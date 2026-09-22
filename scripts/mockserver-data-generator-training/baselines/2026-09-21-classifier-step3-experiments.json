@@ -1,0 +1,154 @@
+{
+    "format": "mockgen-classifier-experiment-record",
+    "version": 1,
+    "date": "2026-09-21",
+    "policy": {
+        "routingPrecision": 0.95,
+        "minimumRouted": 3
+    },
+    "labelling": {
+        "round7": {
+            "partition": "calibration",
+            "selection": "top-k contains thin role",
+            "consensus": 391
+        },
+        "round8": {
+            "partition": "train",
+            "selection": "top-k contains thin or non-routable role, capped 25 per service and role",
+            "items": 1234,
+            "consensus": 1153,
+            "addedTrainRows": 1012
+        },
+        "round9": {
+            "partition": "calibration",
+            "selection": "census of every remaining unlabelled calibration field",
+            "items": 2067,
+            "consensus": 1867,
+            "addedCalibrationRows": 2127
+        }
+    },
+    "candidates": [
+        {
+            "name": "shipped (seed 12, original calibration)",
+            "notes": "package head since dev.13",
+            "routable": 44,
+            "calibrationRows": 4991,
+            "trainRows": null,
+            "acceptedPrecision": 96.19,
+            "supportedRecall": 63.03,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 2.24,
+            "pass": true,
+            "failures": []
+        },
+        {
+            "name": "r7: targeted calibration additions",
+            "notes": "selection bias tightened description threshold",
+            "routable": 47,
+            "calibrationRows": 5351,
+            "trainRows": null,
+            "acceptedPrecision": 96.13,
+            "supportedRecall": 60.96,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 2.27,
+            "pass": true,
+            "failures": []
+        },
+        {
+            "name": "r8: retrained on enriched train, original calibration",
+            "notes": "currency threshold fell 0.852->0.545",
+            "routable": 51,
+            "calibrationRows": 4991,
+            "trainRows": null,
+            "acceptedPrecision": 94.98,
+            "supportedRecall": 64.31,
+            "statusRecall": "26/44",
+            "criticalFalsePositiveRate": 3.78,
+            "pass": false,
+            "failures": [
+                "accepted precision below 95%",
+                "status recall below 60%",
+                "critical false-positive rate above 3% of accepted decisions"
+            ]
+        },
+        {
+            "name": "seed 13 on original data",
+            "notes": "seed-noise control",
+            "routable": 45,
+            "calibrationRows": 4991,
+            "trainRows": null,
+            "acceptedPrecision": 94.96,
+            "supportedRecall": 62.08,
+            "statusRecall": "28/44",
+            "criticalFalsePositiveRate": 3.74,
+            "pass": false,
+            "failures": ["accepted precision below 95%", "critical false-positive rate above 3% of accepted decisions"]
+        },
+        {
+            "name": "seed 14 on original data",
+            "notes": "seed-noise control",
+            "routable": 46,
+            "calibrationRows": 4991,
+            "trainRows": null,
+            "acceptedPrecision": 95.41,
+            "supportedRecall": 61.98,
+            "statusRecall": "21/44",
+            "criticalFalsePositiveRate": 3.36,
+            "pass": false,
+            "failures": ["status recall below 60%", "critical false-positive rate above 3% of accepted decisions"]
+        },
+        {
+            "name": "census-A: shipped weights, census calibration",
+            "notes": "",
+            "routable": 49,
+            "calibrationRows": 7118,
+            "trainRows": null,
+            "acceptedPrecision": 97.2,
+            "supportedRecall": 58.85,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 1.31,
+            "pass": false,
+            "failures": ["supported recall below 60%"]
+        },
+        {
+            "name": "census-B: r8 weights, census calibration",
+            "notes": "",
+            "routable": 51,
+            "calibrationRows": 7118,
+            "trainRows": null,
+            "acceptedPrecision": 96.07,
+            "supportedRecall": 60.18,
+            "statusRecall": "26/44",
+            "criticalFalsePositiveRate": 2.76,
+            "pass": false,
+            "failures": ["status recall below 60%"]
+        },
+        {
+            "name": "census-C: r8 5-seed logit ensemble, census calibration",
+            "notes": "",
+            "routable": 51,
+            "calibrationRows": 7118,
+            "trainRows": null,
+            "acceptedPrecision": 95.09,
+            "supportedRecall": 59.43,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 3.58,
+            "pass": false,
+            "failures": ["supported recall below 60%", "critical false-positive rate above 3% of accepted decisions"]
+        },
+        {
+            "name": "census-D: original-data 5-seed logit ensemble, census calibration",
+            "notes": "",
+            "routable": 45,
+            "calibrationRows": 7118,
+            "trainRows": null,
+            "acceptedPrecision": 96.24,
+            "supportedRecall": 59.53,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 2.65,
+            "pass": false,
+            "failures": ["supported recall below 60%"]
+        }
+    ],
+    "conclusion": "No candidate passes every release gate; the shipped head is retained. Seed changes alone move status recall 21-28/44 and critical false positives 2.2-3.7%, so the gates cannot separate these data changes from training noise."
+}

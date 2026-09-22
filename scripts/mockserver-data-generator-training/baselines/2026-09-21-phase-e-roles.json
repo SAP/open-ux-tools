@@ -1,0 +1,66 @@
+{
+    "date": "2026-09-21",
+    "record": "Phase E: new semantic roles validated by a three-judge adjudication",
+    "guideline": {
+        "file": "scripts/mockserver-data-generator-training/judge-guideline-v3.md",
+        "sha256Prefix": "6d1f9afe7cd2",
+        "addsRoles": ["manufacturer", "product_model", "distance", "rating"]
+    },
+    "panel": {
+        "method": "model-panel-consensus",
+        "humanVerified": false,
+        "judges": ["anthropic--claude-4.8-opus", "anthropic--claude-4.6-sonnet", "gpt-5.6-terra"],
+        "note": "anthropic--claude-4.5-sonnet was replaced: it appended content after its JSON on every batch and produced no usable judgment",
+        "transport": "local LiteLLM proxy, outside every repository"
+    },
+    "candidates": {
+        "selection": "train/calibration and sealed fields whose property name carries the concept word",
+        "items": 311,
+        "services": 47,
+        "byPartition": {
+            "train": 261,
+            "calibration": 4,
+            "sealed": 46
+        }
+    },
+    "adjudication": {
+        "decided": 311,
+        "split": 0,
+        "unanimous": 253,
+        "rule": "at least two of three identical"
+    },
+    "ruleValidation": {
+        "manufacturer": {
+            "hits": 63,
+            "correct": 63,
+            "strictPrecision": 1.0,
+            "services": 6,
+            "shipped": true
+        },
+        "distance": {
+            "hits": 80,
+            "correct": 80,
+            "strictPrecision": 1.0,
+            "services": 13,
+            "shipped": true,
+            "note": "hierarchy depth fields (DistanceFromRoot) excluded; they were the only misses"
+        },
+        "rating": {
+            "hits": 17,
+            "correct": 17,
+            "strictPrecision": 1.0,
+            "services": 15,
+            "shipped": true,
+            "note": "numeric columns only; 7 panel-rating fields are strings and are not routed"
+        },
+        "product_model": {
+            "hits": 99,
+            "correct": 71,
+            "strictPrecision": 0.717,
+            "shipped": false,
+            "reason": "the correct hits are dominated by CAP test-fixture entities (BasicLifecycle, CancelOnCreate, ...); in real business entities (ModelCosts, ModelUsages) \"model\" meant a costing model"
+        }
+    },
+    "whyNotRetrained": "the candidates sit almost entirely in the train and sealed partitions (4 in calibration); the release gate floors routing at 5 correct calibration decisions per role, so a retrained head would keep every new role auxiliary. The roles are routed by validated name rules instead; the head is re-qualified with frozen weights only to carry the new registry fingerprint.",
+    "sealedLabelsUnchanged": "sealed rows keep their original labels; release gates count classifier decisions only, and the new roles are not head labels"
+}

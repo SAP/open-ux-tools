@@ -1,0 +1,252 @@
+{
+    "date": "2026-09-18",
+    "purpose": "Development evidence for the v3 role-classifier replacement; not a release qualification. Counts and fingerprints only.",
+    "labels": {
+        "method": "model-panel-consensus",
+        "humanVerified": false,
+        "judges": ["anthropic--claude-4.8-opus", "anthropic--claude-4.5-sonnet", "gpt-5.6-terra"],
+        "rolePromptSha256": "71230cd223544f7f2db4da024a4cc3a82f850e0a4484ea7d7571bfd9b7cdfaf7",
+        "relevancePromptSha256": "a516ba508fed5345c5f80ba5f3a6af6d1e9101df7873cf17a7f5b9751da8eaea",
+        "roleItems": 23741,
+        "roleAdjudicated": 4309,
+        "roleDisagreements": 49,
+        "fleissKappa": {
+            "round1": 0.868,
+            "round2": 0.809,
+            "round3 (name/text fields, v1)": 0.72,
+            "re-judge (name/text fields, v2)": 0.83,
+            "round5 (exhaustive calibration+holdout)": 0.785,
+            "round6 (exhaustive train)": 0.806
+        },
+        "relevanceItemsV1": 1820,
+        "relevanceItemsV2": 1820,
+        "relevanceUnanimousV2": 1734,
+        "rejudgedUnderGuidelineV2": 1624,
+        "guidelineV2Sha256Prefix": "5927abc38ec22954",
+        "exhaustiveRounds": {
+            "calibration+holdout": 8196,
+            "train": 11187
+        }
+    },
+    "partitions": {
+        "train": 12375,
+        "calibration": 4991,
+        "sealed": 4317,
+        "sealedServices": 41,
+        "sealedDomains": 21,
+        "sealedStatusFields": 71,
+        "sealedStatusPolicyExcluded": 6
+    },
+    "runtimeChanges": [
+        "field-context-v3-priority-text-v4 (natural-language rendering + identifier head noun)",
+        "head-calibrated thresholds govern v3 routing",
+        "auxiliaryLabels head contract",
+        "technical-field abstention for CAP draft/action-control fields",
+        "lexical fallback off for 8 rules contradicting adjudicated labels",
+        "sealed gate scored on classifier-sourced decisions, policy-forbidden fields excluded from recall denominators",
+        "relevance-encoder packaged-model role supported"
+    ],
+    "bestHead": {
+        "round": 19,
+        "headSha256": "9e76f095a9bb9e8929126a897356ecdfef449bceba75f865fa59267ae1b1bd3b",
+        "labels": 63,
+        "routableLabels": [
+            "audit_user",
+            "boolean_flag",
+            "business_partner_id",
+            "city",
+            "company_code",
+            "count",
+            "country",
+            "currency",
+            "customer_id",
+            "date",
+            "datetime",
+            "description",
+            "email",
+            "language",
+            "material_no",
+            "monetary_amount",
+            "org_name",
+            "person_full_name",
+            "phone",
+            "plant",
+            "postal_code",
+            "quantity",
+            "region",
+            "start_date",
+            "status",
+            "street_address",
+            "unit_of_measure",
+            "url",
+            "year"
+        ],
+        "calibrationAccuracy": 0.752,
+        "sealedEvaluation": {
+            "services": 41,
+            "domains": 21,
+            "acceptedRoles": {
+                "correct": 1104,
+                "total": 1189
+            },
+            "supportedFieldsWithoutMetadata": {
+                "correct": 1197,
+                "total": 1934
+            },
+            "unannotatedStatusFields": {
+                "correct": 30,
+                "total": 44
+            },
+            "unannotatedStatusServices": 22,
+            "unannotatedStatusDomains": 10,
+            "criticalFalsePositives": 64
+        },
+        "rawStatusTopLabelCorrect": {
+            "correct": 33,
+            "total": 44
+        },
+        "gate": {
+            "pass": false,
+            "metrics": {
+                "reviewedFields": 4317,
+                "acceptedFields": 2058,
+                "acceptedPrecision": 0.7453838678328474,
+                "supportedFields": 1934,
+                "supportedRecall": 0.6189245087900724,
+                "statusFields": 44,
+                "statusServices": 22,
+                "statusDomains": 10,
+                "statusRecall": 0.6818181818181818,
+                "criticalFalsePositives": 64
+            },
+            "failures": [
+                "accepted precision below 95%",
+                "supported recall below 70%",
+                "status recall below 90%",
+                "critical false-positive roles are present"
+            ]
+        },
+        "classifierDecisions": 1189,
+        "classifierCorrect": 1104
+    },
+    "classifierErrorProfile": {
+        "currencyOnPanelUnknown": 21,
+        "currencyVsCurrencyName": 11,
+        "unitOfMeasureVsIso": 6,
+        "quantityVsMonetaryAmount": 6,
+        "descriptionOnUnknown": 7,
+        "booleanOnUnknown": 6,
+        "supportedMissesRawCorrectButRejected": 450,
+        "missesBelowThreshold": 313,
+        "missesConflictingSet": 180
+    },
+    "relevance": {
+        "frozenEncoder": {
+            "v1": {
+                "calibrationAUC": 0.83
+            },
+            "v2": {
+                "calibrationAUC": 0.77,
+                "calibration": {
+                    "total": 400,
+                    "positives": 175,
+                    "hardNegatives": 225,
+                    "positiveAccepted": 13,
+                    "hardNegativeAccepted": 2,
+                    "positiveAcceptance": 0.07428571428571429,
+                    "hardNegativeAcceptance": 0.008888888888888889
+                },
+                "sealed": {
+                    "total": 515,
+                    "positives": 268,
+                    "hardNegatives": 247,
+                    "positiveAccepted": 0,
+                    "hardNegativeAccepted": 0,
+                    "positiveAcceptance": 0,
+                    "hardNegativeAcceptance": 0
+                }
+            }
+        },
+        "fineTunedBiEncoderBest": {
+            "v1": {
+                "calibrationAUC": 0.907,
+                "recallAt1pctFpr": 0.299
+            },
+            "v2": {
+                "calibrationAUC": 0.851,
+                "recallAt1pctFpr": 0.234
+            }
+        },
+        "crossEncoder": {
+            "v1": {
+                "calibrationAUC": 0.84
+            },
+            "v2": {
+                "calibrationAUC": 0.86,
+                "recallAt1pctFpr": 0.171
+            }
+        },
+        "conclusion": "With 7 approved-value service groups and service-disjoint partitions no head generalizes value plausibility to unseen services at the 80%/1% bar; more approved-value sources are required.",
+        "v3": {
+            "services": {
+                "trainingApproved": 19,
+                "evaluationApproved": 19,
+                "source": "public-value-corpus-discovery.ts over the registry (38 value-bearing public services, personal-data sources rejected)"
+            },
+            "pairs": 3513,
+            "unanimous": 3018,
+            "crossDomainJudgedRelevant": {
+                "train": 163,
+                "calibration": 76
+            },
+            "frozenBaseline": {
+                "calibrationAUC": 0.571,
+                "recallAt1pctFpr": 0.02
+            },
+            "fineTunedBiEncoder": {
+                "calibrationAUC": 0.752,
+                "recallAt1pctFpr": 0.085
+            },
+            "conclusion": "More unseen services make cross-domain value plausibility harder, not easier: the task as posed (same-type value from another service) is not separable at the 80%/1% bar with any tested head."
+        }
+    },
+    "gateOutcome": "not qualified (classifier precision 0.929, supported recall 0.62, status recall 0.68); relevance not qualified",
+    "priorRounds": {
+        "round13": {
+            "acceptedRoles": {
+                "correct": 104,
+                "total": 122
+            },
+            "supportedFieldsWithoutMetadata": {
+                "correct": 105,
+                "total": 139
+            },
+            "unannotatedStatusFields": {
+                "correct": 29,
+                "total": 35
+            },
+            "criticalFalsePositives": 17
+        }
+    },
+    "round16_precisionTarget0_95": {
+        "sealedEvaluation": {
+            "services": 41,
+            "domains": 21,
+            "acceptedRoles": {
+                "correct": 211,
+                "total": 252
+            },
+            "supportedFieldsWithoutMetadata": {
+                "correct": 221,
+                "total": 301
+            },
+            "unannotatedStatusFields": {
+                "correct": 27,
+                "total": 35
+            },
+            "unannotatedStatusServices": 19,
+            "unannotatedStatusDomains": 8,
+            "criticalFalsePositives": 39
+        }
+    }
+}

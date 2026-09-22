@@ -1,0 +1,74 @@
+{
+    "date": "2026-09-21",
+    "record": "dev.9 release baseline: tier attribution honesty, routed-count floor, time and descr rules (VSIX 1.51.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.9",
+        "integrity": "sha512-r3p6pELQjqAgdEiZ/KaFLr12D1J4msqZ5w5xrtUV9XET9ggyqvIcvyTO4eRVS82NXeBiLjI3UQbWMjeq4MSPuw==",
+        "distSha256": "a00da0d520d2def8358aa7ae9e24ee5640cf011f6bdbfe3f5999df4748bdc48b",
+        "tarballBytes": 127933244,
+        "tarballSha256": "facdb5189a09b2890ffd49e0f4b8f123390531aa3bb21e47d88c5dd44f660154",
+        "modelRevision": "05cbe56f241934dcfa7f3bb0312410525cde88a107cb5106252216332676dfc9",
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest",
+            "integrityVerifiedAgainstVsixPin": true
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.51.0.vsix",
+        "version": "1.51.0",
+        "target": "linux-x64",
+        "sha256": "2182144acf3ec8479798bd5e63406ae26296507dbbbab49c9fe10a227612259e",
+        "files": 478,
+        "workerSha256": "3b042042fd8947ec6d11e134aa42c1e383900f93f9b67d2eda3a4e9b70639d9a",
+        "supersedes": "1.50.0 (dev.8)"
+    },
+    "classifier": {
+        "policy": "routing precision target 0.95 (unchanged), minimum routed decisions 5 -> 3; weights frozen",
+        "routable": 44,
+        "newlyRoutable": ["bank_name", "region_name", "time", "timezone"],
+        "sealedEvaluation": {
+            "acceptedRoles": "1160/1206 (96.19%)",
+            "supportedRecall": "1256/2026 (61.99%)",
+            "statusRecall": "27/44",
+            "criticalFalsePositives": "27 (2.24%)"
+        },
+        "rejectedAlternatives": {
+            "p0.93": "accepted precision 94.88%, critical FP 3.69% - fails two release gates",
+            "p0.90": "accepted precision 94.52%, critical FP 4.13% - fails two release gates"
+        }
+    },
+    "corpus": {
+        "file": "2026-09-21-tier-benchmark-dev9.json",
+        "services": "131/131, 0 failures",
+        "before": {
+            "recognised": 41.65,
+            "model": 15.16,
+            "typed": 42.46
+        },
+        "afterPhaseA": {
+            "recognised": 42.48,
+            "model": 15.09,
+            "typed": 41.72
+        },
+        "dev9": {
+            "recognised": 43.48,
+            "model": 14.93,
+            "typed": 40.87
+        },
+        "typedFloorAddressable": "8797 -> 8575"
+    },
+    "tests": {
+        "package": "463/463",
+        "trainingTools": "80/80",
+        "dataEditorMockgen": "50/50",
+        "lintErrors": 0
+    },
+    "generatorLogicVersion": 16,
+    "phaseD": "blocked: enabling status code/text coherence by default contradicts the deliberate guardrail test \"does not invent business coherence rules from field names by default\"; reverted, needs an owner decision",
+    "incidents": [
+        "disk full (338 MB free of 460 GB) stalled staging; freed own temp artifacts only",
+        "first routing sweep invalid: zsh does not word-split, heads recorded a malformed policy; rerun with a policy guard"
+    ]
+}

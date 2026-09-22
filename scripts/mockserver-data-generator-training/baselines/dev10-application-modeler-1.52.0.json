@@ -1,0 +1,69 @@
+{
+    "date": "2026-09-21",
+    "record": "dev.10 release baseline: manufacturer, distance and rating roles (VSIX 1.52.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.10",
+        "integrity": "sha512-TJv7jiyqvGmetcLZ4UYLUWrvtXuzeXdF81n366wizwC7O/+DTYG1g5k6Dg1qce8AqDR5xICPUpSRyn7NIH/Nlw==",
+        "distSha256": "a8390ef6b31995cbba3555f1ef0d5934968bc96cda60335657721eb154b3f184",
+        "tarballBytes": 127933328,
+        "tarballSha256": "ea7cec8961a4c02bb5d05876de5c09906018ed3a52018631efd34bd6cbfb0c66",
+        "modelRevision": "b95d02394af3e2553d4a08d11aec3e378565822f0f9df6f98cc06a0dff53d546",
+        "registryFingerprintPrefix": "ae53fee7b59a",
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest"
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.52.0.vsix",
+        "version": "1.52.0",
+        "target": "linux-x64",
+        "sha256": "145079aa455a6b0da717600c1a632e18e144d6a8a832e4e76518d7ceebad46af",
+        "workerSha256": "321aeb5a61a628ee67e5d56387596c0e80e4a22f9468749759c9e826938e97de",
+        "supersedes": "1.51.0 (dev.9)"
+    },
+    "classifier": {
+        "policy": "weights frozen; precision target 0.95, minimum routed decisions 3 (unchanged from dev.9)",
+        "routable": 44,
+        "sealedEvaluation": {
+            "acceptedRoles": "1160/1206 (96.19%)",
+            "supportedRecall": "1277/2026 (63.03%)",
+            "statusRecall": "27/44",
+            "criticalFalsePositives": "27 (2.24%)"
+        }
+    },
+    "newRoles": {
+        "shipped": ["manufacturer", "distance", "rating"],
+        "rejected": ["product_model"],
+        "evidence": "2026-09-21-phase-e-roles.json"
+    },
+    "corpus": {
+        "file": "2026-09-21-tier-benchmark-dev10.json",
+        "services": "131/131, 0 failures",
+        "programme": {
+            "baseline": {
+                "recognised": 41.65,
+                "model": 15.16,
+                "typed": 42.46
+            },
+            "dev9": {
+                "recognised": 43.48,
+                "model": 14.93,
+                "typed": 40.87
+            },
+            "dev10": {
+                "recognised": 45.27,
+                "model": 15.36,
+                "typed": 38.65
+            }
+        },
+        "typedFloorAddressable": "8797 -> 8575 (dev.9) -> 8167 (dev.10)"
+    },
+    "tests": {
+        "package": "466/466",
+        "trainingTools": "80/80",
+        "dataEditorMockgen": "50/50",
+        "lintErrors": 0
+    }
+}

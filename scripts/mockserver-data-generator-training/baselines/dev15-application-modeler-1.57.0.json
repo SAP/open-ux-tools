@@ -1,0 +1,183 @@
+{
+    "date": "2026-09-21",
+    "record": "dev.15 release baseline: classifier trained on the corpus-v1 overlay (1,383 train+calibration services) as a 3-seed ensemble, plus CAP common code-list handling (VSIX 1.57.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.15",
+        "integrity": "sha512-1QWOoFoyGJb7aW9CqmXPzciOIklPVryAzbSr1sCzXLGmk1eQ+zzpWpr4Vr4I0r55OQz0aqRkZc8bkF2xeOir9A==",
+        "distSha256": "2a70e4511bf6570042d2764d5a54a302961e465ae05df8df77329e7a1a1f6f1b",
+        "modelRevision": "28f842a9595cd579fd2c9112c241d9c9003179922b2b50d7876719d6a8334a75",
+        "generatorLogicVersion": 19,
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest",
+            "tarballDownloadedAndVerified": true
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.57.0.vsix",
+        "version": "1.57.0",
+        "target": "linux-x64",
+        "sha256": "e87a61b838295db77113fcf8a8b0613c3d6bd6aa1a623840423e19ee2a607d24",
+        "workerSha256": "b95948f746d027f3a6c408a690653d6711f095b61336d93c8665fe68f9e10f87",
+        "supersedes": "1.56.0 (dev.14)"
+    },
+    "corpus": {
+        "authorization": "owner-authorized structural metadata only (s4-harvest, harvest/internal, private/sap-metadata); SAP Hub excluded (evaluation-only terms)",
+        "privacy": "1,627 scanner findings, all unreachable from field contexts; 6 files excluded; 0 open findings",
+        "overlay": {
+            "newServices": 979,
+            "newByOrigin": {
+                "s4-harvest": 860,
+                "harvest-internal": 114,
+                "fin-local-copy": 3,
+                "private-sap-metadata": 2
+            },
+            "newBySplit": {
+                "train": 784,
+                "calibration": 195
+            },
+            "idleReassigned": 233,
+            "idleBySplit": {
+                "train": 182,
+                "calibration": 51
+            },
+            "inherited": 18,
+            "newFamilies": 1099,
+            "largestNewFamily": 6,
+            "newFields": 312306,
+            "idleFields": 29428
+        },
+        "excludedByReason": {
+            "protected-resemblance": 34,
+            "alias-version": 109,
+            "unparsed": 67,
+            "privacy-excluded": 6,
+            "registered-protected-identical": 2
+        },
+        "labelling": {
+            "c1Calibration": {
+                "fields": 5212,
+                "consensus": 4763
+            },
+            "t1Train": {
+                "fields": 6893,
+                "consensus": 6292
+            },
+            "t2UncertainTrain": {
+                "fields": 4876,
+                "consensus": 4426
+            },
+            "unionItems": 44437
+        },
+        "rows": {
+            "train": 23857,
+            "trainFamilies": 884,
+            "calibration": 7114,
+            "calibrationFamilies": 26,
+            "previousTrain": 13387,
+            "previousTrainFamilies": 65
+        }
+    },
+    "classifier": {
+        "policy": "precision target 0.95, minimum routed 3; config A (census calibration unchanged); 3-seed logit ensemble (hidden 768)",
+        "routable": 52,
+        "sealedWithCodeLists": {
+            "acceptedPrecision": 96.27,
+            "supportedRecall": 65.59,
+            "statusRecall": "32/44",
+            "criticalFalsePositiveRate": 2.67,
+            "pass": true
+        },
+        "seedsWithCodeLists": {
+            "s12": {
+                "acceptedPrecision": 96.84,
+                "supportedRecall": 63.95,
+                "statusRecall": "29/44",
+                "criticalFalsePositiveRate": 2.14,
+                "pass": true
+            },
+            "s13": {
+                "acceptedPrecision": 95.76,
+                "supportedRecall": 66.75,
+                "statusRecall": "32/44",
+                "criticalFalsePositiveRate": 2.88,
+                "pass": true
+            },
+            "s14": {
+                "acceptedPrecision": 96.22,
+                "supportedRecall": 65.09,
+                "statusRecall": "31/44",
+                "criticalFalsePositiveRate": 2.47,
+                "pass": true
+            }
+        },
+        "seedsWithoutCodeLists": {
+            "s12": {
+                "acceptedPrecision": 95.96,
+                "supportedRecall": 65.72,
+                "statusRecall": "29/44",
+                "criticalFalsePositiveRate": 3.1,
+                "pass": false
+            },
+            "s13": {
+                "acceptedPrecision": 95.33,
+                "supportedRecall": 68.39,
+                "statusRecall": "32/44",
+                "criticalFalsePositiveRate": 3.42,
+                "pass": false
+            },
+            "s14": {
+                "acceptedPrecision": 95.22,
+                "supportedRecall": 66.93,
+                "statusRecall": "31/44",
+                "criticalFalsePositiveRate": 3.58,
+                "pass": false
+            }
+        },
+        "shippedHeadWithCodeLists": {
+            "acceptedPrecision": 95.94,
+            "supportedRecall": 61.76,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 2.39,
+            "pass": true
+        },
+        "shippedHeadWithoutCodeLists": {
+            "acceptedPrecision": 96.19,
+            "supportedRecall": 63.03,
+            "statusRecall": "27/44",
+            "criticalFalsePositiveRate": 2.24,
+            "pass": true
+        },
+        "note": "Code-list handling was added after the sealed set showed CAP sap.common.Currencies errors; both views are recorded. Config B (census+C1 calibration) failed the critical false-positive gate on every seed and was not shipped."
+    },
+    "tiers": {
+        "file": "2026-09-21-tier-benchmark-corpus-v1.json",
+        "before": {
+            "recognised": 45.29,
+            "model": 15.14,
+            "typed": 38.84,
+            "declared": 0.72,
+            "authored": 0
+        },
+        "after": {
+            "recognised": 49.61,
+            "model": 13.66,
+            "typed": 36.01,
+            "declared": 0.72,
+            "authored": 0
+        },
+        "addressableTyped": {
+            "before": 8167,
+            "after": 7391
+        },
+        "failures": 0
+    },
+    "checks": {
+        "packageTests": "473/473",
+        "lintErrors": 0,
+        "checkRelease": "pass",
+        "editorContractCheck": "28/28 valid",
+        "editorMockgenTests": "50/50"
+    }
+}

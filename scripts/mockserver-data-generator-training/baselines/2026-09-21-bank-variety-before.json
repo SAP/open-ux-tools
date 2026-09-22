@@ -1,0 +1,214 @@
+{
+    "format": "mockgen-bank-variety-benchmark",
+    "version": 1,
+    "services": 91,
+    "recognisedColumns": 3275,
+    "fullyDistinctColumnsPct": 48.06,
+    "rowCountReducedEntities": 42,
+    "roles": {
+        "description": {
+            "columns": 450,
+            "distinctPerTenRows": 1.1
+        },
+        "business_identifier": {
+            "columns": 344,
+            "distinctPerTenRows": 9.6
+        },
+        "monetary_amount": {
+            "columns": 288,
+            "distinctPerTenRows": 10
+        },
+        "datetime": {
+            "columns": 259,
+            "distinctPerTenRows": 9.7
+        },
+        "audit_user": {
+            "columns": 220,
+            "distinctPerTenRows": 9
+        },
+        "currency": {
+            "columns": 146,
+            "distinctPerTenRows": 5.1
+        },
+        "quantity": {
+            "columns": 133,
+            "distinctPerTenRows": 9.7
+        },
+        "year": {
+            "columns": 132,
+            "distinctPerTenRows": 4.6
+        },
+        "date": {
+            "columns": 125,
+            "distinctPerTenRows": 9.8
+        },
+        "language": {
+            "columns": 109,
+            "distinctPerTenRows": 4.1
+        },
+        "distance": {
+            "columns": 92,
+            "distinctPerTenRows": 10
+        },
+        "manufacturer": {
+            "columns": 91,
+            "distinctPerTenRows": 5.1
+        },
+        "time": {
+            "columns": 83,
+            "distinctPerTenRows": 10
+        },
+        "country": {
+            "columns": 76,
+            "distinctPerTenRows": 3.9
+        },
+        "city": {
+            "columns": 68,
+            "distinctPerTenRows": 3.4
+        },
+        "numeric_identifier": {
+            "columns": 58,
+            "distinctPerTenRows": 9.9
+        },
+        "phone": {
+            "columns": 46,
+            "distinctPerTenRows": 10
+        },
+        "start_date": {
+            "columns": 45,
+            "distinctPerTenRows": 9.7
+        },
+        "street_address": {
+            "columns": 44,
+            "distinctPerTenRows": 9.7
+        },
+        "org_name": {
+            "columns": 38,
+            "distinctPerTenRows": 3.7
+        },
+        "postal_code": {
+            "columns": 34,
+            "distinctPerTenRows": 3.5
+        },
+        "email": {
+            "columns": 32,
+            "distinctPerTenRows": 8.6
+        },
+        "end_date": {
+            "columns": 31,
+            "distinctPerTenRows": 9.9
+        },
+        "unit_of_measure": {
+            "columns": 31,
+            "distinctPerTenRows": 4.5
+        },
+        "count": {
+            "columns": 30,
+            "distinctPerTenRows": 2.2
+        },
+        "region": {
+            "columns": 28,
+            "distinctPerTenRows": 3.6
+        },
+        "person_full_name": {
+            "columns": 24,
+            "distinctPerTenRows": 9.2
+        },
+        "person_last_name": {
+            "columns": 22,
+            "distinctPerTenRows": 5.7
+        },
+        "boolean_flag": {
+            "columns": 22,
+            "distinctPerTenRows": 2
+        },
+        "person_first_name": {
+            "columns": 18,
+            "distinctPerTenRows": 5.7
+        },
+        "country_name": {
+            "columns": 18,
+            "distinctPerTenRows": 3.8
+        },
+        "business_partner_id": {
+            "columns": 18,
+            "distinctPerTenRows": 9.5
+        },
+        "percentage": {
+            "columns": 13,
+            "distinctPerTenRows": 10
+        },
+        "equipment_id": {
+            "columns": 13,
+            "distinctPerTenRows": 9.3
+        },
+        "status": {
+            "columns": 12,
+            "distinctPerTenRows": 4.9
+        },
+        "price": {
+            "columns": 12,
+            "distinctPerTenRows": 10
+        },
+        "url": {
+            "columns": 11,
+            "distinctPerTenRows": 3.8
+        },
+        "rating": {
+            "columns": 10,
+            "distinctPerTenRows": 6.2
+        },
+        "material_no": {
+            "columns": 9,
+            "distinctPerTenRows": 10
+        },
+        "region_name": {
+            "columns": 7,
+            "distinctPerTenRows": 3
+        },
+        "bic": {
+            "columns": 5,
+            "distinctPerTenRows": 3.6
+        },
+        "timezone": {
+            "columns": 5,
+            "distinctPerTenRows": 3.8
+        },
+        "customer_id": {
+            "columns": 5,
+            "distinctPerTenRows": 10
+        },
+        "mobile_phone": {
+            "columns": 5,
+            "distinctPerTenRows": 10
+        },
+        "document_id": {
+            "columns": 4,
+            "distinctPerTenRows": 9.8
+        },
+        "customer_purchase_order": {
+            "columns": 3,
+            "distinctPerTenRows": 7
+        },
+        "batch": {
+            "columns": 2,
+            "distinctPerTenRows": 10
+        },
+        "business_network_id": {
+            "columns": 1,
+            "distinctPerTenRows": 10
+        },
+        "vendor_id": {
+            "columns": 1,
+            "distinctPerTenRows": 10
+        },
+        "length_unit": {
+            "columns": 1,
+            "distinctPerTenRows": 10
+        },
+        "employee_id": {
+            "columns": 1,
+            "distinctPerTenRows": 10
+        }
+    }
+}

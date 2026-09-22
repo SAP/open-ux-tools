@@ -1,0 +1,65 @@
+{
+    "format": "mockgen-t2-speed-record",
+    "version": 1,
+    "date": "2026-09-21",
+    "machine": "local macOS (BAS is slower; relative change is what carries over)",
+    "runs": [
+        {
+            "config": "dev.13: three relevance attempts, 120 s budget",
+            "services": [
+                {
+                    "file": "rap-dmo-travel-v2.metadata.xml",
+                    "wallMs": 11744,
+                    "t2Ms": 10164,
+                    "accepted": 48,
+                    "eligible": 140
+                },
+                {
+                    "file": "fin-cash-bank-manage.metadata.xml",
+                    "wallMs": 34886,
+                    "t2Ms": 32733,
+                    "accepted": 136,
+                    "eligible": 1210
+                }
+            ]
+        },
+        {
+            "config": "one relevance attempt, 120 s budget",
+            "services": [
+                {
+                    "file": "rap-dmo-travel-v2.metadata.xml",
+                    "wallMs": 8461,
+                    "t2Ms": 6979,
+                    "accepted": 48,
+                    "eligible": 140
+                },
+                {
+                    "file": "fin-cash-bank-manage.metadata.xml",
+                    "wallMs": 34797,
+                    "t2Ms": 32685,
+                    "accepted": 136,
+                    "eligible": 1210
+                }
+            ]
+        },
+        {
+            "config": "one relevance attempt, 20 s budget (dev.14)",
+            "services": [
+                {
+                    "file": "rap-dmo-travel-v2.metadata.xml",
+                    "wallMs": 8197,
+                    "t2Ms": 6716,
+                    "accepted": 48,
+                    "eligible": 140
+                },
+                {
+                    "file": "fin-cash-bank-manage.metadata.xml",
+                    "wallMs": 16107,
+                    "t2Ms": 14010,
+                    "accepted": 92,
+                    "eligible": 1210
+                }
+            ]
+        }
+    ]
+}

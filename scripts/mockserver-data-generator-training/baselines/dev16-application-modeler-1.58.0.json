@@ -1,0 +1,108 @@
+{
+    "date": "2026-09-22",
+    "record": "dev.16 release baseline: classifier head B (prototype head, 926 field concepts with LLM-written value banks) on top of the unchanged dev.15 role head (VSIX 1.58.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.16",
+        "integrity": "sha512-mO+yxA/HBtjeFt4J7hOhJ0KVi6mzUpeWQyMuU6NeS3gXVb8L/AlheVSFHR0CSH5/De97L+hZ3XcnNznNWg0ewA==",
+        "distSha256": "0722b7947e4307643e6c257dd7a0ef222fbc6cc3e6589383860ad1b5684eee5c",
+        "modelRevision": "476838c84a9ffbb81da045653ac9bff0a709241c29a8fa60359dcd481a3a039f",
+        "generatorLogicVersion": 20,
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest",
+            "tarballDownloadedAndVerified": true
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.58.0.vsix",
+        "version": "1.58.0",
+        "target": "linux-x64",
+        "sha256": "3d3bedcaa4049ca9b6e3cf7e3044d9d49aaf2f6af489c2c7583c5a6235aa5945",
+        "workerSha256": "3f8179ba6055352820deee6ba4399f5211838ee8acc31cbf7a84a87354096176",
+        "supersedes": "1.57.0 (dev.15)"
+    },
+    "headB": {
+        "owner": "publication of derived concept names, descriptions, banks and prototypes approved 2026-09-21 (all concepts in >= 10 families)",
+        "mining": {
+            "conceptKeys": 51963,
+            "candidatesInAtLeast10Families": 2121,
+            "handledByHeadA": 784
+        },
+        "cards": {
+            "model": "anthropic--claude-4.6-sonnet via LiteLLM",
+            "kept": 1005,
+            "conceptsAfterSynonymMerge": 926,
+            "byKind": {
+                "code": 250,
+                "identifier": 317,
+                "code-text": 211,
+                "number": 34,
+                "name": 65,
+                "text": 24,
+                "decimal": 25
+            }
+        },
+        "thresholds": {
+            "global": {
+                "similarity": 0.75,
+                "margin": 0.02
+            },
+            "perConcept": "25th percentile of the similarity of its own train examples to its prototype",
+            "selection": "most accepted fields with >= 95% precision on the tune half; chosen before looking at the confirm half"
+        },
+        "judgedPrecision": {
+            "rule": "two-of-three majority (opus 4.8, sonnet 4.6, gpt-5.6-terra tie-break)",
+            "sample": "10 fields per calibration-partition service, 287 services, 2,293 judged",
+            "tune": "95.4% (323 accepted)",
+            "confirm": "93.4% (229 accepted) — below the plan target of 95%"
+        }
+    },
+    "tiers": {
+        "file": "2026-09-21-tier-benchmark-head-b.json",
+        "before": {
+            "recognised": 49.61,
+            "model": 13.66,
+            "typed": 36.01,
+            "declared": 0.72,
+            "authored": 0
+        },
+        "after": {
+            "recognised": 52.46,
+            "model": 13.72,
+            "typed": 33.11,
+            "declared": 0.72,
+            "authored": 0
+        },
+        "servicesImproved": 52,
+        "servicesWorse": 0,
+        "failures": 0
+    },
+    "speed": {
+        "localMac": [
+            {
+                "file": "rap-dmo-travel-v2.metadata.xml",
+                "wallMs": 6578,
+                "t2Ms": 5026,
+                "accepted": 39,
+                "eligible": 130
+            },
+            {
+                "file": "fin-cash-bank-manage.metadata.xml",
+                "wallMs": 20295,
+                "t2Ms": 17870,
+                "accepted": 93,
+                "eligible": 590
+            }
+        ],
+        "note": "T2 remains capped at 20 s; on the cash bank service head B takes half the model-eligible slots and the remaining entities use the full cap"
+    },
+    "headA": "unchanged from dev.15 (sealed gates identical by construction: concept decisions are not classifier decisions)",
+    "checks": {
+        "packageTests": "478/478",
+        "lintErrors": 0,
+        "checkRelease": "pass",
+        "editorContractCheck": "28/28 valid",
+        "editorTests": "56/56"
+    }
+}

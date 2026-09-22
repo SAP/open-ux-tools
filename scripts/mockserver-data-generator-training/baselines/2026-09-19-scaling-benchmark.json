@@ -1,0 +1,61 @@
+{
+    "format": "mockgen-scaling-benchmark",
+    "version": 1,
+    "settings": {
+        "seed": 123,
+        "repeat": 3,
+        "mode": "deterministic",
+        "entities": 17
+    },
+    "points": [
+        {
+            "rowsPerEntity": 1,
+            "generatedRows": 17,
+            "medianMs": 287.3,
+            "bestMs": 269.7,
+            "msPerRow": 15.865
+        },
+        {
+            "rowsPerEntity": 2,
+            "generatedRows": 34,
+            "medianMs": 257.4,
+            "bestMs": 253.5,
+            "msPerRow": 7.457
+        },
+        {
+            "rowsPerEntity": 5,
+            "generatedRows": 85,
+            "medianMs": 241.2,
+            "bestMs": 239.9,
+            "msPerRow": 2.822
+        },
+        {
+            "rowsPerEntity": 10,
+            "generatedRows": 170,
+            "medianMs": 307.6,
+            "bestMs": 278.7,
+            "msPerRow": 1.64
+        },
+        {
+            "rowsPerEntity": 25,
+            "generatedRows": 425,
+            "medianMs": 281.7,
+            "bestMs": 261.5,
+            "msPerRow": 0.615
+        },
+        {
+            "rowsPerEntity": 50,
+            "generatedRows": 850,
+            "medianMs": 336.6,
+            "bestMs": 317.1,
+            "msPerRow": 0.373
+        },
+        {
+            "rowsPerEntity": 100,
+            "generatedRows": 1700,
+            "medianMs": 484.7,
+            "bestMs": 452.5,
+            "msPerRow": 0.266
+        }
+    ]
+}

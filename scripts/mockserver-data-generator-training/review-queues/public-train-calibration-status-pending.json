@@ -1,0 +1,3022 @@
+{
+    "format": "mockgen-role-review-queue",
+    "version": 1,
+    "qualification": "pending-adjudication-not-training-data",
+    "services": [
+        {
+            "serviceId": "cap-js-audit-logging-cap-audit-personal-data-crud-1",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-crud-1/Customers/status_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-crud-1",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Customers",
+                        "propertyName": "status_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "creditCardNo", "emailAddress", "firstName", "lastName", "someOtherField"]
+                    },
+                    "sourceChecksum": "314d1004edeeab5c996ae31569d4fca99c5a25f531987a2927f8a05a54fd1c0c"
+                },
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-crud-1/Notes/customerStatus_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-crud-1",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Notes",
+                        "propertyName": "customerStatus_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "customerStatus",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "attachment_ID", "dummyArray", "note"]
+                    },
+                    "sourceChecksum": "314d1004edeeab5c996ae31569d4fca99c5a25f531987a2927f8a05a54fd1c0c"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-js-audit-logging-cap-audit-personal-data-crud-2",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-crud-2/Customers/status_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-crud-2",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Customers",
+                        "propertyName": "status_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "creditCardNo", "emailAddress", "firstName", "lastName", "someOtherField"]
+                    },
+                    "sourceChecksum": "45ca56e54cd1fde5254de2b77dbbe6f9d8c25600623edc3f04c03370ae26f2aa"
+                },
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-crud-2/Notes/customerStatus_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-crud-2",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Notes",
+                        "propertyName": "customerStatus_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "customerStatus",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "attachment_ID", "dummyArray", "note"]
+                    },
+                    "sourceChecksum": "45ca56e54cd1fde5254de2b77dbbe6f9d8c25600623edc3f04c03370ae26f2aa"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-js-audit-logging-cap-audit-personal-data-fiori-1",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-fiori-1/Customers/status_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-fiori-1",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Customers",
+                        "propertyName": "status_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "creditCardNo", "emailAddress", "firstName", "lastName", "someOtherField"]
+                    },
+                    "sourceChecksum": "53e45a306be4f2c015d54b93b97fc68d9ad0c1a8971522e126bb87619c522dd0"
+                },
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-fiori-1/Notes/customerStatus_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-fiori-1",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Notes",
+                        "propertyName": "customerStatus_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "customerStatus",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "attachment_ID", "dummyArray", "note"]
+                    },
+                    "sourceChecksum": "53e45a306be4f2c015d54b93b97fc68d9ad0c1a8971522e126bb87619c522dd0"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-js-audit-logging-cap-audit-personal-data-fiori-2",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-fiori-2/Customers/status_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-fiori-2",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Customers",
+                        "propertyName": "status_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "creditCardNo", "emailAddress", "firstName", "lastName", "someOtherField"]
+                    },
+                    "sourceChecksum": "83455159e82c8a56391c31037dfa36156889b83298a34b331ce8ec66db78aeab"
+                },
+                {
+                    "fieldId": "property:cap-js-audit-logging-cap-audit-personal-data-fiori-2/Notes/customerStatus_ID",
+                    "serviceId": "cap-js-audit-logging-cap-audit-personal-data-fiori-2",
+                    "split": "train",
+                    "domain": "personal-data-auditing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Notes",
+                        "propertyName": "customerStatus_ID",
+                        "primitiveType": "guid",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "customerStatus",
+                                "direction": "source",
+                                "property": "ID"
+                            }
+                        ],
+                        "neighbors": ["ID", "attachment_ID", "dummyArray", "note"]
+                    },
+                    "sourceChecksum": "83455159e82c8a56391c31037dfa36156889b83298a34b331ce8ec66db78aeab"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/InputShipments/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "InputShipments",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "destination", "expectedDelivery", "origin", "shipmentDate"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/Shipments/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Shipments",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "destination", "expectedDelivery", "origin", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartAliasInput/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartAliasInput",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "destination", "expectedDelivery", "origin", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartCompositionWildcardAlias/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartCompositionWildcardAlias",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartCyclicPath/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartCyclicPath",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartMultipleAliasComposition/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartMultipleAliasComposition",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartMultipleAliasScalar/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartMultipleAliasScalar",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartNestedAlias/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartNestedAlias",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "orderDate"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartNestedComposition/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartNestedComposition",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "shipmentDate"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartNestedSelected/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartNestedSelected",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "shipmentDate"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartNoInput/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartNoInput",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "destination",
+                            "expectedDelivery",
+                            "notes",
+                            "origin",
+                            "shipmentDate",
+                            "totalValue"
+                        ]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartSelectedInput/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartSelectedInput",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "destination", "expectedDelivery", "origin", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartSelfWildcard/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartSelfWildcard",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartSelfWildcardAlias/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartSelfWildcardAlias",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "shipmentDate", "totalValue"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartSelfWithAssoc/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartSelfWithAssoc",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "author_ID"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                },
+                {
+                    "fieldId": "property:cap-js-process-cap-process-bookshop-annotationservice/StartWithAuthorInput/status",
+                    "serviceId": "cap-js-process-cap-process-bookshop-annotationservice",
+                    "split": "train",
+                    "domain": "workflow-lifecycle-testing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "StartWithAuthorInput",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "author_ID"]
+                    },
+                    "sourceChecksum": "daf0c7ef119d9c26c00374b8beb82b21d5787469aa6110d67fd099a056e528ce"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-js-process-cap-process-status-management-authorsservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-process-cap-process-status-management-authorsservice/Authors/verificationStatus",
+                    "serviceId": "cap-js-process-cap-process-status-management-authorsservice",
+                    "split": "train",
+                    "domain": "publication-approval",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Authors",
+                        "propertyName": "verificationStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            },
+                            {
+                                "term": "UI.Hidden"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "dateOfBirth",
+                            "dateOfDeath",
+                            "isVerified",
+                            "modifiedAt",
+                            "modifiedBy"
+                        ]
+                    },
+                    "sourceChecksum": "1dd068e2a17f8f7b9f2d47ed481e4a6f4855beae4fe0f176d16528aebe3b024d"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-js-process-cap-process-status-management-booksservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-process-cap-process-status-management-booksservice/Books/processStatus",
+                    "serviceId": "cap-js-process-cap-process-status-management-booksservice",
+                    "split": "train",
+                    "domain": "publication-approval",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Books",
+                        "propertyName": "processStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            },
+                            {
+                                "term": "UI.Hidden"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "author_ID",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "descr",
+                            "genre_ID",
+                            "isApproved"
+                        ]
+                    },
+                    "sourceChecksum": "4342471ca0a026828162f7ec1c55fabc8286fa18f7c221aa513596de0d3f84c4"
+                }
+            ]
+        },
+        {
+            "serviceId": "microsoft-adventureworks-data-warehouse",
+            "partition": "train",
+            "pending": []
+        },
+        {
+            "serviceId": "microsoft-adventureworks-oltp",
+            "partition": "train",
+            "pending": []
+        },
+        {
+            "serviceId": "microsoft-futon-manufacturing",
+            "partition": "train",
+            "pending": []
+        },
+        {
+            "serviceId": "sap-btp-ai-best-practices-cap-ai-log-analyzer-reportservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-ai-best-practices-cap-ai-log-analyzer-reportservice/Messages/STATUS",
+                    "serviceId": "sap-btp-ai-best-practices-cap-ai-log-analyzer-reportservice",
+                    "split": "train",
+                    "domain": "log-analysis",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Messages",
+                        "propertyName": "STATUS",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ALLO_PLAN_ID",
+                            "ALLO_WL_ID",
+                            "COLOR",
+                            "CONTROLLER_ID",
+                            "COUNTER",
+                            "CREATIONTSTAMP",
+                            "DELETIONTSTAMP",
+                            "DELETION_INDICATOR"
+                        ]
+                    },
+                    "sourceChecksum": "7cbf7ee5a78e62c5dcf6ef1058176075590834ae55ebd6565d1a538f19ae1e3f"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-agentservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-industry-use-cases-cap-customer-interaction-agentservice/CustomerInteraction/status_code",
+                    "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-agentservice",
+                    "split": "train",
+                    "domain": "customer-service",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "CustomerInteraction",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 2
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "category_code",
+                            "createdAt",
+                            "createdBy",
+                            "customer_ID",
+                            "extRef",
+                            "modifiedAt",
+                            "modifiedBy"
+                        ]
+                    },
+                    "sourceChecksum": "c995acb5ce6b2286f9eec37199929d593dce7f4e7c8a4e600298a778fd11a403"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-customerservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-industry-use-cases-cap-customer-interaction-customerservice/CustomerInteraction/status_code",
+                    "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-customerservice",
+                    "split": "train",
+                    "domain": "customer-service",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "CustomerInteraction",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 2
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "category_code",
+                            "createdAt",
+                            "createdBy",
+                            "extRef",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "numberOfInteractions"
+                        ]
+                    },
+                    "sourceChecksum": "2fb2ded2a3c744ebd8a7150e4e2ff44b0dcd7f5ebc38060701df440aff034083"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-ticketingservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-industry-use-cases-cap-customer-interaction-ticketingservice/CustomerInteraction/status_code",
+                    "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-ticketingservice",
+                    "split": "train",
+                    "domain": "customer-service",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "CustomerInteraction",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 2
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "category_code",
+                            "createdAt",
+                            "createdBy",
+                            "customer_ID",
+                            "extRef",
+                            "modifiedAt",
+                            "modifiedBy"
+                        ]
+                    },
+                    "sourceChecksum": "f1a1e6bdf825a31afc23fe7d011f3506a99e9473efde973ebd81e12b80f5566c"
+                },
+                {
+                    "fieldId": "property:sap-btp-industry-use-cases-cap-customer-interaction-ticketingservice/InteractionInsight/status_code",
+                    "serviceId": "sap-btp-industry-use-cases-cap-customer-interaction-ticketingservice",
+                    "split": "train",
+                    "domain": "customer-service",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "InteractionInsight",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 2
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "category_code",
+                            "catname",
+                            "createdAt",
+                            "createdBy",
+                            "customer_ID",
+                            "extRef",
+                            "modifiedAt"
+                        ]
+                    },
+                    "sourceChecksum": "f1a1e6bdf825a31afc23fe7d011f3506a99e9473efde973ebd81e12b80f5566c"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkjobservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkjobservice/EventLogs/Status",
+                    "serviceId": "sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkjobservice",
+                    "split": "train",
+                    "domain": "integration-operations",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "EventLogs",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["EventMessage", "EventName", "ID", "Realm", "TransactionDate"]
+                    },
+                    "sourceChecksum": "8c63c1f9ffca05fd159ecae01277e5159792ffdaa2b2e199b5787552fd371f6d"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkservice/EventLogs/Status",
+                    "serviceId": "sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkservice",
+                    "split": "train",
+                    "domain": "integration-operations",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "EventLogs",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["EventMessage", "EventName", "ID", "Realm", "TransactionDate"]
+                    },
+                    "sourceChecksum": "d723d1470865e0b52cf8dddf7007d9502343878511f44801685cbb9862e2e26c"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-cap-service-integration-codejam-cap-incident-integration-incidentsservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-cap-service-integration-codejam-cap-incident-integration-incidentsservice/Incidents/status",
+                    "serviceId": "sap-cap-service-integration-codejam-cap-incident-integration-incidentsservice",
+                    "split": "train",
+                    "domain": "service-incident-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Incidents",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "label": "Status",
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            },
+                            {
+                                "term": "Common.ValueList.CollectionPath",
+                                "value": "Incidents_status"
+                            },
+                            {
+                                "term": "Common.ValueList.Parameters"
+                            },
+                            {
+                                "term": "Common.ValueListWithFixedValues",
+                                "value": true
+                            },
+                            {
+                                "term": "title",
+                                "value": "Status"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "service_ID",
+                            "title",
+                            "urgency"
+                        ]
+                    },
+                    "sourceChecksum": "f17a21d8287f0986313cb076a093e9305907b9d3089986a6cf52da9018eab68a"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargepointservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargepointservice/ChargingStations/firmwareUpdateStatus",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargepointservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingStations",
+                        "propertyName": "firmwareUpdateStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "disabled",
+                            "excludedFromDynamicLoadManagement",
+                            "firmwareVersion",
+                            "iccid",
+                            "id",
+                            "imsi",
+                            "lastSeenAt",
+                            "manualConfiguration"
+                        ]
+                    },
+                    "sourceChecksum": "8e9a19578dc178d025e5dfde1c3a4eb2dfa081d1fe558446cd1729a8352e12d6"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargepointservice/ChargingStations/registrationStatus",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargepointservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingStations",
+                        "propertyName": "registrationStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "disabled",
+                            "excludedFromDynamicLoadManagement",
+                            "firmwareUpdateStatus",
+                            "firmwareVersion",
+                            "iccid",
+                            "id",
+                            "imsi",
+                            "lastSeenAt"
+                        ]
+                    },
+                    "sourceChecksum": "8e9a19578dc178d025e5dfde1c3a4eb2dfa081d1fe558446cd1729a8352e12d6"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargepointservice/Connectors/status",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargepointservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Connectors",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 15
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "connectorId",
+                            "current",
+                            "currentLimit",
+                            "currentType",
+                            "evseIndex",
+                            "maximumPower",
+                            "numberOfPhases",
+                            "type"
+                        ]
+                    },
+                    "sourceChecksum": "8e9a19578dc178d025e5dfde1c3a4eb2dfa081d1fe558446cd1729a8352e12d6"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice/Authorizations/status",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Authorizations",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["badgeAuthenticationId", "id", "method", "reference", "timestamp"]
+                    },
+                    "sourceChecksum": "69490ccfcf2917fa307aca7c3d3505e6665d4cfba15f50726bf21c2f01049154"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice/ChargingSessions/connectorStatus",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingSessions",
+                        "propertyName": "connectorStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Validation.AllowedValues"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "authorization_ID",
+                            "badgeAuthenticationId",
+                            "badgeProviderId",
+                            "badgeVisualBadgeId",
+                            "chargingStationName",
+                            "connectorId",
+                            "cumulatedPrice",
+                            "cumulatedSalesAmount"
+                        ]
+                    },
+                    "sourceChecksum": "69490ccfcf2917fa307aca7c3d3505e6665d4cfba15f50726bf21c2f01049154"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice/ChargingSessions/status",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingSessions",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Validation.AllowedValues"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "authorization_ID",
+                            "badgeAuthenticationId",
+                            "badgeProviderId",
+                            "badgeVisualBadgeId",
+                            "chargingStationName",
+                            "connectorId",
+                            "connectorStatus",
+                            "cumulatedPrice"
+                        ]
+                    },
+                    "sourceChecksum": "69490ccfcf2917fa307aca7c3d3505e6665d4cfba15f50726bf21c2f01049154"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice/Stops/inactivityStatus",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Stops",
+                        "propertyName": "inactivityStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Validation.AllowedValues"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["ID", "extraInactivity", "stopMeterValue", "stopSignedMeterValue", "timestamp"]
+                    },
+                    "sourceChecksum": "69490ccfcf2917fa307aca7c3d3505e6665d4cfba15f50726bf21c2f01049154"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice/ChargingStations/firmwareUpdateStatus",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingStations",
+                        "propertyName": "firmwareUpdateStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "disabled",
+                            "excludedFromDynamicLoadManagement",
+                            "firmwareVersion",
+                            "iccid",
+                            "id",
+                            "imsi",
+                            "lastSeenAt",
+                            "manualConfiguration"
+                        ]
+                    },
+                    "sourceChecksum": "a62e1dc75efd09a04a71ca8fabeb795111aa50fd9961326abc1435e8af17cc44"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice/ChargingStations/registrationStatus",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingStations",
+                        "propertyName": "registrationStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "disabled",
+                            "excludedFromDynamicLoadManagement",
+                            "firmwareUpdateStatus",
+                            "firmwareVersion",
+                            "iccid",
+                            "id",
+                            "imsi",
+                            "lastSeenAt"
+                        ]
+                    },
+                    "sourceChecksum": "a62e1dc75efd09a04a71ca8fabeb795111aa50fd9961326abc1435e8af17cc44"
+                },
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice/Connectors/status",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Connectors",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 15
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "connectorId",
+                            "current",
+                            "currentLimit",
+                            "currentType",
+                            "evseIndex",
+                            "maximumPower",
+                            "numberOfPhases",
+                            "type"
+                        ]
+                    },
+                    "sourceChecksum": "a62e1dc75efd09a04a71ca8fabeb795111aa50fd9961326abc1435e8af17cc44"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-sessionservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-e-mobility-driver-app-cap-e-mobility-sessionservice/ChargingSessions/status",
+                    "serviceId": "sap-e-mobility-driver-app-cap-e-mobility-sessionservice",
+                    "split": "train",
+                    "domain": "electric-vehicle-charging",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ChargingSessions",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Validation.AllowedValues"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "badgeAuthenticationId",
+                            "badgeVisualBadgeId",
+                            "chargingStationName",
+                            "cumulatedPrice",
+                            "currency",
+                            "emi3Id",
+                            "evseCode",
+                            "extraInactivity"
+                        ]
+                    },
+                    "sourceChecksum": "eab5ea8b6e5d663a61e0a9544843799b680fcb8d17480f1030a6a56a15b910cc"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-fiori-tools-store-overview-edmx",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/Product/Availability_Status",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Product",
+                        "propertyName": "Availability_Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 40
+                        },
+                        "label": "Availability Status",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "Category",
+                            "ChangedAt",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "Depth",
+                            "Description",
+                            "DescriptionLanguage"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                },
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/SalesOrder/BillingStatus",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SalesOrder",
+                        "propertyName": "BillingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "PO Confirmation",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BillingStatusDescription",
+                            "ChangedAt",
+                            "ContractAmount",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "CustomerID",
+                            "CustomerName"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                },
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/SalesOrder/BillingStatusDescription",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SalesOrder",
+                        "propertyName": "BillingStatusDescription",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 60
+                        },
+                        "label": "Billing Description",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BillingStatus",
+                            "ChangedAt",
+                            "ContractAmount",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "CustomerID",
+                            "CustomerName"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                },
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/SalesOrder/DeliveryStatus",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SalesOrder",
+                        "propertyName": "DeliveryStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "PO Ordering",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BillingStatus",
+                            "BillingStatusDescription",
+                            "ChangedAt",
+                            "ContractAmount",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "CustomerID"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                },
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/SalesOrder/DeliveryStatusDescription",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SalesOrder",
+                        "propertyName": "DeliveryStatusDescription",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 60
+                        },
+                        "label": "Delivery Description",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BillingStatus",
+                            "BillingStatusDescription",
+                            "ChangedAt",
+                            "ContractAmount",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "CustomerID"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                },
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/SalesOrder/LifecycleStatus",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SalesOrder",
+                        "propertyName": "LifecycleStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "PO Lifecycle",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BillingStatus",
+                            "BillingStatusDescription",
+                            "ChangedAt",
+                            "ContractAmount",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "CustomerID"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                },
+                {
+                    "fieldId": "property:StoreOverviewService/GWSAMPLE_BASIC/SalesOrder/LifecycleStatusDescription",
+                    "serviceId": "sap-fiori-tools-store-overview-edmx",
+                    "split": "train",
+                    "domain": "retail-store-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SalesOrder",
+                        "propertyName": "LifecycleStatusDescription",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 60
+                        },
+                        "label": "Lifecycle Descript.",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BillingStatus",
+                            "BillingStatusDescription",
+                            "ChangedAt",
+                            "ContractAmount",
+                            "CountryCode",
+                            "CreatedAt",
+                            "CurrencyCode",
+                            "CustomerID"
+                        ]
+                    },
+                    "sourceChecksum": "a7a4cb9b5b9370bcc4858ca626a7b10dffa29c8926c99fd95e8b7fe7d766e166"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/PO_Worklist/APPROVALSTATUS",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PO_Worklist",
+                        "propertyName": "APPROVALSTATUS",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>approval}",
+                        "description": "{i18n>approval}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>approval}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>approval}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "CONFIRMSTATUS",
+                            "CompanyName",
+                            "Currency",
+                            "DeliveryDate",
+                            "GrossAmount",
+                            "GrossAmount_1",
+                            "LIFECYCLESTATUS",
+                            "NetAmount"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/PO_Worklist/CONFIRMSTATUS",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PO_Worklist",
+                        "propertyName": "CONFIRMSTATUS",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>confirmation}",
+                        "description": "{i18n>confirmation}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>confirmation}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>confirmation}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "APPROVALSTATUS",
+                            "CompanyName",
+                            "Currency",
+                            "DeliveryDate",
+                            "GrossAmount",
+                            "GrossAmount_1",
+                            "LIFECYCLESTATUS",
+                            "NetAmount"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/PO_Worklist/LIFECYCLESTATUS",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PO_Worklist",
+                        "propertyName": "LIFECYCLESTATUS",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>lifecycle}",
+                        "description": "{i18n>lifecycle}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>lifecycle}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>lifecycle}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "APPROVALSTATUS",
+                            "CONFIRMSTATUS",
+                            "CompanyName",
+                            "Currency",
+                            "DeliveryDate",
+                            "GrossAmount",
+                            "GrossAmount_1",
+                            "NetAmount"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/PO_Worklist/ORDERINGSTATUS",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PO_Worklist",
+                        "propertyName": "ORDERINGSTATUS",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>ordering}",
+                        "description": "{i18n>ordering}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>ordering}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>ordering}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "APPROVALSTATUS",
+                            "CONFIRMSTATUS",
+                            "CompanyName",
+                            "Currency",
+                            "DeliveryDate",
+                            "GrossAmount",
+                            "GrossAmount_1",
+                            "LIFECYCLESTATUS"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POnoDraft/approvalStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POnoDraft",
+                        "propertyName": "approvalStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>approval}",
+                        "description": "{i18n>approval}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>approval}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>approval}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus",
+                            "lifecycleStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POnoDraft/confirmStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POnoDraft",
+                        "propertyName": "confirmStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>confirmation}",
+                        "description": "{i18n>confirmation}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>confirmation}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>confirmation}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus",
+                            "lifecycleStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POnoDraft/invoicingStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POnoDraft",
+                        "propertyName": "invoicingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>invoicing}",
+                        "description": "{i18n>invoicing}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>invoicing}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>invoicing}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "lifecycleStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POnoDraft/lifecycleStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POnoDraft",
+                        "propertyName": "lifecycleStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>lifecycle}",
+                        "description": "{i18n>lifecycle}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>lifecycle}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>lifecycle}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POnoDraft/orderingStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POnoDraft",
+                        "propertyName": "orderingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>ordering}",
+                        "description": "{i18n>ordering}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>ordering}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>ordering}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POs/approvalStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POs",
+                        "propertyName": "approvalStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>approval}",
+                        "description": "{i18n>approval}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>approval}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>approval}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus",
+                            "lifecycleStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POs/confirmStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POs",
+                        "propertyName": "confirmStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>confirmation}",
+                        "description": "{i18n>confirmation}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>confirmation}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>confirmation}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus",
+                            "lifecycleStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POs/invoicingStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POs",
+                        "propertyName": "invoicingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>invoicing}",
+                        "description": "{i18n>invoicing}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>invoicing}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>invoicing}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "lifecycleStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POs/lifecycleStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POs",
+                        "propertyName": "lifecycleStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>lifecycle}",
+                        "description": "{i18n>lifecycle}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>lifecycle}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>lifecycle}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                },
+                {
+                    "fieldId": "property:sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice/POs/orderingStatus",
+                    "serviceId": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+                    "split": "train",
+                    "domain": "purchase-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "POs",
+                        "propertyName": "orderingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>ordering}",
+                        "description": "{i18n>ordering}",
+                        "annotations": [
+                            {
+                                "term": "Common.FieldControl"
+                            },
+                            {
+                                "term": "description",
+                                "value": "{i18n>ordering}"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>ordering}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "approvalStatus",
+                            "confirmStatus",
+                            "createdAt",
+                            "createdBy",
+                            "currency_code",
+                            "grossAmount",
+                            "invoicingStatus"
+                        ]
+                    },
+                    "sourceChecksum": "cad2005ea522b73a2b9cf36a93311fe6019e77ce2a139eb49a482b4489e34ed5"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-sales-and-service-cloud-extensions-cap-project-order-projectorderservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-sales-and-service-cloud-extensions-cap-project-order-projectorderservice/ProjectOrder/status",
+                    "serviceId": "sap-sales-and-service-cloud-extensions-cap-project-order-projectorderservice",
+                    "split": "train",
+                    "domain": "project-order-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ProjectOrder",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "createdAt",
+                            "createdBy",
+                            "customerEmail",
+                            "customerName",
+                            "endDate",
+                            "id",
+                            "isIndividualCustomer",
+                            "modifiedAt"
+                        ]
+                    },
+                    "sourceChecksum": "e88c98a75ae33e6a0665c7eb93d5089dce49f7c66f7a361e2dac6acf68f2bc47"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-tail-spend-management-cap-tail-spend-management-sourcingservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-tail-spend-management-cap-tail-spend-management-sourcingservice/PurchaseRequisition/Status",
+                    "serviceId": "sap-tail-spend-management-cap-tail-spend-management-sourcingservice",
+                    "split": "train",
+                    "domain": "procurement-and-sourcing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PurchaseRequisition",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BusinessSystem",
+                            "CategoryID",
+                            "CompanyCode",
+                            "CreatedDate",
+                            "Currency",
+                            "ExtendedPrice",
+                            "ItemDesc",
+                            "MaterialCode"
+                        ]
+                    },
+                    "sourceChecksum": "0b0f47ba8235109d6d348f3c27cdb120bb2737adbe257cf4ce1aace53615d84d"
+                },
+                {
+                    "fieldId": "property:sap-tail-spend-management-cap-tail-spend-management-sourcingservice/RFPEvent/Status",
+                    "serviceId": "sap-tail-spend-management-cap-tail-spend-management-sourcingservice",
+                    "split": "train",
+                    "domain": "procurement-and-sourcing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "RFPEvent",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BaseLang",
+                            "DOCID",
+                            "Description",
+                            "RFPHandleID",
+                            "Title",
+                            "awardApprovalRequired",
+                            "createDate",
+                            "createdAt"
+                        ]
+                    },
+                    "sourceChecksum": "0b0f47ba8235109d6d348f3c27cdb120bb2737adbe257cf4ce1aace53615d84d"
+                },
+                {
+                    "fieldId": "property:sap-tail-spend-management-cap-tail-spend-management-sourcingservice/TemplateQA/status",
+                    "serviceId": "sap-tail-spend-management-cap-tail-spend-management-sourcingservice",
+                    "split": "train",
+                    "domain": "procurement-and-sourcing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "TemplateQA",
+                        "propertyName": "status",
+                        "primitiveType": "bool",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AnswerType",
+                            "QuestinoDesc",
+                            "QuestionGroup",
+                            "QuestionID",
+                            "QuestionSource",
+                            "WorkspaceDesc",
+                            "WorkspaceID",
+                            "createdAt"
+                        ]
+                    },
+                    "sourceChecksum": "0b0f47ba8235109d6d348f3c27cdb120bb2737adbe257cf4ce1aace53615d84d"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-teched2025-ca262-cap-process-management-adminservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-teched2025-ca262-cap-process-management-adminservice/Incidents/status_code",
+                    "serviceId": "sap-teched2025-ca262-cap-process-management-adminservice",
+                    "split": "train",
+                    "domain": "service-process-automation",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Incidents",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "customer_ID",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "title",
+                            "urgency_code"
+                        ]
+                    },
+                    "sourceChecksum": "37cde23c9e3ee5051bc93f3659b8f66e1a30b98556eb448a168170e3306d8062"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-teched2025-ca262-cap-process-management-processorservice",
+            "partition": "train",
+            "pending": [
+                {
+                    "fieldId": "property:sap-teched2025-ca262-cap-process-management-processorservice/Incidents/status_code",
+                    "serviceId": "sap-teched2025-ca262-cap-process-management-processorservice",
+                    "split": "train",
+                    "domain": "service-process-automation",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Incidents",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "customer_ID",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "title",
+                            "urgency_code"
+                        ]
+                    },
+                    "sourceChecksum": "a3e1c6760cf7f9a8a0bdeae70586839c21f666a98a095d1d7c79ece57c7df19a"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice",
+            "partition": "calibration",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice/LineItemSalesOrderItemCandidates/matchingStatus_criticality",
+                    "serviceId": "sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice",
+                    "split": "calibration",
+                    "domain": "purchase-order-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "LineItemSalesOrderItemCandidates",
+                        "propertyName": "matchingStatus_criticality",
+                        "primitiveType": "int",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "numericMinimum": -2147483648,
+                            "numericMaximum": 2147483647
+                        },
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "customer",
+                            "hasMatch",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "poID"
+                        ]
+                    },
+                    "sourceChecksum": "0380525f69faf4d0b409211fd5809b1f1a28402a9695fb8f8655ae140ba3f636"
+                },
+                {
+                    "fieldId": "property:sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice/LineItems/matchingStatus_criticality",
+                    "serviceId": "sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice",
+                    "split": "calibration",
+                    "domain": "purchase-order-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "LineItems",
+                        "propertyName": "matchingStatus_criticality",
+                        "primitiveType": "int",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "numericMinimum": -2147483648,
+                            "numericMaximum": 2147483647
+                        },
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "customerMaterialNumber",
+                            "description",
+                            "lineNumber",
+                            "materialSelectionReason",
+                            "modifiedAt"
+                        ]
+                    },
+                    "sourceChecksum": "0380525f69faf4d0b409211fd5809b1f1a28402a9695fb8f8655ae140ba3f636"
+                },
+                {
+                    "fieldId": "property:sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice/PurchaseOrders/extractionReviewStatus",
+                    "serviceId": "sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice",
+                    "split": "calibration",
+                    "domain": "purchase-order-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PurchaseOrders",
+                        "propertyName": "extractionReviewStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 50
+                        },
+                        "label": "Extraction Review Status",
+                        "annotations": [
+                            {
+                                "term": "Common.Label",
+                                "value": "Extraction Review Status"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "aiExtractionReview",
+                            "createdAt",
+                            "createdBy",
+                            "customerReason",
+                            "customer_ID",
+                            "documentDate",
+                            "documentNumber"
+                        ]
+                    },
+                    "sourceChecksum": "0380525f69faf4d0b409211fd5809b1f1a28402a9695fb8f8655ae140ba3f636"
+                },
+                {
+                    "fieldId": "property:sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice/PurchaseOrders/paymentStatus",
+                    "serviceId": "sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice",
+                    "split": "calibration",
+                    "domain": "purchase-order-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PurchaseOrders",
+                        "propertyName": "paymentStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 50
+                        },
+                        "label": "Payment Status",
+                        "annotations": [
+                            {
+                                "term": "Common.Label",
+                                "value": "Payment Status"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "aiExtractionReview",
+                            "createdAt",
+                            "createdBy",
+                            "customerReason",
+                            "customer_ID",
+                            "documentDate",
+                            "documentNumber"
+                        ]
+                    },
+                    "sourceChecksum": "0380525f69faf4d0b409211fd5809b1f1a28402a9695fb8f8655ae140ba3f636"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+            "partition": "calibration",
+            "pending": [
+                {
+                    "fieldId": "property:sap-event-hub-cap-samples-cap-event-hub-api-business-partner/A_BPCreditWorthiness/BPCreditStandingStatus",
+                    "serviceId": "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+                    "split": "calibration",
+                    "domain": "business-partner-events",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "A_BPCreditWorthiness",
+                        "propertyName": "BPCreditStandingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "sap.display.format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap.label",
+                                "value": "Stat.Cred.Stndg Info"
+                            },
+                            {
+                                "term": "sap.quickinfo",
+                                "value": "Status of Credit Standing Information"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BPCrdtWrthnssAccessChkIsActive",
+                            "BPCreditStandingComment",
+                            "BPCreditStandingDate",
+                            "BPCreditStandingRating",
+                            "BPForeclosureDate",
+                            "BPForeclosureIsInitiated",
+                            "BPLegalProceedingStatus",
+                            "BPLglProceedingInitiationDate"
+                        ]
+                    },
+                    "sourceChecksum": "e6d352c6ddee0d11f8e20d10b6b3cb49d29d3423d10b1da51e7ceee190c0e099"
+                },
+                {
+                    "fieldId": "property:sap-event-hub-cap-samples-cap-event-hub-api-business-partner/A_BPCreditWorthiness/BPLegalProceedingStatus",
+                    "serviceId": "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+                    "split": "calibration",
+                    "domain": "business-partner-events",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "A_BPCreditWorthiness",
+                        "propertyName": "BPLegalProceedingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 2
+                        },
+                        "annotations": [
+                            {
+                                "term": "sap.display.format",
+                                "value": "NonNegative"
+                            },
+                            {
+                                "term": "sap.label",
+                                "value": "Status of Leg. Proc."
+                            },
+                            {
+                                "term": "sap.quickinfo",
+                                "value": "Status of Legal Proceedings"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BPCrdtWrthnssAccessChkIsActive",
+                            "BPCreditStandingComment",
+                            "BPCreditStandingDate",
+                            "BPCreditStandingRating",
+                            "BPCreditStandingStatus",
+                            "BPForeclosureDate",
+                            "BPForeclosureIsInitiated",
+                            "BPLglProceedingInitiationDate"
+                        ]
+                    },
+                    "sourceChecksum": "e6d352c6ddee0d11f8e20d10b6b3cb49d29d3423d10b1da51e7ceee190c0e099"
+                },
+                {
+                    "fieldId": "property:sap-event-hub-cap-samples-cap-event-hub-api-business-partner/A_BusinessPartner/BusPartMaritalStatus",
+                    "serviceId": "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+                    "split": "calibration",
+                    "domain": "business-partner-events",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "A_BusinessPartner",
+                        "propertyName": "BusPartMaritalStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "sap.display.format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap.label",
+                                "value": "Marital Status"
+                            },
+                            {
+                                "term": "sap.quickinfo",
+                                "value": "Marital Status of Business Partner"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AcademicTitle",
+                            "AdditionalLastName",
+                            "AuthorizationGroup",
+                            "BirthDate",
+                            "BusPartNationality",
+                            "BusinessPartner",
+                            "BusinessPartnerBirthDateStatus",
+                            "BusinessPartnerBirthName"
+                        ]
+                    },
+                    "sourceChecksum": "e6d352c6ddee0d11f8e20d10b6b3cb49d29d3423d10b1da51e7ceee190c0e099"
+                },
+                {
+                    "fieldId": "property:sap-event-hub-cap-samples-cap-event-hub-api-business-partner/A_BusinessPartner/BusinessPartnerBirthDateStatus",
+                    "serviceId": "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+                    "split": "calibration",
+                    "domain": "business-partner-events",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "A_BusinessPartner",
+                        "propertyName": "BusinessPartnerBirthDateStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "sap.display.format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap.label",
+                                "value": "Birth Date Status"
+                            },
+                            {
+                                "term": "sap.quickinfo",
+                                "value": "Date of Birth: Status"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AcademicTitle",
+                            "AdditionalLastName",
+                            "AuthorizationGroup",
+                            "BirthDate",
+                            "BusPartMaritalStatus",
+                            "BusPartNationality",
+                            "BusinessPartner",
+                            "BusinessPartnerBirthName"
+                        ]
+                    },
+                    "sourceChecksum": "e6d352c6ddee0d11f8e20d10b6b3cb49d29d3423d10b1da51e7ceee190c0e099"
+                }
+            ]
+        }
+    ]
+}

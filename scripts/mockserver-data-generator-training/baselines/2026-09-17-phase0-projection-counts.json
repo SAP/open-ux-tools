@@ -1,0 +1,126 @@
+{
+    "format": "mockgen-phase0-baseline",
+    "version": 1,
+    "date": "2026-09-17",
+    "purpose": "Phase 0 mechanics record; no labels, no model, no quality claim.",
+    "internalQueue": {
+        "location": "private, outside repository",
+        "fields": 702,
+        "partitions": {
+            "train": 528,
+            "calibration": 174
+        },
+        "services": 82,
+        "domains": 30,
+        "sha256": "bb93cee3a3a78c62a87cd7b2bb6c55413f69ff21116a3544aef28677de1a6a18"
+    },
+    "publicQueues": {
+        "holdout": {
+            "fields": 45,
+            "services": 19,
+            "domains": 8
+        },
+        "trainCalibration": {
+            "fields": 80,
+            "train": 72,
+            "calibration": 8
+        }
+    },
+    "contextStatistics": {
+        "total": 827,
+        "maxWordPieceTokens": 64,
+        "overflow": {
+            "count": 604,
+            "maxTokens": 672
+        },
+        "perPartition": {
+            "sealed": {
+                "fields": 45,
+                "overflow": 30,
+                "distinctTexts": 38
+            },
+            "train": {
+                "fields": 600,
+                "overflow": 422,
+                "distinctTexts": 497
+            },
+            "calibration": {
+                "fields": 182,
+                "overflow": 152,
+                "distinctTexts": 174
+            }
+        },
+        "crossPartitionCollisions": {
+            "trainCalibration": 0,
+            "trainSealed": 0,
+            "calibrationSealed": 0
+        }
+    },
+    "contextStatisticsNote": "overflow measured with an unbounded WordPiece tokenizer; the runtime tokenizer and the v3 export both truncate identically at 64 (62 pieces + [CLS]/[SEP]), so training/serving parity holds while low-priority tail segments (neighbors, facets, annotations) are dropped for overflowing contexts.",
+    "canonicalProjection": {
+        "public": {
+            "counts": {
+                "candidateServices": 4,
+                "candidateRows": 38,
+                "labels": 7,
+                "skippedServices": 469
+            },
+            "labels": ["city", "email", "person_first_name", "person_last_name", "phone", "postal_code", "quantity"],
+            "skipped": {
+                "not-train": 344,
+                "unsupported-source-format": 71,
+                "license-or-authorization": 54
+            },
+            "source": {
+                "registryFingerprint": "a09b343aa4f437038f3cf345e69ef86b2eaac1cf6a4ff8e4099140562fdd05c0",
+                "splitFingerprint": "5025f6de3fb035aa0fa143db6be233144f14f869fb8860fe1b421629d6f31f7e",
+                "catalogFingerprint": "fc0ef2ae31c283e5289c2942fb688626e1797870e304d0d3ff71fc47bd5d65db",
+                "sourceRootNotPersisted": true,
+                "includeInternal": false,
+                "conversionManifestFingerprint": "072e55bea3d9e566c835c5695ad10cf58d4fe46df1c9e1a5830e3987dab412fb"
+            },
+            "rowsHaveFamily": false
+        },
+        "internal": {
+            "counts": {
+                "candidateServices": 58,
+                "candidateRows": 52,
+                "labels": 8,
+                "skippedServices": 415
+            },
+            "labels": [
+                "city",
+                "email",
+                "person_first_name",
+                "person_last_name",
+                "phone",
+                "postal_code",
+                "quantity",
+                "unit_of_measure"
+            ],
+            "skipped": {
+                "not-train": 344,
+                "unsupported-source-format": 71
+            },
+            "source": {
+                "registryFingerprint": "a09b343aa4f437038f3cf345e69ef86b2eaac1cf6a4ff8e4099140562fdd05c0",
+                "splitFingerprint": "5025f6de3fb035aa0fa143db6be233144f14f869fb8860fe1b421629d6f31f7e",
+                "catalogFingerprint": "fc0ef2ae31c283e5289c2942fb688626e1797870e304d0d3ff71fc47bd5d65db",
+                "sourceRootNotPersisted": true,
+                "includeInternal": true,
+                "conversionManifestFingerprint": "dcaea16a65684ff32db62e675fb4302f2ddb0932aefd65263a159e11aeaa767c"
+            },
+            "rowsHaveFamily": false
+        }
+    },
+    "lineage": {
+        "registry": "var/ml-native/recovery-v34-generator-calibration-ready-v2/registry.json",
+        "splits": "var/ml-native/recovery-v34-generator-calibration-ready-v2/splits.json",
+        "descriptorCatalog": "var/ml-native/recovery-v34-authoritative-planner-v4-lineage-integration-v2/descriptor-catalog.json",
+        "note": "conversion fingerprints equal the 2026-09-17 audit run (registry a09b343a\u2026, split 5025f6de\u2026, catalog fc0ef2ae\u2026); the audit and this run share one lineage."
+    },
+    "encoderDecision": {
+        "status": "frozen MiniLM retained pending Phase 2.3 calibration on real labels",
+        "probe": "skipped: no second proxy class until adjudication supplies labels"
+    }
+}

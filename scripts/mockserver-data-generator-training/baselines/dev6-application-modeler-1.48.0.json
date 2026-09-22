@@ -1,0 +1,16 @@
+{
+    "format": "mockgen-role-classifier-baseline",
+    "version": 1,
+    "npmPackage": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.6",
+        "integrity": "sha512-33IBiwSc8Ypc24Z3dt3AS8fv5Mjcym/hjpO4JIYmkLpCnZiy0O0i5uKIVToZPvm3W8eOynNJMN9KIQ0JxbHrvw=="
+    },
+    "applicationModeler": {
+        "name": "sap-ux-application-modeler-extension",
+        "version": "1.48.0",
+        "platform": "linux-x64",
+        "sha256": "a786c0b08d53bda54771556d46393635e1f539059b7559f733dd7aa89a4c7c58"
+    },
+    "purpose": "Immutable comparison artifacts; no replacement head has qualified."
+}

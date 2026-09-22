@@ -1,6 +1,76 @@
 # Mockserver data generator model evaluation
 
+## Manually run the finance preview
+
+Use the Node and pnpm versions declared by the repositories. With existing
+workspace dependencies installed, no dependency upgrades or app install are needed:
+
+```sh
+cd /Users/I335123/SAPDevelop/Projects/open-ux-tools-mockserver-data-generator
+corepack pnpm --filter @sap-ux/mockserver-data-generator build
+corepack pnpm --dir ../open-ux-odata-mock-data-generator-spi --filter @sap-ux/fe-mockserver-core build
+mockgen_preview_dir=$(mktemp -d /tmp/mockgen-preview.XXXXXX)
+unzip -q '/Users/I335123/Downloads/fin.cash.bank.manage-main (3).zip' -d "$mockgen_preview_dir"
+export MOCKGEN_PREVIEW_APP="$mockgen_preview_dir/fin.cash.bank.manage-main"
+node --input-type=module -e '
+import { startFinancePreview } from "./scripts/mockserver-data-generator-evaluation/lib/finance-preview.mjs";
+const preview = await startFinancePreview({
+    app: process.env.MOCKGEN_PREVIEW_APP,
+    generatorOptions: { pipeline: "semantic-v2", mode: "deterministic", generatedDataCache: false }
+});
+console.log("Open in your browser: " + preview.url);
+for (const signal of ["SIGINT", "SIGTERM"]) {
+    process.once(signal, async () => { await preview.close(); process.exit(0); });
+}
+'
+```
+
+Open the printed localhost address in your normal browser. Leave the terminal
+running; Ctrl+C stops the server. This development preview uses the actual local
+MockGen provider and sibling SPI host without changing the app. It downloads UI5
+assets from the app's configured public UI5 origin, but does not contact its SAP
+backend. The UI therefore needs internet access.
+
+This runs **deterministic semantic-v2**, not learned classification or SFT.
+Authored data, including empty JSON, keeps precedence. Unavailable-domain and
+empty-parent warnings are evidence gaps, not validated semantic coverage. Do not
+delete authored files to conceal those gaps.
+
+Manually check the bank list, filtering, a bank detail, house-bank navigation and
+return navigation. Record missing data, failed requests and browser console errors.
+HTTP 200 is not proof of UI correctness. `/test/flpSandbox.html` is also served for
+launchpad-shell testing.
+
+For an app already provisioned with the MockGen launcher and compatible host,
+`pnpm run start-mock -- --mockgen` is the standard opt-in entry point. The supplied
+ZIP is not automatically provisioned that way. Learned mode additionally needs a
+verified model manifest/cache; this checkout does not imply a qualified v3 model
+or a public release manifest.
+
 This harness evaluates the production `@sap-ux/mockserver-data-generator` runtime against the fixed classifier and SFT cohorts retained by the successful MockGen pilot. It does not copy model weights, training data, or generated rows into `open-ux-tools`.
+
+Capture a local application through both generation pipelines and evaluate the
+resulting envelope with privacy-safe aggregate findings:
+
+~~~sh
+pnpm mockgen:capture-app \
+  --app /absolute/path/to/app \
+  --config ui5-mock.yaml \
+  --pipeline legacy,semantic-v2 \
+  --output /tmp/mockgen-capture
+
+pnpm mockgen:evaluate-capture \
+  --capture /tmp/mockgen-capture \
+  --output /tmp/mockgen-capture-evaluation.json
+~~~
+
+The capture files are explicit local evidence and may contain generated row
+values. Keep them outside the repository unless a test fixture has been
+intentionally minimized. The evaluation report records only capture files,
+resource names, property names, row indexes, rule identifiers, and aggregate
+counts; it does not print row values by default. `semantic-v2` remains an
+opt-in shadow pipeline and `pipeline: legacy` remains the rollback path until the
+full promotion gates pass.
 
 Build the package and run the native candidates from Node 22:
 
@@ -261,3 +331,41 @@ node scripts/mockserver-data-generator-evaluation/bench-classifier-backend.mjs \
 ~~~
 
 Stop the WASM branch when this screen exceeds the frozen 1.5 times native p95 gate. Passing the screen would only authorize the full SFT and platform experiment; it would not select WASM by itself.
+# Live HTTP capture
+
+Run the unchanged local app through the actual mock-server host and capture only
+HTTP evidence by default:
+
+```bash
+node scripts/mockserver-data-generator-evaluation/live-http-capture.mjs \
+  --app /path/to/app --config ui5-mock.yaml --output /tmp/live-http.json \
+  --service-path /sap/opu/odata4/sap/ui_cashbank_manage/srvd/sap/ui_cashbank_manage/0001 \
+  --resources CashBank \
+  --navigations 'CashBank?$expand=_HouseBank'
+```
+
+The report is `executionMode: "live-http"`, keeps UI status as `not-run`, and
+records method, redacted path, status, duration, checks, and response hashes.
+It does not include response bodies or row values unless
+`--include-generated-values` is explicitly supplied. `--options-file` passes
+explicit provider options to the host; requested model mode is reported
+separately from observed execution and is never treated as learned evidence by
+this HTTP-only capture.
+
+### Evaluate against original authored context
+
+To verify relationships whose authored endpoints were deliberately omitted from a capture,
+pass the original app and its relative configuration path:
+
+```bash
+node scripts/mockserver-data-generator-evaluation/evaluate-capture.mjs \
+  --capture /tmp/finance-capture --output /tmp/finance-evaluation.json \
+  --app /path/to/original-app --config ui5-mock.yaml
+```
+
+Configuration, metadata and authored-row hashes must match the captured evidence. Authored
+JSON is read only into memory; reports contain counts and findings, never its row values.
+Contributors are not executed. Generator-only scenarios do not borrow authored context.
+Changed evidence and outside-app paths are rejected. Empty requested resources still fail,
+even when emptiness is the correct consequence of an authored empty required parent domain.
+The CLI exits nonzero for a non-passing evaluation, including unverified checks.

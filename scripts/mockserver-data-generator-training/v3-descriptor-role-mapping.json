@@ -1,0 +1,17 @@
+{
+    "format": "mockgen-v3-descriptor-role-mapping",
+    "version": 1,
+    "status": "machine-proposed-unreviewed",
+    "provenance": "Direct descriptor-title to registered semantic-role equivalents only; not gold labels.",
+    "mappings": {
+        "City name": "city",
+        "Email address": "email",
+        "Person family name": "person_last_name",
+        "Person given name": "person_first_name",
+        "Postal code": "postal_code",
+        "Street address line": "street_address",
+        "Telephone number": "phone",
+        "Unit of Measure Code": "unit_of_measure",
+        "Whole-number quantity": "quantity"
+    }
+}

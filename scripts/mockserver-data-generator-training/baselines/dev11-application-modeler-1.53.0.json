@@ -1,0 +1,76 @@
+{
+    "date": "2026-09-21",
+    "record": "dev.11 release baseline: fix for the typed-floor/typed-tier mismatch that made the editor reject every generation on dev.10 (VSIX 1.53.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.11",
+        "integrity": "sha512-Ym9mMqKDt/sbPglvJ/dSWu4FodpUdPWnYVxe15fsOJA4vNhXbljlKEoNhDRnLeK1+hpSbf0faSqPdeWS7RKaNg==",
+        "distSha256": "2dc88ce49328633738d72501581c88dc2fb1f9c3c725df15f3001fabd291401e",
+        "tarballBytes": 127933362,
+        "tarballSha256": "5dd5b8bf78a886006aa6efa193335ff1183a2676c52b3a1938a17695294ab4ef",
+        "modelRevision": "b95d02394af3e2553d4a08d11aec3e378565822f0f9df6f98cc06a0dff53d546",
+        "registryFingerprintPrefix": "ae53fee7b59a",
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest"
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.53.0.vsix",
+        "version": "1.53.0",
+        "target": "linux-x64",
+        "sha256": "f2d587880ba9b28049a0c60f1e8e09174df20e5f5e2b6452e1e8c52b8a344083",
+        "supersedes": "1.52.0 (dev.10) - broken on BAS"
+    },
+    "classifier": {
+        "policy": "weights frozen; precision target 0.95, minimum routed decisions 3 (unchanged from dev.9)",
+        "routable": 44,
+        "sealedEvaluation": {
+            "acceptedRoles": "1160/1206 (96.19%)",
+            "supportedRecall": "1277/2026 (63.03%)",
+            "statusRecall": "27/44",
+            "criticalFalsePositives": "27 (2.24%)"
+        }
+    },
+    "newRoles": {
+        "shipped": ["manufacturer", "distance", "rating"],
+        "rejected": ["product_model"],
+        "evidence": "2026-09-21-phase-e-roles.json"
+    },
+    "corpus": {
+        "file": "2026-09-21-tier-benchmark-dev10.json",
+        "services": "131/131, 0 failures",
+        "programme": {
+            "baseline": {
+                "recognised": 41.65,
+                "model": 15.16,
+                "typed": 42.46
+            },
+            "dev9": {
+                "recognised": 43.48,
+                "model": 14.93,
+                "typed": 40.87
+            },
+            "dev10": {
+                "recognised": 45.27,
+                "model": 15.36,
+                "typed": 38.65
+            }
+        },
+        "typedFloorAddressable": "8797 -> 8575 (dev.9) -> 8167 (dev.10)"
+    },
+    "tests": {
+        "package": "466/466",
+        "trainingTools": "80/80",
+        "dataEditorMockgen": "50/50",
+        "lintErrors": 0
+    },
+    "defect": {
+        "symptom": "BAS: \"MockGen generated an invalid validated result\" after T3, on every generation where the fine-tuned tier accepted any value",
+        "cause": "typedFloor counted every row of a typed-floor property; tiers.typed subtracted the cells the fine-tuned tier overwrote. The editor IPC validator requires the causes to sum to tiers.typed. Travel: 759 vs 715 (difference 44 = model slots).",
+        "whyTestsMissed": "the editor fixture used hand-made numbers; no package test checked the sum with model > 0; no check ran a real package result through the editor validator",
+        "fix": "both statistics computed in one pass over the same cells",
+        "regression": "value-tiers.test.ts asserts the sum with model > 0 (failed before the fix, passes after); evaluation/editor-contract-check.mjs runs real generations through the editor worker mapping and validator",
+        "verification": "editor path: Travel and finance fixtures invalid before the fix, valid after; all 26 EDMX corpus services valid after"
+    }
+}

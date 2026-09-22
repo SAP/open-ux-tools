@@ -1,0 +1,59 @@
+{
+    "date": "2026-09-21",
+    "record": "dev.13 release baseline: broader value banks and description rotation (VSIX 1.55.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.13",
+        "integrity": "sha512-xeGX5t4mil4tThtyYYdECzcVYzttFWOUAYeTre55MHmrNVvl2T7o6tZIcSaSWWkk9eh4ht//324pNN9izCwHZw==",
+        "distSha256": "7af69c63d3c75a62e859e5789a562438b7b55c48e12d44800641951bafa558bf",
+        "tarballBytes": 127934768,
+        "tarballSha256": "146f120d7781a7d068783eeb4dcaf40f8e94c257f4e6c7515345a566abd12a3c",
+        "modelRevision": "09f91f1fb7a550343adab8515dc49c025ec496a57edc3d124d4edb22a1a20bec",
+        "generatorLogicVersion": 17,
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest",
+            "tarballDownloadedAndVerified": true
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.55.0.vsix",
+        "version": "1.55.0",
+        "target": "linux-x64",
+        "sha256": "d0f903920c8a01acbba321a906b2966d08ff33f43d72c267d16671181b13df6c",
+        "supersedes": "1.54.0 (dev.12)"
+    },
+    "classifier": {
+        "policy": "weights frozen; precision target 0.95, minimum routed decisions 3",
+        "routable": 44,
+        "registryFingerprintPrefix": "cb4ba118352c",
+        "sealedEvaluation": {
+            "acceptedRoles": "1160/1206 (96.19%)",
+            "supportedRecall": "1277/2026 (63.03%)",
+            "statusRecall": "27/44",
+            "criticalFalsePositives": "27 (2.24%)"
+        }
+    },
+    "banks": {
+        "evidence": ["2026-09-21-bank-variety-before.json", "2026-09-21-bank-variety-after.json"],
+        "servicesAtFullRowCount": "91 -> 131",
+        "fullyDistinctColumns": "48% -> 60%",
+        "descriptionDistinctPerTenRows": "1.1 -> 8.6"
+    },
+    "corpus": {
+        "file": "2026-09-21-tier-benchmark-dev13.json",
+        "services": "131/131 generated, 0 failures",
+        "shares": {
+            "recognised": 45.29,
+            "model": 15.14,
+            "typed": 38.84
+        }
+    },
+    "checks": {
+        "packageTests": "468/468",
+        "lintErrors": 0,
+        "checkRelease": "pass",
+        "editorContractCheck": "28/28 valid (26 corpus EDMX + 2 fixtures)",
+        "editorMockgenTests": "50/50"
+    }
+}

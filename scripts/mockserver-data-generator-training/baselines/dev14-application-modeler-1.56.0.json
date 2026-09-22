@@ -1,0 +1,56 @@
+{
+    "date": "2026-09-21",
+    "record": "dev.14 release baseline: one fine-tuned attempt per relevance-checked resource; editor fine-tuned budget 120 s -> 20 s (VSIX 1.56.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.14",
+        "integrity": "sha512-fyEiZr57RiAg6BoivcWxPA+OrKQZJ3Q3JgBVYIC4kJGID9tGOq3RnvFZlNcAD+uXAY5lp0NhruGbszTpBDF2gg==",
+        "distSha256": "8da34db4343695f33b150b9c3d4c9db8d6d1e2f677ef2fc9a53e7ef17b0da0fa",
+        "tarballBytes": 127934879,
+        "tarballSha256": "0d99325f0e17266c625ce75f346da8f8cf309e555e32752481655d718e9022ab",
+        "modelRevision": "09f91f1fb7a550343adab8515dc49c025ec496a57edc3d124d4edb22a1a20bec",
+        "generatorLogicVersion": 18,
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest",
+            "tarballDownloadedAndVerified": true,
+            "secondsUntilServed": 300
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.56.0.vsix",
+        "version": "1.56.0",
+        "target": "linux-x64",
+        "sha256": "8b9c9a3e2b0b7c8ef2bfe87a27593eb141d1d65382428226b97d516650db38ac",
+        "workerSha256": "5e87f67151b51918c350ced7ac4efb23fdd8d4c28c53c1f68b73afc7ad9af183",
+        "supersedes": "1.55.0 (dev.13)"
+    },
+    "classifier": {
+        "policy": "weights frozen; precision target 0.95, minimum routed decisions 3",
+        "routable": 44,
+        "registryFingerprintPrefix": "cb4ba118352c",
+        "sealedEvaluation": {
+            "acceptedRoles": "1160/1206 (96.19%)",
+            "supportedRecall": "1277/2026 (63.03%)",
+            "statusRecall": "27/44",
+            "criticalFalsePositives": "27 (2.24%)"
+        },
+        "note": "unchanged; retraining and calibration experiments did not pass the release gates",
+        "evidence": "2026-09-21-classifier-step3-experiments.json"
+    },
+    "speed": {
+        "evidence": "2026-09-21-t2-speed.json",
+        "localMac": {
+            "travel": "11.7 s -> 8.2 s, fine-tuned values 48 -> 48",
+            "cashBank": "34.9 s -> 16.1 s, fine-tuned values 136 -> 92"
+        },
+        "contractCheckWallClock": "28 services in 404 s (about 40 min with the 120 s budget)"
+    },
+    "checks": {
+        "packageTests": "469/469",
+        "lintErrors": 0,
+        "checkRelease": "pass",
+        "editorContractCheck": "28/28 valid",
+        "editorMockgenTests": "50/50"
+    }
+}

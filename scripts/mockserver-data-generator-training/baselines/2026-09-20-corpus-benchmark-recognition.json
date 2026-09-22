@@ -1,0 +1,1101 @@
+{
+    "format": "mockgen-corpus-benchmark",
+    "version": 1,
+    "settings": {
+        "mode": "auto",
+        "rowsPerEntity": 2,
+        "seed": 123,
+        "sftBudgetMs": 1
+    },
+    "registry": {
+        "path": "/Users/I335123/SAPDevelop/Projects/sap-ai-mockserver/var/ml-native/recovery-v34-generator-calibration-ready-v2/registry.json",
+        "services": 473,
+        "parsableSources": 135
+    },
+    "corpus": {
+        "attempted": 131,
+        "generated": 131,
+        "failed": 0,
+        "skipped": 4
+    },
+    "routing": {
+        "totalFields": 11529,
+        "metadataAccepted": 687,
+        "classifierAccepted": 3313,
+        "lexicalAccepted": 1086,
+        "abstained": 6443,
+        "providerBound": 4852,
+        "detectedButUnbound": 234,
+        "metadataPct": 5.96,
+        "classifierPct": 28.74,
+        "lexicalPct": 9.42,
+        "abstainedPct": 55.89,
+        "providerBoundPct": 42.09
+    },
+    "semanticCoverage": {
+        "eligibleFields": 11529,
+        "routedFields": 4852,
+        "formatValidatedFields": 672,
+        "structuralOnlyFields": 4180,
+        "unsupportedFields": 6677,
+        "evidenceVerifiedFields": 190,
+        "syntheticUnverifiedFields": 4824
+    },
+    "speed": {
+        "medianMs": 1401.5,
+        "p90Ms": 2853.9,
+        "maxMs": 10886.1,
+        "totalSec": 244.7
+    },
+    "failures": [],
+    "services": [
+        {
+            "id": "cap-js-audit-logging-cap-audit-multitenancy-catalogservice",
+            "format": "csn",
+            "entities": 6,
+            "fields": 32,
+            "providerBound": 22,
+            "elapsedMs": 1320.6
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-1",
+            "format": "csn",
+            "entities": 16,
+            "fields": 62,
+            "providerBound": 13,
+            "elapsedMs": 2034.3
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-2",
+            "format": "csn",
+            "entities": 8,
+            "fields": 37,
+            "providerBound": 10,
+            "elapsedMs": 1480.2
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-3",
+            "format": "csn",
+            "entities": 5,
+            "fields": 18,
+            "providerBound": 8,
+            "elapsedMs": 1132.8
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-4",
+            "format": "csn",
+            "entities": 2,
+            "fields": 5,
+            "providerBound": 0,
+            "elapsedMs": 1011.9
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-5",
+            "format": "csn",
+            "entities": 3,
+            "fields": 10,
+            "providerBound": 0,
+            "elapsedMs": 1097.7
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-6",
+            "format": "csn",
+            "entities": 1,
+            "fields": 2,
+            "providerBound": 1,
+            "elapsedMs": 875.6
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-crud-7",
+            "format": "csn",
+            "entities": 3,
+            "fields": 9,
+            "providerBound": 2,
+            "elapsedMs": 1029.8
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-fiori-1",
+            "format": "csn",
+            "entities": 13,
+            "fields": 53,
+            "providerBound": 12,
+            "elapsedMs": 1744.2
+        },
+        {
+            "id": "cap-js-audit-logging-cap-audit-personal-data-fiori-2",
+            "format": "csn",
+            "entities": 8,
+            "fields": 37,
+            "providerBound": 10,
+            "elapsedMs": 1539.1
+        },
+        {
+            "id": "cap-js-data-privacy-cap-privacy-incidents-processorsservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 45,
+            "providerBound": 29,
+            "elapsedMs": 1215.9
+        },
+        {
+            "id": "cap-js-ord-cap-ord-bookshop-adminservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 39,
+            "providerBound": 27,
+            "elapsedMs": 1139.8
+        },
+        {
+            "id": "cap-js-ord-cap-ord-bookshop-catalogservice",
+            "format": "csn",
+            "entities": 6,
+            "fields": 31,
+            "providerBound": 20,
+            "elapsedMs": 1197.8
+        },
+        {
+            "id": "cap-js-ord-cap-ord-bookshop-cinemaservice",
+            "format": "csn",
+            "entities": 4,
+            "fields": 19,
+            "providerBound": 12,
+            "elapsedMs": 989.3
+        },
+        {
+            "id": "cap-js-ord-cap-ord-bookshop-externalservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 39,
+            "providerBound": 27,
+            "elapsedMs": 1138
+        },
+        {
+            "id": "cap-js-ord-cap-ord-bookshop-sap-capdpprod-dpbooks-v1",
+            "format": "csn",
+            "entities": 8,
+            "fields": 43,
+            "providerBound": 20,
+            "elapsedMs": 1564.6
+        },
+        {
+            "id": "cap-js-process-cap-process-bookshop-annotationhybridservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 10,
+            "providerBound": 2,
+            "elapsedMs": 1124.3
+        },
+        {
+            "id": "cap-js-process-cap-process-bookshop-annotationservice",
+            "format": "csn",
+            "entities": 116,
+            "fields": 546,
+            "providerBound": 121,
+            "elapsedMs": 10886.1
+        },
+        {
+            "id": "cap-js-process-cap-process-bookshop-draftannotationservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 40,
+            "providerBound": 8,
+            "elapsedMs": 1619.8
+        },
+        {
+            "id": "cap-js-process-cap-process-status-management-authorsservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 13,
+            "providerBound": 10,
+            "elapsedMs": 987.5
+        },
+        {
+            "id": "cap-js-process-cap-process-status-management-booksservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 46,
+            "providerBound": 31,
+            "elapsedMs": 1274.6
+        },
+        {
+            "id": "cap-js-process-cap-process-status-management-catalogservice",
+            "format": "csn",
+            "entities": 5,
+            "fields": 32,
+            "providerBound": 21,
+            "elapsedMs": 1317.7
+        },
+        {
+            "id": "cap-sflight-public",
+            "format": "csn",
+            "entities": 23,
+            "fields": 149,
+            "providerBound": 75,
+            "elapsedMs": 2662.3
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:API_PAYMENT_ADVICE_SRV",
+            "format": "edmx",
+            "entities": 2,
+            "fields": 82,
+            "providerBound": 41,
+            "elapsedMs": 1745
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:CE_API_MAINTENANCEORDER_0002",
+            "format": "edmx",
+            "entities": 15,
+            "fields": 506,
+            "providerBound": 162,
+            "elapsedMs": 9767.9
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:CE_FIXEDASSETACQUISITION_0001",
+            "format": "edmx",
+            "entities": 4,
+            "fields": 65,
+            "providerBound": 40,
+            "elapsedMs": 1262.7
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:IssueService",
+            "format": "edmx",
+            "entities": 44,
+            "fields": 280,
+            "providerBound": 132,
+            "elapsedMs": 3182.9
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:MAINTENANCETASKLIST_0001",
+            "format": "edmx",
+            "entities": 8,
+            "fields": 183,
+            "providerBound": 58,
+            "elapsedMs": 3425.4
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:ResourceRequest",
+            "format": "edmx",
+            "entities": 4,
+            "fields": 35,
+            "providerBound": 14,
+            "elapsedMs": 1313.7
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:sap-s4-CE_MAINTENANCENOTIFICATION_0001-v1",
+            "format": "edmx",
+            "entities": 4,
+            "fields": 95,
+            "providerBound": 25,
+            "elapsedMs": 2652.1
+        },
+        {
+            "id": "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:sap-s4-CE_SALESORDERWITHOUTCHARGE_0001-v1",
+            "format": "edmx",
+            "entities": 9,
+            "fields": 252,
+            "providerBound": 92,
+            "elapsedMs": 5249
+        },
+        {
+            "id": "finance-cash-public",
+            "format": "edmx",
+            "entities": 17,
+            "fields": 402,
+            "providerBound": 164,
+            "elapsedMs": 2908.3
+        },
+        {
+            "id": "northwind-v2-user-authorized",
+            "format": "edmx",
+            "entities": 26,
+            "fields": 182,
+            "providerBound": 64,
+            "elapsedMs": 2533
+        },
+        {
+            "id": "sap-btp-ai-best-practices-cap-ai-log-analyzer-reportservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 126,
+            "providerBound": 50,
+            "elapsedMs": 1995.1
+        },
+        {
+            "id": "sap-btp-ai-best-practices-cap-ai-log-analyzer-toolservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 5,
+            "providerBound": 1,
+            "elapsedMs": 967.1
+        },
+        {
+            "id": "sap-btp-ai-best-practices-cap-purchase-order-extractor-documentservice",
+            "format": "csn",
+            "entities": 10,
+            "fields": 127,
+            "providerBound": 57,
+            "elapsedMs": 2330.4
+        },
+        {
+            "id": "sap-btp-ai-core-consumption-monitor-cap-ai-core-consumption-finopsservice",
+            "format": "csn",
+            "entities": 10,
+            "fields": 127,
+            "providerBound": 55,
+            "elapsedMs": 2547.4
+        },
+        {
+            "id": "sap-btp-cap-dox-invoice-validation-cap-invoice-validation-invoiceassessmentservice",
+            "format": "csn",
+            "entities": 13,
+            "fields": 110,
+            "providerBound": 71,
+            "elapsedMs": 1915.2
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-business-context-vector-notificationservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 12,
+            "providerBound": 2,
+            "elapsedMs": 1128.5
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-business-context-vector-publicmanagerservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 20,
+            "providerBound": 3,
+            "elapsedMs": 1074.2
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-business-context-vector-social-citizen-genai-srv-redditservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 10,
+            "providerBound": 2,
+            "elapsedMs": 1065
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-citizen-reporting-notificationservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 12,
+            "providerBound": 2,
+            "elapsedMs": 1102.3
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-citizen-reporting-publicmanagerservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 20,
+            "providerBound": 2,
+            "elapsedMs": 1076.4
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-citizen-reporting-social-citizen-genai-srv-redditservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 10,
+            "providerBound": 2,
+            "elapsedMs": 1062.8
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-customer-loyalty-custloyal-abservice",
+            "format": "csn",
+            "entities": 6,
+            "fields": 22,
+            "providerBound": 8,
+            "elapsedMs": 1395
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-customer-loyalty-s4-business-partner",
+            "format": "csn",
+            "entities": 1,
+            "fields": 2,
+            "providerBound": 1,
+            "elapsedMs": 966.5
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-customer-loyalty-s4-product",
+            "format": "csn",
+            "entities": 1,
+            "fields": 3,
+            "providerBound": 2,
+            "elapsedMs": 947.1
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-adminservice",
+            "format": "csn",
+            "entities": 6,
+            "fields": 64,
+            "providerBound": 41,
+            "elapsedMs": 1475
+        },
+        {
+            "id": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-travelerservice",
+            "format": "csn",
+            "entities": 4,
+            "fields": 37,
+            "providerBound": 21,
+            "elapsedMs": 1262.9
+        },
+        {
+            "id": "sap-btp-industry-use-cases-cap-customer-interaction-agentservice",
+            "format": "csn",
+            "entities": 12,
+            "fields": 75,
+            "providerBound": 29,
+            "elapsedMs": 1681
+        },
+        {
+            "id": "sap-btp-industry-use-cases-cap-customer-interaction-customerservice",
+            "format": "csn",
+            "entities": 10,
+            "fields": 59,
+            "providerBound": 25,
+            "elapsedMs": 1581.5
+        },
+        {
+            "id": "sap-btp-industry-use-cases-cap-customer-interaction-ticketingservice",
+            "format": "csn",
+            "entities": 15,
+            "fields": 111,
+            "providerBound": 44,
+            "elapsedMs": 2087.1
+        },
+        {
+            "id": "sap-btp-industry-use-cases-cap-workplace-management-wpm-srv-wpmadmin",
+            "format": "csn",
+            "entities": 3,
+            "fields": 16,
+            "providerBound": 4,
+            "elapsedMs": 1091.4
+        },
+        {
+            "id": "sap-btp-industry-use-cases-cap-workplace-management-wpm-srv-wpmservice",
+            "format": "csn",
+            "entities": 4,
+            "fields": 17,
+            "providerBound": 4,
+            "elapsedMs": 1092.3
+        },
+        {
+            "id": "sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkjobservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 71,
+            "providerBound": 22,
+            "elapsedMs": 1848.5
+        },
+        {
+            "id": "sap-btp-integration-toolkit-lite-cap-integration-toolkit-itkservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 71,
+            "providerBound": 22,
+            "elapsedMs": 1852.8
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-analyticsservice",
+            "format": "csn",
+            "entities": 16,
+            "fields": 405,
+            "providerBound": 219,
+            "elapsedMs": 5169
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice",
+            "format": "csn",
+            "entities": 4,
+            "fields": 42,
+            "providerBound": 25,
+            "elapsedMs": 1401.5
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-managealertsservice",
+            "format": "csn",
+            "entities": 13,
+            "fields": 57,
+            "providerBound": 14,
+            "elapsedMs": 1312.4
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-managetagsservice",
+            "format": "csn",
+            "entities": 9,
+            "fields": 56,
+            "providerBound": 12,
+            "elapsedMs": 1545.3
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-plugin-aicore",
+            "format": "csn",
+            "entities": 3,
+            "fields": 30,
+            "providerBound": 8,
+            "elapsedMs": 1247.5
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice",
+            "format": "csn",
+            "entities": 24,
+            "fields": 271,
+            "providerBound": 88,
+            "elapsedMs": 4126.2
+        },
+        {
+            "id": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice",
+            "format": "csn",
+            "entities": 22,
+            "fields": 211,
+            "providerBound": 75,
+            "elapsedMs": 3601.4
+        },
+        {
+            "id": "sap-cap-agentic-engineered-cap-financial-risk-riskservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 36,
+            "providerBound": 9,
+            "elapsedMs": 1727.5
+        },
+        {
+            "id": "sap-cap-service-integration-codejam-cap-incident-integration-incidentsservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 39,
+            "providerBound": 20,
+            "elapsedMs": 1349.2
+        },
+        {
+            "id": "sap-cap-sflight-cap-sflight-analyticsservice",
+            "format": "csn",
+            "entities": 16,
+            "fields": 122,
+            "providerBound": 74,
+            "elapsedMs": 2358.7
+        },
+        {
+            "id": "sap-cap-sflight-cap-sflight-travelservice",
+            "format": "csn",
+            "entities": 21,
+            "fields": 144,
+            "providerBound": 92,
+            "elapsedMs": 2467.1
+        },
+        {
+            "id": "sap-catalog-admin-v4-user-authorized",
+            "format": "edmx",
+            "entities": 12,
+            "fields": 103,
+            "providerBound": 52,
+            "elapsedMs": 1388.9
+        },
+        {
+            "id": "sap-cloud-cap-reviews-public",
+            "format": "csn",
+            "entities": 8,
+            "fields": 32,
+            "providerBound": 13,
+            "elapsedMs": 1489.2
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-bookshop-adminservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 45,
+            "providerBound": 31,
+            "elapsedMs": 1188.1
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-bookshop-catalogservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 43,
+            "providerBound": 26,
+            "elapsedMs": 1362.7
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-bookstore-adminservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 58,
+            "providerBound": 34,
+            "elapsedMs": 1424.4
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-bookstore-catalogservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 58,
+            "providerBound": 30,
+            "elapsedMs": 1512.8
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-bookstore-dataservice",
+            "format": "csn",
+            "entities": 3,
+            "fields": 7,
+            "providerBound": 1,
+            "elapsedMs": 1046.2
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-inspectr-dataservice",
+            "format": "csn",
+            "entities": 3,
+            "fields": 7,
+            "providerBound": 1,
+            "elapsedMs": 1030.4
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-loggers-logservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 4,
+            "providerBound": 2,
+            "elapsedMs": 1011.6
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-loggers-sue",
+            "format": "csn",
+            "entities": 1,
+            "fields": 2,
+            "providerBound": 1,
+            "elapsedMs": 860.2
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-orders-ordersservice",
+            "format": "csn",
+            "entities": 6,
+            "fields": 38,
+            "providerBound": 18,
+            "elapsedMs": 1487.6
+        },
+        {
+            "id": "sap-cloud-cap-samples-cloud-cap-reviews-reviewsservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 8,
+            "providerBound": 2,
+            "elapsedMs": 965.5
+        },
+        {
+            "id": "sap-cloud-cap-samples-java-cloud-cap-java-bookshop-catalogservice",
+            "format": "csn",
+            "entities": 9,
+            "fields": 60,
+            "providerBound": 35,
+            "elapsedMs": 1475.9
+        },
+        {
+            "id": "sap-cloud-cap-samples-java-cloud-cap-java-bookshop-notesservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 2,
+            "providerBound": 0,
+            "elapsedMs": 932.6
+        },
+        {
+            "id": "sap-cloud-cap-samples-java-cloud-cap-java-bookshop-reviewservice",
+            "format": "csn",
+            "entities": 9,
+            "fields": 60,
+            "providerBound": 36,
+            "elapsedMs": 1426.8
+        },
+        {
+            "id": "sap-codejam-bookshop-public",
+            "format": "edmx",
+            "entities": 3,
+            "fields": 14,
+            "providerBound": 8,
+            "elapsedMs": 1052.7
+        },
+        {
+            "id": "sap-e-mobility-driver-app-cap-e-mobility-badgeservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 15,
+            "providerBound": 8,
+            "elapsedMs": 961.8
+        },
+        {
+            "id": "sap-e-mobility-driver-app-cap-e-mobility-chargepointservice",
+            "format": "csn",
+            "entities": 6,
+            "fields": 66,
+            "providerBound": 18,
+            "elapsedMs": 1462.9
+        },
+        {
+            "id": "sap-e-mobility-driver-app-cap-e-mobility-chargingsessionservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 73,
+            "providerBound": 33,
+            "elapsedMs": 1543.8
+        },
+        {
+            "id": "sap-e-mobility-driver-app-cap-e-mobility-chargingstationservice",
+            "format": "csn",
+            "entities": 9,
+            "fields": 75,
+            "providerBound": 18,
+            "elapsedMs": 1707.8
+        },
+        {
+            "id": "sap-e-mobility-driver-app-cap-e-mobility-remotebadgeservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 18,
+            "providerBound": 9,
+            "elapsedMs": 1082.7
+        },
+        {
+            "id": "sap-e-mobility-driver-app-cap-e-mobility-sessionservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 22,
+            "providerBound": 10,
+            "elapsedMs": 1086.8
+        },
+        {
+            "id": "sap-event-driven-integrations-e-bite-cap-coffee-roaster-ebite-producerservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 7,
+            "providerBound": 2,
+            "elapsedMs": 862.2
+        },
+        {
+            "id": "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+            "format": "csn",
+            "entities": 49,
+            "fields": 897,
+            "providerBound": 242,
+            "elapsedMs": 9379.1
+        },
+        {
+            "id": "sap-event-hub-cap-samples-cap-event-hub-cloudeventservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 9,
+            "providerBound": 2,
+            "elapsedMs": 1032.3
+        },
+        {
+            "id": "sap-fiori-elements-feature-showcase-fiori-elements-showcase-lropodataservice",
+            "format": "csn",
+            "entities": 25,
+            "fields": 154,
+            "providerBound": 61,
+            "elapsedMs": 2969.4
+        },
+        {
+            "id": "sap-fiori-elements-feature-showcase-fiori-elements-showcase-worklistodataservice",
+            "format": "csn",
+            "entities": 10,
+            "fields": 47,
+            "providerBound": 18,
+            "elapsedMs": 1847.8
+        },
+        {
+            "id": "sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice",
+            "format": "csn",
+            "entities": 24,
+            "fields": 166,
+            "providerBound": 102,
+            "elapsedMs": 2853.9
+        },
+        {
+            "id": "sap-fiori-feature-showcase-public",
+            "format": "csn",
+            "entities": 27,
+            "fields": 164,
+            "providerBound": 57,
+            "elapsedMs": 3064.6
+        },
+        {
+            "id": "sap-fiori-tools-incident-local-edmx",
+            "format": "edmx",
+            "entities": 10,
+            "fields": 67,
+            "providerBound": 38,
+            "elapsedMs": 1255.2
+        },
+        {
+            "id": "sap-fiori-tools-manage-products-edmx",
+            "format": "edmx",
+            "entities": 26,
+            "fields": 182,
+            "providerBound": 64,
+            "elapsedMs": 2542.6
+        },
+        {
+            "id": "sap-fiori-tools-neo-migration-edmx",
+            "format": "edmx",
+            "entities": 26,
+            "fields": 182,
+            "providerBound": 64,
+            "elapsedMs": 2529.8
+        },
+        {
+            "id": "sap-fiori-tools-products-review-edmx",
+            "format": "edmx",
+            "entities": 25,
+            "fields": 195,
+            "providerBound": 67,
+            "elapsedMs": 2363.8
+        },
+        {
+            "id": "sap-fiori-tools-sales-order-edmx",
+            "format": "edmx",
+            "entities": 26,
+            "fields": 182,
+            "providerBound": 64,
+            "elapsedMs": 2579
+        },
+        {
+            "id": "sap-fiori-tools-samples-fiori-cap-frontend-service-catalogservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 3,
+            "providerBound": 1,
+            "elapsedMs": 950
+        },
+        {
+            "id": "sap-fiori-tools-samples-fiori-cap-hybrid-catalogservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 3,
+            "providerBound": 1,
+            "elapsedMs": 945.1
+        },
+        {
+            "id": "sap-fiori-tools-samples-fiori-cap-mta-catalogservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 3,
+            "providerBound": 1,
+            "elapsedMs": 945.6
+        },
+        {
+            "id": "sap-fiori-tools-samples-fiori-cap-mta-standalone-catalogservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 3,
+            "providerBound": 1,
+            "elapsedMs": 949
+        },
+        {
+            "id": "sap-fiori-tools-samples-fiori-incident-management-incidentservice",
+            "format": "csn",
+            "entities": 10,
+            "fields": 64,
+            "providerBound": 39,
+            "elapsedMs": 1409.5
+        },
+        {
+            "id": "sap-fiori-tools-sepmra-local-edmx",
+            "format": "edmx",
+            "entities": 25,
+            "fields": 201,
+            "providerBound": 67,
+            "elapsedMs": 2642.1
+        },
+        {
+            "id": "sap-fiori-tools-store-overview-edmx",
+            "format": "edmx",
+            "entities": 14,
+            "fields": 125,
+            "providerBound": 73,
+            "elapsedMs": 2363.8
+        },
+        {
+            "id": "sap-fiori-tools-travel-v4-edmx",
+            "format": "edmx",
+            "entities": 4,
+            "fields": 65,
+            "providerBound": 26,
+            "elapsedMs": 1069.7
+        },
+        {
+            "id": "sap-fiori-tools-ztravel-edmx",
+            "format": "edmx",
+            "entities": 30,
+            "fields": 194,
+            "providerBound": 99,
+            "elapsedMs": 1945.6
+        },
+        {
+            "id": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-masterdataservice",
+            "format": "csn",
+            "entities": 15,
+            "fields": 120,
+            "providerBound": 62,
+            "elapsedMs": 2612
+        },
+        {
+            "id": "sap-hana-opensap-cloud-2020-cap-hana-purchase-orders-poservice",
+            "format": "csn",
+            "entities": 18,
+            "fields": 189,
+            "providerBound": 108,
+            "elapsedMs": 2797
+        },
+        {
+            "id": "sap-learning-journey-public",
+            "format": "edmx",
+            "entities": 2,
+            "fields": 24,
+            "providerBound": 12,
+            "elapsedMs": 1199.5
+        },
+        {
+            "id": "sap-lite-inventory-management-cap-inventory-management-inventoryservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 115,
+            "providerBound": 49,
+            "elapsedMs": 2030.2
+        },
+        {
+            "id": "sap-odata-dd-server-cap-northbreeze-main",
+            "format": "csn",
+            "entities": 3,
+            "fields": 25,
+            "providerBound": 11,
+            "elapsedMs": 1096.4
+        },
+        {
+            "id": "sap-recap2026-cap-features-cap-recap-xstravels-travelservice",
+            "format": "csn",
+            "entities": 23,
+            "fields": 132,
+            "providerBound": 75,
+            "elapsedMs": 2302.6
+        },
+        {
+            "id": "sap-recap2026-cap-level-data-federation-cap-recap-xflights-adminservice",
+            "format": "csn",
+            "entities": 8,
+            "fields": 50,
+            "providerBound": 27,
+            "elapsedMs": 1410.8
+        },
+        {
+            "id": "sap-recipes-backend-public",
+            "format": "edmx",
+            "entities": 1,
+            "fields": 20,
+            "providerBound": 3,
+            "elapsedMs": 1091.8
+        },
+        {
+            "id": "sap-recipes-local-public",
+            "format": "edmx",
+            "entities": 4,
+            "fields": 31,
+            "providerBound": 5,
+            "elapsedMs": 1327.9
+        },
+        {
+            "id": "sap-sales-and-service-cloud-extensions-cap-bonus-plan-bonusplanservice",
+            "format": "csn",
+            "entities": 5,
+            "fields": 24,
+            "providerBound": 10,
+            "elapsedMs": 1258.4
+        },
+        {
+            "id": "sap-sales-and-service-cloud-extensions-cap-bonus-plan-bonuspolicyservice",
+            "format": "csn",
+            "entities": 5,
+            "fields": 34,
+            "providerBound": 20,
+            "elapsedMs": 1177.1
+        },
+        {
+            "id": "sap-sales-and-service-cloud-extensions-cap-bonus-plan-employeeservice",
+            "format": "csn",
+            "entities": 7,
+            "fields": 49,
+            "providerBound": 30,
+            "elapsedMs": 1194.3
+        },
+        {
+            "id": "sap-sales-and-service-cloud-extensions-cap-project-order-projectorderservice",
+            "format": "csn",
+            "entities": 1,
+            "fields": 12,
+            "providerBound": 5,
+            "elapsedMs": 997
+        },
+        {
+            "id": "sap-sepmra-product-v2-user-authorized",
+            "format": "edmx",
+            "entities": 29,
+            "fields": 208,
+            "providerBound": 71,
+            "elapsedMs": 2577
+        },
+        {
+            "id": "sap-tail-spend-management-cap-tail-spend-management-sourcingservice",
+            "format": "csn",
+            "entities": 21,
+            "fields": 262,
+            "providerBound": 164,
+            "elapsedMs": 2969.9
+        },
+        {
+            "id": "sap-teched2025-ca262-cap-process-management-adminservice",
+            "format": "csn",
+            "entities": 9,
+            "fields": 50,
+            "providerBound": 31,
+            "elapsedMs": 1287.8
+        },
+        {
+            "id": "sap-teched2025-ca262-cap-process-management-processorservice",
+            "format": "csn",
+            "entities": 10,
+            "fields": 58,
+            "providerBound": 39,
+            "elapsedMs": 1305.1
+        },
+        {
+            "id": "sap-travel-v4-user-authorized",
+            "format": "edmx",
+            "entities": 14,
+            "fields": 156,
+            "providerBound": 81,
+            "elapsedMs": 1644.3
+        },
+        {
+            "id": "sap-ui5-cap-event-app-ui5-cap-event-registration-eventregistrationservice",
+            "format": "csn",
+            "entities": 2,
+            "fields": 18,
+            "providerBound": 13,
+            "elapsedMs": 899.4
+        },
+        {
+            "id": "sap-ui5con-2026-fiori-building-blocks-cap-fiori-building-blocks-travelservice",
+            "format": "csn",
+            "entities": 21,
+            "fields": 145,
+            "providerBound": 91,
+            "elapsedMs": 2570.6
+        },
+        {
+            "id": "sap-wdf2025-fiori-building-blocks-cap-wdf-fiori-building-blocks-travelservice",
+            "format": "csn",
+            "entities": 21,
+            "fields": 145,
+            "providerBound": 91,
+            "elapsedMs": 2697.2
+        }
+    ]
+}

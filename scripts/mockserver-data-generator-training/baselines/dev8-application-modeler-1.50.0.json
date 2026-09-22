@@ -1,0 +1,236 @@
+{
+    "date": "2026-09-20",
+    "record": "dev.8 release baseline (tier-2 gating fix, VSIX 1.50.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.8",
+        "integrity": "sha512-bNIggOFhoolXjRCPtFZt3KFi+xZ1jLoF5zSRGBxp5B6fq5dZD7QksjNj6dHMLTD6iRGrK444kvWcIf0qvTrxVw==",
+        "distSha256": "90b7cc2e35fee7e6e8c692955a194fa2ce4b45076af51160c815cf9c2cb69508",
+        "tarballBytes": 127934451,
+        "tarballSha256": "f6a396fc26d84f823cb5ee04d0929a93e656907d779726514b65426cd1c34784",
+        "modelRevision": "366078043946169e18aa721923017bd6a858fc56d02e53035946c567eeb166ea",
+        "npmPublication": {
+            "published": true,
+            "date": "2026-09-20",
+            "registry": "https://registry.npmjs.org/",
+            "distTag": "latest",
+            "npmShasum": "b4322ec011bf48695b13db4aeec2af7ff7d88d5b",
+            "integrityVerifiedAgainstVsixPin": true,
+            "note": "published from this machine as npm user \"unseen\"; the registry took about three minutes to serve the 128 MB archive"
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.50.0.vsix",
+        "version": "1.50.0",
+        "target": "linux-x64",
+        "bytes": 11362930,
+        "sha256": "2cf6cb34f7063712d5f2e81d7c368ade729dd54c5e5201f79ad46c681a691207",
+        "files": 478,
+        "workerSha256": "6e99a94582deee66c1f7f351c852bf2d99aa134023a928d950f2caaf743413a3",
+        "supersedes": {
+            "version": "1.49.0",
+            "sha256": "ce2fa7ea8914c14d804873b95355c4138e4bb7477da0fa116cbb36ff0c3de752",
+            "reason": "first successful BAS run showed tier 2 consuming 91.7 s of 100.6 s, 80% of it on resources that could not accept its output"
+        }
+    },
+    "classifier": {
+        "labels": 63,
+        "routableLabels": 40,
+        "routable": [
+            "audit_user",
+            "boolean_flag",
+            "business_partner_id",
+            "chart_of_accounts",
+            "city",
+            "company_code",
+            "count",
+            "country",
+            "currency",
+            "customer_id",
+            "datetime",
+            "description",
+            "distribution_channel",
+            "document_id",
+            "email",
+            "end_date",
+            "gl_account",
+            "language",
+            "material_no",
+            "monetary_amount",
+            "org_name",
+            "payment_terms",
+            "percentage",
+            "person_first_name",
+            "person_full_name",
+            "person_last_name",
+            "phone",
+            "plant",
+            "postal_code",
+            "product_category",
+            "quantity",
+            "region",
+            "start_date",
+            "status",
+            "storage_location",
+            "street_address",
+            "unit_of_measure",
+            "url",
+            "vendor_id",
+            "year"
+        ],
+        "sealedEvaluation": {
+            "services": 41,
+            "domains": 21,
+            "acceptedRoles": {
+                "correct": 1146,
+                "total": 1191
+            },
+            "supportedFieldsWithoutMetadata": {
+                "correct": 1241,
+                "total": 1978
+            },
+            "unannotatedStatusFields": {
+                "correct": 27,
+                "total": 44
+            },
+            "unannotatedStatusServices": 22,
+            "unannotatedStatusDomains": 10,
+            "criticalFalsePositives": 26
+        },
+        "precision": 0.9622,
+        "criticalFalsePositiveRate": 0.0218,
+        "qualification": "qualified",
+        "architecture": "MiniLM embedding + 256-unit ReLU hidden layer + 63-class softmax"
+    },
+    "relevance": {
+        "qualification": "qualified",
+        "sealedEvaluation": {
+            "positives": 399,
+            "positiveAccepted": 5,
+            "hardNegatives": 704,
+            "hardNegativeAccepted": 6
+        },
+        "behaviour": "conservative: rejects most candidates, generation falls back to deterministic values and reports SFT_CANDIDATE_RELEVANCE_UNVERIFIED"
+    },
+    "pairedReplay": {
+        "travel-v2 auto": "completed",
+        "travel-v2 deterministic": "rejected by design (no verifier in deterministic mode)",
+        "finance auto": "completed",
+        "finance deterministic": "completed",
+        "cap-sflight auto": "completed",
+        "learning-journey auto": "completed"
+    },
+    "tests": {
+        "package": "459/459",
+        "packageLintErrors": 0,
+        "trainingTools": "80/80",
+        "dataEditorMockgen": "50/50"
+    },
+    "gateRevisions": {
+        "statusRecall": "0.90 -> 0.60",
+        "supportedRecall": "0.70 -> 0.60",
+        "criticalFalsePositives": "absolute 0 -> 3% of accepted decisions",
+        "relevancePositiveAcceptance": "0.80 floor -> non-degenerate, hard-negative budget kept at 1%",
+        "authorizedBy": "package owner, 2026-09-19"
+    },
+    "basFindings": {
+        "date": "2026-09-20",
+        "reportedBy": "package owner, first BAS linux-x64 run of 1.48.0",
+        "workerEnvironment": "client.ts allowedEnvironment() now forwards ASDF_*, npm_config_*, the proxy variables and NODE_EXTRA_CA_CERTS; NODE_OPTIONS stays stripped",
+        "onnxruntimeCudaDownload": "runtime.ts installEnvironment() sets ONNXRUNTIME_NODE_INSTALL=skip; onnxruntime-node 1.24.3 declares a cuda12 requirement for linux/x64 only, and MockGen runs the bundled CPU provider",
+        "npmPublication": "@unseen/mock-data-generator@0.1.0-dev.7 published by the package owner; download and integrity verification passed in BAS before the install step failed"
+    },
+    "tierGating": {
+        "generatorLogicVersion": "13 -> 14 (invalidates datasets cached by dev.7)",
+        "relevanceCircuit": "once one resource has ended unverified - declined by the verifier, structurally invalid to the last attempt, or out of budget - the remaining resources reuse that outcome without calling the model; rows, diagnostics and coverage counters unchanged",
+        "protocolArtifacts": "entity sets in SAP Gateway's reserved SAP__ namespace are left to the deterministic tier, reported once as SFT_SKIPPED_PROTOCOL_ARTIFACTS",
+        "travelV2": {
+            "options": "mode auto, seed 123, 10 rows per entity, sftTimeoutMs 30000, sftBudgetMs 120000 (the editor worker defaults)",
+            "beforeMs": 42287,
+            "afterMs": 10444,
+            "beforeAttempts": 315,
+            "afterAttempts": 80,
+            "rows": 289,
+            "note": "same machine, same options; the before run was produced by disabling both gates in the built artifact"
+        },
+        "travelV2PairedReplay": {
+            "options": "mode auto, seed 123, 1 row per entity",
+            "beforeMs": 7769,
+            "afterMs": 3066,
+            "outcome": "completed, validation passed, 28/28 resources",
+            "routingUnchanged": true
+        },
+        "basObservation": {
+            "date": "2026-09-20",
+            "totalMs": 100557,
+            "tier2Ms": 91655,
+            "tier2ZeroAcceptMs": 35772,
+            "tier2ProtocolArtifactMs": 37342,
+            "tier2BusinessMs": 17495
+        }
+    },
+    "selfReferenceFix": {
+        "defect": "the structural-property map created one set per relationship end, so a relationship whose source and target are the same entity set produced two sets for one key and the second write discarded the first, leaving one end's foreign key writable by the fine-tuned tier",
+        "preExisting": true,
+        "attribution": "reproduces with both tier-2 gates disabled; invisible until now because the 2026-09-19 corpus baseline was recorded with sftBudgetMs 1, so tier 2 never ran",
+        "reproducer": "cap-js-ord-cap-ord-bookshop-cinemaservice, self-referencing Genres.parent",
+        "beforeError": "Generated relationship Genres.parent->Genres is not referentially valid (sourceRows=2, targetRows=2)"
+    },
+    "corpusBenchmark": {
+        "note": "same corpus, same code, three runs. The 2026-09-19 learned baseline is superseded because it used sftBudgetMs 1 without recording that, so tier 2 never ran in it; its numbers were medianMs 1516.5, p90Ms 3366.8, totalSec 269.3 (learned) and medianMs 96 (deterministic), measured against dev.7.",
+        "wholePipeline": {
+            "file": "2026-09-20-corpus-benchmark-learned.json",
+            "settings": "mode auto, 2 rows per entity, seed 123, packaged service budget",
+            "generated": 131,
+            "failed": 0,
+            "totalFields": 11529,
+            "providerBoundPct": 42.09,
+            "classifierPct": 28.74,
+            "medianMs": 3757.2,
+            "p90Ms": 14800.0,
+            "totalSec": 808.2
+        },
+        "recognitionPath": {
+            "file": "2026-09-20-corpus-benchmark-recognition.json",
+            "settings": "mode auto, 2 rows per entity, seed 123, sftBudgetMs 1 so tier 2 never fires",
+            "generated": 131,
+            "failed": 0,
+            "totalFields": 11529,
+            "providerBoundPct": 42.09,
+            "classifierPct": 28.74,
+            "medianMs": 1401.5,
+            "p90Ms": 2853.9,
+            "totalSec": 244.7
+        },
+        "deterministic": {
+            "file": "2026-09-20-corpus-benchmark-deterministic.json",
+            "settings": "mode deterministic, 2 rows per entity, seed 123",
+            "generated": 119,
+            "failed": 12,
+            "totalFields": 9928,
+            "providerBoundPct": 20.11,
+            "classifierPct": 0,
+            "medianMs": 92.7,
+            "p90Ms": 122.3,
+            "totalSec": 12.0
+        }
+    },
+    "valueTierAccounting": {
+        "purpose": "answer how much of a generated dataset each tier actually wrote, per value slot rather than per field",
+        "buckets": "declared and authored (T0), recognised (T1), model (T2), typed (T3), structural for foreign keys decided by relational assignment",
+        "method": "recorded at each value-producing return point, totalled from the published rows so later row expansion or key-domain reduction cannot make the total disagree with the dataset",
+        "invariants": "sum of the six buckets equals slots equals the published cell count; tiers.model equals statistics.sft.acceptedSlots; deterministic mode gives model 0",
+        "generatorLogicVersion": "14 -> 15",
+        "logLine": "[MockGen] Tiers: slots=, T0 declared=, T0 authored=, T1 recognised=, T2 model=, T3 typed=, structural=",
+        "travelV2": {
+            "options": "mode auto, seed 123, 10 rows per entity, editor worker budgets",
+            "slots": 1785,
+            "authored": 0,
+            "declared": 0,
+            "recognised": 726,
+            "model": 53,
+            "typed": 976,
+            "structural": 30
+        }
+    }
+}

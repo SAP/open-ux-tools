@@ -1,0 +1,1917 @@
+{
+    "format": "mockgen-role-review-queue",
+    "version": 1,
+    "qualification": "pending-adjudication-not-training-data",
+    "services": [
+        {
+            "serviceId": "cap-js-data-privacy-cap-privacy-incidents-processorsservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:cap-js-data-privacy-cap-privacy-incidents-processorsservice/Incidents/status_code",
+                    "serviceId": "cap-js-data-privacy-cap-privacy-incidents-processorsservice",
+                    "split": "known-sap-holdout",
+                    "domain": "privacy-incident-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Incidents",
+                        "propertyName": "status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "createdAt",
+                            "createdBy",
+                            "customer_ID",
+                            "incidentResolvedDate",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "title"
+                        ]
+                    },
+                    "sourceChecksum": "b7521b68d436bf7c278fcdbd1f3179434bbfe50c6b4250effc3fdb580c1e14f7"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-adminservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-adminservice/SubmittedDocuments/status",
+                    "serviceId": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-adminservice",
+                    "split": "known-sap-holdout",
+                    "domain": "travel-document-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SubmittedDocuments",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "content",
+                            "documentID",
+                            "documentType",
+                            "documentTypeSchemaID",
+                            "extractedData",
+                            "fileName",
+                            "mimeType"
+                        ]
+                    },
+                    "sourceChecksum": "7b4d14c1d4ba6b6b475456b0af030b7c8fddc89cfc77d12892279cabf7532a3e"
+                },
+                {
+                    "fieldId": "property:sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-adminservice/Subscriptions/status",
+                    "serviceId": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-adminservice",
+                    "split": "known-sap-holdout",
+                    "domain": "travel-document-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Subscriptions",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "course_ID",
+                            "createdAt",
+                            "createdBy",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "s4hanaBusinessPartnerID",
+                            "s4hanaSalesOrderID"
+                        ]
+                    },
+                    "sourceChecksum": "7b4d14c1d4ba6b6b475456b0af030b7c8fddc89cfc77d12892279cabf7532a3e"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-travelerservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-travelerservice/SubmittedDocuments/status",
+                    "serviceId": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-travelerservice",
+                    "split": "known-sap-holdout",
+                    "domain": "travel-document-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "SubmittedDocuments",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "content",
+                            "documentID",
+                            "documentType",
+                            "documentTypeSchemaID",
+                            "extractedData",
+                            "fileName",
+                            "mimeType"
+                        ]
+                    },
+                    "sourceChecksum": "a656050f4b9a921ac95ddcc8eab5399c529ffb6394144f8e6608dae0198a530f"
+                },
+                {
+                    "fieldId": "property:sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-travelerservice/Subscriptions/status",
+                    "serviceId": "sap-btp-generative-ai-hub-use-cases-cap-vertigo-travel-travelerservice",
+                    "split": "known-sap-holdout",
+                    "domain": "travel-document-processing",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Subscriptions",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "course_ID",
+                            "createdAt",
+                            "createdBy",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "s4hanaBusinessPartnerID",
+                            "s4hanaSalesOrderID"
+                        ]
+                    },
+                    "sourceChecksum": "a656050f4b9a921ac95ddcc8eab5399c529ffb6394144f8e6608dae0198a530f"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-analyticsservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-analyticsservice/CloudCreditConsumptions/Credits_status",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-analyticsservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "CloudCreditConsumptions",
+                        "propertyName": "Credits_status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "Credits_balance",
+                            "Credits_balance_consumed",
+                            "Credits_cloudCreditsForPhase",
+                            "Credits_phaseStartDate",
+                            "Credits_phaseUpdatedOn",
+                            "Forecast_cost",
+                            "Measures_cloudCreditsCost",
+                            "Measures_cost"
+                        ]
+                    },
+                    "sourceChecksum": "292c44dc8cc670f2d83688802b8489dfe33a79907f30c6116b446a0a66df9a43"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice/BillingDifferences/status",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "BillingDifferences",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "label": "Assessment",
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            },
+                            {
+                                "term": "title",
+                                "value": "Assessment"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "Billing_difference",
+                            "Credits_balance_consumed",
+                            "Credits_cloudCreditsForPhase",
+                            "Credits_phaseStartDate",
+                            "Measures_cloudCreditsCost",
+                            "Measures_cost",
+                            "Measures_paygCost",
+                            "criticality"
+                        ]
+                    },
+                    "sourceChecksum": "b068983e6017e9af8f59f185366c66e628497e46804ccb18b3a6157910c13118"
+                },
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice/Card_CreditBurnDownHeaders/Credits_status",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Card_CreditBurnDownHeaders",
+                        "propertyName": "Credits_status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "Credits_balance",
+                            "Credits_balance_consumed",
+                            "Credits_cloudCreditsForPhase",
+                            "Credits_phaseStartDate",
+                            "Measures_cloudCreditsCost",
+                            "Predicted_credits_balance",
+                            "chartBalance",
+                            "currency"
+                        ]
+                    },
+                    "sourceChecksum": "b068983e6017e9af8f59f185366c66e628497e46804ccb18b3a6157910c13118"
+                },
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice/Card_CreditBurnDowns/Credits_status",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-contractsservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Card_CreditBurnDowns",
+                        "propertyName": "Credits_status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "Credits_balance",
+                            "Credits_balance_consumed",
+                            "Credits_cloudCreditsForPhase",
+                            "Credits_phaseStartDate",
+                            "Measures_cloudCreditsCost",
+                            "Predicted_credits_balance",
+                            "chartBalance",
+                            "currency"
+                        ]
+                    },
+                    "sourceChecksum": "b068983e6017e9af8f59f185366c66e628497e46804ccb18b3a6157910c13118"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice/BulkForecastSettings/statusText",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "BulkForecastSettings",
+                        "propertyName": "statusText",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "label": "Forecast Relevance",
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            },
+                            {
+                                "term": "title",
+                                "value": "Forecast Relevance"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "cMeasureId",
+                            "cMetricName",
+                            "degressionFactor",
+                            "method",
+                            "serviceId",
+                            "serviceName"
+                        ]
+                    },
+                    "sourceChecksum": "b6901121058798cf15d07f3596d7d9f1b125cc47fd677406fb11e0767cbcf3e5"
+                },
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice/ForecastSettings/statusText",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ForecastSettings",
+                        "propertyName": "statusText",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "label": "Forecast Relevance",
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            },
+                            {
+                                "term": "title",
+                                "value": "Forecast Relevance"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["degressionFactor", "measureId", "method", "serviceId"]
+                    },
+                    "sourceChecksum": "b6901121058798cf15d07f3596d7d9f1b125cc47fd677406fb11e0767cbcf3e5"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice/ContractCreditValues/status",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ContractCreditValues",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "balance",
+                            "cloudCreditsForPhase",
+                            "contractEndDate",
+                            "contractStartDate",
+                            "currency",
+                            "phaseEndDate",
+                            "phaseStartDate",
+                            "phaseUpdatedOn"
+                        ]
+                    },
+                    "sourceChecksum": "f99649dc865022a212d42e50350139eaa3884a3514212b7a43f7357879cb4aeb"
+                },
+                {
+                    "fieldId": "property:sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice/ForecastSettings/statusText",
+                    "serviceId": "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice",
+                    "split": "known-sap-holdout",
+                    "domain": "cloud-cost-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "ForecastSettings",
+                        "propertyName": "statusText",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "label": "Forecast Relevance",
+                        "annotations": [
+                            {
+                                "term": "Core.Computed",
+                                "value": true
+                            },
+                            {
+                                "term": "title",
+                                "value": "Forecast Relevance"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["degressionFactor", "measureId", "method", "serviceId"]
+                    },
+                    "sourceChecksum": "f99649dc865022a212d42e50350139eaa3884a3514212b7a43f7357879cb4aeb"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-lite-inventory-management-cap-inventory-management-inventoryservice",
+            "partition": "known-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-lite-inventory-management-cap-inventory-management-inventoryservice/Plants/AvailabilityStatus",
+                    "serviceId": "sap-lite-inventory-management-cap-inventory-management-inventoryservice",
+                    "split": "known-sap-holdout",
+                    "domain": "inventory-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Plants",
+                        "propertyName": "AvailabilityStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "ID",
+                            "ManufacturerName",
+                            "Plant",
+                            "PlantDesc",
+                            "ProductPicUrl",
+                            "ReorderPoint",
+                            "ReorderQuantity",
+                            "StockQAvailable"
+                        ]
+                    },
+                    "sourceChecksum": "39cd9027b588d0e819c8feca02f15033fc96aa4b93dce97214b78ddea3c41ae7"
+                },
+                {
+                    "fieldId": "property:sap-lite-inventory-management-cap-inventory-management-inventoryservice/Products2Plants/AvailabilityStatus",
+                    "serviceId": "sap-lite-inventory-management-cap-inventory-management-inventoryservice",
+                    "split": "known-sap-holdout",
+                    "domain": "inventory-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Products2Plants",
+                        "propertyName": "AvailabilityStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "Category",
+                            "CategoryDesc",
+                            "Currency",
+                            "ID",
+                            "ManufacturerName",
+                            "Plants_ID",
+                            "Plants_Plant",
+                            "ProductDesc"
+                        ]
+                    },
+                    "sourceChecksum": "39cd9027b588d0e819c8feca02f15033fc96aa4b93dce97214b78ddea3c41ae7"
+                },
+                {
+                    "fieldId": "property:sap-lite-inventory-management-cap-inventory-management-inventoryservice/PurchaseRequisition/Status",
+                    "serviceId": "sap-lite-inventory-management-cap-inventory-management-inventoryservice",
+                    "split": "known-sap-holdout",
+                    "domain": "inventory-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "PurchaseRequisition",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "CreatedDate",
+                            "Currency",
+                            "PRID",
+                            "PlantDesc",
+                            "PlantID",
+                            "PlantsPlantUID",
+                            "ProductDesc",
+                            "ProductId"
+                        ]
+                    },
+                    "sourceChecksum": "39cd9027b588d0e819c8feca02f15033fc96aa4b93dce97214b78ddea3c41ae7"
+                }
+            ]
+        },
+        {
+            "serviceId": "cap-sflight-public",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:SFlightService/fe_cap_travel_Booking/BookingStatus_code",
+                    "serviceId": "cap-sflight-public",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-booking",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "fe_cap_travel_Booking",
+                        "propertyName": "BookingStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "BookingStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "BookingUUID",
+                            "ConnectionID",
+                            "CurrencyCode",
+                            "FlightDate",
+                            "FlightPrice",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "792a11a0c4bde693a11dc03653614016de36671ce4370dcc2302996239aafaaf"
+                },
+                {
+                    "fieldId": "property:SFlightService/fe_cap_travel_Travel/TravelStatus_code",
+                    "serviceId": "cap-sflight-public",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-booking",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "fe_cap_travel_Travel",
+                        "propertyName": "TravelStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "TravelStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode",
+                            "Description",
+                            "EndDate",
+                            "GoGreen",
+                            "GreenFee",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "792a11a0c4bde693a11dc03653614016de36671ce4370dcc2302996239aafaaf"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-cap-sflight-cap-sflight-analyticsservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-cap-sflight-cap-sflight-analyticsservice/Bookings/status",
+                    "serviceId": "sap-cap-sflight-cap-sflight-analyticsservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Bookings",
+                        "propertyName": "status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>BookingStatus}",
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            },
+                            {
+                                "term": "Common.ValueList#vlStatus.CollectionPath",
+                                "value": "Bookings"
+                            },
+                            {
+                                "term": "Common.ValueList#vlStatus.Parameters"
+                            },
+                            {
+                                "term": "Common.ValueList#vlStatus.PresentationVariantQualifier",
+                                "value": "pvStatus"
+                            },
+                            {
+                                "term": "Common.ValueList.CollectionPath",
+                                "value": "BookingStatus"
+                            },
+                            {
+                                "term": "Common.ValueList.Parameters"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>BookingStatus}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "CombinedID",
+                            "ConnectionID",
+                            "CurrencyCode_code",
+                            "DepAirport",
+                            "DepCity",
+                            "DestAirport"
+                        ]
+                    },
+                    "sourceChecksum": "e5ad08a64609f450e1e53a8e33aa141e493fd9260336268d1faef0d56dc6b225"
+                },
+                {
+                    "fieldId": "property:sap-cap-sflight-cap-sflight-analyticsservice/Bookings/statusName",
+                    "serviceId": "sap-cap-sflight-cap-sflight-analyticsservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Bookings",
+                        "propertyName": "statusName",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 255
+                        },
+                        "label": "{i18n>Name}",
+                        "annotations": [
+                            {
+                                "term": "title",
+                                "value": "{i18n>Name}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "CombinedID",
+                            "ConnectionID",
+                            "CurrencyCode_code",
+                            "DepAirport",
+                            "DepCity",
+                            "DestAirport"
+                        ]
+                    },
+                    "sourceChecksum": "e5ad08a64609f450e1e53a8e33aa141e493fd9260336268d1faef0d56dc6b225"
+                },
+                {
+                    "fieldId": "property:sap-cap-sflight-cap-sflight-analyticsservice/Travels/TravelStatus_code",
+                    "serviceId": "sap-cap-sflight-cap-sflight-analyticsservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travels",
+                        "propertyName": "TravelStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "TravelStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode_code",
+                            "CustomerName",
+                            "Description",
+                            "EndDate",
+                            "GoGreen",
+                            "GreenFee"
+                        ]
+                    },
+                    "sourceChecksum": "e5ad08a64609f450e1e53a8e33aa141e493fd9260336268d1faef0d56dc6b225"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-cap-sflight-cap-sflight-travelservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-cap-sflight-cap-sflight-travelservice/Booking/BookingStatus_code",
+                    "serviceId": "sap-cap-sflight-cap-sflight-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Booking",
+                        "propertyName": "BookingStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "BookingStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "BookingUUID",
+                            "ConnectionID",
+                            "CurrencyCode_code",
+                            "FlightDate",
+                            "FlightPrice",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "753c62338ec22e4b4f0c01ad507c36b0dc86c0402af189a999d4c80abbbc0d42"
+                },
+                {
+                    "fieldId": "property:sap-cap-sflight-cap-sflight-travelservice/Travel/TravelStatus_code",
+                    "serviceId": "sap-cap-sflight-cap-sflight-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travel",
+                        "propertyName": "TravelStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "TravelStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode_code",
+                            "Description",
+                            "EndDate",
+                            "GoGreen",
+                            "GreenFee",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "753c62338ec22e4b4f0c01ad507c36b0dc86c0402af189a999d4c80abbbc0d42"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice/Booking/BookingStatus_code",
+                    "serviceId": "sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Booking",
+                        "propertyName": "BookingStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "BookingStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "BookingUUID",
+                            "ConnectionID",
+                            "CurrencyCode_code",
+                            "FlightDate",
+                            "FlightPrice",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "39bc292d6e5a2e49c629ce0b2f7c858a0a631a2a8ae17324d0eaf903c9ed6b91"
+                },
+                {
+                    "fieldId": "property:sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice/Travel/TravelStatusName",
+                    "serviceId": "sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travel",
+                        "propertyName": "TravelStatusName",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 255
+                        },
+                        "label": "{i18n>Name}",
+                        "annotations": [
+                            {
+                                "term": "title",
+                                "value": "{i18n>Name}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AgencyName",
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode_code",
+                            "CustomerFullName",
+                            "Description",
+                            "EndDate",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "39bc292d6e5a2e49c629ce0b2f7c858a0a631a2a8ae17324d0eaf903c9ed6b91"
+                },
+                {
+                    "fieldId": "property:sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice/Travel/TravelStatus_code",
+                    "serviceId": "sap-fiori-elements-v4-cap-advanced-fiori-elements-v4-cap-advanced-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travel",
+                        "propertyName": "TravelStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {},
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "TravelStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "AgencyName",
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode_code",
+                            "CustomerFullName",
+                            "Description",
+                            "EndDate",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "39bc292d6e5a2e49c629ce0b2f7c858a0a631a2a8ae17324d0eaf903c9ed6b91"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-fiori-tools-incident-local-edmx",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:IncidentLocalService/IncidentService/IncidentFlow/stepStatus",
+                    "serviceId": "sap-fiori-tools-incident-local-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "service-incidents",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "IncidentFlow",
+                        "propertyName": "stepStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 10
+                        },
+                        "label": "{i18n>ProcessStepStatus}",
+                        "annotations": [
+                            {
+                                "term": "Common.Label",
+                                "value": "{i18n>ProcessStepStatus}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "createdAt",
+                            "createdBy",
+                            "criticality",
+                            "id",
+                            "incident_ID",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "processStep"
+                        ]
+                    },
+                    "sourceChecksum": "af1fb670e87dc6c9fb547304777ce945ad503f34f2a39c264b06003da4818cea"
+                },
+                {
+                    "fieldId": "property:IncidentLocalService/IncidentService/Incidents/incidentStatus_code",
+                    "serviceId": "sap-fiori-tools-incident-local-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "service-incidents",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Incidents",
+                        "propertyName": "incidentStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "label": "{i18n>IncidentStatus}",
+                        "annotations": [
+                            {
+                                "term": "Common.Label",
+                                "value": "{i18n>IncidentStatus}"
+                            },
+                            {
+                                "term": "Common.Text",
+                                "value": "incidentStatus/name"
+                            },
+                            {
+                                "term": "Common.ValueList"
+                            },
+                            {
+                                "term": "Common.ValueListWithFixedValues",
+                                "value": true
+                            }
+                        ],
+                        "linkedMetadataPaths": ["IncidentStatus", "incidentStatus/name"],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "incidentStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "HasActiveEntity",
+                            "HasDraftEntity",
+                            "ID",
+                            "IsActiveEntity",
+                            "assignedIndividual_ID",
+                            "category_code",
+                            "createdAt",
+                            "createdBy"
+                        ]
+                    },
+                    "sourceChecksum": "af1fb670e87dc6c9fb547304777ce945ad503f34f2a39c264b06003da4818cea"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-fiori-tools-samples-fiori-incident-management-incidentservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-fiori-tools-samples-fiori-incident-management-incidentservice/IncidentFlow/stepStatus",
+                    "serviceId": "sap-fiori-tools-samples-fiori-incident-management-incidentservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "service-incidents",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "IncidentFlow",
+                        "propertyName": "stepStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 10
+                        },
+                        "label": "{i18n>ProcessStepStatus}",
+                        "annotations": [
+                            {
+                                "term": "title",
+                                "value": "{i18n>ProcessStepStatus}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "createdAt",
+                            "createdBy",
+                            "criticality",
+                            "id",
+                            "incident_ID",
+                            "modifiedAt",
+                            "modifiedBy",
+                            "processStep"
+                        ]
+                    },
+                    "sourceChecksum": "0e15db5cf3005c545aa699b80c7bb493b94befb1fe2a0303cea3c0d78b1c603d"
+                },
+                {
+                    "fieldId": "property:sap-fiori-tools-samples-fiori-incident-management-incidentservice/Incidents/incidentStatus_code",
+                    "serviceId": "sap-fiori-tools-samples-fiori-incident-management-incidentservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "service-incidents",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Incidents",
+                        "propertyName": "incidentStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 20
+                        },
+                        "label": "Incident Status",
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            },
+                            {
+                                "term": "title",
+                                "value": "Incident Status"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "incidentStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "ID",
+                            "assignedIndividual_ID",
+                            "category_code",
+                            "createdAt",
+                            "createdBy",
+                            "description",
+                            "identifier",
+                            "identifierFieldControl"
+                        ]
+                    },
+                    "sourceChecksum": "0e15db5cf3005c545aa699b80c7bb493b94befb1fe2a0303cea3c0d78b1c603d"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-fiori-tools-travel-v4-edmx",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:TravelV4Service/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001/TravelType/Status",
+                    "serviceId": "sap-fiori-tools-travel-v4-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "TravelType",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": false,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "SAP__common.IsUpperCase"
+                            },
+                            {
+                                "term": "SAP__core.Computed"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AgencyID",
+                            "AgencyName",
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode",
+                            "CustomerID",
+                            "CustomerName",
+                            "DraftEntityCreationDateTime"
+                        ]
+                    },
+                    "sourceChecksum": "b209028a7e9e71e8b2e46e1960e720de2444d5db202382f3cb804c9f77fce5a0"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-fiori-tools-ztravel-edmx",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/BookingStatusType/BookingStatus",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "BookingStatusType",
+                        "propertyName": "BookingStatus",
+                        "primitiveType": "string",
+                        "nullable": false,
+                        "isKey": true,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "Booking Status",
+                        "description": "Flight Reference Scenario: Travel Status",
+                        "annotations": [
+                            {
+                                "term": "sap:display-format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap:text",
+                                "value": "BookingStatus_Text"
+                            }
+                        ],
+                        "linkedMetadataPaths": ["BookingStatus_Text"],
+                        "relationshipParticipation": [],
+                        "neighbors": ["BookingStatus_Text"]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/BookingStatusType/BookingStatus_Text",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "BookingStatusType",
+                        "propertyName": "BookingStatus_Text",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1024
+                        },
+                        "label": "Booking Status",
+                        "description": "Overall Status Text",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["BookingStatus"]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/BookingType/BookingStatus",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "BookingType",
+                        "propertyName": "BookingStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "Booking Status",
+                        "description": "Flight Reference Scenario: Travel Status",
+                        "annotations": [
+                            {
+                                "term": "Common.ValueList"
+                            },
+                            {
+                                "term": "sap:display-format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap:text",
+                                "value": "BookingStatusText"
+                            }
+                        ],
+                        "linkedMetadataPaths": ["BookingStatus", "BookingStatusText"],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AirlineID",
+                            "BookingDate",
+                            "BookingID",
+                            "BookingStatusText",
+                            "BookingUUID",
+                            "CarrierName",
+                            "ConnectionID",
+                            "CurrencyCode"
+                        ]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/BookingType/BookingStatusText",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "BookingType",
+                        "propertyName": "BookingStatusText",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1024
+                        },
+                        "label": "Booking Status",
+                        "description": "Overall Status Text",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AirlineID",
+                            "BookingDate",
+                            "BookingID",
+                            "BookingStatus",
+                            "BookingUUID",
+                            "CarrierName",
+                            "ConnectionID",
+                            "CurrencyCode"
+                        ]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/OverallStatusType/OverallStatus",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "OverallStatusType",
+                        "propertyName": "OverallStatus",
+                        "primitiveType": "string",
+                        "nullable": false,
+                        "isKey": true,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "Overall Status",
+                        "description": "Flight Reference Scenario: Travel Status",
+                        "annotations": [
+                            {
+                                "term": "sap:display-format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap:text",
+                                "value": "OverallStatus_Text"
+                            }
+                        ],
+                        "linkedMetadataPaths": ["OverallStatus_Text"],
+                        "relationshipParticipation": [],
+                        "neighbors": ["OverallStatus_Text"]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/OverallStatusType/OverallStatus_Text",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "OverallStatusType",
+                        "propertyName": "OverallStatus_Text",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1024
+                        },
+                        "label": "Overall Status",
+                        "description": "Overall Status Text",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["OverallStatus"]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/TravelType/OverallStatus",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "TravelType",
+                        "propertyName": "OverallStatus",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "Overall Status",
+                        "description": "Flight Reference Scenario: Travel Status",
+                        "annotations": [
+                            {
+                                "term": "Common.ValueList"
+                            },
+                            {
+                                "term": "sap:display-format",
+                                "value": "UpperCase"
+                            },
+                            {
+                                "term": "sap:text",
+                                "value": "OverallStatusText"
+                            }
+                        ],
+                        "linkedMetadataPaths": ["OverallStatus", "OverallStatusText"],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AgencyID",
+                            "AgencyName",
+                            "BeginDate",
+                            "BookingFee",
+                            "BookingFee_fc",
+                            "CurrencyCode",
+                            "CustomerID",
+                            "CustomerName"
+                        ]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                },
+                {
+                    "fieldId": "property:ZTravelService/cds_xdmoxui_travel_a_d/TravelType/OverallStatusText",
+                    "serviceId": "sap-fiori-tools-ztravel-edmx",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "TravelType",
+                        "propertyName": "OverallStatusText",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1024
+                        },
+                        "label": "Overall Status",
+                        "description": "Overall Status Text",
+                        "annotations": [],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": [
+                            "AgencyID",
+                            "AgencyName",
+                            "BeginDate",
+                            "BookingFee",
+                            "BookingFee_fc",
+                            "CurrencyCode",
+                            "CustomerID",
+                            "CustomerName"
+                        ]
+                    },
+                    "sourceChecksum": "bfc7074f06ca85cdc08e69c20fe40ac1f160e39b24eb0b1694cfcfcad0a6d252"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-recap2026-cap-features-cap-recap-xstravels-travelservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-recap2026-cap-features-cap-recap-xstravels-travelservice/Travels/Status_code",
+                    "serviceId": "sap-recap2026-cap-features-cap-recap-xstravels-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travels",
+                        "propertyName": "Status_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "label": "{i18n>TravelStatus}",
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "UI.ValueCriticality"
+                            },
+                            {
+                                "term": "title",
+                                "value": "{i18n>TravelStatus}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "Status",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "Agency_ID",
+                            "BeginDate",
+                            "BookingFee",
+                            "Currency_code",
+                            "Customer_ID",
+                            "Description",
+                            "EndDate",
+                            "ID"
+                        ]
+                    },
+                    "sourceChecksum": "f21e9257bc8dbaed12f914c7a2cd252f7b3cf1970cfebc65307c1d3378105a6a"
+                },
+                {
+                    "fieldId": "property:sap-recap2026-cap-features-cap-recap-xstravels-travelservice/TravelsExport/Status",
+                    "serviceId": "sap-recap2026-cap-features-cap-recap-xstravels-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-management",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "TravelsExport",
+                        "propertyName": "Status",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 255
+                        },
+                        "label": "{i18n>Name}",
+                        "annotations": [
+                            {
+                                "term": "title",
+                                "value": "{i18n>Name}"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [],
+                        "neighbors": ["Agency", "BeginDate", "Currency", "Description", "EndDate", "ID", "TotalPrice"]
+                    },
+                    "sourceChecksum": "f21e9257bc8dbaed12f914c7a2cd252f7b3cf1970cfebc65307c1d3378105a6a"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-ui5con-2026-fiori-building-blocks-cap-fiori-building-blocks-travelservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-ui5con-2026-fiori-building-blocks-cap-fiori-building-blocks-travelservice/Booking/BookingStatus_code",
+                    "serviceId": "sap-ui5con-2026-fiori-building-blocks-cap-fiori-building-blocks-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": "llm-consensus-reviewed",
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Booking",
+                        "propertyName": "BookingStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "BookingStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "BookingUUID",
+                            "ConnectionID",
+                            "CurrencyCode_code",
+                            "FlightDate",
+                            "FlightPrice",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "b10e6ca32a6e0f0ad43932e9846b4ddf1467335469a77fc176d61898697f55f9"
+                },
+                {
+                    "fieldId": "property:sap-ui5con-2026-fiori-building-blocks-cap-fiori-building-blocks-travelservice/Travel/TravelStatus_code",
+                    "serviceId": "sap-ui5con-2026-fiori-building-blocks-cap-fiori-building-blocks-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travel",
+                        "propertyName": "TravelStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "TravelStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode_code",
+                            "Description",
+                            "EndDate",
+                            "GoGreen",
+                            "GreenFee",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "b10e6ca32a6e0f0ad43932e9846b4ddf1467335469a77fc176d61898697f55f9"
+                }
+            ]
+        },
+        {
+            "serviceId": "sap-wdf2025-fiori-building-blocks-cap-wdf-fiori-building-blocks-travelservice",
+            "partition": "unseen-sap-holdout",
+            "pending": [
+                {
+                    "fieldId": "property:sap-wdf2025-fiori-building-blocks-cap-wdf-fiori-building-blocks-travelservice/Booking/BookingStatus_code",
+                    "serviceId": "sap-wdf2025-fiori-building-blocks-cap-wdf-fiori-building-blocks-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Booking",
+                        "propertyName": "BookingStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "BookingStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BookingDate",
+                            "BookingID",
+                            "BookingUUID",
+                            "ConnectionID",
+                            "CurrencyCode_code",
+                            "FlightDate",
+                            "FlightPrice",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "b10e6ca32a6e0f0ad43932e9846b4ddf1467335469a77fc176d61898697f55f9"
+                },
+                {
+                    "fieldId": "property:sap-wdf2025-fiori-building-blocks-cap-wdf-fiori-building-blocks-travelservice/Travel/TravelStatus_code",
+                    "serviceId": "sap-wdf2025-fiori-building-blocks-cap-wdf-fiori-building-blocks-travelservice",
+                    "split": "unseen-sap-holdout",
+                    "domain": "travel-analytics",
+                    "candidateRole": null,
+                    "reviewStatus": "pending",
+                    "priorPlannerStatus": null,
+                    "context": {
+                        "inputFormat": "v3",
+                        "entityName": "Travel",
+                        "propertyName": "TravelStatus_code",
+                        "primitiveType": "string",
+                        "nullable": true,
+                        "isKey": false,
+                        "facets": {
+                            "maxLength": 1
+                        },
+                        "annotations": [
+                            {
+                                "term": "Common.Text"
+                            },
+                            {
+                                "term": "Common.TextArrangement"
+                            }
+                        ],
+                        "linkedMetadataPaths": [],
+                        "relationshipParticipation": [
+                            {
+                                "relationship": "TravelStatus",
+                                "direction": "source",
+                                "property": "code"
+                            }
+                        ],
+                        "neighbors": [
+                            "BeginDate",
+                            "BookingFee",
+                            "CurrencyCode_code",
+                            "Description",
+                            "EndDate",
+                            "GoGreen",
+                            "GreenFee",
+                            "LastChangedAt"
+                        ]
+                    },
+                    "sourceChecksum": "b10e6ca32a6e0f0ad43932e9846b4ddf1467335469a77fc176d61898697f55f9"
+                }
+            ]
+        }
+    ]
+}
