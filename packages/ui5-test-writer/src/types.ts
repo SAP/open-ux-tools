@@ -153,11 +153,15 @@ export type ContactCardField = {
 };
 
 /**
- * A table column whose bound property carries both a `Common.Text` annotation and a
- * `UI.TextArrangement` annotation. `textProperty` is the text/description property the
- * column can be sorted by (the `Common.Text` target, e.g. "CustomerName").
+ * A table column whose bound property carries a `Common.Text` annotation. `textProperty` is the
+ * text/description property the column can be sorted by (the `Common.Text` target, e.g.
+ * "AccountingDocumentType_Text") and is always present. `columnProperty` is the column's own bound
+ * property (e.g. "AccountingDocumentType"); it is omitted when the `UI.TextArrangement` is
+ * `TextOnly`, because then only the text property is sortable. A `UI.TextArrangement` is not
+ * required — a maintained `Common.Text` is enough to emit the text-property sort test.
  */
 export type TextAnnotationColumn = {
+    columnProperty?: string;
     textProperty: string;
 };
 

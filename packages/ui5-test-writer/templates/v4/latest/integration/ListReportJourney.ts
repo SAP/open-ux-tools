@@ -193,8 +193,14 @@ function journey() {
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
     opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {
         <%_ textAnnotationColumns.forEach(function(column) { _%>
+        <%_ if (column.columnProperty) { _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending);
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
+        <%_ } _%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);
         <%_ }); -%>
     });
 <%_ } -%>

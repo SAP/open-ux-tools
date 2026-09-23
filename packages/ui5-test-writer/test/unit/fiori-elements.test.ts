@@ -1874,7 +1874,9 @@ export type Then = Opa5 & BaseArrangements & {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                     }
                     return features;
                 });
@@ -1899,12 +1901,45 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('"sap/ui/core/library"');
                 expect(content).toContain('function (opaTest, runner, coreLibrary)');
                 expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending)');
+                expect(content).toContain(
+                    'iCheckSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending, true)'
+                );
                 expect(content).toContain(
                     'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
                 );
                 expect(content).toContain(
                     'iCheckSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending, true)'
                 );
+                // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
+            });
+
+            it('emits only the text-property sort test when columnProperty is omitted (TextOnly) (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        // TextOnly arrangement: the code column is not sortable, so columnProperty is omitted.
+                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain(
+                    'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
+                );
+                // The text-property sort test is still reset to SortOrder.None.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
+                // The code column is not sortable under TextOnly, so no sort test targets CustomerID.
+                expect(content).not.toContain('iChangeSortOrder({ name: "CustomerID" }');
+                expect(content).not.toContain('iCheckSortOrder({ name: "CustomerID" }');
             });
 
             it('omits the sort-order test and coreLibrary import when there is no text-annotated column', async () => {
@@ -1932,7 +1967,9 @@ export type Then = Opa5 & BaseArrangements & {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                     }
                     return features;
                 });
@@ -1961,8 +1998,37 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).toContain('import { SortOrder } from "sap/ui/core/library";');
                 expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.Ascending)');
+                expect(content).toContain('iCheckSortOrder({ name: "CustomerID" }, SortOrder.Ascending, true)');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.Ascending)');
                 expect(content).toContain('iCheckSortOrder({ name: "CustomerName" }, SortOrder.Ascending, true)');
+                // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
+            });
+
+            it('emits only the text-property sort test when columnProperty is omitted (TextOnly) (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        // TextOnly arrangement: the code column is not sortable, so columnProperty is omitted.
+                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.Ascending)');
+                // The text-property sort test is still reset to SortOrder.None.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
+                // The code column is not sortable under TextOnly, so no sort test targets CustomerID.
+                expect(content).not.toContain('iChangeSortOrder({ name: "CustomerID" }');
+                expect(content).not.toContain('iCheckSortOrder({ name: "CustomerID" }');
             });
 
             it('omits the sort-order test and SortOrder import when there is no text-annotated column', async () => {
