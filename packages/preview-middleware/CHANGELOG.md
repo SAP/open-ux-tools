@@ -1,5 +1,68 @@
 # @sap-ux/preview-middleware
 
+## 1.2.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.56 → 1.0.57
+
+## 1.2.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Features
+
+- Serve merged manifest.json via proxy in CF ADP preview mode [[3f822e1](https://github.com/SAP/open-ux-tools/commit/3f822e140aad6deb2df243295a25a917b7044929)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.55 → 1.0.56
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.54 → 1.0.55
+
+## 1.2.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.53 → 1.0.54
+- @sap-ux/system-access 1.0.13 → 1.0.14
+
+## 1.2.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux-private/preview-middleware-client [[fb8fd7a](https://github.com/SAP/open-ux-tools/commit/fb8fd7abaf0149663650b31c3010303e619e99f7)]
+
+## 1.2.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/adp-tooling 1.0.52 → 1.0.53
+- @sap-ux/system-access 1.0.13 → 1.0.13
+
 ## 1.2.11
 
 ### Patch Changes
