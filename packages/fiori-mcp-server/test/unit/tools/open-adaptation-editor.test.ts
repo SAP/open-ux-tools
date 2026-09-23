@@ -19,7 +19,7 @@ jest.unstable_mockModule('../../../src/utils', () => ({
 }));
 
 const mockSpawn = jest.fn<any>();
-jest.unstable_mockModule('cross-spawn', () => ({
+jest.unstable_mockModule('nano-spawn', () => ({
     default: mockSpawn
 }));
 
@@ -67,9 +67,13 @@ describe('openAdaptationEditor', () => {
         mockExistsSync.mockReturnValue(false);
     });
 
+    function fakeSubprocess(child: FakeChildProcess): { nodeChildProcess: Promise<FakeChildProcess> } {
+        return { nodeChildProcess: Promise.resolve(child) };
+    }
+
     test('returns Success when URL line is emitted on stdout', async () => {
         const child = new FakeChildProcess(9999);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
 
@@ -86,7 +90,7 @@ describe('openAdaptationEditor', () => {
 
     test('returns Error with Timeout message when no URL emitted within timeout', async () => {
         const child = new FakeChildProcess(1234);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         jest.useFakeTimers();
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
@@ -100,7 +104,7 @@ describe('openAdaptationEditor', () => {
 
     test('includes stderr in error message when timeout occurs with stderr output', async () => {
         const child = new FakeChildProcess(1234);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         jest.useFakeTimers();
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
@@ -120,7 +124,7 @@ describe('openAdaptationEditor', () => {
     test('uses process.execPath when fiori.cjs binary target exists', async () => {
         mockExistsSync.mockImplementation((p: unknown) => typeof p === 'string' && p.includes('fiori.cjs'));
         const child = new FakeChildProcess(42);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -140,7 +144,7 @@ describe('openAdaptationEditor', () => {
             (p: unknown) => typeof p === 'string' && p.includes('.bin') && p.includes('fiori')
         );
         const child = new FakeChildProcess(43);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -154,7 +158,7 @@ describe('openAdaptationEditor', () => {
 
     test('extracts editor path from "fiori run --open" line before URL line', async () => {
         const child = new FakeChildProcess(100);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -169,7 +173,7 @@ describe('openAdaptationEditor', () => {
 
     test('handles process error event and resolves with Error status on timeout', async () => {
         const child = new FakeChildProcess(1234);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         jest.useFakeTimers();
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
@@ -187,7 +191,7 @@ describe('openAdaptationEditor', () => {
 
     test('parsePort returns default https port 443 for https URL without explicit port', async () => {
         const child = new FakeChildProcess(101);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -201,7 +205,7 @@ describe('openAdaptationEditor', () => {
 
     test('parsePort returns default http port 80 for http URL without explicit port', async () => {
         const child = new FakeChildProcess(102);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -218,7 +222,7 @@ describe('openAdaptationEditor', () => {
         // However, jest.fn's mockReturnValue returns our child object; child.pid IS undefined.
         // Verify the pid guard is exercised by checking what the function actually returns.
         const child = new FakeChildProcess(undefined);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -245,7 +249,7 @@ describe('openAdaptationEditor', () => {
     test('parsePort returns undefined for an unparseable URL, omitting port from output', async () => {
         // Emit a URL that matches the regex but whose port field cannot be parsed by new URL()
         const child = new FakeChildProcess(103);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {
@@ -262,7 +266,7 @@ describe('openAdaptationEditor', () => {
     test('falls back to npm when neither binary exists', async () => {
         mockExistsSync.mockReturnValue(false);
         const child = new FakeChildProcess(44);
-        mockSpawn.mockReturnValue(child);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
         setImmediate(() => {

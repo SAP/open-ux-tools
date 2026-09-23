@@ -2779,9 +2779,6 @@ importers:
       '@sap/ux-specification':
         specifier: 1.144.5
         version: 1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
-      '@types/cross-spawn':
-        specifier: 6.0.6
-        version: 6.0.6
       '@types/json-schema':
         specifier: 7.0.15
         version: 7.0.15
@@ -2794,9 +2791,6 @@ importers:
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
-      cross-spawn:
-        specifier: 7.0.6
-        version: 7.0.6
       esbuild:
         specifier: '>=0.28.1'
         version: 0.28.2
@@ -2809,6 +2803,9 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
+      nano-spawn:
+        specifier: 2.1.0
+        version: 2.1.0
       npm-run-all2:
         specifier: 9.0.2
         version: 9.0.2
@@ -15613,6 +15610,10 @@ packages:
   mute-stream@4.0.0:
     resolution: {integrity: sha512-gSrprq0fJ3EiOErzjdIZrjysVVmJ4uu1QWfCDss5LypA5OXvrMje5Ym5z6V6RLyJ2eF87lasX7t6a0AnFvZblg==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
+  nano-spawn@2.1.0:
+    resolution: {integrity: sha512-yTW+2okrElHiH4fsiz/+/zc0EDo9BDDoC3iKk8dpv1GeRc9nUWzUZHx6TofMWErchhUQR8hY9/Eu1Uja9x1nqA==}
+    engines: {node: '>=20.17'}
 
   nanoid@3.3.18:
     resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
@@ -32079,6 +32080,8 @@ snapshots:
   mute-stream@0.0.8: {}
 
   mute-stream@4.0.0: {}
+
+  nano-spawn@2.1.0: {}
 
   nanoid@3.3.18: {}
 

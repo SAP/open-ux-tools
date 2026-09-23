@@ -1,6 +1,6 @@
 import type { OpenAdaptationEditorOutput, OpenAdaptationEditorInput } from '../types/index.js';
 import { type ChildProcess } from 'node:child_process';
-import crossSpawn from 'cross-spawn';
+import spawn from 'nano-spawn';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -162,12 +162,9 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
-        // On Windows, .cmd shims cannot be spawned directly via CreateProcess.
-        // cross-spawn handles this transparently without shell: true.
-        const childProcess: ChildProcess = crossSpawn(command, args, {
-            cwd: appPath,
-            stdio: ['ignore', 'pipe', 'pipe']
-        });
+        // nano-spawn handles .cmd/.bat shims on Windows without shell: true.
+        const subprocess = spawn(command, args, { cwd: appPath });
+        const childProcess: ChildProcess = await subprocess.nodeChildProcess;
 
         const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, TIMEOUT_MS);
 
