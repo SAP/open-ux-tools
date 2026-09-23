@@ -64,10 +64,6 @@ function violatesNavigationRule(
  * Inspects a single `UI.Chart` annotation and appends a diagnostic for each `Measures`
  * or `Dimensions` `PropertyPath` that does not traverse a 1:n navigation property.
  *
- * The check only runs when **both** `Measures` and `Dimensions` are present.  Charts that
- * use a `DataPoint` pattern (e.g. Bullet, Harvey Ball, Radial) omit `Dimensions` by design;
- * skipping those avoids false positives for the DataPoint-based measure reference in `Measures`.
- *
  * Each diagnostic points at the specific violating `PropertyPath` element and carries whether
  * the violation is in a measure or a dimension.
  *
@@ -98,12 +94,10 @@ function checkChartAnnotation(
             )[0]
     );
 
-    // Skip charts that do not declare both Measures and Dimensions (e.g. DataPoint-based charts).
-    if (propValueEls.some((el) => !el)) {
-        return;
-    }
-
     for (const [i, propValueEl] of propValueEls.entries()) {
+        if (!propValueEl) {
+            continue;
+        }
         const propName = MICRO_CHART_CHECKED_PROPS[i];
         const propertyType: 'measure' | 'dimension' = propName === 'Measures' ? 'measure' : 'dimension';
         const [collection] = elementsWithName(Edm.Collection, propValueEl);
