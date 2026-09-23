@@ -4,7 +4,7 @@ import { existsSync, lstatSync, accessSync, constants } from 'node:fs';
 import validateNpmPackageName from 'validate-npm-package-name';
 
 /** Regex for a valid UI5 view name: starts with one or more letters, followed by letters/digits/underscores/hyphens. */
-export const VIEW_NAME_REGEX = /^[a-zA-Z]+[a-zA-Z0-9_-]*$/;
+export const VIEW_NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 
 /** Maximum allowed length for a UI5 view name. */
 export const VIEW_NAME_MAX_LENGTH = 120;
