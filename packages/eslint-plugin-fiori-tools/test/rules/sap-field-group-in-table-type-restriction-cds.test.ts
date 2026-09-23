@@ -105,6 +105,25 @@ const CAP_MANIFEST_WITH_ANALYTICAL_TABLE = getManifestAsCode(CAP_MANIFEST, [
     }
 ]);
 
+// CAP manifest: set TreeTable on IncidentsList
+const CAP_MANIFEST_WITH_TREE_TABLE = getManifestAsCode(CAP_MANIFEST, [
+    {
+        path: [
+            'sap.ui5',
+            'routing',
+            'targets',
+            'IncidentsList',
+            'options',
+            'settings',
+            'controlConfiguration',
+            '@com.sap.vocabularies.UI.v1.LineItem',
+            'tableSettings',
+            'type'
+        ],
+        value: 'TreeTable'
+    }
+]);
+
 // Object page: CollectionFacet > CollectionFacet > ReferenceFacet → incidentFlow/@UI.LineItem
 // Tests that the recursive traversal reaches a ReferenceFacet two levels deep
 const CAP_NESTED_COLLECTION_FACET_WITH_FIELDGROUP = `
@@ -200,17 +219,17 @@ ruleTester.run(`${TEST_NAME} - CDS`, fieldGroupInTableTypeRestrictionRule, {
     invalid: [
         createInvalidTest(
             {
-                name: 'DataFieldForAnnotation targeting FieldGroup in GridTable',
+                name: 'DataFieldForAnnotation targeting FieldGroup in TreeTable',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CAP_LINEITEM_WITH_FIELDGROUP,
                 errors: [
                     {
                         message:
-                            '`UI.FieldGroup` is not supported in `GridTable`. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
+                            '`UI.FieldGroup` is not supported in `TreeTable`. Change the table type to `ResponsiveTable` or use individual `UI.DataField` entries instead.'
                     }
                 ]
             },
-            [{ filename: CAP_MANIFEST_PATH, code: CAP_MANIFEST_WITH_GRID_TABLE }]
+            [{ filename: CAP_MANIFEST_PATH, code: CAP_MANIFEST_WITH_TREE_TABLE }]
         ),
         createInvalidTest(
             {
