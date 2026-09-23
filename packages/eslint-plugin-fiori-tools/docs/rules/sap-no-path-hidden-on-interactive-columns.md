@@ -159,7 +159,7 @@ annotate service.SalesOrders with @(
 ### How to Fix
 
 - **Replace with static hiding**: if the column should always be hidden, use `<Annotation Term="UI.Hidden" Bool="true"/>` instead of a path.
-- **Restrict interactivity**:  add the column's property to both `Capabilities.SortRestrictions/NonSortableProperties` and `Capabilities.FilterRestrictions/NonFilterableProperties` so the back end does not expose sorting or filtering for it.
+- **Restrict interactivity**: add the column's property to both `Capabilities.SortRestrictions/NonSortableProperties` and `Capabilities.FilterRestrictions/NonFilterableProperties` so the back end does not expose sorting or filtering for it.
 
 ## Bug Report
 
