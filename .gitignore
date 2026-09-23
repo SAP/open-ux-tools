@@ -198,5 +198,10 @@ CLAUDE.local.md
 .claude/cache/
 dist-cjs/
 
+# esbuild license/legal output (build artefacts, not committed)
+*.LICENSES.txt
+*.LEGAL.txt
+
 # Test fixture lock files
 packages/cds-odata-annotation-converter/test/data/bookshop/package-lock.json
+**/.che

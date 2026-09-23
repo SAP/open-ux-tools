@@ -1,0 +1,107 @@
+{
+  "type": "annotation-group",
+  "range": "[(0,0)..(0,46)]",
+  "name": {
+    "type": "identifier",
+    "range": "[(0,0)..(0,2)]",
+    "value": "UI",
+    "quoted": false
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,2)..(0,3)]",
+    "value": ":"
+  },
+  "items": {
+    "type": "annotation-group-items",
+    "range": "[(0,4)..(0,46)]",
+    "openToken": {
+      "type": "token",
+      "range": "[(0,4)..(0,5)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,45)..(0,46)]",
+      "value": "}"
+    },
+    "items": [
+      {
+        "type": "flattened-expression",
+        "range": "[(0,6)..(0,44)]",
+        "path": {
+          "type": "flattened-path",
+          "range": "[(0,6)..(0,37)]",
+          "value": "LineItem#abc.@UI.Criticality",
+          "segments": [
+            {
+              "type": "flattened-annotation-segment",
+              "range": "[(0,8)..(0,20)]",
+              "prefix": false,
+              "term": {
+                "type": "identifier",
+                "range": "[(0,8)..(0,16)]",
+                "value": "LineItem",
+                "quoted": true
+              },
+              "qualifier": {
+                "type": "qualifier",
+                "range": "[(0,17)..(0,20)]",
+                "value": "abc"
+              }
+            },
+            {
+              "type": "flattened-annotation-segment",
+              "range": "[(0,21)..(0,36)]",
+              "prefix": true,
+              "vocabulary": {
+                "type": "identifier",
+                "range": "[(0,22)..(0,24)]",
+                "value": "UI",
+                "quoted": true
+              },
+              "term": {
+                "type": "identifier",
+                "range": "[(0,25)..(0,36)]",
+                "value": "Criticality",
+                "quoted": true
+              }
+            }
+          ],
+          "separators": [
+            {
+              "type": "separator",
+              "range": "[(0,20)..(0,21)]",
+              "value": ".",
+              "escaped": true
+            }
+          ]
+        },
+        "colon": {
+          "type": "token",
+          "range": "[(0,37)..(0,38)]",
+          "value": ":"
+        },
+        "value": {
+          "type": "enum",
+          "range": "[(0,39)..(0,44)]",
+          "path": {
+            "type": "path",
+            "range": "[(0,40)..(0,44)]",
+            "value": "High",
+            "segments": [
+              {
+                "type": "identifier",
+                "range": "[(0,40)..(0,44)]",
+                "value": "High",
+                "quoted": false
+              }
+            ],
+            "separators": []
+          }
+        }
+      }
+    ],
+    "commas": []
+  }
+}

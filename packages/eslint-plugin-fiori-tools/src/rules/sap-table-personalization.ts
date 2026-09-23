@@ -51,7 +51,7 @@ const rule: FioriRuleDefinition = createFioriRule({
             [TABLE_PERSONALIZATION_GROUP]:
                 'Data grouping should be enabled in the{{sectionText}} table. Grouping is available for analytical and responsive type tables.',
             [MISSING_PERSONALIZATION_PROPERTIES]:
-                'In case of using an object, omitting a setting is treated as false. {{undefinedPropertiesString}}.'
+                'In case of using an object, omitting a setting is treated as `false`. {{undefinedPropertiesString}}.'
         },
         fixable: 'code'
     },
@@ -84,7 +84,8 @@ const rule: FioriRuleDefinition = createFioriRule({
             let messageId = MessageIdByProperty[diagnostic.property ?? ''];
             if (diagnostic.undefinedProperties?.length) {
                 const tableReference = diagnostic.pageSectionName ? ` ${diagnostic.pageSectionName} table` : ' table';
-                undefinedPropertiesString = `Currently ${diagnostic.undefinedProperties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${tableReference}`;
+                const properties = diagnostic.undefinedProperties.map((property) => `\`${property}\``);
+                undefinedPropertiesString = `Currently ${properties.join(', ')} ${diagnostic.undefinedProperties.length === 1 ? 'is disabled' : 'are disabled'} in the${tableReference}`;
                 messageId = MISSING_PERSONALIZATION_PROPERTIES;
             }
             return context.report({

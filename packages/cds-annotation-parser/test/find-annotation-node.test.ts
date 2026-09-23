@@ -402,6 +402,19 @@ describe('context resolver', () => {
             expect(path).toStrictEqual('/items/items/0/value/properties/1/value/items/0');
         });
     });
+
+    describe('flattened structure', () => {
+        describe('basic', () => {
+            test('nested term', async () => {
+                const ast = await getAst('valid/struct/flattened');
+                const path = findAnnotationNode(ast, {
+                    position: Position.create(4, 4),
+                    includeDelimiterCharacters: false
+                });
+                expect(path).toStrictEqual('/value/flattenedExpressions/1');
+            });
+        });
+    });
 });
 
 describe('getNode', () => {
