@@ -12,7 +12,6 @@ import type { IndexedAnnotation, ParsedApp, ParsedService } from '../project-con
 import { buildAnnotationIndexKey } from '../project-context/parser/index.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import { isV2Table } from '../utils/helpers.js';
-import { createJsonFixer } from '../language/rule-fixer.js';
 
 const GROUPABLE_TABLE_TYPES = new Set(['AnalyticalTable', 'ResponsiveTable']);
 const UI_PRESENTATION_VARIANT = 'com.sap.vocabularies.UI.v1.PresentationVariant';
@@ -79,7 +78,7 @@ function collectAnnotationGrouping(
 }
 
 /**
- * Checks if grouping is enabled in the manifest.
+ * Checks if grouping is enabled in the manifest via personalization settings.
  *
  * @param table - Table settings to check
  * @returns - Group enabled and group path in the manifest
@@ -87,9 +86,7 @@ function collectAnnotationGrouping(
 function checkGroupingEnabledInManifest(table: FeV4Table): { group: boolean; groupPath: string[] } {
     const personalization = table.configuration.personalization.valueInFile;
     let groupPath: string[] | undefined;
-    if (personalization === true) {
-        groupPath = [...table.configuration.personalization.configurationPath];
-    } else if (typeof personalization === 'object' && personalization !== null && personalization.group === true) {
+    if (typeof personalization === 'object' && personalization !== null && personalization.group === true) {
         groupPath = [...table.configuration.personalization.configurationPath, 'group'];
     }
     if (!groupPath) {
@@ -99,14 +96,51 @@ function checkGroupingEnabledInManifest(table: FeV4Table): { group: boolean; gro
 }
 
 /**
- * Checks a single V4 table for manifest personalization.group violations and appends any
- * found violations to the problems array. Flags both `personalization = true` (all
- * personalization explicitly enabled) and `personalization = { group: true }`.
+ * Merges pageName into an existing annotation problem or pushes a new one.
+ * Deduplicates problems across pages sharing the same annotation element.
  *
- * @param table - The V4 linked table
+ * @param problems - Accumulator for found violations
+ * @param tableType - Unsupported table type
+ * @param pageName - Page to associate with this violation
+ * @param annotation - Indexed annotation containing the GroupBy
+ * @param propertyValue - The GroupBy PropertyValue element (used as dedup key)
+ */
+function mergeOrAddAnnotationProblem(
+    problems: GroupingSupportedTableTypesOnly[],
+    tableType: string,
+    pageName: string,
+    annotation: IndexedAnnotation,
+    propertyValue: Element
+): void {
+    const existingIndex = problems.findIndex((p) => p.annotation?.reference.value === propertyValue);
+    if (existingIndex >= 0) {
+        const existing = problems[existingIndex];
+        if (!existing.pageNames?.includes(pageName)) {
+            existing.pageNames = [...(existing.pageNames ?? []), pageName];
+        }
+        return;
+    }
+    problems.push({
+        type: GROUPING_SUPPORTED_TABLE_TYPES_ONLY,
+        tableType,
+        pageNames: [pageName],
+        annotation: {
+            reference: { uri: annotation.top.uri, value: propertyValue },
+            reportedParent: annotation.top.value
+        }
+    });
+}
+
+/**
+ * Checks a single table for grouping violations and appends any found violations to the problems
+ * array. Manifest settings take priority: if grouping is enabled in the manifest, the manifest
+ * node is reported and the annotation check is skipped. Annotation problems are deduplicated
+ * across pages sharing the same annotation — pageNames accumulates all affected page names.
+ *
+ * @param table - The V4 or V2 linked table
  * @param pageName - The routing target name of the page containing this table
  * @param parsedApp - Parsed application with manifest data
- * @param sourceCode - FioriJSONSourceCode for JSON node resolution
+ * @param sourceCode - Source code context for JSON node resolution
  * @param problems - Accumulator for found violations
  */
 function collectGroupingViolation(
@@ -121,21 +155,24 @@ function collectGroupingViolation(
         return;
     }
     if (!isV2Table(table)) {
-        // report personalization group node
         const { group, groupPath } = checkGroupingEnabledInManifest(table);
-        if (group && sourceCode instanceof FioriJSONSourceCode) {
-            const node = sourceCode.getNode(sourceCode.ast.body, groupPath);
-            problems.push({
-                type: GROUPING_SUPPORTED_TABLE_TYPES_ONLY,
-                tableType,
-                pageName,
-                manifest: {
-                    uri: parsedApp.manifest.manifestUri,
-                    object: parsedApp.manifestObject,
-                    propertyPath: groupPath,
-                    loc: node.loc
-                }
-            });
+        if (group) {
+            if (sourceCode instanceof FioriJSONSourceCode) {
+                const node = sourceCode.getNode(sourceCode.ast.body, groupPath);
+                problems.push({
+                    type: GROUPING_SUPPORTED_TABLE_TYPES_ONLY,
+                    tableType,
+                    pageName,
+                    manifest: {
+                        uri: parsedApp.manifest.manifestUri,
+                        object: parsedApp.manifestObject,
+                        propertyPath: groupPath,
+                        loc: node.loc
+                    }
+                });
+            }
+            // Manifest enables grouping — skip annotation check regardless of source file
+            return;
         }
     }
     const parsedService = sourceCode.projectContext.getIndexedServiceForMainService(parsedApp);
@@ -143,26 +180,17 @@ function collectGroupingViolation(
         return;
     }
     const { group, annotation, propertyValue } = collectAnnotationGrouping(table, parsedService);
-    // report annotation node
     if (group && annotation && propertyValue) {
-        problems.push({
-            type: GROUPING_SUPPORTED_TABLE_TYPES_ONLY,
-            tableType,
-            pageNames: [pageName],
-            annotation: {
-                reference: { uri: annotation.top.uri, value: propertyValue },
-                reportedParent: annotation.top.value
-            }
-        });
+        mergeOrAddAnnotationProblem(problems, tableType, pageName, annotation, propertyValue);
     }
 }
 
 /**
- * Checks all V4 tables in a page for manifest personalization.group violations.
+ * Checks all tables in a page for grouping violations.
  *
- * @param page - V4 application page
+ * @param page - V4 or V2 application page
  * @param parsedApp - Parsed application with manifest data
- * @param sourceCode - FioriJSONSourceCode for JSON node resolution
+ * @param sourceCode - Source code context for JSON node resolution
  * @param problems - Accumulator for found violations
  */
 function checkGrouping(
@@ -189,9 +217,9 @@ function checkGrouping(
 }
 
 /**
- * Collects manifest personalization.group violations across all V4 apps.
+ * Collects grouping violations across all apps.
  *
- * @param sourceCode - FioriJSONSourceCode for the manifest file
+ * @param sourceCode - Source code context
  * @param problems - Accumulator for found violations
  */
 function collectGroupForTableTypeProblems(
@@ -216,10 +244,8 @@ const rule: FioriRuleDefinition = createFioriRule({
             url: 'https://github.com/SAP/open-ux-tools/blob/main/packages/eslint-plugin-fiori-tools/docs/rules/sap-grouping-supported-table-types-only.md'
         },
         messages: {
-            [GROUPING_SUPPORTED_TABLE_TYPES_ONLY]:
-                'Grouping is not supported for "{{tableType}}" table type. Disable grouping or use "AnalyticalTable" or "ResponsiveTable" table type instead.'
-        },
-        fixable: 'code'
+            [GROUPING_SUPPORTED_TABLE_TYPES_ONLY]: 'Grouping is not supported for `{{tableType}}` table type.'
+        }
     },
 
     check(context) {
@@ -232,13 +258,12 @@ const rule: FioriRuleDefinition = createFioriRule({
         }
         return problems;
     },
-    createJsonVisitorHandler: (context, diagnostic, paths) => {
+    createJsonVisitorHandler: (context, diagnostic) => {
         return function report(node: MemberNode): void {
             context.report({
                 node,
                 messageId: GROUPING_SUPPORTED_TABLE_TYPES_ONLY,
-                data: { tableType: diagnostic.tableType },
-                fix: createJsonFixer({ context, node, deepestPathResult: paths, operation: 'delete' })
+                data: { tableType: diagnostic.tableType }
             });
         };
     },
