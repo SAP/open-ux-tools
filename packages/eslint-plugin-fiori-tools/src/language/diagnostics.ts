@@ -212,7 +212,6 @@ export interface NoDeepCollectionFacets {
 
 export interface GroupingSupportedTableTypesOnly {
     type: typeof GROUPING_SUPPORTED_TABLE_TYPES_ONLY;
-    /** The unsupported table type found in the manifest or linked from the annotation context. */
     tableType: string;
     pageName?: string; // for manifest property
     pageNames?: string[]; // for referenced annotation
