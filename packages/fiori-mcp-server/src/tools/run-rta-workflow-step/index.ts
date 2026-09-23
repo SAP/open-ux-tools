@@ -46,9 +46,9 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
- * Asserts that `site` is a non-empty http(s)://localhost URL.
- * The adaptation editor always binds to localhost, so any other host is rejected
- * to prevent SSRF via a malicious MCP client or prompt-injected URL.
+ * Asserts that `site` is a non-empty http(s)://localhost or http(s)://127.0.0.1 URL.
+ * The adaptation editor always binds to the local loopback interface, so any other
+ * host is rejected to prevent SSRF via a malicious MCP client or prompt-injected URL.
  *
  * @param site Value of `input.site`.
  * @returns The validated site URL.
@@ -66,8 +66,8 @@ function requireSite(site: string | undefined): string {
     if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         throw new Error(`site must be an http:// or https:// URL. Received: "${site}"`);
     }
-    if (url.hostname !== 'localhost') {
-        throw new Error(`site must point to localhost. Received: "${url.hostname}"`);
+    if (url.hostname !== 'localhost' && url.hostname !== '127.0.0.1') {
+        throw new Error(`site must point to localhost or 127.0.0.1. Received: "${url.hostname}"`);
     }
     return site;
 }
