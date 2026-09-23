@@ -11,7 +11,7 @@
             "fieldRequired": "This is a required field and can't be empty.",
             "invalidUrl": "Please enter a valid URL, for example https://my-system.example.com",
             "systemNameExists": "A system with the name '{{name}}' already exists. Please choose a different name.",
-            "checkNameFailed": "Unable to check the uniqueness of the system name. Please try again."
+            "checkNameFailed": "Unable to check if the system name is unique. Please try again."
         },
         "prompts": {
             "systemName": "System Name: ",
@@ -51,13 +51,13 @@
         "saveAnywayPrompt": "Connection check failed. Save system anyway?",
         "catalogServicesFound_one": "{{count}} catalog service found",
         "catalogServicesFound_other": "{{count}} catalog services found",
-        "metadataRequestSuccessful": "✓ Metadata request succeeded",
+        "metadataRequestSuccessful": "✓ Metadata requested",
         "unexpectedStatus": "Unexpected response status: {{status}}"
     },
     "systemActions": {
         "systemNotAdded": "System wasn't added",
-        "systemNotAddedInvalidConfig": "The system wasn't added due to an invalid system configuration. Check the error logs for details.",
-        "systemNotAddedDuplicate": "The system wasn't added due to a duplicate system configuration. Check the error logs for details.",
+        "systemNotAddedInvalidConfig": "The system wasn't added due to an invalid system configuration. Check the error logs for more details.",
+        "systemNotAddedDuplicate": "The system wasn't added due to a duplicate system configuration. Check the error logs for more details.",
         "systemNotSaved": "System wasn't saved",
         "systemNotUpdated": "System wasn't updated",
         "operationCancelled": "Operation canceled",

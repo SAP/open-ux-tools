@@ -1,5 +1,39 @@
 # @sap-ux/create
 
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- apply i18n text review feedback for clarity and consistency [[c84c818](https://github.com/SAP/open-ux-tools/commit/c84c818790fe1fadb7ff020e67f06efc68873b6d)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.57 → 1.0.58
+- @sap-ux/preview-middleware 1.2.17 → 1.2.18
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/flp-config-inquirer 1.0.57 → 1.0.58
+- @sap-ux/app-config-writer 1.1.23 → 1.1.24
+- @sap-ux/ui5-test-writer 1.13.3 → 1.13.4
+- @sap-ux/abap-deploy-config-writer 1.0.27 → 1.0.28
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/cap-config-writer 1.0.39 → 1.0.40
+- @sap-ux/inquirer-common 1.0.43 → 1.0.44
+- @sap-ux/mockserver-config-writer 1.0.19 → 1.0.20
+- @sap-ux/odata-service-writer 1.0.22 → 1.0.23
+- @sap-ux/project-input-validator 1.0.19 → 1.0.20
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/abap-deploy-config-inquirer 2.0.48 → 2.0.49
+
 ## 1.4.0
 
 ### Minor Changes

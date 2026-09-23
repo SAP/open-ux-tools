@@ -1,0 +1,75 @@
+{
+    "type": "annotation-group",
+    "name": {
+        "type": "identifier",
+        "value": "CDS",
+        "range": "[(0,0)..(0,5)]",
+        "quoted": false
+    },
+    "items": {
+        "type": "annotation-group-items",
+        "items": [
+            {
+                "type": "annotation",
+                "term": {
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "OdataDraftEnabled"
+                        }
+                    ],
+                    "separators": [],
+                    "type": "path",
+                    "value": "OdataDraftEnabled",
+                    "range": "[(1,4)..(1,17)]"
+                },
+                "originalTerm": {
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "draft",
+                            "range": "[(1,4)..(1,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "enabled",
+                            "range": "[(1,10)..(1,17)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(1,9)..(1,10)]",
+                            "escaped": false
+                        }
+                    ],
+                    "type": "path",
+                    "value": "draft.enabled",
+                    "range": "[(1,4)..(1,17)]"
+                },
+                "range": "[(1,4)..(1,17)]"
+            }
+        ],
+        "range": "[(0,7)..(2,1)]",
+        "commas": [],
+        "openToken": {
+            "type": "token",
+            "value": "{",
+            "range": "[(0,7)..(0,8)]"
+        },
+        "closeToken": {
+            "type": "token",
+            "value": "}",
+            "range": "[(2,0)..(2,1)]"
+        }
+    },
+    "range": "[(0,0)..(2,1)]",
+    "colon": {
+        "type": "token",
+        "value": ":",
+        "range": "[(0,5)..(0,6)]"
+    }
+}

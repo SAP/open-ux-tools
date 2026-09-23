@@ -74,6 +74,7 @@ function findPkgRoot(entryPath, pkgName) {
 
 // createRequire rooted at the package so pnpm symlinks resolve correctly
 const req = createRequire(path.join(PKG_ROOT, 'package.json'));
+const { makeLicensePlugin } = req('../../esbuildLicensePlugin.cjs');
 
 // onnxruntime-web is a dep of @huggingface/transformers. Resolve via transformers' context
 // so pnpm symlinks resolve correctly even though onnxruntime-web is not a direct dep here.
@@ -222,7 +223,9 @@ await esbuild.build({
         ].join('\n')
     },
     external: ['vscode', 'playwright-core'],
-    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
+    legalComments: 'linked',
+    metafile: true,
+    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]
 });
 
 console.log('✓ esbuild bundle complete');

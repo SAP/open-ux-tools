@@ -1,5 +1,21 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.37
+
+### Patch Changes
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 1.0.36
+
+### Patch Changes
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
 ## 1.0.35
 
 ### Patch Changes
