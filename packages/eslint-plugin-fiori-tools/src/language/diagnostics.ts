@@ -21,6 +21,7 @@ export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
+export const GROUPING_SUPPORTED_TABLE_TYPES_ONLY = 'sap-grouping-supported-table-types-only';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -209,8 +210,6 @@ export interface NoDeepCollectionFacets {
     };
 }
 
-export const GROUPING_SUPPORTED_TABLE_TYPES_ONLY = 'sap-grouping-supported-table-types-only';
-
 export interface GroupingSupportedTableTypesOnly {
     type: typeof GROUPING_SUPPORTED_TABLE_TYPES_ONLY;
     /** The unsupported table type found in the manifest or linked from the annotation context. */
@@ -219,8 +218,6 @@ export interface GroupingSupportedTableTypesOnly {
     pageNames?: string[]; // for referenced annotation
     /** Set when grouping is enabled via manifest personalization settings. */
     manifest?: ManifestPropertyDiagnosticData;
-    /** When set, the manifest fix replaces the reported node's value with this instead of deleting it. */
-    manifestFixValue?: Record<string, unknown>;
     /** Set when grouping is configured via a UI.PresentationVariant GroupBy annotation. */
     annotation?: {
         reference: AnnotationReference;
