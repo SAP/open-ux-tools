@@ -18,6 +18,7 @@ import {
     STRICT_UOM_FILTERING,
     NO_LIVE_MODE,
     CLOUD_DEV_ADAPTATION_STATUS,
+    GROUPING_SUPPORTED_TABLE_TYPES_ONLY,
     NO_SINGLE_FACET_IN_COLLECTION,
     NO_DEEP_COLLECTION_FACETS
 } from '../language/diagnostics.js';
@@ -88,6 +89,7 @@ import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
 import cloudDevAdaptationStatus from './sap-cloud-dev-adaptation-status.js';
+import groupingSupportedTableTypesOnly from './sap-grouping-supported-table-types-only.js';
 import noSingleFacetInCollection from './sap-no-single-facet-in-collection.js';
 import noDeepCollectionFacets from './sap-no-deep-collection-facets.js';
 
@@ -159,6 +161,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
     [NO_LIVE_MODE]: noLiveMode,
     [CLOUD_DEV_ADAPTATION_STATUS]: cloudDevAdaptationStatus,
+    [GROUPING_SUPPORTED_TABLE_TYPES_ONLY]: groupingSupportedTableTypesOnly,
     [NO_SINGLE_FACET_IN_COLLECTION]: noSingleFacetInCollection,
     [NO_DEEP_COLLECTION_FACETS]: noDeepCollectionFacets
 };

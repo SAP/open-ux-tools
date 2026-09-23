@@ -21,6 +21,7 @@ export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
+export const GROUPING_SUPPORTED_TABLE_TYPES_ONLY = 'sap-grouping-supported-table-types-only';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -209,6 +210,20 @@ export interface NoDeepCollectionFacets {
     };
 }
 
+export interface GroupingSupportedTableTypesOnly {
+    type: typeof GROUPING_SUPPORTED_TABLE_TYPES_ONLY;
+    tableType: string;
+    pageName?: string; // for manifest property
+    pageNames?: string[]; // for referenced annotation
+    /** Set when grouping is enabled via manifest personalization settings. */
+    manifest?: ManifestPropertyDiagnosticData;
+    /** Set when grouping is configured via a UI.PresentationVariant GroupBy annotation. */
+    annotation?: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -227,5 +242,6 @@ export type Diagnostic =
     | StrictUomFiltering
     | NoLiveMode
     | CloudDevAdaptationStatus
+    | GroupingSupportedTableTypesOnly
     | NoSingleFacetInCollection
     | NoDeepCollectionFacets;
