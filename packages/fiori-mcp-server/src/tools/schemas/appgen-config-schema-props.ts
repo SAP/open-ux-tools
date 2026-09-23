@@ -150,6 +150,21 @@ export const entityConfig = z.object({
             )
             .meta({ examples: ['SalesOrder', 'PurchaseOrderHeader', 'MyEntity'] })
     }),
+    navigationEntity: z
+        .object({
+            EntitySet: z
+                .string()
+                .describe('The target EntitySet name from the navigation property in OData Metadata.')
+                .meta({ examples: ['Booking', 'SalesOrderItems', 'PurchaseOrderItems'] }),
+            Name: z
+                .string()
+                .describe('The navigation property name on the main entity.')
+                .meta({ examples: ['_Items', 'to_Item', 'Items'] })
+        })
+        .describe(
+            'Optional navigation entity. Defines the sub-entity reachable via a navigation property on the main entity.'
+        )
+        .optional(),
     generateFormAnnotations: z
         .boolean()
         .describe('Whether to generate form annotations for the main entity if none exist.')

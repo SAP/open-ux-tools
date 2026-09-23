@@ -25,10 +25,10 @@ import {
     EDMX_V4_NAMESPACE,
     EDM_V4_NAMESPACE
 } from '@sap-ux/xml-odata-annotation-converter';
+import { compareByRange } from '@sap-ux/text-document-utils';
 import type { SourcePosition, XMLAstNode, XMLAttribute, XMLDocument, XMLElement } from '@xml-tools/ast';
 import { DEFAULT_NS } from '@xml-tools/ast';
 
-import { compareByRange } from '../utils/index.js';
 import type { Comment } from './comments.js';
 import type {
     DeleteAttribute,

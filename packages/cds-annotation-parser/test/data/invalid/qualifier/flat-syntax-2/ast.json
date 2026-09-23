@@ -1,28 +1,46 @@
 {
-  "type": "annotation",
+  "type": "flattened-expression",
   "range": "[(0,0)..(0,38)]",
-  "term": {
-    "type": "path",
+  "path": {
+    "type": "flattened-path",
     "range": "[(0,0)..(0,34)]",
     "value": "UI#wrong.HeaderInfo.Description",
     "segments": [
       {
-        "type": "identifier",
-        "range": "[(0,2)..(0,4)]",
-        "value": "UI",
-        "quoted": true
+        "type": "flattened-annotation-segment",
+        "range": "[(0,2)..(0,10)]",
+        "prefix": false,
+        "term": {
+          "type": "identifier",
+          "range": "[(0,2)..(0,4)]",
+          "value": "UI",
+          "quoted": true
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "range": "[(0,5)..(0,10)]",
+          "value": "wrong"
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,11)..(0,21)]",
-        "value": "HeaderInfo",
-        "quoted": true
+        "name": {
+          "type": "identifier",
+          "range": "[(0,11)..(0,21)]",
+          "value": "HeaderInfo",
+          "quoted": true
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,22)..(0,33)]",
-        "value": "Description",
-        "quoted": true
+        "name": {
+          "type": "identifier",
+          "range": "[(0,22)..(0,33)]",
+          "value": "Description",
+          "quoted": true
+        }
       }
     ],
     "separators": [
@@ -39,11 +57,6 @@
         "escaped": true
       }
     ]
-  },
-  "qualifier": {
-    "type": "qualifier",
-    "range": "[(0,5)..(0,10)]",
-    "value": "wrong"
   },
   "colon": {
     "type": "token",
