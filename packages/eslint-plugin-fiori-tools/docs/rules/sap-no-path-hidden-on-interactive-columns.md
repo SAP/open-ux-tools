@@ -1,14 +1,15 @@
-# `UI.Hidden` with a dynamic path must not be used on sortable or filterable columns (`sap-no-path-hidden-on-interactive-columns`)
+# A `UI.Hidden` Annotation with a Dynamic Path Must Not Be Used on Sortable or Filterable Columns (`sap-no-path-hidden-on-interactive-columns`)
 
-A `UI.Hidden` annotation that uses a path-based (dynamic) value on a `UI.LineItem` column can cause UX inconsistencies when that column is still sortable or filterable, because those operations are performed on the back end which is unaware of the dynamic hidden state. Use a static `UI.Hidden` (`Bool="true"`) or restrict sorting and filtering via `Capabilities.SortRestrictions` and `Capabilities.FilterRestrictions` annotations.
+A `UI.Hidden` annotation that uses a path-based (dynamic) value on a `UI.LineItem` column can cause UX inconsistencies when that column is still sortable or filterable, because those operations are performed on the back end, which is unaware of the dynamic hidden state. Use a static `UI.Hidden` annotation (`Bool="true"`) or restrict sorting and filtering using the `Capabilities.SortRestrictions` and `Capabilities.FilterRestrictions` annotations.
 
 ## Rule Details
 
 The rule checks every `UI.DataField` record inside a `UI.LineItem` annotation. If the record carries a `UI.Hidden` annotation with a `Path` attribute (dynamic hiding), the rule reports a warning unless the column's property is explicitly listed in **both** `Capabilities.SortRestrictions/NonSortableProperties` and `Capabilities.FilterRestrictions/NonFilterableProperties`.
 
-> **XML note**: `Capabilities.SortRestrictions` and `Capabilities.FilterRestrictions` must target the **entity set**, not the entity type. Use the entity container path with a slash separator (e.g. `SalesService.EntityContainer/SalesOrders`), not the dot-separated entity type name (`SalesService.SalesOrders`).
+> **XML note**: `Capabilities.SortRestrictions` and `Capabilities.FilterRestrictions` must target the **entity set**, not the entity type. Use the entity container path with a slash separator, for example, (`SalesService.EntityContainer/SalesOrders`) and not the dot-separated entity type name `SalesService.SalesOrders`.
 
-##### Warning Message: `UI.Hidden with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via Capabilities annotations.`
+### Warning Message
+A `UI.Hidden` annotation with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via `Capabilities` annotations.
 
 The following patterns are considered warnings:
 
@@ -157,9 +158,9 @@ annotate service.SalesOrders with @(
 
 ### How to Fix
 
-1. **Replace with static hiding** — if the column should always be hidden, use `<Annotation Term="UI.Hidden" Bool="true"/>` instead of a path.
-2. **Restrict interactivity** — add the column's property to both `Capabilities.SortRestrictions/NonSortableProperties` and `Capabilities.FilterRestrictions/NonFilterableProperties` so the back end does not expose sorting or filtering for it.
+- **Replace with static hiding**: if the column should always be hidden, use `<Annotation Term="UI.Hidden" Bool="true"/>` instead of a path.
+- **Restrict interactivity**:  add the column's property to both `Capabilities.SortRestrictions/NonSortableProperties` and `Capabilities.FilterRestrictions/NonFilterableProperties` so the back end does not expose sorting or filtering for it.
 
 ## Bug Report
 
-In case you detect an issue with the check please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you encounter a problem, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
