@@ -9,6 +9,7 @@ import type { Table as FeV4Table } from '../project-context/linker/fe-v4.js';
 import type { Table as FeV2Table } from '../project-context/linker/fe-v2.js';
 import type { ParsedService } from '../project-context/parser/index.js';
 import { DATA_FIELD_FOR_ANNOTATION, UI_FIELD_GROUP } from '../constants.js';
+import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 
 const UNSUPPORTED_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
 
@@ -124,6 +125,9 @@ const rule: FioriRuleDefinition = createFioriRule({
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriAnnotationSourceCode)) {
+            return [];
+        }
         const problems: FieldGroupInTableTypeRestriction[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {

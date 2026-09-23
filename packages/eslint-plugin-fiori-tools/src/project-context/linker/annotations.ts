@@ -7,8 +7,7 @@ import {
     parseIdentifier,
     getElementAttribute,
     toFullyQualifiedPath,
-    parsePath,
-    ELEMENT_TYPE
+    parsePath
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
@@ -95,13 +94,8 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
  * @returns Array of nested record elements
  */
 function getCollectionFacetRecords(record: Element): Element[] {
-    const facetsPropValue = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            return getElementAttributeValue(child, Edm.Property) === 'Facets';
-        }
-        return false;
-    });
-    if (facetsPropValue?.type === ELEMENT_TYPE) {
+    const facetsPropValue = getPropertyValueElement(record, 'Facets');
+    if (facetsPropValue) {
         const [nestedCollection] = elementsWithName(Edm.Collection, facetsPropValue);
         if (nestedCollection) {
             return elementsWithName(Edm.Record, nestedCollection);
