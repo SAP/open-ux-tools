@@ -7,7 +7,9 @@ Grouping can be configured in two independent places:
 - **Manifest** (`personalization.group` or `personalization = true` for V4 apps)
 - **Annotation** (`UI.PresentationVariant.GroupBy` with a non-empty `PropertyPath` collection)
 
-This rule checks both sources and reports the specific element where the unsupported grouping is declared.
+The rule checks manifest settings first. If grouping is enabled in the manifest, the manifest node is reported and the annotation check is skipped for that table. The annotation check only runs when the manifest does not enable grouping.
+
+When a `UI.PresentationVariant GroupBy` annotation affects tables on multiple pages, the rule reports it once and lists all affected page names.
 
 ## Rule details
 
