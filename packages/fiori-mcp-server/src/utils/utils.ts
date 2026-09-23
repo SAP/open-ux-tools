@@ -55,7 +55,11 @@ export interface RunCmdArgsOptions {
  * @returns A promise resolving to the collected stdout/stderr.
  * @throws {Error} If the process cannot be spawned, exits with a non-zero code, or exceeds `timeout`.
  */
-export async function runCmdArgs(cmd: string, args: string[], options: RunCmdArgsOptions = {}): Promise<RunCmdArgsResult> {
+export async function runCmdArgs(
+    cmd: string,
+    args: string[],
+    options: RunCmdArgsOptions = {}
+): Promise<RunCmdArgsResult> {
     const { cwd, timeout } = options;
     try {
         const result = await spawn(cmd, args, { cwd, timeout });
@@ -63,10 +67,14 @@ export async function runCmdArgs(cmd: string, args: string[], options: RunCmdArg
     } catch (error) {
         if (error instanceof SubprocessError) {
             if (error.exitCode === undefined && error.signalName) {
-                throw new Error(`Command '${cmd}' timed out after ${timeout}ms (${args.length} args) and was terminated.`);
+                throw new Error(
+                    `Command '${cmd}' timed out after ${timeout}ms (${args.length} args) and was terminated.`
+                );
             }
             const detail = [error.stderr, error.stdout].filter(Boolean).join('\n').trim();
-            throw new Error(`Command '${cmd}' failed with exit code ${error.exitCode ?? 'unknown'} (${args.length} args).\n${detail}`);
+            throw new Error(
+                `Command '${cmd}' failed with exit code ${error.exitCode ?? 'unknown'} (${args.length} args).\n${detail}`
+            );
         }
         throw error;
     }
