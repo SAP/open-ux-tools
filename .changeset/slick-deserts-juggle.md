@@ -3,6 +3,7 @@
 '@sap-ux/axios-extension': patch
 '@sap-ux/adp-tooling': patch
 '@sap-ux/fiori-mcp-server': patch
+'@sap-ux/generator-odata-downloader': patch
 'sap-ux-sap-systems-ext': patch
 ---
 
