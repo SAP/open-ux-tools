@@ -296,6 +296,68 @@ const V2_MICRO_CHART_INVALID = `
         </Annotation>
     </Annotations>`;
 
+// Chart on IncidentFlow, referenced via the 1:n incidentFlow navigation from Incidents.
+// Because incidentFlow is collection-valued, the chart entity is already a collection row —
+// its direct scalar properties are valid measures/dimensions.
+const V4_MICRO_CHART_CROSS_ENTITY_1N_VALID = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.Chart#FlowChart"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.IncidentFlow">
+        <Annotation Term="UI.Chart" Qualifier="FlowChart">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>processStep</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>stepStatus</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
+// Chart on ProcessingThreshold, referenced via the to-one processingThreshold navigation from Incidents.
+// Because processingThreshold is NOT collection-valued, the chart entity is still in a single-row
+// context — its direct properties are invalid and the rule must fire.
+const V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_INVALID = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="processingThreshold/@UI.Chart#ThresholdChart"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.ProcessingThreshold">
+        <Annotation Term="UI.Chart" Qualifier="ThresholdChart">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>processingDays</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>processingLimit</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
 ruleTester.run(TEST_NAME, microChartRule, {
     valid: [
         createValidTest(
@@ -335,6 +397,16 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V2: micro chart with all navigation paths',
                 filename: V2_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V2_ANNOTATIONS, V2_MICRO_CHART_VALID)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Chart referenced via 1:n incidentFlow navigation. The chart entity (IncidentFlow) is
+                // a collection row, so its direct scalar properties are valid measures/dimensions.
+                name: 'V4: chart on 1:n cross-entity with direct properties - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_1N_VALID)
             },
             []
         )
@@ -402,6 +474,17 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_DATAPOINT_ONLY_MEASURES),
                 errors: [{ message: EXPECTED_MEASURE_MESSAGE }]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                // Chart referenced via the to-one processingThreshold navigation from Incidents.
+                // The chart entity is NOT a collection row — direct properties still require a 1:n hop.
+                name: 'V4: chart on to-one cross-entity with direct properties - reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_INVALID),
+                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         )

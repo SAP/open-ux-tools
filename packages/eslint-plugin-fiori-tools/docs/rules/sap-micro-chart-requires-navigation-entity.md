@@ -14,6 +14,14 @@ The rule only checks charts that are actually displayed on a page. A chart is co
 
 For every page-visible chart, every `PropertyPath` in the `Measures` and `Dimensions` collections must include a `/` navigation separator (e.g. `to_History/Revenue`). Each path that references a property of the chart's own entity (no `/`) is flagged individually — one warning per invalid `PropertyPath`, with the message identifying whether the violation is in a measure or a dimension.
 
+**Cross-entity chart references (navigation annotation paths)**
+
+When a `DataFieldForAnnotation.Target` references a chart via a navigation prefix (e.g. `to_Items/@UI.Chart`), the rule resolves the multiplicity of that navigation before deciding whether to check the chart:
+
+- **1:n navigation** (e.g. `incidentFlow/@UI.Chart`): the chart entity is a collection row. Each row already represents a distinct data point, so direct scalar properties are valid measures/dimensions without any further navigation. The rule skips these charts.
+- **To-one navigation** (e.g. `processingThreshold/@UI.Chart`): the chart entity is still a single-row context (same record as the page entity). Direct properties of that entity do not supply multiple data points, so the rule still runs and reports violations.
+- **Unresolvable navigation**: when the multiplicity cannot be determined from the service metadata, the rule runs the check as a safe fallback.
+
 **Warning (measure):** Micro chart measure must reference a property from a 1:n navigation entity (e.g. "to_History/Revenue" instead of "Revenue").
 
 **Warning (dimension):** Micro chart dimension must reference a property from a 1:n navigation entity (e.g. "to_History/Period" instead of "Period").
@@ -100,6 +108,36 @@ annotate service.SalesOrder with @(
 );
 ```
 
+```xml
+<!-- ⚠ WRONG: Chart referenced via a to-one navigation; its direct properties still need a 1:n hop -->
+<Annotations Target="MyService.SalesOrder">
+    <Annotation Term="UI.LineItem">
+        <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="toShippingAddress/@UI.Chart#AddressChart"/>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+<Annotations Target="MyService.ShippingAddress">
+    <Annotation Term="UI.Chart" Qualifier="AddressChart">
+        <Record>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+            <PropertyValue Property="Measures">
+                <Collection>
+                    <PropertyPath>Street</PropertyPath>
+                </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Dimensions">
+                <Collection>
+                    <PropertyPath>City</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
+```
+
 The following patterns are not considered warnings:
 
 ```xml
@@ -175,6 +213,37 @@ annotate service.SalesOrder with @(
         Dimensions: [to_Items/productID]
     }
 );
+```
+
+```xml
+<!-- ✅ CORRECT: Chart referenced via a 1:n navigation (to_Items); the chart entity is a
+     collection row so its direct properties are valid measures/dimensions -->
+<Annotations Target="MyService.SalesOrder">
+    <Annotation Term="UI.LineItem">
+        <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="to_Items/@UI.Chart#ItemChart"/>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+<Annotations Target="MyService.SalesOrderItem">
+    <Annotation Term="UI.Chart" Qualifier="ItemChart">
+        <Record>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+            <PropertyValue Property="Measures">
+                <Collection>
+                    <PropertyPath>Quantity</PropertyPath>
+                </Collection>
+            </PropertyValue>
+            <PropertyValue Property="Dimensions">
+                <Collection>
+                    <PropertyPath>ProductID</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
 ```
 
 ### How to Fix

@@ -122,12 +122,49 @@ function checkChartAnnotation(
     }
 }
 
-type ChartLookupItem = { annotation?: { annotation?: IndexedAnnotation } };
+type ChartLookupItem = { annotation?: { annotation?: IndexedAnnotation; annotationPath?: string } };
 type ChartPageEntry = {
     pageNames: string[];
     chartEntityType: MetadataElement;
     service: ParsedService;
 };
+
+/**
+ * Returns `true` when the navigation path from `fromEntityType` passes through at least one
+ * collection-valued (1:n) association.  When the chart entity is already a collection row,
+ * its direct properties are valid measure/dimension references without any further navigation.
+ *
+ * Traversal mirrors `violatesNavigationRule`: walks each segment via the entity-type index,
+ * following to-one hops until a 1:n hop is found or the path is exhausted.
+ * An unresolvable segment causes an early `false` return (safe fallback — run the check).
+ *
+ * @param navSegments - Navigation property names before the `@` in the annotation path.
+ * @param fromEntityType - Fully-qualified entity type name of the page (starting point).
+ * @param service - Parsed OData service used for metadata resolution.
+ * @returns `true` when any segment is collection-valued.
+ */
+function isReachedViaCollectionNavigation(
+    navSegments: string[],
+    fromEntityType: string,
+    service: ParsedService
+): boolean {
+    let currentEntityType = fromEntityType;
+    for (const segment of navSegments) {
+        const navElement = getEntityTypeForContextPath(`/${currentEntityType}/${segment}`, service);
+        if (!navElement) {
+            return false; // Unresolvable — don't skip; run the check.
+        }
+        if (navElement.isCollectionValued === true) {
+            return true; // Confirmed 1:n — chart entity is a collection row.
+        }
+        if (navElement.structuredType) {
+            currentEntityType = navElement.structuredType; // Follow to-one hop.
+        } else {
+            return false; // Not a navigation property — don't skip.
+        }
+    }
+    return false;
+}
 
 /**
  * Registers a single chart lookup item into the page map, keyed by its `IndexedAnnotation`.
@@ -182,12 +219,17 @@ function buildChartPageMap(sourceCode: FioriAnnotationSourceCode): Map<IndexedAn
             const pageEntityTypePath = pageTyped.entity?.structuredType;
             for (const chart of charts) {
                 const chartEntityType = chart.annotation?.annotation?.target ?? '';
-                // Charts whose annotation target is a different entity type than the page entity are
-                // referenced via a navigation path (e.g. `_Booking/@UI.Chart`). The sub-entity is
-                // already a 1:n navigation target, so its direct properties are valid without an
-                // additional navigation prefix — skip the check for these charts.
                 if (pageEntityTypePath && chartEntityType !== pageEntityTypePath) {
-                    continue;
+                    // Only skip when the path to the chart entity contains a confirmed 1:n hop.
+                    // A to-one (e.g. toAddress/@UI.Chart) still requires the chart measures
+                    // and dimensions to traverse a 1:n navigation from the chart entity.
+                    const rawPath = chart.annotation?.annotationPath ?? '';
+                    const atIdx = rawPath.indexOf('@');
+                    const navPart = atIdx > 0 ? rawPath.substring(0, atIdx).replace(/\/$/, '') : '';
+                    const navSegments = navPart ? navPart.split('/').filter(Boolean) : [];
+                    if (isReachedViaCollectionNavigation(navSegments, pageEntityTypePath, service)) {
+                        continue;
+                    }
                 }
                 addChartToPageMap(chartPageMap, chart, chartEntityType, page.targetName, service);
             }
