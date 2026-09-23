@@ -25,7 +25,6 @@ import {
     getPropertyLabelFromMetadata,
     isHiddenFilter,
     isTextOnlyArrangement,
-    isHiddenProperty,
     getFilterFieldItems,
     extractCustomToolBarActions
 } from '../../../src/utils/listReportUtils.js';
@@ -2377,9 +2376,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
     });
 
-    // Regression (fin.test.v4.lr1): the column's bound property has a TextArrangement, but the text
-    // (sort target) property carries UI.Hidden and so is not a sortable column — must be excluded, or
-    // the generated sort test fails with "can not find sort item".
+    // Regression (fin.test.v4.lr1): the text (sort target) property carries UI.Hidden. The sort test is
+    // still emitted regardless — a hidden sort target is treated as a likely annotation mistake that the
+    // (typically failing) generated test should surface to the developer, not silently suppress.
     const metadataWithHiddenTextProperty = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
@@ -2405,9 +2404,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-    test('excludes the column when its text (sort target) property is hidden', () => {
+    test('still emits the column when its text (sort target) property is hidden', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataWithHiddenTextProperty);
-        expect(result.textAnnotationColumns).toEqual([]);
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
     });
 });
 
@@ -2673,50 +2672,6 @@ describe('Test isTextOnlyArrangement()', () => {
     test('returns false when the entity set name is undefined', () => {
         const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
         expect(isTextOnlyArrangement(metadata, undefined, 'CustomerID')).toBe(false);
-    });
-});
-
-describe('Test isHiddenProperty()', () => {
-    // TravelType/HiddenName carries UI.Hidden; VisibleName does not.
-    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TravelType">
-                <Key><PropertyRef Name="TravelID"/></Key>
-                <Property Name="TravelID" Type="Edm.String"/>
-                <Property Name="HiddenName" Type="Edm.String"/>
-                <Property Name="VisibleName" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
-            </EntityContainer>
-            <Annotations Target="TestService.TravelType/HiddenName">
-                <Annotation Term="com.sap.vocabularies.UI.v1.Hidden"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    test('returns true for a property carrying UI.Hidden', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Travel', 'HiddenName')).toBe(true);
-    });
-
-    test('returns false for a property without UI.Hidden', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Travel', 'VisibleName')).toBe(false);
-    });
-
-    test('returns false when the entity set name is undefined', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, undefined, 'HiddenName')).toBe(false);
-    });
-
-    test('returns false for an unknown entity set or property', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Unknown', 'HiddenName')).toBe(false);
-        expect(isHiddenProperty(metadata, 'Travel', 'Unknown')).toBe(false);
     });
 });
 

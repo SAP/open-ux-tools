@@ -39,6 +39,25 @@ const V4_TEMPLATE_BUCKETS = [
     { minVersion: '1.148.0', template: '1.148' }
 ];
 
+// A batch of Fiori Elements OPA fixes (e.g. the List Report text-annotation column sort behaviour)
+// first ships in UI5 1.151.1. Tests that depend on any of these fixes are emitted only for the
+// `latest` template bucket and only when the target UI5 version is at least this. New feature gates
+// tied to the same fix batch should reuse this constant and `supportsV4OpaFixes` rather than
+// hard-coding the version.
+const V4_1_151_FIX_MIN_VERSION = '1.151.1';
+
+/**
+ * Whether the target UI5 version includes the Fiori Elements OPA fix batch (see
+ * `V4_1_151_FIX_MIN_VERSION`). An unspecified version is treated as the latest (supported),
+ * consistent with `getTemplateUi5Version(undefined) === 'latest'`.
+ *
+ * @param ui5Version - the target UI5 version, or undefined for latest
+ * @returns true if the version supports the OPA fix batch
+ */
+function supportsV4OpaFixes(ui5Version?: string): boolean {
+    return ui5Version === undefined || compareUI5VersionGte(ui5Version, V4_1_151_FIX_MIN_VERSION);
+}
+
 function getTemplateUi5Version(ui5Version?: string): string {
     if (!ui5Version) {
         return V4_TEMPLATE_LATEST;
@@ -84,7 +103,22 @@ export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Ve
 }
 
 /**
- * Generate OPA test files for a Fiori elements for OData V4 application.
+ * Removes the List Report text-annotation column sort tests unless the target UI5 version includes
+ * the Fiori Elements OPA fix batch (see `V4_1_151_FIX_MIN_VERSION`); on older runtimes they fail.
+ *
+ * @param appFeatures - the extracted app feature data (mutated in place)
+ * @param ui5Version - the target UI5 version, or undefined for latest
+ */
+export function stripUnsupportedSortTests(appFeatures: AppFeatures, ui5Version?: string): void {
+    if (supportsV4OpaFixes(ui5Version)) {
+        return;
+    }
+    if (appFeatures.listReport) {
+        appFeatures.listReport.textAnnotationColumns = [];
+    }
+}
+
+/**
  * Note: this can potentially overwrite existing files in the webapp/test folder.
  *
  * @param basePath - the absolute target path where the application will be generated
@@ -124,6 +158,9 @@ export async function generateOPAFiles(
     // Drop action tests the target template bucket cannot render (custom actions: latest only;
     // menu actions: 1.148 and latest).
     removeUnsupportedActions(appFeatures, templateUi5Version);
+    // Drop the List Report text-annotation sort tests unless the target UI5 version includes the
+    // Fiori Elements OPA fix batch (see V4_1_151_FIX_MIN_VERSION); undefined version → latest → kept.
+    stripUnsupportedSortTests(appFeatures, options.ui5Version);
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);

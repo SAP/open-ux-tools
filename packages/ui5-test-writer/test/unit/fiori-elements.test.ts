@@ -1886,11 +1886,13 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
                     .contents as string;
 
+            // The sort tests ship only in the `latest` bucket and only for UI5 >= 1.151.1. An
+            // unspecified version resolves to the latest bucket and is treated as supported.
             it.each([
-                ['1.84', '1.120.0'],
-                ['1.148', '1.148.0'],
-                ['latest', undefined]
-            ])('bucket %s emits the sort-order test and coreLibrary import (JS)', async (_bucket, ui5Version) => {
+                ['unspecified version', undefined],
+                ['1.151.1', '1.151.1'],
+                ['a newer version', '1.152.0']
+            ])('emits the sort-order test and coreLibrary import for %s (JS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
                 withTextAnnotationColumn();
@@ -1914,6 +1916,25 @@ export type Then = Opa5 & BaseArrangements & {
                 // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
+            });
+
+            // Older buckets (1.84, 1.148) and any UI5 < 1.151.1 must NOT emit the sort tests: the
+            // required Fiori Elements sort fix is unavailable there.
+            it.each([
+                ['1.84 bucket', '1.120.0'],
+                ['1.148 bucket', '1.148.0'],
+                ['latest bucket below 1.151.1', '1.151.0']
+            ])('omits the sort-order test and coreLibrary import for %s (JS)', async (_desc, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('"sap/ui/core/library"');
+                expect(content).not.toContain('coreLibrary');
+                expect(content).not.toContain('Check text annotation for columns');
             });
 
             it('emits only the text-property sort test when columnProperty is omitted (TextOnly) (JS)', async () => {
@@ -1962,7 +1983,8 @@ export type Then = Opa5 & BaseArrangements & {
         describe('text annotation sort-order test — TS', () => {
             // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
             // exercises the conditional `import { SortOrder } from "sap/ui/core/library"` and the
-            // "Check text annotation for columns" opaTest across all three TS buckets.
+            // "Check text annotation for columns" opaTest. Emitted only for the `latest` bucket and
+            // only when the target UI5 version is >= 1.151.1.
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
@@ -1979,11 +2001,13 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.ts']
                     .contents as string;
 
+            // The sort tests ship only in the `latest` bucket and only for UI5 >= 1.151.1. An
+            // unspecified version resolves to the latest bucket and is treated as supported.
             it.each([
-                ['1.84', '1.120.0'],
-                ['1.148', '1.148.0'],
-                ['latest', undefined]
-            ])('bucket %s emits the sort-order test and SortOrder import (TS)', async (_bucket, ui5Version) => {
+                ['unspecified version', undefined],
+                ['1.151.1', '1.151.1'],
+                ['a newer version', '1.152.0']
+            ])('emits the sort-order test and SortOrder import for %s (TS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
                 withTextAnnotationColumn();
@@ -2005,6 +2029,25 @@ export type Then = Opa5 & BaseArrangements & {
                 // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
+            });
+
+            // Older buckets (1.84, 1.148) and any UI5 < 1.151.1 must NOT emit the sort tests: the
+            // required Fiori Elements sort fix is unavailable there.
+            it.each([
+                ['1.84 bucket', '1.120.0'],
+                ['1.148 bucket', '1.148.0'],
+                ['latest bucket below 1.151.1', '1.151.0']
+            ])('omits the sort-order test and SortOrder import for %s (TS)', async (_desc, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('sap/ui/core/library');
+                expect(content).not.toContain('SortOrder');
+                expect(content).not.toContain('Check text annotation for columns');
             });
 
             it('emits only the text-property sort test when columnProperty is omitted (TextOnly) (TS)', async () => {
