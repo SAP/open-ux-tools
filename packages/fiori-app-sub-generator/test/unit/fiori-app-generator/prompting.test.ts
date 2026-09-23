@@ -98,13 +98,8 @@ describe('prompting.ts', () => {
         });
 
         it('should validate view name correctly', () => {
-            const validate = getViewQuestion().validate as (input: string) => boolean | string;
-
-            expect(validate('')).toBe(validateViewName(''));
-            expect(validate('Invalid Name')).toBe(validateViewName('Invalid Name'));
-            expect(validate('a'.repeat(121))).toBe(validateViewName('a'.repeat(121)));
-            expect(validate('ValidName')).toBe(true);
-            expect(validate('123')).toBe(validateViewName('123'));
+            // validateViewName behaviour is tested in @sap-ux/project-input-validator/test/ui5-validators.test.ts
+            expect(getViewQuestion().validate).toBe(validateViewName);
         });
     });
 
