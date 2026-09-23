@@ -1,5 +1,27 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- Migration to a new AST format of the CDS flattened annotations [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cds-odata-annotation-converter 1.0.11 → 1.1.0
+- @sap-ux/cds-annotation-parser 1.0.7 → 1.1.0
+- @sap-ux/text-document-utils 1.0.2 → 1.0.3
+- @sap-ux/odata-annotation-core 1.0.2 → 1.0.3
+- @sap-ux/odata-annotation-core-types 1.0.2 → 1.0.3
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/xml-odata-annotation-converter 1.0.3 → 1.0.4
+- @sap-ux/odata-entity-model 1.0.1 → 1.0.1
+- @sap-ux/odata-vocabularies 1.1.1 → 1.1.2
+
 ## 1.0.28
 
 ### Patch Changes

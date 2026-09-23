@@ -132,6 +132,9 @@ export const tools = [
            - **IMPORTANT**: On VSCode, if the service requires authentication and is not already stored, ask the user to store it first. Never ask for credentials directly.
 
         2. Parse the metadata.xml to understand the data model (entities, associations).
+           Set mainEntity to the entity that best matches the user's request.
+           If that entity has to-many navigation properties, set navigationEntity using
+           the most relevant child EntitySet and navigation property Name.
 
         3. Generate the application once the config is complete and valid.
 
@@ -154,6 +157,7 @@ export const tools = [
           },
           "entityConfig": {
             "mainEntity": { "entityName": "Travel" },
+            "navigationEntity": { "EntitySet": "Booking", "Name": "_Booking" },
             "generateFormAnnotations": true,
             "generateLROPAnnotations": true
           }

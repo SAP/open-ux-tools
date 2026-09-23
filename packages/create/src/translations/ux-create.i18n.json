@@ -1,0 +1,68 @@
+{
+    "systemLookup": {
+        "multipleSystemsFound_one": "{{count}} system found with this URL:",
+        "multipleSystemsFound_other": "{{count}} systems found with this URL:",
+        "selectSystemPrompt": "Which system do you want to use?",
+        "clientInfo": "(Client: {{client}})",
+        "noClient": "(No Client)"
+    },
+    "systemPrompts": {
+        "validation": {
+            "fieldRequired": "This is a required field and can't be empty.",
+            "invalidUrl": "Please enter a valid URL, for example https://my-system.example.com",
+            "systemNameExists": "A system with the name '{{name}}' already exists. Please choose a different name.",
+            "checkNameFailed": "Unable to check if the system name is unique. Please try again."
+        },
+        "prompts": {
+            "systemName": "System Name: ",
+            "systemUrl": "System URL: ",
+            "sapClient": "SAP Client (Optional - Press Enter to Skip): ",
+            "systemType": "System Type: ",
+            "authenticationType": "Authentication Type: ",
+            "connectionType": "Connection Type: ",
+            "username": "Username (Optional - Press Enter to Skip): ",
+            "password": "Password (Optional - Press Enter to Skip): ",
+            "reentranceTicketNote": "\nNote: Re-entrance ticket authentication will open a browser tab when the system is first used.\n"
+        },
+        "updateFields": {
+            "selectPrompt": "Select Fields to Update:",
+            "nameLabel": "Name (Existing: {{name}})",
+            "usernameLabel": "Username (Existing: {{username}})",
+            "usernameNone": "(None)",
+            "passwordLabel": "Password",
+            "clearCredentialsLabel": "Clear Stored Credentials",
+            "clearCredentialsConfirm": "Are you sure you want to clear all stored credentials?",
+            "minOneRequired": "You must select at least one field.",
+            "newNamePrompt": "New System Name:",
+            "newUsernamePrompt": "New Username:",
+            "newPasswordPrompt": "New Password:"
+        },
+        "removeConfirmation": {
+            "prompt": "Are you sure you want to remove system '{{systemName}}'?"
+        }
+    },
+    "systemConnection": {
+        "invalidUrl": "Invalid URL: {{url}}",
+        "skippingCheck": "Skipping connection check (--skip-connection-validation flag provided)",
+        "verifying": "Verifying connection to the back-end system...",
+        "connectionSuccessful": "✓ Connection established",
+        "connectionFailed": "Connection check failed: {{error}}",
+        "unknownError": "Unknown error",
+        "saveAnywayPrompt": "Connection check failed. Save system anyway?",
+        "catalogServicesFound_one": "{{count}} catalog service found",
+        "catalogServicesFound_other": "{{count}} catalog services found",
+        "metadataRequestSuccessful": "✓ Metadata requested",
+        "unexpectedStatus": "Unexpected response status: {{status}}"
+    },
+    "systemActions": {
+        "systemNotAdded": "System wasn't added",
+        "systemNotAddedInvalidConfig": "The system wasn't added due to an invalid system configuration. Check the error logs for more details.",
+        "systemNotAddedDuplicate": "The system wasn't added due to a duplicate system configuration. Check the error logs for more details.",
+        "systemNotSaved": "System wasn't saved",
+        "systemNotUpdated": "System wasn't updated",
+        "operationCancelled": "Operation canceled",
+        "systemAdded": "System '{{name}}' added",
+        "systemUpdated": "System '{{name}}' updated",
+        "systemRemoved": "System '{{name}}' removed"
+    }
+}

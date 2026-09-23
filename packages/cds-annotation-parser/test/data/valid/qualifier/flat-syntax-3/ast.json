@@ -1,22 +1,36 @@
 {
-  "type": "annotation",
+  "type": "flattened-expression",
   "range": "[(0,0)..(0,33)]",
-  "term": {
-    "type": "path",
+  "path": {
+    "type": "flattened-path",
     "range": "[(0,0)..(0,29)]",
     "value": "HeaderInfo#abc.Description",
     "segments": [
       {
-        "type": "identifier",
-        "range": "[(0,2)..(0,12)]",
-        "value": "HeaderInfo",
-        "quoted": true
+        "type": "flattened-annotation-segment",
+        "range": "[(0,2)..(0,16)]",
+        "prefix": false,
+        "term": {
+          "type": "identifier",
+          "range": "[(0,2)..(0,12)]",
+          "value": "HeaderInfo",
+          "quoted": true
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "range": "[(0,13)..(0,16)]",
+          "value": "abc"
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,17)..(0,28)]",
-        "value": "Description",
-        "quoted": true
+        "name": {
+          "type": "identifier",
+          "range": "[(0,17)..(0,28)]",
+          "value": "Description",
+          "quoted": true
+        }
       }
     ],
     "separators": [
@@ -27,11 +41,6 @@
         "escaped": true
       }
     ]
-  },
-  "qualifier": {
-    "type": "qualifier",
-    "range": "[(0,13)..(0,16)]",
-    "value": "abc"
   },
   "colon": {
     "type": "token",
