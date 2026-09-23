@@ -216,9 +216,11 @@ export interface GroupingSupportedTableTypesOnly {
     /** The unsupported table type found in the manifest or linked from the annotation context. */
     tableType: string;
     pageName?: string; // for manifest property
-    pageNames?: [string]; // for referenced annotation
+    pageNames?: string[]; // for referenced annotation
     /** Set when grouping is enabled via manifest personalization settings. */
     manifest?: ManifestPropertyDiagnosticData;
+    /** When set, the manifest fix replaces the reported node's value with this instead of deleting it. */
+    manifestFixValue?: Record<string, unknown>;
     /** Set when grouping is configured via a UI.PresentationVariant GroupBy annotation. */
     annotation?: {
         reference: AnnotationReference;

@@ -87,7 +87,9 @@ function collectAnnotationGrouping(
 function checkGroupingEnabledInManifest(table: FeV4Table): { group: boolean; groupPath: string[] } {
     const personalization = table.configuration.personalization.valueInFile;
     let groupPath: string[] | undefined;
-    if (typeof personalization === 'object' && personalization !== null && personalization.group === true) {
+    if (personalization === true) {
+        groupPath = [...table.configuration.personalization.configurationPath];
+    } else if (typeof personalization === 'object' && personalization !== null && personalization.group === true) {
         groupPath = [...table.configuration.personalization.configurationPath, 'group'];
     }
     if (!groupPath) {
