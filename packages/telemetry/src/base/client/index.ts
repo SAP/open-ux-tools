@@ -44,7 +44,7 @@ class ClientFactory {
         return client;
     }
 
-    private static buildConnectionString(key: string): string {
+    public static buildConnectionString(key: string): string {
         if (!key) {
             return '';
         }
