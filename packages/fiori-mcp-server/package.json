@@ -94,7 +94,7 @@
         "nano-spawn": "2.1.0",
         "npm-run-all2": "9.0.2",
         "os-name": "4.0.1",
-        "playwright-core": "1.58.2",
+        "playwright-core": "1.63.0",
         "prettify-xml": "1.2.0",
         "promptfoo": "0.122.0",
         "ts-node": "10.9.2",

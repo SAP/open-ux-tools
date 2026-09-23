@@ -121,7 +121,7 @@ const adpTools = [
         description: `Drives Runtime Authoring (RTA) in the SAP Fiori adaptation editor through a dispatched step protocol. Each call advances one step of the workflow; steps must be called in sequence. \`site\` is the editor URL from \`open_adaptation_editor\` — pass it on every step.
 
         Steps:
-        - **start** — payload: \`{ site: string, frameId?: string }\`. Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
+        - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
         - **get_overlays** — site + optional frameId. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
         - **get_context** — site + optional frameId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
         - **call_action** — site + optional frameId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.

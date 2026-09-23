@@ -181,7 +181,9 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .string()
         .optional()
         .describe(
-            'Optional iframe element id (e.g. "preview"). Pass on every step when the editor renders inside an iframe.'
+            'iframe element id containing the editor. The SAP Fiori adaptation editor always renders inside ' +
+                'an iframe with id "preview". Defaults to "preview" if omitted — always pass the value ' +
+                'echoed back by the "start" step to every subsequent step.'
         ),
     payload: zod
         .record(zod.string(), zod.unknown())

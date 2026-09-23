@@ -85,12 +85,11 @@ function requireSite(site: string | undefined): string {
 export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
     try {
         const site = requireSite(input.site);
+        const frameId = input.frameId ?? 'preview';
         switch (input.step) {
             case 'start': {
-                const frameId = input.frameId;
                 // Always disconnect any existing page for this URL before starting fresh.
-                // This prevents a new project opened on the same port from reusing the
-                // previous project's stale Playwright page.
+                // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
                 await defaultTransport.disconnectSite(site);
                 const result = await startRta(defaultTransport, { site, frameId });
                 return { site, frameId, ...result };
@@ -98,36 +97,25 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'get_overlays': {
                 const { overlays, actionsCatalog } = await getOverlays(defaultTransport, {
                     site,
-                    frameId: input.frameId
+                    frameId
                 });
                 return { overlays, actionsCatalog };
             }
             case 'get_context': {
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
-                const context = await getElementContext(
-                    defaultTransport,
-                    { site, frameId: input.frameId },
-                    controlId,
-                    actionId
-                );
+                const context = await getElementContext(defaultTransport, { site, frameId }, controlId, actionId);
                 return { context };
             }
             case 'call_action': {
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const actionPayload = requireObject(input.payload, 'actionPayload');
-                const ok = await executeAction(
-                    defaultTransport,
-                    { site, frameId: input.frameId },
-                    controlId,
-                    actionId,
-                    actionPayload
-                );
+                const ok = await executeAction(defaultTransport, { site, frameId }, controlId, actionId, actionPayload);
                 return { success: ok };
             }
             case 'save': {
-                const ok = await saveChanges(defaultTransport, { site, frameId: input.frameId });
+                const ok = await saveChanges(defaultTransport, { site, frameId });
                 return { saved: ok };
             }
             case 'stop': {
@@ -138,15 +126,15 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { stopped: true };
             }
             case 'restart': {
-                const page = { site, frameId: input.frameId };
+                const page = { site, frameId };
                 await defaultTransport.disconnectSite(site);
                 const result = await startRta(defaultTransport, page);
-                return { site, frameId: input.frameId, ...result };
+                return { site, frameId, ...result };
             }
             case 'get_page_actions': {
                 const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
                     site,
-                    frameId: input.frameId
+                    frameId
                 });
                 return {
                     registered,
@@ -156,12 +144,12 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'call_page_action': {
                 const id = requireString(input.payload, 'id');
-                const result = await callPageAction(defaultTransport, { site, frameId: input.frameId }, id);
+                const result = await callPageAction(defaultTransport, { site, frameId }, id);
                 return { result };
             }
             case 'press_interactive': {
                 const controlId = requireString(input.payload, 'controlId');
-                const result = await pressInteractive(defaultTransport, { site, frameId: input.frameId }, controlId);
+                const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
                 return { result };
             }
             default:
