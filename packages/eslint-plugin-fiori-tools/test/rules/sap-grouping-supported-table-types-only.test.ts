@@ -28,10 +28,8 @@ const ruleTester = new RuleTester({
 const TEST_NAME = 'sap-grouping-supported-table-types-only';
 const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
-const ERROR_MESSAGE_GRID_TABLE =
-    'Grouping is not supported for "GridTable" table type. Disable grouping or use "AnalyticalTable" or "ResponsiveTable" table type instead.';
-const ERROR_MESSAGE_TREE_TABLE =
-    'Grouping is not supported for "TreeTable" table type. Disable grouping or use "AnalyticalTable" or "ResponsiveTable" table type instead.';
+const ERROR_MESSAGE_GRID_TABLE = 'Grouping is not supported for `GridTable` table type.';
+const ERROR_MESSAGE_TREE_TABLE = 'Grouping is not supported for `TreeTable` table type.';
 
 const V4_TABLE_TYPE_PATH = [
     'sap.ui5',
@@ -211,6 +209,22 @@ ruleTester.run(TEST_NAME, groupingSupportedTableTypesOnly, {
         ),
         createValidTest(
             {
+                name: 'V4: manifest grouping enabled takes priority over annotation GroupBy',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, makeV4GroupByAnnotation('forGrid'))
+            },
+            [
+                {
+                    filename: V4_MANIFEST_PATH,
+                    code: getManifestAsCode(V4_MANIFEST, [
+                        { path: V4_TABLE_TYPE_PATH, value: 'GridTable' },
+                        { path: V4_PERSONALIZATION_PATH, value: { group: true } }
+                    ])
+                }
+            ]
+        ),
+        createValidTest(
+            {
                 name: 'V4 manifest: GridTable + personalization.group = false',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
@@ -299,11 +313,7 @@ ruleTester.run(TEST_NAME, groupingSupportedTableTypesOnly, {
                     { path: V4_TABLE_TYPE_PATH, value: 'GridTable' },
                     { path: V4_PERSONALIZATION_PATH, value: { group: true } }
                 ]),
-                errors: [{ message: ERROR_MESSAGE_GRID_TABLE }],
-                output: getManifestAsCode(V4_MANIFEST, [
-                    { path: V4_TABLE_TYPE_PATH, value: 'GridTable' },
-                    { path: V4_PERSONALIZATION_PATH, value: {} }
-                ])
+                errors: [{ message: ERROR_MESSAGE_GRID_TABLE }]
             },
             []
         ),
