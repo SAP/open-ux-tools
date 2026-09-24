@@ -270,7 +270,7 @@ annotate IncidentService.Incidents with @UI.LineItem #test: [{
         test('name of flattened record property in annotation', () => {
             testPointer(
                 '/targets/8/terms/0/content/0/content/0/attributes/Property/value',
-                '/targets/8/assignments/0/term/segments/2',
+                '/targets/8/assignments/0/path/segments/1',
                 true
             );
         });
@@ -286,19 +286,19 @@ annotate IncidentService.Incidents with @UI.LineItem #test: [{
         test('value of flattened record property', () => {
             testPointer(
                 '/targets/8/terms/2/content/0/content/0/content/0/content/0/content/0',
-                '/targets/8/assignments/1/items/items/1/value/properties/0/value',
+                '/targets/8/assignments/1/items/items/1/value/flattenedExpressions/0/value',
                 true
             );
             testPointer(
                 '/targets/8/terms/2/content/0/content/0/content/0/content/0/content/0/content/0',
-                '/targets/8/assignments/1/items/items/1/value/properties/0/value',
+                '/targets/8/assignments/1/items/items/1/value/flattenedExpressions/0/value',
                 true
             );
         });
         test('name of flattened record property', () => {
             testPointer(
                 '/targets/8/terms/2/content/0/content/0/content/0/content/0/attributes/Property/value',
-                '/targets/8/assignments/1/items/items/1/value/properties/0/name/segments/1',
+                '/targets/8/assignments/1/items/items/1/value/flattenedExpressions/0/value/path/segments/1',
                 true
             );
         });
