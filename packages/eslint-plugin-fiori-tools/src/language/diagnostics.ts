@@ -20,6 +20,7 @@ export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS = 'sap-no-path-hidden-on-interactive-columns';
+export const FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION = 'sap-field-group-in-table-type-restriction';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
 
@@ -193,6 +194,17 @@ export interface CloudDevAdaptationStatus {
     type: typeof CLOUD_DEV_ADAPTATION_STATUS;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface FieldGroupInTableTypeRestriction {
+    type: typeof FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION;
+    pageNames: string[];
+    tableType: string;
+    pageSectionName?: string;
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export interface NoSingleFacetInCollection {
     type: typeof NO_SINGLE_FACET_IN_COLLECTION;
     pageNames: string[];
@@ -238,5 +250,6 @@ export type Diagnostic =
     | NoLiveMode
     | CloudDevAdaptationStatus
     | NoPathHiddenOnInteractiveColumns
+    | FieldGroupInTableTypeRestriction
     | NoSingleFacetInCollection
     | NoDeepCollectionFacets;
