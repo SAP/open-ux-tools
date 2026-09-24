@@ -24,7 +24,7 @@ import {
 import type { ModelComponentManifest, ModelManifest } from './manifest.js';
 import { createMiniLmTextEmbedder, createOnnxBackend } from './minilm-runtime.js';
 import type { VerifiedModelArtifacts } from './runtime-artifacts.js';
-import { createPilotSftGenerator, type PilotSamplingOptions } from './sft-runtime.js';
+import { createPilotSftGenerator, processCompletionStore, type PilotSamplingOptions } from './sft-runtime.js';
 import { createSmolLm2Tokenizer } from './smollm-tokenizer.js';
 
 export interface LoadedLearnedComponent<T> {
@@ -348,7 +348,8 @@ function defaultFactories(
                 sampling: configuration.samplingOptions,
                 promptContractVersion: configuration.promptContractVersion,
                 runtimeContract: configuration.runtimeContract,
-                separators: configuration.jsonSeparators
+                separators: configuration.jsonSeparators,
+                completionStore: processCompletionStore()
             });
             return { value: sft, dispose: () => sft.dispose?.() };
         }

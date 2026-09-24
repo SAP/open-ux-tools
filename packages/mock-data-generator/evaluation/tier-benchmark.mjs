@@ -12,7 +12,7 @@
 //
 // Usage:
 //   node tier-benchmark.mjs PACKAGE_ROOT --registry r.json --source-root /abs [--profile two-row|editor]
-//        [--rows N] [--seed N] [--sft-budget-ms N] [--sft-timeout-ms N] [--output summary.json]
+//        [--rows N] [--seed N] [--sft-budget-ms N] [--sft-timeout-ms N] [--sft-model-rows N] [--output summary.json]
 //        [--records services.jsonl] [--fields fields.jsonl] [--rows-out rows.jsonl --rows-for ids.json]
 //        [--only ids.json] [--limit N]
 //
@@ -59,8 +59,18 @@ const settings = {
         : {}),
     ...(argument('--sft-timeout-ms') || profile.sftTimeoutMs
         ? { sftTimeoutMs: Number(argument('--sft-timeout-ms', String(profile.sftTimeoutMs))) }
-        : {})
+        : {}),
+    ...(argument('--sft-model-rows') ? { sftModelRows: Number(argument('--sft-model-rows')) } : {})
 };
+// The editor profile mirrors the generator the data editor creates: builds that define execution-mode
+// defaults apply the `data-editor` ones under the explicit profile settings, as the editor does.
+if (profileName === 'editor') {
+    const standalone = await import(join(packageRoot, 'dist/standalone.js'));
+    const defaults = standalone.executionModeDefaults?.('data-editor') ?? {};
+    for (const [key, value] of Object.entries(defaults)) {
+        if (!(key in settings)) settings[key] = value;
+    }
+}
 const outputPath = argument('--output');
 const recordsPath = argument('--records');
 const fieldsPath = argument('--fields');

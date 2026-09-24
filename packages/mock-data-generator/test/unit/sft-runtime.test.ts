@@ -1,9 +1,11 @@
 import {
     chunkFields,
+    createMemoryCompletionStore,
     createPilotSftGenerator,
     grammarFields,
     grammarTokenBound,
     numberFormatOf,
+    processCompletionStore,
     renderPilotSftPrompt,
     type ConstrainedTextGenerationInput,
     type ConstrainedTextGenerator
@@ -807,5 +809,69 @@ describe('SFT runtime contract 2', () => {
                 runtimeContract: 3 as 2
             })
         ).toThrow('runtime contract');
+    });
+});
+
+describe('SFT completion store', () => {
+    const sampling = { temperature: 0.6, topP: 0.9, repetitionPenalty: 1.15, noRepeatNgramSize: 4, maxNewTokens: 300 };
+    const request: SftGenerationInput = {
+        ...input,
+        contractVersion: 2,
+        fields: [{ name: 'Remark', primitiveType: 'string', nullable: false, maxLength: 40 }],
+        rowCount: 3
+    };
+
+    test('answers an identical request from the store and runs the model only for new rows', async () => {
+        const store = createMemoryCompletionStore(10);
+        const generateBatch = jest.fn(async (_request: ConstrainedTextGenerationInput, seeds: ReadonlyArray<number>) =>
+            seeds.map((seed) => `{"Remark": "Note ${seed % 1000}"}`)
+        );
+        const create = () =>
+            createPilotSftGenerator({
+                fingerprint: 'sft-model-sha256',
+                textGenerator: { generate: jest.fn(), generateBatch },
+                sampling,
+                runtimeContract: 2,
+                completionStore: store
+            });
+
+        const first = await create().generate(request, new AbortController().signal);
+        const second = await create().generate({ ...request, rowCount: 4 }, new AbortController().signal);
+
+        expect(second.rows.slice(0, 3)).toEqual(first.rows);
+        expect(generateBatch).toHaveBeenCalledTimes(2);
+        expect(generateBatch.mock.calls[1]?.[1]).toHaveLength(1);
+    });
+
+    test('keeps the most recent entries of a bounded store', () => {
+        const store = createMemoryCompletionStore(2);
+        store.set('a', '1');
+        store.set('b', '2');
+        store.get('a');
+        store.set('c', '3');
+        expect(store.get('a')).toBeUndefined();
+        expect(store.get('b')).toBe('2');
+        expect(store.get('c')).toBe('3');
+        expect(processCompletionStore()).toBe(processCompletionStore());
+    });
+
+    test('caches single-row calls as well', async () => {
+        const store = createMemoryCompletionStore();
+        const generate = jest.fn(async () => '{"Remark": "Checked"}');
+        const create = () =>
+            createPilotSftGenerator({
+                fingerprint: 'sft-model-sha256',
+                textGenerator: { generate },
+                sampling,
+                runtimeContract: 2,
+                completionStore: store
+            });
+        const single = { ...request, rowCount: 1 };
+
+        await create().generate(single, new AbortController().signal);
+        const again = await create().generate(single, new AbortController().signal);
+
+        expect(again.rows).toEqual([{ Remark: 'Checked' }]);
+        expect(generate).toHaveBeenCalledTimes(1);
     });
 });

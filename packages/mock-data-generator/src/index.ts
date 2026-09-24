@@ -754,6 +754,20 @@ function validateOptions(options: MockDataGeneratorOptions): void {
     if (options.pipeline !== undefined && !['legacy', 'semantic-v2'].includes(options.pipeline)) {
         throw new TypeError('Mock data generator pipeline must be legacy or semantic-v2');
     }
+    if (
+        options.sftModelRows !== undefined &&
+        (!Number.isSafeInteger(options.sftModelRows) || options.sftModelRows <= 0 || options.sftModelRows > 1_000)
+    ) {
+        throw new TypeError('Mock data generator SFT model rows must be an integer between 1 and 1000');
+    }
+    if (
+        options.sftPriorityTargets !== undefined &&
+        (!Array.isArray(options.sftPriorityTargets) ||
+            options.sftPriorityTargets.length > 10_000 ||
+            !options.sftPriorityTargets.every((target) => typeof target === 'string'))
+    ) {
+        throw new TypeError('Mock data generator SFT priority targets must be a list of entity set names');
+    }
 }
 
 function capabilities(

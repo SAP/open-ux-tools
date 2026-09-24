@@ -85,6 +85,13 @@ export interface MockDataGeneratorOptions {
     sftTimeoutMs?: number;
     /** Total local-LLM budget shared across service entities; defaults to 20 seconds. */
     sftBudgetMs?: number;
+    /**
+     * Rows per entity the fine-tuned model writes; the remaining rows reuse those values field by
+     * field (coupled fields together). Every row when absent.
+     */
+    sftModelRows?: number;
+    /** Entity sets the fine-tuned tier fills first, in this order, such as those an app displays. */
+    sftPriorityTargets?: ReadonlyArray<string>;
 }
 
 export interface SemanticClassifierInput {

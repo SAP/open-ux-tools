@@ -9,7 +9,7 @@ import {
     type StandaloneGenerationResult
 } from './standalone.js';
 
-export { createMockDataGenerator, getMockDataGeneratorInfo } from './standalone.js';
+export { createMockDataGenerator, executionModeDefaults, getMockDataGeneratorInfo } from './standalone.js';
 export { generateProjectData } from './project-data.js';
 export type {
     CreateMockDataGeneratorOptions,

@@ -80,6 +80,29 @@ export interface CreateMockDataGeneratorOptions {
     onProgress?: (event: MockDataGenerationProgress) => void;
 }
 
+// The data editor waits for the result synchronously: the fine-tuned tier gets 20 seconds in total,
+// and writes 4 rows per entity whose values the other rows reuse, so more entities get model values
+// within the budget. Explicit generation options always win.
+const EXECUTION_MODE_DEFAULTS: Readonly<
+    Record<NonNullable<CreateMockDataGeneratorOptions['executionMode']>, StandaloneGenerationOptions>
+> = Object.freeze({
+    api: Object.freeze({}),
+    'start-mock': Object.freeze({}),
+    'data-editor': Object.freeze({ sftBudgetMs: 20_000, sftTimeoutMs: 30_000, sftModelRows: 4 })
+});
+
+/**
+ * Generation options an execution mode applies unless the caller sets them.
+ *
+ * @param executionMode the generator's execution mode
+ * @returns the mode's default options
+ */
+export function executionModeDefaults(
+    executionMode: CreateMockDataGeneratorOptions['executionMode'] = 'api'
+): StandaloneGenerationOptions {
+    return EXECUTION_MODE_DEFAULTS[executionMode];
+}
+
 function readManifest(): PackagedModelManifest {
     return parsePackagedModelManifest(JSON.parse(readFileSync(manifestPath, 'utf8')) as unknown);
 }
@@ -335,15 +358,16 @@ export async function createMockDataGenerator(
             assertActive();
             request.signal?.throwIfAborted();
             const mode = generationOptions.mode ?? 'auto';
+            const effectiveOptions = { ...executionModeDefaults(options.executionMode), ...generationOptions };
             const result = await generateService(
                 request,
-                { ...generationOptions, pipeline: 'semantic-v2' },
+                { ...effectiveOptions, pipeline: 'semantic-v2' },
                 {
                     ...(await runtime(mode)),
                     ...(options.onProgress ? { onProgress: options.onProgress } : {})
                 }
             );
-            validateGeneratedResult(request, result, { ...generationOptions, pipeline: 'semantic-v2' });
+            validateGeneratedResult(request, result, { ...effectiveOptions, pipeline: 'semantic-v2' });
             const formats = !result.diagnostics.some(({ severity }) => severity === 'error');
             const coverage = semanticCoverage(request, result);
             return Object.freeze({
@@ -368,7 +392,7 @@ export async function createMockDataGenerator(
             assertActive();
             return inspectService(
                 request,
-                { ...generationOptions, pipeline: 'semantic-v2' },
+                { ...executionModeDefaults(options.executionMode), ...generationOptions, pipeline: 'semantic-v2' },
                 {
                     ...(await runtime(generationOptions.mode ?? 'auto')),
                     ...(options.onProgress ? { onProgress: options.onProgress } : {})

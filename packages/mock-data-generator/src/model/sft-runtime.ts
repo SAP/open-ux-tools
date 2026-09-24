@@ -89,6 +89,53 @@ export interface CreatePilotSftGeneratorOptions {
     runtimeContract?: 1 | 2;
     /** Contract 2 only: punctuation outside strings; `spaced` when absent. */
     separators?: Exclude<JsonSeparators, 'any'>;
+    /**
+     * Contract 2 only: completed answers by request, so an identical request (same model, prompt,
+     * grammar, sampling and seed) returns the same values without running the model again. No
+     * answers are kept when absent.
+     */
+    completionStore?: SftCompletionStore;
+}
+
+/** Completed model answers keyed by a hash of everything that determines them. */
+export interface SftCompletionStore {
+    get(key: string): string | undefined;
+    set(key: string, completion: string): void;
+}
+
+/**
+ * A bounded in-memory completion store; the oldest entries leave first.
+ *
+ * @param maximumEntries entries kept
+ * @returns the store
+ */
+export function createMemoryCompletionStore(maximumEntries = 20_000): SftCompletionStore {
+    const entries = new Map<string, string>();
+    return Object.freeze({
+        get: (key: string) => entries.get(key),
+        set: (key: string, completion: string) => {
+            entries.delete(key);
+            entries.set(key, completion);
+            if (entries.size > maximumEntries) {
+                const oldest = entries.keys().next();
+                if (!oldest.done) {
+                    entries.delete(oldest.value);
+                }
+            }
+        }
+    });
+}
+
+const PROCESS_COMPLETION_STORE = createMemoryCompletionStore();
+
+/**
+ * The completion store shared by the generators of this process: a regeneration of the same service
+ * gets the answers it already received, and its budget goes to the requests it has not seen.
+ *
+ * @returns the process-wide store
+ */
+export function processCompletionStore(): SftCompletionStore {
+    return PROCESS_COMPLETION_STORE;
 }
 
 /**
@@ -497,6 +544,24 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
     }
     const exact = runtimeContract === 2;
     const separators: JsonSeparators = exact ? (options.separators ?? 'spaced') : 'any';
+    const store = exact ? options.completionStore : undefined;
+    const completionKey = (request: ConstrainedTextGenerationInput, seed: number): string =>
+        createHash('sha256')
+            .update(
+                JSON.stringify([
+                    options.fingerprint,
+                    request.prompt,
+                    request.grammar,
+                    request.temperature,
+                    request.topP,
+                    request.repetitionPenalty,
+                    request.noRepeatNgramSize,
+                    request.maxNewTokens,
+                    request.separators ?? 'any',
+                    seed
+                ])
+            )
+            .digest('hex');
     return Object.freeze({
         fingerprint: options.fingerprint,
         generate: async (input: SftGenerationInput, signal: AbortSignal) => {
@@ -559,18 +624,19 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                 context.signal.throwIfAborted();
                 attempts += 1;
                 try {
-                    const completion = await abortable(
-                        options.textGenerator.generate(
-                            generationInput(
-                                fields,
-                                promptFor(fields, rowIndex),
-                                rowSeed(input.seed, input.entityName, rowIndex, chunkKey)
-                            ),
-                            context.signal
-                        ),
-                        context.signal
+                    const request = generationInput(
+                        fields,
+                        promptFor(fields, rowIndex),
+                        rowSeed(input.seed, input.entityName, rowIndex, chunkKey)
                     );
+                    const key = store ? completionKey(request, request.seed) : undefined;
+                    const completion =
+                        (key === undefined ? undefined : store?.get(key)) ??
+                        (await abortable(options.textGenerator.generate(request, context.signal), context.signal));
                     const partial = parse(completion, fields);
+                    if (key !== undefined) {
+                        store?.set(key, completion);
+                    }
                     parsedResponses += 1;
                     return partial;
                 } catch (error) {
@@ -605,18 +671,31 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                     rowSeed(input.seed, input.entityName, rowIndex, chunkKey)
                 );
                 attempts += input.rowCount;
-                const completions = await generateRows.call(
-                    options.textGenerator,
-                    generationInput(fields, promptFor(fields, 0), seeds[0] ?? input.seed),
-                    seeds,
-                    context.signal
+                const request = generationInput(fields, promptFor(fields, 0), seeds[0] ?? input.seed);
+                const keys = seeds.map((seed) => completionKey(request, seed));
+                const completions: Array<string | undefined> = keys.map((key) => store?.get(key));
+                // Only the rows without a stored answer run through the model.
+                const missing = completions.flatMap((completion, rowIndex) =>
+                    completion === undefined ? [rowIndex] : []
                 );
+                if (missing.length > 0) {
+                    const generatedRows = await generateRows.call(
+                        options.textGenerator,
+                        request,
+                        missing.map((rowIndex) => seeds[rowIndex] ?? input.seed),
+                        context.signal
+                    );
+                    missing.forEach((rowIndex, position) => {
+                        completions[rowIndex] = generatedRows[position];
+                    });
+                }
                 completions.forEach((completion, rowIndex) => {
                     if (completion === undefined) {
                         return;
                     }
                     try {
                         const partial = parse(completion, fields);
+                        store?.set(keys[rowIndex] ?? '', completion);
                         parsedResponses += 1;
                         Object.assign(rows[rowIndex] ?? {}, partial);
                     } catch {

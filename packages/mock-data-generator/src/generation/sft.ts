@@ -845,11 +845,15 @@ export async function applySftGeneration(
             })
         );
     }
-    // Referenced domains are generated before their dependent display fields are projected; among the
-    // rest, resources with fewer fields to fill go first because they finish within a slice.
+    // Referenced domains are generated before their dependent display fields are projected; then the
+    // caller's priority targets (such as the entity sets an app displays), in the caller's order; among
+    // the rest, resources with fewer fields to fill go first because they finish within a slice.
+    const priority = new Map((options.sftPriorityTargets ?? []).map((target, index) => [target, index]));
+    const priorityOf = (resourceName: string): number => priority.get(resourceName) ?? Number.MAX_SAFE_INTEGER;
     prepared.sort(
         (left, right) =>
             Number(Boolean(right.domainKey)) - Number(Boolean(left.domainKey)) ||
+            priorityOf(left.resourceName) - priorityOf(right.resourceName) ||
             left.fields.length - right.fields.length
     );
     const startedAt = performance.now();
@@ -916,6 +920,13 @@ export async function applySftGeneration(
         const linkedTexts = linkedTextOwners(entity, fields);
         const requiresRelevance = domainKey !== undefined || linkedTexts.length > 0;
         const coupledGroups = coupledFieldGroups(entity, fields);
+        // The model writes the first rows; the rest reuse their values field by field. A generated
+        // domain needs every row's own key, so it is always written whole.
+        const modelRowCount =
+            options.pipeline === 'semantic-v2' && domainKey === undefined
+                ? Math.min(fallbackRows.length, options.sftModelRows ?? fallbackRows.length)
+                : fallbackRows.length;
+        const modelFallbackRows = fallbackRows.slice(0, modelRowCount);
         // Rows whose linked texts the relevance check accepted; linked texts of other rows keep their fallback.
         let verifiedTextRows: ReadonlySet<number> = new Set();
         // Each attempt gets a slice long enough to finish on a small machine; once the service budget
@@ -976,7 +987,7 @@ export async function applySftGeneration(
                         ...(options.pipeline === 'semantic-v2'
                             ? {
                                   contractVersion: 2 as const,
-                                  fixedRows: fallbackRows,
+                                  fixedRows: modelFallbackRows,
                                   siblingGroup: 'residual',
                                   acceptedRoles: Object.freeze(
                                       Object.fromEntries(
@@ -997,7 +1008,7 @@ export async function applySftGeneration(
                         fields,
                         ...(coupledGroups.length > 0 ? { coupledFieldGroups: coupledGroups } : {}),
                         budgetMs: attemptBudgetMs,
-                        rowCount: fallbackRows.length,
+                        rowCount: modelRowCount,
                         seed: ((options.seed ?? 1) + candidateAttempt) % Number.MAX_SAFE_INTEGER,
                         ...(options.locale ? { locale: options.locale } : {})
                     }),
@@ -1020,7 +1031,7 @@ export async function applySftGeneration(
                         entity,
                         linkedTexts,
                         output.rows,
-                        fallbackRows,
+                        modelFallbackRows,
                         (pairs) => {
                             const verifierBudgetMs = budgetMs - (performance.now() - entityStartedAt);
                             return verifierBudgetMs > 0
@@ -1162,7 +1173,9 @@ export async function applySftGeneration(
         const generatedDomainRows: MockDataRow[] = [];
         const generatedKeys = new Set<string>();
         let duplicateDomainRows = 0;
-        for (const [rowIndex, fallbackRow] of fallbackRows.entries()) {
+        // The values each model row contributed, for the rows that reuse them.
+        const acceptedValues: Array<Record<string, JsonValue>> = [];
+        for (const [rowIndex, fallbackRow] of modelFallbackRows.entries()) {
             const candidateRow: unknown = output.rows[rowIndex];
             if (!isPlainRecord(candidateRow)) {
                 rowsWithoutCandidate += 1;
@@ -1250,6 +1263,9 @@ export async function applySftGeneration(
                     acceptedByField.set(name, (acceptedByField.get(name) ?? 0) + 1);
                     acceptedSlots += 1;
                 }
+                acceptedValues[rowIndex] = Object.fromEntries(
+                    accepted.map(({ name }) => [name, candidateRow[name] as JsonValue])
+                );
                 generatedRows.push(Object.freeze(row));
                 if (domainKey) {
                     generatedDomainRows.push(Object.freeze(row));
@@ -1275,6 +1291,38 @@ export async function applySftGeneration(
                 }
             }
             generatedRows.push(Object.freeze(row));
+        }
+        // Rows beyond the model's reuse its values unit by unit (a coupled group moves as one), each
+        // unit from a different model row so the combinations vary. A linked text whose code is not
+        // generated with it stays with its own code, so it is never reused.
+        if (modelRowCount < fallbackRows.length) {
+            const grouped = new Set(coupledGroups.flat());
+            const units = [
+                ...coupledGroups,
+                ...fields.filter(({ name }) => !grouped.has(name)).map(({ name }) => [name])
+            ].filter(
+                (unit) => !linkedTexts.some(({ owner, text }) => unit.includes(text.name) && !unit.includes(owner.name))
+            );
+            const sources = units.map((unit) =>
+                acceptedValues.filter((values) => values !== undefined && unit.every((name) => name in values))
+            );
+            for (const fallbackRow of fallbackRows.slice(modelRowCount)) {
+                const rowIndex = generatedRows.length;
+                const row: Record<string, JsonValue> = { ...fallbackRow };
+                for (const [unitIndex, unit] of units.entries()) {
+                    const pool = sources[unitIndex] ?? [];
+                    const source = pool[(rowIndex + unitIndex) % Math.max(1, pool.length)];
+                    if (!source) {
+                        continue;
+                    }
+                    for (const name of unit) {
+                        row[name] = source[name] as JsonValue;
+                        acceptedByField.set(name, (acceptedByField.get(name) ?? 0) + 1);
+                        acceptedSlots += 1;
+                    }
+                }
+                generatedRows.push(Object.freeze(row));
+            }
         }
         generated[resourceName] = Object.freeze(generatedDomainRows.length ? generatedDomainRows : generatedRows);
         const publishedRowCount = generated[resourceName].length;
