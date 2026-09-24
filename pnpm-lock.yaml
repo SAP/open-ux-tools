@@ -1149,8 +1149,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@sap/approuter':
-        specifier: 22.0.3
-        version: 22.0.3(supports-color@8.1.1)(undici@6.28.0)
+        specifier: 23.0.0
+        version: 23.0.0(supports-color@8.1.1)(undici@6.28.0)
       content-type:
         specifier: ^1.0.5
         version: 1.0.5
@@ -9531,8 +9531,8 @@ packages:
     resolution: {integrity: sha512-nvyb4NbP8tpBPOjOG0et7R0/XhCWVPstzRCgNHXbCtJYC+Mzyz1Ky2kZB8Mztyqvu6BgnzntRRe/txChVQH1MQ==}
     engines: {node: '>=20.x'}
 
-  '@sap/approuter@22.0.3':
-    resolution: {integrity: sha512-hjtf23npfT+9qNVZ6URHnhWT2sER8YZfjaxQKSwRl+P7Npu/ySSNSQWnqZvdtiH8PsrB5eBd7tTSNmfxy/n/vA==}
+  '@sap/approuter@23.0.0':
+    resolution: {integrity: sha512-f5JHq/LmUTA63PFX50yHKYhwelmmoSl8yDDSgXRdNdjCH0JG7tZx7NBxduYL4yPDGnDchGB9O+/zuRdCZ/sYJQ==}
     engines: {node: ^22.0.0 || ^24.0.0}
 
   '@sap/audit-logging@7.0.0':
@@ -13320,8 +13320,8 @@ packages:
     peerDependencies:
       express: '>= 4.11'
 
-  express-session@1.18.2:
-    resolution: {integrity: sha512-SZjssGQC7TzTs9rpPDuUrR23GNZ9+2+IkA/+IJWmvQilTr5OSliEHGF+D9scbIpdC6yGtTI0/VhaHoVes2AN/A==}
+  express-session@1.19.0:
+    resolution: {integrity: sha512-0csaMkGq+vaiZTmSMMGkfdCOabYv192VbytFypcvI0MANrp+4i/7yEkJ0sbAEhycQjntaKGzYfjfXQyVb7BHMA==}
     engines: {node: '>= 0.8.0'}
 
   express@4.22.1:
@@ -24630,7 +24630,7 @@ snapshots:
       lodash: 4.18.1
       yaml: 2.8.3
 
-  '@sap/approuter@22.0.3(supports-color@8.1.1)(undici@6.28.0)':
+  '@sap/approuter@23.0.0(supports-color@8.1.1)(undici@6.28.0)':
     dependencies:
       '@sap/audit-logging': 7.0.0(supports-color@8.1.1)
       '@sap/e2e-trace': 6.0.0
@@ -24655,7 +24655,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       deepmerge: 2.2.1
       encodeurl: 1.0.2
-      express-session: 1.18.2(supports-color@8.1.1)
+      express-session: 1.19.0(supports-color@8.1.1)
       http-proxy-agent: 7.0.2(supports-color@8.1.1)
       https-proxy-agent: 7.0.6(supports-color@8.1.1)
       ioredis: 5.6.1(supports-color@8.1.1)
@@ -29449,7 +29449,7 @@ snapshots:
       express: 5.2.1(supports-color@8.1.1)
       ip-address: 10.5.0
 
-  express-session@1.18.2(supports-color@8.1.1):
+  express-session@1.19.0(supports-color@8.1.1):
     dependencies:
       cookie: 0.7.2
       cookie-signature: 1.0.7
