@@ -185,6 +185,8 @@ sap.ui.define([
             When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
             Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
             When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+            // Deselect the row so the following actions start with an empty selection.
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
 <%              } else if (!action.custom && !action.menuActions) { -%>
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } -%>

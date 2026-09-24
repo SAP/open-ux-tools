@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(3,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,5)..(1,6)]"
+                    "range": "[(1,5)..(1,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -101,8 +101,8 @@
                 "range": "[(4,4)..(6,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(4,5)..(4,6)]"
+                    "range": "[(4,5)..(4,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -180,8 +180,8 @@
                 "range": "[(7,4)..(9,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(7,5)..(7,6)]"
+                    "range": "[(7,5)..(7,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -299,8 +299,8 @@
                 "range": "[(10,4)..(12,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(10,5)..(10,6)]"
+                    "range": "[(10,5)..(10,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -440,8 +440,8 @@
                 "range": "[(13,4)..(15,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(13,5)..(13,6)]"
+                    "range": "[(13,5)..(13,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -581,8 +581,8 @@
                 "range": "[(16,4)..(18,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(16,5)..(16,6)]"
+                    "range": "[(16,5)..(16,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -722,8 +722,8 @@
                 "range": "[(19,4)..(21,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(19,5)..(19,6)]"
+                    "range": "[(19,5)..(19,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -847,8 +847,8 @@
                 "range": "[(22,4)..(24,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(22,5)..(22,6)]"
+                    "range": "[(22,5)..(22,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -1010,8 +1010,8 @@
                 "range": "[(25,4)..(27,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(25,5)..(25,6)]"
+                    "range": "[(25,5)..(25,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -1128,8 +1128,8 @@
                 "range": "[(28,4)..(37,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(28,5)..(28,6)]"
+                    "range": "[(28,5)..(28,6)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",

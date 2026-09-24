@@ -1,5 +1,53 @@
 # @sap-ux/ui5-test-writer
 
+## 1.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Bug Fixes
+
+- List Report action tests now validate the action parameter dialog and deselect the row after a critical action so following actions start with an empty selection. The per-action filter-bar search is hoisted to a single call before the action block. [[6594642](https://github.com/SAP/open-ux-tools/commit/65946422b7b8b8ba91d75d2e09941e1b6af4e51b)]
+
+## 1.13.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/preview-middleware 1.2.17 → 1.2.18
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/fiori-generator-shared 1.2.17 → 1.2.18
+
+## 1.13.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.16 → 1.2.17
+- @sap-ux/preview-middleware 1.2.16 → 1.2.17
+
+## 1.13.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.15 → 1.2.16
+
+## 1.13.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.14 → 1.2.15
+
 ## 1.13.0
 
 ### Minor Changes

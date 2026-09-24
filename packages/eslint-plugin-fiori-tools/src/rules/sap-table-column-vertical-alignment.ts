@@ -17,7 +17,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [TABLE_COLUMN_VERTICAL_ALIGNMENT]:
-                '"tableColumnVerticalAlignment" for Responsive tables must be set to "Middle" - the default value'
+                '`tableColumnVerticalAlignment` for Responsive tables must be set to `Middle` - the default value'
         },
         fixable: 'code'
     },
