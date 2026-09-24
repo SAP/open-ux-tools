@@ -9,7 +9,7 @@ The rule checks every `UI.DataField` record inside a `UI.LineItem` annotation. I
 > **XML note**: `Capabilities.SortRestrictions` and `Capabilities.FilterRestrictions` must target the **entity set**, not the entity type. Use the entity container path with a slash separator, for example, `SalesService.EntityContainer/SalesOrders` and not the dot-separated entity type name `SalesService.SalesOrders`.
 
 ### Warning Message
-A `UI.Hidden` annotation with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering via `Capabilities` annotations.
+A `UI.Hidden` annotation with a path-based value must not be used on a sortable or filterable column. Use a static UI.Hidden or restrict sorting and filtering using a `Capabilities` annotation.
 
 The following patterns are considered warnings:
 
