@@ -1,7 +1,6 @@
 import {
     createAllowedTokenResolver,
     createCausalTextGenerator,
-    repeatedNgramTokens,
     selectNucleus,
     type CausalLmInputs,
     type CausalLmOutputs,
@@ -519,11 +518,5 @@ describe('grammar-constrained causal text runtime, contract 2', () => {
             );
 
         expect(resolveAllowed(state('Name'))).toBe(resolveAllowed(state('Title')));
-    });
-
-    test('bans a token that would repeat an n-gram of the row values', () => {
-        expect([...repeatedNgramTokens([1, 2, 3, 1, 2], 3)]).toEqual([3]);
-        expect([...repeatedNgramTokens([1, 2, 3], 3)]).toEqual([]);
-        expect([...repeatedNgramTokens([1, 1, 1], 0)]).toEqual([]);
     });
 });

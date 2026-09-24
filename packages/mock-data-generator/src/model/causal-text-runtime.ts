@@ -357,41 +357,12 @@ export function selectNucleus(
 }
 
 /**
- * Tokens that would repeat an n-gram of the value tokens already generated in this row.
- *
- * @param history value tokens of the row so far
- * @param size n-gram size; below 2 bans nothing
- * @returns banned next tokens
- */
-export function repeatedNgramTokens(history: ReadonlyArray<number>, size: number): ReadonlySet<number> {
-    const banned = new Set<number>();
-    if (size < 2 || history.length < size - 1) {
-        return banned;
-    }
-    const prefixStart = history.length - (size - 1);
-    for (let start = 0; start + size - 1 < history.length; start += 1) {
-        let matches = true;
-        for (let offset = 0; offset < size - 1; offset += 1) {
-            if (history[start + offset] !== history[prefixStart + offset]) {
-                matches = false;
-                break;
-            }
-        }
-        if (matches) {
-            banned.add(requiredElement(history, start + size - 1, 'n-gram history'));
-        }
-    }
-    return banned;
-}
-
-/**
  * Sample one allowed token.
  *
  * @param logits the row's next-token logits
  * @param allowed grammar-allowed token ids
- * @param history value tokens of the row so far: repetition penalty and n-gram ban apply to them only
- * @param ngramSize n-gram size to ban, 0 for none
- * @param input sampling options
+ * @param history value tokens of the row so far; the repetition penalty applies to them only
+ * @param input sampling options (`noRepeatNgramSize` is not applied: measured without benefit)
  * @param random the row's seeded random source
  * @param weights scratch buffer of the vocabulary size
  * @param heap scratch buffer of the vocabulary size
@@ -401,7 +372,6 @@ function sample(
     logits: Float32Array,
     allowed: Readonly<Int32Array>,
     history: ReadonlyArray<number>,
-    ngramSize: number,
     input: ConstrainedTextGenerationInput,
     random: () => number,
     weights: Float64Array,
@@ -410,9 +380,7 @@ function sample(
     if (allowed.length === 0) {
         throw new Error('SFT grammar has no valid next token');
     }
-    const banned = repeatedNgramTokens(history, ngramSize);
-    const unbanned = banned.size > 0 ? allowed.filter((id) => !banned.has(id)) : allowed;
-    const candidates = unbanned.length > 0 ? unbanned : allowed;
+    const candidates = allowed;
     const repeated = new Set(history);
     const temperature = Math.max(input.temperature, 1e-6);
     const score = (id: number): number => {
@@ -689,7 +657,6 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
                 logits,
                 resolveAllowedTokens(sequence.state),
                 valuePhase ? sequence.valueHistory : [],
-                valuePhase ? input.noRepeatNgramSize : 0,
                 input,
                 sequence.random,
                 samplingWeights,

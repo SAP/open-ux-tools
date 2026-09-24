@@ -16,7 +16,7 @@
 //   LITELLM_API_KEY=... node realism-judge.mjs --variant dev20=rows20.jsonl --variant dev21=rows21.jsonl
 //        --services services.json --out report.json --cache verdicts.jsonl
 //        [--judges anthropic--claude-4.8-opus,anthropic--claude-4.6-sonnet] [--concurrency 2]
-//        [--entities 2] [--columns 25] [--rows 10] [--batch 2]
+//        [--entities 2] [--columns 25] [--rows 10] [--batch 2] [--prefer-model]
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { appendFile, readFile, writeFile } from 'node:fs/promises';
@@ -59,6 +59,8 @@ const entitiesPerService = Number(flag('--entities', '2'));
 const columnsPerEntity = Number(flag('--columns', '25'));
 const rowsPerEntity = Number(flag('--rows', '10'));
 const batchSize = Number(flag('--batch', '2'));
+// Model-tier realism (M5): prefer entities where some variant has model-written columns.
+const preferModel = process.argv.includes('--prefer-model');
 if (variants.length === 0 || !servicesPath || !outPath || !cachePath) {
     throw new TypeError(
         'Usage: realism-judge.mjs --variant name=rows.jsonl ... --services s.json --out r.json --cache c.jsonl'
@@ -113,8 +115,15 @@ for (const serviceId of services) {
         missing.push(serviceId);
         continue;
     }
+    const modelWritten = (name) =>
+        variants.some(({ name: variant }) =>
+            Object.entries(dumps.get(variant).get(serviceId)?.fieldTier ?? {}).some(
+                ([field, tier]) => field.startsWith(`${name}.`) && tier.modelCells > 0
+            )
+        );
     const entities = Object.entries(reference.resources ?? {})
         .filter(([name, rows]) => !name.startsWith('SAP__') && rows.length > 0 && Object.keys(rows[0]).length >= 3)
+        .filter(([name]) => !preferModel || modelWritten(name))
         .map(([name]) => name)
         .sort((left, right) =>
             sha(`${PROTOCOL}:${serviceId}:${left}`) < sha(`${PROTOCOL}:${serviceId}:${right}`) ? -1 : 1
