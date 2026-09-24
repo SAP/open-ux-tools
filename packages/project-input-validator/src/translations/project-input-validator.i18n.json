@@ -43,7 +43,10 @@
         "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path.",
         "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}.",
         "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
-        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must use the local CAP project as the data source."
+        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must use the local CAP project as the data source.",
+        "viewNameRequired": "You must provide a view name to continue.",
+        "viewNameTooLong": "The view name cannot contain more than {{maxLength}} characters.",
+        "viewNameInvalid": "The view name must start with a letter and may contain letters, digits, dashes, and underscores."
     },
     "general": {
         "invalidUrl": "Invalid URL: [{{-input}}]",

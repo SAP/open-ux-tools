@@ -45,6 +45,8 @@ function journey() {
     QUnit.module("<%- name%>ObjectPage journey");
 
     opaTest("Navigate to <%- name%>ObjectPage", function (Given: Given, When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+        Given.iResetTestData();
         Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
 <% const parentTableId = navigationParents.parentLRViewKey ? '"' + navigationParents.parentLRViewKey + '"' : '""'; -%>
@@ -64,6 +66,7 @@ function journey() {
 <% }); %>
         Then.onThe<%- name%>Generated.iSeeThisPage();
     });
+
 
 <% if (headerActions?.length > 0) { -%>
     opaTest("Check header actions of the Object Page", function (_Given: Given, <% if (headerHasMenu) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {

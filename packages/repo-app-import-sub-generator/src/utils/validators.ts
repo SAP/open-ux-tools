@@ -11,6 +11,8 @@ import { downloadApp, hasQfaJson } from '../utils/download-utils.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { qfaJsonFileName } from '../utils/constants.js';
+import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { EventName } from '../telemetryEvents/index.js';
 
 /**
  * Validates the metadata section of the app configuration.
@@ -116,7 +118,20 @@ async function generateAppNotFoundHelpLink(): Promise<ValidationLink> {
 }
 
 /**
- * Validates the app selection and handles app download if applicable.
+ * Generates a help link for the "App Download Failed" error.
+ *
+ * @returns {Promise<ValidationLink>} - A promise resolving to a validation link for the error.
+ */
+async function generateAppDownloadFailedHelpLink(): Promise<ValidationLink> {
+    return ErrorHandler.getHelpLink(
+        HELP_NODES.ABAP_REPO_APP_DOWNLOAD_FAILED,
+        ERROR_TYPE.INTERNAL_SERVER_ERROR,
+        t('error.appDownloadFailed')
+    );
+}
+
+/**
+ * Validates the app selection and handles the app download, if applicable.
  *
  * @param answers - The selected app information.
  * @param appList - The list of available apps.
@@ -145,7 +160,18 @@ export async function validateAppSelection(
     // Valid app selected, try to download
     if (answers?.appId) {
         try {
-            await downloadApp(answers.repoName);
+            const downloadSucceeded = await downloadApp(answers.repoName);
+            if (!downloadSucceeded) {
+                if (downloadType === AppDownloadType.AbapRepository) {
+                    await sendTelemetry(
+                        EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
+                        TelemetryHelper.createTelemetryData({}) ?? {}
+                    ).catch(() => {
+                        // telemetry errors are non-fatal
+                    });
+                }
+                return await generateAppDownloadFailedHelpLink();
+            }
             const isQfaJsonPresent: boolean = hasQfaJson();
             if (!isQfaJsonPresent && downloadType === AppDownloadType.ADTQuickDeploy) {
                 appWizard?.showError(

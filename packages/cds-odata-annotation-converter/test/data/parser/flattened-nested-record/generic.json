@@ -109,7 +109,7 @@
                                                 "valueRange": "[(2,21)..(2,27)]"
                                             }
                                         },
-                                        "contentRange": "[(2,30)..(2,54)]",
+                                        "contentRange": "[(2,29)..(2,54)]",
                                         "content": [
                                             {
                                                 "type": "element",
@@ -336,7 +336,7 @@
                                 "valueRange": "[(11,10)..(11,17)]"
                             }
                         },
-                        "contentRange": "[(11,19)..(11,25)]",
+                        "contentRange": "[(11,18)..(11,25)]",
                         "content": [
                             {
                                 "type": "element",

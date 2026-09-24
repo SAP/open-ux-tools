@@ -1,5 +1,85 @@
 # @sap-ux/ui5-test-writer
 
+## 1.15.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.18 → 1.2.19
+
+## 1.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Features
+
+- Reset mock and test data at the start of every generated FE V4 journey. Each journey now calls `iResetMockData({ ServiceUri })` and `iResetTestData()` before `iStartMyApp()` so data manipulations from earlier journeys (or a developer's own tests) do not affect later ones. [[e421860](https://github.com/SAP/open-ux-tools/commit/e421860a11bf3f59a6a4ae4463634dfd924f66ad)]
+
+## 1.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Bug Fixes
+
+- List Report action tests now validate the action parameter dialog and deselect the row after a critical action so following actions start with an empty selection. The per-action filter-bar search is hoisted to a single call before the action block. [[6594642](https://github.com/SAP/open-ux-tools/commit/65946422b7b8b8ba91d75d2e09941e1b6af4e51b)]
+
+## 1.13.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/preview-middleware 1.2.17 → 1.2.18
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/fiori-generator-shared 1.2.17 → 1.2.18
+
+## 1.13.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.16 → 1.2.17
+- @sap-ux/preview-middleware 1.2.16 → 1.2.17
+
+## 1.13.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.15 → 1.2.16
+
+## 1.13.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.14 → 1.2.15
+
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-17
+
+#### Features
+
+- Generate per-tab OPA5 tests for multi-table (Multiple Table Mode) List Reports — columns, toolbar actions, create/delete and contact-card checks now run on each non-custom tab, and object-page navigation is resolved to the tab that exposes the page (by entity set). Contact-card link checks now first call `iExecuteShowHideDetails(true)` so columns hidden in a ResponsiveTable popin become clickable. [[e9f9abe](https://github.com/SAP/open-ux-tools/commit/e9f9abe984b1f1fbae10d27e82edd394ac5026b5)]
+
 ## 1.12.1
 
 ### Patch Changes

@@ -60,6 +60,7 @@ export type JourneyParams = {
     startPages: string[];
     startLR: string | undefined;
     navigatedOP: string | undefined;
+    navigatedOPTabKey?: string;
     hideFilterBar: boolean;
     /**
      * True when the generated journey may use the column-adaptation-dialog OPA API
@@ -68,6 +69,8 @@ export type JourneyParams = {
      * template bucket when the target `ui5Version` is undefined (i.e. newest) or >= 1.152.0.
      */
     supportsColumnAdaptationCheck: boolean;
+    /** OData service URI passed to `iResetMockData({ ServiceUri })` at the start of each journey. */
+    serviceUri: string;
 };
 
 export type FEV4ManifestTarget = {
@@ -216,6 +219,20 @@ export type FilterBarItem = {
     custom: boolean;
 };
 
+/**
+ * Per-tab feature data for a multi-table (Multiple Table Mode) List Report. Each non-custom tab is
+ * checked separately (columns, actions, create/delete, contact cards) against its own table.
+ */
+export type ListReportTab = {
+    key: string;
+    entitySet?: string;
+    tableColumns: TableColumnFeatureData;
+    contactCardColumns: ContactCardField[];
+    toolBarActions: ActionButtonState[];
+    createButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+    deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+};
+
 export type ListReportFeatures = {
     name?: string;
     createButton?: {
@@ -243,6 +260,11 @@ export type ListReportFeatures = {
      * single-table LRs. Used to target a specific tab via `onTable("<key>")`.
      */
     tableIdentifiers?: string[];
+    /**
+     * Per-tab feature data for multi-table List Reports; empty for single-table LRs (in which case the
+     * top-level `tableColumns` / `toolBarActions` / `contactCardColumns` describe the single table).
+     */
+    tabs?: ListReportTab[];
     semanticKey?: {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
@@ -316,6 +338,10 @@ export interface ActionButtonState {
      * The writer emits a follow-up marker comment so the developer can fix the assertion.
      */
     labelUnresolved?: boolean;
+    /**
+     * Names of the action's non-binding parameters.
+     */
+    parameterDialogFields?: string[];
 }
 
 export interface MenuActionState {
