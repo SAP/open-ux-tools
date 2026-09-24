@@ -85,8 +85,9 @@ function computeFallbackLocalePath(basePath: string, locale: string): string {
  * @returns - fallback locale path, or undefined if not configured
  */
 function getI18nAppFallbackLocalePath(manifest: Manifest, appPath: string): string | undefined {
-    if (typeof manifest?.['sap.app']?.i18n === 'object') {
-        const fallbackLocale = (manifest['sap.app'].i18n as { fallbackLocale?: unknown }).fallbackLocale;
+    const i18n = manifest?.['sap.app']?.i18n;
+    if (i18n !== null && typeof i18n === 'object') {
+        const fallbackLocale = (i18n as { fallbackLocale?: unknown }).fallbackLocale;
         if (typeof fallbackLocale === 'string' && fallbackLocale && /^[A-Za-z0-9_-]+$/.test(fallbackLocale)) {
             return computeFallbackLocalePath(appPath, fallbackLocale);
         }
@@ -111,19 +112,20 @@ function getI18nAppPath(manifest: Manifest): string {
     if (typeof manifest?.['sap.app']?.i18n === 'string') {
         return join(manifest['sap.app'].i18n);
     }
-    if (typeof manifest?.['sap.app']?.i18n === 'object') {
+    const i18nObj = manifest?.['sap.app']?.i18n;
+    if (i18nObj !== null && typeof i18nObj === 'object') {
         // bundleName wins over `bundleUrl`
-        if ('bundleName' in manifest['sap.app'].i18n) {
+        if ('bundleName' in i18nObj) {
             // module name is in dot notation; strip appId as a prefix
-            const bundleName = manifest['sap.app'].i18n.bundleName;
+            const bundleName = i18nObj.bundleName;
             const appId = manifest['sap.app'].id ?? '';
             const suffix = appId && bundleName.startsWith(appId) ? bundleName.slice(appId.length) : bundleName;
             const i18nPath = `${join(...suffix.split('.'))}.properties`;
             return join(i18nPath);
         }
 
-        if ('bundleUrl' in manifest['sap.app'].i18n) {
-            return join(manifest['sap.app'].i18n.bundleUrl);
+        if ('bundleUrl' in i18nObj) {
+            return join(i18nObj.bundleUrl);
         }
     }
     // default

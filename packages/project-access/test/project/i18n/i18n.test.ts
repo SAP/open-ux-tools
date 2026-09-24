@@ -177,6 +177,16 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
         expect(result['sap.app.fallbackLocale']).toBeUndefined();
     });
 
+    test('null sap.app.i18n does not crash when resolving fallbackLocale', () => {
+        const manifest = {
+            'sap.app': { i18n: null },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        expect(() => getRelativeI18nPropertiesPaths(manifest)).not.toThrow();
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result['sap.app.fallbackLocale']).toBeUndefined();
+    });
+
     test('Path traversal in sap.app fallbackLocale is rejected', () => {
         const manifest = {
             'sap.app': {
