@@ -44,6 +44,9 @@ async function mergeWithFallback(
         const fallbackBundle = await getPropertiesI18nBundle(fallbackPath, fs);
         if (primaryError?.code === 'ENOENT') {
             delete result.errors![primaryKey];
+            if (Object.keys(result.errors!).length === 0) {
+                result.errors = undefined;
+            }
         }
         // Primary entries take precedence on key collision
         return { ...fallbackBundle, ...current };

@@ -281,7 +281,7 @@ describe('read', () => {
                 models: {}
             });
             expect(result['sap.app']).toEqual(fallbackData);
-            expect(result.errors?.['sap.app']).toBeUndefined();
+            expect(result.errors).toBeUndefined();
         });
 
         test('bundles with sap.app fallback locale — non-ENOENT primary error is preserved, fallback not attempted', async () => {
@@ -313,7 +313,7 @@ describe('read', () => {
                 models: { i18n: { path: modelPath, fallbackLocalePath: modelFallbackPath } }
             });
             expect(result.models['i18n']).toEqual(fallbackData);
-            expect(result.errors?.['models.i18n']).toBeUndefined();
+            expect(result.errors).toBeUndefined();
         });
 
         test('bundles with model fallback locale — non-ENOENT primary error is preserved, fallback not attempted', async () => {
