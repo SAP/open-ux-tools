@@ -177,6 +177,51 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
         expect(result['sap.app.fallbackLocale']).toBeUndefined();
     });
 
+    test('bundleName equal to appId yields default path (empty suffix guard)', () => {
+        const manifest = {
+            'sap.app': {
+                id: 'sample.app',
+                i18n: { bundleName: 'sample.app' }
+            },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result['sap.app']).toEqual(join('i18n/i18n.properties'));
+    });
+
+    test('model bundleName equal to appId yields no model path (empty suffix guard)', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: { bundleName: 'sample.app' },
+                        uri: 'i18n/i18n.properties'
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']).toEqual({ path: join('i18n/i18n.properties') });
+    });
+
+    test('model bundleName without appId resolves using full bundle name', () => {
+        const manifest = {
+            'sap.app': {},
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: { bundleName: 'model.bundle.i18n' }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']).toEqual({ path: join('model/bundle/i18n.properties') });
+    });
+
     test('null sap.app.i18n does not crash when resolving fallbackLocale', () => {
         const manifest = {
             'sap.app': { i18n: null },
