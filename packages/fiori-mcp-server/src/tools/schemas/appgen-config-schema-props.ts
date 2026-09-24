@@ -1,6 +1,7 @@
 import * as z from 'zod';
 import { LATEST_UI5_VERSION } from '../../constant.js';
 import { PACKAGE_NAME, PACKAGE_VERSION } from '../../package-info.js';
+import { VIEW_NAME_REGEX, VIEW_NAME_MAX_LENGTH } from '@sap-ux/project-input-validator';
 
 // Extended type generators API use
 export const PREDEFINED_GENERATOR_VALUES = {
@@ -42,7 +43,42 @@ export const project = z.object({
                 'the generator will refuse to run if it does. ' +
                 'Do NOT pre-create that subfolder; only the parent targetFolder may exist.'
         ),
-    ui5Version: z.string().default(LATEST_UI5_VERSION)
+    ui5Version: z.string().default(LATEST_UI5_VERSION),
+    enableTypeScript: z
+        .boolean()
+        .default(false)
+        .describe(
+            'Generate the application in TypeScript (true) or JavaScript (false, default). ' +
+                'JS↔TS is a whole-project scaffolding decision (views, controllers, tsconfig.json, build). ' +
+                'There is no supported conversion command — this can only be set at generation time.'
+        ),
+    namespace: z
+        .string()
+        .regex(
+            /^(?!sap$)(?!new)[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$/,
+            'Invalid namespace — must be lowercase dot-separated segments, not "sap" or start with "new".'
+        )
+        .optional()
+        .describe(
+            'Application namespace, e.g. "com.mycompany". Lowercase dot-separated segments only. ' +
+                'Must not be "sap" or start with "new". ' +
+                'Combined length of namespace + app name must not exceed 70 characters. ' +
+                'Cannot be changed after generation.'
+        ),
+    viewName: z
+        .string()
+        .min(1)
+        .max(VIEW_NAME_MAX_LENGTH)
+        .regex(
+            VIEW_NAME_REGEX,
+            `View name must start with a letter and contain only letters, digits, underscores, or hyphens (max ${VIEW_NAME_MAX_LENGTH} characters).`
+        )
+        .optional()
+        .describe(
+            'Initial view name (FF_SIMPLE floorplan only). ' +
+                'Sets the physical view and controller filenames at scaffold time. ' +
+                'Renaming these files later breaks manifest routing wiring.'
+        )
 });
 
 export const serviceOdata = z.object({
@@ -114,6 +150,21 @@ export const entityConfig = z.object({
             )
             .meta({ examples: ['SalesOrder', 'PurchaseOrderHeader', 'MyEntity'] })
     }),
+    navigationEntity: z
+        .object({
+            EntitySet: z
+                .string()
+                .describe('The target EntitySet name from the navigation property in OData Metadata.')
+                .meta({ examples: ['Booking', 'SalesOrderItems', 'PurchaseOrderItems'] }),
+            Name: z
+                .string()
+                .describe('The navigation property name on the main entity.')
+                .meta({ examples: ['_Items', 'to_Item', 'Items'] })
+        })
+        .describe(
+            'Optional navigation entity. Defines the sub-entity reachable via a navigation property on the main entity.'
+        )
+        .optional(),
     generateFormAnnotations: z
         .boolean()
         .describe('Whether to generate form annotations for the main entity if none exist.')

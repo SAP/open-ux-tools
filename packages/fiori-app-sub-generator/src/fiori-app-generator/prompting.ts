@@ -27,34 +27,8 @@ import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types/index.js';
 import { Features, defaultPromptValues } from '../types/index.js';
+import { validateViewName } from '@sap-ux/project-input-validator';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils/index.js';
-
-/**
- * Validates the view name.
- * The view name must be a valid identifier and must not be empty.
- * The view name must not exceed 120 characters.
- * The view name must start with a letter and can contain letters, numbers, hyphens, and underscores.
- *
- * @param {string} name The view name to validate.
- * @returns {boolean | string} true if the view name is valid, otherwise a string with the error message
- */
-function validateViewName(name: string): boolean | string {
-    // Validate input is not empty
-    if (!name) {
-        return t('prompts.viewName.validationMessages.viewNameRequired');
-    }
-    // Validate view names matches the allowed pattern
-    const regExp = /^[a-zA-Z]+[a-zA-Z0-9-_]{0,120}$/;
-    const result = regExp.test(name);
-
-    if (name.length > 120) {
-        return t('prompts.viewName.validationMessages.viewNameTooLong');
-    }
-    if (!result) {
-        return t('prompts.viewName.validationMessages.viewNameInvalid');
-    }
-    return true;
-}
 
 const viewNamePromptName = 'viewName';
 export interface ViewNameAnswer {

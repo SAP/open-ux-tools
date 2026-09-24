@@ -1,5 +1,25 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.53
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-input-validator [[2bdadd6](https://github.com/SAP/open-ux-tools/commit/2bdadd61025d3b0c53888c652f07974d2b5dcfae)]
+
+#### Release Date
+
+2026-09-24
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.21 → 3.2.22
+
 ## 0.3.52
 
 ### Patch Changes
