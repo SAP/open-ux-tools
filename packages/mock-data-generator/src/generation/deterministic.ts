@@ -45,8 +45,47 @@ function humanize(value: string): string {
         .replace(/^./, (character) => character.toUpperCase());
 }
 
-function truncate(value: string, maximumLength?: number): string {
-    return maximumLength === undefined ? value : value.slice(0, maximumLength);
+// Words that only say a field is an identifier; they do not name what it identifies.
+const IDENTIFIER_WORDS = new Set(['id', 'uuid', 'guid', 'key', 'code', 'no', 'nr', 'num', 'number']);
+const CODE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+/**
+ * Upper-case initials of the words of a technical name, identifier words left out: `SettlementTypeCode`
+ * gives `ST`, `TravelID` gives `T`.
+ *
+ * @param name technical name
+ * @param maximum most letters to keep
+ * @returns initials, at least one letter
+ */
+function nameInitials(name: string, maximum: number): string {
+    const words = humanize(name)
+        .split(' ')
+        .filter((word) => /^\p{L}/u.test(word));
+    const meaningful = words.filter((word) => !IDENTIFIER_WORDS.has(word.toLowerCase()));
+    const letters = (meaningful.length > 0 ? meaningful : words).map((word) => word[0]?.toUpperCase() ?? '').join('');
+    return (letters || 'X').slice(0, Math.max(1, maximum));
+}
+
+/**
+ * A code-shaped value of at most `maximumLength` characters: initials of the name and a zero-padded
+ * ordinal (`ST001`), or a single letter or digit for one-character columns.
+ *
+ * @param name technical name the initials come from
+ * @param ordinal 1-based ordinal
+ * @param maximumLength declared maximum length, if any
+ * @returns the code
+ */
+function codeShaped(name: string, ordinal: number, maximumLength?: number): string {
+    if (maximumLength !== undefined && maximumLength <= 0) {
+        return '';
+    }
+    if (maximumLength === 1) {
+        return CODE_ALPHABET[(ordinal - 1) % CODE_ALPHABET.length] ?? 'A';
+    }
+    const length = Math.min(maximumLength ?? 6, 6);
+    const prefix = nameInitials(name, Math.max(1, Math.min(3, length - 1)));
+    const digits = Math.max(1, length - prefix.length);
+    return `${prefix}${String(ordinal % 10 ** digits).padStart(digits, '0')}`.slice(0, length);
 }
 
 function uniqueEnumValues(property: SchemaProperty): ReadonlyArray<string | number | boolean> {
@@ -69,7 +108,11 @@ function numericStringKey(length: number, ordinal: number): string {
 
 interface GovernedStringKeyDomain {
     cardinality: number;
-    value: (ordinal: number) => string;
+    /**
+     * The key of an ordinal below `cardinality`. `offset` rotates the domain so unrelated entity sets
+     * do not share keys; formats that ignore it keep one fixed domain.
+     */
+    value: (ordinal: number, offset?: number) => string;
 }
 
 function cappedPower(base: number, exponent: number): number {
@@ -132,7 +175,43 @@ function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDom
         const cardinality = cappedPower(10, length);
         return { cardinality, value: (ordinal) => numericStringKey(length, ordinal) };
     }
-    return undefined;
+    return readableStringKeyDomain(property, words);
+}
+
+/**
+ * The typed key format of a string key no other rule governs, for columns of at least four characters:
+ * an identifier (`...ID`, `...Number`) takes a zero-padded number (`10000001`), anything else a code of
+ * the name's initials and a zero-padded ordinal (`ST0001`). Every format leaves room for at least 1,000
+ * distinct keys; shorter columns keep the compact base-36 keys.
+ *
+ * @param property the key property
+ * @param words the lower-case words of its name
+ * @returns the key domain, or undefined for columns shorter than four characters
+ */
+function readableStringKeyDomain(
+    property: SchemaProperty,
+    words: ReadonlySet<string>
+): GovernedStringKeyDomain | undefined {
+    if (property.maxLength !== undefined && property.maxLength < 4) {
+        return undefined;
+    }
+    const nameWords = [...words];
+    const last = nameWords.at(-1) ?? '';
+    const length = Math.min(property.maxLength ?? 8, 10);
+    if (['id', 'number', 'no', 'nr', 'num'].includes(last)) {
+        // A rotation of the numbers from 10^(length-1): distinct for every ordinal below the cardinality.
+        const span = 9 * 10 ** (length - 1);
+        return {
+            cardinality: cappedPower(10, length - 1),
+            value: (ordinal, offset = 0) => numericStringKey(length, (offset + ordinal) % span)
+        };
+    }
+    const prefix = nameInitials(property.name, Math.min(3, length - 3));
+    const digits = length - prefix.length;
+    return {
+        cardinality: cappedPower(10, digits),
+        value: (ordinal, offset = 0) => `${prefix}${String((offset + ordinal) % 10 ** digits).padStart(digits, '0')}`
+    };
 }
 
 function integerRange(
@@ -194,7 +273,7 @@ function keyValue(property: SchemaProperty, ordinal: number, seed: number, scope
         case 'string': {
             const governed = governedStringKeyDomain(property);
             if (governed) {
-                return governed.value(ordinal);
+                return governed.value(ordinal, stableNumber(`${seed}:${scope}`));
             }
             const seedHex = createHash('sha256').update(`${seed}:${scope}`).digest('hex').slice(0, 16);
             if (property.maxLength === undefined) {
@@ -477,19 +556,35 @@ function keyProfile(
     );
 }
 
+/**
+ * The typed floor of a string: a label of the field (or its entity) with the row number, as long as it
+ * fits the declared length, else a code of the field's initials. Codes and short columns always take
+ * the code shape. Nothing here claims a meaning the field was not given.
+ *
+ * @param entity the entity
+ * @param property the string property
+ * @param rowIndex zero-based row
+ * @param hash stable per-cell hash
+ * @returns the value
+ */
 function stringValue(entity: SchemaEntity, property: SchemaProperty, rowIndex: number, hash: number): string {
     const evidence = `${property.name} ${property.label ?? ''}`.toLocaleLowerCase();
+    const ordinal = rowIndex + 1;
+    const fits = (value: string): boolean => property.maxLength === undefined || value.length <= property.maxLength;
 
+    if (evidence.includes('code') || (property.maxLength !== undefined && property.maxLength <= 4)) {
+        return codeShaped(property.name, evidence.includes('code') ? (hash % 999) + 1 : ordinal, property.maxLength);
+    }
+    let labels: string[];
     if (evidence.includes('name')) {
-        return truncate(`${humanize(entity.name)} ${rowIndex + 1}`, property.maxLength);
+        labels = [`${humanize(entity.name)} ${ordinal}`];
+    } else if (evidence.includes('description')) {
+        labels = [`${humanize(entity.name)} description ${ordinal}`, `Description ${ordinal}`];
+    } else {
+        const words = humanize(property.name).split(' ');
+        labels = [`${words.join(' ')} ${ordinal}`, `${words.at(-1) ?? 'Value'} ${ordinal}`];
     }
-    if (evidence.includes('description')) {
-        return truncate(`${humanize(entity.name)} description ${rowIndex + 1}`, property.maxLength);
-    }
-    if (evidence.includes('code')) {
-        return truncate(`C${String((hash % 999) + 1).padStart(3, '0')}`, property.maxLength);
-    }
-    return truncate(`${humanize(property.name)} ${rowIndex + 1}`, property.maxLength);
+    return labels.find(fits) ?? codeShaped(property.name, ordinal, property.maxLength);
 }
 
 /**
@@ -581,9 +676,12 @@ function typedValue(
             return range.minimum + (hash % (range.maximum - range.minimum + 1));
         }
         case 'decimal': {
+            // Sized by the facets but kept to at most four integer digits and four fraction digits, so
+            // an undeclared or wide decimal reads as an ordinary quantity rather than a 13-digit figure.
             const precision = Math.min(property.precision ?? 8, 15);
-            const scale = Math.min(property.scale ?? 2, precision);
-            const maximumScaled = Math.min(Number.MAX_SAFE_INTEGER, 10 ** precision - 1);
+            const scale = Math.min(property.scale ?? 2, precision, 4);
+            const integerDigits = Math.min(Math.max(0, precision - Math.min(property.scale ?? 2, precision)), 4);
+            const maximumScaled = Math.min(Number.MAX_SAFE_INTEGER, 10 ** (integerDigits + scale) - 1);
             return Number(((hash % (maximumScaled + 1)) / 10 ** scale).toFixed(scale));
         }
         case 'bool':
