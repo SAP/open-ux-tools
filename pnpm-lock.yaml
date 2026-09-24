@@ -2254,6 +2254,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
@@ -2345,6 +2348,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -2772,6 +2778,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store

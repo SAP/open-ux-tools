@@ -115,7 +115,7 @@ export const tools = [
         1. Examine the inputSchema below to understand the EXACT structure required
         2. The input MUST match the schema type 'GeneratorConfigOData' with these TOP-LEVEL properties:
            - floorplan (must be: 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_WORKLIST', 'FE_FEOP', 'FE_FPM', 'FF_SIMPLE', required)
-           - project (object, required)
+           - project (object, required) — includes name, title, description, targetFolder, ui5Version, enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
            - service (object, optional)
            - entityConfig (object, optional)
         3. DO NOT create properties like "config", or any other structure - use ONLY the properties defined in inputSchema
@@ -132,6 +132,9 @@ export const tools = [
            - **IMPORTANT**: On VSCode, if the service requires authentication and is not already stored, ask the user to store it first. Never ask for credentials directly.
 
         2. Parse the metadata.xml to understand the data model (entities, associations).
+           Set mainEntity to the entity that best matches the user's request.
+           If that entity has to-many navigation properties, set navigationEntity using
+           the most relevant child EntitySet and navigation property Name.
 
         3. Generate the application once the config is complete and valid.
 
@@ -143,7 +146,9 @@ export const tools = [
             "title": "My Travel App",
             "description": "Travel management application",
             "targetFolder": "/home/user/projects",
-            "ui5Version": "1.136.7"
+            "ui5Version": "1.136.7",
+            "enableTypeScript": false,
+            "namespace": "com.mycompany"
           },
           "service": {
             "host": "https://my-system.example.com",
@@ -154,6 +159,7 @@ export const tools = [
           },
           "entityConfig": {
             "mainEntity": { "entityName": "Travel" },
+            "navigationEntity": { "EntitySet": "Booking", "Name": "_Booking" },
             "generateFormAnnotations": true,
             "generateLROPAnnotations": true
           }

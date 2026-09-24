@@ -1,5 +1,22 @@
 # @sap-ux/cds-annotation-parser
 
+## 1.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- Migration to a new AST format of the CDS flattened annotations [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.2 → 1.0.3
+- @sap-ux/odata-annotation-core 1.0.2 → 1.0.3
+- @sap-ux/odata-entity-model 1.0.1 → 1.0.1
+- @sap-ux/odata-vocabularies 1.1.1 → 1.1.2
+
 ## 1.0.7
 
 ### Patch Changes

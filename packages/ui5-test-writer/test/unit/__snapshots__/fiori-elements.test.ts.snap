@@ -208,6 +208,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -635,6 +637,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -1039,6 +1043,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -1443,6 +1449,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -1824,6 +1832,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -2163,6 +2173,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             
         });
@@ -2498,6 +2510,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             
         });
@@ -2894,6 +2908,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -3419,6 +3435,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -3923,6 +3941,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesListTarget.iSeeThisPage();
         });
@@ -5787,6 +5807,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -7482,6 +7504,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -9304,6 +9328,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -11132,6 +11158,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -11517,6 +11545,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             
         });
@@ -11890,6 +11920,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -12119,6 +12151,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -12349,6 +12383,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -12578,6 +12614,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -12808,6 +12846,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -13037,6 +13077,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -13244,6 +13286,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -13428,6 +13472,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -13699,6 +13745,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -14008,6 +14056,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -14264,6 +14314,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
     });
@@ -14539,6 +14591,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -14793,6 +14847,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
     });
@@ -15068,6 +15124,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -15322,6 +15380,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
     });
@@ -15587,6 +15647,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -15821,6 +15883,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -16232,6 +16296,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -16643,6 +16709,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -17045,6 +17113,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -17284,6 +17354,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -17514,6 +17586,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -17753,6 +17827,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -17983,6 +18059,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -18212,6 +18290,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -19888,6 +19968,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -21759,6 +21841,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -23620,6 +23704,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();

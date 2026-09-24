@@ -6,7 +6,9 @@ import {
     validateModuleName,
     validateProjectFolder,
     validateNamespace,
-    validateLibModuleName
+    validateLibModuleName,
+    validateViewName,
+    VIEW_NAME_MAX_LENGTH
 } from '../src/ui5/validators.js';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -95,5 +97,39 @@ describe('Test Validator functions', () => {
         expect(validateProjectFolder(join(__dirname, '..'), 'test')).toEqual(
             t('ui5.moduleAlreadyExists', { folderName: 'test' })
         );
+    });
+
+    describe('validateViewName', () => {
+        it('returns true for a valid simple name', () => {
+            expect(validateViewName('Main')).toBe(true);
+            expect(validateViewName('View1')).toBe(true);
+        });
+
+        it('returns true for names with digits, underscores, and hyphens', () => {
+            expect(validateViewName('My-View_1')).toBe(true);
+        });
+
+        it('returns true for a name at the max length', () => {
+            expect(validateViewName('A'.repeat(VIEW_NAME_MAX_LENGTH))).toBe(true);
+        });
+
+        it('returns error when name is empty', () => {
+            expect(validateViewName('')).toBe(t('ui5.viewNameRequired'));
+        });
+
+        it('returns error when name exceeds max length', () => {
+            expect(validateViewName('A'.repeat(VIEW_NAME_MAX_LENGTH + 1))).toBe(
+                t('ui5.viewNameTooLong', { maxLength: VIEW_NAME_MAX_LENGTH })
+            );
+        });
+
+        it.each([
+            ['starts with a digit', '1View'],
+            ['starts with an underscore', '_View'],
+            ['contains a space', 'My View'],
+            ['contains a special character', 'View@1']
+        ])('returns error when name %s', (_label, name) => {
+            expect(validateViewName(name)).toBe(t('ui5.viewNameInvalid'));
+        });
     });
 });
