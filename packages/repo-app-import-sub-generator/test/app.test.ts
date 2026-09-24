@@ -362,6 +362,7 @@ describe('Repo App Download', () => {
         };
         (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.1' }]);
         (validateQfaJsonFile as jest.Mock).mockReturnValue(true);
+        (downloadUtils.hasQfaJson as jest.Mock).mockReturnValue(true);
         (getAdtDeployConfig as jest.Mock).mockResolvedValue({
             target: { url: 'https://test-url.com', client: '100', destination: 'TEST_DESTINATION' },
             app: { name: appId, package: 'MY_PKG', description: '', transport: 'REPLACE_WITH_TRANSPORT' }

@@ -79,7 +79,14 @@ export async function downloadApp(repoName: string): Promise<boolean> {
     const ui5AbapRepository = serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
     RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
-    let downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    let downloadedAppPackage: Buffer | undefined;
+    try {
+        downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    } catch (error) {
+        // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
+        // Fall through to the ADT FileStoreService fallback below.
+        RepoAppDownloadLogger.logger?.debug(`ABAP_REPOSITORY_SRV unavailable, falling back to ADT: ${(error as Error).message}`);
+    }
     if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
         RepoAppDownloadLogger.logger?.debug(t('error.adtFallbackDownload'));
         try {
