@@ -62,6 +62,13 @@ export type JourneyParams = {
     navigatedOP: string | undefined;
     navigatedOPTabKey?: string;
     hideFilterBar: boolean;
+    /**
+     * True when the generated journey may use the column-adaptation-dialog OPA API
+     * (`iOpenColumnAdaptation` / `iCheckAdaptationColumn` / `iConfirmColumnAdaptation`).
+     * That API is only available from UI5 1.152.0, so this is set only for the `latest`
+     * template bucket when the target `ui5Version` is undefined (i.e. newest) or >= 1.152.0.
+     */
+    supportsColumnAdaptationCheck: boolean;
     /** OData service URI passed to `iResetMockData({ ServiceUri })` at the start of each journey. */
     serviceUri: string;
 };

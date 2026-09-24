@@ -39,6 +39,26 @@ const V4_TEMPLATE_BUCKETS = [
     { minVersion: '1.148.0', template: '1.148' }
 ];
 
+// Minimum UI5 version that exposes the column-adaptation-dialog OPA API
+// (`iOpenColumnAdaptation` / `iCheckAdaptationColumn` / `iConfirmColumnAdaptation`).
+const COLUMN_ADAPTATION_MIN_UI5_VERSION = '1.152.0';
+
+/**
+ * Whether the target app can run the column-adaptation-dialog OPA test. The API only exists from
+ * UI5 1.152.0, and is only rendered by the `latest` template bucket. An undefined `ui5Version`
+ * resolves to the `latest` bucket (newest UI5), so it is treated as supporting the API.
+ *
+ * @param templateUi5Version - the resolved template bucket ('1.84' / '1.148' / 'latest')
+ * @param ui5Version - the target app's minimum UI5 version (undefined → latest)
+ * @returns true if the adaptation-dialog test may be generated
+ */
+function supportsColumnAdaptationCheck(templateUi5Version: string, ui5Version?: string): boolean {
+    if (templateUi5Version !== V4_TEMPLATE_LATEST) {
+        return false;
+    }
+    return ui5Version === undefined || compareUI5VersionGte(ui5Version, COLUMN_ADAPTATION_MIN_UI5_VERSION);
+}
+
 function getTemplateUi5Version(ui5Version?: string): string {
     if (!ui5Version) {
         return V4_TEMPLATE_LATEST;
@@ -153,6 +173,7 @@ export async function generateOPAFiles(
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
+        supportsColumnAdaptationCheck: supportsColumnAdaptationCheck(templateUi5Version, options.ui5Version),
         navigatedOPTabKey,
         hideFilterBar: config.hideFilterBar,
         serviceUri: getServiceUri(manifest)
