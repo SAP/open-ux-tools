@@ -31,7 +31,7 @@ describe('flp/sandbox2AfterInit', () => {
         bootstrapEl.id = 'sap-ui-bootstrap';
         documentMock.getElementById.mockReturnValue(bootstrapEl);
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.150.0' });
+        VersionInfo.load.mockResolvedValue({ name: 'SAPUI5 Distribution', version: '1.150.0', libraries: [{ name: 'sap.ui.core', version: '1.150.0' }] });
 
         componentInstanceMock = {};
         lifecycleServiceMock = { attachAppLoaded: jest.fn() };
@@ -145,7 +145,7 @@ describe('flp/sandbox2AfterInit', () => {
 
         test('logs warning when card generator enabled but UI5 < 1.121', async () => {
             bootstrapEl.dataset.openUxPreviewEnableCardGenerator = 'true';
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.0' });
+            VersionInfo.load.mockResolvedValue({ name: 'SAPUI5 Distribution', version: '1.120.0', libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
             const logWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
             await execute();
             expect(addCardGenerationUserActionMock).not.toHaveBeenCalled();
