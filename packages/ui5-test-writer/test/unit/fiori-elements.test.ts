@@ -274,6 +274,68 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('onMessageDialog().iCancel()');
                 expect(journey).toContain('onHeader().iExecuteAction({ service: "TestService", action: "setToBooked"');
             });
+
+            it('deselects the row after a bound critical action so the next action starts clean', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true }
+                ]);
+                // One select before the action, one deselect after cancelling the dialog.
+                const selectCount = (journey.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).length;
+                expect(selectCount).toBe(2);
+                expect(journey).toContain('Deselect the row so the following actions start with an empty selection.');
+            });
+
+            it('hoists a single filter-bar search before the action block for multiple critical actions', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
+                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: false, isCritical: true }
+                ]);
+                // Scope to the actions test block; the separate "Navigate to ObjectPage" block has its own search.
+                const actionsBlock = journey.slice(
+                    journey.indexOf('Check table columns and actions'),
+                    journey.indexOf('Navigate to ObjectPage')
+                );
+                const searchCount = (actionsBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length;
+                expect(searchCount).toBe(1);
+            });
+
+            it('validates the action parameter dialog for a parameterized action and cancels it', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Deduct Discount',
+                        action: 'deductDiscount',
+                        visible: true,
+                        enabled: false,
+                        isCritical: false,
+                        parameterDialogFields: ['discount_percent']
+                    }
+                ]);
+                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Deduct Discount")');
+                expect(journey).toContain(
+                    'onActionDialog().iCheckActionParameterDialogField({ property: "discount_percent" }, undefined, { visible: true })'
+                );
+                expect(journey).toContain('onActionDialog().iCancel()');
+                // A parameter dialog is shown, not the plain confirmation message dialog.
+                expect(journey).not.toContain('onMessageDialog');
+            });
+
+            it('prefers the parameter dialog over the confirmation dialog for a critical parameterized action', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Deduct Discount',
+                        action: 'deductDiscount',
+                        visible: true,
+                        enabled: false,
+                        isCritical: true,
+                        parameterDialogFields: ['discount_percent']
+                    }
+                ]);
+                const activeLines = journey.split('\n').filter((line) => !line.trim().startsWith('//'));
+                expect(
+                    activeLines.some((line) => line.includes('onActionDialog().iCheckActionParameterDialogField'))
+                ).toBe(true);
+                expect(activeLines.some((line) => line.includes('onMessageDialog'))).toBe(false);
+            });
         });
 
         it('No manifest', async () => {

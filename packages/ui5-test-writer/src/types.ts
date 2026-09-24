@@ -329,6 +329,10 @@ export interface ActionButtonState {
      * The writer emits a follow-up marker comment so the developer can fix the assertion.
      */
     labelUnresolved?: boolean;
+    /**
+     * Names of the action's non-binding parameters.
+     */
+    parameterDialogFields?: string[];
 }
 
 export interface MenuActionState {
