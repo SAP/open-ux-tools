@@ -33,7 +33,7 @@ jobs:
                   git config --system core.longpaths true
                   New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+              uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Setup pnpm
@@ -153,7 +153,7 @@ jobs:
                   fetch-depth: 0
                   token: ${{ steps.app-token.outputs.token }}
             - name: Use Node.js 22.x
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+              uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
               with:
                   node-version: 22.x
             - name: Setup pnpm
@@ -206,7 +206,7 @@ jobs:
             - name: Checkout code repository
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
             - name: Use Node.js 22.x
-              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+              uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
               with:
                   node-version: 22.x
             - name: Setup pnpm
