@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Features
+
+- Reset mock and test data at the start of every generated FE V4 journey. Each journey now calls `iResetMockData({ ServiceUri })` and `iResetTestData()` before `iStartMyApp()` so data manipulations from earlier journeys (or a developer's own tests) do not affect later ones. [[e421860](https://github.com/SAP/open-ux-tools/commit/e421860a11bf3f59a6a4ae4463634dfd924f66ad)]
+
 ## 1.14.0
 
 ### Minor Changes
