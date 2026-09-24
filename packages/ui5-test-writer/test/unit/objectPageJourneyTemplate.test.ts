@@ -15,12 +15,18 @@ function renderJourney(bodySections: unknown[]): string {
     const out = join(__dirname, 'out.gen.js');
     fs.copyTpl(templatePath, out, {
         name: 'GLLineItem',
-        navigationParents: { parentLRName: '', parentLRTableIdentifier: undefined, parentOPs: [] },
+        navigationParents: {
+            parentLRName: '',
+            parentLRViewKey: undefined,
+            parentLRViewIsDefault: undefined,
+            parentOPs: []
+        },
         hideFilterBar: false,
         headerActions: [],
         headerSections: [],
         editButton: undefined,
         headerTitle: undefined,
+        serviceUri: '/odata/v4/TestService/',
         bodySections
     });
     return fs.read(out);

@@ -120,7 +120,9 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
-|  new      | [sap-no-single-facet-in-collection](docs/rules/sap-no-single-facet-in-collection.md) | Ensures `UI.CollectionFacet` is not used when it contains only a single `UI.ReferenceFacet`. | | ✅ |
+|  new      | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
+|  10.11.0  | [sap-no-deep-collection-facets](docs/rules/sap-no-deep-collection-facets.md) | Ensures `UI.CollectionFacet` elements are not nested at third level or deeper. | | ✅ |
+|  10.10.0  | [sap-no-single-facet-in-collection](docs/rules/sap-no-single-facet-in-collection.md) | Ensures `UI.CollectionFacet` is not used when it contains only a single `UI.ReferenceFacet`. | | ✅ |
 |  10.8.0   | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
 |  10.7.6   | [sap-no-live-mode](docs/rules/sap-no-live-mode.md) | Ensures that live mode is not enabled. | | ✅ |
 |  10.2.0   | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description text property referenced using the `Common.Text` annotation has a meaningful `Common.Label` annotation. It must not be a generic value such as "Name" or "Description", and not the same label as the `ID` property. | | ✅ |

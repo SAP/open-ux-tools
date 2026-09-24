@@ -1,5 +1,123 @@
 # @sap-ux/create
 
+## 1.4.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.14.0 → 1.15.0
+
+## 1.4.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.13.4 → 1.14.0
+
+## 1.4.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- apply i18n text review feedback for clarity and consistency [[c84c818](https://github.com/SAP/open-ux-tools/commit/c84c818790fe1fadb7ff020e67f06efc68873b6d)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.57 → 1.0.58
+- @sap-ux/preview-middleware 1.2.17 → 1.2.18
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/flp-config-inquirer 1.0.57 → 1.0.58
+- @sap-ux/app-config-writer 1.1.23 → 1.1.24
+- @sap-ux/ui5-test-writer 1.13.3 → 1.13.4
+- @sap-ux/abap-deploy-config-writer 1.0.27 → 1.0.28
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/cap-config-writer 1.0.39 → 1.0.40
+- @sap-ux/inquirer-common 1.0.43 → 1.0.44
+- @sap-ux/mockserver-config-writer 1.0.19 → 1.0.20
+- @sap-ux/odata-service-writer 1.0.22 → 1.0.23
+- @sap-ux/project-input-validator 1.0.19 → 1.0.20
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/abap-deploy-config-inquirer 2.0.48 → 2.0.49
+
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- system management CLI improvements
+
+    - Add `--skip-credentials-prompt` flag for non-basic auth
+    - Add i18n localization
+    - Implement HTTP connection check with error handling
+    - Add smart URL lookup (prompt when multiple systems match)
+    - Add "Clear Credentials" option
+    - Fix re-entrance ticket authentication message display [[77ac0e2](https://github.com/SAP/open-ux-tools/commit/77ac0e2629ef9e95e72723c5a7a31c28aa2a1405)]
+
+## 1.3.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.42 → 1.0.43
+- @sap-ux/abap-deploy-config-inquirer 2.0.47 → 2.0.48
+- @sap-ux/cap-config-writer 1.0.38 → 1.0.39
+- @sap-ux/flp-config-inquirer 1.0.56 → 1.0.57
+- @sap-ux/ui5-test-writer 1.13.2 → 1.13.3
+- @sap-ux/adp-tooling 1.0.56 → 1.0.57
+- @sap-ux/preview-middleware 1.2.16 → 1.2.17
+- @sap-ux/app-config-writer 1.1.23 → 1.1.23
+
+## 1.3.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.15 → 1.2.16
+- @sap-ux/adp-tooling 1.0.55 → 1.0.56
+- @sap-ux/app-config-writer 1.1.23 → 1.1.23
+- @sap-ux/ui5-test-writer 1.13.1 → 1.13.2
+- @sap-ux/flp-config-inquirer 1.0.55 → 1.0.56
+
+## 1.3.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.46 → 2.0.47
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+- @sap-ux/adp-tooling 1.0.54 → 1.0.55
+- @sap-ux/flp-config-inquirer 1.0.54 → 1.0.55
+- @sap-ux/preview-middleware 1.2.14 → 1.2.15
+- @sap-ux/app-config-writer 1.1.23 → 1.1.23
+- @sap-ux/ui5-test-writer 1.13.0 → 1.13.1
+
+## 1.3.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.12.1 → 1.13.0
+
 ## 1.3.24
 
 ### Patch Changes

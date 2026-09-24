@@ -7,9 +7,12 @@ import { qfaJsonFileName } from '../../src/utils/constants.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { AppDownloadType } from '../../src/app/types.js';
+import { EventName } from '../../src/telemetryEvents/index.js';
 
 const mockDownloadApp = jest.fn() as jest.Mock;
 const mockHasQfaJson = jest.fn<() => boolean>().mockReturnValue(true);
+const mockSendTelemetry = jest.fn().mockResolvedValue(undefined) as jest.Mock;
+const mockCreateTelemetryData = jest.fn().mockReturnValue({}) as jest.Mock;
 
 jest.unstable_mockModule('../../src/utils/logger', () => {
     const mock = {
@@ -22,6 +25,11 @@ jest.unstable_mockModule('../../src/utils/logger', () => {
 jest.unstable_mockModule('../../src/utils/download-utils', () => ({
     downloadApp: mockDownloadApp,
     hasQfaJson: mockHasQfaJson
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    sendTelemetry: mockSendTelemetry,
+    TelemetryHelper: { createTelemetryData: mockCreateTelemetryData }
 }));
 
 // Pre-import actual inquirer-common before mocking
@@ -196,6 +204,7 @@ describe('validateAppSelection', () => {
         } as unknown as AppWizard;
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
+        mockDownloadApp.mockResolvedValue(true);
         mockHasQfaJson.mockReturnValue(false);
         await validateAppSelection(answers, appList, undefined, mockAppWizard);
         expect(mockAppWizard.showError).toHaveBeenCalledWith(
@@ -207,12 +216,38 @@ describe('validateAppSelection', () => {
     it('should return true if a valid app is selected and download is successful', async () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue(true);
         mockHasQfaJson.mockReturnValue(true);
         const result = await validateAppSelection(answers, appList);
 
         expect(mockDownloadApp).toHaveBeenCalledWith('testRepo');
         expect(result).toBe(true);
+    });
+
+    it('should send legacy system telemetry and return a help link if download returns no data', async () => {
+        const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
+        const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
+        mockDownloadApp.mockResolvedValue(false);
+        mockGetHelpLink.mockResolvedValue(mockHelpLink);
+
+        const result = await validateAppSelection(
+            answers,
+            appList,
+            undefined,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSendTelemetry).toHaveBeenCalledWith(
+            EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
+            expect.any(Object)
+        );
+        expect(mockGetHelpLink).toHaveBeenCalledWith(
+            HELP_NODES.ABAP_REPO_APP_DOWNLOAD_FAILED,
+            ERROR_TYPE.INTERNAL_SERVER_ERROR,
+            t('error.appDownloadFailed')
+        );
+        expect(result).toBe(mockHelpLink);
     });
 
     it('should return an error message if download fails', async () => {
@@ -236,7 +271,7 @@ describe('validateAppSelection', () => {
     it('should skip qfa.json check and return true for ABAP repository download type', async () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue(true);
         (hasQfaJson as jest.Mock).mockReturnValue(false);
 
         const result = await validateAppSelection(
