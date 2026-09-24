@@ -58,6 +58,13 @@ sap.ui.define([
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Active Template", { enabled: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Deduct Discount");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Deduct Discount", { enabled: false });
+            // "Deduct Discount" is conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the action parameter dialog.
+            // When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iSelectRows(0);
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Deduct Discount");
+            // Then.onTheTravelListGenerated.onActionDialog().iCheckActionParameterDialogField({ property: "discount_percent" }, undefined, { visible: true });
+            // When.onTheTravelListGenerated.onActionDialog().iCancel();
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iSelectRows(0);
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Check Travel");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Check Travel", { enabled: false });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Set To New");

@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Bug Fixes
+
+- List Report action tests now validate the action parameter dialog and deselect the row after a critical action so following actions start with an empty selection. The per-action filter-bar search is hoisted to a single call before the action block. [[6594642](https://github.com/SAP/open-ux-tools/commit/65946422b7b8b8ba91d75d2e09941e1b6af4e51b)]
+
 ## 1.13.4
 
 ### Patch Changes
