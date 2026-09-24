@@ -17,7 +17,9 @@ import type {
     SftCandidateRelevanceVerifier,
     SftFieldRequest,
     SftGenerationStatistics,
-    SftGenerator
+    SftGenerator,
+    SftResourceOutcome,
+    SftSkippedResource
 } from '../types.js';
 import { coherencePropertyNames } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
@@ -651,6 +653,7 @@ export async function applySftGeneration(
     const generated: Record<string, ReadonlyArray<MockDataRow>> = {};
     const diagnostics: MockDataGeneratorDiagnostic[] = [];
     const assignments: SftAssignmentStatistics[] = [];
+    const skippedResources: SftSkippedResource[] = [];
     const relevanceVerifiedResources = new Set<string>();
     let attempts = 0;
     let parsedResponses = 0;
@@ -720,6 +723,14 @@ export async function applySftGeneration(
         }
         if (circuitOpen) {
             generated[resourceName] = fallbackRows;
+            skippedResources.push(
+                Object.freeze({
+                    resource: resourceName,
+                    reason: 'circuit-open' as const,
+                    rowCount: fallbackRows.length,
+                    fields: Object.freeze(fields.map(({ name }) => name))
+                })
+            );
             if (!circuitDiagnosticEmitted) {
                 diagnostics.push(
                     Object.freeze({
@@ -746,6 +757,14 @@ export async function applySftGeneration(
             generated[resourceName] = fallbackRows;
             remainingEntities -= 1;
             budgetSkipped += 1;
+            skippedResources.push(
+                Object.freeze({
+                    resource: resourceName,
+                    reason: 'budget' as const,
+                    rowCount: fallbackRows.length,
+                    fields: Object.freeze(fields.map(({ name }) => name))
+                })
+            );
             continue;
         }
         eligibleSlots += fallbackRows.length * fields.length;
@@ -890,12 +909,25 @@ export async function applySftGeneration(
             }
             relevanceCircuitOpen = relevanceCircuitOpen || unverifiedCandidates;
             attempts += 1;
+            const timedOut =
+                typeof error === 'object' &&
+                error !== null &&
+                'code' in error &&
+                error.code === 'SFT_INFERENCE_TIMEOUT';
+            let failureKind: 'unverified' | 'timeout' | 'failed' = 'failed';
+            if (unverifiedCandidates) {
+                failureKind = 'unverified';
+            } else if (timedOut) {
+                failureKind = 'timeout';
+            }
             assignments.push(
                 Object.freeze({
                     resource: resourceName,
                     entity: entity.name,
                     rowCount: fallbackRows.length,
                     parsed: false,
+                    outcome: failureKind,
+                    rowsWithoutCandidate: fallbackRows.length,
                     fields: Object.freeze(
                         fields.map(({ name }) =>
                             Object.freeze({ name, eligibleSlots: fallbackRows.length, acceptedSlots: 0 })
@@ -912,11 +944,6 @@ export async function applySftGeneration(
                 acceptedSlots: 0,
                 durationMs: performance.now() - entityStartedAt
             });
-            const timedOut =
-                typeof error === 'object' &&
-                error !== null &&
-                'code' in error &&
-                error.code === 'SFT_INFERENCE_TIMEOUT';
             // A verifier that declines every candidate means the proposed display values could not
             // be shown to be relevant. The deterministic rows are kept and the resource is reported
             // as unverified, which is visible in `validation.domainMeaning`; rejecting the whole
@@ -936,12 +963,6 @@ export async function applySftGeneration(
                     message: 'Fine-tuned generation failed; deterministic fallback remains active.'
                 }
             } as const;
-            let failureKind: keyof typeof failures = 'failed';
-            if (unverifiedCandidates) {
-                failureKind = 'unverified';
-            } else if (timedOut) {
-                failureKind = 'timeout';
-            }
             const failure = failures[failureKind];
             diagnostics.push(Object.freeze({ ...failure, severity: 'warning', target: resourceName }));
             continue;
@@ -955,6 +976,8 @@ export async function applySftGeneration(
                 .map((property) => [property.name, property])
         );
         const acceptedByField = new Map(fields.map(({ name }) => [name, 0]));
+        const invalidByField = new Map(fields.map(({ name }) => [name, 0]));
+        let rowsWithoutCandidate = 0;
         const generatedRows: MockDataRow[] = [];
         const generatedDomainRows: MockDataRow[] = [];
         const generatedKeys = new Set<string>();
@@ -962,36 +985,44 @@ export async function applySftGeneration(
         for (const [rowIndex, fallbackRow] of fallbackRows.entries()) {
             const candidateRow: unknown = output.rows[rowIndex];
             if (!isPlainRecord(candidateRow)) {
+                rowsWithoutCandidate += 1;
                 generatedRows.push(fallbackRow);
                 continue;
+            }
+            if (Object.keys(candidateRow).length === 0) {
+                rowsWithoutCandidate += 1;
             }
             if (options.pipeline === 'semantic-v2') {
                 const requestedNames = fields.map(({ name }) => name).sort();
                 const candidateNames = Object.keys(candidateRow).sort();
-                const groupIsValid =
+                const namesMatch =
                     requestedNames.length === candidateNames.length &&
-                    requestedNames.every((name, index) => name === candidateNames[index]) &&
-                    fields.every(({ name }) => {
-                        const property = fieldByName.get(name);
-                        const role = property ? semanticRoleCandidate(entity, property) : undefined;
-                        const narrative = role ? semanticRoleDefinition(role)?.sftEligible === true : false;
-                        const linkedText = entity.properties.some((owner) => owner.links?.text === name);
-                        const value = candidateRow[name];
-                        if (
-                            linkedText &&
-                            (typeof value !== 'string' ||
-                                !/\p{L}/u.test(value) ||
-                                entity.properties.some(
-                                    (owner) =>
-                                        owner.links?.text === name &&
-                                        normalizedText(String(candidateRow[owner.name] ?? fallbackRow[owner.name])) ===
-                                            normalizedText(value)
-                                ))
-                        ) {
-                            return false;
-                        }
-                        return property !== undefined && validCandidate(property, value, narrative || linkedText);
-                    });
+                    requestedNames.every((name, index) => name === candidateNames[index]);
+                const invalidFields = fields.filter(({ name }) => {
+                    const property = fieldByName.get(name);
+                    const role = property ? semanticRoleCandidate(entity, property) : undefined;
+                    const narrative = role ? semanticRoleDefinition(role)?.sftEligible === true : false;
+                    const linkedText = entity.properties.some((owner) => owner.links?.text === name);
+                    const value = candidateRow[name];
+                    if (
+                        linkedText &&
+                        (typeof value !== 'string' ||
+                            !/\p{L}/u.test(value) ||
+                            entity.properties.some(
+                                (owner) =>
+                                    owner.links?.text === name &&
+                                    normalizedText(String(candidateRow[owner.name] ?? fallbackRow[owner.name])) ===
+                                        normalizedText(value)
+                            ))
+                    ) {
+                        return false;
+                    }
+                    return !(property !== undefined && validCandidate(property, value, narrative || linkedText));
+                });
+                if (namesMatch) {
+                    invalidFields.forEach(({ name }) => invalidByField.set(name, (invalidByField.get(name) ?? 0) + 1));
+                }
+                const groupIsValid = namesMatch && invalidFields.length === 0;
                 if (!groupIsValid) {
                     rejectedSlots += fields.length;
                     generatedRows.push(fallbackRow);
@@ -1028,6 +1059,8 @@ export async function applySftGeneration(
                     row[propertyName] = candidate;
                     acceptedByField.set(propertyName, (acceptedByField.get(propertyName) ?? 0) + 1);
                     acceptedSlots += 1;
+                } else if (candidate !== undefined) {
+                    invalidByField.set(propertyName, (invalidByField.get(propertyName) ?? 0) + 1);
                 }
             }
             generatedRows.push(Object.freeze(row));
@@ -1074,18 +1107,27 @@ export async function applySftGeneration(
                     'Not all unresolved slots received valid model output; fields retain structural fallback or incomplete synthetic reference rows are omitted.'
             });
         }
+        let outcome: SftResourceOutcome = 'rejected';
+        if (entityAcceptedSlots >= eligibleRowCount * fields.length) {
+            outcome = 'accepted';
+        } else if (entityAcceptedSlots > 0) {
+            outcome = 'partial';
+        }
         assignments.push(
             Object.freeze({
                 resource: resourceName,
                 entity: entity.name,
                 rowCount: publishedRowCount,
                 parsed: true,
+                outcome,
+                rowsWithoutCandidate,
                 fields: Object.freeze(
                     fields.map(({ name }) =>
                         Object.freeze({
                             name,
                             eligibleSlots: eligibleRowCount,
-                            acceptedSlots: acceptedByField.get(name) ?? 0
+                            acceptedSlots: acceptedByField.get(name) ?? 0,
+                            invalidSlots: invalidByField.get(name) ?? 0
                         })
                     )
                 )
@@ -1116,7 +1158,8 @@ export async function applySftGeneration(
             acceptedSlots,
             rejectedSlots,
             fallbackSlots: Math.max(0, eligibleSlots - acceptedSlots),
-            assignments: Object.freeze(assignments)
+            assignments: Object.freeze(assignments),
+            ...(skippedResources.length > 0 ? { skippedResources: Object.freeze(skippedResources) } : {})
         })
     });
 }

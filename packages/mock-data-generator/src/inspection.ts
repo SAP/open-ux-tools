@@ -11,7 +11,8 @@ import type {
     MockDataGeneratorInspectionV1,
     MockDataGeneratorResult,
     MockDataServiceRequest,
-    SemanticClassification
+    SemanticClassification,
+    ValueTier
 } from './types.js';
 
 function canonicalJson(value: unknown): string {
@@ -87,7 +88,8 @@ function decision(
     rawClassification: SemanticClassification | undefined,
     detectedClassification: SemanticClassification | undefined,
     finalClassification: SemanticClassification | undefined,
-    pipeline: ServiceInspectionExecution['pipeline']
+    pipeline: ServiceInspectionExecution['pipeline'],
+    valueTier?: MockDataGeneratorFieldDecisionInspection['valueTier']
 ): MockDataGeneratorFieldDecisionInspection {
     const threshold = finalClassification?.routeThreshold ?? 0.5;
     let acceptedRole: string | undefined;
@@ -147,6 +149,7 @@ function decision(
                 .filter((candidate) => candidate.role !== acceptedRole)
                 .map((candidate) => Object.freeze({ ...candidate }))
         ),
+        ...(valueTier ? { valueTier } : {}),
         evidence: Object.freeze({
             ...(property.label ? { label: property.label } : {}),
             ...(property.description ? { description: property.description } : {}),
@@ -166,6 +169,8 @@ export interface ServiceInspectionExecution {
     result: MockDataGeneratorResult;
     graph?: SchemaGraph;
     rawClassifications: ReadonlyMap<string, SemanticClassification>;
+    /** Published cells per property (`semanticPropertyKey`) by writing tier. */
+    fieldTiers?: ReadonlyMap<string, Readonly<{ tier: ValueTier; cells: number; modelCells: number }>>;
     detectedClassifications: ReadonlyMap<string, SemanticClassification>;
     classifications: ReadonlyMap<string, SemanticClassification>;
     pipeline: 'legacy' | 'semantic-v2';
@@ -221,7 +226,8 @@ export function buildServiceInspection(
                     execution.rawClassifications.get(key),
                     execution.detectedClassifications.get(key),
                     execution.classifications.get(key),
-                    execution.pipeline
+                    execution.pipeline,
+                    execution.fieldTiers?.get(key)
                 );
             })
         ) ?? [];
@@ -339,6 +345,9 @@ export function buildServiceInspection(
                 : [])
         ]),
         diagnostics: execution.result.diagnostics,
+        statistics: execution.result.statistics,
+        ...(execution.result.tiers ? { tiers: execution.result.tiers } : {}),
+        ...(execution.result.typedFloor ? { typedFloor: execution.result.typedFloor } : {}),
         metrics: Object.freeze({
             timingsMs: execution.timingsMs,
             rssBytes: execution.rssBytes

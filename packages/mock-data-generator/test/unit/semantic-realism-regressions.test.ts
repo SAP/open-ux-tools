@@ -484,7 +484,8 @@ describe('semantic realism regressions', () => {
             assignments: [
                 expect.objectContaining({
                     resource: 'Record',
-                    fields: [{ name: 'OpaqueText', eligibleSlots: 2, acceptedSlots: 1 }]
+                    outcome: 'partial',
+                    fields: [{ name: 'OpaqueText', eligibleSlots: 2, acceptedSlots: 1, invalidSlots: 1 }]
                 })
             ]
         });

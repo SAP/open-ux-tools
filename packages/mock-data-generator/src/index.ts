@@ -38,7 +38,7 @@ import { finalizeSemanticServiceWorld } from './generation/service-world.js';
 import { validateTemporalPlan } from './generation/temporal-plan.js';
 import { parseEdmx } from './schema/edmx.js';
 import { parseCsn } from './schema/csn.js';
-import { classifySchema } from './semantics/classifier.js';
+import { classifySchema, semanticPropertyKey } from './semantics/classifier.js';
 import { routingStatistics } from './semantics/routing-statistics.js';
 import { arbitrateSemanticClassifications, resolveSemanticClassifications } from './semantics/lexical-fallback.js';
 import { assertMetadataInputWithinLimit } from './metadata-limit.js';
@@ -209,7 +209,8 @@ function dominantTier(tally: ValueTierTally, resourceName: string, propertyName:
  * @param targets the entity sets the caller asked for
  * @param resources the published rows
  * @param statistics the fine-tuned tier's own per-field accounting
- * @returns generated value slots by writing tier, and the typed floor by cause
+ * @returns generated value slots by writing tier, the typed floor by cause, and each published
+ * property's split between the fine-tuned tier and the tier that wrote its remaining cells
  */
 function valueTierStatistics(
     graph: SchemaGraph | undefined,
@@ -217,7 +218,11 @@ function valueTierStatistics(
     targets: ReadonlyArray<MockDataTarget>,
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>,
     statistics: SftGenerationStatistics
-): { tiers: MockDataGeneratorTierStatistics; typedFloor: MockDataGeneratorTypedFloorCauses } {
+): {
+    tiers: MockDataGeneratorTierStatistics;
+    typedFloor: MockDataGeneratorTypedFloorCauses;
+    fieldTiers: ReadonlyMap<string, Readonly<{ tier: ValueTier; cells: number; modelCells: number }>>;
+} {
     const accepted = new Map<string, number>();
     for (const assignment of statistics.assignments) {
         for (const field of assignment.fields) {
@@ -234,6 +239,7 @@ function valueTierStatistics(
         structural: 0
     };
     const causes = { keys: 0, booleans: 0, protocol: 0, addressable: 0 };
+    const fieldTiers = new Map<string, Readonly<{ tier: ValueTier; cells: number; modelCells: number }>>();
     for (const { name } of targets) {
         const rows = resources[name] ?? [];
         if (rows.length === 0) {
@@ -246,6 +252,10 @@ function valueTierStatistics(
             const tier = dominantTier(tally, name, propertyName);
             counts.model += written;
             counts[tier] += remaining;
+            fieldTiers.set(
+                semanticPropertyKey(name, propertyName),
+                Object.freeze({ tier, cells: rows.length, modelCells: written })
+            );
             if (tier !== VALUE_TIER.typed) {
                 continue;
             }
@@ -263,7 +273,8 @@ function valueTierStatistics(
     }
     return {
         tiers: Object.freeze({ ...counts, slots: Object.values(counts).reduce((sum, count) => sum + count, 0) }),
-        typedFloor: Object.freeze(causes)
+        typedFloor: Object.freeze(causes),
+        fieldTiers
     };
 }
 
@@ -1048,6 +1059,7 @@ async function executeServiceGeneration(
             : undefined;
     const learnedComponents = runtimeFingerprints(options, activeRuntime);
     const requestFingerprint = createGenerationFingerprint(request, options, learnedComponents);
+    const tierStatistics = valueTierStatistics(graph, valueTiers, generationTargets, resources, sftStatistics);
     const result = Object.freeze({
         resources,
         ...(semanticRoles
@@ -1066,7 +1078,8 @@ async function executeServiceGeneration(
         }),
         statistics: Object.freeze({ sft: sftStatistics }),
         routing: routingStatistics(graph, generationTargets, detectedClassifications, classifications),
-        ...valueTierStatistics(graph, valueTiers, generationTargets, resources, sftStatistics)
+        tiers: tierStatistics.tiers,
+        typedFloor: tierStatistics.typedFloor
     });
     assertGeneratedResultWithinLimit(result);
     if (options.pipeline === 'semantic-v2') {
@@ -1119,6 +1132,7 @@ async function executeServiceGeneration(
                 : {}),
             ...(activeRuntime.sft ? { sft: { fingerprint: activeRuntime.sft.fingerprint } } : {})
         },
+        fieldTiers: tierStatistics.fieldTiers,
         timingsMs: Object.freeze(timingsMs),
         rssBytes: Object.freeze({ before: rssBefore, after: process.memoryUsage().rss })
     });
@@ -1201,6 +1215,8 @@ export type {
     SftFieldRequest,
     SftFieldStatistics,
     SftGenerationStatistics,
+    SftResourceOutcome,
+    SftSkippedResource,
     SftGenerationInput,
     SftGenerationOutput,
     SftGenerator

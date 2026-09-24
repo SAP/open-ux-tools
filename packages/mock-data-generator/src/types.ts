@@ -293,7 +293,19 @@ export interface SftFieldStatistics {
     name: string;
     eligibleSlots: number;
     acceptedSlots: number;
+    /** Rows whose candidate for this field failed its constraints or the placeholder checks. */
+    invalidSlots?: number;
 }
+
+/**
+ * How one resource's model attempt ended.
+ * - `accepted`: every eligible slot received a model value.
+ * - `partial`: some slots received a model value.
+ * - `rejected`: the model answered, but no candidate passed validation.
+ * - `unverified`: a linked-text or generated-domain candidate was declined by the relevance check.
+ * - `timeout` / `failed`: the model call timed out or failed.
+ */
+export type SftResourceOutcome = 'accepted' | 'partial' | 'rejected' | 'unverified' | 'timeout' | 'failed';
 
 export interface SftAssignmentStatistics {
     resource: string;
@@ -301,6 +313,18 @@ export interface SftAssignmentStatistics {
     rowCount: number;
     parsed: boolean;
     fields: ReadonlyArray<SftFieldStatistics>;
+    outcome?: SftResourceOutcome;
+    /** Rows for which the model returned no complete candidate. */
+    rowsWithoutCandidate?: number;
+}
+
+/** A resource with fields for the model that was not attempted. */
+export interface SftSkippedResource {
+    resource: string;
+    /** `budget`: the service budget could not fund another attempt; `circuit-open`: skipped after a runtime failure. */
+    reason: 'budget' | 'circuit-open';
+    rowCount: number;
+    fields: ReadonlyArray<string>;
 }
 
 export interface SftGenerationStatistics {
@@ -313,6 +337,8 @@ export interface SftGenerationStatistics {
     /** Final eligible slots not filled by an accepted model value. */
     fallbackSlots: number;
     assignments: ReadonlyArray<SftAssignmentStatistics>;
+    /** Resources with fields for the model that were left to the deterministic tiers without an attempt. */
+    skippedResources?: ReadonlyArray<SftSkippedResource>;
 }
 
 export interface MockDataGeneratorStatistics {
@@ -437,6 +463,11 @@ export interface MockDataGeneratorFieldDecisionInspection {
     providerState: 'available' | 'legacy-unverified' | 'not-selected';
     providerRejectionReason?: MockDataGeneratorAbstentionReason;
     rejectedCandidates: ReadonlyArray<Readonly<{ role: string; confidence: number }>>;
+    /**
+     * Published cells of this property by the tier that wrote them: `modelCells` came from the
+     * fine-tuned tier and the remaining cells from `tier`. Absent for resources that were not generated.
+     */
+    valueTier?: Readonly<{ tier: ValueTier; cells: number; modelCells: number }>;
     evidence: Readonly<{
         label?: string;
         description?: string;
@@ -498,6 +529,10 @@ export interface MockDataGeneratorInspectionV1 {
     generatedValues?: MockDataGeneratorResult['resources'];
     invariants: ReadonlyArray<MockDataGeneratorInvariantInspection>;
     diagnostics: MockDataGeneratorResult['diagnostics'];
+    /** The generation's fine-tuned tier statistics, value slots by writing tier and typed-floor causes. */
+    statistics?: MockDataGeneratorStatistics;
+    tiers?: MockDataGeneratorTierStatistics;
+    typedFloor?: MockDataGeneratorTypedFloorCauses;
     metrics: Readonly<{
         timingsMs: Readonly<Record<string, number>>;
         rssBytes: Readonly<{ before: number; after: number }>;

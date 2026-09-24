@@ -653,7 +653,9 @@ describe('mockserver data generator public API', () => {
                     entity: 'Record',
                     rowCount: 2,
                     parsed: true,
-                    fields: [{ name: 'OpaqueText', eligibleSlots: 2, acceptedSlots: 2 }]
+                    outcome: 'accepted',
+                    rowsWithoutCandidate: 0,
+                    fields: [{ name: 'OpaqueText', eligibleSlots: 2, acceptedSlots: 2, invalidSlots: 0 }]
                 }
             ]
         });

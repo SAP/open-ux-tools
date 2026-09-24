@@ -1,0 +1,14 @@
+[
+    "cap-js-process-cap-process-bookshop-annotationservice",
+    "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:CE_API_MAINTENANCEORDER_0002",
+    "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:IssueService",
+    "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:MAINTENANCETASKLIST_0001",
+    "external-eval:sap-hub-evaluation-cohort-v33-2026-07-24:sap-s4-CE_SALESORDERWITHOUTCHARGE_0001-v1",
+    "finance-cash-public",
+    "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-analyticsservice",
+    "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-presentationservice",
+    "sap-btp-resource-consumption-monitor-cap-resource-consumption-monitor-retrievalservice",
+    "sap-event-hub-cap-samples-cap-event-hub-api-business-partner",
+    "sap-fiori-tools-products-review-edmx",
+    "sap-fiori-tools-sepmra-local-edmx"
+]
