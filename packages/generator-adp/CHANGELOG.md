@@ -1,5 +1,14 @@
 # @sap-ux/generator-adp
 
+## 1.0.65
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+- @sap-ux/adp-tooling 1.0.58 → 1.0.59
+
 ## 1.0.64
 
 ### Patch Changes

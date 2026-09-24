@@ -17,7 +17,7 @@ import type {
 } from './types.js';
 import { SupportedPageTypes, ValidationError, DotFileExtension } from './types.js';
 import { t } from './i18n.js';
-import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
+import { FileName, DirName, getWebappPath, updatePackageScript, getMainService } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils.js';
 import { addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils.js';
@@ -154,7 +154,8 @@ export async function generateOPAFiles(
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
         navigatedOPTabKey,
-        hideFilterBar: config.hideFilterBar
+        hideFilterBar: config.hideFilterBar,
+        serviceUri: getServiceUri(manifest)
     };
 
     const writeContext: WriteContext = {
@@ -468,6 +469,17 @@ function getAppFromManifest(manifest: Manifest, forcedAppID?: string): { appID: 
     }
 
     return { appID, appPath };
+}
+
+/**
+ * Resolves the OData service URI used by `iResetMockData({ ServiceUri })` at the start of each journey.
+ *
+ * @param manifest - the app descriptor of the app
+ * @returns the main service's URI, or an empty string if it cannot be resolved
+ */
+function getServiceUri(manifest: Manifest): string {
+    const mainService = getMainService(manifest);
+    return (mainService && manifest['sap.app']?.dataSources?.[mainService]?.uri) || '';
 }
 
 /**

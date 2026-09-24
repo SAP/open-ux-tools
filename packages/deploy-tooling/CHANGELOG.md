@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+
 ## 1.0.47
 
 ### Patch Changes

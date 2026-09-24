@@ -139,6 +139,7 @@ describe('executeFunctionality', () => {
             'floorplan': 'FE_LROP',
             'project': {
                 'description': 'Description for App 1',
+                'enableTypeScript': false,
                 'name': 'app1',
                 'sapux': true,
                 'targetFolder': join(testOutputDir, 'app1'),
