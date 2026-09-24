@@ -253,6 +253,28 @@ describe('Test function createApplicationAccess()', () => {
         );
     });
 
+    test('createI18nEntriesAtPath forwards project root and entries to standalone function (mocked)', async () => {
+        mockCreateI18nEntriesAtPath.mockResolvedValue(true);
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot);
+        const entries = [{ key: 'k1', value: 'v1' }];
+
+        await appAccess.createI18nEntriesAtPath('i18n/i18n.properties', entries);
+
+        expect(mockCreateI18nEntriesAtPath).toHaveBeenCalledWith(appRoot, 'i18n/i18n.properties', entries, undefined);
+    });
+
+    test('createI18nEntriesAtPath passes mem-fs-editor to standalone function (mocked)', async () => {
+        mockCreateI18nEntriesAtPath.mockResolvedValue(true);
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const entries = [{ key: 'k1', value: 'v1' }];
+
+        await appAccess.createI18nEntriesAtPath('i18n/i18n.properties', entries);
+
+        expect(mockCreateI18nEntriesAtPath).toHaveBeenCalledWith(appRoot, 'i18n/i18n.properties', entries, memFs);
+    });
+
     test('Update package.json of standalone app (mocked)', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
         const updateFileContent = { sapux: false } as unknown as Package;
