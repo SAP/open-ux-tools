@@ -1,0 +1,103 @@
+{
+    "date": "2026-09-24",
+    "record": "dev.21 release: concept head (head B) and fine-tuned row model rebuilt from the published MockGen dataset only; role head, relevance head and encoder unchanged (VSIX 1.62.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.21",
+        "integrity": "sha512-M3m3BKfpR1ebi+ON/B9Ale7vS/xbRZzvG7ZEUByuceTvDXgrEq75rD9Lb263pc2wcbrBkzQclOP72HoyXIygEw==",
+        "distSha256": "539a2c58894fc0a9b2b5a0432bd5d27d81f60d91b16a6858bde486f6cd5f7e73",
+        "modelRevision": "9981c4179ffebbbf0b2858b22702eb24c84b3f479b5e42c52b3d928be8f51d1d",
+        "generatorLogicVersion": 25,
+        "npmPublication": {
+            "published": true,
+            "distTag": "latest",
+            "tarballDownloadedAndVerified": true
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.62.0.vsix",
+        "version": "1.62.0",
+        "target": "linux-x64",
+        "sha256": "8f65db5bb1e15962c09bb63fb1a8d3f50a4d45c57e14b4503dba323d46fcaf2a",
+        "workerSha256": "83147523554936b1cae1dbab2242c0cd152459152401015f36ec18811b01a321",
+        "supersedes": "1.61.0 (dev.20)"
+    },
+    "publishedDataset": {
+        "gitCommit": "45ee63eeaeed18156683a0d6c6c049ba3da98536",
+        "conceptsTrainSha256": "6fd28cba4200fc06d21f4ff4806864bea923c2105581afa73fa79bade63a0d7a",
+        "conceptExamplesTrainSha256": "1c32a5461c4a9f3b147aa9d74257e8988d7525beba63a5c6c3a6f3376a4ef832",
+        "sftTrainSha256": "bb6396bd85137b2eb254ff77d0d847e5b052cf5bed1d4a0f9f85e633ea76837d",
+        "sftValidationSha256": "9cf951495ae5ddba3e14643aa69ddfb5de1f7fce28211b0a009ecdd187316a0e"
+    },
+    "models": {
+        "headA": "unchanged from dev.20; the published-data candidate failed the sealed gates and is not shipped",
+        "relevanceHead": "unchanged",
+        "encoder": "unchanged",
+        "headB": {
+            "source": "published concepts (names, value kinds, banks) and concept examples (prototypes) only",
+            "sha256": "e343424d9aff7c59b02ec10aeaf74eae088d8bce4ec63d74a42a239a975d7960",
+            "concepts": 656,
+            "byKind": { "code": 250, "identifier": 317, "name": 65, "text": 24 },
+            "dropped": {
+                "count": 270,
+                "byKind": { "code-text": 211, "number": 34, "decimal": 25 },
+                "reason": "the published concept catalogue carries no code/text pairs or numeric ranges"
+            },
+            "acceptance": {
+                "global": { "similarity": 0.75, "margin": 0.02 },
+                "perConcept": "25th percentile of the similarity of its own published examples to its prototype",
+                "learnedLayer": "not used (it was fitted to the previous prototypes)"
+            },
+            "judgedPrecision": {
+                "method": "runtime parseConceptHead/matchConcept on the judged tune/confirm fit halves (two-of-three majority)",
+                "tune": "94.3% (205 accepted, 11 on pairs never judged)",
+                "confirm": "93.5% (140 accepted, 2 on pairs never judged)",
+                "dev20Reference": { "tune": "95.1% (384 accepted)", "confirm": "94.9% (274 accepted)" }
+            }
+        },
+        "rowModel": {
+            "source": "LoRA fine-tune of HuggingFaceTB/SmolLM2-135M-Instruct (revision 12fd25f7) on the published SFT train split only, int8 ONNX",
+            "componentVersion": "published-smollm2-135m-int8",
+            "fingerprint": "83519afdf60360c717088655dbbdb7e1cb9ee526e4d7a94691952f05ca562d51",
+            "modelSha256": "eaaa5aa94d67b9ec26e6289ba45b3df575ea4c4aea680b92624bfef25ef7c6fd",
+            "validationVersusDev20": {
+                "records": 694,
+                "parsed": { "dev20": "58.8%", "dev21": "57.1%" },
+                "keysMatchPrompt": { "dev20": "11.7%", "dev21": "20.9%" },
+                "fullyValid": { "dev20": "3.5%", "dev21": "7.1%" },
+                "typeViolationsPer1000Cells": { "dev20": 54, "dev21": 23 },
+                "maxLengthViolationsPer1000Cells": { "dev20": 63, "dev21": 83 },
+                "judgedPlausible": { "dev20": "5%", "dev21": "19%" }
+            }
+        }
+    },
+    "tiers": {
+        "files": {
+            "dev20": "2026-09-24-tier-benchmark-dev20.json (generated 2026-09-24 from the published dev.20 tarball)",
+            "dev21": "2026-09-24-tier-benchmark-dev21.json"
+        },
+        "before": { "recognised": 54.0, "model": 6.18, "typed": 34.56, "declared": 5.26, "authored": 0 },
+        "after": { "recognised": 51.73, "model": 6.89, "typed": 36.12, "declared": 5.26, "authored": 0 },
+        "headBOnlyWithDev20RowModel": { "recognised": 51.73, "model": 7.17, "typed": 35.84 },
+        "servicesWithMoreRecognisedOrModelCells": 31,
+        "servicesWithFewer": 43,
+        "failures": 0
+    },
+    "robustnessSweep": {
+        "services": 2300,
+        "settings": "createMockDataGenerator({ executionMode: 'data-editor' }), 10 rows, LLM budget 1 ms",
+        "dev20": { "ok": 2261, "noTargets": 38, "errors": 1 },
+        "dev21": { "ok": 2261, "noTargets": 38, "errors": 1 },
+        "newFailures": 0,
+        "typedShareOfCommonSlots": { "dev20": "40.02%", "dev21": "44.47%" }
+    },
+    "checks": {
+        "packageTests": "538/538",
+        "lintErrors": 0,
+        "checkRelease": "pass",
+        "validateChangesets": "pass",
+        "editorTests": "58/58",
+        "vsixVerify": "pass",
+        "editorContractCheck": "3/3 valid (ALP sales V2, Travel V2, CashBank V4) against the downloaded npm tarball"
+    }
+}
