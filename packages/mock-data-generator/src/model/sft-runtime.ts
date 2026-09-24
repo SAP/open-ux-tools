@@ -8,7 +8,34 @@ export interface SftGrammarField {
     valueKind: JsonValueKind;
     nullable: boolean;
     maxLength?: number;
+    /**
+     * Type-exact number format. When set, a number takes no exponent, `integer` numbers take digits
+     * only, and the digit counts and range below bound the value; when absent, any JSON number is
+     * accepted.
+     */
+    numberFormat?: SftNumberFormat;
+    /**
+     * Within this many characters of `maxLength`, the string may finish its current word but not
+     * start another one it would have to cut off. 0 or absent disables the steering.
+     */
+    steerWithin?: number;
 }
+
+export interface SftNumberFormat {
+    integer: boolean;
+    /** Digits before the decimal point. */
+    maxIntegerDigits: number;
+    /** Digits after the decimal point; 0 for integers. */
+    maxFractionDigits: number;
+    minimum?: number;
+    maximum?: number;
+}
+
+/**
+ * JSON punctuation the runtime enforces outside strings: `any` whitespace (legacy), `compact`
+ * (`{"A":"x","B":1}`) or `spaced` (`{"A": "x", "B": 1}`, the separators of the training rows).
+ */
+export type JsonSeparators = 'any' | 'compact' | 'spaced';
 
 export interface ConstrainedTextGenerationInput {
     prompt: string;
@@ -19,10 +46,22 @@ export interface ConstrainedTextGenerationInput {
     repetitionPenalty: number;
     noRepeatNgramSize: number;
     maxNewTokens: number;
+    /** JSON punctuation enforced outside strings; `any` when absent. */
+    separators?: JsonSeparators;
 }
 
 export interface ConstrainedTextGenerator {
     generate(input: ConstrainedTextGenerationInput, signal: AbortSignal): Promise<string>;
+    /**
+     * One completion of the same prompt per seed, decoded together. A row that does not complete
+     * within `maxNewTokens`, or before `signal` aborts, is undefined; cancellation returns the rows
+     * completed so far instead of throwing.
+     */
+    generateBatch?(
+        input: ConstrainedTextGenerationInput,
+        seeds: ReadonlyArray<number>,
+        signal: AbortSignal
+    ): Promise<ReadonlyArray<string | undefined>>;
     dispose?(): Promise<void> | void;
 }
 
@@ -42,7 +81,34 @@ export interface CreatePilotSftGeneratorOptions {
     maxFieldsPerPrompt?: number;
     /** Prompt format supported by the model artifact, independently of the planner contract. */
     promptContractVersion?: 1 | 2;
+    /**
+     * How the runtime calls the model (see `RUNTIME_CONTRACT_2`). 1, the default, is the original
+     * contract: free whitespace, any JSON number, one call with every field under the semantic
+     * planner, rows decoded one at a time, and only complete rows returned.
+     */
+    runtimeContract?: 1 | 2;
+    /** Contract 2 only: punctuation outside strings; `spaced` when absent. */
+    separators?: Exclude<JsonSeparators, 'any'>;
 }
+
+/**
+ * Runtime contract 2, measured as parts of performance plan v2 (P1):
+ * - canonical separators, fed by the runtime instead of sampled;
+ * - type-exact numbers: integers take digits only within their type's range, decimals at most
+ *   their precision and scale, no exponent;
+ * - near a string's maximum length the model may finish a word but not start one;
+ * - under the semantic planner, at most `maxFieldsPerPrompt` (default 8) fields per call, coupled
+ *   fields kept in one call, and the token bound derived from the grammar;
+ * - all rows of a call that share one prompt are decoded together;
+ * - rows are returned with the fields that completed, for per-field acceptance by the caller.
+ */
+export const RUNTIME_CONTRACT_2_MAX_FIELDS_PER_CALL = 8;
+// Within this many characters of the maximum length a string stops starting words (at most a
+// quarter of the length, so short codes are unaffected).
+const MAXIMUM_STEERING_CHARACTERS = 8;
+const DEFAULT_DECIMAL_INTEGER_DIGITS = 15;
+const DEFAULT_DECIMAL_FRACTION_DIGITS = 6;
+const MAXIMUM_SAFE_INTEGER_DIGITS = 15;
 
 const SYSTEM_PROMPT =
     'You generate realistic, internally consistent SAP business mock data as JSON. ' +
@@ -172,6 +238,98 @@ export function renderPilotSftPrompt(input: SftGenerationInput): string {
     );
 }
 
+/**
+ * The type-exact number format of an integer or decimal field.
+ *
+ * @param field requested field
+ * @returns number format, or undefined for non-numeric fields
+ */
+export function numberFormatOf(field: SftFieldRequest): SftNumberFormat | undefined {
+    if (field.primitiveType === 'int') {
+        const bound = Math.max(Math.abs(field.minimum ?? 0), Math.abs(field.maximum ?? 0));
+        return Object.freeze({
+            integer: true,
+            maxIntegerDigits:
+                bound > 0
+                    ? Math.min(MAXIMUM_SAFE_INTEGER_DIGITS, String(Math.trunc(bound)).length)
+                    : MAXIMUM_SAFE_INTEGER_DIGITS,
+            maxFractionDigits: 0,
+            ...(field.minimum === undefined ? {} : { minimum: field.minimum }),
+            ...(field.maximum === undefined ? {} : { maximum: field.maximum })
+        });
+    }
+    if (field.primitiveType !== 'decimal') {
+        return undefined;
+    }
+    const scale = field.scale ?? DEFAULT_DECIMAL_FRACTION_DIGITS;
+    const integerDigits =
+        field.precision === undefined ? DEFAULT_DECIMAL_INTEGER_DIGITS : field.precision - (field.scale ?? 0);
+    if (integerDigits <= 0) {
+        // Every digit is a fraction digit: the integer part is 0.
+        return Object.freeze({
+            integer: false,
+            maxIntegerDigits: 1,
+            maxFractionDigits: scale,
+            maximum: 1 - 10 ** -Math.max(1, scale)
+        });
+    }
+    return Object.freeze({
+        integer: false,
+        maxIntegerDigits: Math.min(MAXIMUM_SAFE_INTEGER_DIGITS, integerDigits),
+        maxFractionDigits: scale
+    });
+}
+
+/**
+ * The grammar of one call's fields.
+ *
+ * @param fields requested fields, in prompt order
+ * @param exact contract 2: type-exact numbers and length steering
+ * @returns grammar fields
+ */
+export function grammarFields(fields: ReadonlyArray<SftFieldRequest>, exact: boolean): ReadonlyArray<SftGrammarField> {
+    return Object.freeze(
+        fields.map((field) => {
+            const numberFormat = exact ? numberFormatOf(field) : undefined;
+            const steerWithin =
+                exact && field.maxLength !== undefined
+                    ? Math.min(MAXIMUM_STEERING_CHARACTERS, Math.floor(field.maxLength / 4))
+                    : 0;
+            return Object.freeze({
+                name: field.name,
+                valueKind: valueKind(field),
+                nullable: field.nullable,
+                ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength }),
+                ...(numberFormat ? { numberFormat } : {}),
+                ...(steerWithin > 0 ? { steerWithin } : {})
+            });
+        })
+    );
+}
+
+/**
+ * An upper bound on the tokens of a completion under a grammar: every token carries at least one
+ * character, so the longest text the grammar admits bounds the tokens. Escapes count two characters.
+ *
+ * @param grammar the call's grammar fields
+ * @returns token bound
+ */
+export function grammarTokenBound(grammar: ReadonlyArray<SftGrammarField>): number {
+    let characters = 2;
+    for (const field of grammar) {
+        // `"Name": ` plus `, ` between fields.
+        characters += field.name.length + 6;
+        if (field.valueKind === 'string') {
+            characters += 2 + 2 * (field.maxLength ?? 80);
+        } else if (field.numberFormat) {
+            characters += 2 + field.numberFormat.maxIntegerDigits + field.numberFormat.maxFractionDigits;
+        } else {
+            characters += 24;
+        }
+    }
+    return characters;
+}
+
 function valueKind(field: SftFieldRequest): JsonValueKind {
     if (field.primitiveType === 'int' || field.primitiveType === 'decimal') {
         return 'number';
@@ -186,13 +344,44 @@ function rowSeed(seed: number, entityName: string, rowIndex: number, chunkKey: s
     return createHash('sha256').update(`${seed}:${entityName}:${rowIndex}:${chunkKey}`).digest().readUInt32BE(0);
 }
 
-function chunkFields(
+/**
+ * Split fields into calls of at most `maximum` fields, in field order, keeping each coupled group in
+ * one call (a group larger than `maximum` is a call of its own).
+ *
+ * @param fields requested fields
+ * @param maximum fields per call
+ * @param groups coupled field names
+ * @returns calls, each a list of fields
+ */
+export function chunkFields(
     fields: ReadonlyArray<SftFieldRequest>,
-    maximum: number
+    maximum: number,
+    groups: ReadonlyArray<ReadonlyArray<string>> = []
 ): ReadonlyArray<ReadonlyArray<SftFieldRequest>> {
+    const groupOf = new Map<string, number>();
+    groups.forEach((group, index) => group.forEach((name) => groupOf.set(name, index)));
+    const units: SftFieldRequest[][] = [];
+    const emitted = new Set<number>();
+    for (const field of fields) {
+        const group = groupOf.get(field.name);
+        if (group === undefined) {
+            units.push([field]);
+        } else if (!emitted.has(group)) {
+            emitted.add(group);
+            units.push(fields.filter(({ name }) => groupOf.get(name) === group));
+        }
+    }
     const chunks: ReadonlyArray<SftFieldRequest>[] = [];
-    for (let start = 0; start < fields.length; start += maximum) {
-        chunks.push(Object.freeze(fields.slice(start, start + maximum)));
+    let current: SftFieldRequest[] = [];
+    for (const unit of units) {
+        if (current.length > 0 && current.length + unit.length > maximum) {
+            chunks.push(Object.freeze(current));
+            current = [];
+        }
+        current.push(...unit);
+    }
+    if (current.length > 0) {
+        chunks.push(Object.freeze(current));
     }
     return Object.freeze(chunks);
 }
@@ -290,8 +479,12 @@ function canSplitIncompleteCompletion(error: unknown, signal: AbortSignal): bool
 export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions): SftGenerator {
     const budgetMs = options.budgetMs ?? 90_000;
     const promptContractVersion = options.promptContractVersion ?? 1;
+    const runtimeContract = options.runtimeContract ?? 1;
     if (promptContractVersion !== 1 && promptContractVersion !== 2) {
         throw new TypeError('SFT prompt contract version must be 1 or 2');
+    }
+    if (runtimeContract !== 1 && runtimeContract !== 2) {
+        throw new TypeError('SFT runtime contract must be 1 or 2');
     }
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
@@ -302,6 +495,8 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
     ) {
         throw new TypeError('SFT maximum fields per prompt must be a positive integer');
     }
+    const exact = runtimeContract === 2;
+    const separators: JsonSeparators = exact ? (options.separators ?? 'spaced') : 'any';
     return Object.freeze({
         fingerprint: options.fingerprint,
         generate: async (input: SftGenerationInput, signal: AbortSignal) => {
@@ -310,56 +505,72 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                 throw new TypeError('SFT request budget must be positive');
             }
             const context = abortContext(signal, Math.min(budgetMs, requestBudgetMs));
-            const maxFieldsPerPrompt =
-                input.contractVersion === 2
-                    ? Math.max(1, input.fields.length)
-                    : (options.maxFieldsPerPrompt ?? (input.fields.length >= 100 ? 8 : 3));
-            const fieldChunks = chunkFields(input.fields, maxFieldsPerPrompt);
+            let maxFieldsPerPrompt: number;
+            if (input.contractVersion !== 2) {
+                maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? (input.fields.length >= 100 ? 8 : 3);
+            } else if (exact) {
+                maxFieldsPerPrompt = options.maxFieldsPerPrompt ?? RUNTIME_CONTRACT_2_MAX_FIELDS_PER_CALL;
+            } else {
+                maxFieldsPerPrompt = Math.max(1, input.fields.length);
+            }
+            const fieldChunks = chunkFields(
+                input.fields,
+                maxFieldsPerPrompt,
+                exact ? (input.coupledFieldGroups ?? []) : []
+            );
             const rows: Array<Record<string, JsonValue>> = Array.from({ length: input.rowCount }, () => ({}));
             let attempts = 0;
             let parsedResponses = 0;
+            const promptFor = (fields: ReadonlyArray<SftFieldRequest>, rowIndex: number): string => {
+                const fixedRow = input.fixedRows?.[rowIndex];
+                return renderPilotSftPrompt({
+                    ...input,
+                    contractVersion: promptContractVersion,
+                    fields,
+                    ...(fixedRow === undefined ? {} : { fixedRows: [fixedRow] })
+                });
+            };
+            const generationInput = (
+                fields: ReadonlyArray<SftFieldRequest>,
+                prompt: string,
+                seed: number
+            ): ConstrainedTextGenerationInput => {
+                const grammar = grammarFields(fields, exact);
+                return Object.freeze({
+                    prompt,
+                    grammar,
+                    seed,
+                    ...options.sampling,
+                    ...(exact ? { maxNewTokens: grammarTokenBound(grammar), separators } : {})
+                });
+            };
+            const parse = (completion: string, fields: ReadonlyArray<SftFieldRequest>): Record<string, JsonValue> => {
+                const partial = firstJsonObject(completion);
+                if (JSON.stringify(Object.keys(partial)) !== JSON.stringify(fields.map(({ name }) => name))) {
+                    throw new TypeError('SFT completion keys do not match the requested grammar');
+                }
+                return partial;
+            };
             const generateFields = async (
                 fields: ReadonlyArray<SftFieldRequest>,
                 rowIndex: number,
                 chunkKey: string
             ): Promise<Record<string, JsonValue>> => {
                 context.signal.throwIfAborted();
-                const fixedRow = input.fixedRows?.[rowIndex];
-                const prompt = renderPilotSftPrompt({
-                    ...input,
-                    contractVersion: promptContractVersion,
-                    fields,
-                    ...(fixedRow === undefined ? {} : { fixedRows: [fixedRow] })
-                });
-                const grammar = Object.freeze(
-                    fields.map((field) =>
-                        Object.freeze({
-                            name: field.name,
-                            valueKind: valueKind(field),
-                            nullable: field.nullable,
-                            ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength })
-                        })
-                    )
-                );
-                const expectedKeys = fields.map(({ name }) => name);
                 attempts += 1;
                 try {
                     const completion = await abortable(
                         options.textGenerator.generate(
-                            Object.freeze({
-                                prompt,
-                                grammar,
-                                seed: rowSeed(input.seed, input.entityName, rowIndex, chunkKey),
-                                ...options.sampling
-                            }),
+                            generationInput(
+                                fields,
+                                promptFor(fields, rowIndex),
+                                rowSeed(input.seed, input.entityName, rowIndex, chunkKey)
+                            ),
                             context.signal
                         ),
                         context.signal
                     );
-                    const partial = firstJsonObject(completion);
-                    if (JSON.stringify(Object.keys(partial)) !== JSON.stringify(expectedKeys)) {
-                        throw new TypeError('SFT completion keys do not match the requested grammar');
-                    }
+                    const partial = parse(completion, fields);
                     parsedResponses += 1;
                     return partial;
                 } catch (error) {
@@ -376,8 +587,59 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                     throw error;
                 }
             };
+            // Rows share one prompt when no per-row context is rendered; they are then decoded together.
+            const batchable = (fields: ReadonlyArray<SftFieldRequest>): boolean =>
+                exact &&
+                options.textGenerator.generateBatch !== undefined &&
+                input.rowCount > 1 &&
+                Array.from({ length: input.rowCount }, (_unused, rowIndex) => promptFor(fields, rowIndex)).every(
+                    (prompt, _index, all) => prompt === all[0]
+                );
+            const generateBatch = async (fields: ReadonlyArray<SftFieldRequest>, chunkKey: string): Promise<void> => {
+                const generateRows = options.textGenerator.generateBatch;
+                if (!generateRows) {
+                    throw new TypeError('SFT text generator does not decode rows together');
+                }
+                context.signal.throwIfAborted();
+                const seeds = Array.from({ length: input.rowCount }, (_unused, rowIndex) =>
+                    rowSeed(input.seed, input.entityName, rowIndex, chunkKey)
+                );
+                attempts += input.rowCount;
+                const completions = await generateRows.call(
+                    options.textGenerator,
+                    generationInput(fields, promptFor(fields, 0), seeds[0] ?? input.seed),
+                    seeds,
+                    context.signal
+                );
+                completions.forEach((completion, rowIndex) => {
+                    if (completion === undefined) {
+                        return;
+                    }
+                    try {
+                        const partial = parse(completion, fields);
+                        parsedResponses += 1;
+                        Object.assign(rows[rowIndex] ?? {}, partial);
+                    } catch {
+                        // An unparseable row keeps its fallback values; the others are kept.
+                    }
+                });
+            };
             try {
                 for (const [chunkIndex, fields] of fieldChunks.entries()) {
+                    if (batchable(fields)) {
+                        try {
+                            await generateBatch(fields, String(chunkIndex));
+                        } catch (error) {
+                            signal.throwIfAborted();
+                            if (!context.signal.aborted) {
+                                throw error;
+                            }
+                        }
+                        if (context.signal.aborted) {
+                            break;
+                        }
+                        continue;
+                    }
                     for (let rowIndex = 0; rowIndex < input.rowCount; rowIndex += 1) {
                         try {
                             const partial = await generateFields(fields, rowIndex, String(chunkIndex));
@@ -417,7 +679,9 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                     rows: Object.freeze(
                         rows.map((row) =>
                             Object.freeze(
-                                input.fields.every(({ name }) => Object.prototype.hasOwnProperty.call(row, name))
+                                // Contract 2 returns the fields that completed; the caller accepts them one by one.
+                                exact ||
+                                    input.fields.every(({ name }) => Object.prototype.hasOwnProperty.call(row, name))
                                     ? row
                                     : {}
                             )

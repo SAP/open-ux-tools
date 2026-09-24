@@ -203,28 +203,30 @@ describe('standalone MockGen API', () => {
         }
     });
 
-    test('leaves project JSON unchanged when an evidence-poor linked domain lacks a verifier', async () => {
+    test('writes deterministic values with a warning when an evidence-poor linked domain lacks a verifier', async () => {
         const root = await mkdtemp(join(tmpdir(), 'mockgen-project-'));
         const dataDirectory = join(root, 'webapp', 'localService', 'mockdata');
-        const original = '[{"Code":"original","Description":"authored"}]';
         try {
             await mkdir(dataDirectory, { recursive: true });
-            await writeFile(join(dataDirectory, 'BookingStatus.json'), original);
             const travelMetadata = await readFile(new URL('./travel-v2.metadata.xml', import.meta.url), 'utf8');
-            await expect(
-                generateProjectData({
-                    projectRoot: root,
-                    dataDirectory: 'webapp/localService/mockdata',
-                    request: {
-                        metadata: { format: 'edmx', content: travelMetadata },
-                        service: { urlPath: '/travel', odataVersion: '2.0' },
-                        targets: [{ name: 'BookingStatus', kind: 'entity-set' }],
-                        existingData: {}
-                    },
-                    options: { mode: 'deterministic', seed: 1, rowsPerEntity: 2 }
-                })
-            ).rejects.toThrow('SFT_CANDIDATE_VERIFIER_UNAVAILABLE');
-            expect(await readFile(join(dataDirectory, 'BookingStatus.json'), 'utf8')).toBe(original);
+            const written = await generateProjectData({
+                projectRoot: root,
+                dataDirectory: 'webapp/localService/mockdata',
+                request: {
+                    metadata: { format: 'edmx', content: travelMetadata },
+                    service: { urlPath: '/travel', odataVersion: '2.0' },
+                    targets: [{ name: 'BookingStatus', kind: 'entity-set' }],
+                    existingData: {}
+                },
+                options: { mode: 'deterministic', seed: 1, rowsPerEntity: 2 }
+            });
+            expect(written.generation.diagnostics).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({ code: 'SFT_CANDIDATE_VERIFIER_UNAVAILABLE', target: 'BookingStatus' })
+                ])
+            );
+            const rows = JSON.parse(await readFile(join(dataDirectory, 'BookingStatus.json'), 'utf8')) as unknown[];
+            expect(rows).toHaveLength(2);
         } finally {
             await rm(root, { recursive: true, force: true });
         }

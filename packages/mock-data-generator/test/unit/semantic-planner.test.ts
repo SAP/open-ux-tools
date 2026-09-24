@@ -258,7 +258,7 @@ describe('semantic-v2 arbitration', () => {
         expect(new Set(rows.map((row) => `${row.BankCountry}:${row.BankInternalID}`)).size).toBe(5);
     });
 
-    it('offers unresolved narrative and numeric fields to SFT and rejects an invalid group atomically', async () => {
+    it('offers unresolved narrative and numeric fields to SFT and accepts each valid field on its own', async () => {
         const narrativeMetadata = `<?xml version="1.0"?>
 <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
   <edmx:DataServices>
@@ -318,11 +318,20 @@ describe('semantic-v2 arbitration', () => {
         const sftInput = (sft.generate as jest.Mock).mock.calls[0][0] as { fields: Array<Record<string, unknown>> };
         expect(sftInput.fields).toContainEqual(expect.objectContaining({ name: 'Amount' }));
         expect(sftInput.fields).not.toContainEqual(expect.objectContaining({ semanticRole: 'unknown' }));
-        expect(result.resources.Reviews).toEqual(baseline.resources.Reviews);
-        expect(result.statistics.sft.acceptedSlots).toBe(0);
+        // The placeholder description keeps its fallback; the valid amount is accepted on its own.
+        expect(result.resources.Reviews).toEqual([
+            { ...baseline.resources.Reviews[0], Notes: 'Notes 1', Amount: 12.25 }
+        ]);
+        expect(result.statistics.sft.assignments[0]?.fields.find(({ name }) => name === 'Description')).toMatchObject({
+            acceptedSlots: 0,
+            invalidSlots: 1
+        });
+        expect(result.statistics.sft.assignments[0]?.fields.find(({ name }) => name === 'Amount')).toMatchObject({
+            acceptedSlots: 1
+        });
     });
 
-    it('rejects a semantic-v2 SFT instruction echo as a whole sibling group', async () => {
+    it('rejects a row with a semantic-v2 SFT instruction echo as a whole and other placeholders field by field', async () => {
         const metadata = `<?xml version="1.0"?>
 <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
   <edmx:DataServices>
@@ -382,8 +391,16 @@ describe('semantic-v2 arbitration', () => {
         const baseline = await generateService(request, options, { classifier });
         const result = await generateService(request, options, { classifier, sft });
 
-        expect(result.resources.Reviews).toEqual(baseline.resources.Reviews);
-        expect(result.statistics.sft.acceptedSlots).toBe(0);
+        // The two echo rows keep every fallback value; the URL and path descriptions are rejected on
+        // their own, so their rows still take the model's notes.
+        expect(result.resources.Reviews.slice(0, 2)).toEqual(baseline.resources.Reviews.slice(0, 2));
+        expect(result.resources.Reviews.slice(2)).toEqual(
+            baseline.resources.Reviews.slice(2).map((row) => ({
+                ...row,
+                Notes: 'A customer requested a revised itinerary.'
+            }))
+        );
+        expect(result.statistics.sft.acceptedSlots).toBe(3);
     });
 
     it('derives parent counts and Has flags from final child relationships', async () => {

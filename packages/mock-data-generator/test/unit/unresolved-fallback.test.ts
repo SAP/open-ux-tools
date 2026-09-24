@@ -22,9 +22,17 @@ const request = {
 const options = { pipeline: 'semantic-v2', seed: 42, rowsPerEntity: 2 } as const;
 
 describe('LLM fallback for unresolved semantics', () => {
-    it('does not publish deterministic placeholders for an evidence-poor linked domain', async () => {
-        await expect(generateService({ ...request, targets: request.targets.slice(0, 2) }, options)).rejects.toThrow(
-            'SFT_CANDIDATE_VERIFIER_UNAVAILABLE'
+    it('keeps deterministic values for an evidence-poor linked domain and reports them as unverified', async () => {
+        const result = await generateService({ ...request, targets: request.targets.slice(0, 2) }, options);
+        expect(result.resources.PhaseCodes).toHaveLength(2);
+        expect(result.diagnostics).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    code: 'SFT_CANDIDATE_VERIFIER_UNAVAILABLE',
+                    severity: 'warning',
+                    target: 'PhaseCodes'
+                })
+            ])
         );
     });
 

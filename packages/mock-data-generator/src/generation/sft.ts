@@ -41,11 +41,8 @@ class CandidateRelevanceError extends Error {
     }
 }
 
-class CandidateVerifierUnavailableError extends Error {
-    constructor(resource?: string) {
-        super(`SFT_CANDIDATE_VERIFIER_UNAVAILABLE${resource ? `: ${resource}` : ''}`);
-    }
-}
+const VERIFIER_UNAVAILABLE_MESSAGE =
+    'No model or independent relevance check is available for this generated code/text domain; its deterministic values are kept and its meaning is unverified.';
 
 export interface SftRunResult {
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
@@ -80,6 +77,38 @@ function normalizedText(value: string): string {
 
 function escapedRegExp(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+/**
+ * Whether a proposed value repeats the prompt's instructions instead of holding content. Such a value
+ * shows the model lost track of the task, so the other values of its row are not trusted either.
+ *
+ * @param property the field
+ * @param value proposed value
+ * @returns true for an instruction echo
+ */
+function isInstructionEcho(property: SchemaProperty, value: unknown): boolean {
+    if (typeof value !== 'string') {
+        return false;
+    }
+    const normalized = normalizedText(value);
+    if (
+        /\b(?:return|output|provide|respond|generate)\b.{0,80}\bjson\s+array\b/u.test(normalized) ||
+        /\bjson\s+array\b.{0,100}\b(?:with|containing)\b.{0,80}\b(?:object|row|key|field)s?\b/u.test(normalized)
+    ) {
+        return true;
+    }
+    const fieldPattern = [property.name, property.label, property.description]
+        .filter((candidate): candidate is string => Boolean(candidate))
+        .map((candidate) => escapedRegExp(normalizedText(candidate)))
+        .join('|');
+    return (
+        fieldPattern.length > 0 &&
+        new RegExp(
+            `^(?:the\\s+)?["']?(?:${fieldPattern})["']?\\s+(?:key|field)\\b.*\\b(?:should|must|contain|include|return)\\b`,
+            'u'
+        ).test(normalized)
+    );
 }
 
 function isNarrativePlaceholder(property: SchemaProperty, value: string): boolean {
@@ -201,6 +230,29 @@ function linkedTextOwners(
     });
 }
 
+/**
+ * Fields the model must propose in one call and that are accepted together: a code with its text
+ * when the model proposes both (a generated domain key and its caption, or a linked pair).
+ *
+ * @param entity the resource's entity
+ * @param fields the fields the model proposes
+ * @returns groups of field names
+ */
+function coupledFieldGroups(
+    entity: SchemaEntity,
+    fields: ReadonlyArray<SftFieldRequest>
+): ReadonlyArray<ReadonlyArray<string>> {
+    const names = new Set(fields.map(({ name }) => name));
+    return Object.freeze(
+        entity.properties.flatMap((owner) => {
+            const text = owner.links?.text;
+            return text && text !== owner.name && names.has(text) && names.has(owner.name)
+                ? [Object.freeze([owner.name, text])]
+                : [];
+        })
+    );
+}
+
 function validLinkedTextGroup(
     entity: SchemaEntity,
     fields: ReadonlyArray<SftFieldRequest>,
@@ -317,6 +369,12 @@ function residualFields(
                     nullable: property.nullable,
                     ...(maxLength === undefined ? {} : { maxLength }),
                     ...(property.maxLength === undefined ? {} : { declaredMaxLength: property.maxLength }),
+                    ...(property.primitiveType === 'int' && property.numericMinimum !== undefined
+                        ? { minimum: property.numericMinimum }
+                        : {}),
+                    ...(property.primitiveType === 'int' && property.numericMaximum !== undefined
+                        ? { maximum: property.numericMaximum }
+                        : {}),
                     ...(semanticV2 && property.enumValues ? { allowedDomain: property.enumValues } : {})
                 });
             })
@@ -452,27 +510,30 @@ function reservedSftProperties(
 }
 
 /**
- * Prevent a deterministic placeholder from escaping when a linked domain needs model meaning.
+ * Report the generated code/text domains whose display values need a model that is not available.
+ * Generation continues: those resources keep their deterministic values, and the warning marks them
+ * as unverified. With a model but no relevance check, `applySftGeneration` reports the same warning
+ * for the resources it has to leave unverified.
  *
  * @param graph
  * @param targets
  * @param existingData
  * @param classifications
  * @param sftAvailable
- * @param verifierAvailable
  * @param options
+ * @returns one warning per affected entity set
  */
-export function assertSyntheticDomainGenerationReady(
+export function syntheticDomainReadinessDiagnostics(
     graph: SchemaGraph,
     targets: ReadonlySet<string>,
     existingData: Readonly<Record<string, ExistingMockData>>,
     classifications: ReadonlyMap<string, SemanticClassification>,
     sftAvailable: boolean,
-    verifierAvailable: boolean,
     options: MockDataGeneratorOptions = { pipeline: 'semantic-v2' }
-): void {
-    if (sftAvailable && verifierAvailable) {
-        return;
+): ReadonlyArray<MockDataGeneratorDiagnostic> {
+    const diagnostics: MockDataGeneratorDiagnostic[] = [];
+    if (sftAvailable) {
+        return diagnostics;
     }
     for (const entity of graph.entities) {
         if (!targets.has(entity.entitySetName)) {
@@ -487,19 +548,20 @@ export function assertSyntheticDomainGenerationReady(
                 relationship.mappings.forEach(({ targetProperty }) => structural.add(targetProperty));
             }
         }
+        // A domain with supplied rows is owned by the caller; syntheticDomainKey declines it.
         const reserved = reservedSftProperties(entity, structural, options);
-        const ownership = existingData[entity.entitySetName];
-        const authored =
-            (ownership?.initialRows.present &&
-                'rows' in ownership.initialRows &&
-                ownership.initialRows.rows.length > 0) ||
-            (ownership?.contributor.present && ownership.contributor.hasInitialData);
-        const domainKey = syntheticDomainKey(graph, entity, existingData, reserved, classifications);
-        const fields = authored ? [] : residualFields(graph, entity, classifications, reserved, options, domainKey);
-        if (domainKey || (sftAvailable && linkedTextOwners(entity, fields).length > 0)) {
-            throw new CandidateVerifierUnavailableError(entity.entitySetName);
+        if (syntheticDomainKey(graph, entity, existingData, reserved, classifications)) {
+            diagnostics.push(
+                Object.freeze({
+                    code: 'SFT_CANDIDATE_VERIFIER_UNAVAILABLE',
+                    severity: 'warning' as const,
+                    target: entity.entitySetName,
+                    message: VERIFIER_UNAVAILABLE_MESSAGE
+                })
+            );
         }
     }
+    return Object.freeze(diagnostics);
 }
 
 function notifyProgress(
@@ -603,6 +665,89 @@ async function verifyWithinBudget(
 }
 
 /**
+ * The rows whose proposed linked texts the independent relevance check accepts. Only rows that
+ * propose a usable caption for every linked text (letters, valid, different from its code) are sent.
+ * A check that fails or runs out of time verifies no row.
+ *
+ * @param entity the resource's entity
+ * @param linkedTexts linked text fields and their code owners
+ * @param rows candidate rows
+ * @param fallbackRows deterministic rows, for codes the model did not propose
+ * @param verify the budgeted relevance check
+ * @param context service and resource of the pairs
+ * @param context.service service identity
+ * @param context.resource entity set
+ * @returns indexes of verified rows
+ */
+async function verifiedLinkedTextRows(
+    entity: SchemaEntity,
+    linkedTexts: ReturnType<typeof linkedTextOwners>,
+    rows: ReadonlyArray<MockDataRow>,
+    fallbackRows: ReadonlyArray<MockDataRow>,
+    verify: (pairs: ReadonlyArray<SftCandidateRelevancePair>) => Promise<ReadonlyArray<boolean>>,
+    context: Readonly<{ service: MockDataServiceIdentity; resource: string }>
+): Promise<ReadonlySet<number>> {
+    const properties = new Map(entity.properties.map((property) => [property.name, property]));
+    const proposing = rows.flatMap((row, rowIndex) => {
+        const usable =
+            isPlainRecord(row) &&
+            linkedTexts.every(({ owner, text }) => {
+                const caption = row[text.name];
+                const code = row[owner.name] ?? fallbackRows[rowIndex]?.[owner.name];
+                const property = properties.get(text.name);
+                return (
+                    typeof caption === 'string' &&
+                    /\p{L}/u.test(caption) &&
+                    property !== undefined &&
+                    validCandidate(property, caption, true) &&
+                    code !== undefined &&
+                    normalizedText(String(code)) !== normalizedText(caption)
+                );
+            });
+        return usable ? [rowIndex] : [];
+    });
+    const pairs = proposing.flatMap((rowIndex) =>
+        linkedTexts.map(({ owner, text }) => ({
+            service: context.service,
+            resource: context.resource,
+            entity: entity.name,
+            field: text,
+            value: String(rows[rowIndex]?.[text.name]),
+            linkedCode: {
+                property: owner.name,
+                value: String(rows[rowIndex]?.[owner.name] ?? fallbackRows[rowIndex]?.[owner.name])
+            },
+            textLink: { codeProperty: owner.name, textProperty: text.name },
+            relatedResources: Object.freeze(
+                [...new Set((text.referencedBy ?? []).map((reference) => reference.split('.')[0]))].sort()
+            )
+        }))
+    );
+    if (pairs.length === 0) {
+        return new Set();
+    }
+    let decisions: ReadonlyArray<boolean>;
+    try {
+        decisions = await verify(pairs);
+    } catch (error) {
+        if (!(error instanceof CandidateRelevanceError)) {
+            throw error;
+        }
+        return new Set();
+    }
+    if (!Array.isArray(decisions) || decisions.length !== pairs.length) {
+        return new Set();
+    }
+    return new Set(
+        proposing.filter((_rowIndex, position) =>
+            decisions
+                .slice(position * linkedTexts.length, (position + 1) * linkedTexts.length)
+                .every((decision) => decision === true)
+        )
+    );
+}
+
+/**
  * Fill fields left unresolved by T1 from the injected fine-tuned generator.
  *
  * @param graph
@@ -662,7 +807,6 @@ export async function applySftGeneration(
     let rejectedSlots = 0;
     let circuitOpen = false;
     let circuitDiagnosticEmitted = false;
-    let relevanceCircuitOpen = false;
 
     let protocolArtifacts = 0;
     const prepared = Object.entries(resources).map(([resourceName, fallbackRows]) => {
@@ -715,9 +859,9 @@ export async function applySftGeneration(
     let attemptedResources = 0;
     // A caller budget below the minimum slice goes to a single attempt rather than to none.
     const minimumAttemptMs = Math.min(MINIMUM_SFT_ATTEMPT_MS, serviceBudgetMs);
-    for (const { resourceName, fallbackRows, entity, fields, domainKey } of prepared) {
+    for (const { resourceName, fallbackRows, entity, fields: plannedFields, domainKey } of prepared) {
         signal.throwIfAborted();
-        if (!entity || fields.length === 0 || fallbackRows.length === 0) {
+        if (!entity || plannedFields.length === 0 || fallbackRows.length === 0) {
             generated[resourceName] = fallbackRows;
             continue;
         }
@@ -728,7 +872,7 @@ export async function applySftGeneration(
                     resource: resourceName,
                     reason: 'circuit-open' as const,
                     rowCount: fallbackRows.length,
-                    fields: Object.freeze(fields.map(({ name }) => name))
+                    fields: Object.freeze(plannedFields.map(({ name }) => name))
                 })
             );
             if (!circuitDiagnosticEmitted) {
@@ -745,11 +889,35 @@ export async function applySftGeneration(
             continue;
         }
 
+        // Without an independent relevance check, a generated code/text domain keeps its deterministic
+        // rows and linked texts keep their fallback; the other fields may still take model values.
+        const plannedTexts = linkedTextOwners(entity, plannedFields);
+        if ((domainKey !== undefined || plannedTexts.length > 0) && !candidateVerifier) {
+            diagnostics.push(
+                Object.freeze({
+                    code: 'SFT_CANDIDATE_VERIFIER_UNAVAILABLE',
+                    severity: 'warning',
+                    target: resourceName,
+                    message: VERIFIER_UNAVAILABLE_MESSAGE
+                })
+            );
+        }
+        let fields = plannedFields;
+        if (!candidateVerifier && domainKey !== undefined) {
+            fields = [];
+        } else if (!candidateVerifier) {
+            fields = plannedFields.filter(({ name }) => !plannedTexts.some(({ text }) => text.name === name));
+        }
+        if (fields.length === 0) {
+            generated[resourceName] = fallbackRows;
+            remainingEntities -= 1;
+            continue;
+        }
         const linkedTexts = linkedTextOwners(entity, fields);
         const requiresRelevance = domainKey !== undefined || linkedTexts.length > 0;
-        if (requiresRelevance && !candidateVerifier) {
-            throw new CandidateVerifierUnavailableError(resourceName);
-        }
+        const coupledGroups = coupledFieldGroups(entity, fields);
+        // Rows whose linked texts the relevance check accepted; linked texts of other rows keep their fallback.
+        let verifiedTextRows: ReadonlySet<number> = new Set();
         // Each attempt gets a slice long enough to finish on a small machine; once the service budget
         // cannot fund another slice, the remaining resources keep their deterministic rows.
         const remainingServiceMs = serviceBudgetMs - (performance.now() - startedAt);
@@ -788,13 +956,6 @@ export async function applySftGeneration(
         notifyProgress(onProgress, { ...progress, tier: 'T2', phase: 'start' });
         let output: Awaited<ReturnType<SftGenerator['generate']>> | undefined;
         try {
-            // Once one resource has ended unverified -- declined by the verifier, structurally
-            // invalid to the last attempt, or out of budget -- the remaining resources take the
-            // same outcome without paying for the model again. The rows, diagnostics and counters
-            // are the ones the exhausted attempts would have produced.
-            if (requiresRelevance && relevanceCircuitOpen) {
-                throw new CandidateRelevanceError();
-            }
             // One candidate per resource: a retry only changes the seed of the same prompt and costs a
             // full model call (a status value list spent 12 s on three declined attempts), while a
             // declined resource keeps its deterministic rows either way.
@@ -834,6 +995,7 @@ export async function applySftGeneration(
                         service,
                         entityName: entity.name,
                         fields,
+                        ...(coupledGroups.length > 0 ? { coupledFieldGroups: coupledGroups } : {}),
                         budgetMs: attemptBudgetMs,
                         rowCount: fallbackRows.length,
                         seed: ((options.seed ?? 1) + candidateAttempt) % Number.MAX_SAFE_INTEGER,
@@ -849,6 +1011,28 @@ export async function applySftGeneration(
                 attempts += completion.attempts;
                 parsedResponses += completion.parsedResponses;
                 if (!requiresRelevance || !candidateVerifier) {
+                    break;
+                }
+                if (!domainKey) {
+                    // Linked texts are verified row by row: a verified row keeps its texts, the others
+                    // keep their fallback, and the other fields are accepted on their own merits.
+                    verifiedTextRows = await verifiedLinkedTextRows(
+                        entity,
+                        linkedTexts,
+                        output.rows,
+                        fallbackRows,
+                        (pairs) => {
+                            const verifierBudgetMs = budgetMs - (performance.now() - entityStartedAt);
+                            return verifierBudgetMs > 0
+                                ? verifyWithinBudget(candidateVerifier, pairs, signal, verifierBudgetMs)
+                                : Promise.resolve([]);
+                        },
+                        { service, resource: resourceName }
+                    );
+                    signal.throwIfAborted();
+                    if (verifiedTextRows.size === fallbackRows.length) {
+                        relevanceVerifiedResources.add(resourceName);
+                    }
                     break;
                 }
                 if (
@@ -904,10 +1088,6 @@ export async function applySftGeneration(
         } catch (error) {
             signal.throwIfAborted();
             const unverifiedCandidates = error instanceof CandidateRelevanceError;
-            if (requiresRelevance && !unverifiedCandidates) {
-                throw error;
-            }
-            relevanceCircuitOpen = relevanceCircuitOpen || unverifiedCandidates;
             attempts += 1;
             const timedOut =
                 typeof error === 'object' &&
@@ -993,12 +1173,7 @@ export async function applySftGeneration(
                 rowsWithoutCandidate += 1;
             }
             if (options.pipeline === 'semantic-v2') {
-                const requestedNames = fields.map(({ name }) => name).sort();
-                const candidateNames = Object.keys(candidateRow).sort();
-                const namesMatch =
-                    requestedNames.length === candidateNames.length &&
-                    requestedNames.every((name, index) => name === candidateNames[index]);
-                const invalidFields = fields.filter(({ name }) => {
+                const fieldIsValid = (name: string): boolean => {
                     const property = fieldByName.get(name);
                     const role = property ? semanticRoleCandidate(entity, property) : undefined;
                     const narrative = role ? semanticRoleDefinition(role)?.sftEligible === true : false;
@@ -1017,18 +1192,34 @@ export async function applySftGeneration(
                     ) {
                         return false;
                     }
-                    return !(property !== undefined && validCandidate(property, value, narrative || linkedText));
-                });
-                if (namesMatch) {
-                    invalidFields.forEach(({ name }) => invalidByField.set(name, (invalidByField.get(name) ?? 0) + 1));
-                }
-                const groupIsValid = namesMatch && invalidFields.length === 0;
-                if (!groupIsValid) {
+                    return property !== undefined && validCandidate(property, value, narrative || linkedText);
+                };
+                const present = fields.filter(({ name }) => Object.prototype.hasOwnProperty.call(candidateRow, name));
+                // An instruction echo anywhere in the row means none of its values are trusted.
+                if (
+                    present.some(({ name }) => {
+                        const property = fieldByName.get(name);
+                        return property !== undefined && isInstructionEcho(property, candidateRow[name]);
+                    })
+                ) {
+                    present.forEach(({ name }) => invalidByField.set(name, (invalidByField.get(name) ?? 0) + 1));
                     rejectedSlots += fields.length;
                     generatedRows.push(fallbackRow);
                     continue;
                 }
+                const valid = new Set(present.filter(({ name }) => fieldIsValid(name)).map(({ name }) => name));
+                present.forEach(({ name }) => {
+                    if (!valid.has(name)) {
+                        invalidByField.set(name, (invalidByField.get(name) ?? 0) + 1);
+                    }
+                });
                 if (domainKey) {
+                    // A generated domain row is one unit: every field valid, or the row stays deterministic.
+                    if (present.length !== fields.length || valid.size !== fields.length) {
+                        rejectedSlots += fields.length;
+                        generatedRows.push(fallbackRow);
+                        continue;
+                    }
                     const signature = JSON.stringify(candidateRow[domainKey]);
                     if (generatedKeys.has(signature)) {
                         const previous = generatedDomainRows.find((row) => row[domainKey] === candidateRow[domainKey]);
@@ -1040,8 +1231,21 @@ export async function applySftGeneration(
                     }
                     generatedKeys.add(signature);
                 }
+                // Other fields are accepted one by one; coupled fields only together, and linked texts
+                // only in rows the relevance check verified.
+                const acceptable = (name: string): boolean =>
+                    valid.has(name) &&
+                    (!linkedTexts.some(({ text }) => text.name === name) ||
+                        verifiedTextRows.has(rowIndex) ||
+                        !!domainKey);
+                const accepted = fields.filter(
+                    ({ name }) =>
+                        acceptable(name) &&
+                        coupledGroups.every((group) => !group.includes(name) || group.every(acceptable))
+                );
+                rejectedSlots += fields.length - accepted.length;
                 const row: Record<string, JsonValue> = { ...fallbackRow };
-                for (const { name } of fields) {
+                for (const { name } of accepted) {
                     row[name] = candidateRow[name] as JsonValue;
                     acceptedByField.set(name, (acceptedByField.get(name) ?? 0) + 1);
                     acceptedSlots += 1;
@@ -1055,6 +1259,13 @@ export async function applySftGeneration(
             const row: Record<string, JsonValue> = { ...fallbackRow };
             for (const [propertyName, property] of fieldByName) {
                 const candidate = candidateRow[propertyName];
+                const unverifiedText =
+                    !domainKey &&
+                    !verifiedTextRows.has(rowIndex) &&
+                    linkedTexts.some(({ text }) => text.name === propertyName);
+                if (unverifiedText) {
+                    continue;
+                }
                 if (validCandidate(property, candidate)) {
                     row[propertyName] = candidate;
                     acceptedByField.set(propertyName, (acceptedByField.get(propertyName) ?? 0) + 1);

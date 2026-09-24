@@ -135,10 +135,12 @@ function extendGeneratedValueListDomain(
         ) {
             continue;
         }
-        // A descriptive value was verified for its original code only. Reusing it
-        // with a protected, previously unseen code would create an unverified pair.
+        // A descriptive value was verified for its original code only. Reusing it with a protected,
+        // previously unseen code would create an unverified pair, so the tuple is reported as a
+        // conflict, as when the domain is full, instead of failing the whole service.
         if (relevanceVerifiedDomain && values.some(({ property }) => targetProperties.get(property)?.links?.text)) {
-            throw new Error(`SYNTHETIC_DOMAIN_EXTENSION_UNVERIFIED: ${targetEntity.entitySetName}`);
+            reportConflict();
+            continue;
         }
         if (domain.length >= maxRows) {
             reportConflict();

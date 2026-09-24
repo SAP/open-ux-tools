@@ -1,4 +1,8 @@
-import { createCausalOnnxSession, type CausalOnnxBackend } from '../../src/model/causal-onnx-session.js';
+import {
+    causalIntraOpThreads,
+    createCausalOnnxSession,
+    type CausalOnnxBackend
+} from '../../src/model/causal-onnx-session.js';
 
 describe('causal ONNX session adapter', () => {
     test('marshals prefill/decode tensors and extracts final-position logits and KV output', async () => {
@@ -61,5 +65,55 @@ describe('causal ONNX session adapter', () => {
                 pastKeyValues: new Map()
             })
         ).rejects.toThrow(/present\.0/);
+    });
+
+    test("decodes several rows in one call and returns each row's last-position logits", async () => {
+        const run = jest.fn(
+            async (feeds: Readonly<Record<string, { data: BigInt64Array | Float32Array; dims: number[] }>>) => {
+                expect(feeds.input_ids?.dims).toEqual([2, 1]);
+                expect(feeds.attention_mask?.dims).toEqual([2, 4]);
+                expect(feeds['past_key_values.0.key']?.dims).toEqual([2, 1, 3, 1]);
+                return {
+                    logits: { data: Float32Array.of(1, 2, 3, 4), dims: [2, 1, 2] },
+                    'present.0.key': { data: new Float32Array(8), dims: [2, 1, 4, 1] },
+                    'present.0.value': { data: new Float32Array(8), dims: [2, 1, 4, 1] }
+                };
+            }
+        );
+        const backend: CausalOnnxBackend = {
+            createSession: jest.fn(async () => ({ run })),
+            tensor: (_type, data, dims) => ({ data, dims: [...dims] })
+        };
+        const session = await createCausalOnnxSession({
+            modelPath: '/verified-cache/sft/model.onnx',
+            config: { numLayers: 1, numKeyValueHeads: 1, headDimension: 1 },
+            backend
+        });
+
+        const output = await session.run({
+            inputIds: Int32Array.of(5, 6),
+            attentionMask: new Int32Array(8).fill(1),
+            positionIds: Int32Array.of(3, 3),
+            pastKeyValues: new Map([[0, { key: new Float32Array(6), value: new Float32Array(6) }]]),
+            batchSize: 2
+        });
+
+        expect(output.lastLogits).toEqual(Float32Array.of(1, 2, 3, 4));
+        await expect(
+            session.run({
+                inputIds: Int32Array.of(5, 6, 7),
+                attentionMask: new Int32Array(8).fill(1),
+                positionIds: Int32Array.of(3, 3, 3),
+                pastKeyValues: new Map(),
+                batchSize: 2
+            })
+        ).rejects.toThrow('batch size');
+    });
+
+    test('uses at most four native threads and never more than the available cores', () => {
+        expect(causalIntraOpThreads(2)).toBe(2);
+        expect(causalIntraOpThreads(12)).toBe(4);
+        expect(causalIntraOpThreads(0)).toBe(1);
+        expect(causalIntraOpThreads()).toBeGreaterThanOrEqual(1);
     });
 });

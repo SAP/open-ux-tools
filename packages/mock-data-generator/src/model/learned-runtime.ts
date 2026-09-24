@@ -68,13 +68,17 @@ export type EmbeddingSemanticClassifierContract = Pick<
     'serializeV3Input' | 'v3Roles' | 'v3RegistryFingerprint' | 'v3SerializerFingerprint'
 >;
 
-interface SftArtifactConfiguration {
+export interface SftArtifactConfiguration {
     numHiddenLayers: number;
     numKeyValueHeads: number;
     hiddenSize: number;
     numAttentionHeads: number;
     samplingOptions: PilotSamplingOptions;
     promptContractVersion: 1 | 2;
+    /** How the runtime calls the model; contract 2 unless the artifact pins 1. */
+    runtimeContract: 1 | 2;
+    /** Contract 2 punctuation; `spaced` (the training rows' separators) unless the artifact declares `compact`. */
+    jsonSeparators: 'compact' | 'spaced';
 }
 
 /**
@@ -150,7 +154,14 @@ function positiveNumber(value: unknown, label: string): number {
     return value;
 }
 
-function parseSftConfiguration(value: unknown): SftArtifactConfiguration {
+/**
+ * Validate the SFT artifact's generation config. The runtime contract defaults to 2 and its
+ * separators to `spaced`; an artifact may pin contract 1 or declare `compact` separators.
+ *
+ * @param value parsed `generation-config.json`
+ * @returns the validated configuration
+ */
+export function parseSftConfiguration(value: unknown): SftArtifactConfiguration {
     if (value === null || typeof value !== 'object' || Array.isArray(value)) {
         throw new TypeError('SFT generation config must be an object');
     }
@@ -172,8 +183,18 @@ function parseSftConfiguration(value: unknown): SftArtifactConfiguration {
     if (promptContractVersion !== 1 && promptContractVersion !== 2) {
         throw new TypeError('SFT prompt contract version must be 1 or 2');
     }
+    const runtimeContract = input.runtimeContract ?? 2;
+    if (runtimeContract !== 1 && runtimeContract !== 2) {
+        throw new TypeError('SFT runtime contract must be 1 or 2');
+    }
+    const jsonSeparators = input.jsonSeparators ?? 'spaced';
+    if (jsonSeparators !== 'compact' && jsonSeparators !== 'spaced') {
+        throw new TypeError('SFT JSON separators must be compact or spaced');
+    }
     return {
         promptContractVersion,
+        runtimeContract,
+        jsonSeparators,
         numHiddenLayers: positiveInteger(input.numHiddenLayers, 'SFT numHiddenLayers'),
         numKeyValueHeads: positiveInteger(input.numKeyValueHeads, 'SFT numKeyValueHeads'),
         hiddenSize: positiveInteger(input.hiddenSize, 'SFT hiddenSize'),
@@ -325,7 +346,9 @@ function defaultFactories(
                 fingerprint: component.fingerprint,
                 textGenerator: createCausalTextGenerator({ tokenizer, session }),
                 sampling: configuration.samplingOptions,
-                promptContractVersion: configuration.promptContractVersion
+                promptContractVersion: configuration.promptContractVersion,
+                runtimeContract: configuration.runtimeContract,
+                separators: configuration.jsonSeparators
             });
             return { value: sft, dispose: () => sft.dispose?.() };
         }

@@ -157,6 +157,7 @@ const sft = Object.freeze({
             call.ms = performance.now() - startedAt;
             call.ortCalls = ortCounters.calls - before.calls;
             call.forwardTokens = ortCounters.forwardTokens - before.forwardTokens;
+            call.ortMs = ortCounters.ms - before.ms;
             call.prefills = ortCounters.prefills - before.prefills;
             calls.push(call);
         }
@@ -191,7 +192,8 @@ function llmCallMetrics(observed) {
         ortCalls: 0,
         forwardTokens: 0,
         prefills: 0,
-        ms: 0
+        ms: 0,
+        ortMs: 0
     };
     for (const call of observed) {
         metrics.calls += 1;
@@ -200,6 +202,7 @@ function llmCallMetrics(observed) {
         metrics.forwardTokens += call.forwardTokens;
         metrics.prefills += call.prefills;
         metrics.ms += call.ms;
+        metrics.ortMs += call.ortMs;
         if (call.error || !Array.isArray(call.rows)) {
             metrics.failedCalls += 1;
             continue;
@@ -237,6 +240,7 @@ function llmCallMetrics(observed) {
         }
     }
     metrics.ms = Math.round(metrics.ms);
+    metrics.ortMs = Math.round(metrics.ortMs);
     return metrics;
 }
 

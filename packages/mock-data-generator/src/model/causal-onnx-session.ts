@@ -1,4 +1,19 @@
+import { availableParallelism } from 'node:os';
 import type { CausalLmInputs, CausalLmSession } from './causal-text-runtime.js';
+
+// A 135M-parameter decoder stops gaining from threads well before 4 on this runtime, and more
+// threads than cores (a 2-core workspace) only add contention.
+const MAXIMUM_INTRA_OP_THREADS = 4;
+
+/**
+ * Native threads for the causal model: at most 4, and never more than the cores available.
+ *
+ * @param cores cores available to this process
+ * @returns intra-op thread count
+ */
+export function causalIntraOpThreads(cores: number = availableParallelism()): number {
+    return Math.max(1, Math.min(MAXIMUM_INTRA_OP_THREADS, Math.floor(cores)));
+}
 
 export interface CausalOnnxTensor {
     data: BigInt64Array | Float32Array;
@@ -68,7 +83,7 @@ export function createCausalOnnxBackend(module: unknown, label: string): CausalO
                 executionMode: 'sequential',
                 enableCpuMemArena: true,
                 enableMemPattern: true,
-                intraOpNumThreads: 4,
+                intraOpNumThreads: causalIntraOpThreads(),
                 interOpNumThreads: 1
             });
             return Object.freeze({
@@ -110,29 +125,46 @@ export async function createCausalOnnxSession(options: CreateCausalOnnxSessionOp
     const session = await options.backend.createSession(options.modelPath);
     return Object.freeze({
         run: async (input: CausalLmInputs) => {
-            const sequenceLength = input.inputIds.length;
+            const batchSize = input.batchSize ?? 1;
+            const sequenceLength = input.inputIds.length / batchSize;
+            const attentionLength = input.attentionMask.length / batchSize;
+            if (
+                !Number.isSafeInteger(batchSize) ||
+                batchSize <= 0 ||
+                !Number.isSafeInteger(sequenceLength) ||
+                sequenceLength <= 0 ||
+                !Number.isSafeInteger(attentionLength) ||
+                input.positionIds.length !== input.inputIds.length
+            ) {
+                throw new TypeError('causal ONNX inputs do not match their batch size');
+            }
             const feeds: Record<string, CausalOnnxTensor> = {
                 'input_ids': options.backend.tensor('int64', BigInt64Array.from(input.inputIds, BigInt), [
-                    1,
+                    batchSize,
                     sequenceLength
                 ]),
                 'attention_mask': options.backend.tensor('int64', BigInt64Array.from(input.attentionMask, BigInt), [
-                    1,
-                    input.attentionMask.length
+                    batchSize,
+                    attentionLength
                 ]),
                 'position_ids': options.backend.tensor('int64', BigInt64Array.from(input.positionIds, BigInt), [
-                    1,
+                    batchSize,
                     sequenceLength
                 ])
             };
             for (let layer = 0; layer < options.config.numLayers; layer += 1) {
                 const previous = input.pastKeyValues.get(layer);
-                const divisor = options.config.numKeyValueHeads * options.config.headDimension;
+                const divisor = batchSize * options.config.numKeyValueHeads * options.config.headDimension;
                 const pastLength = previous ? previous.key.length / divisor : 0;
                 if (!Number.isSafeInteger(pastLength)) {
                     throw new TypeError('causal ONNX KV cache has an invalid shape');
                 }
-                const dimensions = [1, options.config.numKeyValueHeads, pastLength, options.config.headDimension];
+                const dimensions = [
+                    batchSize,
+                    options.config.numKeyValueHeads,
+                    pastLength,
+                    options.config.headDimension
+                ];
                 feeds[`past_key_values.${layer}.key`] = options.backend.tensor(
                     'float32',
                     previous?.key ?? new Float32Array(),
@@ -150,12 +182,14 @@ export async function createCausalOnnxSession(options: CreateCausalOnnxSessionOp
             if (!logits || !(logits.data instanceof Float32Array) || logits.dims.length !== 3) {
                 throw new TypeError('causal ONNX session did not return three-dimensional float logits');
             }
+            const outputBatchSize = logits.dims[0];
             const outputSequenceLength = logits.dims[1];
             const vocabularySize = logits.dims[2];
             if (
+                outputBatchSize !== batchSize ||
                 !outputSequenceLength ||
                 !vocabularySize ||
-                logits.data.length !== outputSequenceLength * vocabularySize
+                logits.data.length !== batchSize * outputSequenceLength * vocabularySize
             ) {
                 throw new TypeError('causal ONNX logits have an invalid shape');
             }
@@ -168,13 +202,13 @@ export async function createCausalOnnxSession(options: CreateCausalOnnxSessionOp
                 }
                 presentKeyValues.set(layer, { key: key.data, value: value.data });
             }
-            return Object.freeze({
-                lastLogits: logits.data.slice(
-                    (outputSequenceLength - 1) * vocabularySize,
-                    outputSequenceLength * vocabularySize
-                ),
-                presentKeyValues
-            });
+            // A graph that emits only the last position (sequence length 1) needs no selection.
+            const lastLogits = new Float32Array(batchSize * vocabularySize);
+            for (let row = 0; row < batchSize; row += 1) {
+                const start = (row * outputSequenceLength + outputSequenceLength - 1) * vocabularySize;
+                lastLogits.set(logits.data.subarray(start, start + vocabularySize), row * vocabularySize);
+            }
+            return Object.freeze({ lastLogits, presentKeyValues });
         },
         dispose: async () => {
             await session.dispose?.();

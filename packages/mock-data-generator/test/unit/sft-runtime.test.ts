@@ -1,6 +1,11 @@
 import {
+    chunkFields,
     createPilotSftGenerator,
+    grammarFields,
+    grammarTokenBound,
+    numberFormatOf,
     renderPilotSftPrompt,
+    type ConstrainedTextGenerationInput,
     type ConstrainedTextGenerator
 } from '../../src/model/sft-runtime.js';
 import type { SftGenerationInput } from '../../src/index.js';
@@ -659,5 +664,148 @@ describe('pilot-compatible SFT runtime', () => {
         await expect(
             generator.generate({ ...input, rowCount: 1, budgetMs }, new AbortController().signal)
         ).rejects.toThrow('SFT request budget must be positive');
+    });
+});
+
+describe('SFT runtime contract 2', () => {
+    const sampling = { temperature: 0.6, topP: 0.9, repetitionPenalty: 1.15, noRepeatNgramSize: 4, maxNewTokens: 300 };
+    const plannerInput: SftGenerationInput = {
+        ...input,
+        contractVersion: 2,
+        fields: Array.from({ length: 10 }, (_unused, index) => ({
+            name: `Field${index}`,
+            primitiveType: index === 9 ? 'int' : 'string',
+            nullable: false,
+            maxLength: 20,
+            ...(index === 9 ? { minimum: 0, maximum: 255 } : {})
+        })),
+        coupledFieldGroups: [['Field7', 'Field8']]
+    };
+
+    test('splits planner fields into calls of at most eight, keeping coupled fields in one call', () => {
+        const chunks = chunkFields(plannerInput.fields, 8, plannerInput.coupledFieldGroups);
+        expect(chunks.map((chunk) => chunk.map(({ name }) => name))).toEqual([
+            ['Field0', 'Field1', 'Field2', 'Field3', 'Field4', 'Field5', 'Field6'],
+            ['Field7', 'Field8', 'Field9']
+        ]);
+        expect(chunkFields(plannerInput.fields.slice(0, 3), 2).map((chunk) => chunk.length)).toEqual([2, 1]);
+    });
+
+    test('derives type-exact number formats and a grammar-bounded token budget', () => {
+        expect(
+            numberFormatOf({ name: 'Byte', primitiveType: 'int', nullable: false, minimum: 0, maximum: 255 })
+        ).toEqual({ integer: true, maxIntegerDigits: 3, maxFractionDigits: 0, minimum: 0, maximum: 255 });
+        expect(
+            numberFormatOf({ name: 'Amount', primitiveType: 'decimal', nullable: true, precision: 7, scale: 2 })
+        ).toEqual({ integer: false, maxIntegerDigits: 5, maxFractionDigits: 2 });
+        expect(
+            numberFormatOf({ name: 'Rate', primitiveType: 'decimal', nullable: true, precision: 3, scale: 3 })
+        ).toEqual({ integer: false, maxIntegerDigits: 1, maxFractionDigits: 3, maximum: 0.999 });
+        expect(numberFormatOf({ name: 'Plain', primitiveType: 'decimal', nullable: true })).toMatchObject({
+            maxIntegerDigits: 15,
+            maxFractionDigits: 6
+        });
+        expect(numberFormatOf({ name: 'Text', primitiveType: 'string', nullable: true })).toBeUndefined();
+
+        const grammar = grammarFields(
+            [
+                { name: 'Title', primitiveType: 'string', nullable: false, maxLength: 40 },
+                { name: 'Count', primitiveType: 'int', nullable: true, maximum: 99 }
+            ],
+            true
+        );
+        expect(grammar[0]).toMatchObject({ steerWithin: 8 });
+        expect(grammar[1]).toMatchObject({ numberFormat: { integer: true, maxIntegerDigits: 2 } });
+        expect(
+            grammarFields(
+                grammar.map((field) => ({ ...field, primitiveType: 'string' })),
+                false
+            )[0]
+        ).not.toHaveProperty('steerWithin');
+        // "{", "}", each `"Name": ` with its separator, a 40-character string (escapes count twice), two digits.
+        expect(grammarTokenBound(grammar)).toBe(2 + (5 + 6) + (2 + 80) + (5 + 6) + (2 + 2 + 0));
+    });
+
+    test('decodes all rows of a call together and returns the fields each row completed', async () => {
+        const batches: Array<{ request: ConstrainedTextGenerationInput; seeds: ReadonlyArray<number> }> = [];
+        const textGenerator: ConstrainedTextGenerator = {
+            generate: jest.fn(async () => {
+                throw new Error('rows of one prompt are decoded together');
+            }),
+            generateBatch: jest.fn(async (request: ConstrainedTextGenerationInput, seeds: ReadonlyArray<number>) => {
+                batches.push({ request, seeds });
+                const names = request.grammar.map(({ name }) => name);
+                const row = JSON.stringify(
+                    Object.fromEntries(names.map((name) => [name, name === 'Field9' ? 7 : 'x']))
+                );
+                // The second row of the first call does not complete.
+                return seeds.map((_seed, index) => (index === 1 && names.includes('Field0') ? undefined : row));
+            })
+        };
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator,
+            sampling,
+            runtimeContract: 2
+        });
+
+        const result = await generator.generate(plannerInput, new AbortController().signal);
+
+        expect(batches).toHaveLength(2);
+        expect(batches[0]?.seeds).toHaveLength(2);
+        expect(new Set(batches[0]?.seeds).size).toBe(2);
+        expect(batches[0]?.request).toMatchObject({ separators: 'spaced' });
+        expect(batches[0]?.request.maxNewTokens).toBe(grammarTokenBound(batches[0]?.request.grammar ?? []));
+        expect(batches[1]?.request.grammar[2]).toMatchObject({
+            name: 'Field9',
+            numberFormat: { integer: true, maximum: 255 }
+        });
+        expect(Object.keys(result.rows[0] ?? {})).toHaveLength(10);
+        expect(result.rows[1]).toEqual({ Field7: 'x', Field8: 'x', Field9: 7 });
+        expect(result.statistics).toEqual({ attempts: 4, parsedResponses: 3 });
+    });
+
+    test('decodes rows one at a time when each row renders its own prompt', async () => {
+        const generate = jest.fn(async (request: ConstrainedTextGenerationInput) =>
+            JSON.stringify(Object.fromEntries(request.grammar.map(({ name }) => [name, 'x'])))
+        );
+        const generateBatch = jest.fn();
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate, generateBatch },
+            sampling,
+            promptContractVersion: 2,
+            runtimeContract: 2,
+            separators: 'compact'
+        });
+
+        const result = await generator.generate(
+            {
+                ...plannerInput,
+                fields: plannerInput.fields.slice(0, 2),
+                coupledFieldGroups: [],
+                fixedRows: [{ ID: 1 }, { ID: 2 }]
+            },
+            new AbortController().signal
+        );
+
+        expect(generateBatch).not.toHaveBeenCalled();
+        expect(generate).toHaveBeenCalledTimes(2);
+        expect(generate.mock.calls[0]?.[0]).toMatchObject({ separators: 'compact' });
+        expect(result.rows).toEqual([
+            { Field0: 'x', Field1: 'x' },
+            { Field0: 'x', Field1: 'x' }
+        ]);
+    });
+
+    test('rejects an unknown runtime contract', () => {
+        expect(() =>
+            createPilotSftGenerator({
+                fingerprint: 'sft-model-sha256',
+                textGenerator: { generate: jest.fn() },
+                sampling,
+                runtimeContract: 3 as 2
+            })
+        ).toThrow('runtime contract');
     });
 });

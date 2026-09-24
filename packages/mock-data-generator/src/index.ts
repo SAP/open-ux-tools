@@ -30,7 +30,7 @@ import {
 import { propertyValueIsValid } from './generation/constraints.js';
 import {
     applySftGeneration,
-    assertSyntheticDomainGenerationReady,
+    syntheticDomainReadinessDiagnostics,
     isProtocolArtifactEntitySet
 } from './generation/sft.js';
 import { authoredRows, preserveAuthoredRows } from './generation/authored.js';
@@ -906,14 +906,15 @@ async function executeServiceGeneration(
         );
         if (options.pipeline === 'semantic-v2') {
             classifications = demoteBoundSemanticRoles(graph, classifications, diagnostics, request.existingData);
-            assertSyntheticDomainGenerationReady(
-                graph,
-                new Set(generationTargets.map(({ name }) => name)),
-                request.existingData,
-                classifications,
-                activeRuntime.sft !== undefined,
-                activeRuntime.candidateVerifier !== undefined,
-                options
+            diagnostics.push(
+                ...syntheticDomainReadinessDiagnostics(
+                    graph,
+                    new Set(generationTargets.map(({ name }) => name)),
+                    request.existingData,
+                    classifications,
+                    activeRuntime.sft !== undefined,
+                    options
+                )
             );
         }
         reportProgress(activeRuntime, {

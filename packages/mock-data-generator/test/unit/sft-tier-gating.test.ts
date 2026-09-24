@@ -32,7 +32,7 @@ function callsFor(generate: jest.Mock<SftGenerator['generate']>, entityName: str
 }
 
 describe('tier 2 gating', () => {
-    it('stops proposing display values once the relevance verifier has rejected a whole resource', async () => {
+    it('verifies each linked domain on its own, so one declined resource does not skip the next', async () => {
         const generate = jest.fn<SftGenerator['generate']>(async () => ({
             rows: [
                 { Code: 'A', Caption: 'Alpha' },
@@ -60,12 +60,9 @@ describe('tier 2 gating', () => {
             }
         );
 
-        // Only the first linked domain pays for the model; the second reuses that verdict.
-        const domainCalls = [callsFor(generate, 'PhaseCode'), callsFor(generate, 'StageCode')].sort(
-            (left, right) => left - right
-        );
-        expect(domainCalls[0]).toBe(0);
-        expect(domainCalls[1]).toBeGreaterThan(0);
+        // The breaker is scoped to one resource: each linked domain gets its own model call.
+        expect(callsFor(generate, 'PhaseCode')).toBe(1);
+        expect(callsFor(generate, 'StageCode')).toBe(1);
 
         const unverified = result.diagnostics.filter(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED');
         expect(unverified.map(({ target }) => target).sort()).toEqual(['PhaseCodes', 'StageCodes']);

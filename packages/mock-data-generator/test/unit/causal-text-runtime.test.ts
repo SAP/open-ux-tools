@@ -1,8 +1,10 @@
 import {
     createAllowedTokenResolver,
     createCausalTextGenerator,
+    repeatedNgramTokens,
     selectNucleus,
     type CausalLmInputs,
+    type CausalLmOutputs,
     type CausalLmSession,
     type CausalTokenizer
 } from '../../src/model/causal-text-runtime.js';
@@ -67,7 +69,7 @@ describe('grammar-constrained causal text runtime', () => {
         const second = resolveAllowed({ ...state });
 
         expect(second).toBe(first);
-        expect(first).toEqual([0, 1]);
+        expect(Array.from(first)).toEqual([0, 1]);
     });
 
     test('reuses allowed-token candidates across unbounded string lengths', () => {
@@ -95,9 +97,9 @@ describe('grammar-constrained causal text runtime', () => {
         const oneCharacter = advanceText(emptyValue, 'A');
         const fullValue = advanceText(oneCharacter, 'B');
 
-        expect(resolveAllowed(emptyValue)).toEqual([0, 1, 4]);
-        expect(resolveAllowed(oneCharacter)).toEqual([0, 3, 4]);
-        expect(resolveAllowed(fullValue)).toEqual([3]);
+        expect(Array.from(resolveAllowed(emptyValue))).toEqual([0, 1, 4]);
+        expect(Array.from(resolveAllowed(oneCharacter))).toEqual([0, 3, 4]);
+        expect(Array.from(resolveAllowed(fullValue))).toEqual([3]);
     });
 
     test('does not let a symbol-only token exhaust a bounded generated string', () => {
@@ -105,7 +107,7 @@ describe('grammar-constrained causal text runtime', () => {
         const initial = createJsonRowGrammar([{ name: 'Code', valueKind: 'string', nullable: false, maxLength: 1 }]);
         const emptyValue = advanceText(initial, '{"Code":"');
 
-        expect(resolveAllowed(emptyValue)).toEqual([1]);
+        expect(Array.from(resolveAllowed(emptyValue))).toEqual([1]);
     });
 
     test('selects an exact top-p nucleus without sorting the full vocabulary', () => {
@@ -405,5 +407,123 @@ describe('grammar-constrained causal text runtime', () => {
         // cache internals through a production-only testing API.
         await expect(generator.generate(input, new AbortController().signal)).resolves.toBe(expected);
         expect(run.mock.calls.filter(([step]) => step.pastKeyValues.size === 0)).toHaveLength(3);
+    });
+});
+
+describe('grammar-constrained causal text runtime, contract 2', () => {
+    // Multi-character tokens for the structure, single characters so any forced text can be encoded.
+    const vocabulary = ['{"', 'Name', '": "', 'A', 'B', ' C', '"}', '{', '"', ':', ' ', '}', 'N', 'a', 'm', 'e', '<p>'];
+    const ids = new Map(vocabulary.map((text, id) => [text, id]));
+    const tokenizer: CausalTokenizer = {
+        vocabSize: vocabulary.length,
+        specialTokenIds: [16],
+        encode: (text) => {
+            if (text.startsWith('<prompt>')) {
+                return [16];
+            }
+            const encoded: number[] = [];
+            let rest = text;
+            const longestPrefix = (remaining: string): string | undefined =>
+                vocabulary
+                    .filter((token, id) => id !== 16 && remaining.startsWith(token))
+                    .sort((left, right) => right.length - left.length)[0];
+            while (rest.length > 0) {
+                const match = longestPrefix(rest);
+                if (!match) {
+                    throw new Error('unencodable');
+                }
+                encoded.push(ids.get(match) ?? -1);
+                rest = rest.slice(match.length);
+            }
+            return encoded;
+        },
+        decode: (tokens) => tokens.map((id) => vocabulary[id] ?? '').join('')
+    };
+    const preferring =
+        (scores: Readonly<Record<string, number>>) =>
+        (input: CausalLmInputs): Promise<CausalLmOutputs> => {
+            const batch = input.batchSize ?? 1;
+            const logits = new Float32Array(batch * vocabulary.length).fill(-100);
+            for (let row = 0; row < batch; row += 1) {
+                for (const [token, score] of Object.entries(scores)) {
+                    logits[row * vocabulary.length + (ids.get(token) ?? 0)] = score;
+                }
+            }
+            return Promise.resolve({
+                lastLogits: logits,
+                presentKeyValues: new Map([[0, { key: new Float32Array(batch), value: new Float32Array(batch) }]])
+            });
+        };
+    const input = {
+        prompt: '<prompt>',
+        grammar: [{ name: 'Name', valueKind: 'string' as const, nullable: false, maxLength: 6, steerWithin: 3 }],
+        seed: 1,
+        temperature: 1e-6,
+        topP: 1,
+        repetitionPenalty: 1,
+        noRepeatNgramSize: 0,
+        maxNewTokens: 40,
+        separators: 'spaced' as const
+    };
+
+    test('decodes the rows of one prompt together and feeds forced text without sampling', async () => {
+        const run = jest.fn(preferring({ A: 5, B: 4, '"}': 1, '": "': 3, '"': 2 }));
+        const generator = createCausalTextGenerator({ tokenizer, session: { run } });
+
+        const rows = await generator.generateBatch?.(input, [1, 2], new AbortController().signal);
+
+        expect(rows).toHaveLength(2);
+        for (const row of rows ?? []) {
+            expect(JSON.parse(row ?? 'null')).toEqual({ Name: expect.stringMatching(/^[AB]+$/u) });
+        }
+        const decodeSteps = run.mock.calls.slice(1).map(([step]) => step);
+        // Both rows advance in one batch; the forced opening is fed token by token without sampling,
+        // and its last token is left to the model (token healing).
+        expect(decodeSteps[0]).toMatchObject({ batchSize: 2 });
+        expect(Array.from(decodeSteps[0]?.inputIds ?? [])).toEqual([ids.get('{"'), ids.get('{"')]);
+        expect(Array.from(decodeSteps[1]?.inputIds ?? [])).toEqual([ids.get('Name'), ids.get('Name')]);
+    });
+
+    test('ends a string at a word boundary instead of starting a word near its maximum length', async () => {
+        const generator = createCausalTextGenerator({
+            tokenizer,
+            session: { run: jest.fn(preferring({ ' C': 9, A: 5, '"}': 1, '": "': 3, '"': 2 })) }
+        });
+
+        await expect(generator.generate(input, new AbortController().signal)).resolves.toBe('{"Name": " C C"}');
+    });
+
+    test('returns the completed rows instead of throwing when the batch is cancelled', async () => {
+        const generator = createCausalTextGenerator({
+            tokenizer,
+            session: { run: jest.fn(preferring({ A: 5 })) }
+        });
+        const controller = new AbortController();
+        controller.abort(new Error('budget used'));
+
+        await expect(generator.generateBatch?.(input, [1, 2], controller.signal)).resolves.toEqual([
+            undefined,
+            undefined
+        ]);
+        await expect(generator.generate(input, controller.signal)).rejects.toThrow('budget used');
+    });
+
+    test('shares allowed value tokens across grammars with different field names', () => {
+        const resolveAllowed = createAllowedTokenResolver(vocabulary, new Set([16]));
+        const state = (name: string) =>
+            advanceText(
+                createJsonRowGrammar([{ name, valueKind: 'string', nullable: false, maxLength: 60 }], {
+                    separators: 'spaced'
+                }),
+                `{"${name}": "AB`
+            );
+
+        expect(resolveAllowed(state('Name'))).toBe(resolveAllowed(state('Title')));
+    });
+
+    test('bans a token that would repeat an n-gram of the row values', () => {
+        expect([...repeatedNgramTokens([1, 2, 3, 1, 2], 3)]).toEqual([3]);
+        expect([...repeatedNgramTokens([1, 2, 3], 3)]).toEqual([]);
+        expect([...repeatedNgramTokens([1, 1, 1], 0)]).toEqual([]);
     });
 });

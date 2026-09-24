@@ -1,8 +1,11 @@
 import {
     advanceText,
     createJsonRowGrammar,
+    forcedText,
     grammarComplete,
     textAllowed,
+    valueStateKey,
+    withinSteeringWindow,
     type JsonRowGrammarState
 } from './json-row-grammar.js';
 import type { ConstrainedTextGenerator, ConstrainedTextGenerationInput } from './sft-runtime.js';
@@ -20,13 +23,18 @@ export interface CausalLmKeyValue {
 }
 
 export interface CausalLmInputs {
+    /** Token ids, `batchSize` rows of equal length, row-major. */
     inputIds: Int32Array;
+    /** Attention mask, `batchSize` rows of past plus new length, row-major. */
     attentionMask: Int32Array;
     positionIds: Int32Array;
     pastKeyValues: ReadonlyMap<number, CausalLmKeyValue>;
+    /** Rows decoded together; 1 when absent. */
+    batchSize?: number;
 }
 
 export interface CausalLmOutputs {
+    /** Logits of each row's last position, `batchSize` rows of the vocabulary size. */
     lastLogits: Float32Array;
     presentKeyValues: ReadonlyMap<number, CausalLmKeyValue>;
 }
@@ -41,6 +49,13 @@ export interface CreateCausalTextGeneratorOptions {
     session: CausalLmSession;
 }
 
+// Bounds the shared allowed-token cache (at most one vocabulary-sized Int32Array per entry) and
+// the forced-text tokenization cache; entries are equivalent grammar states, not requests.
+const MAXIMUM_ALLOWED_TOKEN_ENTRIES = 512;
+const MAXIMUM_FORCED_TEXT_ENTRIES = 4_096;
+
+const VALUE_PHASES: ReadonlySet<string> = new Set(['before-value', 'in-string-value', 'in-nonstring-value']);
+
 function seededRandom(seed: number): () => number {
     let state = seed >>> 0;
     return () => {
@@ -50,21 +65,6 @@ function seededRandom(seed: number): () => number {
         value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
         return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296;
     };
-}
-
-function allowedTokenIds(
-    state: JsonRowGrammarState,
-    texts: ReadonlyArray<string | undefined>,
-    specialIds: ReadonlySet<number>
-): number[] {
-    const result: number[] = [];
-    for (let id = 0; id < texts.length; id += 1) {
-        const text = texts[id];
-        if (!specialIds.has(id) && text !== undefined && textAllowed(state, text)) {
-            result.push(id);
-        }
-    }
-    return result;
 }
 
 interface DecodedToken {
@@ -123,10 +123,22 @@ function mergeTokenIds(left: ReadonlyArray<number>, right: ReadonlyArray<number>
     return merged;
 }
 
-function grammarCacheKey(state: JsonRowGrammarState, maximumTokenLength: number): string {
+/**
+ * Cache key of the legacy (`any` separators) path: the whole state, with lengths normalized where
+ * they cannot change the result.
+ *
+ * @param state grammar state
+ * @param maximumTokenLength longest token text
+ * @returns cache key
+ */
+function legacyCacheKey(state: JsonRowGrammarState, maximumTokenLength: number): string {
     if (state.phase === 'in-string-value' && state.maximumStringLength !== undefined) {
         const capacity = state.maximumStringLength - state.stringLength;
-        if (!state.escaped && state.unicodeEscapeRemaining === 0 && capacity >= maximumTokenLength) {
+        if (
+            !state.escaped &&
+            state.unicodeEscapeRemaining === 0 &&
+            capacity >= maximumTokenLength + state.steerWithin
+        ) {
             return JSON.stringify({
                 ...state,
                 stringLength: 0,
@@ -141,6 +153,11 @@ function grammarCacheKey(state: JsonRowGrammarState, maximumTokenLength: number)
 /**
  * Cache the tokenizer-wide grammar scan for equivalent decoder states.
  *
+ * With canonical separators (`compact`, `spaced`) the runtime feeds all grammar-forced text itself
+ * and only asks for the tokens a value can take; those never reach into the next key, so their set
+ * depends on the value's state alone and the cache is shared by every grammar the generator sees.
+ * The legacy `any` mode keys on the whole state.
+ *
  * @param texts decoded tokenizer vocabulary
  * @param specialIds token IDs that cannot be emitted
  * @returns resolver for allowed token IDs
@@ -148,10 +165,10 @@ function grammarCacheKey(state: JsonRowGrammarState, maximumTokenLength: number)
 export function createAllowedTokenResolver(
     texts: ReadonlyArray<string | undefined>,
     specialIds: ReadonlySet<number>
-): (state: JsonRowGrammarState) => ReadonlyArray<number> {
-    const cache = new Map<string, ReadonlyArray<number>>();
+): (state: JsonRowGrammarState) => Readonly<Int32Array> {
+    const cache = new Map<string, Int32Array>();
     const decoded = texts.flatMap((tokenText, id): DecodedToken[] => {
-        if (specialIds.has(id) || tokenText === undefined) {
+        if (specialIds.has(id) || tokenText === undefined || tokenText.length === 0) {
             return [];
         }
         const length = plainStringLength(tokenText);
@@ -160,22 +177,68 @@ export function createAllowedTokenResolver(
     const plainStringTokens = decoded.filter(
         (token): token is DecodedToken & { plainStringLength: number } => token.plainStringLength !== undefined
     );
+    const allPlainIds = Object.freeze(plainStringTokens.map(({ id }) => id));
     const complexStringTokens = decoded.filter(({ plainStringLength: length }) => length === undefined);
+    const byFirstCharacter = new Map<string, DecodedToken[]>();
+    for (const token of decoded) {
+        const first = String.fromCodePoint(token.text.codePointAt(0) ?? 0);
+        const group = byFirstCharacter.get(first);
+        if (group) {
+            group.push(token);
+        } else {
+            byFirstCharacter.set(first, [token]);
+        }
+    }
     const plainCapacityCache = new Map<number, ReadonlyArray<number>>();
     const maximumPlainLength = Math.max(0, ...plainStringTokens.map(({ plainStringLength: length }) => length));
     const maximumTokenLength = Math.max(0, ...decoded.map(({ text }) => Array.from(text).length));
-    return (state) => {
-        const key = grammarCacheKey(state, maximumTokenLength);
-        const cached = cache.get(key);
-        if (cached) {
-            return cached;
+    const remember = (key: string, allowed: Int32Array): Int32Array => {
+        if (cache.size >= MAXIMUM_ALLOWED_TOKEN_ENTRIES) {
+            const oldest = cache.keys().next();
+            if (!oldest.done) {
+                cache.delete(oldest.value);
+            }
         }
-        let allowed: ReadonlyArray<number>;
+        cache.set(key, allowed);
+        return allowed;
+    };
+    const canonicalAllowed = (state: JsonRowGrammarState): ReadonlyArray<number> => {
+        const allows = (text: string): boolean => textAllowed(state, text, { withinValue: true });
+        const inPlainString =
+            state.phase === 'in-string-value' &&
+            !state.escaped &&
+            state.unicodeEscapeRemaining === 0 &&
+            state.stringHasAlphanumeric;
+        const farFromLimit =
+            state.maximumStringLength === undefined ||
+            state.maximumStringLength - state.stringLength >= maximumTokenLength + state.steerWithin;
+        if (inPlainString && farFromLimit) {
+            return mergeTokenIds(
+                allPlainIds,
+                complexStringTokens.filter(({ text }) => allows(text)).map(({ id }) => id)
+            );
+        }
+        const ids: number[] = [];
+        for (const [first, tokens] of byFirstCharacter) {
+            // Characters are checked one by one, so no token can pass once its first character fails.
+            if (!allows(first)) {
+                continue;
+            }
+            for (const token of tokens) {
+                if (allows(token.text)) {
+                    ids.push(token.id);
+                }
+            }
+        }
+        return ids.sort((left, right) => left - right);
+    };
+    const legacyAllowed = (state: JsonRowGrammarState): ReadonlyArray<number> => {
         if (
             state.phase === 'in-string-value' &&
             !state.escaped &&
             state.unicodeEscapeRemaining === 0 &&
-            state.maximumStringLength !== undefined
+            state.maximumStringLength !== undefined &&
+            state.steerWithin === 0
         ) {
             const capacity = Math.max(0, state.maximumStringLength - state.stringLength);
             const capacityKey = Math.min(capacity, maximumPlainLength);
@@ -194,12 +257,28 @@ export function createAllowedTokenResolver(
                 plainIds = plainStringTokens.filter(({ text }) => textAllowed(state, text)).map(({ id }) => id);
             }
             const complexIds = complexStringTokens.filter(({ text }) => textAllowed(state, text)).map(({ id }) => id);
-            allowed = Object.freeze(mergeTokenIds(plainIds, complexIds));
-        } else {
-            allowed = Object.freeze(allowedTokenIds(state, texts, specialIds));
+            return mergeTokenIds(plainIds, complexIds);
         }
-        cache.set(key, allowed);
-        return allowed;
+        const result: number[] = [];
+        for (let id = 0; id < texts.length; id += 1) {
+            const text = texts[id];
+            if (!specialIds.has(id) && text !== undefined && textAllowed(state, text)) {
+                result.push(id);
+            }
+        }
+        return result;
+    };
+    return (state) => {
+        // Outside values the next key matters, so those states keep the whole-state key.
+        const canonical = state.separators !== 'any' && VALUE_PHASES.has(state.phase);
+        const key = canonical
+            ? `v${valueStateKey(state, maximumTokenLength)}`
+            : `l${legacyCacheKey(state, maximumTokenLength)}`;
+        const cached = cache.get(key);
+        if (cached) {
+            return cached;
+        }
+        return remember(key, Int32Array.from(canonical ? canonicalAllowed(state) : legacyAllowed(state)));
     };
 }
 
@@ -277,18 +356,63 @@ export function selectNucleus(
     return nucleus;
 }
 
+/**
+ * Tokens that would repeat an n-gram of the value tokens already generated in this row.
+ *
+ * @param history value tokens of the row so far
+ * @param size n-gram size; below 2 bans nothing
+ * @returns banned next tokens
+ */
+export function repeatedNgramTokens(history: ReadonlyArray<number>, size: number): ReadonlySet<number> {
+    const banned = new Set<number>();
+    if (size < 2 || history.length < size - 1) {
+        return banned;
+    }
+    const prefixStart = history.length - (size - 1);
+    for (let start = 0; start + size - 1 < history.length; start += 1) {
+        let matches = true;
+        for (let offset = 0; offset < size - 1; offset += 1) {
+            if (history[start + offset] !== history[prefixStart + offset]) {
+                matches = false;
+                break;
+            }
+        }
+        if (matches) {
+            banned.add(requiredElement(history, start + size - 1, 'n-gram history'));
+        }
+    }
+    return banned;
+}
+
+/**
+ * Sample one allowed token.
+ *
+ * @param logits the row's next-token logits
+ * @param allowed grammar-allowed token ids
+ * @param history value tokens of the row so far: repetition penalty and n-gram ban apply to them only
+ * @param ngramSize n-gram size to ban, 0 for none
+ * @param input sampling options
+ * @param random the row's seeded random source
+ * @param weights scratch buffer of the vocabulary size
+ * @param heap scratch buffer of the vocabulary size
+ * @returns the chosen token id
+ */
 function sample(
     logits: Float32Array,
-    candidates: ReadonlyArray<number>,
+    allowed: Readonly<Int32Array>,
     history: ReadonlyArray<number>,
+    ngramSize: number,
     input: ConstrainedTextGenerationInput,
     random: () => number,
     weights: Float64Array,
     heap: Int32Array
 ): number {
-    if (candidates.length === 0) {
+    if (allowed.length === 0) {
         throw new Error('SFT grammar has no valid next token');
     }
+    const banned = repeatedNgramTokens(history, ngramSize);
+    const unbanned = banned.size > 0 ? allowed.filter((id) => !banned.has(id)) : allowed;
+    const candidates = unbanned.length > 0 ? unbanned : allowed;
     const repeated = new Set(history);
     const temperature = Math.max(input.temperature, 1e-6);
     const score = (id: number): number => {
@@ -407,6 +531,41 @@ function clonePrefillOutput(output: CausalLmOutputs): CausalLmOutputs {
 }
 
 /**
+ * Keep the given rows of a batched layer cache, in the given order.
+ *
+ * @param cache layer state of `batchSize` rows
+ * @param batchSize rows in the cache
+ * @param rows row indexes to keep; a row may repeat
+ * @returns the selected rows
+ */
+function selectCacheRows(
+    cache: ReadonlyMap<number, CausalLmKeyValue>,
+    batchSize: number,
+    rows: ReadonlyArray<number>
+): ReadonlyMap<number, CausalLmKeyValue> {
+    if (rows.length === batchSize && rows.every((row, index) => row === index)) {
+        return cache;
+    }
+    const select = (data: Float32Array): Float32Array => {
+        const rowSize = data.length / batchSize;
+        const selected = new Float32Array(rows.length * rowSize);
+        rows.forEach((row, index) => selected.set(data.subarray(row * rowSize, (row + 1) * rowSize), index * rowSize));
+        return selected;
+    };
+    return new Map(Array.from(cache, ([layer, { key, value }]) => [layer, { key: select(key), value: select(value) }]));
+}
+
+interface DecodingSequence {
+    state: JsonRowGrammarState;
+    random: () => number;
+    generated: number[];
+    valueHistory: number[];
+    /** Tokens to feed at the next step; forced text may take several. */
+    pending: number[];
+    outcome?: 'complete' | 'incomplete';
+}
+
+/**
  * Run the pilot causal model with token-level JSON shape constraints.
  *
  * @param options
@@ -414,17 +573,24 @@ function clonePrefillOutput(output: CausalLmOutputs): CausalLmOutputs {
 export function createCausalTextGenerator(options: CreateCausalTextGeneratorOptions): ConstrainedTextGenerator {
     const tokenTexts = tokenTextTable(options.tokenizer);
     const specialIds = new Set(options.tokenizer.specialTokenIds);
-    let previousGrammarKey: string | undefined;
-    let previousAllowedTokenResolver: ReturnType<typeof createAllowedTokenResolver> | undefined;
-    const allowedTokenResolver = (
-        grammar: ConstrainedTextGenerationInput['grammar']
-    ): ReturnType<typeof createAllowedTokenResolver> => {
-        const key = JSON.stringify(grammar);
-        if (key !== previousGrammarKey || !previousAllowedTokenResolver) {
-            previousGrammarKey = key;
-            previousAllowedTokenResolver = createAllowedTokenResolver(tokenTexts, specialIds);
+    const vocabSize = options.tokenizer.vocabSize;
+    const resolveAllowedTokens = createAllowedTokenResolver(tokenTexts, specialIds);
+    const closingQuoteToken = tokenTexts.findIndex((text, id) => text === '"' && !specialIds.has(id));
+    const forcedTokenCache = new Map<string, ReadonlyArray<number>>();
+    const forcedTokens = (text: string): ReadonlyArray<number> => {
+        const cached = forcedTokenCache.get(text);
+        if (cached) {
+            return cached;
         }
-        return previousAllowedTokenResolver;
+        const ids = Object.freeze([...options.tokenizer.encode(text)]);
+        if (ids.length === 0 || options.tokenizer.decode(ids) !== text) {
+            throw new TypeError('SFT forced grammar text does not round-trip through the tokenizer');
+        }
+        if (forcedTokenCache.size >= MAXIMUM_FORCED_TEXT_ENTRIES) {
+            forcedTokenCache.clear();
+        }
+        forcedTokenCache.set(text, ids);
+        return ids;
     };
     let sessionQueue: Promise<void> = Promise.resolve();
     let cachedPrefill: { prompt: string; output: CausalLmOutputs } | undefined;
@@ -443,7 +609,7 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
                 }
                 const output = await options.session.run(input);
                 signal.throwIfAborted();
-                if (output.lastLogits.length !== options.tokenizer.vocabSize) {
+                if (output.lastLogits.length !== vocabSize * (input.batchSize ?? 1)) {
                     throw new TypeError('SFT logits do not match tokenizer vocabulary size');
                 }
                 if (prompt !== undefined) {
@@ -458,74 +624,201 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
         );
         return operation;
     };
-    const generate = async (input: ConstrainedTextGenerationInput, signal: AbortSignal): Promise<string> => {
+
+    /**
+     * Decode one completion per seed for a shared prompt. Rows advance together, one token per
+     * row and step; a lone row takes all grammar-forced tokens in one step. With canonical
+     * separators the forced text is fed without sampling.
+     *
+     * @param input shared prompt, grammar and sampling options
+     * @param seeds one per row
+     * @param signal cancellation; with `partialOnAbort` completed rows are returned instead
+     * @param partialOnAbort whether cancellation returns the completed rows
+     * @returns completions, undefined where a row did not complete
+     */
+    const decode = async (
+        input: ConstrainedTextGenerationInput,
+        seeds: ReadonlyArray<number>,
+        signal: AbortSignal,
+        partialOnAbort: boolean
+    ): Promise<ReadonlyArray<string | undefined>> => {
         if (!Number.isSafeInteger(input.maxNewTokens) || input.maxNewTokens <= 0) {
             throw new TypeError('SFT maxNewTokens must be a positive integer');
+        }
+        if (seeds.length === 0) {
+            return [];
         }
         const promptIds = options.tokenizer.encode(input.prompt);
         if (promptIds.length === 0) {
             throw new TypeError('SFT prompt encoded to no tokens');
         }
-        let state = createJsonRowGrammar(input.grammar);
-        let inputIds = Int32Array.from(promptIds);
-        let position = 0;
-        let totalLength = promptIds.length;
-        let pastKeyValues: ReadonlyMap<number, CausalLmKeyValue> = new Map();
-        const generated: number[] = [];
-        const random = seededRandom(input.seed);
-        const resolveAllowedTokens = allowedTokenResolver(input.grammar);
-        const samplingWeights = new Float64Array(options.tokenizer.vocabSize);
-        const samplingHeap = new Int32Array(options.tokenizer.vocabSize);
-
-        while (generated.length < input.maxNewTokens && !grammarComplete(state)) {
-            signal.throwIfAborted();
-            const sequenceLength = inputIds.length;
-            const basePosition = position;
-            const output = await runSession(
-                {
-                    inputIds,
-                    attentionMask: new Int32Array(totalLength).fill(1),
-                    positionIds: Int32Array.from({ length: sequenceLength }, (_unused, index) => basePosition + index),
-                    pastKeyValues
-                },
-                signal,
-                generated.length === 0 ? input.prompt : undefined
-            );
-            signal.throwIfAborted();
-            const token = sample(
-                output.lastLogits,
-                resolveAllowedTokens(state),
-                generated,
+        const separators = input.separators ?? 'any';
+        const canonical = separators !== 'any';
+        const sequences: DecodingSequence[] = seeds.map((seed) => ({
+            state: createJsonRowGrammar(input.grammar, { separators }),
+            random: seededRandom(seed),
+            generated: [],
+            valueHistory: [],
+            pending: []
+        }));
+        const samplingWeights = new Float64Array(vocabSize);
+        const samplingHeap = new Int32Array(vocabSize);
+        const choose = (sequence: DecodingSequence, logits: Float32Array): void => {
+            if (grammarComplete(sequence.state)) {
+                sequence.outcome = 'complete';
+                return;
+            }
+            if (sequence.generated.length >= input.maxNewTokens) {
+                sequence.outcome = 'incomplete';
+                return;
+            }
+            const forced = canonical ? forcedText(sequence.state) : '';
+            // Forced text is fed without sampling, except its last token: the model samples across
+            // the boundary itself (token healing), so a key and the value after it are tokenized
+            // the way the model learned rather than split where the grammar stops forcing.
+            const ids = forced.length > 0 ? forcedTokens(forced).slice(0, -1) : [];
+            if (ids.length > 0) {
+                const fed = options.tokenizer.decode(ids);
+                sequence.state = advanceText(sequence.state, fed);
+                sequence.generated.push(...ids);
+                sequence.pending = [...ids];
+                return;
+            }
+            const valuePhase = VALUE_PHASES.has(sequence.state.phase);
+            const sampled = sample(
+                logits,
+                resolveAllowedTokens(sequence.state),
+                valuePhase ? sequence.valueHistory : [],
+                valuePhase ? input.noRepeatNgramSize : 0,
                 input,
-                random,
+                sequence.random,
                 samplingWeights,
                 samplingHeap
             );
+            // Near a string's maximum length, a token that starts a new word ends the string instead,
+            // so text stops at a word boundary rather than being cut off inside a word.
+            const startsWord = /^\s/u.test(tokenTexts[sampled] ?? '');
+            const token =
+                startsWord && closingQuoteToken >= 0 && withinSteeringWindow(sequence.state)
+                    ? closingQuoteToken
+                    : sampled;
             const text = tokenTexts[token];
             if (text === undefined) {
                 throw new TypeError('SFT selected an undecodable token');
             }
-            generated.push(token);
-            state = advanceText(state, text);
-            pastKeyValues = output.presentKeyValues;
-            position += sequenceLength;
-            totalLength += 1;
-            inputIds = Int32Array.of(token);
+            sequence.generated.push(token);
+            if (valuePhase) {
+                sequence.valueHistory.push(token);
+            }
+            sequence.state = advanceText(sequence.state, text);
+            if (grammarComplete(sequence.state)) {
+                sequence.outcome = 'complete';
+                return;
+            }
+            sequence.pending = [token];
+        };
+
+        const results = (): ReadonlyArray<string | undefined> =>
+            sequences.map((sequence) =>
+                sequence.outcome === 'complete' ? options.tokenizer.decode(sequence.generated) : undefined
+            );
+        try {
+            const prefill = await runSession(
+                {
+                    inputIds: Int32Array.from(promptIds),
+                    attentionMask: new Int32Array(promptIds.length).fill(1),
+                    positionIds: Int32Array.from({ length: promptIds.length }, (_unused, index) => index),
+                    pastKeyValues: new Map(),
+                    batchSize: 1
+                },
+                signal,
+                input.prompt
+            );
+            signal.throwIfAborted();
+            sequences.forEach((sequence) => choose(sequence, prefill.lastLogits));
+            let cache = prefill.presentKeyValues;
+            // Batch row of each sequence in `cache`; every row of the prefill is row 0.
+            const rows = sequences.map(() => 0);
+            let cacheBatch = 1;
+            let length = promptIds.length;
+            while (true) {
+                const active = sequences.flatMap((sequence, index) =>
+                    sequence.outcome === undefined && sequence.pending.length > 0 ? [index] : []
+                );
+                if (active.length === 0) {
+                    break;
+                }
+                signal.throwIfAborted();
+                cache = selectCacheRows(
+                    cache,
+                    cacheBatch,
+                    active.map((index) => requiredElement(rows, index, 'cache row'))
+                );
+                cacheBatch = active.length;
+                active.forEach((index, row) => (rows[index] = row));
+                // A lone row takes all its forced tokens at once; rows in a batch advance together.
+                const step =
+                    active.length === 1
+                        ? requiredElement(sequences, requiredElement(active, 0, 'active'), 'sequence').pending.length
+                        : 1;
+                const inputIds = new Int32Array(active.length * step);
+                active.forEach((index, row) => {
+                    const sequence = requiredElement(sequences, index, 'sequence');
+                    const fed = sequence.pending.splice(0, step);
+                    inputIds.set(fed, row * step);
+                });
+                const pastLength = length;
+                const output = await runSession(
+                    {
+                        inputIds,
+                        attentionMask: new Int32Array(active.length * (pastLength + step)).fill(1),
+                        positionIds: Int32Array.from(
+                            { length: active.length * step },
+                            (_unused, index) => pastLength + (index % step)
+                        ),
+                        pastKeyValues: cache,
+                        batchSize: active.length
+                    },
+                    signal
+                );
+                signal.throwIfAborted();
+                cache = output.presentKeyValues;
+                length += step;
+                active.forEach((index, row) => {
+                    const sequence = requiredElement(sequences, index, 'sequence');
+                    if (sequence.pending.length === 0) {
+                        choose(sequence, output.lastLogits.subarray(row * vocabSize, (row + 1) * vocabSize));
+                    }
+                });
+            }
+        } catch (error) {
+            cachedPrefill = undefined;
+            if (partialOnAbort && signal.aborted) {
+                return results();
+            }
+            throw error;
         }
-        if (!grammarComplete(state)) {
-            throw new Error('SFT generation ended before completing its JSON object');
-        }
-        return options.tokenizer.decode(generated);
+        return results();
     };
+
     return Object.freeze({
         generate: async (input: ConstrainedTextGenerationInput, signal: AbortSignal) => {
             try {
-                return await generate(input, signal);
+                const [completion] = await decode(input, [input.seed], signal, false);
+                if (completion === undefined) {
+                    throw new Error('SFT generation ended before completing its JSON object');
+                }
+                return completion;
             } catch (error) {
                 cachedPrefill = undefined;
                 throw error;
             }
         },
+        generateBatch: async (
+            input: ConstrainedTextGenerationInput,
+            seeds: ReadonlyArray<number>,
+            signal: AbortSignal
+        ) => decode(input, seeds, signal, true),
         dispose: async () => {
             await sessionQueue;
             cachedPrefill = undefined;

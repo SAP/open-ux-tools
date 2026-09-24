@@ -197,6 +197,9 @@ export interface SftFieldRequest {
     referencedBy?: ReadonlyArray<string>;
     /** Schema-declared currency or unit companion field. */
     currencyOrUnitField?: string;
+    /** Inclusive range of an integer type (for example Edm.Byte 0..255). */
+    minimum?: number;
+    maximum?: number;
 }
 
 /** A proposed descriptive value and its schema context for independent relevance checking. */
@@ -229,6 +232,11 @@ export interface SftGenerationInput {
     fixedRows?: ReadonlyArray<MockDataRow>;
     siblingGroup?: string;
     acceptedRoles?: Readonly<Record<string, string>>;
+    /**
+     * Fields that must be proposed in one call and accepted together (a generated code with its
+     * text, a linked text with its code). The remaining fields may be split across calls.
+     */
+    coupledFieldGroups?: ReadonlyArray<ReadonlyArray<string>>;
 }
 
 export interface SftGenerationOutput {

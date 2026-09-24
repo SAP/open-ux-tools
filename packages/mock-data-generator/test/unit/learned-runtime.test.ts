@@ -1,6 +1,7 @@
 import {
     assertV3HeadLifecycle,
     createLearnedRuntime,
+    parseSftConfiguration,
     type LearnedComponentFactories
 } from '../../src/model/learned-runtime.js';
 import { parseModelManifest, type ModelManifest } from '../../src/model/manifest.js';
@@ -311,5 +312,34 @@ describe('learned runtime composition', () => {
         ]);
         expect(factories.classifier).not.toHaveBeenCalled();
         expect(factories.sft).not.toHaveBeenCalled();
+    });
+});
+
+describe('SFT generation config', () => {
+    const config = {
+        numHiddenLayers: 30,
+        numKeyValueHeads: 3,
+        hiddenSize: 576,
+        numAttentionHeads: 9,
+        samplingOptions: {
+            temperature: 0.6,
+            topP: 0.9,
+            repetitionPenalty: 1.15,
+            noRepeatNgramSize: 4,
+            maxNewTokens: 300
+        }
+    };
+
+    it('runs an artifact under runtime contract 2 with spaced separators unless it pins otherwise', () => {
+        expect(parseSftConfiguration(config)).toMatchObject({ runtimeContract: 2, jsonSeparators: 'spaced' });
+        expect(parseSftConfiguration({ ...config, runtimeContract: 1, jsonSeparators: 'compact' })).toMatchObject({
+            runtimeContract: 1,
+            jsonSeparators: 'compact'
+        });
+    });
+
+    it('rejects an unknown runtime contract or separator style', () => {
+        expect(() => parseSftConfiguration({ ...config, runtimeContract: 3 })).toThrow('runtime contract');
+        expect(() => parseSftConfiguration({ ...config, jsonSeparators: 'any' })).toThrow('separators');
     });
 });

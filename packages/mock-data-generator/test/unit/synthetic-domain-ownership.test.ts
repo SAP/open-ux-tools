@@ -92,6 +92,22 @@ function generator(calls: string[][]): SftGenerator {
     };
 }
 
+/**
+ * The domain keeps its deterministic rows, the model is not asked, and the result says why.
+ *
+ * @param run the fine-tuned tier's result
+ * @param calls model calls made
+ */
+function expectUnverifiedDomainKept(run: Awaited<ReturnType<typeof applySftGeneration>>, calls: string[][]): void {
+    expect(calls).toEqual([]);
+    expect(run.resources.Codes).toEqual(resources().Codes);
+    expect(run.diagnostics).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({ code: 'SFT_CANDIDATE_VERIFIER_UNAVAILABLE', target: 'Codes' })
+        ])
+    );
+}
+
 describe('synthetic reference-domain ownership', () => {
     it('does not let generic classifier roles bypass an unevidenced linked code/text domain', async () => {
         const graph = graphWithCodeDomain();
@@ -106,18 +122,18 @@ describe('synthetic reference-domain ownership', () => {
         expect(diagnostics).toEqual(
             expect.arrayContaining([expect.objectContaining({ code: 'SEMANTIC_DOMAIN_UNAVAILABLE' })])
         );
-        await expect(
-            applySftGeneration(
-                graph,
-                resources(),
-                { urlPath: '/ownership', odataVersion: '4.0' },
-                options(),
-                planned,
-                generator([]),
-                new AbortController().signal,
-                { Codes: absentOwnership }
-            )
-        ).rejects.toThrow('SFT_CANDIDATE_VERIFIER_UNAVAILABLE');
+        const calls: string[][] = [];
+        const run = await applySftGeneration(
+            graph,
+            resources(),
+            { urlPath: '/ownership', odataVersion: '4.0' },
+            options(),
+            planned,
+            generator(calls),
+            new AbortController().signal,
+            { Codes: absentOwnership }
+        );
+        expectUnverifiedDomainKept(run, calls);
     });
 
     it('retains an authored relationship-bound status code and its linked text as application evidence', () => {
@@ -186,43 +202,39 @@ describe('synthetic reference-domain ownership', () => {
         expect(planned.get('Documents.Caption')?.role).toBe('description');
     });
 
-    it('refuses an evidence-poor linked domain without an independent relevance verifier', async () => {
+    it('keeps the deterministic rows of an evidence-poor linked domain without an independent relevance verifier', async () => {
         const calls: string[][] = [];
-        await expect(
-            applySftGeneration(
-                graphWithCodeDomain(),
-                resources(),
-                { urlPath: '/ownership', odataVersion: '4.0' },
-                options(),
-                new Map(),
-                generator(calls),
-                new AbortController().signal,
-                { Codes: absentOwnership }
-            )
-        ).rejects.toThrow('SFT_CANDIDATE_VERIFIER_UNAVAILABLE');
-        expect(calls).toEqual([]);
+        const run = await applySftGeneration(
+            graphWithCodeDomain(),
+            resources(),
+            { urlPath: '/ownership', odataVersion: '4.0' },
+            options(),
+            new Map(),
+            generator(calls),
+            new AbortController().signal,
+            { Codes: absentOwnership }
+        );
+        expectUnverifiedDomainKept(run, calls);
     });
 
     it('does not treat an empty authored value help as a domain', async () => {
         const calls: string[][] = [];
-        await expect(
-            applySftGeneration(
-                graphWithCodeDomain(),
-                resources(),
-                { urlPath: '/ownership', odataVersion: '4.0' },
-                options(),
-                new Map(),
-                generator(calls),
-                new AbortController().signal,
-                {
-                    Codes: {
-                        contributor: { present: false },
-                        initialRows: { source: 'json', present: true, rows: [] }
-                    }
+        const run = await applySftGeneration(
+            graphWithCodeDomain(),
+            resources(),
+            { urlPath: '/ownership', odataVersion: '4.0' },
+            options(),
+            new Map(),
+            generator(calls),
+            new AbortController().signal,
+            {
+                Codes: {
+                    contributor: { present: false },
+                    initialRows: { source: 'json', present: true, rows: [] }
                 }
-            )
-        ).rejects.toThrow('SFT_CANDIDATE_VERIFIER_UNAVAILABLE');
-        expect(calls).toEqual([]);
+            }
+        );
+        expectUnverifiedDomainKept(run, calls);
     });
 
     it('keeps deterministic rows for a malformed linked code/text group without a second model call', async () => {
@@ -516,24 +528,29 @@ describe('synthetic reference-domain ownership', () => {
         );
     });
 
-    it('fails closed for a residual caption when the linked master has a structural relationship', async () => {
+    it('keeps the fallback caption when the linked master has a structural relationship and no verifier', async () => {
         const calls: string[][] = [];
-        await expect(
-            applySftGeneration(
-                graphWithCodeDomain(true),
-                resources(true),
-                { urlPath: '/ownership', odataVersion: '4.0' },
-                options(),
-                new Map(),
-                generator(calls),
-                new AbortController().signal,
-                { Codes: absentOwnership }
-            )
-        ).rejects.toThrow('SFT_CANDIDATE_VERIFIER_UNAVAILABLE');
-        expect(calls).toEqual([]);
+        const run = await applySftGeneration(
+            graphWithCodeDomain(true),
+            resources(true),
+            { urlPath: '/ownership', odataVersion: '4.0' },
+            options(),
+            new Map(),
+            generator(calls),
+            new AbortController().signal,
+            { Codes: absentOwnership }
+        );
+        expect(calls.flat()).not.toContain('Caption');
+        expect(run.resources.Codes).toEqual(resources(true).Codes);
+        expect(run.diagnostics).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ code: 'SFT_CANDIDATE_VERIFIER_UNAVAILABLE', target: 'Codes' })
+            ])
+        );
     });
 
     it('does not clone a verified caption onto a protected owner code during finalization', () => {
+        const diagnostics: Parameters<typeof finalizeSemanticServiceWorld>[5] = [];
         const original = graphWithCodeDomain();
         const item = original.entities[0];
         const graph: SchemaGraph = {
@@ -548,20 +565,21 @@ describe('synthetic reference-domain ownership', () => {
                 original.entities[1]
             ]
         };
-        expect(() =>
-            finalizeSemanticServiceWorld(
-                graph,
-                { Items: [{ ID: 'I1', Code: 'K1' }], Codes: [{ Code: 'K0', Caption: 'Approved' }] },
-                {},
-                7,
-                new Map(),
-                [],
-                {},
-                new Map(),
-                [],
-                new Set(['Codes'])
-            )
-        ).toThrow('SYNTHETIC_DOMAIN_EXTENSION_UNVERIFIED');
+        const world = finalizeSemanticServiceWorld(
+            graph,
+            { Items: [{ ID: 'I1', Code: 'K1' }], Codes: [{ Code: 'K0', Caption: 'Approved' }] },
+            {},
+            7,
+            new Map(),
+            diagnostics,
+            {},
+            new Map(),
+            [],
+            new Set(['Codes'])
+        );
+        // The verified caption stays with its own code; the unmatched tuple is reported, not invented.
+        expect(world.Codes).not.toContainEqual(expect.objectContaining({ Code: 'K1', Caption: 'Approved' }));
+        expect(diagnostics.length).toBeGreaterThan(0);
     });
 
     it('preserves every property of an enumerable authored row during post-projection coherence', () => {
