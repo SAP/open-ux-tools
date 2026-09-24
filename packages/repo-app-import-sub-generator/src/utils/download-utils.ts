@@ -1,4 +1,5 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { FileStoreService } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { PromptState } from '../prompts/prompt-state.js';
@@ -67,22 +68,34 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
 
 /**
  * Downloads application files from the ABAP repository.
+ * First attempts download via ABAP_REPOSITORY_SRV (requires SAP_UI 754+).
+ * Falls back to ADT FileStoreService on older systems.
  *
  * @param {string} repoName - The repository name of the application.
- * @returns {Promise<boolean>} - Resolves to false if no data was returned (such as on a legacy ABAP system), true otherwise.
+ * @returns {Promise<boolean>} - Resolves to false if no data was returned, true otherwise.
  */
 export async function downloadApp(repoName: string): Promise<boolean> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-    const ui5AbapRepository = await serviceProvider.getUi5AbapRepository();
+    const ui5AbapRepository = serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
     RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
-    const downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    let downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
+        RepoAppDownloadLogger.logger?.debug(t('error.adtFallbackDownload'));
+        try {
+            const fileStoreService = await serviceProvider.getAdtService<FileStoreService>(FileStoreService);
+            if (fileStoreService) {
+                downloadedAppPackage = await ui5AbapRepository.downloadFilesViaAdt(repoName, fileStoreService);
+            }
+        } catch (error) {
+            RepoAppDownloadLogger.logger?.error(t('error.adtFallbackDownloadFailed', { error: (error as Error).message }));
+        }
+    }
     if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
         RepoAppDownloadLogger.logger?.error(t('error.appDownloadFailed'));
         return false;
     }
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
-    // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;
     return true;
 }
