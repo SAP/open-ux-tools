@@ -58,8 +58,8 @@ export interface RunRtaWorkflowStepInput {
 export interface StartStepResult {
     /** Echo of the editor URL — carry this forward to every subsequent step. */
     site: string;
-    /** Echo of the frameId — carry this forward when set. */
-    frameId?: string;
+    /** Echo of the frameId — carry this forward to every subsequent step. */
+    frameId: string;
     rtaStarted: boolean;
 }
 
@@ -86,7 +86,7 @@ export interface StopStepResult {
 
 export interface RestartStepResult {
     site: string;
-    frameId?: string;
+    frameId: string;
     rtaStarted: boolean;
 }
 
