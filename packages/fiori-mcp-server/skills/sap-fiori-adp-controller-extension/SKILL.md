@@ -38,7 +38,7 @@ A single tool, dispatched by the `step` argument. `site` is the editor URL from 
 
 | step | site | frameId | payload | returns |
 |------|------|---------|---------|---------|
-| `start` | required | optional | `{ site: string, frameId?: string }` | `{ site, frameId?, rtaStarted: true }` |
+| `start` | required | required (`"preview"`) | — | `{ site, frameId, rtaStarted: true }` |
 | `get_page_actions` | required | carry forward | — | `{ registered: RegisteredPageAction[], interactive: InteractiveElement[], interactiveTruncated?: true }` |
 | `call_page_action` | required | carry forward | `{ id }` | `{ result: PageActionRunResult }` |
 | `press_interactive` | required | carry forward | `{ controlId }` | `{ result: PageActionRunResult }` |
@@ -46,7 +46,7 @@ A single tool, dispatched by the `step` argument. `site` is the editor URL from 
 | `get_context` | required | carry forward | `{ controlId, actionId }` | `{ context }` |
 | `call_action` | required | carry forward | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
 | `save` | required | carry forward | — | `{ saved: boolean }` |
-| `restart` | required | carry forward | — | `{ site, frameId?, rtaStarted: true }` |
+| `restart` | required | carry forward | — | `{ site, frameId, rtaStarted: true }` |
 | `stop` | required | carry forward | — | `{ stopped: true }` |
 
 `Overlay` = `{ overlayId, controlId, label, controlType, parentElementId, parentAggregationName, index?, actionIds: string[] }` — `index` is the 0-based position within `parentAggregationName` and is omitted when the parent/aggregation can't be resolved or the aggregation is single-cardinality. `actionIds` lists the RTA actions available on this overlay; rich metadata for each id is in the top-level `actionsCatalog`.
@@ -57,7 +57,7 @@ A single tool, dispatched by the `step` argument. `site` is the editor URL from 
 - On `press_interactive`, `note` describes the observable change detected after the click (`"registered actions changed"`, `"ObjectPage section changed"`, `"navigation occurred"`, `"dialog/popover opened or closed"`, `"focus moved"`) or `"no observable state change"`. The detector probes at 200 / 400 / 800 ms after the click (cumulative ~1.4 s); a `"no observable state change"` result means *the press didn't move any of those signals within that window*, not that the press failed. It is a soft hint, not an error — re-check `get_page_actions` / `get_overlays` if you expected a context change.
 - On `call_page_action`, `needs_user_action` covers two cases: (a) the action's own `run()` returned that envelope because a precondition (e.g. mandatory filter not set, value help required) can't be met, *or* (b) `run()` *threw* and the server converted the throw into `needs_user_action` with the error message as `reason`. The two are indistinguishable from the surface — if `reason` reads like an exception (`TypeError: …`, `Cannot read property …`), treat it as a runtime error rather than a user-resolvable precondition.
 
-For the standard adaptation editor preview iframe, pass `frameId: "preview"` in the `start` payload.
+For the standard adaptation editor preview iframe, pass `frameId: "preview"` in the `start` step.
 
 > **When to reach for the page-action steps.** The six RTA steps (`get_overlays` → … → `save`) assume the page is already showing the control to edit. In Fiori Elements apps that often isn't true on first load — a List Report shows no rows until "Go" is pressed; an Object Page is only reachable after picking a row. Use `get_page_actions` / `call_page_action` / `press_interactive` to drive these pre-RTA navigations from the skill instead of asking the user to click manually. See **Step 2 — Navigate the app** below.
 
@@ -317,10 +317,10 @@ After generating all files, call `restart` to reload the current editor browser 
 
 ```
 run_rta_workflow_step { step: "restart", site, frameId }
-→ { site, frameId?, rtaStarted: true }
+→ { site, frameId, rtaStarted: true }
 ```
 
-Store the returned `site` (and `frameId` if present). Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
+Store the returned `site` and `frameId`. Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
 
 **Child overlay rule (hard rule).** For each control you added via `CTX_ADDXML`, you must find an overlay whose `controlId` matches that control's own id — not its parent's. The parent aggregation container appearing in `get_overlays` is **not** proof that the inserted child was accepted. If the parent is present but no overlay for the new control's id exists, the runtime silently rejected the fragment content (the change file was written and `call_action` returned `success: true`, but the control never rendered). This is a distinct failure state from "fragment not found."
 
