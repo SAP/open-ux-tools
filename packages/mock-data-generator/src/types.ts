@@ -316,11 +316,13 @@ export interface SftFieldStatistics {
  * How one resource's model attempt ended.
  * - `accepted`: every eligible slot received a model value.
  * - `partial`: some slots received a model value.
+ * - `incomplete`: no row was completed within the time the resource had.
  * - `rejected`: the model answered, but no candidate passed validation.
  * - `unverified`: a linked-text or generated-domain candidate was declined by the relevance check.
  * - `timeout` / `failed`: the model call timed out or failed.
  */
-export type SftResourceOutcome = 'accepted' | 'partial' | 'rejected' | 'unverified' | 'timeout' | 'failed';
+export type SftResourceOutcome =
+    'accepted' | 'partial' | 'incomplete' | 'rejected' | 'unverified' | 'timeout' | 'failed';
 
 export interface SftAssignmentStatistics {
     resource: string;

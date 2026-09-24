@@ -875,3 +875,42 @@ describe('SFT completion store', () => {
         expect(generate).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('SFT runtime contract 2 batches', () => {
+    test('decodes the rows of a call in batches of at most four and stops between batches when cancelled', async () => {
+        const controller = new AbortController();
+        const batches: number[] = [];
+        const generateBatch = jest.fn(
+            async (_request: ConstrainedTextGenerationInput, seeds: ReadonlyArray<number>) => {
+                batches.push(seeds.length);
+                if (batches.length === 2) {
+                    controller.abort(new Error('budget'));
+                }
+                return seeds.map(() => '{"Remark": "Done"}');
+            }
+        );
+        const generator = createPilotSftGenerator({
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate: jest.fn(), generateBatch },
+            sampling: { temperature: 0.6, topP: 0.9, repetitionPenalty: 1.15, noRepeatNgramSize: 4, maxNewTokens: 300 },
+            runtimeContract: 2,
+            budgetMs: 60_000
+        });
+
+        const result = await generator
+            .generate(
+                {
+                    ...input,
+                    contractVersion: 2,
+                    fields: [{ name: 'Remark', primitiveType: 'string', nullable: false, maxLength: 40 }],
+                    rowCount: 10
+                },
+                controller.signal
+            )
+            .catch((error: unknown) => error);
+
+        expect(batches).toEqual([4, 4]);
+        // The caller's own cancellation still propagates.
+        expect(result).toBeInstanceOf(Error);
+    });
+});

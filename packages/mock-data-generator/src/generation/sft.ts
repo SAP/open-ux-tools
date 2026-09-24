@@ -29,6 +29,9 @@ const MAX_SFT_STRING_LENGTH = 80;
 // The shortest model call worth making: on a two-core workspace a resource needs a few seconds to
 // produce any rows, so slices shorter than this only spend time and fall back anyway.
 const MINIMUM_SFT_ATTEMPT_MS = 4_000;
+// How long past its budget a generator may take to return its completed rows: one native decode step
+// of a batch on a loaded machine.
+const GENERATOR_STOP_GRACE_MS = 1_500;
 // `SAP__` is the namespace SAP Gateway reserves for the entity sets it adds to every service:
 // PDF export formats, cover pages, signatures, table columns, hierarchies, value helps, file
 // shares, currencies and units of measure. They are protocol plumbing rather than application
@@ -1013,7 +1016,9 @@ export async function applySftGeneration(
                         ...(options.locale ? { locale: options.locale } : {})
                     }),
                     signal,
-                    attemptBudgetMs + 100
+                    // The generator stops at its own budget and returns the rows it completed; the outer
+                    // bound only catches a generator that does not stop, so it allows one slow native step.
+                    attemptBudgetMs + GENERATOR_STOP_GRACE_MS
                 );
                 if (!output || !Array.isArray(output.rows)) {
                     throw new TypeError('Invalid SFT generation result');
@@ -1041,7 +1046,9 @@ export async function applySftGeneration(
                         { service, resource: resourceName }
                     );
                     signal.throwIfAborted();
-                    if (verifiedTextRows.size === fallbackRows.length) {
+                    // Any verified model caption protects the whole resource: finalization must not clone
+                    // it onto a code it was not verified for.
+                    if (verifiedTextRows.size > 0) {
                         relevanceVerifiedResources.add(resourceName);
                     }
                     break;
@@ -1371,6 +1378,8 @@ export async function applySftGeneration(
             outcome = 'accepted';
         } else if (entityAcceptedSlots > 0) {
             outcome = 'partial';
+        } else if (rowsWithoutCandidate >= modelRowCount) {
+            outcome = 'incomplete';
         }
         assignments.push(
             Object.freeze({

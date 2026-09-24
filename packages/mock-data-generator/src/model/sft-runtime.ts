@@ -150,6 +150,9 @@ export function processCompletionStore(): SftCompletionStore {
  * - rows are returned with the fields that completed, for per-field acceptance by the caller.
  */
 export const RUNTIME_CONTRACT_2_MAX_FIELDS_PER_CALL = 8;
+// Rows decoded together at most: a batch of 4 costs about as much per row as a batch of 10 on CPU,
+// and smaller batches complete progressively, so a time budget keeps the rows already finished.
+export const RUNTIME_CONTRACT_2_MAX_BATCH_ROWS = 4;
 // Within this many characters of the maximum length a string stops starting words (at most a
 // quarter of the length, so short codes are unaffected).
 const MAXIMUM_STEERING_CHARACTERS = 8;
@@ -678,14 +681,19 @@ export function createPilotSftGenerator(options: CreatePilotSftGeneratorOptions)
                 const missing = completions.flatMap((completion, rowIndex) =>
                     completion === undefined ? [rowIndex] : []
                 );
-                if (missing.length > 0) {
+                for (
+                    let start = 0;
+                    start < missing.length && !context.signal.aborted;
+                    start += RUNTIME_CONTRACT_2_MAX_BATCH_ROWS
+                ) {
+                    const group = missing.slice(start, start + RUNTIME_CONTRACT_2_MAX_BATCH_ROWS);
                     const generatedRows = await generateRows.call(
                         options.textGenerator,
                         request,
-                        missing.map((rowIndex) => seeds[rowIndex] ?? input.seed),
+                        group.map((rowIndex) => seeds[rowIndex] ?? input.seed),
                         context.signal
                     );
-                    missing.forEach((rowIndex, position) => {
+                    group.forEach((rowIndex, position) => {
                         completions[rowIndex] = generatedRows[position];
                     });
                 }

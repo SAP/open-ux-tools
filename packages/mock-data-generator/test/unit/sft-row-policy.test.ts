@@ -117,4 +117,38 @@ describe('fine-tuned row policy', () => {
             await generator.dispose();
         }
     });
+
+    it('protects verified model captions of a partially verified resource from being cloned onto new codes', async () => {
+        const result = await generateService(
+            { ...request, targets: [{ name: 'Tickets', kind: 'entity-set' }] },
+            { pipeline: 'semantic-v2', seed: 3, rowsPerEntity: 3, sftModelRows: 2 },
+            {
+                sft: numbered([]),
+                candidateVerifier: {
+                    fingerprint: 'accepts-first-caption',
+                    verifyBatch: async (pairs) => pairs.map(({ value }) => value === 'CategoryText value 0')
+                }
+            }
+        );
+        // Only the verified pair is published with its own code; no other code carries its caption.
+        const withCaption = result.resources.Tickets.filter(
+            ({ CategoryText }) => CategoryText === 'CategoryText value 0'
+        );
+        expect(withCaption.every(({ Category }) => Category === 'C0')).toBe(true);
+        expect(withCaption.length).toBeGreaterThan(0);
+    });
+
+    it('reports a resource whose rows did not complete in time as incomplete', async () => {
+        const result = await generateService(
+            { ...request, targets: [{ name: 'Memos', kind: 'entity-set' }] },
+            { pipeline: 'semantic-v2', seed: 3, rowsPerEntity: 2 },
+            {
+                sft: {
+                    fingerprint: 'no-rows',
+                    generate: async (input) => ({ rows: Array.from({ length: input.rowCount }, () => ({})) })
+                }
+            }
+        );
+        expect(result.statistics.sft.assignments[0]).toMatchObject({ outcome: 'incomplete', rowsWithoutCandidate: 2 });
+    });
 });
