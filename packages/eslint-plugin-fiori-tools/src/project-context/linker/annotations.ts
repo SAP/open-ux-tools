@@ -11,7 +11,13 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
-import { UI_FIELD_GROUP, UI_LINE_ITEM, UI_CHART, UI_DATA_FIELD_FOR_ANNOTATION } from '../../constants.js';
+import {
+    UI_FIELD_GROUP,
+    UI_LINE_ITEM,
+    UI_CHART,
+    UI_DATA_FIELD_FOR_ANNOTATION,
+    UI_COLLECTION_FACET
+} from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -91,6 +97,64 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
+ * Extracts nested facet records from a CollectionFacet's Facets property.
+ *
+ * @param record - The CollectionFacet element
+ * @returns Array of nested record elements
+ */
+function getCollectionFacetRecords(record: Element): Element[] {
+    const facetsPropValue = getPropertyValueElement(record, 'Facets');
+    if (facetsPropValue) {
+        const [nestedCollection] = elementsWithName(Edm.Collection, facetsPropValue);
+        if (nestedCollection) {
+            return elementsWithName(Edm.Record, nestedCollection);
+        }
+    }
+    return [];
+}
+
+/**
+ * Recursively collects table sections from facet records, traversing nested CollectionFacets at any depth.
+ *
+ * @param records - Facet records to process
+ * @param aliasInfo - Alias information for resolving namespaces
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @param facets - The root Facets annotation
+ * @param index - Index of the enclosing top-level facet record
+ * @param sections - Accumulator for collected table section nodes
+ */
+function collectTableSectionsFromRecords(
+    records: Element[],
+    aliasInfo: AliasInformation,
+    entityType: string,
+    service: ParsedService,
+    facets: IndexedAnnotation,
+    index: number,
+    sections: TableSectionNode[]
+): void {
+    for (const record of records) {
+        const type = getRecordType(aliasInfo, record);
+        if (type === UI_COLLECTION_FACET) {
+            collectTableSectionsFromRecords(
+                getCollectionFacetRecords(record),
+                aliasInfo,
+                entityType,
+                service,
+                facets,
+                index,
+                sections
+            );
+        } else {
+            const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
+            if (section?.type === 'table-section') {
+                sections.push(section);
+            }
+        }
+    }
+}
+
+/**
  * Collects object page table sections.
  *
  * @param entityType - Entity type name
@@ -110,14 +174,9 @@ function getOPTableSections(entityType: string, service: ParsedService): TableSe
     }
     const records = elementsWithName(Edm.Record, collection);
     const aliasInfo = service.artifacts.aliasInfo[facets.top.uri];
-    let index = 0;
-    for (const record of records) {
-        const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
-        if (section?.type === 'table-section') {
-            sections.push(section);
-        }
-        index++;
-    }
+    records.forEach((record, index) => {
+        collectTableSectionsFromRecords([record], aliasInfo, entityType, service, facets, index, sections);
+    });
     return sections;
 }
 
@@ -738,4 +797,24 @@ export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPa
         page.lookup[control.type] ??= [];
         page.lookup[control.type]!.push(control);
     }
+}
+
+/**
+ * Retrieves the fully qualified annotation term for a given annotation record.
+ *
+ * @param aliasInfo - Alias information for resolving fully qualified names
+ * @param record - The metadata element representing the annotation record
+ * @returns The fully qualified annotation term, or undefined if it cannot be determined
+ */
+export function getTargetAnnotationTerm(aliasInfo: AliasInformation, record: Element): string | undefined {
+    const annotationPath = getTargetAnnotationPath(record);
+    if (!annotationPath) {
+        return undefined;
+    }
+    const lastAt = annotationPath.lastIndexOf('@');
+    if (lastAt === -1) {
+        return undefined;
+    }
+    const termWithAlias = annotationPath.slice(lastAt + 1).split('#')[0];
+    return toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parseIdentifier(termWithAlias));
 }
