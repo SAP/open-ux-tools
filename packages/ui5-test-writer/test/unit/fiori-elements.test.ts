@@ -334,13 +334,17 @@ describe('ui5-test-writer', () => {
                     {
                         label: 'Deduct Discount',
                         action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
                         visible: true,
                         enabled: false,
                         isCritical: false,
                         parameterDialogFields: ['discount_percent']
                     }
                 ]);
-                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Deduct Discount")');
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "deductDiscount", unbound: false })'
+                );
                 expect(journey).toContain(
                     'onActionDialog().iCheckActionParameterDialogField({ property: "discount_percent" }, undefined, { visible: true })'
                 );
@@ -354,6 +358,8 @@ describe('ui5-test-writer', () => {
                     {
                         label: 'Deduct Discount',
                         action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
                         visible: true,
                         enabled: false,
                         isCritical: true,
