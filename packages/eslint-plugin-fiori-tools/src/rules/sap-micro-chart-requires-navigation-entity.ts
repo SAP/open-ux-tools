@@ -1,12 +1,16 @@
 import type { Element, MetadataElement } from '@sap-ux/odata-annotation-core';
-import { Edm, elementsWithName, elements } from '@sap-ux/odata-annotation-core';
+import { Edm, elementsWithName } from '@sap-ux/odata-annotation-core';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { MicroChartRequiresNavigationEntity } from '../language/diagnostics.js';
 import { MICRO_CHART_REQUIRES_NAVIGATION_ENTITY } from '../language/diagnostics.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 import type { IndexedAnnotation, ParsedService } from '../project-context/parser/index.js';
-import { getElementText, getEntityTypeForContextPath } from '../project-context/linker/annotations.js';
+import {
+    getElementText,
+    getEntityTypeForContextPath,
+    getPropertyValueElement
+} from '../project-context/linker/annotations.js';
 
 /** Annotation record properties whose `PropertyPath` values must use a 1:n navigation path. */
 const MICRO_CHART_CHECKED_PROPS = ['Measures', 'Dimensions'] as const;
@@ -86,13 +90,7 @@ function checkChartAnnotation(
         return;
     }
 
-    const propValueEls = MICRO_CHART_CHECKED_PROPS.map(
-        (propName) =>
-            elements(
-                (el) => el.name === Edm.PropertyValue && el.attributes[Edm.Property]?.value === propName,
-                record
-            )[0]
-    );
+    const propValueEls = MICRO_CHART_CHECKED_PROPS.map((propName) => getPropertyValueElement(record, propName));
 
     for (const [i, propValueEl] of propValueEls.entries()) {
         if (!propValueEl) {
