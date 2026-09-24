@@ -28,6 +28,8 @@ sap.ui.define([
         const defaultTableId = <%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '""' %>;
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+            Given.iResetTestData();
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName %>Generated.iSeeThisPage();
@@ -127,6 +129,11 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
             <%_ } _%>
+            <%_ const toolBarHasDialogAction = (toolBarActions || []).some(function(action) { return action.visible && !action.menuActions && !action.custom && action.enabled !== 'dynamic' && (action.isCritical || (action.parameterDialogFields && action.parameterDialogFields.length > 0)); }); _%>
+            <%_ if (!hideFilterBar && toolBarHasDialogAction) { _%>
+            // Populate the table so the actions below have a row to select.
+            When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
             <%_ if (item.menuActions) { _%>
@@ -153,25 +160,42 @@ sap.ui.define([
             <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
-            <%_ if (item.isCritical && item.enabled === 'dynamic') { _%>
-            // "<%- item.label %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the confirmation dialog.
+            <%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
+            <%_ if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
+            // "<%- item.label %>" is conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the <%- hasParamDialog ? 'action parameter dialog' : 'confirmation dialog' %>.
             <%_ if (!hideFilterBar) { _%>
             // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             <%_ } _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ if (hasParamDialog) { _%>
+            <%_ item.parameterDialogFields.forEach(function(parameter) { _%>
+            // Then.onThe<%- startLR%>Generated.onActionDialog().iCheckActionParameterDialogField({ property: "<%- parameter %>" }, undefined, { visible: true });
+            <%_ }); _%>
+            // When.onThe<%- startLR%>Generated.onActionDialog().iCancel();
+            <%_ } else { _%>
             // Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
             // When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
-            <%_ } else if (item.isCritical) { _%>
-            <%_ if (!hideFilterBar) { _%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             <%_ } _%>
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            <%_ } else if (item.isCritical || hasParamDialog) { _%>
             <%_ if (item.enabled !== true) { _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
             <%_ } _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ if (hasParamDialog) { _%>
+            <%_ item.parameterDialogFields.forEach(function(parameter) { _%>
+            Then.onThe<%- startLR%>Generated.onActionDialog().iCheckActionParameterDialogField({ property: "<%- parameter %>" }, undefined, { visible: true });
+            <%_ }); _%>
+            When.onThe<%- startLR%>Generated.onActionDialog().iCancel();
+            <%_ } else { _%>
             Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
             When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+            <%_ } _%>
+            <%_ if (item.enabled !== true) { _%>
+            // Deselect the row so the following actions start with an empty selection.
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            <%_ } _%>
             <%_ } _%>
             <%_ } _%>
             <%_ } _%>

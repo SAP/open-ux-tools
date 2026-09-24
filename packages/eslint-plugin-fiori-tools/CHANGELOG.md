@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-23
+
+#### Features
+
+- add sap-field-group-in-table-type-restriction rule to flag UI.FieldGroup usage in GridTable, AnalyticalTable, and TreeTable [[b2a5cca](https://github.com/SAP/open-ux-tools/commit/b2a5cca918480042a6f70b27040790cf624d1b30)]
+
 ## 10.11.4
 
 ### Patch Changes

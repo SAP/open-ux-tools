@@ -62,6 +62,8 @@ export type JourneyParams = {
     navigatedOP: string | undefined;
     navigatedOPTabKey?: string;
     hideFilterBar: boolean;
+    /** OData service URI passed to `iResetMockData({ ServiceUri })` at the start of each journey. */
+    serviceUri: string;
 };
 
 export type FEV4ManifestTarget = {
@@ -333,6 +335,10 @@ export interface ActionButtonState {
      * The writer emits a follow-up marker comment so the developer can fix the assertion.
      */
     labelUnresolved?: boolean;
+    /**
+     * Names of the action's non-binding parameters.
+     */
+    parameterDialogFields?: string[];
 }
 
 export interface MenuActionState {
