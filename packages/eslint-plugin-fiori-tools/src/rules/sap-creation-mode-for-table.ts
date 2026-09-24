@@ -627,16 +627,16 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
         },
         messages: {
             invalidCreateMode:
-                'Invalid createMode value: "{{value}}"{{tableType}}{{sectionText}}. The recommended value is "creationRows".{{validValues}}',
-            recommendCreationRows: 'Consider using "creationRows" for a better user experience instead of "{{value}}".',
-            suggestAppLevel: 'Consider adding createMode at the application level for a better user experience.',
+                'Invalid `createMode` value: `{{value}}`{{tableType}}{{sectionText}}. The recommended value is `creationRows`.{{validValues}}',
+            recommendCreationRows: 'Consider using `creationRows` for a better user experience instead of `{{value}}`.',
+            suggestAppLevel: 'Consider adding `createMode` at the application level for a better user experience.',
             analyticalTableNotSupported:
-                'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.',
+                'Creation mode is not supported for analytical tables. Remove the `createMode` or `creationMode` property.',
             invalidCreateModeV4:
-                'Invalid creationMode value "{{value}}"{{tableType}}{{sectionText}}. The recommended value is "{{recommendedValue}}".{{validValues}}',
+                'Invalid `creationMode` value `{{value}}`{{tableType}}{{sectionText}}. The recommended value is `{{recommendedValue}}`.{{validValues}}',
             recommendInlineCreationRowsV4:
-                'Consider using "{{recommendedValue}}" for a better user experience instead of "{{value}}".',
-            suggestAppLevelV4: 'Consider adding creationMode at the application level for better user experience.'
+                'Consider using `{{recommendedValue}}` for a better user experience instead of `{{value}}`.',
+            suggestAppLevelV4: 'Consider adding `creationMode` at the application level for better user experience.'
         },
         fixable: 'code'
     },
@@ -667,16 +667,14 @@ const rule: FioriRuleDefinition = createFioriRule<CreateModeMessageId, [], {}, C
                 value = node.name.value;
             }
             const operation = diagnostic.messageId === 'analyticalTableNotSupported' ? 'delete' : undefined;
+            const validValuesString = diagnostic.validValues.map((value) => `\`${value}\``).join(', ');
             context.report({
                 node,
                 messageId: diagnostic.messageId,
                 data: {
                     value,
                     tableType,
-                    validValues:
-                        diagnostic.validValues.length > 0
-                            ? ` Valid values are: ${diagnostic.validValues.join(', ')}.`
-                            : '',
+                    validValues: diagnostic.validValues.length > 0 ? ` Valid values are: ${validValuesString}.` : '',
                     recommendedValue: diagnostic.recommendedValue ?? '',
                     sectionText: diagnostic.pageSectionName ? ` in ${diagnostic.pageSectionName} section` : ''
                 },

@@ -74,6 +74,11 @@ Use the template from the reference file for your rule type.
 
 - **JSDoc** — add a JSDoc block (`@param`, `@returns`) to every new function. When modifying an existing function, update its JSDoc to reflect any signature or behaviour changes.
 - **Cognitive complexity ≤ 15** — enforced by `sonarjs/cognitive-complexity`. If a function exceeds 15, extract branches or loops into well-named helper functions until the complexity falls within the limit. Do not inline complex logic in a single function to avoid this.
+- **Backtick code indicators in messages** — in rule warning messages, wrap all code-like values in backticks: property names, annotation names, property values, entity names, and any other identifier that appears verbatim in source. Plain prose words stay unquoted.
+  ```typescript
+  // ✅ Correct — code values in backticks
+  message: "The `UI.LineItem` annotation is missing the required `Criticality` property."
+  ```
 
 ### Step 4 — Register the rule
 

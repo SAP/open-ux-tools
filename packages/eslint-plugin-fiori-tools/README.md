@@ -121,6 +121,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
 |  new      | [sap-no-comma-in-section-title](docs/rules/sap-no-comma-in-section-title.md) | Ensures that section and subsection titles in object pages for SAP Fiori elements applications do not contain commas. | | ✅ |
+|  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
 |  10.11.0  | [sap-no-deep-collection-facets](docs/rules/sap-no-deep-collection-facets.md) | Ensures `UI.CollectionFacet` elements are not nested at third level or deeper. | | ✅ |
 |  10.10.0  | [sap-no-single-facet-in-collection](docs/rules/sap-no-single-facet-in-collection.md) | Ensures `UI.CollectionFacet` is not used when it contains only a single `UI.ReferenceFacet`. | | ✅ |
 |  10.8.0   | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |

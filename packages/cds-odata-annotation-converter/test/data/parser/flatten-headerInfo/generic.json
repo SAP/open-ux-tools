@@ -32,7 +32,7 @@
                                 "valueRange": "[(1,15)..(1,23)]"
                             }
                         },
-                        "contentRange": "[(1,25)..(1,37)]",
+                        "contentRange": "[(1,24)..(1,37)]",
                         "content": [
                             {
                                 "type": "element",
@@ -215,7 +215,7 @@
                                 "valueRange": "[(7,15)..(7,23)]"
                             }
                         },
-                        "contentRange": "[(7,25)..(7,36)]",
+                        "contentRange": "[(7,24)..(7,36)]",
                         "content": [
                             {
                                 "type": "element",
@@ -312,7 +312,7 @@
                                                                 "valueRange": "[(8,40)..(8,57)]"
                                                             }
                                                         },
-                                                        "contentRange": "[(8,59)..(8,63)]",
+                                                        "contentRange": "[(8,58)..(8,63)]",
                                                         "content": [
                                                             {
                                                                 "type": "element",
@@ -375,7 +375,7 @@
                                 "valueRange": "[(9,10)..(9,19)]"
                             }
                         },
-                        "contentRange": "[(9,21)..(9,26)]",
+                        "contentRange": "[(9,20)..(9,26)]",
                         "content": [
                             {
                                 "type": "element",
@@ -518,7 +518,7 @@
                                                                 "valueRange": "[(13,38)..(13,55)]"
                                                             }
                                                         },
-                                                        "contentRange": "[(13,57)..(13,62)]",
+                                                        "contentRange": "[(13,56)..(13,62)]",
                                                         "content": [
                                                             {
                                                                 "type": "element",
