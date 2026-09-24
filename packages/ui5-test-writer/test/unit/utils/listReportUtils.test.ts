@@ -24,8 +24,7 @@ import {
     getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
-    hasTextArrangement,
-    isHiddenProperty,
+    isTextOnlyArrangement,
     getFilterFieldItems,
     extractCustomToolBarActions
 } from '../../../src/utils/listReportUtils.js';
@@ -2264,16 +2263,52 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             pageType: 'ListReport'
         }) as unknown as PageWithModelV4;
 
-    test('includes the column when the merged metadata carries a TextArrangement', () => {
+    test('emits both properties when the merged metadata carries a non-TextOnly TextArrangement', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
             localAnnotationXml
         ]);
-        expect(result.textAnnotationColumns).toEqual([{ textProperty: 'CustomerName' }]);
+        // TextLast arrangement: both the code column (CustomerID) and the text property (CustomerName)
+        // are sortable, so both are emitted.
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
     });
 
-    test('excludes the column when no TextArrangement is present in metadata or annotations', () => {
+    // TextOnly arrangement: the code column renders only the text value, so only the text property is
+    // sortable — columnProperty must be omitted so no sort test is generated against the code column.
+    const textOnlyAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly"/>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('omits columnProperty when the arrangement is TextOnly', () => {
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
+            textOnlyAnnotationXml
+        ]);
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: undefined, textProperty: 'CustomerName' }]);
+    });
+
+    test('includes both properties when a text annotation is maintained without a TextArrangement', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
-        expect(result.textAnnotationColumns).toEqual([]);
+        // A TextArrangement is not required: the column still gets a sort test for both the code
+        // column (CustomerID) and the text property (CustomerName) because a Common.Text is maintained.
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
+    });
+
+    test('emits both properties for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
+        // Regression (fin.test.v4.lr1): CompanyCode carries a Common.Text (CompanyCodeName) with no
+        // UI.TextArrangement, and once the (initially UI.Hidden) target was un-hidden, both the code
+        // column and the text property must produce a sort test. Mirrors that shape with CustomerID /
+        // CustomerName: metadata has the Common.Text but no arrangement, and the target is not hidden.
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
     });
 
     test('returns an empty array when there is no metadata', () => {
@@ -2338,12 +2373,12 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             undefined,
             [unrelatedLocalAnnotationXml]
         );
-        expect(result.textAnnotationColumns).toEqual([{ textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
     });
 
-    // Regression (fin.test.v4.lr1): the column's bound property has a TextArrangement, but the text
-    // (sort target) property carries UI.Hidden and so is not a sortable column — must be excluded, or
-    // the generated sort test fails with "can not find sort item".
+    // Regression (fin.test.v4.lr1): the text (sort target) property carries UI.Hidden. The sort test is
+    // still emitted regardless — a hidden sort target is treated as a likely annotation mistake that the
+    // (typically failing) generated test should surface to the developer, not silently suppress.
     const metadataWithHiddenTextProperty = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
@@ -2369,9 +2404,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-    test('excludes the column when its text (sort target) property is hidden', () => {
+    test('still emits the column when its text (sort target) property is hidden', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataWithHiddenTextProperty);
-        expect(result.textAnnotationColumns).toEqual([]);
+        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
     });
 });
 
@@ -2595,9 +2630,8 @@ describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
     });
 });
 
-describe('Test hasTextArrangement()', () => {
-    // Base $metadata: CustomerID carries a Common.Text pointing at CustomerName, but NO TextArrangement.
-    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+describe('Test isTextOnlyArrangement()', () => {
+    const buildMetadataXml = (enumMember: string): string => `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
         <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -2612,95 +2646,32 @@ describe('Test hasTextArrangement()', () => {
                 <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
             </EntityContainer>
             <Annotations Target="TestService.TravelType/CustomerID">
-                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    // Local annotation file: adds the TextArrangement nested on the existing Common.Text of CustomerID.
-    const localAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
-    <edmx:DataServices>
-        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <Annotations Target="TestService.TravelType/CustomerID">
                 <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
-                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextLast"/>
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="${enumMember}"/>
                 </Annotation>
             </Annotations>
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-    test('returns false when $metadata has no TextArrangement annotation', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(hasTextArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
+    test('returns true when the arrangement is TextOnly', () => {
+        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
+        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(true);
     });
 
-    test('returns true once the local annotation carrying TextArrangement is merged in', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, 'Travel', 'CustomerID')).toBe(true);
+    test('returns false for a non-TextOnly arrangement (TextLast)', () => {
+        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextLast')));
+        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
     });
 
-    test('returns false for a property without a Text annotation', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, 'Travel', 'Plain')).toBe(false);
-    });
-
-    test('returns false when the entity set name is undefined', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, undefined, 'CustomerID')).toBe(false);
-    });
-
-    test('returns false for an unknown entity set or property', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, 'Unknown', 'CustomerID')).toBe(false);
-        expect(hasTextArrangement(merged, 'Travel', 'Unknown')).toBe(false);
-    });
-});
-
-describe('Test isHiddenProperty()', () => {
-    // TravelType/HiddenName carries UI.Hidden; VisibleName does not.
-    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TravelType">
-                <Key><PropertyRef Name="TravelID"/></Key>
-                <Property Name="TravelID" Type="Edm.String"/>
-                <Property Name="HiddenName" Type="Edm.String"/>
-                <Property Name="VisibleName" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
-            </EntityContainer>
-            <Annotations Target="TestService.TravelType/HiddenName">
-                <Annotation Term="com.sap.vocabularies.UI.v1.Hidden"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    test('returns true for a property carrying UI.Hidden', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Travel', 'HiddenName')).toBe(true);
-    });
-
-    test('returns false for a property without UI.Hidden', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Travel', 'VisibleName')).toBe(false);
+    test('returns false for a property without a Text/TextArrangement annotation', () => {
+        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
+        expect(isTextOnlyArrangement(metadata, 'Travel', 'Plain')).toBe(false);
     });
 
     test('returns false when the entity set name is undefined', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, undefined, 'HiddenName')).toBe(false);
-    });
-
-    test('returns false for an unknown entity set or property', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Unknown', 'HiddenName')).toBe(false);
-        expect(isHiddenProperty(metadata, 'Travel', 'Unknown')).toBe(false);
+        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
+        expect(isTextOnlyArrangement(metadata, undefined, 'CustomerID')).toBe(false);
     });
 });
 

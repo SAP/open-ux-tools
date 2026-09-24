@@ -489,6 +489,18 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
     });
 
+    test('excludes a column whose text value is the "None" sentinel (any casing)', () => {
+        // Regression (fin.test.v4.lr1): the spec model marks a column without a maintained text
+        // annotation with the sentinel value "None" (capital N). It must not produce a sort test.
+        const node = makeNode({
+            'DataField::AccountingDocument': {
+                schema: { keys: [{ name: 'Value', value: 'AccountingDocument' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'None' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
     test('excludes a column whose text artifactType is not "Annotation"', () => {
         const node = makeNode({
             'DataField::CustomerID': {

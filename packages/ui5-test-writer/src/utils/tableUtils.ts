@@ -239,7 +239,9 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
             return;
         }
         const text = column.properties?.text;
-        if (text?.artifactType !== 'Annotation' || !text.value || text.value === 'none') {
+        // The spec model uses the sentinel value "None" (any casing) to mean "no text annotation is
+        // maintained" — such columns must not produce a sort test.
+        if (text?.artifactType !== 'Annotation' || !text.value || text.value.toLowerCase() === 'none') {
             return;
         }
         // A text target reached through a navigation property (e.g. "_DunningProcedure/DunningProcedure_Text")

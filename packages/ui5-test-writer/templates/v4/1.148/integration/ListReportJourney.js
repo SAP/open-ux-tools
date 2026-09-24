@@ -17,9 +17,8 @@
 
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>,
-    "sap/ui/core/library"<% } %>
-], function (opaTest, runner<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>, coreLibrary<% } %>) {
+    "./pages/JourneyRunner"
+], function (opaTest, runner) {
     "use strict";
 
     function journey() {
@@ -139,14 +138,6 @@ sap.ui.define([
             <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
             Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
             <%_ } -%>
-        });
-<%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-        opaTest("Check text annotation for columns", function (Given, When, Then) {
-            <%_ textAnnotationColumns.forEach(function(column) { _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            <%_ }); -%>
         });
 <%_ } -%>
 <%_ } -%>

@@ -209,8 +209,14 @@ sap.ui.define([
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
         opaTest("Check text annotation for columns", function (Given, When, Then) {
             <%_ textAnnotationColumns.forEach(function(column) { _%>
+            <%_ if (column.columnProperty) { _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending);
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending, true);
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.None);
+            <%_ } _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.None);
             <%_ }); -%>
         });
 <%_ } -%>
