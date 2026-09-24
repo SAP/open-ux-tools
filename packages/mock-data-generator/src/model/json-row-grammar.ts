@@ -225,8 +225,12 @@ function stringCharacterAllowed(state: JsonRowGrammarState, character: string): 
     ) {
         return false;
     }
+    // Canonical output has no \u escapes, so an escape cannot supply the letter or digit a string still
+    // needs in its last position; a backslash there would lead into a dead end.
+    if (character === '\\' && state.separators === 'any') {
+        return true;
+    }
     return (
-        character === '\\' ||
         state.stringHasAlphanumeric ||
         LETTER_OR_NUMBER.test(character) ||
         state.maximumStringLength === undefined ||

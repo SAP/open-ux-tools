@@ -236,3 +236,23 @@ describe('JSON row grammar, runtime contract 2', () => {
         expect(textAllowed(advanceText(opened, 'Caf\\'), 'u00E9')).toBe(false);
     });
 });
+
+describe('JSON row grammar dead ends', () => {
+    test('does not open an escape that could only end a string without a letter or digit', () => {
+        const state = advanceText(
+            createJsonRowGrammar([{ name: 'Origin', valueKind: 'string', nullable: true, maxLength: 3 }], {
+                separators: 'spaced'
+            }),
+            '{"Origin": "--'
+        );
+        expect(textAllowed(state, '\\')).toBe(false);
+        expect(textAllowed(state, 'A')).toBe(true);
+        expect(textAllowed(advanceText(state, 'A'), '"}')).toBe(true);
+        // Legacy output may still escape: a \u escape can supply the letter.
+        const legacy = advanceText(
+            createJsonRowGrammar([{ name: 'Origin', valueKind: 'string', nullable: true, maxLength: 3 }]),
+            '{"Origin":"--'
+        );
+        expect(textAllowed(legacy, '\\u0041')).toBe(true);
+    });
+});
