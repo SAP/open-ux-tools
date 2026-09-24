@@ -148,9 +148,10 @@ function extractBundlePath(appId: string, settings: { bundleName?: string; bundl
     if (settings.bundleName) {
         // Strip appId as a prefix when present; fall back to full bundleName otherwise.
         // Prefix-strip is safer than String.replace which would remove the first occurrence anywhere in the string.
-        const suffix = appId && settings.bundleName.startsWith(appId)
-            ? settings.bundleName.slice(appId.length)
-            : settings.bundleName;
+        const suffix =
+            appId && settings.bundleName.startsWith(appId)
+                ? settings.bundleName.slice(appId.length)
+                : settings.bundleName;
         if (!suffix) {
             return undefined;
         }
