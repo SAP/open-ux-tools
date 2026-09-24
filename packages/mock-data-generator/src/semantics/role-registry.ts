@@ -324,6 +324,56 @@ export function semanticRoleCompatibility(
     return 'compatible';
 }
 
+/** Date roles whose values a string column can carry in a fixed-width date format. */
+const STRING_DATE_ROLES: ReadonlySet<string> = new Set(['date', 'datetime', 'start_date', 'end_date']);
+
+export type StringDateFormat = 'yyyymmdd' | 'iso-date' | 'yyyymmddhhmmss' | 'iso-datetime';
+
+/**
+ * The date format a string column's declared length implies: 8 characters `yyyymmdd`, 10 an ISO date,
+ * 14 `yyyymmddhhmmss`, 19 or more (or no limit) an ISO date-time. Other lengths imply none.
+ *
+ * @param property the string column
+ * @returns the format, or undefined
+ */
+export function stringDateFormat(
+    property: Pick<SchemaProperty, 'primitiveType' | 'maxLength'>
+): StringDateFormat | undefined {
+    if (property.primitiveType !== 'string') {
+        return undefined;
+    }
+    const length = property.maxLength;
+    if (length === undefined || length >= 19) {
+        return 'iso-datetime';
+    }
+    const formats: Readonly<Record<number, StringDateFormat>> = { 8: 'yyyymmdd', 10: 'iso-date', 14: 'yyyymmddhhmmss' };
+    return formats[length];
+}
+
+/**
+ * Role compatibility that also lets a classifier-accepted date role fill a non-key string column whose
+ * length implies a date format. The role registry itself, which the classifier head pins, is unchanged.
+ *
+ * @param role the classifier's role
+ * @param property the column
+ * @returns the compatibility
+ */
+export function classifierRoleCompatibility(
+    role: string,
+    property: Pick<SchemaProperty, 'primitiveType' | 'isKey' | 'maxLength'>
+): ReturnType<typeof semanticRoleCompatibility> {
+    const compatibility = semanticRoleCompatibility(role, property);
+    if (
+        compatibility === 'incompatible-type' &&
+        STRING_DATE_ROLES.has(role) &&
+        !property.isKey &&
+        stringDateFormat(property) !== undefined
+    ) {
+        return 'compatible';
+    }
+    return compatibility;
+}
+
 export function semanticRoleKeyCardinality(
     role: string | undefined,
     property: Pick<SchemaProperty, 'maxLength'>

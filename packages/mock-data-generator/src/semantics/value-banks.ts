@@ -3,6 +3,7 @@ import type { JsonValue, SyntheticSampleDataset, SyntheticScenario } from '../ty
 import type { SchemaProperty } from '../schema/graph.js';
 
 import { DEFAULT_SAMPLE_DATASET } from './sample-dataset.js';
+import { stringDateFormat } from './role-registry.js';
 import * as sampleCatalog from './sample-catalog.js';
 import {
     LOCATIONS,
@@ -540,12 +541,25 @@ export function semanticValue(
         case 'datetime':
         case 'start_date':
         case 'end_date': {
-            if (!['date', 'datetime', 'datetimeoffset'].includes(property.primitiveType)) {
+            const textFormat = stringDateFormat(property);
+            if (!['date', 'datetime', 'datetimeoffset'].includes(property.primitiveType) && !textFormat) {
                 return undefined;
             }
             const date = new Date(context.startDate);
             if (role === 'end_date') {
                 date.setUTCDate(date.getUTCDate() + 30 + (hash % 90));
+            }
+            if (property.primitiveType === 'string' && textFormat) {
+                // A string column carries the date in the fixed-width format its length implies.
+                const iso = date.toISOString();
+                const digits = iso.replace(/[-:T]/gu, '').slice(0, 14);
+                const text: Readonly<Record<typeof textFormat, string>> = {
+                    yyyymmdd: digits.slice(0, 8),
+                    'iso-date': iso.slice(0, 10),
+                    yyyymmddhhmmss: digits,
+                    'iso-datetime': iso.slice(0, 19)
+                };
+                return text[textFormat];
             }
             return property.primitiveType === 'date' ? date.toISOString().slice(0, 10) : date.toISOString();
         }

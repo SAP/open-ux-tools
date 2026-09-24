@@ -2,7 +2,7 @@ import type { SchemaGraph, SchemaProperty } from '../schema/graph.js';
 import type { SemanticClassification } from '../types.js';
 import { capCodeListField } from './cap-code-lists.js';
 import { semanticPropertyKey } from './classifier.js';
-import { semanticRoleCompatibility, semanticRoleDefinition } from './role-registry.js';
+import { classifierRoleCompatibility, semanticRoleCompatibility, semanticRoleDefinition } from './role-registry.js';
 import { semanticRoleForSapDataElement } from './sap-data-elements.js';
 
 function tokens(name: string): ReadonlyArray<string> {
@@ -932,7 +932,7 @@ export function arbitrateSemanticClassifications(
             }
             const lexicalRole = semanticRoleCandidate(entity, property);
             const classifierCompatibility = classifier
-                ? semanticRoleCompatibility(classifier.role, property)
+                ? classifierRoleCompatibility(classifier.role, property)
                 : undefined;
             const lexicalCompatibility = lexicalRole ? semanticRoleCompatibility(lexicalRole, property) : undefined;
             const classifierRole = classifierCompatibility === 'compatible' ? classifier?.role : undefined;
