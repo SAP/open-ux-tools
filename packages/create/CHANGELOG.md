@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 1.4.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+- @sap-ux/adp-tooling 1.0.58 → 1.0.59
+- @sap-ux/flp-config-inquirer 1.0.58 → 1.0.59
+- @sap-ux/preview-middleware 1.2.18 → 1.2.19
+- @sap-ux/app-config-writer 1.1.24 → 1.1.24
+- @sap-ux/ui5-test-writer 1.15.0 → 1.15.1
+
 ## 1.4.4
 
 ### Patch Changes
