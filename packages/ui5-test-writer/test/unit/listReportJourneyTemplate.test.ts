@@ -16,6 +16,7 @@ function renderListReportJourney(bucket: string, tabs: unknown[], navigatedOPTab
         navigatedOP: 'CustomerObjectPage',
         navigatedOPTabKey,
         hideFilterBar: false,
+        serviceUri: '/odata/v4/TestService/',
         filterBarItems: [],
         tableColumns: {},
         contactCardColumns: [],

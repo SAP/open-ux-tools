@@ -189,6 +189,7 @@ describe('ui5-test-writer', () => {
                     startLR: 'TravelList',
                     navigatedOP: undefined,
                     hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
                     name: 'TravelList',
                     appPath: 'project1',
                     createButton: { visible: false },
@@ -253,6 +254,7 @@ describe('ui5-test-writer', () => {
                 editor.copyTpl(templatePath, outPath, {
                     name: 'TravelObjectPage',
                     hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
                     navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
                     headerTitle: undefined,
                     headerSections: [],
