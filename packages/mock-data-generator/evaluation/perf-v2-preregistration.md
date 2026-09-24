@@ -70,4 +70,29 @@ protocol**, not the committed 3,278.
 
 ## Baseline values
 
-Appended once from the P0 baseline runs (see below).
+Appended 2026-09-24 from the P0 baseline runs (published tarballs, interleaved, chunks of 4 services).
+Other agents trained models on the machine throughout; median 1-minute load is given per run.
+
+**Two-row profile, full corpus** (131 generated, 4 unreadable = failures; load 17.0 / 17.5 / 19.0):
+
+| Metric                                                   |                   dev.17 |                   dev.20 |                   dev.21 |
+| -------------------------------------------------------- | -----------------------: | -----------------------: | -----------------------: |
+| M1 recognised share                                      |                   54.00% |                   54.00% |                   51.73% |
+| M2 fine-tuned slots                                      |                    2,712 |                    2,743 |                    2,688 |
+| typed share                                              |                   28.49% |                   28.35% |                   30.87% |
+| M3 generic-typed share                                   |                   12.81% |                   12.67% |                   15.19% |
+| typed split (keys / protocol / guid-date-time / generic) | 2,826 / 56 / 588 / 2,836 | 2,826 / 56 / 588 / 2,805 | 2,826 / 56 / 588 / 3,362 |
+| M5 valid cells / at-cap strings / null                   |      98.9% / 4.1% / 3.3% |      98.6% / 3.9% / 4.1% |     97.1% / 12.4% / 0.8% |
+| M10 median / p90 ms per service                          |           3,666 / 20,481 |           3,837 / 20,059 |           4,865 / 19,361 |
+
+**Editor profile, partial**: the run was stopped when the machine began swapping (load 95–146); it covers
+the first 64 services of the corpus (60 generated, 4 unreadable) for all three releases (load 25.8 / 38.8 / 37.8):
+typed share 37.54% / 37.07% / 40.39%, generic-typed 22.37% / 21.90% / 25.21%, fine-tuned slots
+2,080 / 2,303 / 2,040, recognised 55.21% / 55.21% / 52.45% (dev.17 / dev.20 / dev.21). Final comparisons
+re-measure dev.20 and dev.21 interleaved with the candidate.
+
+**Resulting floors**: M1 ≥ 54.00%; M2 ≥ 2,712 (dev.17 under this protocol); M3 ≤ 12.67%; M4 typed ≤ 40.02% and
+≤ dev.20 in the same interleaved run; M5 valid ≥ 99% and at-cap ≤ 6.4%; M10 ≤ dev.20 in the same run.
+
+**Bisect result**: dev.17 and dev.20 give the same fine-tuned tier (2,712 vs 2,743 slots, eligible 3,866 vs
+3,872) under equal load; the committed dev.20 record (1,368) was depressed by a concurrent sweep.
