@@ -107,7 +107,9 @@ export function getXPathStringsForXmlFile(
     try {
         const xmlContent = fs.read(xmlFilePath);
         const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
-        const nodes: { parentNode: string; node: XmldomNode | null }[] = [{ parentNode: '', node: xmlDocument.firstChild }];
+        const nodes: { parentNode: string; node: XmldomNode | null }[] = [
+            { parentNode: '', node: xmlDocument.firstChild }
+        ];
 
         // check macros namespace and page macro definition
         const macrosNamespace = getOrAddNamespace(xmlDocument);
@@ -201,7 +203,8 @@ export async function getExistingButtonGroups(
         const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
 
         // Get namespace map and create xpath selector
-        const nsMap: Record<string, string> = (xmlDocument.firstChild as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap || {};
+        const nsMap: Record<string, string> =
+            (xmlDocument.firstChild as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap || {};
         const xpathSelect = xpath.useNamespaces(nsMap);
 
         // Query the RichTextEditor element using the aggregation path

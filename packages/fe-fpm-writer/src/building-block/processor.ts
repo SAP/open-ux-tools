@@ -405,16 +405,22 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
     const existingButtonGroupsMap = new Map<string, ButtonGroupConfig>();
 
     if (hasAggregation && xmlDocument && updatedAggregationPath) {
-        const xpathSelect = xpath.useNamespaces((xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {});
+        const xpathSelect = xpath.useNamespaces(
+            (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {}
+        );
         // Example: [<Element: richtexteditor:buttonGroups>] containing all ButtonGroup children
-        const buttonGroupsElements = xpathSelect(updatedAggregationPath, xmlDocument as unknown as Node) as unknown as XmldomElement[];
+        const buttonGroupsElements = xpathSelect(
+            updatedAggregationPath,
+            xmlDocument as unknown as Node
+        ) as unknown as XmldomElement[];
 
         if (buttonGroupsElements.length > 0) {
             const buttonGroupsWrapper = buttonGroupsElements[0];
             const config = getBuildingBlockConfig(BuildingBlockType.RichTextEditorButtonGroups);
             // Read all existing <ButtonGroup> child elements and store their attributes
             const existingButtonGroupElements = Array.from(buttonGroupsWrapper.childNodes).filter(
-                (node) => node.nodeType === 1 && (node as XmldomElement).localName === config.aggregationConfig.elementName
+                (node) =>
+                    node.nodeType === 1 && (node as XmldomElement).localName === config.aggregationConfig.elementName
             ) as XmldomElement[];
 
             // Build map of existing button groups with their custom attributes
@@ -469,7 +475,8 @@ function updateAggregationPath(
     config: { aggregationName: string; elementName: string },
     namespace?: NamespaceConfig
 ): { updatedAggregationPath: string; hasElement: boolean } {
-    const nsMap: Record<string, string> = (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
+    const nsMap: Record<string, string> =
+        (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
     const resolvedPath = resolveAggregationPath(aggregationPath);
 
@@ -491,7 +498,10 @@ function updateAggregationPath(
         };
     } else {
         // Check if the default aggregation element exists within the specific target element
-        const useDefaultAggregation = xpathSelect(`./*[local-name()='${config.elementName}']`, targetNode as unknown as Node);
+        const useDefaultAggregation = xpathSelect(
+            `./*[local-name()='${config.elementName}']`,
+            targetNode as unknown as Node
+        );
         if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
             return { updatedAggregationPath: aggregationPath, hasElement: true };
         }

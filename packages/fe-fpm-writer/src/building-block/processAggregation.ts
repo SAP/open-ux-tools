@@ -204,7 +204,9 @@ function buildPageAggregationFragment(
     return new DOMParser(
         getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
             if (level !== 'warning') {
-                throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+                throw new Error(
+                    `Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`
+                );
             }
         })
     ).parseFromString(wrapped, 'text/xml');
@@ -350,10 +352,18 @@ export function sortPageAggregationChildren(pageElement: XmldomNode): void {
  * @param aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
  */
 export function ensureMissingAggregation(xmlDocument: XmldomDocument, aggregationPath: string): void {
-    const nsMap: Record<string, string> = (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
+    const nsMap: Record<string, string> =
+        (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
 
-    if ((xpathSelect(resolveAggregationPath(aggregationPath), xmlDocument as unknown as Node) as unknown as XmldomElement[]).length > 0) {
+    if (
+        (
+            xpathSelect(
+                resolveAggregationPath(aggregationPath),
+                xmlDocument as unknown as Node
+            ) as unknown as XmldomElement[]
+        ).length > 0
+    ) {
         return;
     }
     const lastSlash = aggregationPath.lastIndexOf('/');
@@ -425,7 +435,10 @@ function wrapLooseBuildingBlocksInItems(
 
     const itemsName = `${macrosPrefix}:items`;
     let itemsEl = Array.from(pageElement.childNodes).find(
-        (n) => n.nodeType === 1 && (n as XmldomElement).namespaceURI === macrosNS && (n as XmldomElement).localName === 'items'
+        (n) =>
+            n.nodeType === 1 &&
+            (n as XmldomElement).namespaceURI === macrosNS &&
+            (n as XmldomElement).localName === 'items'
     ) as XmldomElement | undefined;
 
     if (!itemsEl) {
@@ -493,7 +506,11 @@ function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDoc
  * @param aggDoc - the rendered template document whose first Element child holds the new children
  * @param xmlDocument - the owner document (used to import nodes)
  */
-function appendChildrenIntoContainer(existingContainer: XmldomElement, aggDoc: XmldomDocument, xmlDocument: XmldomDocument): void {
+function appendChildrenIntoContainer(
+    existingContainer: XmldomElement,
+    aggDoc: XmldomDocument,
+    xmlDocument: XmldomDocument
+): void {
     const renderedWrapper = Array.from(aggDoc.documentElement?.childNodes ?? []).find(
         (n) => n.nodeType === 1 /* Element */
     ) as XmldomElement | undefined;
@@ -535,10 +552,14 @@ export async function generateBuildingBlockAggregation(
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
 
-    const nsMap: Record<string, string> = (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
+    const nsMap: Record<string, string> =
+        (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
     const xpathSelect = xpath.useNamespaces(nsMap);
-    const pageNodes = xpathSelect(`//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`, xmlDocument as unknown as Node);
+    const pageNodes = xpathSelect(
+        `//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`,
+        xmlDocument as unknown as Node
+    );
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
         throw new Error(`Page element (sap.fe.macros) not found in view ${viewPath}.`);
     }
