@@ -144,7 +144,7 @@ export interface KeyUserChangeContent {
         contexts?: {
             role?: string[];
         };
-        content: {
+        content?: {
             contexts?: {
                 role?: string[];
             };
