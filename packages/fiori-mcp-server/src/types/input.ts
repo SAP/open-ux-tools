@@ -105,9 +105,26 @@ export const DocSearchInputSchema = zod.object({
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
 });
 
+/**
+ * Adaptation project types the caller may explicitly request. Mirrors the
+ * `AdaptationProjectType` values from `@sap-ux/axios-extension`.
+ */
+export const ADAPTATION_PROJECT_TYPES = ['cloudReady', 'onPremise'] as const;
+
 export const GenerateAdaptationProjectInputSchema = zod.object({
     system: zod.string().describe('The name of the SAP system (obtained from list_sap_systems)'),
     application: zod.string().describe('The application ID to adapt (e.g., sap.ui.demoapps.rta.fe)'),
+    projectType: zod
+        .enum(ADAPTATION_PROJECT_TYPES)
+        .optional()
+        .describe(
+            'The adaptation project type: \'cloudReady\' (shown to the user as "Cloud Ready") or ' +
+                '\'onPremise\' (shown to the user as "Classic"). ' +
+                'Leave this UNSET on the first call. If the selected system AND application support ' +
+                "both types, the tool returns status 'InputRequired' without generating anything; " +
+                'when that happens, ask the user whether they want "Cloud Ready" or "Classic" and then ' +
+                'call this tool again with projectType set to their choice. Do NOT guess or default this value yourself.'
+        ),
     appPath: zod
         .string()
         .describe(
