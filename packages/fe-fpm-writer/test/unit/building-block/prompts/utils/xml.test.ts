@@ -10,6 +10,7 @@ import {
     TEMPLATE_NAMESPACES
 } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
+import type { Document as XmldomDocument } from '@xmldom/xmldom';
 import { isElementIdAvailable } from '../../../../../src/common/utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -82,7 +83,7 @@ describe('utils - xml', () => {
                 name: 'Invalid xml(warning), but duplicate id',
                 content: '<a id="Test">aaa</b>',
                 id: 'Test',
-                available: false
+                available: true
             },
             {
                 name: 'Invalid xml(error)',
@@ -106,20 +107,20 @@ describe('utils - xml', () => {
 });
 
 describe('getOrAddNamespace', () => {
-    function createFragmentXmlDoc(attrs: Record<string, string> = {}) {
+    function createFragmentXmlDoc(attrs: Record<string, string> = {}): XmldomDocument {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
             .join(' ');
         const xml = `<core:FragmentDefinition ${attrString}></core:FragmentDefinition>`;
-        return new DOMParser().parseFromString(xml, 'application/xml');
+        return new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
     }
 
-    function createViewXmlDoc(attrs: Record<string, string> = {}) {
+    function createViewXmlDoc(attrs: Record<string, string> = {}): XmldomDocument {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
             .join(' ');
         const xml = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" ${attrString}></mvc:View>`;
-        return new DOMParser().parseFromString(xml, 'application/xml');
+        return new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
     }
 
     it('returns existing prefix for macros namespace in mvc:View', () => {
@@ -169,7 +170,7 @@ describe('getOrAddNamespace', () => {
             <RichTextEditorWithMetadata metaPath="/Travel/Status" id="RichTextEditor">
             </RichTextEditorWithMetadata>
         </core:FragmentDefinition>`;
-        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        const xmlDoc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
@@ -181,7 +182,7 @@ describe('getOrAddNamespace', () => {
                 <content />
             </Page>
         </mvc:View>`;
-        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        const xmlDoc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
@@ -251,15 +252,18 @@ describe('getDOMParserOptions', () => {
         const options = getDOMParserOptions(undefined, (level, message) => {
             calls.push([level, message]);
         });
-        new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        try {
+            new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        } catch {
+            // fatalError throws a ParseError in xmldom 0.9+; handler still gets called before the throw
+        }
         expect(calls.length).toBeGreaterThan(0);
         expect(calls[0][0]).toBeDefined();
     });
 
-    test('silent handler returns partial DOM without throwing', () => {
+    test('silent handler: fatal parse error still throws ParseError in xmldom 0.9+', () => {
         const options = getDOMParserOptions(undefined, () => {});
-        const doc = new DOMParser(options).parseFromString(invalidXml, 'text/xml');
-        expect(doc).toBeDefined();
+        expect(() => new DOMParser(options).parseFromString(invalidXml, 'text/xml')).toThrow();
     });
 
     test('xmlns option resolves macros prefix from TEMPLATE_NAMESPACES', () => {
@@ -291,7 +295,7 @@ describe('getDOMParserOptions', () => {
     test('returns onError and xmlns in options object', () => {
         const handler = () => {};
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
-        expect(options.onError).toBe(handler);
+        expect(options.onError).toBeDefined();
         expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
     });
 });

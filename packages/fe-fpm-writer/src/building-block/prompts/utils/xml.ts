@@ -1,4 +1,10 @@
-import { DOMParser, type Options } from '@xmldom/xmldom';
+import {
+    DOMParser,
+    type DOMParserOptions,
+    type Document as XmldomDocument,
+    type Node as XmldomNode,
+    type Element as XmldomElement
+} from '@xmldom/xmldom';
 import type { Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 import { MACROS_NAMESPACE_URI } from '../../types.js';
@@ -14,12 +20,6 @@ export const TEMPLATE_NAMESPACES: Record<string, string> = {
     'richtexteditor': 'sap.fe.macros.richtexteditor'
 };
 
-/** `Options` extended with `xmlns` and `onError` */
-type DOMParserOptions = Options & {
-    xmlns?: Record<string, string | null | undefined>;
-    onError?: (level: string, message: string) => void;
-};
-
 /**
  * Builds a `DOMParser` options object.
  *
@@ -33,10 +33,14 @@ export function getDOMParserOptions(
     const handler =
         onError ??
         ((level: string, message: string) => {
-            throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
+            if (level !== 'warning') {
+                throw new Error(
+                    `Unable to parse template file with building block data. Details: [${level}] - ${message}`
+                );
+            }
         });
     return {
-        onError: handler,
+        onError: (level, msg) => handler(level, msg),
         xmlns
     };
 }
@@ -67,21 +71,21 @@ export const augmentXpathWithLocalNames = (path: string): string => {
  * @param result - mutable map of XPath choices to augment
  */
 function addMacrosItemsPathIfMissing(
-    node: Node,
+    node: XmldomNode,
     parentNode: string,
     macrosNamespace: string,
     result: Record<string, string>
 ): void {
-    if ((node as Element).localName !== 'Page' || (node as Element).namespaceURI !== MACROS_NAMESPACE_URI) {
+    if ((node as XmldomElement).localName !== 'Page' || (node as XmldomElement).namespaceURI !== MACROS_NAMESPACE_URI) {
         return;
     }
     const resolvedPrefix = macrosNamespace || 'macros';
     const macrosItemsName = `${resolvedPrefix}:items`;
     const hasItemsChild = Array.from(node.childNodes).some(
-        (child) => child.nodeType === child.ELEMENT_NODE && (child as Element).localName === 'items'
+        (child) => child.nodeType === child.ELEMENT_NODE && (child as XmldomElement).localName === 'items'
     );
     if (!hasItemsChild) {
-        const pageStep = (node as Element).prefix ? node.nodeName : `${resolvedPrefix}:Page`;
+        const pageStep = (node as XmldomElement).prefix ? node.nodeName : `${resolvedPrefix}:Page`;
         const itemsPath = `${parentNode}/${pageStep}/${macrosItemsName}`;
         result[itemsPath] = augmentXpathWithLocalNames(itemsPath);
     }
@@ -103,7 +107,9 @@ export function getXPathStringsForXmlFile(
     try {
         const xmlContent = fs.read(xmlFilePath);
         const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
-        const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
+        const nodes: { parentNode: string; node: XmldomNode | null }[] = [
+            { parentNode: '', node: xmlDocument.firstChild }
+        ];
 
         // check macros namespace and page macro definition
         const macrosNamespace = getOrAddNamespace(xmlDocument);
@@ -120,8 +126,8 @@ export function getXPathStringsForXmlFile(
             hasPageMacroChild = Array.from(node.childNodes).some(
                 (child) =>
                     child.nodeType === child.ELEMENT_NODE &&
-                    (child as Element).localName === 'Page' &&
-                    (child as Element).namespaceURI === MACROS_NAMESPACE_URI
+                    (child as XmldomElement).localName === 'Page' &&
+                    (child as XmldomElement).namespaceURI === MACROS_NAMESPACE_URI
             );
             if (!hasPageMacroChild) {
                 result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
@@ -197,11 +203,12 @@ export async function getExistingButtonGroups(
         const xmlDocument = new DOMParser(getDOMParserOptions()).parseFromString(xmlContent, 'text/xml');
 
         // Get namespace map and create xpath selector
-        const nsMap = (xmlDocument.firstChild as any)?._nsMap || {};
+        const nsMap: Record<string, string> =
+            (xmlDocument.firstChild as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap || {};
         const xpathSelect = xpath.useNamespaces(nsMap);
 
         // Query the RichTextEditor element using the aggregation path
-        const rteElements = xpathSelect(aggregationPath, xmlDocument) as Element[];
+        const rteElements = xpathSelect(aggregationPath, xmlDocument as unknown as Node) as unknown as XmldomElement[];
         if (rteElements.length === 0) {
             return existingButtonGroups;
         }
@@ -209,8 +216,8 @@ export async function getExistingButtonGroups(
         const rteElement = rteElements[0];
         // Find the buttonGroups child element inside the RTE
         const buttonGroupsElement = Array.from(rteElement.childNodes).find(
-            (child) => child.nodeType === 1 && (child as Element).localName === 'buttonGroups'
-        ) as Element | undefined;
+            (child) => child.nodeType === 1 && (child as XmldomElement).localName === 'buttonGroups'
+        ) as XmldomElement | undefined;
 
         if (!buttonGroupsElement) {
             return existingButtonGroups;
@@ -218,8 +225,8 @@ export async function getExistingButtonGroups(
 
         // Get all ButtonGroup children from the buttonGroups element
         const buttonGroupElements = Array.from(buttonGroupsElement.childNodes).filter(
-            (child) => child.nodeType === 1 && (child as Element).localName === 'ButtonGroup'
-        ) as Element[];
+            (child) => child.nodeType === 1 && (child as XmldomElement).localName === 'ButtonGroup'
+        ) as XmldomElement[];
 
         // Extract the 'name' attribute from each ButtonGroup
         buttonGroupElements.forEach((element) => {
@@ -256,7 +263,7 @@ export async function getExistingButtonGroups(
  * @param {string} namespaceUri - The namespace URI to look for.
  * @returns {string|null} The namespace prefix if found ('' for default namespace, or the prefix string), otherwise null.
  */
-function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | null {
+function findNamespacePrefix(root: XmldomElement, namespaceUri: string): string | null {
     // Check all namespace attributes for a matching URI
     for (const attr of Array.from(root.attributes)) {
         if (attr.value === namespaceUri) {
@@ -283,11 +290,14 @@ function findNamespacePrefix(root: HTMLElement, namespaceUri: string): string | 
  * @returns The prefix bound to the namespace URI ('' for default, or the prefix)
  */
 export function getOrAddNamespace(
-    ui5XmlDocument: Document,
+    ui5XmlDocument: XmldomDocument,
     namespaceUri: string = 'sap.fe.macros',
     prefix: string = 'macros'
 ): string {
     const root = ui5XmlDocument.documentElement;
+    if (!root) {
+        return prefix;
+    }
 
     // Check all namespace attributes for a matching URI
     const existingPrefix = findNamespacePrefix(root, namespaceUri);

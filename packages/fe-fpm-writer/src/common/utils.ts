@@ -113,6 +113,13 @@ export async function getManifest(basePath: string, fs: Editor, validate = true)
  */
 export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
     const xmlContent = fs.read(viewOrFragmentPath).toString();
-    const xmlDocument = new DOMParser(getDOMParserOptions(undefined, () => {})).parseFromString(xmlContent, 'text/xml');
-    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+    try {
+        const xmlDocument = new DOMParser(getDOMParserOptions(undefined, () => {})).parseFromString(
+            xmlContent,
+            'text/xml'
+        );
+        return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+    } catch {
+        return true;
+    }
 }
