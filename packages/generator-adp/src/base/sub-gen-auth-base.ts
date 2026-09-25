@@ -11,8 +11,8 @@ import {
     getAdpConfig,
     ManifestService,
     ManifestServiceCF,
-    SystemLookup,
-    isCFEnvironment
+    isCFEnvironment,
+    isAuthRequired
 } from '@sap-ux/adp-tooling';
 
 import { initI18n } from '../utils/i18n.js';
@@ -56,10 +56,6 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      */
     protected variant: DescriptorVariant;
     /**
-     * The system lookup instance.
-     */
-    protected systemLookup: SystemLookup;
-    /**
      * Whether this is a CF project.
      */
     protected isCFProject = false;
@@ -92,7 +88,6 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     protected async onInit(): Promise<void> {
         await initI18n();
 
-        this.systemLookup = new SystemLookup(this.logger);
         this.isCFProject = await isCFEnvironment(this.projectPath);
 
         if (this.isCFProject) {
@@ -114,7 +109,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
 
         try {
-            this.requiresAuth = await this.systemLookup.getSystemRequiresAuth(this.system);
+            this.requiresAuth = await isAuthRequired(this.system, this.logger);
             this.logger.log(`System ${this.system} requires authentication: ${this.requiresAuth}`);
 
             if (!this.requiresAuth) {
