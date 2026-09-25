@@ -187,12 +187,10 @@ export function isViewRestrictionOnlyChange(change: KeyUserChangeContent['conten
     const texts = change['texts'] as Record<string, unknown> | undefined;
     const hasTexts = !!texts && Object.keys(texts).length > 0;
 
-    if (
-        change.changeType === 'updateVariant' &&
-        Object.keys(change.content ?? {}).length === 1 &&
-        'contexts' in change.content &&
-        !hasTexts
-    ) {
+    const content: KeyUserChangeContent['content']['content'] | undefined = change.content;
+    const hasOnlyContexts = content != null && Object.keys(content).length === 1 && 'contexts' in content;
+
+    if (change.changeType === 'updateVariant' && hasOnlyContexts && !hasTexts) {
         return true;
     }
 
