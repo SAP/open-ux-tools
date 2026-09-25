@@ -202,7 +202,8 @@ export enum keyUserPromptNames {
     keyUserSystem = 'keyUserSystem',
     keyUserUsername = 'keyUserUsername',
     keyUserPassword = 'keyUserPassword',
-    keyUserAdaptation = 'keyUserAdaptation'
+    keyUserAdaptation = 'keyUserAdaptation',
+    keyUserRestrictedViewsLabel = 'keyUserRestrictedViewsLabel'
 }
 
 export interface KeyUserSystemPromptOptions {
@@ -225,6 +226,10 @@ export interface KeyUserAdaptationPromptOptions {
     hide?: boolean;
 }
 
+export interface KeyUserRestrictedViewsLabelPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the key-user import inquirer & the prompts.
  */
@@ -233,6 +238,7 @@ export type KeyUserImportPromptOptions = Partial<{
     [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
     [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
     [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+    [keyUserPromptNames.keyUserRestrictedViewsLabel]: KeyUserRestrictedViewsLabelPromptOptions;
 }>;
 
 export interface KeyUserImportAnswers {
