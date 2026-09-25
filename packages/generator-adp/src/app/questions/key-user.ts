@@ -431,9 +431,9 @@ export class KeyUserImportPrompter {
      *
      * A restriction is either a change that exists solely to restrict views (see
      * `isViewRestrictionOnlyChange`, which is skipped on write) or a change with a non-empty
-     * `contexts.role` list alongside other content (whose `contexts` is stripped on write). In both
-     * cases the restriction is lost, so the developer must be notified that the imported views will
-     * become non-restricted.
+     * `contexts.role` list, on the outer or nested inner content, alongside other content (whose
+     * `contexts` is stripped on write). In all cases the restriction is lost, so the developer must
+     * be notified that the imported views will become non-restricted.
      *
      * @returns {boolean} `true` if at least one change has a restricted view.
      */
@@ -442,7 +442,9 @@ export class KeyUserImportPrompter {
             if (isViewRestrictionOnlyChange(change.content)) {
                 return true;
             }
-            return (change.content.contexts?.role?.length ?? 0) > 0;
+            const outerRoles = change.content.contexts?.role?.length ?? 0;
+            const innerRoles = change.content.content?.contexts?.role?.length ?? 0;
+            return outerRoles > 0 || innerRoles > 0;
         });
     }
 }

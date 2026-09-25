@@ -208,6 +208,21 @@ describe('KeyUserImportPrompter', () => {
             expect(await resolveLabelWhen()).toBe(true);
         });
 
+        it('should show the label when the restriction sits only on the nested inner content', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [
+                    {
+                        content: {
+                            changeType: 'propertyChange',
+                            content: { property: 'visible', contexts: { role: ['someRole'] } }
+                        }
+                    }
+                ]
+            });
+
+            expect(await resolveLabelWhen()).toBe(true);
+        });
+
         it('should hide the label when no change carries a view restriction', async () => {
             getKeyUserDataMock.mockResolvedValue({ contents: mockKeyUserChanges });
 
