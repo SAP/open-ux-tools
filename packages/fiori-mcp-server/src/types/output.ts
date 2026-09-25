@@ -102,6 +102,50 @@ export const GenerateAppOutputSchema = zod.object({
     timestamp: zod.string()
 });
 
+export const LookupUi5DocumentationOutputSchema = zod
+    .object({
+        lookupType: zod.enum(['aggregation', 'property', 'event']),
+        library: zod.string(),
+        control: zod.string(),
+        definedIn: zod.string(),
+        inherited: zod.boolean(),
+        since: zod.string().nullable(),
+        description: zod.string().nullable()
+    })
+    .catchall(zod.unknown());
+
+export const ODataMetadataEntrySchema = zod.object({
+    id: zod.string(),
+    url: zod.string(),
+    metadata: zod.string(),
+    model: zod.record(zod.string(), zod.unknown()).optional()
+});
+
+export const ReadODataMetadataOutputSchema = zod.object({
+    entries: zod.array(ODataMetadataEntrySchema)
+});
+
+export const OpenAdaptationEditorOutputSchema = zod.object({
+    status: zod.string(),
+    message: zod.string(),
+    editorUrl: zod.string().optional(),
+    processId: zod.number().optional(),
+    port: zod.number().optional()
+});
+
+export const GenerateAdaptationProjectOutputSchema = zod.object({
+    status: zod.string(),
+    message: zod.string(),
+    projectPath: zod.string().optional()
+});
+
+export const AdpControllerExtensionOutputSchema = zod.object({
+    status: zod.string(),
+    message: zod.string(),
+    appPath: zod.string(),
+    changes: zod.array(zod.string())
+});
+
 export const ExecuteFunctionalityOutputSchema = zod.object({
     /** ID or array of IDs of the executed functionality(ies) */
     functionalityId: FunctionalityIdSchema,
