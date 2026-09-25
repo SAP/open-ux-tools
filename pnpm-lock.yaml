@@ -2722,6 +2722,9 @@ importers:
       '@sap-ai-sdk/langchain':
         specifier: 2.14.0
         version: 2.14.0(@langchain/core@1.2.8(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.220.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@6.39.0(ws@8.21.0)(zod@4.4.3))(ws@8.21.0))(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/annotation-converter':
         specifier: 0.10.22
         version: 0.10.22
@@ -2773,12 +2776,18 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
       '@sap-ux/text-document-utils':
         specifier: workspace:*
         version: link:../text-document-utils
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
@@ -2809,15 +2818,24 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
+      nano-spawn:
+        specifier: 2.1.0
+        version: 2.1.0
       npm-run-all2:
         specifier: 9.0.2
         version: 9.0.2
       os-name:
         specifier: 4.0.1
         version: 4.0.1
+      playwright-core:
+        specifier: 1.63.0
+        version: 1.63.0
+      prettify-xml:
+        specifier: 1.2.0
+        version: 1.2.0
       promptfoo:
         specifier: 0.122.0
-        version: 0.122.0(@cfworker/json-schema@4.1.1)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.20.1)(@types/pg@8.15.6)(babel-plugin-macros@3.1.0)(pg@8.18.0)(playwright-core@1.60.0)(socks@2.8.7)(supports-color@8.1.1)
+        version: 0.122.0(@cfworker/json-schema@4.1.1)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.20.1)(@types/pg@8.15.6)(babel-plugin-macros@3.1.0)(pg@8.18.0)(playwright-core@1.63.0)(socks@2.8.7)(supports-color@8.1.1)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)
@@ -15674,6 +15692,10 @@ packages:
     resolution: {integrity: sha512-gSrprq0fJ3EiOErzjdIZrjysVVmJ4uu1QWfCDss5LypA5OXvrMje5Ym5z6V6RLyJ2eF87lasX7t6a0AnFvZblg==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
+  nano-spawn@2.1.0:
+    resolution: {integrity: sha512-yTW+2okrElHiH4fsiz/+/zc0EDo9BDDoC3iKk8dpv1GeRc9nUWzUZHx6TofMWErchhUQR8hY9/Eu1Uja9x1nqA==}
+    engines: {node: '>=20.17'}
+
   nanoid@3.3.18:
     resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -16483,6 +16505,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.63.0:
+    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   playwright-extra@4.3.6:
     resolution: {integrity: sha512-q2rVtcE8V8K3vPVF1zny4pvwZveHLH8KBuVU2MoE3Jw4OKVoBWsHI9CH9zPydovHHOCDxjGN2Vg+2m644q3ijA==}
     engines: {node: '>=12'}
@@ -16627,6 +16654,9 @@ packages:
     resolution: {integrity: sha512-/FVl766LpUfB5vXgCYOYa0MeV/441Ia99AeICQIQFTY/Nw0roZwULcXpku5i1/m5kt/baz+s4Zogspd839HSMg==}
     engines: {node: '>=14'}
     hasBin: true
+
+  prettify-xml@1.2.0:
+    resolution: {integrity: sha512-kuoTbmC+QQUfx45PrdkVzJqrNEp2lhK++WGyiqBx6JrCvZUQDgeYjdV3h53n7p+37s1Iwx6GjAQ7fcIgD8kkLQ==}
 
   pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
@@ -22290,7 +22320,7 @@ snapshots:
       '@jest/test-result': 30.4.1
       '@jest/transform': 30.4.1(supports-color@8.1.1)
       '@jest/types': 30.4.1
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 4.4.0
@@ -22298,7 +22328,7 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
       jest-changed-files: 30.4.1
-      jest-config: 30.4.2(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3))
+      jest-config: 30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3))
       jest-haste-map: 30.4.1
       jest-message-util: 30.4.1
       jest-regex-util: 30.4.0
@@ -22344,7 +22374,7 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 30.4.1
       '@jest/types': 30.4.1
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
       jest-mock: 30.4.1
 
   '@jest/expect-utils@30.4.1':
@@ -25764,7 +25794,7 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
 
   '@types/bunyan@1.8.11':
     dependencies:
@@ -25793,7 +25823,7 @@ snapshots:
 
   '@types/cross-spawn@6.0.6':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
 
   '@types/debug@4.1.12':
     dependencies:
@@ -25834,7 +25864,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.8':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -25924,7 +25954,7 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
 
   '@types/linkify-it@5.0.0': {}
 
@@ -26064,7 +26094,7 @@ snapshots:
 
   '@types/readdir-glob@1.1.5':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
 
   '@types/redux-logger@3.0.13':
     dependencies:
@@ -26125,7 +26155,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
 
   '@types/tough-cookie@4.0.0':
     optional: true
@@ -30997,38 +31027,6 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@30.4.2(@types/node@22.13.14)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)):
-    dependencies:
-      '@babel/core': 7.29.7(supports-color@8.1.1)
-      '@jest/get-type': 30.1.0
-      '@jest/pattern': 30.4.0
-      '@jest/test-sequencer': 30.4.1
-      '@jest/types': 30.4.1
-      babel-jest: 30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
-      chalk: 4.1.2
-      ci-info: 4.4.0
-      deepmerge: 4.3.1
-      glob: 10.5.0
-      graceful-fs: 4.2.11
-      jest-circus: 30.4.2(babel-plugin-macros@3.1.0)(supports-color@8.1.1)
-      jest-docblock: 30.4.0
-      jest-environment-node: 30.4.1
-      jest-regex-util: 30.4.0
-      jest-resolve: 30.4.1
-      jest-runner: 30.4.2(supports-color@8.1.1)
-      jest-util: 30.4.1
-      jest-validate: 30.4.1
-      parse-json: 5.2.0
-      pretty-format: 30.4.1
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 22.13.14
-      ts-node: 10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-
   jest-config@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@5.9.3)):
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
@@ -32324,6 +32322,8 @@ snapshots:
 
   mute-stream@4.0.0: {}
 
+  nano-spawn@2.1.0: {}
+
   nanoid@3.3.18: {}
 
   napi-build-utils@2.0.0: {}
@@ -33478,12 +33478,14 @@ snapshots:
 
   playwright-core@1.60.0: {}
 
-  playwright-extra@4.3.6(playwright-core@1.60.0)(playwright@1.60.0)(supports-color@8.1.1):
+  playwright-core@1.63.0: {}
+
+  playwright-extra@4.3.6(playwright-core@1.63.0)(playwright@1.60.0)(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     optionalDependencies:
       playwright: 1.60.0
-      playwright-core: 1.60.0
+      playwright-core: 1.63.0
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -33614,6 +33616,8 @@ snapshots:
 
   prettier@3.9.5: {}
 
+  prettify-xml@1.2.0: {}
+
   pretty-bytes@5.6.0: {}
 
   pretty-data@0.40.0: {}
@@ -33696,7 +33700,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
 
-  promptfoo@0.122.0(@cfworker/json-schema@4.1.1)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.20.1)(@types/pg@8.15.6)(babel-plugin-macros@3.1.0)(pg@8.18.0)(playwright-core@1.60.0)(socks@2.8.7)(supports-color@8.1.1):
+  promptfoo@0.122.0(@cfworker/json-schema@4.1.1)(@swc/helpers@0.5.19)(@types/json-schema@7.0.15)(@types/node@22.20.1)(@types/pg@8.15.6)(babel-plugin-macros@3.1.0)(pg@8.18.0)(playwright-core@1.63.0)(socks@2.8.7)(supports-color@8.1.1):
     dependencies:
       '@anthropic-ai/sdk': 0.93.0(zod@4.4.3)
       '@apidevtools/json-schema-ref-parser': 15.3.1(@types/json-schema@7.0.15)
@@ -33818,7 +33822,7 @@ snapshots:
       pdf-parse: 2.4.5
       pem: 1.14.8
       playwright: 1.60.0
-      playwright-extra: 4.3.6(playwright-core@1.60.0)(playwright@1.60.0)(supports-color@8.1.1)
+      playwright-extra: 4.3.6(playwright-core@1.63.0)(playwright@1.60.0)(supports-color@8.1.1)
       read-excel-file: 9.3.10
       sharp: 0.35.3(@types/node@22.20.1)
     transitivePeerDependencies:
