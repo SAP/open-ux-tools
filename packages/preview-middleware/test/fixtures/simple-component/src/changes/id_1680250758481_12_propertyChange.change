@@ -3,20 +3,20 @@
     "fileType": "change",
     "changeType": "propertyChange",
     "moduleName": "",
-    "reference": "test.fe.v2.app",
+    "reference": "my.fe.v2.app",
     "packageName": "",
     "content": {
         "property": "width",
         "newValue": "200px"
     },
     "selector": {
-        "id": "test.fe.v2.app::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--listReport-ProductPictureURL",
+        "id": "my.fe.v2.app::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--listReport-ProductPictureURL",
         "idIsLocal": false,
         "type": "sap.m.Column"
     },
     "layer": "CUSTOMER_BASE",
     "texts": {},
-    "namespace": "apps/test.fe.v2.app/changes/",
+    "namespace": "apps/my.fe.v2.app/changes/",
     "projectId": "",
     "creation": 1680250758481,
     "originalLanguage": "",
