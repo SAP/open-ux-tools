@@ -2156,9 +2156,8 @@ sap.ui.define(function() {
       \\"rootDir\\": \\"./\\",
       \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
-      \\"typeRoots\\": [
-        \\"./node_modules/@types\\",
-        \\"./node_modules/@sapui5/types\\"
+      \\"types\\": [
+        \\"@sapui5/types\\"
       ],
       \\"paths\\": {
           \\"com/sap/myui5tslib113/*\\": [
@@ -2778,9 +2777,8 @@ sap.ui.define(function() {
       \\"rootDir\\": \\"./\\",
       \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
-      \\"typeRoots\\": [
-        \\"./node_modules/@types\\",
-        \\"./node_modules/@sapui5/ts-types-esm\\"
+      \\"types\\": [
+        \\"@sapui5/ts-types-esm\\"
       ],
       \\"paths\\": {
           \\"com/sap/myui5tslib/*\\": [
@@ -3375,9 +3373,8 @@ sap.ui.define(function() {
       \\"rootDir\\": \\"./\\",
       \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
-      \\"typeRoots\\": [
-        \\"./node_modules/@types\\",
-        \\"./node_modules/@sapui5/types\\"
+      \\"types\\": [
+        \\"@sapui5/types\\"
       ],
       \\"paths\\": {
           \\"com/sap/myui5tslib121/*\\": [
