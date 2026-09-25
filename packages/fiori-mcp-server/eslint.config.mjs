@@ -7,7 +7,7 @@ export default [
     ...base,
     {
         rules: {
-            'import/no-unresolved': ['error', { ignore: ['^@modelcontextprotocol/sdk'] }]
+            'import/no-unresolved': ['error', { ignore: ['^@modelcontextprotocol/sdk', '^@sap/ux-specification'] }]
         }
     },
 ];
