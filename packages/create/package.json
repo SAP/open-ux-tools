@@ -52,6 +52,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-test-writer": "workspace:*",
         "@sap-ux/flp-config-inquirer": "workspace:*",
+        "@sap-ux/fiori-migration-writer": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap/cf-tools": "3.3.1",
         "@sap-ux/axios-extension": "workspace:*",

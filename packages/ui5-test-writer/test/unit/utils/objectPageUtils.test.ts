@@ -2722,8 +2722,12 @@ describe('Test getObjectPageFeatures()', () => {
             unbound: false,
             visible: true,
             enabled: true,
+<<<<<<< HEAD
+            dynamicPath: undefined
+=======
             dynamicPath: undefined,
             isCritical: false
+>>>>>>> origin/main
         });
     });
 

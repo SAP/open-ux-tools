@@ -14,6 +14,7 @@ import { getConvertCommands } from './convert/index.js';
 import { getListCommands } from './list/index.js';
 import { getGetCommands } from './get/index.js';
 import { getUpdateCommands } from './update/index.js';
+import { addMigrateCommand } from './migrate/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -144,6 +145,9 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(getCommands.commands)}\n`
     );
     program.addCommand(getCommands);
+
+    // Handler for create-fiori migrate
+    addMigrateCommand(program);
 
     return program;
 }

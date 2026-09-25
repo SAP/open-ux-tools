@@ -11,8 +11,13 @@ jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
 }));
 
 const mockWriteFileSync = jest.fn<any>();
+<<<<<<< HEAD
+const mockExistsSync = jest.fn<any>().mockReturnValue(true);
+const mockStatSync = jest.fn<any>().mockReturnValue({ isDirectory: () => true });
+=======
 const mockExistsSync = jest.fn<any>();
 const mockStatSync = jest.fn<any>();
+>>>>>>> origin/main
 const actualFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
@@ -103,9 +108,14 @@ describe('downloadODataServiceMetadata', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsAppStudio.mockReturnValue(false);
+<<<<<<< HEAD
+        mockExistsSync.mockReturnValue(true);
+        mockStatSync.mockReturnValue({ isDirectory: () => true });
+=======
         // Reset fs mocks to happy-path defaults (directory exists, no metadata.xml yet).
         // Tests that exercise a specific fs guard call setupFsMocks() again with override options.
         setupFsMocks(mockAppPath);
+>>>>>>> origin/main
         mockFindSystem.mockResolvedValue({ system: mockSapSystem });
         mockGetServiceMetadata.mockResolvedValue(mockMetadata);
         mockWriteFileSync.mockImplementation(() => {});
@@ -193,7 +203,11 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when appPath does not exist', async () => {
+<<<<<<< HEAD
+        mockExistsSync.mockReturnValue(false);
+=======
         setupFsMocks('/non/existent/path', { appPathExists: false });
+>>>>>>> origin/main
         const params: DownloadODataServiceMetadataInput = {
             appPath: '/non/existent/path',
             sapSystemQuery: 'TestSystem',
@@ -209,7 +223,12 @@ describe('downloadODataServiceMetadata', () => {
     });
 
     test('should return error when appPath points to a file instead of a directory', async () => {
+<<<<<<< HEAD
+        mockExistsSync.mockReturnValue(true);
+        mockStatSync.mockReturnValue({ isDirectory: () => false });
+=======
         setupFsMocks('/some/existing/file.txt', { isDirectory: false });
+>>>>>>> origin/main
         const params: DownloadODataServiceMetadataInput = {
             appPath: '/some/existing/file.txt',
             sapSystemQuery: 'TestSystem',

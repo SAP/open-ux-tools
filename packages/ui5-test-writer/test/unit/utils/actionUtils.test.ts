@@ -349,6 +349,38 @@ describe('buildActionStateFromSpecModelKey()', () => {
         });
     });
 
+    test('builds state for a collection-bound action (bound, enabled without selection)', () => {
+        const metadata = {
+            entitySets: [],
+            actions: [
+                {
+                    name: 'MassApprove',
+                    fullyQualifiedName: 'TestService.MassApprove(Collection(TestService.Order))',
+                    isBound: true,
+                    parameters: [{ isCollection: true }],
+                    annotations: { Core: {} }
+                }
+            ]
+        } as unknown as ConvertedMetadata;
+
+        const result = buildActionStateFromSpecModelKey(
+            'DataFieldForAction::TestService.MassApprove::TestService.OrderType',
+            'Mass Approve',
+            metadata,
+            'TestService'
+        );
+
+        expect(result).toEqual({
+            label: 'Mass Approve',
+            action: 'MassApprove',
+            service: 'TestService',
+            unbound: false,
+            visible: true,
+            enabled: true,
+            dynamicPath: undefined
+        });
+    });
+
     test('builds state for an unbound action (not found in metadata)', () => {
         const result = buildActionStateFromSpecModelKey(
             'DataFieldForAction::TestService.Create::TestService.OrderType',
