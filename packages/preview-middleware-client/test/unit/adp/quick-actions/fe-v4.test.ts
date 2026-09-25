@@ -4674,8 +4674,7 @@ describe('FE V4 quick actions', () => {
                 ...(!testCase.isListReport && testCase.isNewPageUnavailable
                     ? [
                           {
-                              'pattern':
-                                  '/Travel({key})/_Booking({key1})/_BookSupplement({BookingSupplementKey}):?query:',
+                              'pattern': '/Travel({key})/_Booking({key1})/_BookSupplement({key2}):?query:',
                               'name': 'BookSupplementObjectPage',
                               'target': 'BookSupplementObjectPage'
                           }
