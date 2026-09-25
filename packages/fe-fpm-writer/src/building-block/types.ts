@@ -1,5 +1,6 @@
 import type { IdGeneratorFunction } from '../common/file.js';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
+import type { Node as XmldomNode, Element as XmldomElement } from '@xmldom/xmldom';
 
 export const PageTemplateType = {
     Full: 'full',
@@ -443,7 +444,7 @@ export const MACROS_NAMESPACE_URI = 'sap.fe.macros';
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
  * Used when re-ordering aggregation children under a macros:Page element.
  */
-export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
+export type XmlAggregationGroup = { comments: XmldomNode[]; element: XmldomElement; originalIndex: number };
 
 /**
  * Configuration for appending a named aggregation to an existing building block element in a view XML file.
