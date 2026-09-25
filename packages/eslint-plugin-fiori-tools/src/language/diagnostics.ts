@@ -19,6 +19,7 @@ export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
+export const MICRO_CHART_REQUIRES_NAVIGATION_ENTITY = 'sap-micro-chart-requires-navigation-entity';
 export const FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION = 'sap-field-group-in-table-type-restriction';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
@@ -221,6 +222,16 @@ export interface NoDeepCollectionFacets {
     };
 }
 
+export interface MicroChartRequiresNavigationEntity {
+    type: typeof MICRO_CHART_REQUIRES_NAVIGATION_ENTITY;
+    pageNames: string[];
+    propertyType: 'measure' | 'dimension';
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
     | AnchorBarVisible
@@ -239,6 +250,7 @@ export type Diagnostic =
     | StrictUomFiltering
     | NoLiveMode
     | CloudDevAdaptationStatus
+    | MicroChartRequiresNavigationEntity
     | FieldGroupInTableTypeRestriction
     | NoSingleFacetInCollection
     | NoDeepCollectionFacets;
