@@ -1,5 +1,125 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.37
+
+### Patch Changes
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 1.0.36
+
+### Patch Changes
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+## 1.0.35
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[77ac0e2](https://github.com/SAP/open-ux-tools/commit/77ac0e2629ef9e95e72723c5a7a31c28aa2a1405)]
+
+## 1.0.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 1.0.33
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Retry app list fetch without sap.app/sourceTemplate/id on older ABAP systems that reject the field with HTTP 400 [[9d027ea](https://github.com/SAP/open-ux-tools/commit/9d027eab83ad80aba159d824ab9b0a1ea0020b3b)]
+
+## 1.0.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+## 1.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
+## 1.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[118d3d8](https://github.com/SAP/open-ux-tools/commit/118d3d866ad0003a51a79b3640f3d6cdfe42643b)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[6163dfc](https://github.com/SAP/open-ux-tools/commit/6163dfc4d7d1ae628dedd93f93b4a743ec583d25)]
+
+## 1.0.28
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[30c8bbf](https://github.com/SAP/open-ux-tools/commit/30c8bbf4a155d45d6b7440e76171c24bd8b3a778)]
+
+## 1.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-31
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[8ee2690](https://github.com/SAP/open-ux-tools/commit/8ee2690f3d00e6d0ce5b3cbd2e880ebb2a012208)]
+
 ## 1.0.26
 
 ### Patch Changes

@@ -17,7 +17,7 @@ import type {
 } from './types.js';
 import { SupportedPageTypes, ValidationError, DotFileExtension } from './types.js';
 import { t } from './i18n.js';
-import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
+import { FileName, DirName, getWebappPath, updatePackageScript, getMainService } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils.js';
 import { addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils.js';
@@ -26,7 +26,8 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
-import { isALPManifestTarget } from './utils/listReportUtils.js';
+import { getListReportViews, isALPManifestTarget } from './utils/listReportUtils.js';
+import { resolveOriginatingView } from './utils/objectPageUtils.js';
 import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -139,11 +140,22 @@ export async function generateOPAFiles(
             page.template = 'ListReport';
         }
     }
+    // Resolve which LR tab the navigated Object Page is reached from, so the multi-tab journey navigates
+    // from that tab rather than always the default one (the OP may live on a non-default tab's entity set).
+    const navigatedOPTabKey = LROP.pageOP
+        ? resolveOriginatingView(
+              getListReportViews(manifest, LROP.pageLR?.targetKey),
+              LROP.pageOP.entitySet,
+              LROP.pageLR?.entitySet
+          )?.key
+        : undefined;
     const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar
+        navigatedOPTabKey,
+        hideFilterBar: config.hideFilterBar,
+        serviceUri: getServiceUri(manifest)
     };
 
     const writeContext: WriteContext = {
@@ -457,6 +469,17 @@ function getAppFromManifest(manifest: Manifest, forcedAppID?: string): { appID: 
     }
 
     return { appID, appPath };
+}
+
+/**
+ * Resolves the OData service URI used by `iResetMockData({ ServiceUri })` at the start of each journey.
+ *
+ * @param manifest - the app descriptor of the app
+ * @returns the main service's URI, or an empty string if it cannot be resolved
+ */
+function getServiceUri(manifest: Manifest): string {
+    const mainService = getMainService(manifest);
+    return (mainService && manifest['sap.app']?.dataSources?.[mainService]?.uri) || '';
 }
 
 /**

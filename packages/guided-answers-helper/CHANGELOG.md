@@ -1,8 +1,16 @@
 # @sap-ux/guided-answers-helper
 
+## 1.0.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Retry app list fetch without sap.app/sourceTemplate/id on older ABAP systems that reject the field with HTTP 400 [[9d027ea](https://github.com/SAP/open-ux-tools/commit/9d027eab83ad80aba159d824ab9b0a1ea0020b3b)]
+
 ## 1.0.1
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -10,7 +18,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -45,7 +53,7 @@
 
 ## 0.5.1
 
-*Released: 2026-05-29T12:50:34Z*
+_Released: 2026-05-29T12:50:34Z_
 
 ### Patch Changes
 
@@ -53,7 +61,7 @@
 
 ## 0.5.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -61,7 +69,7 @@
 
 ## 0.4.3
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -69,7 +77,7 @@
 
 ## 0.4.2
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -77,7 +85,7 @@
 
 ## 0.4.1
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -85,7 +93,7 @@
 
 ## 0.4.0
 
-*Released: 2025-08-12T14:05:27Z*
+_Released: 2025-08-12T14:05:27Z_
 
 ### Minor Changes
 
@@ -93,7 +101,7 @@
 
 ## 0.3.1
 
-*Released: 2025-07-16T12:23:18Z*
+_Released: 2025-07-16T12:23:18Z_
 
 ### Patch Changes
 
@@ -101,7 +109,7 @@
 
 ## 0.3.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -109,7 +117,7 @@
 
 ## 0.2.2
 
-*Released: 2025-04-17T12:52:13Z*
+_Released: 2025-04-17T12:52:13Z_
 
 ### Patch Changes
 
@@ -117,7 +125,7 @@
 
 ## 0.2.1
 
-*Released: 2025-01-22T17:11:37Z*
+_Released: 2025-01-22T17:11:37Z_
 
 ### Patch Changes
 
@@ -125,7 +133,7 @@
 
 ## 0.2.0
 
-*Released: 2025-01-08T11:51:44Z*
+_Released: 2025-01-08T11:51:44Z_
 
 ### Minor Changes
 
@@ -133,7 +141,7 @@
 
 ## 0.1.1
 
-*Released: 2024-12-04T15:30:32Z*
+_Released: 2024-12-04T15:30:32Z_
 
 ### Patch Changes
 
@@ -141,7 +149,7 @@
 
 ## 0.1.0
 
-*Released: 2024-11-11T17:55:13Z*
+_Released: 2024-11-11T17:55:13Z_
 
 ### Minor Changes
 
@@ -149,7 +157,7 @@
 
 ## 0.0.2
 
-*Released: 2024-08-28T13:09:47Z*
+_Released: 2024-08-28T13:09:47Z_
 
 ### Patch Changes
 

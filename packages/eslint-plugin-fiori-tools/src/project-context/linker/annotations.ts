@@ -5,14 +5,13 @@ import {
     getElementAttributeValue,
     toFullyQualifiedName,
     parseIdentifier,
-    ELEMENT_TYPE,
     getElementAttribute,
     toFullyQualifiedPath,
     parsePath
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
+import { UI_COLLECTION_FACET, UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -89,6 +88,64 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
+ * Extracts nested facet records from a CollectionFacet's Facets property.
+ *
+ * @param record - The CollectionFacet element
+ * @returns Array of nested record elements
+ */
+function getCollectionFacetRecords(record: Element): Element[] {
+    const facetsPropValue = getPropertyValueElement(record, 'Facets');
+    if (facetsPropValue) {
+        const [nestedCollection] = elementsWithName(Edm.Collection, facetsPropValue);
+        if (nestedCollection) {
+            return elementsWithName(Edm.Record, nestedCollection);
+        }
+    }
+    return [];
+}
+
+/**
+ * Recursively collects table sections from facet records, traversing nested CollectionFacets at any depth.
+ *
+ * @param records - Facet records to process
+ * @param aliasInfo - Alias information for resolving namespaces
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @param facets - The root Facets annotation
+ * @param index - Index of the enclosing top-level facet record
+ * @param sections - Accumulator for collected table section nodes
+ */
+function collectTableSectionsFromRecords(
+    records: Element[],
+    aliasInfo: AliasInformation,
+    entityType: string,
+    service: ParsedService,
+    facets: IndexedAnnotation,
+    index: number,
+    sections: TableSectionNode[]
+): void {
+    for (const record of records) {
+        const type = getRecordType(aliasInfo, record);
+        if (type === UI_COLLECTION_FACET) {
+            collectTableSectionsFromRecords(
+                getCollectionFacetRecords(record),
+                aliasInfo,
+                entityType,
+                service,
+                facets,
+                index,
+                sections
+            );
+        } else {
+            const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
+            if (section?.type === 'table-section') {
+                sections.push(section);
+            }
+        }
+    }
+}
+
+/**
  * Collects object page table sections.
  *
  * @param entityType - Entity type name
@@ -108,14 +165,9 @@ function getOPTableSections(entityType: string, service: ParsedService): TableSe
     }
     const records = elementsWithName(Edm.Record, collection);
     const aliasInfo = service.artifacts.aliasInfo[facets.top.uri];
-    let index = 0;
-    for (const record of records) {
-        const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
-        if (section?.type === 'table-section') {
-            sections.push(section);
-        }
-        index++;
-    }
+    records.forEach((record, index) => {
+        collectTableSectionsFromRecords([record], aliasInfo, entityType, service, facets, index, sections);
+    });
     return sections;
 }
 
@@ -411,59 +463,55 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
 }
 
 /**
- * Returns AnnotationPath property value.
+ * Returns the PropertyValue child element of a record for the given property name.
  *
- * @param record -The record element
- * @returns - Annotation path string
+ * @param record - The record element to search in
+ * @param propertyName - The value of the Property attribute to be matched (such as 'Target', 'ID', 'Facets')
+ * @returns The matching PropertyValue element, or undefined
  */
-function getTargetAnnotationPath(record: Element): string | undefined {
-    const target = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            return name === 'Target';
-        }
-        return false;
-    });
-    if (target?.type === ELEMENT_TYPE) {
-        const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
-        if (stringAttribute) {
-            return stringAttribute.value;
-        } else {
-            const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
-            if (annotationPathContent) {
-                return getElementText(annotationPathContent);
-            }
-        }
-    }
-    return undefined;
+export function getPropertyValueElement(record: Element, propertyName: string): Element | undefined {
+    return elementsWithName(Edm.PropertyValue, record).find(
+        (el) => getElementAttributeValue(el, Edm.Property) === propertyName
+    );
 }
 
 /**
- * Returns ID property value.
+ * Returns the AnnotationPath property value of the Target property in a record element.
+ * Handles both attribute form (`AnnotationPath="..."`) and child-element form (`<AnnotationPath>...</AnnotationPath>`).
  *
  * @param record - The record element
- * @returns - String ID value
+ * @returns The annotation path string, or undefined if not found
+ */
+export function getTargetAnnotationPath(record: Element): string | undefined {
+    const target = getPropertyValueElement(record, 'Target');
+    if (!target) {
+        return undefined;
+    }
+    const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
+    if (stringAttribute) {
+        return stringAttribute.value;
+    }
+    const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
+    return annotationPathContent ? getElementText(annotationPathContent) : undefined;
+}
+
+/**
+ * Returns the value of the ID property.
+ *
+ * @param record - The record element
+ * @returns The string ID value, or undefined if not found
  */
 function getId(record: Element): string | undefined {
-    const id = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            return name === 'ID';
-        }
-        return false;
-    });
-    if (id?.type === ELEMENT_TYPE) {
-        const stringAttribute = getElementAttribute(id, Edm.String);
-        if (stringAttribute) {
-            return stringAttribute.value;
-        } else {
-            const idContent = findContentByName(id.content, Edm.String);
-            if (idContent) {
-                return getElementText(idContent);
-            }
-        }
+    const id = getPropertyValueElement(record, 'ID');
+    if (!id) {
+        return undefined;
     }
-    return undefined;
+    const stringAttribute = getElementAttribute(id, Edm.String);
+    if (stringAttribute) {
+        return stringAttribute.value;
+    }
+    const idContent = findContentByName(id.content, Edm.String);
+    return idContent ? getElementText(idContent) : undefined;
 }
 
 /**
@@ -556,4 +604,24 @@ export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPa
         page.lookup[control.type] ??= [];
         page.lookup[control.type]!.push(control);
     }
+}
+
+/**
+ * Retrieves the fully qualified annotation term for a given annotation record.
+ *
+ * @param aliasInfo - Alias information for resolving fully qualified names
+ * @param record - The metadata element representing the annotation record
+ * @returns The fully qualified annotation term, or undefined if it cannot be determined
+ */
+export function getTargetAnnotationTerm(aliasInfo: AliasInformation, record: Element): string | undefined {
+    const annotationPath = getTargetAnnotationPath(record);
+    if (!annotationPath) {
+        return undefined;
+    }
+    const lastAt = annotationPath.lastIndexOf('@');
+    if (lastAt === -1) {
+        return undefined;
+    }
+    const termWithAlias = annotationPath.slice(lastAt + 1).split('#')[0];
+    return toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parseIdentifier(termWithAlias));
 }

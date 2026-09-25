@@ -89,18 +89,26 @@ export function deleteAppInfoSettings(fs?: Editor) {
  * The function will be called with the file path from the `latestGeneratedFiles` array.
  * If not provided, the command execution step will be skipped.
  * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
+ * @param {boolean} [autoOpen] - Whether to automatically open the Application Info Page.
+ * Defaults to true if not provided.
  * @example
- * loadApplicationInfoFromSettings(filePath => {
- *     // Perform VS Code command with the file path
- *     vscode.commands.executeCommand('fake.extension.loadInfo', filePath);
- * });
+ * loadApplicationInfoFromSettings(
+ *     filePath => vscode.commands.executeCommand('fake.extension.loadInfo', filePath),
+ *     undefined,
+ *     true
+ * );
  */
-export function loadApplicationInfoFromSettings(executeCommand?: (filePath: string) => void, fs?: Editor): void {
+export function loadApplicationInfoFromSettings(
+    executeCommand?: (filePath: string) => void,
+    fs?: Editor,
+    autoOpen: boolean = true
+): void {
     fs = getFsInstance(fs);
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     if (appInfoContents.latestGeneratedFiles.length > 0) {
         const filePath = appInfoContents.latestGeneratedFiles.shift();
-        if (executeCommand && filePath) {
+
+        if (executeCommand && filePath && autoOpen) {
             executeCommand(filePath);
         }
         deleteAppInfoSettings(fs);

@@ -18739,6 +18739,8 @@ sap.ui.define([
         QUnit.module(\\"BookingObjectPageObjectPage journey\\");
 
         opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -18793,6 +18795,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -18855,6 +18859,8 @@ sap.ui.define([
         QUnit.module(\\"TravelObjectPageObjectPage journey\\");
 
         opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -22615,6 +22621,8 @@ sap.ui.define([
         QUnit.module(\\"BookingObjectPageObjectPage journey\\");
 
         opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -22692,6 +22700,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -22780,6 +22790,8 @@ sap.ui.define([
         QUnit.module(\\"TravelObjectPageObjectPage journey\\");
 
         opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -22851,7 +22863,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests\\": \\"../../\\"
+                \\"lrop_v4_addtests\\": \\"../../\\",
+                \\"lrop_v4_addtests.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23728,6 +23741,8 @@ appDescription=A Fiori application.",
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -23766,7 +23781,8 @@ appDescription=A Fiori application.",
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24705,6 +24721,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheTravelListGenerated.iSeeThisPage();
     });
@@ -24743,7 +24761,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_addtests_cds\\": \\"../../\\"
+                \\"lrop_v4_addtests_cds\\": \\"../../\\",
+                \\"lrop_v4_addtests_cds.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -24993,6 +25012,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -26248,6 +26269,8 @@ sap.ui.define([
         QUnit.module(\\"BookingObjectPageObjectPage journey\\");
 
         opaTest(\\"Navigate to BookingObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -26302,6 +26325,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -26364,6 +26389,8 @@ sap.ui.define([
         QUnit.module(\\"TravelObjectPageObjectPage journey\\");
 
         opaTest(\\"Navigate to TravelObjectPageObjectPage\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -26395,7 +26422,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\"
+                \\"lrop_v4_annotation_reuse_lib\\": \\"../../\\",
+                \\"lrop_v4_annotation_reuse_lib.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"

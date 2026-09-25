@@ -1,5 +1,238 @@
 # @sap-ux/generator-simple-fe
 
+## 2.0.126
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.64 → 3.1.65
+- @sap-ux/fiori-freestyle-writer 3.0.109 → 3.0.110
+
+## 2.0.125
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.63 → 3.1.64
+- @sap-ux/fiori-freestyle-writer 3.0.108 → 3.0.109
+
+## 2.0.124
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.62 → 3.1.63
+- @sap-ux/fiori-freestyle-writer 3.0.107 → 3.0.108
+
+## 2.0.123
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.61 → 3.1.62
+- @sap-ux/fiori-freestyle-writer 3.0.106 → 3.0.107
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 2.0.122
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.60 → 3.1.61
+- @sap-ux/fiori-freestyle-writer 3.0.105 → 3.0.106
+
+## 2.0.121
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.59 → 3.1.60
+- @sap-ux/fiori-freestyle-writer 3.0.104 → 3.0.105
+
+## 2.0.120
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.58 → 3.1.59
+- @sap-ux/fiori-freestyle-writer 3.0.103 → 3.0.104
+
+## 2.0.119
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-17
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.57 → 3.1.58
+- @sap-ux/fiori-freestyle-writer 3.0.102 → 3.0.103
+
+## 2.0.118
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.10 → 2.1.0
+- @sap-ux/system-access 1.0.13 → 1.0.14
+- @sap-ux/fiori-elements-writer 3.1.56 → 3.1.57
+- @sap-ux/fiori-freestyle-writer 3.0.101 → 3.0.102
+
+## 2.0.117
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.55 → 3.1.56
+- @sap-ux/fiori-freestyle-writer 3.0.100 → 3.0.101
+
+## 2.0.116
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.54 → 3.1.55
+- @sap-ux/fiori-freestyle-writer 3.0.99 → 3.0.100
+
+## 2.0.115
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.53 → 3.1.54
+- @sap-ux/fiori-freestyle-writer 3.0.98 → 3.0.99
+
+## 2.0.114
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.52 → 3.1.53
+- @sap-ux/fiori-freestyle-writer 3.0.97 → 3.0.98
+
+## 2.0.113
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.51 → 3.1.52
+- @sap-ux/fiori-freestyle-writer 3.0.96 → 3.0.97
+
+## 2.0.112
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.50 → 3.1.51
+- @sap-ux/fiori-freestyle-writer 3.0.95 → 3.0.96
+
+## 2.0.111
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.49 → 3.1.50
+- @sap-ux/fiori-freestyle-writer 3.0.94 → 3.0.95
+- @sap-ux/axios-extension 2.0.10 → 2.0.10
+- @sap-ux/system-access 1.0.13 → 1.0.13
+
+## 2.0.110
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+- @sap-ux/system-access 1.0.12 → 1.0.13
+- @sap-ux/fiori-elements-writer 3.1.48 → 3.1.49
+- @sap-ux/fiori-freestyle-writer 3.0.93 → 3.0.94
+
+## 2.0.109
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.47 → 3.1.48
+- @sap-ux/fiori-freestyle-writer 3.0.92 → 3.0.93
+
+## 2.0.108
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-07
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.46 → 3.1.47
+- @sap-ux/fiori-freestyle-writer 3.0.91 → 3.0.92
+
+## 2.0.107
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.45 → 3.1.46
+- @sap-ux/fiori-freestyle-writer 3.0.90 → 3.0.91
+
+## 2.0.106
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.44 → 3.1.45
+- @sap-ux/fiori-freestyle-writer 3.0.89 → 3.0.90
+
 ## 2.0.105
 
 ### Patch Changes

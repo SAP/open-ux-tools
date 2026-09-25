@@ -6,8 +6,11 @@ import {
     analyzeOperationAvailability,
     extractEnumMemberValue,
     buildActionButtonState,
-    buildActionStateFromSpecModelKey
+    buildActionStateFromSpecModelKey,
+    collectCriticalActionNames,
+    collectActionParameterNames
 } from '../../../src/utils/actionUtils.js';
+import { getMergedConvertedMetadata } from '../../../src/utils/metadataXmlUtils.js';
 
 describe('extractActionMethodName()', () => {
     test('extracts method name from fully qualified action with parentheses', () => {
@@ -308,7 +311,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: false,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -340,7 +344,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -359,7 +364,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: true,
             visible: true,
             enabled: true,
-            dynamicPath: undefined
+            dynamicPath: undefined,
+            isCritical: false
         });
     });
 
@@ -401,7 +407,144 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: 'dynamic',
-            dynamicPath: 'IsReady'
+            dynamicPath: 'IsReady',
+            isCritical: false
         });
+    });
+
+    test('sets isCritical when the action is in the criticalActions set', () => {
+        const metadata = {
+            entitySets: [],
+            actions: [
+                {
+                    name: 'Activate',
+                    fullyQualifiedName: 'TestService.Activate(TestService.Order)',
+                    isBound: true,
+                    parameters: [{ isCollection: false }]
+                }
+            ]
+        } as unknown as ConvertedMetadata;
+
+        const result = buildActionStateFromSpecModelKey(
+            'DataFieldForAction::TestService.Activate::TestService.OrderType',
+            'Activate',
+            metadata,
+            'TestService',
+            new Set(['Activate'])
+        );
+
+        expect(result?.isCritical).toBe(true);
+    });
+});
+
+describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from annotation files', () => {
+    // Inline fixtures (kept self-contained; the metadata has no IsActionCritical — it lives only in the annotation doc).
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="TravelType">
+        <Key><PropertyRef Name="TravelID"/></Key>
+        <Property Name="TravelID" Type="Edm.String"/>
+      </EntityType>
+      <Action Name="setToNew" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <Action Name="setToBooked" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <Action Name="deductDiscount" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/><Parameter Name="discount_percent" Type="Edm.String"/></Action>
+      <EntityContainer Name="Container">
+        <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+    const annotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Annotations Target="TestService.TravelType">
+        <Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+          <Collection>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Set To New"/>
+              <PropertyValue Property="Action" String="TestService.setToNew(TestService.TravelType)"/>
+            </Record>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Set To Booked"/>
+              <PropertyValue Property="Action" String="TestService.setToBooked(TestService.TravelType)"/>
+            </Record>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Deduct Discount"/>
+              <PropertyValue Property="Action" String="TestService.deductDiscount(TestService.TravelType)"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="TestService.setToNew(TestService.TravelType)">
+        <Annotation Term="com.sap.vocabularies.Common.v1.IsActionCritical" Bool="true"/>
+      </Annotations>
+      <Annotations Target="TestService.setToBooked(TestService.TravelType)">
+        <Annotation Term="com.sap.vocabularies.Common.v1.IsActionCritical" Bool="true"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns undefined when no metadata is provided', () => {
+        expect(getMergedConvertedMetadata(undefined)).toBeUndefined();
+    });
+
+    test('IsActionCritical is not visible from metadata.xml alone', () => {
+        expect(collectCriticalActionNames(getMergedConvertedMetadata(metadataXml)).has('setToBooked')).toBe(false);
+    });
+
+    test('IsActionCritical becomes visible once the annotation file is merged', () => {
+        const criticalNames = collectCriticalActionNames(getMergedConvertedMetadata(metadataXml, [annotationXml]));
+        expect(criticalNames.has('setToBooked')).toBe(true);
+        expect(criticalNames.has('setToNew')).toBe(true);
+    });
+
+    test('LR toolbar action states carry isCritical from the merged metadata', async () => {
+        const { checkActionButtonStatesFromMetadata } = await import('../../../src/utils/listReportUtils.js');
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        const criticalActions = collectCriticalActionNames(converted);
+        const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, criticalActions);
+        const critical = actions.filter((a) => a.isCritical).map((a) => a.action);
+        expect(critical).toEqual(expect.arrayContaining(['setToBooked', 'setToNew']));
+    });
+
+    test('LR toolbar action states carry parameterDialogFields from the merged metadata', async () => {
+        const { checkActionButtonStatesFromMetadata } = await import('../../../src/utils/listReportUtils.js');
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, new Set());
+        const deductDiscount = actions.find((a) => a.action === 'deductDiscount');
+        // Binding parameter (_it) dropped; only the real input parameter drives the dialog.
+        expect(deductDiscount?.parameterDialogFields).toEqual(['discount_percent']);
+        expect(actions.find((a) => a.action === 'setToBooked')?.parameterDialogFields).toBeUndefined();
+    });
+});
+
+describe('collectActionParameterNames()', () => {
+    const makeAction = (isBound: boolean, names: string[]): Action =>
+        ({
+            isBound,
+            parameters: names.map((name) => ({ name })) as unknown as ActionParameter[]
+        }) as unknown as Action;
+
+    test('drops the binding parameter for a bound action', () => {
+        expect(collectActionParameterNames(makeAction(true, ['_it', 'discount_percent']))).toEqual([
+            'discount_percent'
+        ]);
+    });
+
+    test('keeps all parameters for an unbound action', () => {
+        expect(collectActionParameterNames(makeAction(false, ['reason', 'amount']))).toEqual(['reason', 'amount']);
+    });
+
+    test('returns undefined when a bound action has only the binding parameter', () => {
+        expect(collectActionParameterNames(makeAction(true, ['_it']))).toBeUndefined();
+    });
+
+    test('returns undefined when the action has no parameters or is undefined', () => {
+        expect(collectActionParameterNames(makeAction(true, []))).toBeUndefined();
+        expect(collectActionParameterNames(undefined)).toBeUndefined();
     });
 });
