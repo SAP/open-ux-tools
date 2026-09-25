@@ -2,6 +2,7 @@
 "@sap-ux-private/ui-prompting-examples": patch
 "@sap-ux/adp-tooling": patch
 "@sap-ux/axios-extension": patch
+"@sap-ux/generator-odata-downloader": patch
 "@sap-ux/backend-proxy-middleware-cf": patch
 "@sap-ux/deploy-tooling": patch
 "@sap-ux/fe-fpm-writer": patch
