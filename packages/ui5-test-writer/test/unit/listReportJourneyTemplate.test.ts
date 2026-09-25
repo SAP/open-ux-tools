@@ -38,7 +38,9 @@ const tabs = [
         entitySet: 'Customer',
         tableColumns: { CompanyCode: { header: 'Company Code' } },
         contactCardColumns: [{ property: 'DataFieldForAnnotation::_UserContactCard::Contact' }],
-        toolBarActions: [{ label: 'Navigate', action: 'Navigate', visible: true, enabled: true }],
+        toolBarActions: [
+            { label: 'Navigate', action: 'Navigate', service: 'NS', unbound: false, visible: true, enabled: true }
+        ],
         createButton: { visible: true },
         deleteButton: { visible: false }
     },
@@ -84,7 +86,9 @@ describe('ListReportJourney template (latest) - multi-tab tab-specific checks', 
     const content = renderListReportJourney('latest', tabs);
 
     test('checks the tab-specific toolbar action and create button on its own tab', () => {
-        expect(content).toContain('onTable("1").iCheckAction("Navigate", { enabled: true })');
+        expect(content).toContain(
+            'onTable("1").iCheckAction({ service: "NS", action: "Navigate", unbound: false }, { enabled: true })'
+        );
         expect(content).toContain('onTable("1").iCheckCreate({ visible: true })');
     });
 

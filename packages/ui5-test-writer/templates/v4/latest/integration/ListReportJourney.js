@@ -97,8 +97,8 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { visible: true });
             <%_ } else { _%>
-            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
-            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
             <%_ } _%>
             <%_ } _%>
             <%_ }); _%>
@@ -158,8 +158,8 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
             <%_ } else { _%>
-            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
             <%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
             <%_ if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
             // "<%- item.label %>" is conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the <%- hasParamDialog ? 'action parameter dialog' : 'confirmation dialog' %>.
@@ -167,7 +167,7 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             <%_ } _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
-            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
             <%_ if (hasParamDialog) { _%>
             <%_ item.parameterDialogFields.forEach(function(parameter) { _%>
             // Then.onThe<%- startLR%>Generated.onActionDialog().iCheckActionParameterDialogField({ property: "<%- parameter %>" }, undefined, { visible: true });
@@ -182,7 +182,7 @@ sap.ui.define([
             <%_ if (item.enabled !== true) { _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
             <%_ } _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
             <%_ if (hasParamDialog) { _%>
             <%_ item.parameterDialogFields.forEach(function(parameter) { _%>
             Then.onThe<%- startLR%>Generated.onActionDialog().iCheckActionParameterDialogField({ property: "<%- parameter %>" }, undefined, { visible: true });

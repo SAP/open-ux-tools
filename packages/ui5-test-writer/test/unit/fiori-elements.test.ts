@@ -209,35 +209,63 @@ describe('ui5-test-writer', () => {
 
             it('integrates confirmation-dialog steps into the actions block only for critical actions', () => {
                 const journey = renderListReportJourney([
-                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
-                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                    {
+                        label: 'Set To Booked',
+                        action: 'setToBooked',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: true
+                    },
+                    {
+                        label: 'Copy',
+                        action: 'Copy',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: true,
+                        isCritical: false
+                    }
                 ]);
                 // No separate opaTest block — critical steps live in "Check table columns and actions".
                 expect(journey).not.toContain('Check critical action confirmation dialog');
-                expect(journey).toContain('iCheckAction("Set To Booked"');
-                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Set To Booked")');
+                expect(journey).toContain('iCheckAction({ service: "NS", action: "setToBooked", unbound: false }');
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "setToBooked", unbound: false })'
+                );
                 expect(journey).toContain('onMessageDialog().iCheckState()');
                 expect(journey).toContain('onMessageDialog().iCancel()');
                 // Bound (enabled !== true) critical action selects a row first.
                 expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
                 // The non-critical action's execute stays commented out.
                 expect(journey).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Copy")'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: "NS", action: "Copy", unbound: false })'
                 );
             });
 
             it('comments out the confirmation-dialog steps for a dynamically-enabled critical action', () => {
                 const journey = renderListReportJourney([
-                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: 'dynamic', isCritical: true }
+                    {
+                        label: 'Set To New',
+                        action: 'setToNew',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: 'dynamic',
+                        isCritical: true
+                    }
                 ]);
                 const lines = journey.split('\n').map((line) => line.trim());
                 // Conditionally enabled (Core.OperationAvailable path) → steps are emitted commented out, never run.
                 expect(lines).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Set To New");'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction({ service: "NS", action: "setToNew", unbound: false });'
                 );
                 const active = lines.filter((line) => !line.startsWith('//'));
                 expect(active.some((line) => line.includes('onMessageDialog'))).toBe(false);
-                expect(active.some((line) => line.includes('iExecuteAction("Set To New")'))).toBe(false);
+                expect(active.some((line) => line.includes('iExecuteAction({ service: "NS", action: "setToNew"'))).toBe(
+                    false
+                );
             });
 
             it('omits the confirmation-dialog steps when no action is critical', () => {
@@ -306,13 +334,17 @@ describe('ui5-test-writer', () => {
                     {
                         label: 'Deduct Discount',
                         action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
                         visible: true,
                         enabled: false,
                         isCritical: false,
                         parameterDialogFields: ['discount_percent']
                     }
                 ]);
-                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Deduct Discount")');
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "deductDiscount", unbound: false })'
+                );
                 expect(journey).toContain(
                     'onActionDialog().iCheckActionParameterDialogField({ property: "discount_percent" }, undefined, { visible: true })'
                 );
@@ -326,6 +358,8 @@ describe('ui5-test-writer', () => {
                     {
                         label: 'Deduct Discount',
                         action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
                         visible: true,
                         enabled: false,
                         isCritical: true,
