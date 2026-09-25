@@ -54,7 +54,15 @@ const adpTools = [
 
         The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
 
-        Optional parameters: targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
+        Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
+
+        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call. When the selected system
+        AND application both support CloudReady and Classic (on-premise) adaptation projects, the tool
+        does NOT generate anything and instead returns status 'InputRequired' with a message. When you
+        receive 'InputRequired', ask the user which type they want, then call this tool again with
+        projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
+        it automatically and you never need to set projectType. Passing a projectType the system or
+        application cannot support returns status 'Error'.
 
         Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
         changes from LREP (using the same system) and include them in the generated
