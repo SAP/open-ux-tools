@@ -1,3 +1,4 @@
+import { isStructuralFragment } from '../../src/generation/sft.js';
 import { generateService } from '../../src/index.js';
 import type { SftCandidateRelevanceVerifier, SftGenerator } from '../../src/types.js';
 
@@ -93,5 +94,34 @@ describe('per-field acceptance of fine-tuned values', () => {
         expect(rows[1]?.CategoryText).not.toBe('Software fault');
         expect(rows[1]).toMatchObject({ Remark: 'Patched the client', Effort: 1.5 });
         expect(rows[2]?.CategoryText).not.toBe('Network outage');
+    });
+});
+
+describe('structural fragments in model values', () => {
+    it('recognises code and JSON fragments but not ordinary punctuation', () => {
+        expect(isStructuralFragment(');;}PeerClass@company.com providing a service')).toBe(true);
+        expect(isStructuralFragment('```Extract and output the data')).toBe(true);
+        expect(isStructuralFragment('This is how the JSON might look: [{')).toBe(true);
+        expect(isStructuralFragment('"Name": "Acme"')).toBe(true);
+        expect(isStructuralFragment('+44-619-758892')).toBe(false);
+        expect(isStructuralFragment('Hardware fault (level 2)')).toBe(false);
+        expect(isStructuralFragment('Price: 12 EUR')).toBe(false);
+    });
+
+    it('keeps the fallback value where the model wrote a fragment', async () => {
+        const result = await generateService(request, options, {
+            sft: answering([
+                { Category: 'HW', CategoryText: 'Hardware fault', Remark: ');;}Extract the value', Effort: 2.5 },
+                { Category: 'SW', CategoryText: 'Software fault', Remark: 'Patched the client', Effort: 1.5 },
+                { Category: 'NW', CategoryText: 'Network outage', Remark: 'Reset the switch', Effort: 3.5 }
+            ]),
+            candidateVerifier: verifying(['Hardware fault', 'Software fault', 'Network outage'])
+        });
+        const rows = result.resources.Tickets;
+        expect(rows[0]?.Remark).not.toBe(');;}Extract the value');
+        expect(rows[1]?.Remark).toBe('Patched the client');
+        expect(result.statistics.sft.assignments[0]?.fields.find(({ name }) => name === 'Remark')).toMatchObject({
+            invalidSlots: 1
+        });
     });
 });

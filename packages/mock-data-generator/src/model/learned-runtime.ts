@@ -24,7 +24,12 @@ import {
 import type { ModelComponentManifest, ModelManifest } from './manifest.js';
 import { createMiniLmTextEmbedder, createOnnxBackend } from './minilm-runtime.js';
 import type { VerifiedModelArtifacts } from './runtime-artifacts.js';
-import { createPilotSftGenerator, processCompletionStore, type PilotSamplingOptions } from './sft-runtime.js';
+import {
+    createPilotSftGenerator,
+    processCompletionStore,
+    type PilotSamplingOptions,
+    type SftCompletionStore
+} from './sft-runtime.js';
 import { createSmolLm2Tokenizer } from './smollm-tokenizer.js';
 
 export interface LoadedLearnedComponent<T> {
@@ -211,7 +216,8 @@ export function parseSftConfiguration(value: unknown): SftArtifactConfiguration 
 
 function defaultFactories(
     contract: EmbeddingSemanticClassifierContract = {},
-    lifecycle: ModelManifest['lifecycle'] = 'development'
+    lifecycle: ModelManifest['lifecycle'] = 'development',
+    completionStore: SftCompletionStore = processCompletionStore()
 ): LearnedComponentFactories {
     return {
         classifier: async (component, files, runtime): Promise<LoadedLearnedComponent<SemanticClassifier>> => {
@@ -349,7 +355,7 @@ function defaultFactories(
                 promptContractVersion: configuration.promptContractVersion,
                 runtimeContract: configuration.runtimeContract,
                 separators: configuration.jsonSeparators,
-                completionStore: processCompletionStore()
+                completionStore
             });
             return { value: sft, dispose: () => sft.dispose?.() };
         }
@@ -363,14 +369,18 @@ function defaultFactories(
  * @param cache
  * @param factories
  * @param classifierContract
+ * @param options `completionStore` keeps model answers; the process-wide in-memory store when absent
+ * @param options.completionStore see above
  */
 export async function createLearnedRuntime(
     manifest: ModelManifest,
     cache: VerifiedModelArtifacts,
     factories?: LearnedComponentFactories,
-    classifierContract?: EmbeddingSemanticClassifierContract
+    classifierContract?: EmbeddingSemanticClassifierContract,
+    options: Readonly<{ completionStore?: SftCompletionStore }> = {}
 ): Promise<LearnedRuntimeHandle> {
-    const componentFactories = factories ?? defaultFactories(classifierContract, manifest.lifecycle);
+    const componentFactories =
+        factories ?? defaultFactories(classifierContract, manifest.lifecycle, options.completionStore);
     if (!cache.ready && cache.files.size === 0) {
         return Object.freeze({
             runtime: Object.freeze({}),

@@ -150,6 +150,18 @@ function isNarrativePlaceholder(property: SchemaProperty, value: string): boolea
     );
 }
 
+/**
+ * Whether a proposed string carries code or JSON fragments instead of field content: it starts with closing
+ * punctuation, contains braces or backticks, or repeats a JSON key/value separator. These are shape defects
+ * of the answer, independent of what the field means.
+ *
+ * @param value proposed string
+ * @returns true for a structural fragment
+ */
+export function isStructuralFragment(value: string): boolean {
+    return /^\s*[)\]};:,]/u.test(value) || /[{}`]/u.test(value) || /"\s*:\s*["\d[{]/u.test(value);
+}
+
 function validCandidate(property: SchemaProperty, value: unknown, strictNarrative = false): value is JsonValue {
     if (!propertyValueIsValid(property, value)) {
         return false;
@@ -161,6 +173,7 @@ function validCandidate(property: SchemaProperty, value: unknown, strictNarrativ
         typeof value === 'string' &&
         /[\p{L}\p{N}]/u.test(value) &&
         !/^\s*[\[{]/u.test(value) &&
+        !isStructuralFragment(value) &&
         (!strictNarrative || !isNarrativePlaceholder(property, value))
     );
 }

@@ -153,9 +153,10 @@ export const RUNTIME_CONTRACT_2_MAX_FIELDS_PER_CALL = 8;
 // Rows decoded together at most: a batch of 4 costs about as much per row as a batch of 10 on CPU,
 // and smaller batches complete progressively, so a time budget keeps the rows already finished.
 export const RUNTIME_CONTRACT_2_MAX_BATCH_ROWS = 4;
-// Within this many characters of the maximum length a string stops starting words (at most a
-// quarter of the length, so short codes are unaffected).
-const MAXIMUM_STEERING_CHARACTERS = 8;
+// Within this many characters of the maximum length a string stops starting words: a third of the
+// length, at least 2 and at most 12, so a 10-character column stops 3 characters before its limit.
+const MAXIMUM_STEERING_CHARACTERS = 12;
+const MINIMUM_STEERING_CHARACTERS = 2;
 const DEFAULT_DECIMAL_INTEGER_DIGITS = 15;
 const DEFAULT_DECIMAL_FRACTION_DIGITS = 6;
 const MAXIMUM_SAFE_INTEGER_DIGITS = 15;
@@ -334,7 +335,7 @@ export function numberFormatOf(field: SftFieldRequest): SftNumberFormat | undefi
  * The grammar of one call's fields.
  *
  * @param fields requested fields, in prompt order
- * @param exact contract 2: type-exact numbers and length steering
+ * @param exact contract 2: type-exact numbers, length steering and no null values
  * @returns grammar fields
  */
 export function grammarFields(fields: ReadonlyArray<SftFieldRequest>, exact: boolean): ReadonlyArray<SftGrammarField> {
@@ -343,12 +344,17 @@ export function grammarFields(fields: ReadonlyArray<SftFieldRequest>, exact: boo
             const numberFormat = exact ? numberFormatOf(field) : undefined;
             const steerWithin =
                 exact && field.maxLength !== undefined
-                    ? Math.min(MAXIMUM_STEERING_CHARACTERS, Math.floor(field.maxLength / 4))
+                    ? Math.min(
+                          MAXIMUM_STEERING_CHARACTERS,
+                          Math.max(MINIMUM_STEERING_CHARACTERS, Math.floor(field.maxLength / 3))
+                      )
                     : 0;
             return Object.freeze({
                 name: field.name,
                 valueKind: valueKind(field),
-                nullable: field.nullable,
+                // Contract 2 asks the model only for values it should write: a null would publish an empty
+                // cell where the typed floor already has a value.
+                nullable: exact ? false : field.nullable,
                 ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength }),
                 ...(numberFormat ? { numberFormat } : {}),
                 ...(steerWithin > 0 ? { steerWithin } : {})

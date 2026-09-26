@@ -716,7 +716,9 @@ describe('SFT runtime contract 2', () => {
             ],
             true
         );
-        expect(grammar[0]).toMatchObject({ steerWithin: 8 });
+        expect(grammar[0]).toMatchObject({ steerWithin: 12 });
+        // The model is not offered null for a field it is asked to fill, even when the column is nullable.
+        expect(grammar[1]).toMatchObject({ nullable: false });
         expect(grammar[1]).toMatchObject({ numberFormat: { integer: true, maxIntegerDigits: 2 } });
         expect(
             grammarFields(

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type {
     MockDataGenerationProgress,
@@ -13,6 +13,7 @@ import type {
 } from './types.js';
 import type { ModelManifest, ModelOutputFormat } from './model/manifest.js';
 import type { LearnedRuntimeHandle } from './model/learned-runtime.js';
+import { openFileCompletionStore, type FileCompletionStore } from './model/file-completion-store.js';
 import type { VerifiedModelArtifacts } from './model/runtime-artifacts.js';
 import {
     parsePackagedModelManifest,
@@ -78,17 +79,24 @@ export interface MockDataGenerator {
 export interface CreateMockDataGeneratorOptions {
     executionMode?: 'api' | 'data-editor' | 'start-mock';
     onProgress?: (event: MockDataGenerationProgress) => void;
+    /**
+     * Absolute directory, owned by the caller, where model answers are kept between processes: an
+     * identical request (same model, prompt, fields and seed) then returns the same values without running
+     * the model, and the time budget goes to the requests not seen yet. In memory for the process when absent.
+     */
+    answerCacheDirectory?: string;
 }
 
-// The data editor waits for the result synchronously: the fine-tuned tier gets 20 seconds in total,
-// and writes 4 rows per entity whose values the other rows reuse, so more entities get model values
+// The data editor waits for the result synchronously: the whole generation should end within 20 seconds
+// (the fine-tuned tier gets what the classifier and deterministic tiers leave, at most 20 seconds), and
+// the model writes 4 rows per entity whose values the other rows reuse, so more entities get model values
 // within the budget. Explicit generation options always win.
 const EXECUTION_MODE_DEFAULTS: Readonly<
     Record<NonNullable<CreateMockDataGeneratorOptions['executionMode']>, StandaloneGenerationOptions>
 > = Object.freeze({
     api: Object.freeze({}),
     'start-mock': Object.freeze({}),
-    'data-editor': Object.freeze({ sftBudgetMs: 20_000, sftTimeoutMs: 30_000, sftModelRows: 4 })
+    'data-editor': Object.freeze({ sftBudgetMs: 20_000, sftTimeoutMs: 30_000, sftModelRows: 4, sftDeadlineMs: 20_000 })
 });
 
 /**
@@ -299,6 +307,12 @@ export async function createMockDataGenerator(
     if (options.executionMode !== undefined && !['api', 'data-editor', 'start-mock'].includes(options.executionMode)) {
         throw new TypeError('Unsupported MockGen execution mode');
     }
+    if (
+        options.answerCacheDirectory !== undefined &&
+        (typeof options.answerCacheDirectory !== 'string' || !isAbsolute(options.answerCacheDirectory))
+    ) {
+        throw new TypeError('The MockGen answer cache directory must be an absolute path');
+    }
     const manifest = parsePackagedModelManifest(JSON.parse(await readFile(manifestPath, 'utf8')) as unknown);
     if (manifest.datasets.length < 2) {
         throw new TypeError('The installed MockGen package lacks versioned sample datasets');
@@ -337,12 +351,24 @@ export async function createMockDataGenerator(
         failures: Object.freeze([])
     });
     let learned: LearnedRuntimeHandle | undefined;
+    let answerStore: FileCompletionStore | undefined;
     let disposed = false;
     async function runtime(mode: MockDataGeneratorOptions['mode']): Promise<LearnedRuntimeHandle['runtime']> {
         if (mode === 'deterministic') {
             return {};
         }
-        learned ??= await createLearnedRuntime(packagedRuntimeManifest(manifest), cache);
+        if (options.answerCacheDirectory !== undefined) {
+            answerStore ??= openFileCompletionStore({
+                directory: options.answerCacheDirectory,
+                namespace: manifest.revision
+            });
+        }
+        learned ??= await createLearnedRuntime(
+            packagedRuntimeManifest(manifest),
+            cache,
+            undefined,
+            answerStore ? { completionStore: answerStore } : {}
+        );
         return learned.runtime;
     }
     function assertActive(): void {
@@ -370,8 +396,22 @@ export async function createMockDataGenerator(
             validateGeneratedResult(request, result, { ...effectiveOptions, pipeline: 'semantic-v2' });
             const formats = !result.diagnostics.some(({ severity }) => severity === 'error');
             const coverage = semanticCoverage(request, result);
+            // A cache that cannot be read or written only costs time; say so instead of failing.
+            const cacheFailure = answerStore?.failure;
             return Object.freeze({
                 ...result,
+                ...(cacheFailure === undefined
+                    ? {}
+                    : {
+                          diagnostics: Object.freeze([
+                              ...result.diagnostics,
+                              Object.freeze({
+                                  code: 'SFT_ANSWER_CACHE_UNAVAILABLE',
+                                  severity: 'info' as const,
+                                  message: `Model answers are kept in memory only: ${cacheFailure}`
+                              })
+                          ])
+                      }),
                 realismReady: true,
                 executionMode: actualExecutionMode(result, mode),
                 validation: Object.freeze({

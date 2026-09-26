@@ -351,27 +351,54 @@ export function stringDateFormat(
 }
 
 /**
- * Role compatibility that also lets a classifier-accepted date role fill a non-key string column whose
- * length implies a date format. The role registry itself, which the classifier head pins, is unchanged.
+ * The time format a string column's declared length implies: 6 characters `HHMMSS`, 8 or more (or no
+ * limit) `HH:MM:SS`. Other lengths imply none.
  *
- * @param role the classifier's role
+ * @param property the string column
+ * @returns the format, or undefined
+ */
+export function stringTimeFormat(
+    property: Pick<SchemaProperty, 'primitiveType' | 'maxLength'>
+): 'hhmmss' | 'iso-time' | undefined {
+    if (property.primitiveType !== 'string') {
+        return undefined;
+    }
+    if (property.maxLength === undefined || property.maxLength >= 8) {
+        return 'iso-time';
+    }
+    return property.maxLength === 6 ? 'hhmmss' : undefined;
+}
+
+const DATE_OR_DATETIME_COLUMNS: ReadonlySet<SchemaProperty['primitiveType']> = new Set([
+    'date',
+    'datetime',
+    'datetimeoffset'
+]);
+
+/**
+ * Role compatibility of a routed role with a column the role registry's types leave out but whose values
+ * the role's provider genuinely writes, for non-key columns: a date role on a string column whose length
+ * implies a date format, `date` and `datetime` across date and date-time columns, and `time` on a string
+ * column whose length implies a time format. The role registry, which the classifier head pins, is
+ * unchanged; every other case is the registry's compatibility.
+ *
+ * @param role the routed role
  * @param property the column
  * @returns the compatibility
  */
-export function classifierRoleCompatibility(
+export function routedRoleCompatibility(
     role: string,
     property: Pick<SchemaProperty, 'primitiveType' | 'isKey' | 'maxLength'>
 ): ReturnType<typeof semanticRoleCompatibility> {
     const compatibility = semanticRoleCompatibility(role, property);
-    if (
-        compatibility === 'incompatible-type' &&
-        STRING_DATE_ROLES.has(role) &&
-        !property.isKey &&
-        stringDateFormat(property) !== undefined
-    ) {
-        return 'compatible';
+    if (compatibility !== 'incompatible-type' || property.isKey) {
+        return compatibility;
     }
-    return compatibility;
+    const supported =
+        (STRING_DATE_ROLES.has(role) && stringDateFormat(property) !== undefined) ||
+        ((role === 'date' || role === 'datetime') && DATE_OR_DATETIME_COLUMNS.has(property.primitiveType)) ||
+        (role === 'time' && stringTimeFormat(property) !== undefined);
+    return supported ? 'compatible' : compatibility;
 }
 
 export function semanticRoleKeyCardinality(

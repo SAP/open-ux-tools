@@ -14,7 +14,7 @@
 //   node tier-benchmark.mjs PACKAGE_ROOT --registry r.json --source-root /abs [--profile two-row|editor]
 //        [--rows N] [--seed N] [--sft-budget-ms N] [--sft-timeout-ms N] [--sft-model-rows N] [--output summary.json]
 //        [--records services.jsonl] [--fields fields.jsonl] [--rows-out rows.jsonl --rows-for ids.json]
-//        [--only ids.json] [--limit N]
+//        [--only ids.json] [--limit N] [--llm-cells cells.jsonl] [--answer-cache DIR]
 //
 // `--records` is appended per service and makes a run resumable: services already recorded are skipped
 // and folded into the summary. Packages that predate per-field tiers in the inspection report can be
@@ -75,6 +75,8 @@ const outputPath = argument('--output');
 const recordsPath = argument('--records');
 const fieldsPath = argument('--fields');
 const rowsOutPath = argument('--rows-out');
+// One line per string cell the model returned (lengths and value), for diagnosing cut-off strings.
+const llmCellsPath = argument('--llm-cells');
 const rowsFor = argument('--rows-for')
     ? new Set(JSON.parse(await readFile(argument('--rows-for'), 'utf8')))
     : undefined;
@@ -126,11 +128,23 @@ const verification = await verifyPackagedModels(join(packageRoot, 'resources/mod
 if (!verification.ready) {
     throw new Error('Packaged model verification failed');
 }
-const handle = await index.createLearnedRuntime(packagedRuntimeManifest(manifest), {
-    ready: true,
-    files: verification.files,
-    failures: []
-});
+// `--answer-cache DIR` keeps model answers on disk as the data editor does; a second run over the same
+// services then measures a regeneration.
+const answerCacheDirectory = argument('--answer-cache');
+let completionStore;
+if (answerCacheDirectory) {
+    const { openFileCompletionStore } = await import(join(packageRoot, 'dist/model/file-completion-store.js'));
+    completionStore = openFileCompletionStore({
+        directory: resolve(answerCacheDirectory),
+        namespace: manifest.revision
+    });
+}
+const handle = await index.createLearnedRuntime(
+    packagedRuntimeManifest(manifest),
+    { ready: true, files: verification.files, failures: [] },
+    undefined,
+    completionStore ? { completionStore } : {}
+);
 if (!handle.runtime.classifier || !handle.runtime.sft) {
     throw new Error(`Learned runtime incomplete: ${JSON.stringify(handle.diagnostics)}`);
 }
@@ -148,10 +162,11 @@ const sft = Object.freeze({
         const call = {
             entity: input.entityName,
             rowCount: input.rowCount,
-            fields: input.fields.map(({ name, primitiveType, maxLength, nullable }) => ({
+            fields: input.fields.map(({ name, primitiveType, maxLength, declaredMaxLength, nullable }) => ({
                 name,
                 primitiveType,
                 maxLength,
+                declaredMaxLength,
                 nullable
             }))
         };
@@ -430,10 +445,36 @@ for (const service of candidates) {
             throw new Error('no per-field tiers: the package predates them and is not instrumented');
         }
         const llm = llmCallMetrics(calls);
+        if (llmCellsPath) {
+            const lines = calls.flatMap((call) =>
+                (call.rows ?? []).flatMap((row) =>
+                    call.fields.flatMap((field) => {
+                        const value = row?.[field.name];
+                        return typeof value === 'string'
+                            ? [
+                                  JSON.stringify({
+                                      service: service.id,
+                                      entity: call.entity,
+                                      field: field.name,
+                                      maxLength: field.maxLength,
+                                      declaredMaxLength: field.declaredMaxLength,
+                                      length: Array.from(value).length,
+                                      value
+                                  })
+                              ]
+                            : [];
+                    })
+                )
+            );
+            if (lines.length > 0) await appendFile(llmCellsPath, `${lines.join('\n')}\n`);
+        }
         record = {
             id: service.id,
             status: 'ok',
             elapsedMs,
+            timingsMs: Object.fromEntries(
+                Object.entries(report.metrics?.timingsMs ?? {}).map(([phase, ms]) => [phase, Math.round(ms)])
+            ),
             load: [Number(loadAtStart.toFixed(2)), Number(loadavg()[0].toFixed(2))],
             tierSource,
             tiers,

@@ -3,7 +3,7 @@ import type { JsonValue, SyntheticSampleDataset, SyntheticScenario } from '../ty
 import type { SchemaProperty } from '../schema/graph.js';
 
 import { DEFAULT_SAMPLE_DATASET } from './sample-dataset.js';
-import { stringDateFormat } from './role-registry.js';
+import { stringDateFormat, stringTimeFormat } from './role-registry.js';
 import * as sampleCatalog from './sample-catalog.js';
 import {
     LOCATIONS,
@@ -563,10 +563,19 @@ export function semanticValue(
             }
             return property.primitiveType === 'date' ? date.toISOString().slice(0, 10) : date.toISOString();
         }
-        case 'time':
-            return property.primitiveType === 'time'
-                ? `${String(hash % 24).padStart(2, '0')}:${String(Math.floor(hash / 24) % 60).padStart(2, '0')}:00`
-                : undefined;
+        case 'time': {
+            const hours = String(hash % 24).padStart(2, '0');
+            const minutes = String(Math.floor(hash / 24) % 60).padStart(2, '0');
+            if (property.primitiveType === 'time') {
+                return `${hours}:${minutes}:00`;
+            }
+            // A string column carries the time in the fixed-width format its length implies.
+            const format = stringTimeFormat(property);
+            if (format === 'hhmmss') {
+                return `${hours}${minutes}00`;
+            }
+            return format === 'iso-time' ? `${hours}:${minutes}:00` : undefined;
+        }
         default:
             return undefined;
     }

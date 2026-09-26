@@ -92,6 +92,11 @@ export interface MockDataGeneratorOptions {
     sftModelRows?: number;
     /** Entity sets the fine-tuned tier fills first, in this order, such as those an app displays. */
     sftPriorityTargets?: ReadonlyArray<string>;
+    /**
+     * Wall time for the whole generation: the fine-tuned tier gets at most what remains of it after the
+     * earlier tiers (and at most `sftBudgetMs`), less a short reserve for finalization. No deadline when absent.
+     */
+    sftDeadlineMs?: number;
 }
 
 export interface SemanticClassifierInput {

@@ -57,6 +57,7 @@ import { datePairs } from './generation/coherence.js';
 import { DEFAULT_SAMPLE_DATASET, validateSampleDataset } from './semantics/sample-dataset.js';
 import { FIELD_CONTEXT_SERIALIZER_FINGERPRINT, serializeFieldContextV3 } from './semantics/field-context.js';
 import { createLearnedRuntime as createModelLearnedRuntime } from './model/learned-runtime.js';
+import type { SftCompletionStore } from './model/sft-runtime.js';
 import type { LearnedComponentFactories, LearnedRuntimeHandle } from './model/learned-runtime.js';
 import type { ModelManifest } from './model/manifest.js';
 import type { VerifiedModelArtifacts } from './model/runtime-artifacts.js';
@@ -114,19 +115,28 @@ export {
  * @param manifest - Verified model manifest.
  * @param cache - Verified local model cache.
  * @param factories - Optional test/component factories.
+ * @param options - `completionStore` keeps model answers (the process-wide in-memory store when absent).
+ * @param options.completionStore - See above.
  * @returns Loaded classifier/SFT runtime plus degradation diagnostics.
  */
 export async function createLearnedRuntime(
     manifest: ModelManifest,
     cache: VerifiedModelArtifacts,
-    factories?: LearnedComponentFactories
+    factories?: LearnedComponentFactories,
+    options: Readonly<{ completionStore?: SftCompletionStore }> = {}
 ): Promise<LearnedRuntimeHandle> {
-    return createModelLearnedRuntime(manifest, cache, factories, {
-        serializeV3Input: serializeFieldContextV3,
-        v3Roles: SEMANTIC_ROLE_REGISTRY,
-        v3RegistryFingerprint: SEMANTIC_ROLE_REGISTRY_FINGERPRINT,
-        v3SerializerFingerprint: FIELD_CONTEXT_SERIALIZER_FINGERPRINT
-    });
+    return createModelLearnedRuntime(
+        manifest,
+        cache,
+        factories,
+        {
+            serializeV3Input: serializeFieldContextV3,
+            v3Roles: SEMANTIC_ROLE_REGISTRY,
+            v3RegistryFingerprint: SEMANTIC_ROLE_REGISTRY_FINGERPRINT,
+            v3SerializerFingerprint: FIELD_CONTEXT_SERIALIZER_FINGERPRINT
+        },
+        options
+    );
 }
 
 function canonicalJson(value: unknown): string {
@@ -728,6 +738,24 @@ function reportFinalTemporalViolations(
     diagnostics.push(...final.filter((failure) => !diagnostics.some(same(failure))));
 }
 
+// Kept back from a generation deadline for finalization and validation after the fine-tuned tier.
+const DEADLINE_FINALIZATION_RESERVE_MS = 300;
+
+/**
+ * The options with the fine-tuned budget cut to what remains of the generation deadline.
+ *
+ * @param options generation options
+ * @param elapsedMs time the generation has already taken
+ * @returns the options the fine-tuned tier runs with
+ */
+function withinDeadline(options: MockDataGeneratorOptions, elapsedMs: number): MockDataGeneratorOptions {
+    if (options.sftDeadlineMs === undefined) {
+        return options;
+    }
+    const remaining = Math.floor(options.sftDeadlineMs - elapsedMs - DEADLINE_FINALIZATION_RESERVE_MS);
+    return { ...options, sftBudgetMs: Math.max(1, Math.min(options.sftBudgetMs ?? 20_000, remaining)) };
+}
+
 function validateOptions(options: MockDataGeneratorOptions): void {
     if (options.seed !== undefined && !Number.isSafeInteger(options.seed)) {
         throw new TypeError('Mock data generator seed must be a safe integer');
@@ -753,6 +781,12 @@ function validateOptions(options: MockDataGeneratorOptions): void {
     }
     if (options.pipeline !== undefined && !['legacy', 'semantic-v2'].includes(options.pipeline)) {
         throw new TypeError('Mock data generator pipeline must be legacy or semantic-v2');
+    }
+    if (
+        options.sftDeadlineMs !== undefined &&
+        (!Number.isSafeInteger(options.sftDeadlineMs) || options.sftDeadlineMs <= 0 || options.sftDeadlineMs > 600_000)
+    ) {
+        throw new TypeError('Mock data generator SFT deadline must be an integer between 1 and 600000 milliseconds');
     }
     if (
         options.sftModelRows !== undefined &&
@@ -973,7 +1007,7 @@ async function executeServiceGeneration(
                 graph,
                 resources,
                 request.service,
-                options,
+                withinDeadline(options, sftStartedAt - startedAt),
                 classifications,
                 activeRuntime.sft,
                 signal,

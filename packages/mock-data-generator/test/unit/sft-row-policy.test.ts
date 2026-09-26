@@ -105,7 +105,8 @@ describe('fine-tuned row policy', () => {
         expect(executionModeDefaults('data-editor')).toEqual({
             sftBudgetMs: 20_000,
             sftTimeoutMs: 30_000,
-            sftModelRows: 4
+            sftModelRows: 4,
+            sftDeadlineMs: 20_000
         });
         expect(executionModeDefaults()).toEqual({});
         expect(executionModeDefaults('start-mock')).toEqual({});
@@ -150,5 +151,34 @@ describe('fine-tuned row policy', () => {
             }
         );
         expect(result.statistics.sft.assignments[0]).toMatchObject({ outcome: 'incomplete', rowsWithoutCandidate: 2 });
+    });
+
+    it('gives the model only what remains of the generation deadline', async () => {
+        const budgets: number[] = [];
+        const slowClassifier = {
+            fingerprint: 'slow-classifier',
+            classify: async () => {
+                await new Promise((resolve) => setTimeout(resolve, 150));
+                return { role: 'unknown', confidence: 0.99, source: 'classifier' as const };
+            }
+        };
+        const sft: SftGenerator = {
+            fingerprint: 'budget-recorder',
+            generate: async (input) => {
+                budgets.push(input.budgetMs ?? 0);
+                return { rows: [] };
+            }
+        };
+        await generateService(
+            { ...request, targets: [{ name: 'Memos', kind: 'entity-set' }] },
+            { pipeline: 'semantic-v2', seed: 3, rowsPerEntity: 2, sftBudgetMs: 20_000, sftDeadlineMs: 1_000 },
+            { classifier: slowClassifier, sft }
+        );
+        // 1 s minus at least the slow classification and the finalization reserve.
+        expect(budgets[0]).toBeGreaterThan(0);
+        expect(budgets[0]).toBeLessThanOrEqual(1_000 - 150 - 300);
+        await expect(
+            generateService(request, { pipeline: 'semantic-v2', rowsPerEntity: 1, sftDeadlineMs: 0 })
+        ).rejects.toThrow('SFT deadline');
     });
 });

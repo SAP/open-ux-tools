@@ -2,6 +2,7 @@ import {
     createAllowedTokenResolver,
     createCausalTextGenerator,
     selectNucleus,
+    trimToWordBoundary,
     type CausalLmInputs,
     type CausalLmOutputs,
     type CausalLmSession,
@@ -492,6 +493,33 @@ describe('grammar-constrained causal text runtime, contract 2', () => {
         await expect(generator.generate(input, new AbortController().signal)).resolves.toBe('{"Name": " C C"}');
     });
 
+    test('shortens a string the grammar cut at its maximum to its last complete word', async () => {
+        const generator = createCausalTextGenerator({
+            tokenizer,
+            session: { run: jest.fn(preferring({ ' C': 9, A: 5, '"}': 1, '": "': 3, '"': 2 })) }
+        });
+
+        await expect(
+            generator.generate(
+                { ...input, grammar: [{ name: 'Name', valueKind: 'string', nullable: false, maxLength: 8 }] },
+                new AbortController().signal
+            )
+        ).resolves.toBe('{"Name": " C C C"}');
+    });
+
+    test('keeps a string the model itself ends at its maximum', async () => {
+        const generator = createCausalTextGenerator({
+            tokenizer,
+            session: { run: jest.fn(preferring({ A: 9, '"}': 1, '": "': 3, '"': 2 })) }
+        });
+        // The model prefers `A` while it may, and the closing quote when nothing else is allowed.
+        const text = await generator.generate(
+            { ...input, grammar: [{ name: 'Name', valueKind: 'string', nullable: false, maxLength: 4 }] },
+            new AbortController().signal
+        );
+        expect(text).toBe('{"Name": "AAAA"}');
+    });
+
     test('returns the completed rows instead of throwing when the batch is cancelled', async () => {
         const generator = createCausalTextGenerator({
             tokenizer,
@@ -518,5 +546,25 @@ describe('grammar-constrained causal text runtime, contract 2', () => {
             );
 
         expect(resolveAllowed(state('Name'))).toBe(resolveAllowed(state('Title')));
+    });
+});
+
+describe('word-boundary trimming', () => {
+    test('drops the unfinished last word and trailing separators', () => {
+        expect(trimToWordBoundary('Replaced the cooling fan and the')).toBe('Replaced the cooling fan and');
+        expect(trimToWordBoundary('Crafted Fe')).toBe('Crafted');
+        expect(trimToWordBoundary('Plan, build -')).toBe('Plan, build');
+        expect(trimToWordBoundary('Plan, build, te')).toBe('Plan, build');
+    });
+
+    test('keeps the complete segments of a cut code', () => {
+        expect(trimToWordBoundary('INV-2018-0')).toBe('INV-2018');
+        expect(trimToWordBoundary('DOC-SPC-N/')).toBe('DOC-SPC-N');
+        expect(trimToWordBoundary('A-1234567')).toBe('A-1234567');
+    });
+
+    test('keeps single words and values that would lose most of their text', () => {
+        expect(trimToWordBoundary('Opportunit')).toBe('Opportunit');
+        expect(trimToWordBoundary('A Longwordthatwascut')).toBe('A Longwordthatwascut');
     });
 });

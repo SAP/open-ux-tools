@@ -2,7 +2,7 @@ import type { SchemaGraph, SchemaProperty } from '../schema/graph.js';
 import type { SemanticClassification } from '../types.js';
 import { capCodeListField } from './cap-code-lists.js';
 import { semanticPropertyKey } from './classifier.js';
-import { classifierRoleCompatibility, semanticRoleCompatibility, semanticRoleDefinition } from './role-registry.js';
+import { routedRoleCompatibility, semanticRoleDefinition } from './role-registry.js';
 import { semanticRoleForSapDataElement } from './sap-data-elements.js';
 
 function tokens(name: string): ReadonlyArray<string> {
@@ -913,7 +913,7 @@ export function arbitrateSemanticClassifications(
             const metadataRole = explicitMetadataRole(property, entity);
             if (metadataRole) {
                 const refinedRole = refinedMetadataRole(property, metadataRole);
-                const compatibility = semanticRoleCompatibility(refinedRole, property);
+                const compatibility = routedRoleCompatibility(refinedRole, property);
                 resolved.set(
                     key,
                     compatibility === 'compatible'
@@ -931,10 +931,8 @@ export function arbitrateSemanticClassifications(
                 continue;
             }
             const lexicalRole = semanticRoleCandidate(entity, property);
-            const classifierCompatibility = classifier
-                ? classifierRoleCompatibility(classifier.role, property)
-                : undefined;
-            const lexicalCompatibility = lexicalRole ? semanticRoleCompatibility(lexicalRole, property) : undefined;
+            const classifierCompatibility = classifier ? routedRoleCompatibility(classifier.role, property) : undefined;
+            const lexicalCompatibility = lexicalRole ? routedRoleCompatibility(lexicalRole, property) : undefined;
             const classifierRole = classifierCompatibility === 'compatible' ? classifier?.role : undefined;
             const compatibleLexicalRole = lexicalCompatibility === 'compatible' ? lexicalRole : undefined;
             const lexicalFallbackAllowed =

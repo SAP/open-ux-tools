@@ -31,6 +31,8 @@ export interface JsonRowGrammarState {
     separatorSpace: boolean;
     /** Within this many characters of its maximum, the runtime ends the string instead of starting a word. */
     steerWithin: number;
+    /** The field whose key or value is being read. */
+    fieldName?: string;
 }
 
 export interface JsonRowGrammarOptions {
@@ -304,7 +306,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                 nullable: next.nullable,
                 maximumStringLength: next.maxLength,
                 numberFormat: next.numberFormat,
-                steerWithin: Math.max(0, next.steerWithin ?? 0)
+                steerWithin: Math.max(0, next.steerWithin ?? 0),
+                fieldName: next.name
             };
         }
         case 'in-key': {

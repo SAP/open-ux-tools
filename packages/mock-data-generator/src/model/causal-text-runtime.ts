@@ -531,6 +531,42 @@ interface DecodingSequence {
     /** Tokens to feed at the next step; forced text may take several. */
     pending: number[];
     outcome?: 'complete' | 'incomplete';
+    /** Fields whose string the grammar closed at its maximum while the model was still writing. */
+    cutFields: Set<string>;
+}
+
+/**
+ * A string cut at its maximum length, shortened to its last complete word: the text before the last
+ * whitespace, without trailing separators; a code without whitespace keeps its complete segments. A
+ * single word is kept as it is, and so is a value that would lose too much of its text.
+ *
+ * @param value the cut string
+ * @returns the shortened string, or the value itself
+ */
+export function trimToWordBoundary(value: string): string {
+    const boundary = value.search(/\s\S*$/u);
+    if (boundary <= 0) {
+        // A code cut inside its last segment keeps its complete segments (`INV-2018-0` becomes `INV-2018`).
+        const separator = value.search(/[-_/.:][^-_/.:]*$/u);
+        const code = separator > 0 ? value.slice(0, separator) : value;
+        return /[\p{L}\p{N}]/u.test(code) && code.length * 2 >= value.length ? code : value;
+    }
+    const trimmed = value.slice(0, boundary).replace(/[\s,;:&+/(\-\u2013\u2014]+$/u, '');
+    return /[\p{L}\p{N}]/u.test(trimmed) && trimmed.length * 3 >= value.length ? trimmed : value;
+}
+
+/**
+ * Serialize a completion object with the separators the runtime enforces.
+ *
+ * @param row the completion's fields in order
+ * @param separators the enforced separators
+ * @returns the JSON text
+ */
+function serializeRow(row: Readonly<Record<string, unknown>>, separators: 'compact' | 'spaced'): string {
+    const [colon, comma] = separators === 'spaced' ? [': ', ', '] : [':', ','];
+    return `{${Object.entries(row)
+        .map(([key, value]) => `${JSON.stringify(key)}${colon}${JSON.stringify(value)}`)
+        .join(comma)}}`;
 }
 
 /**
@@ -544,6 +580,18 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
     const vocabSize = options.tokenizer.vocabSize;
     const resolveAllowedTokens = createAllowedTokenResolver(tokenTexts, specialIds);
     const closingQuoteToken = tokenTexts.findIndex((text, id) => text === '"' && !specialIds.has(id));
+    const preferredToken = (logits: Float32Array): number => {
+        let best = -1;
+        let bestScore = Number.NEGATIVE_INFINITY;
+        for (let id = 0; id < vocabSize; id += 1) {
+            const score = logits[id] ?? Number.NEGATIVE_INFINITY;
+            if (score > bestScore && !specialIds.has(id)) {
+                best = id;
+                bestScore = score;
+            }
+        }
+        return best;
+    };
     const forcedTokenCache = new Map<string, ReadonlyArray<number>>();
     const forcedTokens = (text: string): ReadonlyArray<number> => {
         const cached = forcedTokenCache.get(text);
@@ -627,7 +675,8 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
             random: seededRandom(seed),
             generated: [],
             valueHistory: [],
-            pending: []
+            pending: [],
+            cutFields: new Set<string>()
         }));
         const samplingWeights = new Float64Array(vocabSize);
         const samplingHeap = new Int32Array(vocabSize);
@@ -651,6 +700,18 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
                 sequence.generated.push(...ids);
                 sequence.pending = [...ids];
                 return;
+            }
+            // At a string's maximum only its closing quote is allowed. When the model's own first choice
+            // was to keep writing, the string was cut and is shortened to a word boundary afterwards.
+            if (
+                canonical &&
+                sequence.state.phase === 'in-string-value' &&
+                sequence.state.fieldName !== undefined &&
+                sequence.state.maximumStringLength !== undefined &&
+                sequence.state.stringLength >= sequence.state.maximumStringLength &&
+                !(tokenTexts[preferredToken(logits)] ?? '').startsWith('"')
+            ) {
+                sequence.cutFields.add(sequence.state.fieldName);
             }
             const valuePhase = VALUE_PHASES.has(sequence.state.phase);
             const sampled = sample(
@@ -685,10 +746,22 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
             sequence.pending = [token];
         };
 
+        const completion = (sequence: DecodingSequence): string => {
+            const text = options.tokenizer.decode(sequence.generated);
+            if (sequence.cutFields.size === 0 || separators === 'any') {
+                return text;
+            }
+            const row = JSON.parse(text) as Record<string, unknown>;
+            for (const field of sequence.cutFields) {
+                const value = row[field];
+                if (typeof value === 'string') {
+                    row[field] = trimToWordBoundary(value);
+                }
+            }
+            return serializeRow(row, separators);
+        };
         const results = (): ReadonlyArray<string | undefined> =>
-            sequences.map((sequence) =>
-                sequence.outcome === 'complete' ? options.tokenizer.decode(sequence.generated) : undefined
-            );
+            sequences.map((sequence) => (sequence.outcome === 'complete' ? completion(sequence) : undefined));
         try {
             const prefill = await runSession(
                 {
