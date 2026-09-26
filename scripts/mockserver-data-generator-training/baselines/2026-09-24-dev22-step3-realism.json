@@ -1,0 +1,437 @@
+{
+    "format": "mockgen-realism-judgement",
+    "protocol": "mockgen-realism-v1",
+    "judges": ["anthropic--claude-4.8-opus", "anthropic--claude-4.6-sonnet"],
+    "settings": {
+        "entitiesPerService": 2,
+        "columnsPerEntity": 25,
+        "rowsPerEntity": 10,
+        "batchSize": 2
+    },
+    "services": 60,
+    "missing": [],
+    "usage": {
+        "calls": 1,
+        "promptTokens": 3,
+        "completionTokens": 301,
+        "failedBatches": 0
+    },
+    "variants": {
+        "headA": {
+            "items": 108,
+            "meanOverJudges": {
+                "structural": {
+                    "columns": 73,
+                    "share": 0.8755
+                },
+                "all": {
+                    "columns": 990,
+                    "share": 0.7564
+                },
+                "model": {
+                    "columns": 138,
+                    "share": 0.3985
+                },
+                "typed": {
+                    "columns": 268,
+                    "share": 0.6204
+                },
+                "recognised": {
+                    "columns": 470,
+                    "share": 0.8994
+                },
+                "declared": {
+                    "columns": 41,
+                    "share": 1
+                }
+            },
+            "judgeAgreement": 0.9035,
+            "perJudge": {
+                "anthropic--claude-4.8-opus": {
+                    "itemsJudged": 108,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 73,
+                            "realistic": 68,
+                            "share": 0.9315
+                        },
+                        "all": {
+                            "columns": 990,
+                            "realistic": 780,
+                            "share": 0.7879
+                        },
+                        "model": {
+                            "columns": 138,
+                            "realistic": 65,
+                            "share": 0.471
+                        },
+                        "typed": {
+                            "columns": 268,
+                            "realistic": 168,
+                            "share": 0.6269
+                        },
+                        "recognised": {
+                            "columns": 470,
+                            "realistic": 438,
+                            "share": 0.9319
+                        },
+                        "declared": {
+                            "columns": 41,
+                            "realistic": 41,
+                            "share": 1
+                        }
+                    }
+                },
+                "anthropic--claude-4.6-sonnet": {
+                    "itemsJudged": 107,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 72,
+                            "realistic": 59,
+                            "share": 0.8194
+                        },
+                        "all": {
+                            "columns": 974,
+                            "realistic": 706,
+                            "share": 0.7248
+                        },
+                        "model": {
+                            "columns": 138,
+                            "realistic": 45,
+                            "share": 0.3261
+                        },
+                        "typed": {
+                            "columns": 259,
+                            "realistic": 159,
+                            "share": 0.6139
+                        },
+                        "recognised": {
+                            "columns": 466,
+                            "realistic": 404,
+                            "share": 0.867
+                        },
+                        "declared": {
+                            "columns": 39,
+                            "realistic": 39,
+                            "share": 1
+                        }
+                    }
+                }
+            }
+        },
+        "final": {
+            "items": 108,
+            "meanOverJudges": {
+                "structural": {
+                    "columns": 73,
+                    "share": 0.8823
+                },
+                "all": {
+                    "columns": 990,
+                    "share": 0.7635
+                },
+                "model": {
+                    "columns": 150,
+                    "share": 0.39
+                },
+                "typed": {
+                    "columns": 235,
+                    "share": 0.6852
+                },
+                "recognised": {
+                    "columns": 480,
+                    "share": 0.8754
+                },
+                "declared": {
+                    "columns": 52,
+                    "share": 1
+                }
+            },
+            "judgeAgreement": 0.8953,
+            "perJudge": {
+                "anthropic--claude-4.8-opus": {
+                    "itemsJudged": 108,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 73,
+                            "realistic": 69,
+                            "share": 0.9452
+                        },
+                        "all": {
+                            "columns": 990,
+                            "realistic": 789,
+                            "share": 0.797
+                        },
+                        "model": {
+                            "columns": 150,
+                            "realistic": 69,
+                            "share": 0.46
+                        },
+                        "typed": {
+                            "columns": 235,
+                            "realistic": 164,
+                            "share": 0.6979
+                        },
+                        "recognised": {
+                            "columns": 480,
+                            "realistic": 435,
+                            "share": 0.9063
+                        },
+                        "declared": {
+                            "columns": 52,
+                            "realistic": 52,
+                            "share": 1
+                        }
+                    }
+                },
+                "anthropic--claude-4.6-sonnet": {
+                    "itemsJudged": 107,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 72,
+                            "realistic": 59,
+                            "share": 0.8194
+                        },
+                        "all": {
+                            "columns": 974,
+                            "realistic": 711,
+                            "share": 0.73
+                        },
+                        "model": {
+                            "columns": 150,
+                            "realistic": 48,
+                            "share": 0.32
+                        },
+                        "typed": {
+                            "columns": 226,
+                            "realistic": 152,
+                            "share": 0.6726
+                        },
+                        "recognised": {
+                            "columns": 476,
+                            "realistic": 402,
+                            "share": 0.8445
+                        },
+                        "declared": {
+                            "columns": 50,
+                            "realistic": 50,
+                            "share": 1
+                        }
+                    }
+                }
+            }
+        },
+        "dev20": {
+            "items": 108,
+            "meanOverJudges": {
+                "structural": {
+                    "columns": 73,
+                    "share": 0.8014
+                },
+                "all": {
+                    "columns": 990,
+                    "share": 0.7091
+                },
+                "model": {
+                    "columns": 87,
+                    "share": 0.0977
+                },
+                "typed": {
+                    "columns": 281,
+                    "share": 0.5338
+                },
+                "recognised": {
+                    "columns": 497,
+                    "share": 0.8712
+                },
+                "declared": {
+                    "columns": 52,
+                    "share": 1
+                }
+            },
+            "judgeAgreement": 0.9091,
+            "perJudge": {
+                "anthropic--claude-4.8-opus": {
+                    "itemsJudged": 108,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 73,
+                            "realistic": 64,
+                            "share": 0.8767
+                        },
+                        "all": {
+                            "columns": 990,
+                            "realistic": 731,
+                            "share": 0.7384
+                        },
+                        "model": {
+                            "columns": 87,
+                            "realistic": 13,
+                            "share": 0.1494
+                        },
+                        "typed": {
+                            "columns": 281,
+                            "realistic": 152,
+                            "share": 0.5409
+                        },
+                        "recognised": {
+                            "columns": 497,
+                            "realistic": 450,
+                            "share": 0.9054
+                        },
+                        "declared": {
+                            "columns": 52,
+                            "realistic": 52,
+                            "share": 1
+                        }
+                    }
+                },
+                "anthropic--claude-4.6-sonnet": {
+                    "itemsJudged": 108,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 73,
+                            "realistic": 53,
+                            "share": 0.726
+                        },
+                        "all": {
+                            "columns": 990,
+                            "realistic": 673,
+                            "share": 0.6798
+                        },
+                        "model": {
+                            "columns": 87,
+                            "realistic": 4,
+                            "share": 0.046
+                        },
+                        "typed": {
+                            "columns": 281,
+                            "realistic": 148,
+                            "share": 0.5267
+                        },
+                        "recognised": {
+                            "columns": 497,
+                            "realistic": 416,
+                            "share": 0.837
+                        },
+                        "declared": {
+                            "columns": 52,
+                            "realistic": 52,
+                            "share": 1
+                        }
+                    }
+                }
+            }
+        },
+        "dev21": {
+            "items": 108,
+            "meanOverJudges": {
+                "structural": {
+                    "columns": 73,
+                    "share": 0.8151
+                },
+                "all": {
+                    "columns": 990,
+                    "share": 0.7127
+                },
+                "model": {
+                    "columns": 71,
+                    "share": 0.3521
+                },
+                "typed": {
+                    "columns": 315,
+                    "share": 0.4937
+                },
+                "recognised": {
+                    "columns": 479,
+                    "share": 0.8633
+                },
+                "declared": {
+                    "columns": 52,
+                    "share": 1
+                }
+            },
+            "judgeAgreement": 0.9222,
+            "perJudge": {
+                "anthropic--claude-4.8-opus": {
+                    "itemsJudged": 108,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 73,
+                            "realistic": 61,
+                            "share": 0.8356
+                        },
+                        "all": {
+                            "columns": 990,
+                            "realistic": 722,
+                            "share": 0.7293
+                        },
+                        "model": {
+                            "columns": 71,
+                            "realistic": 29,
+                            "share": 0.4085
+                        },
+                        "typed": {
+                            "columns": 315,
+                            "realistic": 154,
+                            "share": 0.4889
+                        },
+                        "recognised": {
+                            "columns": 479,
+                            "realistic": 426,
+                            "share": 0.8894
+                        },
+                        "declared": {
+                            "columns": 52,
+                            "realistic": 52,
+                            "share": 1
+                        }
+                    }
+                },
+                "anthropic--claude-4.6-sonnet": {
+                    "itemsJudged": 108,
+                    "itemsTotal": 108,
+                    "byTier": {
+                        "structural": {
+                            "columns": 73,
+                            "realistic": 58,
+                            "share": 0.7945
+                        },
+                        "all": {
+                            "columns": 990,
+                            "realistic": 689,
+                            "share": 0.696
+                        },
+                        "model": {
+                            "columns": 71,
+                            "realistic": 21,
+                            "share": 0.2958
+                        },
+                        "typed": {
+                            "columns": 315,
+                            "realistic": 157,
+                            "share": 0.4984
+                        },
+                        "recognised": {
+                            "columns": 479,
+                            "realistic": 401,
+                            "share": 0.8372
+                        },
+                        "declared": {
+                            "columns": 52,
+                            "realistic": 52,
+                            "share": 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

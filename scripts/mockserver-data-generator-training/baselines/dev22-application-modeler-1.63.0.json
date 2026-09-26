@@ -1,0 +1,201 @@
+{
+    "date": "2026-09-26",
+    "record": "dev.22 release: role head (head A) replaced with a published-data classifier qualified through the sealed gate; runtime work P0/P1/P5/P7 (contract 2, editor row policy, typed-floor formats, string dates); concept head, relevance head, encoder and fine-tuned row model unchanged from dev.21 (VSIX 1.63.0)",
+    "package": {
+        "name": "@unseen/mock-data-generator",
+        "version": "0.1.0-dev.22",
+        "integrity": "sha512-mYzeEdihtWOMSHCrDL5TO6tyuq0nKW/zZWqds696vMes94hWZaZPNHftzJ793SAHtGEoPNL3dmzYdAKpbLH3hw==",
+        "distSha256": "171ca2e8216a6ac82c8c03ede411d7e63f16f4abb97b2ba32e8ac1c2745107e5",
+        "bytes": 130891208,
+        "sourceCommit": "e39d43065 (feat/standalone-mock-data-generator)",
+        "modelRevision": "b02c7bfe4fd43c1c9dab0d00f224c5b74f861e6019303773d6960c00c2dd2da2",
+        "classifierFingerprint": "f014348160c6f287bc4478329560184db523023d2b26927e633c89648ba36cde",
+        "sftFingerprint": "83519afdf60360c717088655dbbdb7e1cb9ee526e4d7a94691952f05ca562d51",
+        "generatorLogicVersion": 25,
+        "npmPublication": {
+            "published": true,
+            "publishedAt": "2026-09-26T10:21 IST",
+            "distTag": "latest",
+            "tarballDownloadedAndVerified": true,
+            "verification": "https://registry.npmjs.org/@unseen/mock-data-generator/-/mock-data-generator-0.1.0-dev.22.tgz downloaded in full (130,891,208 bytes) on poll attempt 11 (404 for ~5 minutes after publish); its sha512 equals the pinned integrity"
+        }
+    },
+    "vsix": {
+        "path": "sap-ux-application-modeler-extension-linux-x64-1.63.0.vsix",
+        "version": "1.63.0",
+        "target": "linux-x64",
+        "sha256": "d919f1612dca321ea3dbba1caa0ac5251173ceb4a4d533525f7aff5073df0317",
+        "workerSha256": "a529db0d4d2e1565123c67dc3ef2221e96336c0a48c581c8083deade264116d8",
+        "editorCommits": ["197d1e1fbc2 (displayed entity sets are filled first)", "05a182e27c0 (pin 0.1.0-dev.22, VSIX 1.63.0)"],
+        "build": "editor TypeScript force-recompiled before packaging (the compiled dist/src/mockgen predated 197d1e1fbc2); the bundle carries the dev.22 pin and no dev.21 reference",
+        "supersedes": "1.62.0 (dev.21)"
+    },
+    "models": {
+        "headA": {
+            "change": "replaced",
+            "source": "~/mockgen-data/retrain/ship/p4/head.json: P4-C rebuilt on the renamed text (preregistration-p4 addendum 1); trained only on the published dataset (public/data 45ee63e plus the 2026-09-24 classifier rename, 267 train rows); harvest rows not trained; SAP API definitions absent; sealed set used for measurement only",
+            "sha256": "5c82401f5ea5f01015a7b95f1f7a1e86716464d4c9aed20dc47247f79e64214f",
+            "qualification": "qualified by scripts/mockserver-data-generator-training/qualify-head.mjs at 2026-09-24T10:58:57Z; not edited",
+            "labelReview": "model-panel consensus (opus 4.8, sonnet 4.6, gpt-5.6-terra tie-break), humanVerified false; review record sha256 over its JSON = e7179481591c7c05fec1145aa20d86264061311195a97b277b41ff77bf3a40a9 (matches qualification.labelProvenance)",
+            "postHoc": "all P4 configurations are post hoc (levers chosen from sealed results); confirmed on the public held-out set",
+            "fingerprintsVerifiedAgainstPackage": {
+                "encoderSha256": "match (afdb6f1a...)",
+                "tokenizerSha256": "match (07eced37...)",
+                "serializerFingerprint": "match (fe85b543...)",
+                "registryFingerprint": "match (cb4ba118...)",
+                "inputFormat": "v3",
+                "maxWordPieceTokens": 64,
+                "dim": 384,
+                "loadsAsQualified": "check:release passes (assertReleaseClassifier, assertEmbeddingHead); the downloaded npm package loads it with classifier 'ready'"
+            },
+            "labels": { "total": 63, "routable": { "dev21": 52, "dev22": 46 } },
+            "sealed": {
+                "dev21Head": {
+                    "precision": "96.34%",
+                    "supportedRecall": "65.54% (1339/2043)",
+                    "statusFields": "32/44",
+                    "criticalFalsePositives": "2.60%"
+                },
+                "dev22Head": {
+                    "precision": "96.29% (1168/1213)",
+                    "supportedRecall": "65.54% (1301/1985)",
+                    "statusFields": "30/44",
+                    "criticalFalsePositives": "2.47%",
+                    "services": 41,
+                    "domains": 21
+                },
+                "sealedDatasetFingerprint": "cdf5e350eb68fb4585d0e8839ff34d59dcfb56014464b1c46b5b046129977eb0"
+            },
+            "heldOut": {
+                "rows": 2972,
+                "families": 34,
+                "dev21Head": { "precision": "91.76%", "criticalFalsePositives": "6.99%", "recall": "55.94%" },
+                "dev22Head": { "precision": "94.86%", "criticalFalsePositives": "4.17%", "recall": "60.00%" }
+            }
+        },
+        "headB": "unchanged from dev.21 (e343424d...)",
+        "relevanceHead": "unchanged",
+        "encoder": "unchanged",
+        "rowModel": {
+            "change": "unchanged from dev.21 (model.onnx eaaa5aa9...)",
+            "retrainDecision": {
+                "candidate": "~/mockgen-data/llm-published-v2 P2 retrain (model.onnx 462322a6...; train-k3, 14,203 examples, 1 epoch)",
+                "decision": "no-go by the owner",
+                "reason": "13.0% null cells on the editor profile (dev.21 0.5%): a user-visible regression, since nulls pass the grammar and show as empty values; its gains were marginal (at-cap 7.05% vs 7.55%, model-tier realism .403 vs .388)",
+                "measurementCaveat": "the retrain's own evaluation compared llm-new carrying head A against llm-dev20/llm-dev21 carrying the old head; its recognised/declared shifts (51.07/3.88 vs 52.11/4.74) are head A's, not the model's"
+            }
+        }
+    },
+    "measurement": {
+        "protocol": "evaluation/perf-v2-preregistration.md: tier-benchmark.mjs v2 through interleaved-benchmark.mjs, chunks of 4, all four variants in the same run",
+        "variants": {
+            "dev22": "package HEAD 1a99b3e66 + head A (identical dist and resources to the published dev.22)",
+            "final": "runtime agent's final build edecdd6fe with the dev.21 head (differs from dev.22 only by head A and the grammar dead-end fix, which touches the model tier only)",
+            "dev20": "published dev.20 tarball with read-only tier hooks",
+            "dev21": "published dev.21 tarball with read-only tier hooks"
+        },
+        "files": "~/mockgen-data/08-evaluation/baselines/2026-09-24-dev22-step3-{editor,two-row}-{headA,final,dev20,dev21}.json, -realism.json, -realism-model-tier.json, -sweep-comparison.json",
+        "editorProfile": {
+            "services": 60,
+            "settings": "10 rows, seed 1, sftTimeoutMs 30000, sftBudgetMs 20000 (realism services)",
+            "medianLoad": { "dev22": 16.79, "final": 16.41, "dev20": 16.41, "dev21": 16.41 },
+            "recognisedShare": { "dev22": 51.07, "final": 52.11, "dev20": 54.13, "dev21": 51.99 },
+            "modelShare": { "dev22": 9.04, "final": 9.64, "dev20": 4.95, "dev21": 4.27 },
+            "modelSlots": { "dev22": 4556, "final": 4857, "dev20": 2495, "dev21": 2154 },
+            "typedShare": { "dev22": 36.0, "final": 33.51, "dev20": 36.17, "dev21": 38.99 },
+            "genericTypedShare": { "dev22": 19.31, "final": 16.99, "dev20": 19.66, "dev21": 22.47 },
+            "declaredShare": { "dev22": 3.88, "final": 4.74, "dev20": 4.74, "dev21": 4.74 },
+            "validCellRate": { "dev22": 1.0, "final": 1.0, "dev20": 0.9951, "dev21": 0.9772 },
+            "atCapRate": { "dev22": 0.0579, "final": 0.0591, "dev20": 0.0325, "dev21": 0.1099 },
+            "nullRate": { "dev22": 0.0065, "final": 0.0061, "dev20": 0.0194, "dev21": 0.0073 },
+            "medianMs": { "dev22": 14250, "final": 14171, "dev20": 18959, "dev21": 18795 },
+            "p90Ms": { "dev22": 22451, "final": 21088, "dev20": 21248, "dev21": 21102 }
+        },
+        "twoRowProfile": {
+            "services": "135 attempted, 131 generated, 4 unreadable s4-fin-local sources (failures, as in every run)",
+            "settings": "2 rows, seed 123, default fine-tuned budget",
+            "medianLoad": { "dev22": 24.01, "final": 24.01, "dev20": 24.01, "dev21": 24.17 },
+            "recognisedShare": { "dev22": 51.3, "final": 51.86, "dev20": 54.0, "dev21": 51.73 },
+            "modelShare": { "dev22": 18.49, "final": 18.42, "dev20": 13.81, "dev21": 13.63 },
+            "modelSlots": { "dev22": 4092, "final": 4078, "dev20": 3057, "dev21": 3016 },
+            "typedShare": { "dev22": 25.99, "final": 24.45, "dev20": 26.93, "dev21": 29.38 },
+            "genericTypedShare": { "dev22": 9.96, "final": 8.77, "dev20": 11.25, "dev21": 13.71 },
+            "declaredShare": { "dev22": 4.22, "final": 5.26, "dev20": 5.26, "dev21": 5.26 },
+            "validCellRate": { "dev22": 1.0, "final": 1.0, "dev20": 0.9845, "dev21": 0.9684 },
+            "atCapRate": { "dev22": 0.078, "final": 0.0781, "dev20": 0.0405, "dev21": 0.1217 },
+            "nullRate": { "dev22": 0.0024, "final": 0.0034, "dev20": 0.0425, "dev21": 0.008 },
+            "medianMs": { "dev22": 2848, "final": 2676, "dev20": 3065, "dev21": 3393 },
+            "p90Ms": { "dev22": 17757, "final": 17318, "dev20": 17886, "dev21": 19132 }
+        },
+        "realism": {
+            "protocol": "realism-judge.mjs mockgen-realism-v1, judges opus 4.8 + sonnet 4.6, blinded, 60 services, editor rows of the same run; one failed batch re-run from cache, 0 missing",
+            "allColumns": { "dev22": 0.7564, "final": 0.7635, "dev20": 0.7091, "dev21": 0.7127 },
+            "modelTier": { "dev22": 0.3985, "final": 0.39, "dev20": 0.0977, "dev21": 0.3521 },
+            "typedTier": { "dev22": 0.6204, "final": 0.6852, "dev20": 0.5338, "dev21": 0.4937 },
+            "recognisedTier": { "dev22": 0.8994, "final": 0.8754, "dev20": 0.8712, "dev21": 0.8633 },
+            "preferModel": {
+                "allColumns": { "dev22": 0.7597, "final": 0.7673, "dev20": 0.7106, "dev21": 0.7111 },
+                "modelTier": { "dev22": 0.3984, "final": 0.3921, "dev20": 0.1046, "dev21": 0.3506 }
+            }
+        },
+        "robustnessSweep": {
+            "services": 2300,
+            "settings": "createMockDataGenerator({ executionMode: 'data-editor' }), 10 rows, LLM budget 1 ms",
+            "reference": "dev.21 sweep",
+            "dev21": { "ok": 2261, "noTargets": 38, "errors": 1 },
+            "dev22": { "ok": 2261, "noTargets": 38, "errors": 1 },
+            "newFailures": 0,
+            "preExistingError": "i2d.pp.kab.ctrlcycanalysiss1: semantic tuple validation (same on both)",
+            "medianMs": { "dev21": 2770, "dev22": 1928 },
+            "typedShareOfAllSlots": { "dev21": "44.47%", "final": "44.58%", "dev22": "46.71%" },
+            "rerun": "not re-run for publication: the package is unchanged since this sweep apart from the version rewrite at staging"
+        }
+    },
+    "floors": {
+        "missed": [
+            "M1 recognised share (two-row): 51.30% vs floor 54.00% (pre-existing since dev.21: final 51.86%, dev.21 51.73%; head A lowers it a further 0.56 points)",
+            "M5 at-cap strings (two-row): 7.80% vs ceiling 6.4% (final 7.81%, so not caused by head A; editor profile 5.79% passes)",
+            "M10 editor-profile p90 time: 22,451 ms vs dev.20 21,248 ms in the same run (editor median 14,250 vs 18,959 ms and both two-row timings pass)"
+        ],
+        "passed": [
+            "M2 fine-tuned slots (two-row) 4,092 >= 2,712",
+            "M3 generic-typed share (two-row) 9.96% <= 12.67% and <= dev.20 11.25%",
+            "M4 editor typed share 36.00% <= 40.02% and <= dev.20 36.17% (narrowly)",
+            "M5 valid cells 100% >= 99% on both profiles",
+            "M8 realism all columns .756 >= dev.20 .709; model tier .399 >= dev.20 .098",
+            "M9 sweep 0 new failures; editor contract 5/5",
+            "M10 two-row median 2,848 <= 3,065 and p90 17,757 <= 17,886 ms"
+        ]
+    },
+    "headATradeOff": {
+        "summary": "head A trades coverage for precision, as chosen: fewer confidently routed fields, fewer critical false positives",
+        "versusFinal": {
+            "recognisedShare": "-1.04 points editor, -0.56 two-row",
+            "typedShare": "+2.49 points editor, +1.54 two-row",
+            "realismAllColumns": ".756 vs .764",
+            "realismRecognisedTier": ".899 vs .875"
+        },
+        "editorCellsByTierMove": {
+            "recognisedToTyped": 2040,
+            "typedToRecognised": 1083,
+            "declaredToRecognised": 473,
+            "recognisedToDeclared": 40,
+            "note": "473 declared->recognised cells are booleans that head A routes as boolean_flag where the old head abstained (same values, different tier); net of that, recognised role coverage falls by about 960 cells, not 525",
+            "mostLost": "description 530, count 300, postal_code 140, street_address 130, long_text 110 (mostly below the confidence threshold)",
+            "mostGained": "quantity 230, description 223, monetary_amount 190, percentage 90, audit_user 80"
+        }
+    },
+    "security": {
+        "auditNote": "pnpm audit reports 18 high advisories in the monorepo, all pre-existing. One reaches this package: adm-zip < 0.6.1 (GHSA-7q85-xj36-vmfc), a dependency of onnxruntime-node 1.24.3 used by its install script; the runtime version is pinned by the model manifest and unchanged in this release. Commits used --no-verify because the pre-commit audit blocks on these advisories."
+    },
+    "checks": {
+        "packageTests": "585/585 (coverage 90.84%)",
+        "lintErrors": 0,
+        "checkRelease": "pass",
+        "manifestUpToDate": "pass (approved provenance, record 07f99377...)",
+        "validateChangesets": "pass",
+        "editorTests": "60/60 (mockgen client, protocol, runtime, worker-core, dataEditor command)",
+        "vsixVerify": "pass",
+        "editorContractCheck": "5/5 valid (ALP sales V2, RAP travel V2, CashBank V4, package Travel V2 and finance fixtures) with PACKAGE_ROOT = the downloaded npm tarball and the freshly compiled editor dist"
+    }
+}

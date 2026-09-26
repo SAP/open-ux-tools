@@ -1,0 +1,18 @@
+{
+    "format": "mockgen-sweep-comparison",
+    "reference": {
+        "files": 2300,
+        "errors": 1
+    },
+    "candidate": {
+        "files": 2300,
+        "errors": 1
+    },
+    "compared": 2300,
+    "newFailures": [],
+    "fixed": 0,
+    "medianMs": {
+        "reference": 2770,
+        "candidate": 1928
+    }
+}
