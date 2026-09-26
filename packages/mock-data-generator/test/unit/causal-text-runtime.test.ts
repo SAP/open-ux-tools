@@ -568,3 +568,68 @@ describe('word-boundary trimming', () => {
         expect(trimToWordBoundary('A Longwordthatwascut')).toBe('A Longwordthatwascut');
     });
 });
+
+describe('repetition penalty scope', () => {
+    test('does not count the token that opens a value as a repetition', async () => {
+        const vocabulary = ['<p>', '{', '"', 'A', 'B', ':', ' ', ',', '}', ' "', ' null', ...'FirstSecond'];
+        const ids = new Map(vocabulary.map((text, id) => [text, id]));
+        const tokenizer: CausalTokenizer = {
+            vocabSize: vocabulary.length,
+            specialTokenIds: [0],
+            encode: (text) => {
+                if (text.startsWith('<prompt>')) {
+                    return [0];
+                }
+                const encoded: number[] = [];
+                let rest = text;
+                const longest = (remaining: string): string | undefined =>
+                    vocabulary
+                        .filter((token, id) => id !== 0 && remaining.startsWith(token))
+                        .sort((left, right) => right.length - left.length)[0];
+                while (rest.length > 0) {
+                    const match = longest(rest);
+                    if (!match) {
+                        throw new Error('unencodable');
+                    }
+                    encoded.push(ids.get(match) ?? -1);
+                    rest = rest.slice(match.length);
+                }
+                return encoded;
+            },
+            decode: (tokens) => tokens.map((id) => vocabulary[id] ?? '').join('')
+        };
+        // ` "` barely beats ` null`; a 1.15 penalty on ` "` would flip the second field to null.
+        const scores: Readonly<Record<string, number>> = { ' "': 5, ' null': 4.8, A: 3, '"': 2, ',': 2, '}': 2 };
+        const run = jest.fn(async (step: CausalLmInputs) => {
+            const batch = step.batchSize ?? 1;
+            const logits = new Float32Array(batch * vocabulary.length).fill(-100);
+            for (let row = 0; row < batch; row += 1) {
+                for (const [token, score] of Object.entries(scores)) {
+                    logits[row * vocabulary.length + (ids.get(token) ?? 0)] = score;
+                }
+            }
+            return { lastLogits: logits, presentKeyValues: new Map() };
+        });
+        const generator = createCausalTextGenerator({ tokenizer, session: { run } });
+
+        const text = await generator.generate(
+            {
+                prompt: '<prompt>',
+                grammar: [
+                    { name: 'First', valueKind: 'string', nullable: true, maxLength: 1 },
+                    { name: 'Second', valueKind: 'string', nullable: true, maxLength: 1 }
+                ],
+                seed: 1,
+                temperature: 1e-6,
+                topP: 1,
+                repetitionPenalty: 1.15,
+                noRepeatNgramSize: 0,
+                maxNewTokens: 40,
+                separators: 'spaced'
+            },
+            new AbortController().signal
+        );
+
+        expect(text).toBe('{"First": "A", "Second": "A"}');
+    });
+});

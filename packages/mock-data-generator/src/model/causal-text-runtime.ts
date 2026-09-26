@@ -55,6 +55,7 @@ const MAXIMUM_ALLOWED_TOKEN_ENTRIES = 512;
 const MAXIMUM_FORCED_TEXT_ENTRIES = 4_096;
 
 const VALUE_PHASES: ReadonlySet<string> = new Set(['before-value', 'in-string-value', 'in-nonstring-value']);
+const CONTENT_PHASES: ReadonlySet<string> = new Set(['in-string-value', 'in-nonstring-value']);
 
 function seededRandom(seed: number): () => number {
     let state = seed >>> 0;
@@ -735,7 +736,12 @@ export function createCausalTextGenerator(options: CreateCausalTextGeneratorOpti
                 throw new TypeError('SFT selected an undecodable token');
             }
             sequence.generated.push(token);
-            if (valuePhase) {
+            // Only value content counts as a repetition: not the token that opens a value across the key
+            // boundary (a healed ` "`, a digit after the separator) and not the one that closes a string.
+            if (
+                CONTENT_PHASES.has(sequence.state.phase) &&
+                !(sequence.state.phase === 'in-string-value' && text.startsWith('"'))
+            ) {
                 sequence.valueHistory.push(token);
             }
             sequence.state = advanceText(sequence.state, text);

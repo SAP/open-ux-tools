@@ -96,3 +96,13 @@ re-measure dev.20 and dev.21 interleaved with the candidate.
 
 **Bisect result**: dev.17 and dev.20 give the same fine-tuned tier (2,712 vs 2,743 slots, eligible 3,866 vs
 3,872) under equal load; the committed dev.20 record (1,368) was depressed by a concurrent sweep.
+
+## Addendum 1 (2026-09-26): null cells
+
+Registered before the round-2 runtime measurements, at the LLM agent's request (R3 in
+`~/mockgen-data/llm-published-v3/RUNTIME-REQUESTS.md`). A null model answer is a valid cell but shows as an empty
+value, so `llm.validCellRate` does not reveal it.
+
+- **M5b null cells** (`llm.nullRate`, both profiles): at most the previous release plus 1 point. dev.22: 0.24%
+  two-row, 0.65% editor profile.
+- Reported next to the valid-cell rate in every comparison from now on.
