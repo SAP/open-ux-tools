@@ -1,0 +1,111 @@
+{
+    "format": "mockgen-tier-benchmark",
+    "version": 2,
+    "package": {
+        "name": "@sap-ux/mock-data-generator",
+        "version": "0.0.0",
+        "root": "builds/r2-2a",
+        "sftFingerprint": "e09ecb5b904df4d5923bf28d0799a5a8676e0ddbb74547731b8a76798b85ea8a",
+        "classifierFingerprint": "f014348160c6f287bc4478329560184db523023d2b26927e633c89648ba36cde"
+    },
+    "settings": {
+        "profile": "editor",
+        "rowsPerEntity": 10,
+        "seed": 1,
+        "sftBudgetMs": 20000,
+        "sftTimeoutMs": 30000,
+        "sftModelRows": 4,
+        "sftDeadlineMs": 20000
+    },
+    "host": {
+        "availableParallelism": 12,
+        "node": "v22.22.3",
+        "loadAverage": {
+            "start": 4.93,
+            "end": 4.93
+        },
+        "modelLoadMs": 946
+    },
+    "tierSources": ["inspection"],
+    "corpus": {
+        "attempted": 60,
+        "generated": 60,
+        "failed": 0,
+        "noTargets": 0
+    },
+    "totals": {
+        "authored": 0,
+        "declared": 1956,
+        "recognised": 26394,
+        "model": 10293,
+        "typed": 11745,
+        "structural": 4324,
+        "slots": 54712
+    },
+    "shares": {
+        "recognised": 52.38,
+        "model": 20.43,
+        "typed": 23.31,
+        "declared": 3.88,
+        "authored": 0,
+        "genericTyped": 7.8
+    },
+    "typedSplit": {
+        "key": 6523,
+        "boolean": 0,
+        "protocol": 0,
+        "realistic": 1290,
+        "generic": 3932
+    },
+    "addressableByPrimitiveType": {
+        "string": 2902,
+        "datetimeoffset": 480,
+        "int": 280,
+        "decimal": 630,
+        "date": 60,
+        "time": 40,
+        "guid": 700,
+        "binary": 120,
+        "datetime": 10
+    },
+    "llm": {
+        "plannedSlots": 13905,
+        "eligibleSlots": 10895,
+        "acceptedSlots": 10293,
+        "acceptedOfPlanned": 0.7402,
+        "servicesBudgetExhausted": 4,
+        "outcomes": {
+            "accepted": 331,
+            "partial": 25,
+            "rejected": 7,
+            "incomplete": 1
+        },
+        "calls": 364,
+        "failedCalls": 0,
+        "rowsRequested": 1449,
+        "rowsComplete": 1445,
+        "cells": 4233,
+        "validCells": 4233,
+        "nullCells": 0,
+        "stringCells": 3179,
+        "atCapCells": 38,
+        "ortCalls": 12388,
+        "forwardTokens": 106593,
+        "prefills": 334,
+        "ms": 367945,
+        "ortMs": 249562,
+        "validCellRate": 1,
+        "nullRate": 0,
+        "atCapRate": 0.012,
+        "completeRowRate": 0.9972,
+        "forwardTokensPerRequestedRow": 73.5631,
+        "msPerForwardToken": 3.4519
+    },
+    "timing": {
+        "totalMs": 394784,
+        "medianMs": 3656,
+        "p90Ms": 17374,
+        "maxMs": 19772
+    },
+    "failures": []
+}
