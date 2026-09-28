@@ -1,5 +1,65 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-23
+
+#### Features
+
+- add sap-field-group-in-table-type-restriction rule to flag UI.FieldGroup usage in GridTable, AnalyticalTable, and TreeTable [[b2a5cca](https://github.com/SAP/open-ux-tools/commit/b2a5cca918480042a6f70b27040790cf624d1b30)]
+
+## 10.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 10.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+## 10.11.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Update diagnostic messages by formatting rule-related properties, values, and annotation names as inline code for better readability in warnings/errors. [[079ed68](https://github.com/SAP/open-ux-tools/commit/079ed68394d934231110f108f5ab175c679d44e1)]
+
+## 10.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- Add defensive checks to esbuild.mjs to fail fast if @babel/eslint-parser is not installed and assert no @babel/* imports leak into the bundle after build [[6f73f76](https://github.com/SAP/open-ux-tools/commit/6f73f76dcf69c4791ffcec715689f55fa7ad9614)]
+
 ## 10.11.0
 
 ### Minor Changes

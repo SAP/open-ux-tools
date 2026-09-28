@@ -139,9 +139,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             ['width-including-column-header-manifest']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the {{sectionText}}table.',
+                'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the {{sectionText}}table.',
             ['width-including-column-header']:
-                'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.'
+                'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width.'
         },
         fixable: 'code'
     },

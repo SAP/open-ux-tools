@@ -192,9 +192,9 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             trivialLabel:
-                'The "{{textPropertyTarget}}" text property has a "{{textPropertyLabel}}" generic label. Use a more descriptive label that distinguishes it from other properties',
+                'The `{{textPropertyTarget}}` text property has a "{{textPropertyLabel}}" generic label. Use a more descriptive label that distinguishes it from other properties',
             duplicateLabel:
-                'The "{{textPropertyTarget}}" text property has the same "{{textPropertyLabel}}" label as the "{{idPropertyTarget}}" ID property. The description column label must be different from the ID label'
+                'The `{{textPropertyTarget}}` text property has the same "{{textPropertyLabel}}" label as the `{{idPropertyTarget}}` ID property. The description column label must be different from the ID label'
         }
     },
 
