@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { resolve, isAbsolute } from 'node:path';
+import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectMigrator } from '@sap-ux/fiori-migration-writer';
@@ -60,7 +60,11 @@ function validateDestination(destination: string): string {
 function validateHostname(hostname: string): string {
     // RFC-compliant hostname: alphanumeric and hyphens, segments separated by dots
     // No leading/trailing hyphens in segments, no consecutive dots
-    if (!/^(?!-)(?!.*-$)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/.test(hostname)) {
+    if (
+        !/^(?!-)(?!.*-$)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/.test(
+            hostname
+        )
+    ) {
         throw new Error('Invalid hostname format');
     }
     return hostname;
@@ -232,11 +236,7 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
     }
 
     if (!destination && !hostname) {
-        const useDestination = await promptConfirm(
-            'useDestination',
-            'Use SAP System destination?',
-            true
-        );
+        const useDestination = await promptConfirm('useDestination', 'Use SAP System destination?', true);
 
         if (useDestination) {
             const dest = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
@@ -325,7 +325,12 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     // 6. Execute migration
     logger.info('Starting migration...');
 
-    const baseUri = destination ? `/${destination}` : hostname ? `https://${hostname}` : '';
+    let baseUri = '';
+    if (destination) {
+        baseUri = `/${destination}`;
+    } else if (hostname) {
+        baseUri = `https://${hostname}`;
+    }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
 
     // Build ImportProjectInfo with client if provided
