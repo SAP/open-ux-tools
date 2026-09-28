@@ -109,15 +109,8 @@ export async function generateAndWriteUI5Yaml(config: UI5YamlGenerationConfig): 
  * @param config - Configuration object containing all required parameters
  */
 export async function generateAndWriteUI5LocalYaml(config: UI5LocalYamlGenerationConfig): Promise<void> {
-    const {
-        templateData,
-        neoappDestinations,
-        messages,
-        destination,
-        firstNeoAppDestination,
-        webappPath,
-        rootPath
-    } = config;
+    const { templateData, neoappDestinations, messages, destination, firstNeoAppDestination, webappPath, rootPath } =
+        config;
     // Only generate for regular projects, not library or extension projects
     if (templateData.project.type !== MigrationTypes.project) {
         return;

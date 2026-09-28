@@ -293,7 +293,6 @@ describe('<UIFlexibleTable />', () => {
             setProps({ maxWidth: undefined });
             const root2 = container.querySelector(selectors.tableRoot) as HTMLElement;
             expect(root2.style.maxWidth).toBe('100%');
->>>>>>> origin/main
         });
 
         it('onRenderRowContainer ', () => {

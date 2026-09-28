@@ -86,14 +86,14 @@ export async function generateUI5YamlContent(
         config.addCustomMiddleware(previewMiddleware);
     }
 
-    let yamlContent = config.toString();
+    const yamlContent = config.toString();
 
     // Post-process: Add specVersion 4.0 (UI5Config doesn't set this)
     const yamlJson = parse(yamlContent);
 
     // Add specVersion at the top
     const orderedYaml: any = { specVersion: '4.0' };
-    Object.keys(yamlJson).forEach(key => {
+    Object.keys(yamlJson).forEach((key) => {
         orderedYaml[key] = yamlJson[key];
     });
 
@@ -145,12 +145,7 @@ export async function generateUI5LocalYamlContent(
 
         // Note: addUI5Framework automatically appends the theme library based on the theme parameter,
         // so we don't need to manually add it to the libraries array
-        config.addUI5Framework(
-            'SAPUI5',
-            templateData.project.localUI5Version,
-            libraries,
-            theme
-        );
+        config.addUI5Framework('SAPUI5', templateData.project.localUI5Version, libraries, theme);
     }
 
     // Build backend configuration using helpers
@@ -198,14 +193,14 @@ export async function generateUI5LocalYamlContent(
         config.addCustomMiddleware(previewMiddleware);
     }
 
-    let yamlContent = config.toString();
+    const yamlContent = config.toString();
 
     // Parse and post-process
     const yamlJson = parse(yamlContent);
 
     // Add specVersion at the top
     const orderedYaml: any = { specVersion: '4.0' };
-    Object.keys(yamlJson).forEach(key => {
+    Object.keys(yamlJson).forEach((key) => {
         orderedYaml[key] = yamlJson[key];
     });
 
@@ -235,9 +230,7 @@ export async function generateUI5LocalYamlContent(
         };
 
         // Find index of fiori-tools-proxy and insert before it
-        const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
-            (mw: any) => mw.name === 'fiori-tools-proxy'
-        );
+        const proxyIndex = orderedYaml.server.customMiddleware.findIndex((mw: any) => mw.name === 'fiori-tools-proxy');
         if (proxyIndex >= 0) {
             orderedYaml.server.customMiddleware.splice(proxyIndex, 0, mockserverMiddleware);
         } else {
@@ -296,14 +289,14 @@ export async function generateUI5MockYamlContent(
     // Add fiori-tools-appreload middleware
     config.addFioriToolsAppReloadMiddleware();
 
-    let yamlContent = config.toString();
+    const yamlContent = config.toString();
 
     // Post-process: Add specVersion and webappPath
     const yamlJson = parse(yamlContent);
 
     // Add specVersion at the top
     const orderedYaml: any = { specVersion: '4.0' };
-    Object.keys(yamlJson).forEach(key => {
+    Object.keys(yamlJson).forEach((key) => {
         orderedYaml[key] = yamlJson[key];
     });
 
