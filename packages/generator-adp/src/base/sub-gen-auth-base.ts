@@ -117,6 +117,8 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
                 this.prompts.splice(0, 1, []);
             }
         } catch (error) {
+            // Remove the credential page in case an error occures.
+            this.prompts.splice(0, 1, []);
             await this.handleRuntimeCrash(error.message);
         }
     }
