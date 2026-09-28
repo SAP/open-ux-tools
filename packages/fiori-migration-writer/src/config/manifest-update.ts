@@ -51,7 +51,11 @@ export async function updateManifestForMigration(
 
     // Update sap.ui5 section
     if (manifestJson['sap.ui5']) {
-        const manifestModified = adaptMinUI5Version(manifestJson);
+        // Pass the UI5 version to replace placeholder variables in minUI5Version
+        // Use ui5Version which has already been processed by checkManifestUI5Version
+        // (manifestUI5Version may still contain the placeholder)
+        const ui5Version = templateData.project.ui5Version;
+        const manifestModified = adaptMinUI5Version(manifestJson, ui5Version);
         if (manifestModified) {
             saveFile = true;
         }

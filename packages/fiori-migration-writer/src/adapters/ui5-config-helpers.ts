@@ -62,10 +62,11 @@ export function buildProxyConfig(
         }
     };
 
-    // Note: DO NOT add ui5.version here - it breaks UI5 resource loading.
-    // The proxy middleware should always read the version from manifest.json.
-    // The setUI5Version parameter is used elsewhere (manifest updates, ui5-mock.yaml)
-    // but must not affect ui5.yaml proxy configuration.
+    // Add UI5 version to proxy config when setUI5Version is true
+    // This matches the behavior in tools-suite master for ui5-mock.yaml
+    if (setUI5Version && templateData.ui5Yaml?.ui5Version) {
+        proxyConfig.ui5.version = templateData.ui5Yaml.ui5Version;
+    }
 
     return proxyConfig;
 }
