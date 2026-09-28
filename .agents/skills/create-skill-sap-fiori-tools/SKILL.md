@@ -145,12 +145,32 @@ Skill files load into context. Long ones crowd out everything else and slow the 
 - **SKILL.md — always in context.** Keep it ≤ 500 lines. Use it as an index that points to `references/` for depth.
 - **`references/*.md` — pulled in on demand.** Detailed CAP flows, RAP flows, error catalogues, long CDS templates, historical migration notes.
 
+### Critical rule: Keep references one level deep
+
+**All reference files must link directly from SKILL.md.** Never create references that link to other references — Claude may use preview commands like `head -100` when encountering nested references, resulting in incomplete information.
+
+**✅ Correct — one level deep:**
+```
+SKILL.md → references/cap-implementation.md
+SKILL.md → references/rap-implementation.md
+SKILL.md → references/rap-read-only.md
+SKILL.md → references/shared-implementation.md
+```
+
+**❌ Wrong — nested references:**
+```
+SKILL.md → references/index.md → references/cap-implementation.md
+SKILL.md → references/rap-implementation.md → references/detailed-guides/1-read-only.md
+```
+
+If a reference file needs to point to related content, link back to another reference that is **also directly linked from SKILL.md**, not to a file buried deeper.
+
 ### When to split
 
 Count lines with `wc -l SKILL.md`. If the file is:
 
 - **< 300 lines** — keep flat.
-- **300–500 lines** — consider splitting the largest section (usually the RAP implementation) into a file under `references/` (e.g. `references/rap/implementation.md`).
+- **300–500 lines** — consider splitting the largest section (usually the RAP implementation) into a file under `references/` (e.g. `references/rap-implementation.md`).
 - **> 500 lines** — split now. Model performance drops sharply.
 
 Layout patterns that work well (paths shown relative to `<target-directory>/<skill-name>/`):
@@ -159,14 +179,14 @@ Layout patterns that work well (paths shown relative to `<target-directory>/<ski
 <skill-name>/
 ├── SKILL.md                        # ~200-400 lines: purpose, prerequisites, decision matrix, quick summaries
 └── references/
-    ├── cap/
-    │   └── implementation.md       # Full CAP flow
-    └── rap/
-        ├── implementation.md       # Full RAP flow
-        └── detailed-guides/
-            ├── 1-read-only.md
-            └── 2-editable.md
+    ├── cap-implementation.md       # Full CAP flow (linked from SKILL.md)
+    ├── rap-implementation.md       # Full RAP flow (linked from SKILL.md)
+    ├── rap-read-only.md            # RAP variant 1 (linked from SKILL.md)
+    ├── rap-editable.md             # RAP variant 2 (linked from SKILL.md)
+    └── shared-implementation.md    # Shared code (linked from SKILL.md)
 ```
+
+**Note the flat structure under `references/`** — subdirectories like `cap/` and `rap/` are allowed for organization, but every `.md` file inside them must still be directly linked from SKILL.md, not from another reference file.
 
 See existing skills such as `sap-fiori-tree-table/` and `sap-fiori-eslint-plugin/` (wherever your host stores them) for concrete examples.
 
@@ -180,7 +200,7 @@ Signals you are repeating yourself:
 
 - Two skills both explain "how to run `cds watch` for a CAP project" → link to `sap-fiori-app-development` instead.
 - Every RAP skill re-explains "install ABAP Development Tools for VS Code" → put it once in a shared `references/` file and link.
-- Three skills copy the same CDS snippet → move it to `references/backend-samples.md` and link.
+- Three skills copy the same CDS snippet → move it to `references/shared-implementation.md` and link.
 
 **Do not** duplicate content just to keep a skill "self-contained". Cross-references cost one line; duplication costs maintenance forever.
 
