@@ -40,6 +40,23 @@ export function collectCriticalActionNames(metadata?: ConvertedMetadata): Set<st
     return names;
 }
 
+/**
+ * Collects the names of an action's non-binding parameters. For a bound action the first parameter is the binding
+ * parameter and is skipped.
+ *
+ * @param action The converted action definition
+ * @returns The non-binding parameter names, or undefined if there are none
+ */
+export function collectActionParameterNames(action?: Action): string[] | undefined {
+    const parameters = action?.parameters;
+    if (!parameters?.length) {
+        return undefined;
+    }
+    const startIndex = action?.isBound === true ? 1 : 0;
+    const names = parameters.slice(startIndex).map((parameter) => parameter.name);
+    return names.length > 0 ? names : undefined;
+}
+
 type OperationAvailableWithPaths = OperationAvailable & { $Path?: string; path?: string };
 type RestrictionValueWithPaths = (boolean | { $Path?: string; path?: string }) | undefined;
 type EntityContainerAnnotationsWithActions = EntityContainerAnnotations & Record<string, ActionAnnotations>;
@@ -193,7 +210,8 @@ export function buildActionButtonState(
         enabled,
         dynamicPath,
         invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined,
-        isCritical: criticalActions?.has(actionMethod) ?? false
+        isCritical: criticalActions?.has(actionMethod) ?? false,
+        parameterDialogFields: collectActionParameterNames(actionTarget)
     };
 }
 
@@ -244,7 +262,8 @@ export function buildActionStateFromSpecModelKey(
         visible: true,
         enabled,
         dynamicPath,
-        isCritical: criticalActions?.has(actionMethod) ?? false
+        isCritical: criticalActions?.has(actionMethod) ?? false,
+        parameterDialogFields: collectActionParameterNames(actionDefinition)
     };
 }
 

@@ -1,0 +1,65 @@
+{
+    "type": "annotation",
+    "term": {
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "CDS"
+            },
+            {
+                "type": "identifier",
+                "value": "CdsPersistenceExists"
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "escaped": false,
+                "value": "."
+            }
+        ],
+        "type": "path",
+        "value": "CDS.CdsPersistenceExists",
+        "range": "[(0,0)..(0,22)]"
+    },
+    "originalTerm": {
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "cds",
+                "range": "[(0,0)..(0,3)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "persistence",
+                "range": "[(0,4)..(0,15)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "exists",
+                "range": "[(0,16)..(0,22)]",
+                "quoted": false
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,3)..(0,4)]",
+                "escaped": false
+            },
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,15)..(0,16)]",
+                "escaped": false
+            }
+        ],
+        "type": "path",
+        "value": "cds.persistence.exists",
+        "range": "[(0,0)..(0,22)]"
+    },
+    "range": "[(0,0)..(0,22)]"
+}

@@ -147,7 +147,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid createMode value: "badValue" in Products section. The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue` in Products section. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -190,7 +190,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid createMode value: "badValue". The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -215,7 +215,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid createMode value: "badValue". The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -279,7 +279,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
+                            'Creation mode is not supported for analytical tables. Remove the `createMode` or `creationMode` property.'
                     }
                 ]
             },
@@ -341,7 +341,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
+                            'Creation mode is not supported for analytical tables. Remove the `createMode` or `creationMode` property.'
                     }
                 ]
             },
@@ -365,7 +365,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider adding createMode at the application level for a better user experience.'
+                        message: 'Consider adding `createMode` at the application level for a better user experience.'
                     }
                 ]
             },
@@ -418,7 +418,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider adding createMode at the application level for a better user experience.'
+                        message: 'Consider adding `createMode` at the application level for a better user experience.'
                     }
                 ]
             },
