@@ -64,8 +64,13 @@ export function buildProxyConfig(
 
     // Add UI5 version to proxy config when setUI5Version is true
     // This matches the behavior in tools-suite master for ui5-mock.yaml
+    // Skip if version is a placeholder/fallback value like "snapshot-version"
     if (setUI5Version && templateData.ui5Yaml?.ui5Version) {
-        proxyConfig.ui5.version = templateData.ui5Yaml.ui5Version;
+        const version = templateData.ui5Yaml.ui5Version;
+        // Only add real versions, not placeholder values
+        if (version && !version.includes('snapshot-version')) {
+            proxyConfig.ui5.version = version;
+        }
     }
 
     return proxyConfig;

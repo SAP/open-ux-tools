@@ -285,31 +285,6 @@ describe('<UIFlexibleTable />', () => {
         });
 
         it('Render with limited width', () => {
-<<<<<<< HEAD
-            wrapper.setProps({
-                maxWidth: 1000
-            });
-            const root = wrapper.find(selectors.tableRoot);
-            expect(root.length).toEqual(1);
-            expect(root.getElement().props.style).toMatchInlineSnapshot(`
-                Object {
-                  "--flexible-table-actions-min-width": "54px",
-                  "maxWidth": "1000px",
-                }
-            `);
-
-            wrapper.setProps({
-                maxWidth: undefined
-            });
-            wrapper.update();
-            const root2 = wrapper.find(selectors.tableRoot);
-            expect(root2.getElement().props.style).toMatchInlineSnapshot(`
-                Object {
-                  "--flexible-table-actions-min-width": "54px",
-                  "maxWidth": "100%",
-                }
-            `);
-=======
             setProps({ maxWidth: 1000 });
             const root = container.querySelector(selectors.tableRoot) as HTMLElement;
             expect(container.querySelectorAll(selectors.tableRoot)).toHaveLength(1);
