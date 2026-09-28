@@ -8,6 +8,7 @@ const mockLoadApps = jest.fn<any>();
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockLoggerError = jest.fn<any>();
+const mockIsInternalFeaturesSettingEnabled = jest.fn<any>();
 
 const SupportedProject = {
     ON_PREM: 'onPremise',
@@ -34,6 +35,10 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getSupportedProject: mockGetSupportedProject,
     loadApps: mockLoadApps,
     SupportedProject
+}));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
 // Force isYoAvailable() to return false so tests always exercise the npx fallback path.
@@ -71,6 +76,8 @@ describe('generateAdaptationProject', () => {
         mockGetConfiguredProvider.mockResolvedValue({});
         mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
         mockLoadApps.mockResolvedValue([]);
+        // Default to external usage (released-status logic).
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
     });
 
     test('returns Error when required parameters are missing', async () => {
@@ -274,6 +281,21 @@ describe('generateAdaptationProject', () => {
             expect(mockRunCmdArgs).not.toHaveBeenCalled();
         });
 
+        test('rejects a CloudReady-only system under internal usage', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('internal features enabled');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
         test('forces onPremise on an on-premise-only system', async () => {
             mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
 
@@ -390,6 +412,40 @@ describe('generateAdaptationProject', () => {
 
             expect(result.status).toEqual('Success');
             expect(generatorPayload().projectType).toEqual('cloudReady');
+        });
+
+        test('forces onPremise on a mixed system under internal usage, ignoring released status', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('onPremise');
+            // Internal usage forces on-premise without an app lookup.
+            expect(mockLoadApps).not.toHaveBeenCalled();
+        });
+
+        test('rejects a cloudReady request on a mixed system under internal usage', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'cloudReady'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('internal features enabled');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
         });
     });
 });

@@ -12,6 +12,7 @@ import {
     SupportedProject
 } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
 /** Maximum time to wait for the key user changes fetch before aborting generation. */
 const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
@@ -131,6 +132,26 @@ async function resolveProjectType(
     const provider = await getConfiguredProvider({ system, client }, logger);
     const supportedProject = await getSupportedProject(provider);
 
+    if (isInternalFeaturesSettingEnabled()) {
+        if (supportedProject === SupportedProject.CLOUD_READY) {
+            return {
+                kind: 'error',
+                message:
+                    `System '${system}' supports only Cloud Ready adaptation projects, which cannot be ` +
+                    'created while internal features are enabled. Use a system that supports Classic.'
+            };
+        }
+        if (requested === AdaptationProjectType.CLOUD_READY) {
+            return {
+                kind: 'error',
+                message:
+                    'Cloud Ready adaptation projects are not available with internal features enabled. ' +
+                    'Only Classic adaptation projects can be created.'
+            };
+        }
+        return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
+    }
+
     if (supportedProject === SupportedProject.CLOUD_READY) {
         if (requested === AdaptationProjectType.ON_PREMISE) {
             return unsupportedTypeError(`System '${system}'`, 'Cloud Ready', 'onPremise');
@@ -145,11 +166,9 @@ async function resolveProjectType(
         return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
     }
 
-    // Mixed system: the application's released status decides whether a genuine choice exists.
     const apps = await loadApps(provider, true, supportedProject);
     const status = apps.find((entry) => entry.id === application)?.cloudDevAdaptationStatus;
 
-    // A released cloud application is the only case with a real choice.
     if (status === 'released') {
         if (requested) {
             return { kind: 'resolved', projectType: requested };
@@ -164,19 +183,18 @@ async function resolveProjectType(
         };
     }
 
-    // A positively identified classic application can only be on-premise.
     if (status === '') {
         if (requested === AdaptationProjectType.CLOUD_READY) {
-            return unsupportedTypeError(
-                `Application '${application}' is a classic application and`,
-                'Classic',
-                'cloudReady'
-            );
+            return {
+                kind: 'error',
+                message:
+                    `Application '${application}' is a classic application, so Cloud Ready adaptation ` +
+                    'projects are not available. Only Classic adaptation projects can be created.'
+            };
         }
         return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
     }
 
-    // Status unknown (app not in the index): honour an explicit request, else default to on-premise.
     return { kind: 'resolved', projectType: requested ?? AdaptationProjectType.ON_PREMISE };
 }
 
