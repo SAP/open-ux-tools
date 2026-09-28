@@ -18,8 +18,7 @@ const REQUIRED = new Set([
     'resources/models/sft/model.onnx',
     'resources/models/sft/tokenizer.json',
     'resources/models/sft/generation-config.json',
-    'resources/datasets/synthetic-catalog.v2.json',
-    'resources/datasets/text-samples.v1.json'
+    'resources/banks/value-banks.v1.json'
 ]);
 const FORBIDDEN =
     /(?:^|\/)(?:fe-mockserver|downloader|release|start|host-compatibility|model-cache)(?:\.|\/)|(?:^|\/)\.mockserver-data-generator-dev(?:\/|$)/iu;

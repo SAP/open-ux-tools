@@ -9,6 +9,7 @@ import type {
 } from '../types.js';
 import { createCausalOnnxBackend, createCausalOnnxSession } from './causal-onnx-session.js';
 import { parseConceptHead } from './concept-head.js';
+import type { ConceptValueBank } from '../semantics/bank-store.js';
 import { createCausalTextGenerator } from './causal-text-runtime.js';
 import {
     assertCandidateRelevanceHead,
@@ -71,7 +72,10 @@ export interface LearnedRuntimeHandle {
 export type EmbeddingSemanticClassifierContract = Pick<
     EmbeddingSemanticClassifierOptions,
     'serializeV3Input' | 'v3Roles' | 'v3RegistryFingerprint' | 'v3SerializerFingerprint'
->;
+> & {
+    /** The value bank of a concept id; required to load a concept prototype head. */
+    conceptBank?: (id: string) => ConceptValueBank | undefined;
+};
 
 export interface SftArtifactConfiguration {
     numHiddenLayers: number;
@@ -259,20 +263,28 @@ function defaultFactories(
                     embeddingDimension: head.dim
                 });
             }
-            // The prototype head (head B) shares this encoder; it is optional but must load when declared.
+            // The prototype head (head B) shares this encoder; it is optional but must load when declared, and
+            // each of its concepts takes its values from the value-bank store the contract supplies.
             const conceptDeclared = component.files.some(({ role }) => role === 'concept-head');
             const conceptFile = files.get('concept-head');
             if (conceptDeclared && !conceptFile) {
                 throw new TypeError('The declared concept prototype head is missing from verified artifacts');
             }
+            if (conceptFile && head.inputFormat === 'v3' && !contract.conceptBank) {
+                throw new TypeError('The concept prototype head requires the value-bank store');
+            }
             const conceptHead =
-                conceptFile && head.inputFormat === 'v3'
-                    ? parseConceptHead(JSON.parse(await readFile(conceptFile, 'utf8')), {
-                          dim: head.dim,
-                          encoderSha256: head.encoderSha256 ?? '',
-                          tokenizerSha256: head.tokenizerSha256 ?? '',
-                          serializerFingerprint: head.serializerFingerprint ?? ''
-                      })
+                conceptFile && head.inputFormat === 'v3' && contract.conceptBank
+                    ? parseConceptHead(
+                          JSON.parse(await readFile(conceptFile, 'utf8')),
+                          {
+                              dim: head.dim,
+                              encoderSha256: head.encoderSha256 ?? '',
+                              tokenizerSha256: head.tokenizerSha256 ?? '',
+                              serializerFingerprint: head.serializerFingerprint ?? ''
+                          },
+                          contract.conceptBank
+                      )
                     : undefined;
             const backend = createOnnxBackend(await import(runtime.specifier), 'verified native runtime');
             const embedder = await createMiniLmTextEmbedder({

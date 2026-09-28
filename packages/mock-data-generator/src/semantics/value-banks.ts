@@ -2,10 +2,9 @@ import { createHash } from 'node:crypto';
 import type { JsonValue, SyntheticSampleDataset, SyntheticScenario } from '../types.js';
 import type { SchemaProperty } from '../schema/graph.js';
 
-import { DEFAULT_SAMPLE_DATASET } from './sample-dataset.js';
-import { stringDateFormat, stringTimeFormat } from './role-registry.js';
-import * as sampleCatalog from './sample-catalog.js';
+import { semanticRoleDefinition, stringDateFormat, stringTimeFormat } from './role-registry.js';
 import {
+    DEFAULT_SAMPLE_DATASET,
     LOCATIONS,
     DATA_ENRICHMENT_LOCATIONS,
     CURRENCIES,
@@ -19,8 +18,9 @@ import {
     PRICE_SOURCES,
     ACCOUNT_DESCRIPTIONS,
     BANK_NAMES,
-    CATALOG_ROLE_SAMPLES
-} from './sample-catalog.js';
+    VALUE_BANK_STORE_SHA256,
+    roleSamples
+} from './bank-store.js';
 
 // Roles that `semanticValue` can actually produce a value for. A role outside this set has no
 // value bank, so accepting it would claim semantic coverage the generator cannot deliver: the cell
@@ -132,15 +132,60 @@ export const PROVIDER_CAPABLE_ROLES: ReadonlySet<string> = Object.freeze(
 ) as ReadonlySet<string>;
 
 export const SEMANTIC_CATALOG_VERSION = 'synthetic-providers-v2' as const;
+// The value-bank store's digest covers every bank a generated value can come from, the concept banks
+// included, so a changed bank changes the generation fingerprint and invalidates cached data.
 export const SEMANTIC_CATALOG_FINGERPRINT = createHash('sha256')
-    .update(
-        JSON.stringify({
-            version: SEMANTIC_CATALOG_VERSION,
-            samples: sampleCatalog,
-            textSamples: DEFAULT_SAMPLE_DATASET
-        })
-    )
+    .update(JSON.stringify({ version: SEMANTIC_CATALOG_VERSION, valueBanks: VALUE_BANK_STORE_SHA256 }))
     .digest('hex');
+
+/**
+ * Reject unusable host sample datasets before generation, including untyped host configuration.
+ *
+ * @param dataset the sample dataset a host passes in `sampleDataset`
+ */
+export function validateSampleDataset(dataset: SyntheticSampleDataset): void {
+    if (
+        !dataset ||
+        typeof dataset.id !== 'string' ||
+        !dataset.id ||
+        typeof dataset.version !== 'string' ||
+        !dataset.version ||
+        ![dataset.firstNames, dataset.lastNames, dataset.organizations, dataset.descriptions].every(
+            (values) =>
+                Array.isArray(values) &&
+                values.length > 0 &&
+                values.every((value) => typeof value === 'string' && value.length > 0)
+        )
+    ) {
+        throw new TypeError('A synthetic sample dataset requires an identity, version and non-empty string arrays.');
+    }
+    if (
+        dataset.roleSamples !== undefined &&
+        (!dataset.roleSamples ||
+            typeof dataset.roleSamples !== 'object' ||
+            Array.isArray(dataset.roleSamples) ||
+            !Object.values(dataset.roleSamples).every(
+                (values) =>
+                    Array.isArray(values) &&
+                    values.length > 0 &&
+                    values.every((value) => typeof value === 'string' && value.length > 0)
+            ))
+    ) {
+        throw new TypeError('Synthetic role samples must be non-empty string arrays.');
+    }
+    for (const role of Object.keys(dataset.roleSamples ?? {})) {
+        const definition = semanticRoleDefinition(role);
+        if (
+            definition?.keyPolicy !== 'forbidden' ||
+            definition.validator !== 'structural' ||
+            !definition.compatiblePrimitiveTypes.includes('string')
+        ) {
+            throw new TypeError(
+                'Only non-key descriptive roles can use sample replacements; use explicit field domains for codes.'
+            );
+        }
+    }
+}
 
 function subscriberDigits(hash: number, length: number): string {
     const minimum = 10 ** (length - 1);
@@ -202,7 +247,7 @@ function completeString(candidates: ReadonlyArray<string>, maximumLength: number
 }
 
 function catalogSample(role: string, index: number): string | undefined {
-    const samples = CATALOG_ROLE_SAMPLES[role];
+    const samples = roleSamples(role);
     return samples?.length ? samples[index % samples.length] : undefined;
 }
 
@@ -381,10 +426,7 @@ function stringRoleValue(
         case 'remark':
             return completeString(context.dataset.descriptions, property.maxLength, hash);
         case 'sales_item_proposal_description':
-            return completeString(
-                [`${context.product} proposal`, ...(CATALOG_ROLE_SAMPLES[role] ?? [])],
-                property.maxLength
-            );
+            return completeString([`${context.product} proposal`, ...(roleSamples(role) ?? [])], property.maxLength);
         case 'data_enrichment_ethnicity':
             return catalogSample(role, rowIndex);
         case 'indicator':

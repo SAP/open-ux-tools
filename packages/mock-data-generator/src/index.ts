@@ -46,7 +46,7 @@ import { assertGeneratedResultWithinLimit } from './result-limit.js';
 import { buildServiceInspection, type ServiceInspectionExecution } from './inspection.js';
 import type { SchemaGraph } from './schema/graph.js';
 import { SEMANTIC_ROLE_REGISTRY, SEMANTIC_ROLE_REGISTRY_FINGERPRINT } from './semantics/role-registry.js';
-import { SEMANTIC_CATALOG_FINGERPRINT } from './semantics/value-banks.js';
+import { SEMANTIC_CATALOG_FINGERPRINT, validateSampleDataset } from './semantics/value-banks.js';
 import { assertSemanticValues, compileSemanticPlan, demoteBoundSemanticRoles } from './generation/semantic-plan.js';
 import { applyApplicationDomains, applySyntheticScenario } from './generation/scenario.js';
 import { validateTupleDomains } from './generation/tuple-domain.js';
@@ -54,7 +54,7 @@ import { applyCurrencyMetadata, assertCurrencyMetadata } from './generation/curr
 import { applyCapCodeListMetadata } from './generation/code-list-metadata.js';
 import { applyCountryMetadata } from './generation/country-metadata.js';
 import { datePairs } from './generation/coherence.js';
-import { DEFAULT_SAMPLE_DATASET, validateSampleDataset } from './semantics/sample-dataset.js';
+import { DEFAULT_SAMPLE_DATASET, packagedConceptBank } from './semantics/bank-store.js';
 import { FIELD_CONTEXT_SERIALIZER_FINGERPRINT, serializeFieldContextV3 } from './semantics/field-context.js';
 import { createLearnedRuntime as createModelLearnedRuntime } from './model/learned-runtime.js';
 import type { SftCompletionStore } from './model/sft-runtime.js';
@@ -133,7 +133,8 @@ export async function createLearnedRuntime(
             serializeV3Input: serializeFieldContextV3,
             v3Roles: SEMANTIC_ROLE_REGISTRY,
             v3RegistryFingerprint: SEMANTIC_ROLE_REGISTRY_FINGERPRINT,
-            v3SerializerFingerprint: FIELD_CONTEXT_SERIALIZER_FINGERPRINT
+            v3SerializerFingerprint: FIELD_CONTEXT_SERIALIZER_FINGERPRINT,
+            conceptBank: packagedConceptBank
         },
         options
     );

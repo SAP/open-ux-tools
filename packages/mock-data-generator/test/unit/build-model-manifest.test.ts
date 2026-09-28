@@ -16,7 +16,7 @@ describe('build-model-manifest', () => {
             {
                 id: 'd',
                 version: '1',
-                path: 'resources/datasets/d.json',
+                path: 'resources/datasets/legacy.json',
                 bytes: 1,
                 sha256: 'b'.repeat(64),
                 license: 'Apache-2.0',
@@ -44,7 +44,7 @@ describe('build-model-manifest', () => {
         'classifier/encoder.onnx': 'encoder-bytes',
         'classifier/head.json': 'head-bytes',
         'classifier/vocab.txt': 'vocab-bytes',
-        '../../resources/datasets/d.json': 'dataset-bytes'
+        '../../resources/banks/value-banks.v1.json': 'store-bytes'
     };
     const describe = async (path: string): Promise<{ bytes: number; sha256: string } | undefined> =>
         path in files ? { bytes: files[path].length, sha256: sha(files[path]) } : undefined;
@@ -64,6 +64,36 @@ describe('build-model-manifest', () => {
         expect(identity.revision).toBe(manifest.revision);
         expect(identity.components[0].fingerprint).toBe(manifest.components[0].fingerprint);
         expect(manifest.revision).not.toBe(template.revision);
+        // Whatever the template declared, the manifest declares exactly the value-bank store.
+        expect(manifest.datasets).toEqual([
+            expect.objectContaining({
+                id: 'mockgen-value-banks',
+                path: 'resources/banks/value-banks.v1.json',
+                bytes: 'store-bytes'.length,
+                sha256: sha('store-bytes')
+            })
+        ]);
+    });
+
+    it('fails without the value-bank store', async () => {
+        const { buildModelManifest } = await import(scriptUrl);
+        const withoutStore = async (path: string) => (path.includes('value-banks') ? undefined : describe(path));
+        await expect(
+            buildModelManifest(template, withoutStore, {
+                inputFormat: 'v3',
+                encoderSha256: sha('encoder-bytes'),
+                tokenizerSha256: sha('vocab-bytes')
+            })
+        ).rejects.toThrow(/value-bank store is missing/u);
+    });
+
+    it('requires a value bank for every concept of the concept head', async () => {
+        const { assertConceptBanks } = await import(scriptUrl);
+        const store = { banks: { 'concept:a': { kind: 'concept' }, 'role:b': { kind: 'role' } } };
+        expect(() => assertConceptBanks({ concepts: [{ id: 'a' }] }, store)).not.toThrow();
+        expect(() => assertConceptBanks({ concepts: [{ id: 'a' }, { id: 'b' }] }, store)).toThrow(
+            /without a value bank: b/u
+        );
     });
 
     it('declares the relevance head when present and rejects encoder fingerprint drift', async () => {

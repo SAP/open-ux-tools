@@ -1,4 +1,5 @@
 import type { ConceptBank, ConceptMatch } from '../types.js';
+import type { ConceptValueBank } from '../semantics/bank-store.js';
 
 /**
  * The classifier's prototype head (head B). It shares the encoder with the trained role head (head A)
@@ -6,10 +7,13 @@ import type { ConceptBank, ConceptMatch } from '../types.js';
  * of real example fields of that concept. A field takes the nearest concept when the cosine similarity
  * and the gap to the runner-up both clear the head's thresholds, which are chosen on judged real fields.
  * Concepts are added or changed through this file alone, without retraining head A.
+ *
+ * The file carries prototypes, thresholds and acceptance inputs only; each concept's values live in the
+ * value-bank store under `concept:<id>` and are joined here, so `concepts` holds complete banks.
  */
 export interface ConceptHead {
     readonly format: 'mockgen-concept-head';
-    readonly version: 1;
+    readonly version: 2;
     readonly dim: number;
     readonly encoderSha256: string;
     readonly tokenizerSha256: string;
@@ -55,15 +59,6 @@ export interface ConceptHeadContract {
     serializerFingerprint: string;
 }
 
-const VALUE_KINDS = new Set<ConceptBank['valueKind']>([
-    'code',
-    'code-text',
-    'name',
-    'text',
-    'identifier',
-    'number',
-    'decimal'
-]);
 const SHA256 = /^[0-9a-f]{64}$/u;
 
 function record(value: unknown, label: string): Record<string, unknown> {
@@ -80,16 +75,35 @@ function stringArray(value: unknown, label: string): string[] {
     return value as string[];
 }
 
-function parseConcept(value: unknown, index: number): ConceptBank {
-    const concept = parseConceptBank(value, index);
-    const input = value as Record<string, unknown>;
+const CONCEPT_KEYS = new Set(['id', 'minimumSimilarity', 'cohesion']);
+
+function parseConcept(
+    value: unknown,
+    index: number,
+    bankFor: (id: string) => ConceptValueBank | undefined
+): ConceptBank {
+    const input = record(value, `concept ${index}`);
+    const { id } = input;
+    if (typeof id !== 'string' || id.length === 0) {
+        throw new TypeError(`concept ${index} needs an id`);
+    }
+    const unexpected = Object.keys(input).filter((key) => !CONCEPT_KEYS.has(key));
+    if (unexpected.length > 0) {
+        throw new TypeError(
+            `concept ${id} carries ${unexpected.join(', ')}; concept values belong in the value-bank store`
+        );
+    }
+    const bank = bankFor(id);
+    if (!bank) {
+        throw new TypeError(`concept ${id} has no value bank concept:${id} in the value-bank store`);
+    }
     const minimum = input.minimumSimilarity;
     if (minimum !== undefined && (typeof minimum !== 'number' || !(minimum > 0 && minimum <= 1))) {
-        throw new TypeError(`concept ${concept.id} has an invalid minimum similarity`);
+        throw new TypeError(`concept ${id} has an invalid minimum similarity`);
     }
     let cohesion: ConceptBank['cohesion'];
     if (input.cohesion !== undefined) {
-        const entry = record(input.cohesion, `concept ${concept.id} cohesion`);
+        const entry = record(input.cohesion, `concept ${id} cohesion`);
         const { p10, p25, p50, examples } = entry;
         if (
             [p10, p25, p50].some((quantile) => typeof quantile !== 'number' || !(quantile >= -1 && quantile <= 1)) ||
@@ -97,12 +111,18 @@ function parseConcept(value: unknown, index: number): ConceptBank {
             !Number.isInteger(examples) ||
             examples < 1
         ) {
-            throw new TypeError(`concept ${concept.id} has an invalid cohesion profile`);
+            throw new TypeError(`concept ${id} has an invalid cohesion profile`);
         }
         cohesion = Object.freeze({ p10: p10 as number, p25: p25 as number, p50: p50 as number, examples });
     }
     return Object.freeze({
-        ...concept,
+        id,
+        name: bank.name,
+        valueKind: bank.valueKind,
+        types: bank.types,
+        ...(bank.values ? { values: bank.values } : {}),
+        ...(bank.pairs ? { pairs: bank.pairs } : {}),
+        ...(bank.range ? { range: bank.range } : {}),
         ...(minimum === undefined ? {} : { minimumSimilarity: minimum as number }),
         ...(cohesion ? { cohesion } : {})
     });
@@ -175,74 +195,29 @@ function acceptanceProbability(
     return 1 / (1 + Math.exp(-logit));
 }
 
-function parseConceptBank(value: unknown, index: number): ConceptBank {
-    const input = record(value, `concept ${index}`);
-    const { id, name, valueKind } = input;
-    if (typeof id !== 'string' || id.length === 0 || typeof name !== 'string' || name.length === 0) {
-        throw new TypeError(`concept ${index} needs an id and a name`);
-    }
-    if (typeof valueKind !== 'string' || !VALUE_KINDS.has(valueKind as ConceptBank['valueKind'])) {
-        throw new TypeError(`concept ${id} has an unsupported value kind`);
-    }
-    const kind = valueKind as ConceptBank['valueKind'];
-    const types = stringArray(input.types, `concept ${id} types`);
-    if (kind === 'code-text') {
-        const pairs = input.pairs;
-        if (
-            !Array.isArray(pairs) ||
-            pairs.length === 0 ||
-            pairs.some((pair) => {
-                const entry = pair as Record<string, unknown> | null;
-                return typeof entry?.code !== 'string' || typeof entry.text !== 'string' || !entry.code || !entry.text;
-            })
-        ) {
-            throw new TypeError(`concept ${id} needs code/text pairs`);
-        }
-        return Object.freeze({
-            id,
-            name,
-            valueKind: kind,
-            types,
-            pairs: Object.freeze(
-                (pairs as Array<{ code: string; text: string }>).map((pair) =>
-                    Object.freeze({ code: pair.code, text: pair.text })
-                )
-            )
-        });
-    }
-    if (kind === 'number' || kind === 'decimal') {
-        const range = record(input.range, `concept ${id} range`);
-        const { min, max, scale } = range;
-        if (
-            typeof min !== 'number' ||
-            typeof max !== 'number' ||
-            typeof scale !== 'number' ||
-            !(min <= max) ||
-            !Number.isInteger(scale) ||
-            scale < 0
-        ) {
-            throw new TypeError(`concept ${id} needs a numeric range`);
-        }
-        return Object.freeze({ id, name, valueKind: kind, types, range: Object.freeze({ min, max, scale }) });
-    }
-    const values = stringArray(input.values, `concept ${id} values`);
-    if (values.length === 0) {
-        throw new TypeError(`concept ${id} needs values`);
-    }
-    return Object.freeze({ id, name, valueKind: kind, types, values: Object.freeze([...values]) });
-}
-
 /**
  * Validate a packaged prototype head against the encoder contract it must share with head A.
  *
  * @param value parsed JSON document
  * @param contract encoder, tokenizer and serializer the prototypes were computed with
- * @returns the validated head
+ * @param bankFor the value bank of a concept id; every concept of the head must have one
+ * @returns the validated head with each concept joined to its value bank
  */
-export function parseConceptHead(value: unknown, contract: ConceptHeadContract): ConceptHead {
+export function parseConceptHead(
+    value: unknown,
+    contract: ConceptHeadContract,
+    bankFor: (id: string) => ConceptValueBank | undefined
+): ConceptHead {
     const input = record(value, 'concept head');
-    if (input.format !== 'mockgen-concept-head' || input.version !== 1) {
+    if (input.format !== 'mockgen-concept-head') {
         throw new TypeError('unsupported concept head format');
+    }
+    if (input.version !== 2) {
+        throw new TypeError(
+            input.version === 1
+                ? 'concept head version 1 carries its own values; strip them into the value-bank store'
+                : 'unsupported concept head version'
+        );
     }
     if (input.dim !== contract.dim) {
         throw new TypeError('concept head dimension does not match the classifier encoder');
@@ -269,7 +244,7 @@ export function parseConceptHead(value: unknown, contract: ConceptHeadContract):
     if (!Array.isArray(input.concepts) || input.concepts.length === 0) {
         throw new TypeError('concept head has no concepts');
     }
-    const concepts = input.concepts.map(parseConcept);
+    const concepts = input.concepts.map((concept, index) => parseConcept(concept, index, bankFor));
     if (new Set(concepts.map((concept) => concept.id)).size !== concepts.length) {
         throw new TypeError('concept head contains duplicate concept ids');
     }
@@ -291,7 +266,7 @@ export function parseConceptHead(value: unknown, contract: ConceptHeadContract):
     return Object.freeze({
         ...(acceptance ? { acceptance } : {}),
         format: 'mockgen-concept-head',
-        version: 1,
+        version: 2,
         dim: contract.dim,
         encoderSha256: contract.encoderSha256,
         tokenizerSha256: contract.tokenizerSha256,

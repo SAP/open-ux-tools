@@ -74,8 +74,7 @@ function generateService(...[request, options, runtime]: Parameters<typeof gener
 }
 import { applySftGeneration } from '../../src/generation/sft.js';
 import type { SchemaGraph } from '../../src/schema/graph.js';
-import { EQUIPMENT_NAMES, LOCATIONS } from '../../src/semantics/sample-catalog.js';
-import { DEFAULT_SAMPLE_DATASET } from '../../src/semantics/sample-dataset.js';
+import { DEFAULT_SAMPLE_DATASET, EQUIPMENT_NAMES, LOCATIONS } from '../../src/semantics/bank-store.js';
 
 // Values must come from the governed banks; the patterns follow the banks as they grow.
 const alternation = (values: ReadonlyArray<string>): RegExp => new RegExp(`^(?:${values.join('|')})$`, 'u');

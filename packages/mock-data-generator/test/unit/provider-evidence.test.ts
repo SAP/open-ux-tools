@@ -1,7 +1,7 @@
 import { generateService, inspectService, validateGeneratedResult } from '../../src/index.js';
 import type { MockDataGeneratorOptions } from '../../src/types.js';
 import { applyApplicationDomains, applySyntheticScenario } from '../../src/generation/scenario.js';
-import { validateSampleDataset } from '../../src/semantics/sample-dataset.js';
+import { validateSampleDataset } from '../../src/semantics/value-banks.js';
 import { parseEdmx } from '../../src/schema/edmx.js';
 import { applySemanticCoherence } from '../../src/generation/coherence.js';
 

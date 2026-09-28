@@ -1,5 +1,5 @@
 import { generateService, type MockDataServiceRequest } from '../../src/index.js';
-import { CURRENCIES, UNITS } from '../../src/semantics/sample-catalog.js';
+import { CURRENCIES, UNITS } from '../../src/semantics/bank-store.js';
 
 const request: MockDataServiceRequest = {
     metadata: {

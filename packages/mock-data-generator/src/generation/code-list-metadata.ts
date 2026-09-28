@@ -1,6 +1,6 @@
 import type { SchemaEntity, SchemaGraph, SchemaProperty } from '../schema/graph.js';
 import { capCodeList, type CapCodeListKind } from '../semantics/cap-code-lists.js';
-import { UNIT_ISO_CODES, UNIT_SAMPLES } from '../semantics/sample-catalog.js';
+import { UNIT_ISO_CODES, UNIT_SAMPLES } from '../semantics/bank-store.js';
 import type { JsonValue, MockDataRow } from '../types.js';
 import { VALUE_TIER } from '../types.js';
 import { currencyFractionDigits } from './coherence.js';

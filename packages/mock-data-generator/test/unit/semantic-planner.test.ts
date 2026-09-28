@@ -6,7 +6,7 @@ import {
     type SemanticClassifier,
     type SftGenerator
 } from '../../src/index.js';
-import { LOCATIONS } from '../../src/semantics/sample-catalog.js';
+import { LOCATIONS } from '../../src/semantics/bank-store.js';
 
 const COUNTRY_CODES = new Set(LOCATIONS.map(({ country }) => country));
 

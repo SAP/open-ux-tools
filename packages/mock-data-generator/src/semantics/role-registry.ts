@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { PrimitiveType, SchemaProperty } from '../schema/graph.js';
-import { CURRENCIES, LOCATIONS, UNITS, UNIT_ISO_CODES } from './sample-catalog.js';
+import { CURRENCIES, LOCATIONS, UNITS, UNIT_ISO_CODES } from './bank-store.js';
 
 export interface SemanticRoleDefinition {
     family: string;

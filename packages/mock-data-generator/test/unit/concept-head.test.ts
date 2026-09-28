@@ -1,5 +1,6 @@
 import { generateService } from '../../src/index.js';
 import { matchConcept, parseConceptHead } from '../../src/model/concept-head.js';
+import { conceptValueBank, parseValueBankStore } from '../../src/semantics/bank-store.js';
 import { parseEdmx } from '../../src/schema/edmx.js';
 import { arbitrateSemanticClassifications } from '../../src/semantics/lexical-fallback.js';
 import type { ConceptBank, SemanticClassification, SftGenerator } from '../../src/types.js';
@@ -16,7 +17,7 @@ function headDocument(prototypes: number[][], concepts: object[], thresholds = {
     prototypes.flat().forEach((value, index) => buffer.writeFloatLE(value, index * 4));
     return {
         format: 'mockgen-concept-head',
-        version: 1,
+        version: 2,
         ...contract,
         thresholds,
         concepts,
@@ -25,6 +26,7 @@ function headDocument(prototypes: number[][], concepts: object[], thresholds = {
 }
 
 const purchasingGroup = {
+    kind: 'concept',
     id: 'purchasing-group',
     name: 'purchasing group',
     valueKind: 'code-text',
@@ -36,6 +38,7 @@ const purchasingGroup = {
     ]
 };
 const controllingArea = {
+    kind: 'concept',
     id: 'controlling-area',
     name: 'controlling area',
     valueKind: 'code',
@@ -43,12 +46,22 @@ const controllingArea = {
     values: ['1000', '2000', 'A000']
 };
 const headcount = {
+    kind: 'concept',
     id: 'headcount',
     name: 'headcount',
     valueKind: 'number',
     types: ['int'],
     range: { min: 1, max: 500, scale: 0 }
 };
+
+// The value banks live in the store; the head carries only the concept ids and acceptance inputs.
+const store = parseValueBankStore({
+    format: 'mockgen-value-banks',
+    version: 1,
+    banks: Object.fromEntries([purchasingGroup, controllingArea, headcount].map((bank) => [`concept:${bank.id}`, bank]))
+});
+const bankFor = (id: string) => conceptValueBank(store, id);
+const entry = (bank: { id: string }, extra: object = {}) => ({ id: bank.id, ...extra });
 
 describe('concept prototype head (head B)', () => {
     it('validates the head against the classifier encoder contract', () => {
@@ -57,19 +70,41 @@ describe('concept prototype head (head B)', () => {
                 [1, 0, 0],
                 [0, 1, 0]
             ],
-            [purchasingGroup, controllingArea]
+            [entry(purchasingGroup), entry(controllingArea)]
         );
-        expect(parseConceptHead(document, contract).concepts.map((concept) => concept.id)).toEqual([
+        expect(parseConceptHead(document, contract, bankFor).concepts.map((concept) => concept.id)).toEqual([
             'purchasing-group',
             'controlling-area'
         ]);
-        expect(() => parseConceptHead(document, { ...contract, encoderSha256: 'c'.repeat(64) })).toThrow(
+        expect(() => parseConceptHead(document, { ...contract, encoderSha256: 'c'.repeat(64) }, bankFor)).toThrow(
             /encoderSha256/u
         );
-        expect(() => parseConceptHead({ ...document, prototypes: 'AAAA' }, contract)).toThrow(/prototypes/u);
+        expect(() => parseConceptHead({ ...document, prototypes: 'AAAA' }, contract, bankFor)).toThrow(/prototypes/u);
+    });
+
+    it('joins each concept to its value bank and fails loudly when a bank is missing', () => {
+        const head = parseConceptHead(headDocument([[1, 0, 0]], [entry(controllingArea)]), contract, bankFor);
+        expect(head.concepts[0]).toEqual({
+            id: 'controlling-area',
+            name: 'controlling area',
+            valueKind: 'code',
+            types: ['string'],
+            values: ['1000', '2000', 'A000']
+        });
+        expect(() => parseConceptHead(headDocument([[1, 0, 0]], [{ id: 'cost-center' }]), contract, bankFor)).toThrow(
+            /no value bank concept:cost-center/u
+        );
+        // A head that still carries its own values is rejected rather than half-used.
+        expect(() => parseConceptHead(headDocument([[1, 0, 0]], [controllingArea]), contract, bankFor)).toThrow(
+            /value-bank store/u
+        );
         expect(() =>
-            parseConceptHead(headDocument([[1, 0, 0]], [{ ...controllingArea, values: [] }]), contract)
-        ).toThrow(/values/u);
+            parseConceptHead({ ...headDocument([[1, 0, 0]], [entry(controllingArea)]), version: 1 }, contract, bankFor)
+        ).toThrow(/version 1/u);
+        expect(() =>
+            parseConceptHead({ ...headDocument([[1, 0, 0]], [entry(controllingArea)]), version: 3 }, contract, bankFor)
+        ).toThrow(/unsupported concept head version/u);
+        expect(() => parseConceptHead(headDocument([[1, 0, 0]], [{}]), contract, bankFor)).toThrow(/needs an id/u);
     });
 
     it('matches the nearest type-compatible concept only when it clears both thresholds', () => {
@@ -80,9 +115,10 @@ describe('concept prototype head (head B)', () => {
                     [0, 1, 0],
                     [0, 0, 1]
                 ],
-                [purchasingGroup, controllingArea, headcount]
+                [entry(purchasingGroup), entry(controllingArea), entry(headcount)]
             ),
-            contract
+            contract,
+            bankFor
         );
         expect(matchConcept(head, [0.99, 0.05, 0], 'string')).toMatchObject({ id: 'purchasing-group' });
         // Close to two concepts: the runner-up gap is too small.
@@ -102,14 +138,19 @@ describe('concept prototype head (head B)', () => {
                     [1, 0, 0],
                     [0, 1, 0]
                 ],
-                [{ ...purchasingGroup, minimumSimilarity: 0.97 }, controllingArea]
+                [entry(purchasingGroup, { minimumSimilarity: 0.97 }), entry(controllingArea)]
             ),
-            contract
+            contract,
+            bankFor
         );
         expect(matchConcept(head, [0.9, 0.1, 0.4], 'string')).toBeUndefined();
         expect(matchConcept(head, [0.99, 0.01, 0], 'string')).toMatchObject({ id: 'purchasing-group' });
         expect(() =>
-            parseConceptHead(headDocument([[1, 0, 0]], [{ ...controllingArea, minimumSimilarity: 1.5 }]), contract)
+            parseConceptHead(
+                headDocument([[1, 0, 0]], [entry(controllingArea, { minimumSimilarity: 1.5 })]),
+                contract,
+                bankFor
+            )
         ).toThrow(/minimum similarity/u);
     });
 
@@ -141,19 +182,20 @@ describe('concept prototype head (head B)', () => {
                     [1, 0, 0],
                     [0, 1, 0]
                 ],
-                [
-                    { ...purchasingGroup, cohesion },
-                    { ...controllingArea, cohesion }
-                ],
+                [entry(purchasingGroup, { cohesion }), entry(controllingArea, { cohesion })],
                 { similarity: 0.5, margin: 0 }
             ),
             acceptance
         };
-        const head = parseConceptHead(document, contract);
+        const head = parseConceptHead(document, contract, bankFor);
         expect(matchConcept(head, [0.95, 0.05, 0.3], 'string')).toMatchObject({ id: 'purchasing-group' });
         expect(matchConcept(head, [0.8, 0.05, 0.6], 'string')).toBeUndefined();
         expect(() =>
-            parseConceptHead({ ...document, acceptance: { ...acceptance, features: ['similarity'] } }, contract)
+            parseConceptHead(
+                { ...document, acceptance: { ...acceptance, features: ['similarity'] } },
+                contract,
+                bankFor
+            )
         ).toThrow(/features/u);
     });
 

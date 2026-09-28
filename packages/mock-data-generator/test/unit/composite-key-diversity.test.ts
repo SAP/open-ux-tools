@@ -1,7 +1,7 @@
 import { generateDeterministicResources } from '../../src/generation/deterministic.js';
-import { CATALOG_ROLE_SAMPLES } from '../../src/semantics/sample-catalog.js';
+import { roleSamples } from '../../src/semantics/bank-store.js';
 
-const LANGUAGES = CATALOG_ROLE_SAMPLES.language;
+const LANGUAGES = roleSamples('language') ?? [];
 import type { SchemaGraph, SchemaProperty } from '../../src/schema/graph.js';
 
 function generateKeys(properties: SchemaProperty[], rowsPerEntity: number) {

@@ -11,7 +11,7 @@ import {
     type SemanticClassifier,
     type SftGenerator
 } from '../../src/index.js';
-import { PRODUCTS } from '../../src/semantics/sample-catalog.js';
+import { PRODUCTS } from '../../src/semantics/bank-store.js';
 
 describe('mockserver data generator public API', () => {
     it('inspects the exact generation decisions with raw values only when explicitly requested', async () => {

@@ -2,7 +2,8 @@ import { mkdtemp, readFile, rm, writeFile, mkdir, symlink, readdir } from 'node:
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createMockDataGenerator, generateProjectData, getMockDataGeneratorInfo } from '../../src/index.js';
-import { actualExecutionMode, packagedRuntimeManifest } from '../../src/standalone.js';
+import { actualExecutionMode, assertValueBankStoreDeclared, packagedRuntimeManifest } from '../../src/standalone.js';
+import { VALUE_BANK_STORE_SHA256 } from '../../src/semantics/bank-store.js';
 import { parsePackagedModelManifest } from '../../src/model/packaged-models.js';
 import type { MockDataGeneratorResult } from '../../src/types.js';
 
@@ -278,5 +279,19 @@ describe('standalone MockGen API', () => {
             await rm(root, { recursive: true, force: true });
             await rm(outside, { recursive: true, force: true });
         }
+    });
+
+    test('requires the manifest to vouch for the value-bank store that was loaded', async () => {
+        const manifest = parsePackagedModelManifest(
+            JSON.parse(await readFile('resources/models/manifest.json', 'utf8')) as unknown
+        );
+        expect(() => assertValueBankStoreDeclared(manifest)).not.toThrow();
+        expect(manifest.datasets.find(({ id }) => id === 'mockgen-value-banks')?.sha256).toBe(VALUE_BANK_STORE_SHA256);
+        expect(() => assertValueBankStoreDeclared(manifest, '0'.repeat(64))).toThrow(
+            'The loaded MockGen value-bank store does not match the package manifest'
+        );
+        expect(() => assertValueBankStoreDeclared({ ...manifest, datasets: [] })).toThrow(
+            'The installed MockGen package does not declare its value-bank store'
+        );
     });
 });

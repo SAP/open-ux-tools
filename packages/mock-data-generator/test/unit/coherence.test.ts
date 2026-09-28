@@ -1,5 +1,5 @@
 import { generateService as generate, type MockDataServiceRequest, type SftGenerator } from '../../src/index.js';
-import { STATUS_SAMPLES, UNIT_SAMPLES } from '../../src/semantics/sample-catalog.js';
+import { STATUS_SAMPLES, UNIT_SAMPLES } from '../../src/semantics/bank-store.js';
 
 function generateService(...[request, options, runtime]: Parameters<typeof generate>): ReturnType<typeof generate> {
     const rules = [

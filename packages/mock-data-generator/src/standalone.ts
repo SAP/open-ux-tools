@@ -26,6 +26,7 @@ import { createLearnedRuntime, generateService, inspectService, validateGenerate
 import { parseEdmx } from './schema/edmx.js';
 import { parseCsn } from './schema/csn.js';
 import { semanticRoleDefinition } from './semantics/role-registry.js';
+import { VALUE_BANK_STORE_ID, VALUE_BANK_STORE_PATH, VALUE_BANK_STORE_SHA256 } from './semantics/bank-store.js';
 import { authoredDomainValues } from './generation/value-list-context.js';
 
 const require = createRequire(import.meta.url);
@@ -297,6 +298,26 @@ function domainMeaning(
 }
 
 /**
+ * The value-bank store was parsed when the package loaded; the manifest must declare it and vouch for
+ * exactly those bytes, so generation never draws from a store the manifest did not verify.
+ *
+ * @param manifest the parsed package manifest
+ * @param loadedSha256 digest of the store bytes that were parsed
+ */
+export function assertValueBankStoreDeclared(
+    manifest: PackagedModelManifest,
+    loadedSha256: string = VALUE_BANK_STORE_SHA256
+): void {
+    const bankStore = manifest.datasets.find(({ id }) => id === VALUE_BANK_STORE_ID);
+    if (bankStore?.path !== VALUE_BANK_STORE_PATH) {
+        throw new TypeError('The installed MockGen package does not declare its value-bank store');
+    }
+    if (bankStore.sha256 !== loadedSha256) {
+        throw new TypeError('The loaded MockGen value-bank store does not match the package manifest');
+    }
+}
+
+/**
  * Verify package-local models before allocation and create one reusable generation session.
  *
  * @param options
@@ -314,9 +335,7 @@ export async function createMockDataGenerator(
         throw new TypeError('The MockGen answer cache directory must be an absolute path');
     }
     const manifest = parsePackagedModelManifest(JSON.parse(await readFile(manifestPath, 'utf8')) as unknown);
-    if (manifest.datasets.length < 2) {
-        throw new TypeError('The installed MockGen package lacks versioned sample datasets');
-    }
+    assertValueBankStoreDeclared(manifest);
     const datasetFailures = await verifyPackagedDatasets(packageRoot, manifest);
     if (datasetFailures.length > 0) {
         throw new TypeError(

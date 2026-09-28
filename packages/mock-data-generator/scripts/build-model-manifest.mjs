@@ -4,7 +4,9 @@
  *
  * Every file's bytes and sha256 are recomputed, component fingerprints and the manifest revision
  * are derived from content, the classifier contract follows head.json, and the optional
- * relevance head is declared when present. provenance.reviewStatus is only set to 'approved'
+ * relevance head is declared when present. The manifest declares exactly one data resource, the
+ * value-bank store (resources/banks/value-banks.v1.json), and every concept of the concept head must
+ * have its bank there. provenance.reviewStatus is only set to 'approved'
  * when an explicit review record is supplied.
  *
  * Usage: node scripts/build-model-manifest.mjs [--resources resources/models] [--review-status approved --review-record FILE] [--check]
@@ -24,6 +26,14 @@ const checkOnly = process.argv.includes('--check');
 const RELEVANCE_HEAD_PATH = 'classifier/relevance-head.json';
 const CONCEPT_HEAD_PATH = 'classifier/concept-head.json';
 const RELEVANCE_ENCODER_PATH = 'classifier/relevance-encoder.onnx';
+/** The single data resource of the package; its bytes and digest are filled in from disk. */
+export const VALUE_BANK_STORE_DATASET = Object.freeze({
+    id: 'mockgen-value-banks',
+    version: '1',
+    path: 'resources/banks/value-banks.v1.json',
+    license: 'Apache-2.0',
+    provenance: 'package-authored synthetic examples and concept banks of the packaged classifier'
+});
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const canonicalJson = (value) => JSON.stringify(sortKeys(value));
@@ -36,6 +46,21 @@ function sortKeys(value) {
                 .map((key) => [key, sortKeys(value[key])])
         );
     return value;
+}
+
+/**
+ * Fail unless every concept of a concept head has its value bank in the store.
+ *
+ * @param {object} conceptHead parsed concept head
+ * @param {object} store parsed value-bank store
+ */
+export function assertConceptBanks(conceptHead, store) {
+    const missing = (conceptHead.concepts ?? [])
+        .map((concept) => concept.id)
+        .filter((id) => store.banks?.[`concept:${id}`]?.kind !== 'concept');
+    if (missing.length > 0) {
+        throw new Error(`concept head concepts without a value bank: ${missing.slice(0, 10).join(', ')}`);
+    }
 }
 
 /**
@@ -84,13 +109,9 @@ export async function buildModelManifest(template, describe, head) {
                 .join('')
         );
     }
-    manifest.datasets = await Promise.all(
-        (manifest.datasets ?? []).map(async (dataset) => {
-            const described = await describe(join('..', '..', dataset.path));
-            if (!described) throw new Error(`declared dataset is missing: ${dataset.path}`);
-            return { ...dataset, bytes: described.bytes, sha256: described.sha256 };
-        })
-    );
+    const store = await describe(join('..', '..', VALUE_BANK_STORE_DATASET.path));
+    if (!store) throw new Error(`the value-bank store is missing: ${VALUE_BANK_STORE_DATASET.path}`);
+    manifest.datasets = [{ ...VALUE_BANK_STORE_DATASET, bytes: store.bytes, sha256: store.sha256 }];
     manifest.revision = sha256(
         canonicalJson({
             bundleId: manifest.bundleId,
@@ -142,6 +163,13 @@ if (import.meta.url === new URL(process.argv[1], 'file:').href) {
             throw error;
         }
     };
+    try {
+        const conceptHead = JSON.parse(await readFile(join(resources, CONCEPT_HEAD_PATH), 'utf8'));
+        const store = JSON.parse(await readFile(resolve(resources, '..', '..', VALUE_BANK_STORE_DATASET.path), 'utf8'));
+        assertConceptBanks(conceptHead, store);
+    } catch (error) {
+        if (error?.code !== 'ENOENT') throw error;
+    }
     const manifest = await buildModelManifest(template, describe, head);
     if (reviewStatus !== undefined) {
         if (reviewStatus !== 'approved' || !reviewRecord)

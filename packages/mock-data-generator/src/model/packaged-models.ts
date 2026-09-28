@@ -359,7 +359,7 @@ export function parsePackagedModelManifest(value: unknown): PackagedModelManifes
                 typeof dataset.version === 'string' &&
                 !!dataset.version &&
                 typeof dataset.path === 'string' &&
-                dataset.path.startsWith('resources/datasets/') &&
+                dataset.path.startsWith('resources/banks/') &&
                 dataset.path.split('/').every((part) => !!part && part !== '.' && part !== '..') &&
                 typeof dataset.bytes === 'number' &&
                 Number.isSafeInteger(dataset.bytes) &&
@@ -384,7 +384,8 @@ export function parsePackagedModelManifest(value: unknown): PackagedModelManifes
 }
 
 /**
- * Verify replaceable sample resources without using them as a realism oracle.
+ * Verify the packaged value-bank store (and any other declared data resource) against its manifest
+ * size and checksum, without using it as a realism oracle.
  *
  * @param packageRoot
  * @param manifestValue

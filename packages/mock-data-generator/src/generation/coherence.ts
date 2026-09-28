@@ -1,6 +1,6 @@
 import type { JsonValue, MockDataRow, SyntheticCoherenceRule } from '../types.js';
 import type { SchemaEntity, SchemaProperty } from '../schema/graph.js';
-import { LOCATIONS, STATUS_SAMPLES, UNIT_SAMPLES } from '../semantics/sample-catalog.js';
+import { LOCATIONS, STATUS_SAMPLES, UNIT_SAMPLES } from '../semantics/bank-store.js';
 import { propertyValueIsValid } from './constraints.js';
 
 type MutableRow = Record<string, JsonValue>;
