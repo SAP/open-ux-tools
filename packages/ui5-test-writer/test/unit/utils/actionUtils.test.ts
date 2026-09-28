@@ -377,6 +377,8 @@ describe('buildActionStateFromSpecModelKey()', () => {
             unbound: false,
             visible: true,
             enabled: true,
+            isCritical: false,
+            parameterDialogFields: undefined,
             dynamicPath: undefined
         });
     });
