@@ -56,13 +56,14 @@ const adpTools = [
 
         Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
 
-        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call. When the selected system
-        AND application both support CloudReady and Classic (on-premise) adaptation projects, the tool
-        does NOT generate anything and instead returns status 'InputRequired' with a message. When you
-        receive 'InputRequired', ask the user which type they want, then call this tool again with
+        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
+        which type they want — in that case pass their choice through on the first call. When the selected system
+        AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
+        unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
+        you receive 'InputRequired', ask the user which type they want, then call this tool again with
         projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
-        it automatically and you never need to set projectType. Passing a projectType the system or
-        application cannot support returns status 'Error'.
+        it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
+        Passing a projectType the system or application cannot support returns status 'Error'.
 
         Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
         changes from LREP (using the same system) and include them in the generated

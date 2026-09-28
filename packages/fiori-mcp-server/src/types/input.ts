@@ -120,9 +120,10 @@ export const GenerateAdaptationProjectInputSchema = zod.object({
         .describe(
             'The adaptation project type: \'cloudReady\' (shown to the user as "Cloud Ready") or ' +
                 '\'onPremise\' (shown to the user as "Classic"). ' +
-                'Leave this UNSET on the first call. If the selected system AND application support ' +
-                "both types, the tool returns status 'InputRequired' without generating anything; " +
-                'when that happens, ask the user whether they want "Cloud Ready" or "Classic" and then ' +
+                'Leave this UNSET on the first call UNLESS the user has already stated which type they want — ' +
+                'in that case pass their choice through on the first call. If the selected system AND application ' +
+                "support both types and this is unset, the tool returns status 'InputRequired' without generating " +
+                'anything; when that happens, ask the user whether they want "Cloud Ready" or "Classic" and then ' +
                 'call this tool again with projectType set to their choice. Do NOT guess or default this value yourself.'
         ),
     appPath: zod
