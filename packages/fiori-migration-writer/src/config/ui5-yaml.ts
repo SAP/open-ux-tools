@@ -79,16 +79,8 @@ export interface UI5YamlAllFilesConfig {
  * @param config - Configuration object containing all required parameters
  */
 export async function generateAndWriteUI5Yaml(config: UI5YamlGenerationConfig): Promise<void> {
-    const {
-        templateData,
-        neoappDestinations,
-        messages,
-        destination,
-        firstNeoAppDestination,
-        webappPath,
-        setUI5version,
-        rootPath
-    } = config;
+    const { templateData, neoappDestinations, messages, destination, firstNeoAppDestination, webappPath, rootPath } =
+        config;
 
     const ui5YamlContent = await generateUI5YamlContent(
         templateData,
@@ -97,7 +89,7 @@ export async function generateAndWriteUI5Yaml(config: UI5YamlGenerationConfig): 
         destination,
         firstNeoAppDestination,
         webappPath,
-        setUI5version
+        false // Never add version to ui5.yaml - proxy reads from manifest.json
     );
 
     await updateFile(join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
