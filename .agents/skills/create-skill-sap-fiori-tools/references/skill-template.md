@@ -113,6 +113,7 @@ For starting the app (CAP `watch-<app>` / `cds watch`, RAP `npm start` vs `npm r
 ## References
 
 - [feature doc](https://example.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd)
+```
 
 ---
 
@@ -141,8 +142,8 @@ metadata:
 ## Prerequisites
 
 - **Monorepo path:** `packages/<package>`
-- **Node:** ≥ 18
-- **Package manager:** pnpm (workspaces)
+- **Node:** matches the `engines.node` range in the monorepo root `package.json` (do not hardcode a version — use `node -v` against the value in that file)
+- **Package manager:** pnpm (workspaces) — version pinned by the root `package.json` (`packageManager` field)
 - **Scope:** draft — writes files inside the monorepo; runs local tests; does not publish
 
 ---
@@ -167,3 +168,4 @@ pnpm --filter @sap-ux/<package> <script>
 - [ ] Lint clean: `pnpm --filter @sap-ux/<package> lint`
 - [ ] TypeScript compiles: `pnpm --filter @sap-ux/<package> build`
 - [ ] Changeset added if user-visible: `pnpm changeset`
+```

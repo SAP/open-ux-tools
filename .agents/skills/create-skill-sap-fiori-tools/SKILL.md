@@ -55,7 +55,7 @@ Before drafting, confirm the following in one short exchange. Do not guess.
 2. **Target directory** — absolute or workspace-relative path where the skill folder should be created. The skill will live at `<target-directory>/<skill-name>/SKILL.md`.
 3. **One-sentence purpose** — what does the skill let the model do?
 4. **Trigger phrases** — 3–5 realistic user prompts that should invoke this skill. They go into the `description` frontmatter.
-5. **Scope boundary** — `read-only`, `draft`, or `full-execute`. State it in one sentence near the top of the skill body.
+5. **Scope boundary** — `read-only` or `draft`. State it in one sentence near the top of the skill body.
 6. **Backend coverage** — CAP only, RAP only, or both. If both, samples for each are mandatory.
 7. **OData version** — V2, V4, or both. Some templates (`FE_FEOP`, `FE_FPM`) are V4-only.
 8. **Host requirements** — VS Code, BAS, Claude Code, Cursor, Cowork. Host-specific dependencies need a canonical fallback documented in the skill body.
@@ -71,15 +71,15 @@ Create the skill folder at `<target-directory>/<skill-name>/` (target directory 
 
 1. Title + one-paragraph purpose
 2. **Prerequisites** (environment, MCP servers, OData version, backends)
-3. **Scope boundary** (read-only / draft / full-execute) — one sentence, near the top
+3. **Scope boundary** (read-only / draft) — one sentence, near the top
 4. **Mandatory inputs** (what to ask the user before doing anything)
-5. Implementation steps (numbered, sequential — see Step 4)
-6. Verification checklist for the implementation steps (see Step 5)
-7. Testing (how to run the app and reach the feature — see Step 6)
-8. Common Errors and Solutions (see Step 7)
-9. Reference documentation links (see Step 8)
+5. Implementation steps (numbered, sequential — see Step 3)
+6. Verification checklist for the implementation steps (see Step 4)
+7. Testing (how to run the app and reach the feature — see Step 5)
+8. Common Errors and Solutions (see Step 6)
+9. Reference documentation links (see Step 7)
 
-Keep the SKILL.md **under 500 lines**. If you cross that threshold, chunk into `references/` (Step 9).
+Keep the SKILL.md **under 500 lines**. If you cross that threshold, chunk into `references/` (Step 8).
 
 ### Writing style
 
@@ -91,13 +91,13 @@ Keep the SKILL.md **under 500 lines**. If you cross that threshold, chunk into `
 
 ---
 
-## Step 4 — Write steps that execute sequentially
+## Step 3 — Write steps that execute sequentially
 
 Structure the implementation as **numbered, self-contained steps** that a model can execute one at a time without re-reading the whole file.
 
 Each step should:
 
-- Start with a clear objective ("Step 3 — Add the `@Aggregation.ApplySupported` annotation").
+- Start with a clear objective ("Add the `@Aggregation.ApplySupported` annotation").
 - List preconditions ("The entity must have at least one numeric property").
 - Give a runnable snippet or an exact MCP call.
 - End with a verification cue ("You should now see the aggregation function in `$metadata`").
@@ -108,22 +108,22 @@ Also: apply DRY. If two backends share 80% of the flow, put the shared part in t
 
 ---
 
-## Step 5 — Verification checklist for the implementation steps
+## Step 4 — Verification checklist for the implementation steps
 
-Directly after the numbered implementation steps, add a **Verification Checklist** that lets the model (and the user) confirm every step from Step 4 was executed correctly on the target project. This is the feature-level check — not a skill-authoring check.
+Directly after the numbered implementation steps, add a **Verification Checklist** that lets the model (and the user) confirm every step from Step 3 was executed correctly on the target project. This is the feature-level check — not a skill-authoring check.
 
 Use the `## Verification Checklist` block already present in **[references/skill-template.md](references/skill-template.md)** as the starting point, then adapt the `**After Step N — ...**` groups to the actual steps in your skill.
 
 ---
 
-## Step 6 — Testing (how to run the app and reach the feature)
+## Step 5 — Testing (how to run the app and reach the feature)
 
 After the Verification Checklist, add a **Testing** section that tells the user exactly how to start their project so they can walk the Runtime and Regression groups of the checklist. Do not assume the user knows which script to run — CAP, standalone with a live backend, and standalone with mock data all use different commands.
 
 Refer to `sap-fiori-app-development` (section *Application Preview Guidelines*) for anything environment-related (Node install, npm workspace, mock server details). Never re-explain generic project startup in every feature skill.
 ---
 
-## Step 7 — Common Errors and Solutions section
+## Step 6 — Common Errors and Solutions section
 
 Every skill ends with a **Common Errors and Solutions** section. This is the section users jump to when the happy path fails — it lists concrete error messages and the exact fix for each. Look at the `sap-fiori-tree-table` skill for a well-shaped example.
 
@@ -131,14 +131,14 @@ Use the `## Common Errors and Solutions` block already present in **[references/
 
 ---
 
-## Step 8 — Reference documentation links
+## Step 7 — Reference documentation links
 
 Every skill ends with a `## References` section that links out to the authoritative source. This is what users click when the skill's summary is not enough.
 Do not paste raw URLs into the middle of the skill — link them from the References section and reference by name in prose. Broken links here are user-visible; check them before packaging.
 
 ---
 
-## Step 9 — Chunking (the 500-line rule)
+## Step 8 — Chunking (the 500-line rule)
 
 Skill files load into context. Long ones crowd out everything else and slow the model down. Follow progressive disclosure:
 
@@ -172,7 +172,7 @@ See existing skills such as `sap-fiori-tree-table/` and `sap-fiori-eslint-plugin
 
 ---
 
-## Step 10 — Don't Repeat Yourself (DRY)
+## Step 9 — Don't Repeat Yourself (DRY)
 
 Skills in this repo repeatedly discover the same patterns. Bake reusable content into shared references rather than restating it in every skill.
 
