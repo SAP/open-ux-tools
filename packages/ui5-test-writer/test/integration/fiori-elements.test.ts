@@ -81,6 +81,12 @@ describe('ui5-test-writer - Integration tests', () => {
         );
         expect(jsIntegrationFiles).toHaveLength(0);
 
+        // Each journey resets mock and test data (with the manifest's service URI) before starting the app
+        const journey = Object.entries(dumped).find(([p]) => p.endsWith('FirstJourney.ts'))?.[1].contents ?? '';
+        expect(journey).toContain('Given.iResetMockData({ ServiceUri: "/restaurant/" });');
+        expect(journey.indexOf('Given.iResetMockData(')).toBeLessThan(journey.indexOf('Given.iResetTestData()'));
+        expect(journey.indexOf('Given.iResetTestData()')).toBeLessThan(journey.indexOf('Given.iStartMyApp()'));
+
         expect(dumped).toMatchSnapshot();
     });
 });

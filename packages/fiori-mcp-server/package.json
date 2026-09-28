@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "1.13.0",
+    "version": "1.14.0",
     "mcpName": "io.github.SAP/fiori-mcp-server",
     "keywords": [
         "SAP Fiori tools",
@@ -75,6 +75,7 @@
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
