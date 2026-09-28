@@ -42,6 +42,24 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: jest.fn().mockResolvedValue(mockedService)
 }));
 
+// Mock i18n to return translated text
+jest.unstable_mockModule('../../../../src/i18n', () => ({
+    t: jest.fn((key: string, options?: any) => {
+        // Return actual text for testing
+        if (key === 'systemActions.systemAdded') {
+            return `System '${options?.name}' added.`;
+        }
+        if (key === 'systemActions.systemNotAdded') {
+            return 'System was not added.';
+        }
+        if (key === 'systemActions.systemNotSaved') {
+            return 'System was not saved.';
+        }
+        return key;
+    }),
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
 const { addSystemAddCommand } = await import('../../../../src/cli/add/system.js');
 
 describe('system/add', () => {
@@ -85,7 +103,7 @@ describe('system/add', () => {
                 'testuser',
                 '--password',
                 'testpass',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 
@@ -101,7 +119,7 @@ describe('system/add', () => {
             expect.objectContaining({
                 url: 'https://my-sap.example.com'
             }),
-            true // skipCheck = true
+            true // skipConnectionValidation = true
         );
     });
 
@@ -122,7 +140,7 @@ describe('system/add', () => {
                 'user1',
                 '--password',
                 'secret',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 
@@ -139,7 +157,7 @@ describe('system/add', () => {
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-check'])
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-connection-validation'])
         );
 
         // Then
@@ -148,7 +166,7 @@ describe('system/add', () => {
         expect(written.password).toBeUndefined();
     });
 
-    test('should check connection when not using --skip-check', async () => {
+    test('should check connection when not using --skip-connection-validation', async () => {
         // Given
         const command = new Command('add');
         addSystemAddCommand(command);
@@ -164,7 +182,7 @@ describe('system/add', () => {
                 url: 'https://example.com',
                 username: 'user1'
             }),
-            false // skipCheck = false
+            false // skipConnectionValidation = false
         );
     });
 
@@ -193,7 +211,7 @@ describe('system/add', () => {
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-check'])
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-connection-validation'])
         );
 
         // Then
@@ -209,7 +227,7 @@ describe('system/add', () => {
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-check'])
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-connection-validation'])
         );
 
         // Then
@@ -231,7 +249,7 @@ describe('system/add', () => {
                 'https://example.com',
                 '--type',
                 'FooBar',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 
@@ -255,7 +273,7 @@ describe('system/add', () => {
                 'https://example.com',
                 '--auth',
                 'notAnAuthType',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 
@@ -279,7 +297,7 @@ describe('system/add', () => {
                 'https://example.com',
                 '--connection-type',
                 'bad_type',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 
@@ -295,7 +313,7 @@ describe('system/add', () => {
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'not-a-valid-url', '--skip-check'])
+            getArgv(['system', '--name', 'My System', '--url', 'not-a-valid-url', '--skip-connection-validation'])
         );
 
         // Then
@@ -310,7 +328,16 @@ describe('system/add', () => {
 
         // When - test with 2-digit client (invalid)
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--client', '12', '--skip-check'])
+            getArgv([
+                'system',
+                '--name',
+                'My System',
+                '--url',
+                'https://example.com',
+                '--client',
+                '12',
+                '--skip-connection-validation'
+            ])
         );
 
         // Then
@@ -334,7 +361,7 @@ describe('system/add', () => {
                 'https://example.com',
                 '--client',
                 '100',
-                '--skip-check'
+                '--skip-connection-validation'
             ])
         );
 
@@ -350,7 +377,16 @@ describe('system/add', () => {
 
         // When - test with empty client
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--client', '', '--skip-check'])
+            getArgv([
+                'system',
+                '--name',
+                'My System',
+                '--url',
+                'https://example.com',
+                '--client',
+                '',
+                '--skip-connection-validation'
+            ])
         );
 
         // Then
@@ -366,7 +402,7 @@ describe('system/add', () => {
 
         // When
         await command.parseAsync(
-            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-check'])
+            getArgv(['system', '--name', 'My System', '--url', 'https://example.com', '--skip-connection-validation'])
         );
 
         // Then

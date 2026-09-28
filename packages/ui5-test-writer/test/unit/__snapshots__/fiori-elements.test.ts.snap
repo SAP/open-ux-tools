@@ -208,6 +208,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -246,7 +248,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -634,6 +637,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -672,7 +677,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -1037,6 +1043,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -1075,7 +1083,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -1440,6 +1449,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -1478,7 +1489,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -1820,6 +1832,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -1855,7 +1869,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -2158,6 +2173,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             
         });
@@ -2184,7 +2201,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -2492,6 +2510,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             
         });
@@ -2518,7 +2538,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -2887,6 +2908,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -2925,7 +2948,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"vesc.demo.employee.project2\\": \\"../../\\"
+                \\"vesc.demo.employee.project2\\": \\"../../\\",
+                \\"vesc.demo.employee.project2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -3411,6 +3435,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -3449,7 +3475,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"vesc.demo.employee.project2\\": \\"../../\\"
+                \\"vesc.demo.employee.project2\\": \\"../../\\",
+                \\"vesc.demo.employee.project2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -3914,6 +3941,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesListTarget.iSeeThisPage();
         });
@@ -3952,7 +3981,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -5777,6 +5807,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -5815,7 +5847,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -7471,6 +7504,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -7509,7 +7544,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -9292,6 +9328,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -9330,7 +9368,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -11119,6 +11158,8 @@ server:
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelList.iSeeThisPage();
         });
@@ -11157,7 +11198,8 @@ server:
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -11503,6 +11545,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             
         });
@@ -11529,7 +11573,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"test.ui5-test-writer\\": \\"../../\\"
+                \\"test.ui5-test-writer\\": \\"../../\\",
+                \\"test.ui5-test-writer.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -11875,6 +11920,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -11913,7 +11960,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -12103,6 +12151,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -12333,6 +12383,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -12371,7 +12423,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -12561,6 +12614,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -12791,6 +12846,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -12829,7 +12886,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -13019,6 +13077,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -13226,6 +13286,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -13261,7 +13323,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -13409,6 +13472,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -13680,6 +13745,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -13718,7 +13785,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"vesc.demo.employee.project2\\": \\"../../\\"
+                \\"vesc.demo.employee.project2\\": \\"../../\\",
+                \\"vesc.demo.employee.project2.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -13988,6 +14056,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -14244,6 +14314,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
     });
@@ -14282,7 +14354,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -14518,6 +14591,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -14772,6 +14847,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
     });
@@ -14810,7 +14887,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -15046,6 +15124,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -15300,6 +15380,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
     });
@@ -15338,7 +15420,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"projectservice\\": \\"../../\\"
+                \\"projectservice\\": \\"../../\\",
+                \\"projectservice.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -15564,6 +15647,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -15798,6 +15883,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -15836,7 +15923,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -16208,6 +16296,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -16246,7 +16336,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -16618,6 +16709,8 @@ Object {
         QUnit.module(\\"First journey\\");
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheEmployeesList.iSeeThisPage();
         });
@@ -16656,7 +16749,8 @@ Object {
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -17019,6 +17113,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -17057,7 +17153,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -17257,6 +17354,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -17487,6 +17586,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -17525,7 +17626,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -17725,6 +17827,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -17955,6 +18059,8 @@ function journey() {
     QUnit.module(\\"First journey\\");
 
     opaTest(\\"Start application\\", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         Then.onTheEmployeesListGenerated.iSeeThisPage();
     });
@@ -17993,7 +18099,8 @@ runner.run([journey]);
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"ui5-test-writer.test.employees\\": \\"../../\\",
+                \\"ui5-test-writer.test.employees.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -18183,6 +18290,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
@@ -19859,6 +19968,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -19920,7 +20031,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -21729,6 +21841,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -21779,7 +21893,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -23589,6 +23704,8 @@ sap.ui.define([
         const defaultTableId = \\"\\";
 
         opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -23633,7 +23750,8 @@ sap.ui.define([
             src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"project1\\": \\"../../\\"
+                \\"project1\\": \\"../../\\",
+                \\"project1.test\\": \\"../\\"                
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"

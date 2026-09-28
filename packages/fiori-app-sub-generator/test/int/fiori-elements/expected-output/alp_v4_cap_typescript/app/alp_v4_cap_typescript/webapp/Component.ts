@@ -1,7 +1,7 @@
 import BaseComponent from "sap/fe/core/AppComponent";
 
 /**
- * @namespace testNameSpace.alpv4captypescript
+ * @namespace testnamespace.alpv4captypescript
  */
 export default class Component extends BaseComponent {
 

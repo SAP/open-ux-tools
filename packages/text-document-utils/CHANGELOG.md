@@ -1,5 +1,13 @@
 # @sap-ux/text-document-utils
 
+## 1.0.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Migration to a new AST format of the CDS flattened annotations [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
 ## 1.0.2
 
 ### Patch Changes

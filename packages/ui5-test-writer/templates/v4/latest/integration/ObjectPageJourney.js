@@ -25,6 +25,8 @@ sap.ui.define([
         QUnit.module("<%- name%>ObjectPage journey");
 
         opaTest("Navigate to <%- name%>ObjectPage", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+            Given.iResetTestData();
             Given.iStartMyApp();
 <% if(navigationParents.parentLRName) { -%>
 <% const parentTableId = navigationParents.parentLRViewKey ? '"' + navigationParents.parentLRViewKey + '"' : ''; -%>
@@ -55,6 +57,11 @@ sap.ui.define([
 <%     headerActions.forEach(function(action) { -%>
 <%     if (action.visible) { -%>
 <%         if (action.menuActions) { -%>
+<%             if (action.splitButton) { -%>
+            // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>);
+            // When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%             } else { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>);
             When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%             action.menuActions.forEach(function(menuAction) { -%>
@@ -63,17 +70,28 @@ sap.ui.define([
             // When.onThe<%- name%>Generated.onHeader().iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                 } -%>
 <%             }); -%>
+<%             } -%>
 <%         } else if (action.custom) { -%>
 <%             if (action.labelUnresolved) { -%>
             // TODO: label is an unresolved i18n key; replace with the rendered action text
 <%             } -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
-            // When.onThe<%- name%>Generated.onHeader().iPressAction(<%- JSON.stringify(action.label) %>);
+            // When.onThe<%- name%>Generated.onHeader().iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%         } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
-            // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%         } else { -%>
             Then.onThe<%- name%>Generated.onHeader().iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
+<%         } -%>
+<%         if (action.isCritical && action.enabled === 'dynamic') { -%>
+            // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the opened entity. Uncomment when the entity state enables it to test the confirmation dialog.
+            // When.onThe<%- name%>Generated.onHeader().iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%         } else if (action.isCritical) { -%>
+            When.onThe<%- name%>Generated.onHeader().iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%         } else if (!action.custom && !action.menuActions) { -%>
             // When.onThe<%- name%>Generated.onHeader().iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%         } -%>
 <%     } -%>
@@ -120,7 +138,7 @@ sap.ui.define([
 <% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
-        opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1 || (section.subSections && section.subSections.length > 1) || (section.contactCardFields && section.contactCardFields.length > 0) || (section.contactCardColumns && section.contactCardColumns.length > 0) || (section.subSections || []).some(function(sub){ return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); }) || (section.actions && section.actions.some(function(a) { return a.visible && a.menuActions; }))) { %>When<% } else { %>_When<% } %>, Then) {
+        opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1 || (section.subSections && section.subSections.length > 1) || (section.contactCardFields && section.contactCardFields.length > 0) || (section.contactCardColumns && section.contactCardColumns.length > 0) || (section.subSections || []).some(function(sub){ return (sub.contactCardFields && sub.contactCardFields.length > 0) || (sub.contactCardColumns && sub.contactCardColumns.length > 0); }) || (section.actions || []).some(function(a){ return a.visible && ((a.isCritical && a.enabled !== 'dynamic') || a.menuActions); })) { %>When<% } else { %>_When<% } %>, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
 <% } -%>
@@ -130,6 +148,11 @@ sap.ui.define([
 <%      if (action.visible) { -%>
 <%          if (section.isTable && section.navigationProperty) { -%>
 <%              if (action.menuActions) { -%>
+<%                  if (action.splitButton) { -%>
+            // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  } else { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
             When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%                  action.menuActions.forEach(function(menuAction) { -%>
@@ -138,21 +161,42 @@ sap.ui.define([
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
+<%                  } -%>
 <%              } else if (action.custom) { -%>
 <%                  if (action.labelUnresolved) { -%>
             // TODO: label is an unresolved i18n key; replace with the rendered action text
 <%                  } -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
-            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction(<%- JSON.stringify(action.label) %>);
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
-            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
             Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
+<%              } -%>
+<%              if (action.isCritical && action.enabled === 'dynamic') { -%>
+            // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the confirmation dialog.
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
+            // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else if (action.isCritical) { -%>
+            // Critical action (Common.IsActionCritical): select a row, press it, assert the confirmation dialog opens, then cancel so it is not executed.
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+            // Deselect the row so the following actions start with an empty selection.
+            When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iSelectRows(0);
+<%              } else if (!action.custom && !action.menuActions) { -%>
             // When.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } -%>
 <%          } else { -%>
 <%              if (action.menuActions) { -%>
+<%                  if (action.splitButton) { -%>
+            // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
+<%                  } else { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
             When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%                  action.menuActions.forEach(function(menuAction) { -%>
@@ -161,17 +205,29 @@ sap.ui.define([
             // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
+<%                  } -%>
 <%              } else if (action.custom) { -%>
 <%                  if (action.labelUnresolved) { -%>
             // TODO: label is an unresolved i18n key; replace with the rendered action text
 <%                  } -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
-            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction(<%- JSON.stringify(action.label) %>);
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
-            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } else { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
+<%              } -%>
+<%              if (action.isCritical && action.enabled === 'dynamic') { -%>
+            // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the opened entity. Uncomment when the entity state enables it to test the confirmation dialog.
+            // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else if (action.isCritical) { -%>
+            // Critical action (Common.IsActionCritical): press it, assert the confirmation dialog opens, then cancel so it is not executed.
+            When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+            Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
+            When.onThe<%- name%>Generated.onMessageDialog().iCancel();
+<%              } else if (!action.custom && !action.menuActions) { -%>
             // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } -%>
 <%          } -%>

@@ -24,7 +24,7 @@ describe('<UILoadButton />', () => {
 
     it('Should render a LoadButton component', () => {
         const { container } = render(<UILoadButton onClick={onClick} />);
-        expect(container.querySelectorAll(selectors.button).length).toEqual(1);
+        expect(container.querySelectorAll(selectors.button)).toHaveLength(1);
     });
 
     const testCases = [undefined, 'dummy'];

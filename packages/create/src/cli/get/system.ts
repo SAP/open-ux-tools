@@ -4,6 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { getLogger } from '../../tracing/index.js';
+import { findSystemByUrl } from '../utils/system-lookup.js';
 
 /**
  * Add the "get system" subcommand to a passed command.
@@ -54,10 +55,12 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
             entityName: 'system',
             logger: storeLogger
         });
-        const key = new BackendSystemKey({ url, client });
-        const system = await service.read(key);
+
+        // Use smart lookup to handle client mismatch scenarios
+        const system = await findSystemByUrl(url, client, service);
 
         if (!system) {
+            const key = new BackendSystemKey({ url, client });
             logger.error(`System not found: ${key.getId()}`);
             return;
         }
@@ -88,6 +91,8 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
             logger.info(`Connection: ${system.connectionType}`);
             if (system.hasSensitiveData) {
                 logger.info(`Credentials stored securely.`);
+            } else {
+                logger.info(`No credentials stored.`);
             }
         }
     } catch (error) {

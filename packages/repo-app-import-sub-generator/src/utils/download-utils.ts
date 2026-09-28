@@ -69,16 +69,22 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
  * Downloads application files from the ABAP repository.
  *
  * @param {string} repoName - The repository name of the application.
+ * @returns {Promise<boolean>} - Resolves to false if no data was returned (such as on a legacy ABAP system), true otherwise.
  */
-export async function downloadApp(repoName: string): Promise<void> {
+export async function downloadApp(repoName: string): Promise<boolean> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
     const ui5AbapRepository = await serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
     RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
     const downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
+        RepoAppDownloadLogger.logger?.error(t('error.appDownloadFailed'));
+        return false;
+    }
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
     // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;
+    return true;
 }
 
 /**
