@@ -90,16 +90,12 @@ describe('migrate command', () => {
     });
 
     test('should migrate with hostname', async () => {
-        mockPrompt
-            .mockResolvedValueOnce({ clientValue: '' })
-            .mockResolvedValueOnce({ version: '' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(
-            getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com'])
-        );
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com']));
 
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com', '', undefined);
     });
@@ -145,16 +141,12 @@ describe('migrate command', () => {
             ]
         });
 
-        mockPrompt
-            .mockResolvedValueOnce({ clientValue: '' })
-            .mockResolvedValueOnce({ version: '' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(
-            getArgv(['migrate', testProjectRoot, '--destination', 'myDest'])
-        );
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest']));
 
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('SUCCESS'));
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -168,9 +160,7 @@ describe('migrate command', () => {
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(
-            getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--client', '100'])
-        );
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--client', '100']));
 
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('already migrated'));
         expect(loggerMock.info).toHaveBeenCalledWith('Migration cancelled.');
@@ -180,31 +170,23 @@ describe('migrate command', () => {
     test('should force migrate when flag provided', async () => {
         mockGetProjectType.mockResolvedValue('edmx');
 
-        mockPrompt
-            .mockResolvedValueOnce({ clientValue: '' })
-            .mockResolvedValueOnce({ version: '' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(
-            getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--force'])
-        );
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--force']));
 
         expect(mockMigrate).toHaveBeenCalled();
     });
 
     test('should use sap-system-name as destination alias', async () => {
-        mockPrompt
-            .mockResolvedValueOnce({ clientValue: '' })
-            .mockResolvedValueOnce({ version: '' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(
-            getArgv(['migrate', testProjectRoot, '--sap-system-name', 'mySystem'])
-        );
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--sap-system-name', 'mySystem']));
 
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/mySystem', '', undefined);
     });
@@ -276,22 +258,23 @@ describe('migrate command', () => {
     });
 
     test('should prompt for UI5 version when not provided', async () => {
-        mockPrompt
-            .mockResolvedValueOnce({ clientValue: '' })
-            .mockResolvedValueOnce({ version: '1.108.0' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '1.108.0' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
         await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest']));
 
-        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/myDest', 'https://ui5.sap.com/1.108.0', undefined);
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.any(String),
+            '/myDest',
+            'https://ui5.sap.com/1.108.0',
+            undefined
+        );
     });
 
     test('should prompt for client when not provided', async () => {
-        mockPrompt
-            .mockResolvedValueOnce({ clientValue: '200' })
-            .mockResolvedValueOnce({ version: '' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '200' }).mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
