@@ -222,7 +222,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode', 'playwright-core'],
+    external: ['vscode'],
     legalComments: 'linked',
     metafile: true,
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]

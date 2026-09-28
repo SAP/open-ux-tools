@@ -2700,10 +2700,6 @@ importers:
         version: 5.2.14
 
   packages/fiori-mcp-server:
-    dependencies:
-      playwright-core:
-        specifier: 1.63.0
-        version: 1.63.0
     devDependencies:
       '@huggingface/transformers':
         specifier: 4.2.0
@@ -2831,6 +2827,9 @@ importers:
       os-name:
         specifier: 4.0.1
         version: 4.0.1
+      playwright-core:
+        specifier: 1.63.0
+        version: 1.63.0
       prettify-xml:
         specifier: 1.2.0
         version: 1.2.0
