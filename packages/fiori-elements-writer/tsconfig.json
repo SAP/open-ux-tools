@@ -1,43 +1,47 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["../../types/mem-fs-editor.d.ts", "src", "src/**/*.json"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../annotation-generator"
     },
-    "references": [
-        {
-            "path": "../annotation-generator"
-        },
-        {
-            "path": "../cap-config-writer"
-        },
-        {
-            "path": "../eslint-plugin-fiori-tools"
-        },
-        {
-            "path": "../fe-fpm-writer"
-        },
-        {
-            "path": "../fiori-generator-shared"
-        },
-        {
-            "path": "../logger"
-        },
-        {
-            "path": "../odata-service-writer"
-        },
-        {
-            "path": "../project-access"
-        },
-        {
-            "path": "../ui5-application-writer"
-        },
-        {
-            "path": "../ui5-config"
-        },
-        {
-            "path": "../ui5-test-writer"
-        }
-    ]
+    {
+      "path": "../cap-config-writer"
+    },
+    {
+      "path": "../eslint-plugin-fiori-tools"
+    },
+    {
+      "path": "../fe-fpm-writer"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../ui5-application-writer"
+    },
+    {
+      "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-test-writer"
+    }
+  ]
 }
