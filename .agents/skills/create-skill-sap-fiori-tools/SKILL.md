@@ -1,0 +1,189 @@
+---
+name: create-skill-sap-fiori-tools
+description: >
+  Author, review, or refactor a skill for the SAP Fiori Tools / open-ux-tools
+  ecosystem. Use this skill whenever the user wants to create a new skill,
+  rewrite an existing one, add references, split an oversized SKILL.md, enforce the
+  `sap-fiori-<feature>` naming convention, validate frontmatter, add CAP/RAP samples,
+  declare OData V2 vs V4 requirements, mark a skill as internal (developer-facing) or
+  external (public), or produce a verification checklist — even if the user does not
+  explicitly say "skill". Enforces host-agnostic tooling, canonical fallbacks, explicit
+  scope boundaries, and progressive-disclosure chunking (<500 lines per file).
+argument-hint: "Skill name, category (internal|external), backends (CAP/RAP), OData version, target directory"
+metadata:
+  author: sap-fiori-tools
+  version: "0.0.1"
+---
+
+# Create Skill — SAP Fiori Tools
+
+Author skills for the `open-ux-tools` ecosystem, regardless of where they live on disk. This skill enforces the conventions that make Fiori Tools skills portable across VS Code, SAP Business Application Studio (BAS), Claude Code, Cursor, and Cowork — and safe to ship publicly.
+
+> **Skill location is an input, not a convention.** Different hosts and repos use different directories (`.agents/skills/`, `~/.agents/skills/`, `assets/prompts/skills/`, a monorepo path, etc.). Ask the user *where* the skill should be created (or refactored) and treat that path as the target directory throughout. This SKILL.md never assumes a specific location.
+
+> **Why a dedicated creator?** Generic skill-creator advice is not enough here. Our skills must run in multiple hosts, target two backends (CAP + ABAP RAP), two OData versions (V2 + V4), and two audiences (internal developers vs. public end users). This skill captures those constraints so authors do not have to rediscover them.
+
+---
+
+## Step 0 — Classify the skill (do this first)
+
+Before writing anything, decide **who the skill is for**. This drives every later choice.
+
+| Category | Audience | Examples in this repo | Ships publicly? |
+|---|---|---|---|
+| **Internal** | Engineers working on the `open-ux-tools` monorepo | `eslint-rule-development`, `odata-vocabularies-sync` | No — monorepo-only |
+| **External** | End users building SAP Fiori apps (CAP or standalone) | `sap-fiori-app-development`, `sap-fiori-analytical-chart`, `sap-fiori-tree-table`, `sap-fiori-create-cli`, `sap-fiori-eslint-plugin`, `sap-fiori-opa5-test-development`, `sap-fiori-add-visual-filter` | Yes |
+
+### Naming convention (mandatory)
+
+| Category | Pattern | Example |
+|---|---|---|
+| External | `sap-fiori-<feature>` (kebab-case, feature-scoped, no product-suffix like `-cli` unless the skill *is* the CLI) | `sap-fiori-tree-table`, `sap-fiori-analytical-chart` |
+| Internal | `<domain>-<action>` (kebab-case; no `sap-fiori-` prefix so it is obvious the skill is not public) | `eslint-rule-development`, `odata-vocabularies-sync` |
+
+**Do not** ship a public skill without the `sap-fiori-` prefix, and **do not** prefix an internal-only skill with `sap-fiori-` (it will leak into user-facing skill listings).
+
+Ask the user which category applies **if it is not obvious from the request**. Then continue.
+
+---
+
+## Step 1 — Capture intent and inputs
+
+Before drafting, confirm the following in one short exchange. Do not guess.
+
+1. **Skill name** — follows the pattern from Step 0.
+2. **Target directory** — absolute or workspace-relative path where the skill folder should be created. The skill will live at `<target-directory>/<skill-name>/SKILL.md`.
+3. **One-sentence purpose** — what does the skill let the model do?
+4. **Trigger phrases** — 3–5 realistic user prompts that should invoke this skill. They go into the `description` frontmatter.
+5. **Scope boundary** — `read-only`, `draft`, or `full-execute`. State it in one sentence near the top of the skill body.
+6. **Backend coverage** — CAP only, RAP only, or both. If both, samples for each are mandatory.
+7. **OData version** — V2, V4, or both. Some templates (`FE_FEOP`, `FE_FPM`) are V4-only.
+8. **Host requirements** — VS Code, BAS, Claude Code, Cursor, Cowork. Host-specific dependencies need a canonical fallback documented in the skill body.
+9. **Prerequisite MCP servers / extensions** — Fiori MCP, CDS MCP, ABAP Development Tools, etc.
+
+If anything is missing, ask before drafting.
+
+---
+
+## Step 2 — Draft the SKILL.md
+
+Create the skill folder at `<target-directory>/<skill-name>/` (target directory captured in Step 1) and place `SKILL.md` inside it. Use the canonical template in **[references/skill-template.md](references/skill-template.md)**. It contains ready-to-copy frontmatter for both internal and external skills, plus the standard section order:
+
+1. Title + one-paragraph purpose
+2. **Prerequisites** (environment, MCP servers, OData version, backends)
+3. **Scope boundary** (read-only / draft / full-execute) — one sentence, near the top
+4. **Mandatory inputs** (what to ask the user before doing anything)
+5. Implementation steps (numbered, sequential — see Step 4)
+6. Verification checklist for the implementation steps (see Step 5)
+7. Testing (how to run the app and reach the feature — see Step 6)
+8. Common Errors and Solutions (see Step 7)
+9. Reference documentation links (see Step 8)
+
+Keep the SKILL.md **under 500 lines**. If you cross that threshold, chunk into `references/` (Step 9).
+
+### Writing style
+
+- Prefer imperative voice: *"Read the manifest.json"*, not *"You should read..."*.
+- Explain the **why** for non-obvious rules. LLMs follow reasoning better than they follow shouted `MUST`s. Save all-caps `MUST` / `NEVER` for the two or three genuinely dangerous cases (data loss, credential exposure, wrong OData version).
+- Use tables for decision matrices (backend × OData version, host × MCP availability, etc.). They compress well and scan quickly.
+- Show **short** code examples inline. Long snippets belong in `references/`.
+- **Product-name capitalization (mandatory).** Write **SAP** in all caps, **Fiori** with a capital F, and **elements** in lowercase. Never write "Fiori" on its own — always **SAP Fiori** (or **SAP Fiori elements**, **SAP Fiori tools**). Examples: ✅ `SAP Fiori elements`, `SAP Fiori tools`, `SAP Fiori app` — ❌ `SAPUI5 Fiori`, `Fiori Elements`, `fiori app`, `SAP fiori`.
+
+---
+
+## Step 4 — Write steps that execute sequentially
+
+Structure the implementation as **numbered, self-contained steps** that a model can execute one at a time without re-reading the whole file.
+
+Each step should:
+
+- Start with a clear objective ("Step 3 — Add the `@Aggregation.ApplySupported` annotation").
+- List preconditions ("The entity must have at least one numeric property").
+- Give a runnable snippet or an exact MCP call.
+- End with a verification cue ("You should now see the aggregation function in `$metadata`").
+
+**Why:** the model executes skills like a checklist. Steps that mix concerns force it to re-read and re-plan, which wastes tokens and produces inconsistent output.
+
+Also: apply DRY. If two backends share 80% of the flow, put the shared part in the SKILL.md and split only the deltas into per-backend files under `references/` (for example `references/cap/implementation.md` and `references/rap/implementation.md`).
+
+---
+
+## Step 5 — Verification checklist for the implementation steps
+
+Directly after the numbered implementation steps, add a **Verification Checklist** that lets the model (and the user) confirm every step from Step 4 was executed correctly on the target project. This is the feature-level check — not a skill-authoring check.
+
+Use the `## Verification Checklist` block already present in **[references/skill-template.md](references/skill-template.md)** as the starting point, then adapt the `**After Step N — ...**` groups to the actual steps in your skill.
+
+---
+
+## Step 6 — Testing (how to run the app and reach the feature)
+
+After the Verification Checklist, add a **Testing** section that tells the user exactly how to start their project so they can walk the Runtime and Regression groups of the checklist. Do not assume the user knows which script to run — CAP, standalone with a live backend, and standalone with mock data all use different commands.
+
+Refer to `sap-fiori-app-development` (section *Application Preview Guidelines*) for anything environment-related (Node install, npm workspace, mock server details). Never re-explain generic project startup in every feature skill.
+---
+
+## Step 7 — Common Errors and Solutions section
+
+Every skill ends with a **Common Errors and Solutions** section. This is the section users jump to when the happy path fails — it lists concrete error messages and the exact fix for each. Look at the `sap-fiori-tree-table` skill for a well-shaped example.
+
+Use the `## Common Errors and Solutions` block already present in **[references/skill-template.md](references/skill-template.md)** as the starting point — it ships with a `<!-- TODO -->` placeholder ready to be filled in.
+
+---
+
+## Step 8 — Reference documentation links
+
+Every skill ends with a `## References` section that links out to the authoritative source. This is what users click when the skill's summary is not enough.
+Do not paste raw URLs into the middle of the skill — link them from the References section and reference by name in prose. Broken links here are user-visible; check them before packaging.
+
+---
+
+## Step 9 — Chunking (the 500-line rule)
+
+Skill files load into context. Long ones crowd out everything else and slow the model down. Follow progressive disclosure:
+
+- **SKILL.md — always in context.** Keep it ≤ 500 lines. Use it as an index that points to `references/` for depth.
+- **`references/*.md` — pulled in on demand.** Detailed CAP flows, RAP flows, error catalogues, long CDS templates, historical migration notes.
+
+### When to split
+
+Count lines with `wc -l SKILL.md`. If the file is:
+
+- **< 300 lines** — keep flat.
+- **300–500 lines** — consider splitting the largest section (usually the RAP implementation) into a file under `references/` (e.g. `references/rap/implementation.md`).
+- **> 500 lines** — split now. Model performance drops sharply.
+
+Layout patterns that work well (paths shown relative to `<target-directory>/<skill-name>/`):
+
+```
+<skill-name>/
+├── SKILL.md                        # ~200-400 lines: purpose, prerequisites, decision matrix, quick summaries
+└── references/
+    ├── cap/
+    │   └── implementation.md       # Full CAP flow
+    └── rap/
+        ├── implementation.md       # Full RAP flow
+        └── detailed-guides/
+            ├── 1-read-only.md
+            └── 2-editable.md
+```
+
+See existing skills such as `sap-fiori-tree-table/` and `sap-fiori-eslint-plugin/` (wherever your host stores them) for concrete examples.
+
+---
+
+## Step 10 — Don't Repeat Yourself (DRY)
+
+Skills in this repo repeatedly discover the same patterns. Bake reusable content into shared references rather than restating it in every skill.
+
+Signals you are repeating yourself:
+
+- Two skills both explain "how to run `cds watch` for a CAP project" → link to `sap-fiori-app-development` instead.
+- Every RAP skill re-explains "install ABAP Development Tools for VS Code" → put it once in a shared `references/` file and link.
+- Three skills copy the same CDS snippet → move it to `references/backend-samples.md` and link.
+
+**Do not** duplicate content just to keep a skill "self-contained". Cross-references cost one line; duplication costs maintenance forever.
+
+The one exception: **the Prerequisites section**. Repeat it in every skill even if it is nearly identical elsewhere. It is the first thing users read, and a link there is a bad user experience.
+
+---
