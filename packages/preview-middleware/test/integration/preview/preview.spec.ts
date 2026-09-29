@@ -111,7 +111,7 @@ const prepare = async (ui5Version: string, useNewSandbox = false) => {
     const port = await getPort();
     getUrl = buildUrl(port);
     await startServer({
-        command: `cd ${testCwd} && npx ui5 serve --port ${port}`,
+        command: `cd ${testCwd} && NODE_OPTIONS='' && npx ui5 serve --port ${port}`,
         launchTimeout: SERVER_TIMEOUT,
         port: port,
         host: 'localhost',
