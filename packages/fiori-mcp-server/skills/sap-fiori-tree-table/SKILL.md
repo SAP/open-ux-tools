@@ -42,7 +42,7 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 
 ## CAP Implementation
 
-📖 **[Complete CAP Implementation Guide](./references/cap/implementation.md)**
+📖 **[Complete CAP Implementation Guide](./references/cap-implementation.md)**
 
 **Quick Summary:**
 - 6-step process: Check entity → Add association → Add @hierarchy → Configure manifest → Create data → Test
@@ -54,14 +54,14 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 
 ## ABAP RAP Implementation
 
-📖 **[Complete RAP Implementation Guide](./references/rap/implementation.md)**
+📖 **[Complete RAP Implementation Guide](./references/rap-implementation.md)**
 
 **Quick Summary:**
 - 4-step process: Check existing hierarchy → Implement backend → Configure manifest → Test
 - **Decision required:** Read-only (List Report only) vs. Editable (with Object Page)
 - For detailed backend implementation:
-  - [Read-Only Treeviews Guide](./references/rap/detailed-guides/1-read-only-treeviews.md)
-  - [Editable Treeviews Guide](./references/rap/detailed-guides/2-editable-treeviews.md)
+  - [Read-Only Treeviews Guide](./references/rap-read-only-treeviews.md)
+  - [Editable Treeviews Guide](./references/rap-editable-treeviews.md)
 
 ---
 

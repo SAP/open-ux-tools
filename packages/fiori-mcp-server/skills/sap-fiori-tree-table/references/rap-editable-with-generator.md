@@ -4,7 +4,7 @@
 
 **Time Estimate**: 30-45 minutes
 
-📖 **CRITICAL:** Review [RAP Generator Requirements](./0-rap-generator-requirements.md) before starting.
+📖 **CRITICAL:** Review [RAP Generator Requirements](./rap-generator-requirements.md) before starting.
 
 ---
 
