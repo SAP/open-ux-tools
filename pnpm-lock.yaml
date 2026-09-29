@@ -2337,6 +2337,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -2764,6 +2767,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
