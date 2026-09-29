@@ -11,6 +11,7 @@ const __dirname = dirname(__filename);
 // Resolve via package.json (not the main entry) so dirname() gives the package
 // root regardless of where the main field points.
 const req = createRequire(join(__dirname, 'package.json'));
+const { makeLicensePlugin } = req('../../esbuildLicensePlugin.cjs');
 
 // Fail fast if @babel/eslint-parser is not installed — esbuild would silently leave it
 // as an unbundled external import if it can't resolve it, producing a broken bundle.
@@ -107,7 +108,9 @@ const buildOptions = {
     sourcemap: !production,
     banner: { js: cjsCompatBanner },
     external: externalDependencies,
-    plugins: [patchBabelEslintParser]
+    legalComments: 'linked',
+    metafile: true,
+    plugins: [patchBabelEslintParser, makeLicensePlugin()]
 };
 
 if (watch) {

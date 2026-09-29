@@ -10,28 +10,41 @@
         "type": "annotation-group-items",
         "items": [
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.Title.$Type",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(1,4)..(1,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(1,4)..(1,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,4)..(1,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Title",
-                            "range": "[(1,15)..(1,20)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Title",
+                                "range": "[(1,15)..(1,20)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,15)..(1,20)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(1,21)..(1,26)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(1,21)..(1,26)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,21)..(1,26)]"
                         }
                     ],
                     "separators": [
@@ -53,8 +66,8 @@
                 "range": "[(1,4)..(1,56)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,27)..(1,28)]"
+                    "range": "[(1,27)..(1,28)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -73,28 +86,41 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "HeaderInfo.Title.Target",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "HeaderInfo",
-                            "range": "[(2,4)..(2,14)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "HeaderInfo",
+                                "range": "[(2,4)..(2,14)]",
+                                "quoted": false
+                            },
+                            "range": "[(2,4)..(2,14)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Title",
-                            "range": "[(2,15)..(2,20)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Title",
+                                "range": "[(2,15)..(2,20)]",
+                                "quoted": false
+                            },
+                            "range": "[(2,15)..(2,20)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Target",
-                            "range": "[(2,21)..(2,27)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Target",
+                                "range": "[(2,21)..(2,27)]",
+                                "quoted": false
+                            },
+                            "range": "[(2,21)..(2,27)]"
                         }
                     ],
                     "separators": [
@@ -116,8 +142,8 @@
                 "range": "[(2,4)..(2,54)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(2,28)..(2,29)]"
+                    "range": "[(2,28)..(2,29)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -136,22 +162,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart.$Type",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(3,4)..(3,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(3,4)..(3,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(3,4)..(3,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(3,10)..(3,15)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(3,10)..(3,15)]",
+                                "quoted": false
+                            },
+                            "range": "[(3,10)..(3,15)]"
                         }
                     ],
                     "separators": [
@@ -167,8 +202,8 @@
                 "range": "[(3,4)..(3,42)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(3,16)..(3,17)]"
+                    "range": "[(3,16)..(3,17)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -187,22 +222,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "PresentationVariant.$Type",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "PresentationVariant",
-                            "range": "[(4,4)..(4,23)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "PresentationVariant",
+                                "range": "[(4,4)..(4,23)]",
+                                "quoted": false
+                            },
+                            "range": "[(4,4)..(4,23)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(4,24)..(4,29)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(4,24)..(4,29)]",
+                                "quoted": false
+                            },
+                            "range": "[(4,24)..(4,29)]"
                         }
                     ],
                     "separators": [
@@ -218,8 +262,8 @@
                 "range": "[(4,4)..(4,32)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(4,29)..(4,30)]"
+                    "range": "[(4,29)..(4,30)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "number",
@@ -228,22 +272,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "SelectionVariant.$Type",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "SelectionVariant",
-                            "range": "[(5,4)..(5,20)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "SelectionVariant",
+                                "range": "[(5,4)..(5,20)]",
+                                "quoted": false
+                            },
+                            "range": "[(5,4)..(5,20)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(5,21)..(5,26)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(5,21)..(5,26)]",
+                                "quoted": false
+                            },
+                            "range": "[(5,21)..(5,26)]"
                         }
                     ],
                     "separators": [
@@ -259,34 +312,51 @@
                 "range": "[(5,4)..(5,26)]"
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Badge.$Type.Title.Value",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Badge",
-                            "range": "[(6,4)..(6,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Badge",
+                                "range": "[(6,4)..(6,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(6,4)..(6,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(6,10)..(6,15)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(6,10)..(6,15)]",
+                                "quoted": false
+                            },
+                            "range": "[(6,10)..(6,15)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Title",
-                            "range": "[(6,16)..(6,21)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Title",
+                                "range": "[(6,16)..(6,21)]",
+                                "quoted": false
+                            },
+                            "range": "[(6,16)..(6,21)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Value",
-                            "range": "[(6,22)..(6,27)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Value",
+                                "range": "[(6,22)..(6,27)]",
+                                "quoted": false
+                            },
+                            "range": "[(6,22)..(6,27)]"
                         }
                     ],
                     "separators": [
@@ -314,8 +384,8 @@
                 "range": "[(6,4)..(6,35)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(6,27)..(6,28)]"
+                    "range": "[(6,27)..(6,28)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -334,34 +404,56 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Badge#test.$Type.Title.Value",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Badge",
-                            "range": "[(7,6)..(7,11)]",
-                            "quoted": true
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Badge",
+                                "range": "[(7,6)..(7,11)]",
+                                "quoted": true
+                            },
+                            "range": "[(7,6)..(7,16)]",
+                            "qualifier": {
+                                "type": "qualifier",
+                                "value": "test",
+                                "range": "[(7,12)..(7,16)]"
+                            }
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(7,18)..(7,23)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(7,18)..(7,23)]",
+                                "quoted": false
+                            },
+                            "range": "[(7,18)..(7,23)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Title",
-                            "range": "[(7,24)..(7,29)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Title",
+                                "range": "[(7,24)..(7,29)]",
+                                "quoted": false
+                            },
+                            "range": "[(7,24)..(7,29)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "Value",
-                            "range": "[(7,30)..(7,35)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "Value",
+                                "range": "[(7,30)..(7,35)]",
+                                "quoted": false
+                            },
+                            "range": "[(7,30)..(7,35)]"
                         }
                     ],
                     "separators": [
@@ -386,36 +478,44 @@
                     ],
                     "range": "[(7,4)..(7,35)]"
                 },
-                "range": "[(7,4)..(7,35)]",
-                "qualifier": {
-                    "type": "qualifier",
-                    "value": "test",
-                    "range": "[(7,12)..(7,16)]"
-                }
+                "range": "[(7,4)..(7,35)]"
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart.$Type.ChartType",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(8,4)..(8,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(8,4)..(8,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,4)..(8,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(8,10)..(8,15)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(8,10)..(8,15)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,10)..(8,15)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "ChartType",
-                            "range": "[(8,16)..(8,25)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "ChartType",
+                                "range": "[(8,16)..(8,25)]",
+                                "quoted": false
+                            },
+                            "range": "[(8,16)..(8,25)]"
                         }
                     ],
                     "separators": [
@@ -437,8 +537,8 @@
                 "range": "[(8,4)..(8,52)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(8,26)..(8,27)]"
+                    "range": "[(8,26)..(8,27)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -457,22 +557,36 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart#test.$Type",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(9,6)..(9,11)]",
-                            "quoted": true
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(9,6)..(9,11)]",
+                                "quoted": true
+                            },
+                            "range": "[(9,6)..(9,16)]",
+                            "qualifier": {
+                                "type": "qualifier",
+                                "value": "test",
+                                "range": "[(9,12)..(9,16)]"
+                            }
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(9,18)..(9,23)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(9,18)..(9,23)]",
+                                "quoted": false
+                            },
+                            "range": "[(9,18)..(9,23)]"
                         }
                     ],
                     "separators": [
@@ -488,13 +602,8 @@
                 "range": "[(9,4)..(9,26)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(9,24)..(9,25)]"
-                },
-                "qualifier": {
-                    "type": "qualifier",
-                    "value": "test",
-                    "range": "[(9,12)..(9,16)]"
+                    "range": "[(9,24)..(9,25)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "empty-value",
@@ -502,22 +611,36 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Chart#qualifier2.$Type",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Chart",
-                            "range": "[(10,6)..(10,11)]",
-                            "quoted": true
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Chart",
+                                "range": "[(10,6)..(10,11)]",
+                                "quoted": true
+                            },
+                            "range": "[(10,6)..(10,22)]",
+                            "qualifier": {
+                                "type": "qualifier",
+                                "value": "qualifier2",
+                                "range": "[(10,12)..(10,22)]"
+                            }
                         },
                         {
-                            "type": "identifier",
-                            "value": "$Type",
-                            "range": "[(10,24)..(10,29)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$Type",
+                                "range": "[(10,24)..(10,29)]",
+                                "quoted": false
+                            },
+                            "range": "[(10,24)..(10,29)]"
                         }
                     ],
                     "separators": [
@@ -533,13 +656,8 @@
                 "range": "[(10,4)..(10,34)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(10,30)..(10,31)]"
-                },
-                "qualifier": {
-                    "type": "qualifier",
-                    "value": "qualifier2",
-                    "range": "[(10,12)..(10,22)]"
+                    "range": "[(10,30)..(10,31)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",
@@ -558,22 +676,31 @@
                 }
             },
             {
-                "type": "annotation",
-                "term": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "Badge.$MyType",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "Badge",
-                            "range": "[(11,4)..(11,9)]",
-                            "quoted": false
+                            "type": "flattened-annotation-segment",
+                            "prefix": false,
+                            "term": {
+                                "type": "identifier",
+                                "value": "Badge",
+                                "range": "[(11,4)..(11,9)]",
+                                "quoted": false
+                            },
+                            "range": "[(11,4)..(11,9)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "$MyType",
-                            "range": "[(11,10)..(11,17)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "$MyType",
+                                "range": "[(11,10)..(11,17)]",
+                                "quoted": false
+                            },
+                            "range": "[(11,10)..(11,17)]"
                         }
                     ],
                     "separators": [
@@ -589,8 +716,8 @@
                 "range": "[(11,4)..(11,25)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(11,17)..(11,18)]"
+                    "range": "[(11,17)..(11,18)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "string",

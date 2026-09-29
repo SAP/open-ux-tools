@@ -65,7 +65,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [NO_SINGLE_FACET_IN_COLLECTION]:
-                'UI.CollectionFacet should not contain a single UI.ReferenceFacet. Use UI.ReferenceFacet directly under UI.Facets instead.'
+                '`UI.CollectionFacet` should not contain a single `UI.ReferenceFacet`. Use `UI.ReferenceFacet` directly under `UI.Facets` instead.'
         },
         schema: []
     },
