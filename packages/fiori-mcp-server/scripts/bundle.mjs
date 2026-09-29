@@ -320,7 +320,15 @@ for (const wasmFile of [
     }
 }
 
-// ── Step 5: copy icons ────────────────────────────────────────────────────────
+// ── Step 5: copy playwright-core browsers.json ───────────────────────────────
+// playwright-core resolves browsers.json at runtime via path.join(packageRoot,
+// "browsers.json") where packageRoot is derived from __filename. After bundling,
+// __filename points to dist/index.js so browsers.json must live in dist/ too.
+const pwCorePkgDir = findPkgRoot(req.resolve('playwright-core'), 'playwright-core');
+fs.copyFileSync(path.join(pwCorePkgDir, 'browsers.json'), path.join(DIST, 'browsers.json'));
+console.log('✓ Copied playwright-core/browsers.json');
+
+// ── Step 6: copy icons ────────────────────────────────────────────────────────
 
 for (const icon of ['icon.png', 'icon.svg']) {
     fs.copyFileSync(path.join(PKG_ROOT, 'assets', icon), path.join(DIST, icon));
