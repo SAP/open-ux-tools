@@ -41,7 +41,7 @@
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "npm-run-all2": "9.0.2"
+        "npm-run-all2": "9.0.3"
     },
     "engines": {
         "node": ">=22.x"
