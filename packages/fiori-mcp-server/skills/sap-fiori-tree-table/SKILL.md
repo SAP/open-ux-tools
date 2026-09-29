@@ -4,7 +4,7 @@ description: 'Configure hierarchical tree table to SAP Fiori elements applicatio
 argument-hint: 'Entity name (and ABAP package for RAP projects)'
 metadata:
   author: sap-fiori-tools
-  version: "0.0.1"
+  version: "0.0.2"
 ---
 
 # SAP Fiori Tree Table with Recursive Hierarchy
@@ -86,10 +86,10 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 - Managed association in entity
 - `@hierarchy` annotation on service
 - CSV data with `parent_ID` column
-- Test with `npm run watch`
+- For testing, refer to the **Testing Fiori Applications** section in the `sap-fiori-app-development` skill
 
 **ABAP RAP:**
 - CDS view with `@OData.hierarchy.recursiveHierarchy`
 - Qualifier in metadata
 - Test data in database tables
-- Test with `npm start` or `npm run start-mock`
+- For testing, refer to the **Testing Fiori Applications** section in the `sap-fiori-app-development` skill
