@@ -25,7 +25,6 @@ import {
 
 // Import all rules
 import sapBookmarkPerformance from './sap-bookmark-performance.js';
-import sapBrowserApiError from './sap-browser-api-error.js';
 import sapBrowserApiWarning from './sap-browser-api-warning.js';
 import sapCrossApplicationNavigation from './sap-cross-application-navigation.js';
 import sapForbiddenWindowProperty from './sap-forbidden-window-property.js';
@@ -38,7 +37,6 @@ import sapNoDomInsertion from './sap-no-dom-insertion.js';
 import sapNoDynamicStyleInsertion from './sap-no-dynamic-style-insertion.js';
 import sapNoElementCreation from './sap-no-element-creation.js';
 import sapNoEncodeFileService from './sap-no-encode-file-service.js';
-import sapNoEventProp from './sap-no-event-prop.js';
 import sapNoExecCommand from './sap-no-exec-command.js';
 import sapNoGlobalDefine from './sap-no-global-define.js';
 import sapNoGlobalEvent from './sap-no-global-event.js';
@@ -61,9 +59,6 @@ import sapNoProprietaryBrowserApi from './sap-no-proprietary-browser-api.js';
 import sapNoSessionstorage from './sap-no-sessionstorage.js';
 import sapNoUi5PropWarning from './sap-no-ui5-prop-warning.js';
 import sapNoUi5baseProp from './sap-no-ui5base-prop.js';
-import sapNoUi5eventproviderProp from './sap-no-ui5eventprovider-prop.js';
-import sapNoUi5odatamodelProp from './sap-no-ui5odatamodel-prop.js';
-import sapNoWindowAlert from './sap-no-window-alert.js';
 import sapOpa5AutowaitTrue from './sap-opa5-autowait-true.js';
 import sapTimeoutUsage from './sap-timeout-usage.js';
 import sapUi5Forms from './sap-ui5-forms.js';
@@ -97,7 +92,6 @@ import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,
-    'sap-browser-api-error': sapBrowserApiError,
     'sap-browser-api-warning': sapBrowserApiWarning,
     'sap-cross-application-navigation': sapCrossApplicationNavigation,
     'sap-forbidden-window-property': sapForbiddenWindowProperty,
@@ -110,7 +104,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-no-dynamic-style-insertion': sapNoDynamicStyleInsertion,
     'sap-no-element-creation': sapNoElementCreation,
     'sap-no-encode-file-service': sapNoEncodeFileService,
-    'sap-no-event-prop': sapNoEventProp,
     'sap-no-exec-command': sapNoExecCommand,
     'sap-no-global-define': sapNoGlobalDefine,
     'sap-no-global-event': sapNoGlobalEvent,
@@ -133,9 +126,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-no-sessionstorage': sapNoSessionstorage,
     'sap-no-ui5-prop-warning': sapNoUi5PropWarning,
     'sap-no-ui5base-prop': sapNoUi5baseProp,
-    'sap-no-ui5eventprovider-prop': sapNoUi5eventproviderProp,
-    'sap-no-ui5odatamodel-prop': sapNoUi5odatamodelProp,
-    'sap-no-window-alert': sapNoWindowAlert,
     'sap-opa5-autowait-true': sapOpa5AutowaitTrue,
     'sap-timeout-usage': sapTimeoutUsage,
     'sap-ui5-forms': sapUi5Forms,
