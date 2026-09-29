@@ -47,7 +47,8 @@
         "dist",
         "!dist/**/*.map",
         "assets/icon.svg",
-        "assets/icon.png"
+        "assets/icon.png",
+        "browsers.json"
     ],
     "bin": {
         "fiori-mcp": "./dist/index.js"
