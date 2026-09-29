@@ -86,10 +86,10 @@ Configure **hierarchical tree table** to display parent-child relationships in a
 - Managed association in entity
 - `@hierarchy` annotation on service
 - CSV data with `parent_ID` column
-- For testing, refer to the **Testing Fiori Applications** section in the `sap-fiori-app-development` skill
+- For testing, refer to the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill
 
 **ABAP RAP:**
 - CDS view with `@OData.hierarchy.recursiveHierarchy`
 - Qualifier in metadata
 - Test data in database tables
-- For testing, refer to the **Testing Fiori Applications** section in the `sap-fiori-app-development` skill
+- For testing, refer to the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill

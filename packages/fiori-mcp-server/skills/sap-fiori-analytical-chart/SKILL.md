@@ -308,7 +308,7 @@ The **projection view (DDLS file)** and **metadata extension (DDLX file)** are *
 
 ## Testing
 
-Refer to the **Testing Fiori Applications** section in the `sap-fiori-app-development` skill for detailed testing instructions, including:
+Refer to the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill for detailed testing instructions, including:
 - CAP project testing with watch scripts
 - Standalone Fiori project testing with live backend vs. mock mode
 - Metadata refresh procedures after backend changes
