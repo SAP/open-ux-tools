@@ -31,17 +31,17 @@ Before writing anything, decide **who the skill is for**. This drives every late
 
 | Category | Audience | Examples in this repo | Ships publicly? |
 |---|---|---|---|
-| **Internal** | Engineers working on the `open-ux-tools` monorepo | `eslint-rule-development`, `odata-vocabularies-sync` | No — monorepo-only |
-| **External** | End users building SAP Fiori apps (CAP or standalone) | `sap-fiori-app-development`, `sap-fiori-analytical-chart`, `sap-fiori-tree-table`, `sap-fiori-create-cli`, `sap-fiori-eslint-plugin`, `sap-fiori-opa5-test-development`, `sap-fiori-add-visual-filter` | Yes |
+| **Public** | Developers building SAP Fiori apps (CAP or standalone) | `sap-fiori-app-development`, `sap-fiori-analytical-chart`, `sap-fiori-tree-table`, `sap-fiori-create-cli`, `sap-fiori-eslint-plugin`, `sap-fiori-opa5-test-development`, `sap-fiori-add-visual-filter` | Yes |
+| **Contributor** | Engineers working on the `open-ux-tools` monorepo itself | `eslint-rule-development`, `odata-vocabularies-sync` | No — monorepo-only |
 
 ### Naming convention (mandatory)
 
 | Category | Pattern | Example |
 |---|---|---|
-| External | `sap-fiori-<feature>` (kebab-case, feature-scoped, no product-suffix like `-cli` unless the skill *is* the CLI) | `sap-fiori-tree-table`, `sap-fiori-analytical-chart` |
-| Internal | `<domain>-<action>` (kebab-case; no `sap-fiori-` prefix so it is obvious the skill is not public) | `eslint-rule-development`, `odata-vocabularies-sync` |
+| Public | `sap-fiori-<feature>` (kebab-case, feature-scoped, no product-suffix like `-cli` unless the skill *is* the CLI) | `sap-fiori-tree-table`, `sap-fiori-analytical-chart` |
+| Contributor | `<domain>-<action>` (kebab-case; no `sap-fiori-` prefix so it is obvious the skill is not public) | `eslint-rule-development`, `odata-vocabularies-sync` |
 
-**Do not** ship a public skill without the `sap-fiori-` prefix, and **do not** prefix an internal-only skill with `sap-fiori-` (it will leak into user-facing skill listings).
+**Do not** ship a public skill without the `sap-fiori-` prefix, and **do not** prefix a contributor-only skill with `sap-fiori-` (it will leak into user-facing skill listings).
 
 Ask the user which category applies **if it is not obvious from the request**. Then continue.
 
@@ -52,10 +52,10 @@ Ask the user which category applies **if it is not obvious from the request**. T
 Before drafting, confirm the following in one short exchange. Do not guess.
 
 1. **Skill name** — follows the pattern from Step 0.
-2. **Target directory** — absolute or workspace-relative path where the skill folder should be created. The skill will live at `<target-directory>/<skill-name>/SKILL.md`. For the open-ux-tools monorepo: external skills default to `packages/fiori-mcp-server/skills/`, internal skills default to `.agents/skills/`.
+2. **Target directory** — absolute or workspace-relative path where the skill folder should be created. The skill will live at `<target-directory>/<skill-name>/SKILL.md`. For the open-ux-tools monorepo: public skills default to `packages/fiori-mcp-server/skills/`, contributor skills default to `.agents/skills/`.
 3. **Documentation links** — authoritative reference documentation URLs (SAP Help, GitHub docs, API references). Fetch and analyze these first to derive the skill's content, requirements, and implementation steps.
 4. **One-sentence purpose** — what does the skill let the model do? Can be derived from the documentation.
-5. **Trigger phrases** — 3–5 realistic user prompts that should invoke this skill. They go into the `description` frontmatter.
+5. **Trigger phrases** — 3–4 realistic user prompts that should invoke this skill. They go into the `description` frontmatter.
 6. **Scope boundary** — `read-only` or `draft`. Optional; only declare this for complex features like tree tables that have distinct read-only vs editable variants. Most skills default to `draft` (the skill modifies files/configurations). Omit this field unless the distinction matters.
 7. **Backend coverage** — CAP only, RAP only, or both. Default to both; if both, samples for each are mandatory. Derive from documentation if the feature is backend-specific.
 8. **OData version** — V2, V4, or both. Default to V4 (SAP Fiori elements templates like `FE_FEOP`, `FE_FPM` are V4-only). Check documentation for version requirements or V2 support.
@@ -79,10 +79,11 @@ If anything is missing, ask before drafting.
 Then create the skill folder at `<target-directory>/<skill-name>/` (target directory captured in Step 1) and place `SKILL.md` inside it. Use the canonical template in **[references/skill-template.md](references/skill-template.md)**. It contains ready-to-copy frontmatter for both internal and external skills, plus the standard section order:
 
 1. Title + one-paragraph purpose
-2. **Prerequisites** (environment, MCP servers, OData version, backends)
-3. **Scope boundary** (read-only / draft) — one sentence, near the top
-4. **Mandatory inputs** (what to ask the user before doing anything)
-5. Implementation steps (numbered, sequential — see Step 3)
+2. **Example User Prompts** — 3–4 realistic natural-language requests that invoke this skill (see Step 1, item 5)
+3. **Prerequisites** (environment, MCP servers, OData version, backends)
+4. **Scope boundary** (read-only / draft) — one sentence, near the top (optional if obvious)
+5. **Mandatory inputs** (what to ask the user before doing anything)
+6. Implementation steps (numbered, sequential — see Step 3)
 6. Verification checklist for the implementation steps (see Step 4)
 7. Testing (how to run the app and reach the feature — see Step 5)
 8. Common Errors and Solutions (see Step 6)

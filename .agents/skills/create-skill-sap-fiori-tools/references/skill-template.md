@@ -4,9 +4,9 @@ Copy the template that matches your track. Fill in the bracketed placeholders. D
 
 ---
 
-## Template A — External skill (`sap-fiori-<feature>`)
+## Template A — Public skill (`sap-fiori-<feature>`)
 
-Use for skills that ship to end users building SAP Fiori applications.
+Use for skills that ship publicly to developers building SAP Fiori applications.
 
 ```markdown
 ---
@@ -26,6 +26,18 @@ metadata:
 
 ## Purpose
 <Two or three sentences. What outcome does the user get?>
+
+---
+
+## Example User Prompts
+
+This skill is invoked when users ask questions like:
+
+- "<Natural prompt 1 — e.g., 'Add a tree table to show my product hierarchy'>"
+- "<Natural prompt 2 — e.g., 'Make my category field hierarchical'>"
+- "<Natural prompt 3 — e.g., 'Show parent-child relationships in a table'>"
+
+**Guideline:** Write 3–4 realistic user requests. Use complete sentences that users would actually type or say. Include variations (terse vs. detailed, technical vs. business language). These prompts inform the `description` frontmatter.
 
 ---
 
@@ -117,9 +129,9 @@ For starting the app (CAP `watch-<app>` / `cds watch`, RAP `npm start` vs `npm r
 
 ---
 
-## Template B — Internal skill (`<domain>-<action>`)
+## Template B — Contributor skill (`<domain>-<action>`)
 
-Use for skills consumed by engineers working inside the `open-ux-tools` monorepo.
+Use for skills consumed by engineers contributing to the `open-ux-tools` monorepo.
 
 ```markdown
 ---
@@ -136,6 +148,18 @@ metadata:
 
 ## Purpose
 <Two or three sentences targeted at repo contributors, not customers.>
+
+---
+
+## Example User Prompts
+
+This skill is invoked when developers ask:
+
+- "<Natural prompt 1 — e.g., 'Create a new ESLint rule for validating text arrangement'>"
+- "<Natural prompt 2 — e.g., 'Add a rule to check for hidden text properties'>"
+- "<Natural prompt 3 — e.g., 'Write tests for the new ESLint rule'>"
+
+**Guideline:** Write 3–5 realistic developer requests specific to the monorepo task. These should reflect the actual language repo contributors use.
 
 ---
 
