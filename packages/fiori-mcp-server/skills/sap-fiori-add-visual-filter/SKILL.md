@@ -145,21 +145,23 @@ refer to the "Manifest Configuration" section below.
 
 **CORRECT Example:**
 ```abap
-@OData.applySupportedForAggregation: #FULL  ← MANDATORY! Must be present!
+// MANDATORY! Must be present!
+@OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
   provider contract TRANSACTIONAL_QUERY
   as projection on ZR_ENTITY
 {
-  @Aggregation.default: #SUM  ← Specify aggregation method for measure
+  @Aggregation.default: #SUM  // Specify aggregation method for measure
   Amount;
-  Category;  ← Dimension field (no aggregation annotation needed)
+  Category;  // Dimension field (no aggregation annotation needed)
 }
 ```
 
 **WRONG Example:**
 ```abap
 // ❌ WRONG - Don't put on interface view
-@OData.applySupportedForAggregation: #FULL  ← WRONG PLACE!
+// WRONG PLACE!
+@OData.applySupportedForAggregation: #FULL
 define root view entity ZR_ENTITY
   as select from TABLE
 ```
