@@ -230,7 +230,7 @@ export class SapuxFtfsFileIO {
         const exportParams: ExportParametersV4Type = {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
-                manifest,
+                manifest: manifest as any, // Type cast to work around @ui5/manifest version mismatch between dependencies
                 jsonSchema: JSON.parse(schema) as JSONSchema7,
                 logger: specificationLogger
             }
