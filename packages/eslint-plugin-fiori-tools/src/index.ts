@@ -355,11 +355,8 @@ const baseFioriToolsRules = {
     '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
     '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
     '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
-    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
-    // Off rules (alphabetical)
-    '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
-    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
-    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
+    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'warn',
+    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn'
 } as Linter.RulesRecord;
 
 const prodConfig: Linter.Config[] = [

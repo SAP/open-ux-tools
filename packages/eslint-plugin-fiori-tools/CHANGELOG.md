@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-29
+
+#### Bug Fixes
+
+- Remove orphan eslint rules and enable sap-ui5-no-private-prop rule [[d989d4a](https://github.com/SAP/open-ux-tools/commit/d989d4ace191afc1048e6c922f3fe4a0c7c67e12)]
+
 ## 10.12.0
 
 ### Minor Changes
