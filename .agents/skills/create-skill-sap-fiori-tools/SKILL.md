@@ -52,14 +52,15 @@ Ask the user which category applies **if it is not obvious from the request**. T
 Before drafting, confirm the following in one short exchange. Do not guess.
 
 1. **Skill name** — follows the pattern from Step 0.
-2. **Target directory** — absolute or workspace-relative path where the skill folder should be created. The skill will live at `<target-directory>/<skill-name>/SKILL.md`.
-3. **One-sentence purpose** — what does the skill let the model do?
-4. **Trigger phrases** — 3–5 realistic user prompts that should invoke this skill. They go into the `description` frontmatter.
-5. **Scope boundary** — `read-only` or `draft`. State it in one sentence near the top of the skill body.
-6. **Backend coverage** — CAP only, RAP only, or both. If both, samples for each are mandatory.
-7. **OData version** — V2, V4, or both. Some templates (`FE_FEOP`, `FE_FPM`) are V4-only.
-8. **Host requirements** — VS Code, BAS, Claude Code, Cursor, Cowork. Host-specific dependencies need a canonical fallback documented in the skill body.
-9. **Prerequisite MCP servers / extensions** — Fiori MCP, CDS MCP, ABAP Development Tools, etc.
+2. **Target directory** — absolute or workspace-relative path where the skill folder should be created. The skill will live at `<target-directory>/<skill-name>/SKILL.md`. For the open-ux-tools monorepo: external skills default to `packages/fiori-mcp-server/skills/`, internal skills default to `.agents/skills/`.
+3. **Documentation links** — authoritative reference documentation URLs (SAP Help, GitHub docs, API references). Fetch and analyze these first to derive the skill's content, requirements, and implementation steps.
+4. **One-sentence purpose** — what does the skill let the model do? Can be derived from the documentation.
+5. **Trigger phrases** — 3–5 realistic user prompts that should invoke this skill. They go into the `description` frontmatter.
+6. **Scope boundary** — `read-only` or `draft`. Optional; only declare this for complex features like tree tables that have distinct read-only vs editable variants. Most skills default to `draft` (the skill modifies files/configurations). Omit this field unless the distinction matters.
+7. **Backend coverage** — CAP only, RAP only, or both. Default to both; if both, samples for each are mandatory. Derive from documentation if the feature is backend-specific.
+8. **OData version** — V2, V4, or both. Default to V4 (SAP Fiori elements templates like `FE_FEOP`, `FE_FPM` are V4-only). Check documentation for version requirements or V2 support.
+9. **Host requirements** — VS Code, BAS, Claude Code, Github Copilot. Host-specific dependencies need a canonical fallback documented in the skill body.
+10. **Prerequisite MCP servers / extensions** — Fiori MCP, CDS MCP, ABAP Development Tools, etc. Derive from the implementation requirements.
 
 If anything is missing, ask before drafting.
 
@@ -67,7 +68,15 @@ If anything is missing, ask before drafting.
 
 ## Step 2 — Draft the SKILL.md
 
-Create the skill folder at `<target-directory>/<skill-name>/` (target directory captured in Step 1) and place `SKILL.md` inside it. Use the canonical template in **[references/skill-template.md](references/skill-template.md)**. It contains ready-to-copy frontmatter for both internal and external skills, plus the standard section order:
+**First, fetch and analyze the documentation links** provided in Step 1. Extract:
+- Implementation steps and prerequisites
+- Configuration requirements and file changes
+- Backend-specific differences (CAP vs RAP)
+- OData version constraints
+- Code examples and annotation patterns
+- Common errors and troubleshooting guidance
+
+Then create the skill folder at `<target-directory>/<skill-name>/` (target directory captured in Step 1) and place `SKILL.md` inside it. Use the canonical template in **[references/skill-template.md](references/skill-template.md)**. It contains ready-to-copy frontmatter for both internal and external skills, plus the standard section order:
 
 1. Title + one-paragraph purpose
 2. **Prerequisites** (environment, MCP servers, OData version, backends)
