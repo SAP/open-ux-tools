@@ -7,6 +7,7 @@ import {
     getOrAddNamespace,
     getXPathStringsForXmlFile,
     getDOMParserOptions,
+    getExistingButtonGroups,
     TEMPLATE_NAMESPACES
 } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
@@ -297,5 +298,73 @@ describe('getDOMParserOptions', () => {
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
         expect(options.onError).toBeDefined();
         expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
+    });
+});
+
+describe('getOrAddNamespace - null documentElement', () => {
+    it('returns the default prefix when documentElement is null', () => {
+        const doc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            '<root/>',
+            'text/xml'
+        ) as unknown as import('@xmldom/xmldom').Document;
+        Object.defineProperty(doc, 'documentElement', { value: null, configurable: true });
+        expect(getOrAddNamespace(doc, 'sap.fe.macros', 'macros')).toBe('macros');
+    });
+});
+
+describe('getExistingButtonGroups', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('returns empty set when RTE element is not found at aggregation path', async () => {
+        const filePath = '/test/NoRte.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:macros="sap.fe.macros">
+    <macros:Table id="T1"/>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(filePath, `/core:FragmentDefinition/macros:RTE`, fs);
+        expect(result.size).toBe(0);
+    });
+
+    it('returns empty set when RTE element has no buttonGroups child', async () => {
+        const filePath = '/test/RteNoGroups.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status"/>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result.size).toBe(0);
+    });
+
+    it('returns button group names when RTE has buttonGroups children', async () => {
+        const filePath = '/test/RteWithGroups.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status">
+        <richtexteditor:buttonGroups>
+            <richtexteditor:ButtonGroup name="font-style" buttons="bold,italic"/>
+            <richtexteditor:ButtonGroup name="clipboard" buttons="cut,copy,paste"/>
+        </richtexteditor:buttonGroups>
+    </richtexteditor:RichTextEditorWithMetadata>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result).toEqual(new Set(['font-style', 'clipboard']));
     });
 });
