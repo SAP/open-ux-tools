@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 3.2.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+
 ## 3.2.21
 
 ### Patch Changes
