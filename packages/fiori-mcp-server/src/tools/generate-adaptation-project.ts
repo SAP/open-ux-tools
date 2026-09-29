@@ -113,6 +113,40 @@ function unsupportedTypeError(subject: string, supported: string, requested: str
 }
 
 /**
+ * Resolves the project type when internal features are enabled: Cloud Ready is never available,
+ * so a Cloud-Ready-only system or an explicit cloudReady request is an error and everything else
+ * resolves to Classic (on-premise).
+ *
+ * @param system - The name of the SAP system.
+ * @param supportedProject - The project type(s) the system supports.
+ * @param requested - The project type explicitly requested by the caller, if any.
+ * @returns The project type resolution outcome.
+ */
+function resolveInternalProjectType(
+    system: string,
+    supportedProject: SupportedProject,
+    requested: AdaptationProjectType | undefined
+): ProjectTypeResolution {
+    if (supportedProject === SupportedProject.CLOUD_READY) {
+        return {
+            kind: 'error',
+            message:
+                `System '${system}' supports only Cloud Ready adaptation projects, which cannot be ` +
+                'created while internal features are enabled. Use a system that supports Classic.'
+        };
+    }
+    if (requested === AdaptationProjectType.CLOUD_READY) {
+        return {
+            kind: 'error',
+            message:
+                'Cloud Ready adaptation projects are not available with internal features enabled. ' +
+                'Only Classic adaptation projects can be created.'
+        };
+    }
+    return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
+}
+
+/**
  * Resolves the project type for a system/application, mirroring the interactive generator:
  * single-type systems resolve automatically, a mixed system offers a real choice only for a
  * released cloud application, and a requested type the system cannot support yields an error.
@@ -133,23 +167,7 @@ async function resolveProjectType(
     const supportedProject = await getSupportedProject(provider);
 
     if (isInternalFeaturesSettingEnabled()) {
-        if (supportedProject === SupportedProject.CLOUD_READY) {
-            return {
-                kind: 'error',
-                message:
-                    `System '${system}' supports only Cloud Ready adaptation projects, which cannot be ` +
-                    'created while internal features are enabled. Use a system that supports Classic.'
-            };
-        }
-        if (requested === AdaptationProjectType.CLOUD_READY) {
-            return {
-                kind: 'error',
-                message:
-                    'Cloud Ready adaptation projects are not available with internal features enabled. ' +
-                    'Only Classic adaptation projects can be created.'
-            };
-        }
-        return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
+        return resolveInternalProjectType(system, supportedProject, requested);
     }
 
     if (supportedProject === SupportedProject.CLOUD_READY) {

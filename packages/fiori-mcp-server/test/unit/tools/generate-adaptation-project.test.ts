@@ -292,7 +292,7 @@ describe('generateAdaptationProject', () => {
             } as any);
 
             expect(result.status).toEqual('Error');
-            expect(result.message).toContain('internal features enabled');
+            expect(result.message).toContain('internal features are enabled');
             expect(mockRunCmdArgs).not.toHaveBeenCalled();
         });
 
