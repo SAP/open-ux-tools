@@ -1930,7 +1930,11 @@ export type Then = Opa5 & BaseArrangements & {
                 { ui5Version: '1.147.9', expectedBucket: '1.84' },
                 { ui5Version: '1.148.0', expectedBucket: '1.148' },
                 { ui5Version: '1.148.9', expectedBucket: '1.148' },
-                { ui5Version: '1.149.0', expectedBucket: 'latest' },
+                { ui5Version: '1.149.0', expectedBucket: '1.148' },
+                { ui5Version: '1.151.9', expectedBucket: '1.148' },
+                { ui5Version: '1.152.0', expectedBucket: '1.152' },
+                { ui5Version: '1.152.9', expectedBucket: '1.152' },
+                { ui5Version: '1.153.0', expectedBucket: 'latest' },
                 { ui5Version: '1.160.0', expectedBucket: 'latest' }
             ])('ui5Version $ui5Version → bucket $expectedBucket', async ({ ui5Version, expectedBucket }) => {
                 const projectDir = prepareTestFiles('FullScreenLROP');
@@ -2114,7 +2118,8 @@ export type Then = Opa5 & BaseArrangements & {
             it.each([
                 ['1.84', '1.120.0'],
                 ['1.148', '1.148.0'],
-                ['latest', '1.149.0']
+                ['1.152', '1.152.0'],
+                ['latest', '1.153.0']
             ])('bucket %s generates correct FPM output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('CustomOP');
                 fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
@@ -2166,6 +2171,16 @@ describe('removeUnsupportedActions()', () => {
     it('latest: keeps all action types', () => {
         const features = makeFeatures();
         removeUnsupportedActions(features, 'latest');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'CustomTB', 'MenuTB'],
+            header: ['CustomH', 'MenuH', 'KeepH'],
+            section: ['KeepS', 'CustomS', 'MenuS']
+        });
+    });
+
+    it('1.152: keeps all action types (same as latest)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.152');
         expect(labels(features)).toEqual({
             tb: ['KeepTB', 'CustomTB', 'MenuTB'],
             header: ['CustomH', 'MenuH', 'KeepH'],
