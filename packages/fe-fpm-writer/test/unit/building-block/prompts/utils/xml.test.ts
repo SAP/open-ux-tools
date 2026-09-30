@@ -306,7 +306,7 @@ describe('getOrAddNamespace - null documentElement', () => {
         const doc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
             '<root/>',
             'text/xml'
-        ) as unknown as import('@xmldom/xmldom').Document;
+        ) as unknown as XmldomDocument;
         Object.defineProperty(doc, 'documentElement', { value: null, configurable: true });
         expect(getOrAddNamespace(doc, 'sap.fe.macros', 'macros')).toBe('macros');
     });
