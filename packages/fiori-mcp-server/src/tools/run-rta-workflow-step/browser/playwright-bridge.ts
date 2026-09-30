@@ -246,14 +246,16 @@ export async function stopBrowser(): Promise<void> {
         return;
     }
 
-    for (const [site, rpc] of connectionRegistry.entries()) {
-        try {
-            await rpc.close();
-        } catch {
-            // Ignore errors when closing pages.
-        }
-        connectionRegistry.delete(site);
-    }
+    await Promise.all(
+        [...connectionRegistry.entries()].map(async ([site, rpc]) => {
+            try {
+                await rpc.close();
+            } catch {
+                // Ignore errors when closing pages.
+            }
+            connectionRegistry.delete(site);
+        })
+    );
 
     try {
         await browser.close();

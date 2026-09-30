@@ -58,23 +58,23 @@ export async function readODataMetadataAdp(params: ReadODataMetadataInput): Prom
     );
 
     const dataSources = manifestService.getManifestDataSources();
-    const entries: ODataMetadataEntry[] = [];
-    for (const [name, dataSource] of Object.entries(dataSources)) {
-        if (dataSource.type !== 'OData') {
-            continue;
-        }
-        const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
-        const formattedMetadata = formatXml(rawMetadata);
-        if (saveLocal) {
-            writeLocalMetadata(appPath, name, formattedMetadata);
-        }
-        entries.push({
-            id: name,
-            url: dataSource.uri,
-            metadata: formattedMetadata,
-            model: modelsByDataSource.get(name)
-        });
-    }
+    const entries: ODataMetadataEntry[] = await Promise.all(
+        Object.entries(dataSources)
+            .filter(([, dataSource]) => dataSource.type === 'OData')
+            .map(async ([name, dataSource]) => {
+                const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
+                const formattedMetadata = formatXml(rawMetadata);
+                if (saveLocal) {
+                    writeLocalMetadata(appPath, name, formattedMetadata);
+                }
+                return {
+                    id: name,
+                    url: dataSource.uri,
+                    metadata: formattedMetadata,
+                    model: modelsByDataSource.get(name)
+                };
+            })
+    );
     return { entries };
 }
 
