@@ -11,19 +11,19 @@ sap.ui.define([
             Given.iResetMockData({ ServiceUri: "/admin/" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheBooksList.iSeeThisPage();
+            Then.onTheBooksListGenerated.iSeeThisPage();
         });
 
 
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheBooksList.onFilterBar().iExecuteSearch();
+            When.onTheBooksListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheBooksList.onTable().iCheckRows();
+            Then.onTheBooksListGenerated.onTable().iCheckRows();
 
-            When.onTheBooksList.onTable().iPressRow(0);
-            Then.onTheBooksObjectPage.iSeeThisPage();
+            When.onTheBooksListGenerated.onTable().iPressRow(0);
+            Then.onTheBooksObjectPageGenerated.iSeeThisPage();
 
         });
 
