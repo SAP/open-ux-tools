@@ -10,8 +10,8 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getWebappPath: mockGetWebappPath
 }));
 
-const { ensureAnnotationI18nModelContent, ensureAnnotationI18nModelRegistered } =
-    await import('../../../../src/writer/manifest/ensure-annotation-i18n-model.js');
+const { ensureI18nModelContent, ensureI18nModelRegistered } =
+    await import('../../../../src/writer/manifest/ensure-i18n-model.js');
 
 interface DescriptorChange {
     changeType: string;
@@ -19,7 +19,7 @@ interface DescriptorChange {
     texts?: object;
 }
 
-describe('ensureAnnotationI18nModelRegistered', () => {
+describe('ensureI18nModelRegistered', () => {
     const projectPath = '/mock/project';
     const webappPath = join(projectPath, 'webapp');
     const descriptorPath = join(webappPath, 'manifest.appdescr_variant');
@@ -43,7 +43,7 @@ describe('ensureAnnotationI18nModelRegistered', () => {
             content: [{ changeType: 'appdescr_app_setTitle', content: {} }]
         });
 
-        const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
+        const modified = await ensureI18nModelRegistered(projectPath, fs);
 
         expect(modified).toBe(true);
         const changes = i18nModelChanges();
@@ -66,7 +66,7 @@ describe('ensureAnnotationI18nModelRegistered', () => {
             ]
         });
 
-        const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
+        const modified = await ensureI18nModelRegistered(projectPath, fs);
 
         expect(modified).toBe(false);
         const changes = i18nModelChanges();
@@ -85,7 +85,7 @@ describe('ensureAnnotationI18nModelRegistered', () => {
             ]
         });
 
-        const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
+        const modified = await ensureI18nModelRegistered(projectPath, fs);
 
         expect(modified).toBe(false);
         expect(i18nModelChanges()).toHaveLength(1);
@@ -102,14 +102,14 @@ describe('ensureAnnotationI18nModelRegistered', () => {
             ]
         });
 
-        const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
+        const modified = await ensureI18nModelRegistered(projectPath, fs);
 
         expect(modified).toBe(true);
         expect(i18nModelChanges()).toHaveLength(1);
     });
 
     it('should return false when the descriptor does not exist', async () => {
-        const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
+        const modified = await ensureI18nModelRegistered(projectPath, fs);
 
         expect(modified).toBe(false);
     });
@@ -117,17 +117,17 @@ describe('ensureAnnotationI18nModelRegistered', () => {
     it('should return false when the descriptor has no content array', async () => {
         fs.writeJSON(descriptorPath, { fileName: 'manifest' });
 
-        const modified = await ensureAnnotationI18nModelRegistered(projectPath, fs);
+        const modified = await ensureI18nModelRegistered(projectPath, fs);
 
         expect(modified).toBe(false);
     });
 });
 
-describe('ensureAnnotationI18nModelContent', () => {
+describe('ensureI18nModelContent', () => {
     it('should append a fresh @i18n model when none exists', () => {
         const content: DescriptorChange[] = [{ changeType: 'appdescr_app_setTitle', content: {} }];
 
-        const modified = ensureAnnotationI18nModelContent(content);
+        const modified = ensureI18nModelContent(content);
 
         expect(modified).toBe(true);
         expect(content).toHaveLength(2);
@@ -147,7 +147,7 @@ describe('ensureAnnotationI18nModelContent', () => {
             }
         ];
 
-        const modified = ensureAnnotationI18nModelContent(content);
+        const modified = ensureI18nModelContent(content);
 
         expect(modified).toBe(false);
         expect(content).toHaveLength(1);
@@ -163,7 +163,7 @@ describe('ensureAnnotationI18nModelContent', () => {
             }
         ];
 
-        const modified = ensureAnnotationI18nModelContent(content);
+        const modified = ensureI18nModelContent(content);
 
         expect(modified).toBe(false);
         expect(content).toHaveLength(1);
@@ -178,7 +178,7 @@ describe('ensureAnnotationI18nModelContent', () => {
             }
         ];
 
-        const modified = ensureAnnotationI18nModelContent(content);
+        const modified = ensureI18nModelContent(content);
 
         expect(modified).toBe(true);
         expect(content).toHaveLength(2);

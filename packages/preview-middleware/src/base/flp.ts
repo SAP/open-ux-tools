@@ -38,7 +38,7 @@ import {
     type CommonAdditionalChangeInfoProperties,
     loadAppVariant,
     readManifestFromBuildPath,
-    ensureAnnotationI18nModelRegistered
+    ensureI18nModelRegistered
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -1321,7 +1321,7 @@ export class FlpSandbox {
         if (!('cfBuildPath' in config)) {
             try {
                 const projectRoot = dirname(this.utils.getProject().getSourcePath());
-                const modified = await ensureAnnotationI18nModelRegistered(projectRoot, this.fs);
+                const modified = await ensureI18nModelRegistered(projectRoot, this.fs);
                 if (modified) {
                     await new Promise<void>((resolve) => this.fs.commit(resolve));
                 }

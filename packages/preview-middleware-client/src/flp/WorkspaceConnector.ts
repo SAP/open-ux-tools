@@ -99,7 +99,11 @@ const connector = merge({}, ObjectStorageConnector, {
             features.isVariantAdaptationEnabled = true;
         }
 
-        features.isAnnotationChangeEnabled = false;
+        // TODO: Need to check system ui5 version instead of runtime version
+        features.isAnnotationChangeEnabled = !isLowerThanMinimalUi5Version(ui5Version, {
+            major: 1,
+            minor: 152
+        });
 
         return features;
     }

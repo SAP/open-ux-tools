@@ -69,13 +69,13 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
 // Mock @sap-ux/adp-tooling
 const mockAdpPreviewConstructor = jest.fn<typeof actualAdpTooling.AdpPreview>();
 const mockReadManifestFromBuildPath = jest.fn<typeof actualAdpTooling.readManifestFromBuildPath>();
-const mockEnsureAnnotationI18nModelRegistered = jest.fn<typeof actualAdpTooling.ensureAnnotationI18nModelRegistered>();
+const mockEnsureI18nModelRegistered = jest.fn<typeof actualAdpTooling.ensureI18nModelRegistered>();
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...actualAdpTooling,
     AdpPreview: mockAdpPreviewConstructor,
     readManifestFromBuildPath: mockReadManifestFromBuildPath,
-    ensureAnnotationI18nModelRegistered: mockEnsureAnnotationI18nModelRegistered
+    ensureI18nModelRegistered: mockEnsureI18nModelRegistered
 }));
 
 // Mock @sap-ux/i18n
@@ -1937,8 +1937,8 @@ describe('initAdp', () => {
     const syncSpy = jest.fn();
 
     beforeEach(() => {
-        mockEnsureAnnotationI18nModelRegistered.mockReset();
-        mockEnsureAnnotationI18nModelRegistered.mockResolvedValue(false);
+        mockEnsureI18nModelRegistered.mockReset();
+        mockEnsureI18nModelRegistered.mockResolvedValue(false);
         mockAdpPreviewConstructor.mockImplementation((): adpTooling.AdpPreview => {
             return {
                 init: () => {
@@ -2014,7 +2014,7 @@ describe('initAdp', () => {
     });
 
     test('initAdp ensures the @i18n model in the descriptor before merge', async () => {
-        mockEnsureAnnotationI18nModelRegistered.mockResolvedValue(true);
+        mockEnsureI18nModelRegistered.mockResolvedValue(true);
         const commitSpy = jest.fn((cb: () => void) => cb());
         const utils = {
             getProject: () => ({ getSourcePath: () => '/adp.project/webapp' })
@@ -2029,13 +2029,13 @@ describe('initAdp', () => {
         await flp.initAdp({ target: { url } } as AdpPreviewConfig);
 
         // projectRoot is dirname(webappPath)
-        expect(mockEnsureAnnotationI18nModelRegistered).toHaveBeenCalledWith('/adp.project', expect.anything());
+        expect(mockEnsureI18nModelRegistered).toHaveBeenCalledWith('/adp.project', expect.anything());
         // commit runs because registration reported a change, before AdpPreview is constructed/merged
         expect(commitSpy).toHaveBeenCalled();
     });
 
     test('initAdp does not commit when the descriptor already has the @i18n model', async () => {
-        mockEnsureAnnotationI18nModelRegistered.mockResolvedValue(false);
+        mockEnsureI18nModelRegistered.mockResolvedValue(false);
         const commitSpy = jest.fn((cb: () => void) => cb());
         const utils = {
             getProject: () => ({ getSourcePath: () => '/adp.project/webapp' })
@@ -2049,7 +2049,7 @@ describe('initAdp', () => {
 
         await flp.initAdp({ target: { url } } as AdpPreviewConfig);
 
-        expect(mockEnsureAnnotationI18nModelRegistered).toHaveBeenCalled();
+        expect(mockEnsureI18nModelRegistered).toHaveBeenCalled();
         expect(commitSpy).not.toHaveBeenCalled();
     });
 

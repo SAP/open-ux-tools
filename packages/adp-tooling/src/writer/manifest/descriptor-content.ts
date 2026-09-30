@@ -1,7 +1,7 @@
 import { isFeatureSupportedVersion } from '../../ui5/index.js';
 import { FlexLayer, ApplicationType } from '../../types.js';
 import type { Content, AdpWriterConfig, ResourceModel } from '../../types.js';
-import { ensureAnnotationI18nModelContent } from './ensure-annotation-i18n-model.js';
+import { ensureI18nModelContent } from './ensure-i18n-model.js';
 
 /**
  * Creates a descriptor change object for a resource model.
@@ -139,7 +139,7 @@ export function getManifestContent(config: AdpWriterConfig): Content[] {
         }
     });
 
-    ensureAnnotationI18nModelContent(content);
+    ensureI18nModelContent(content);
 
     return content;
 }

@@ -234,17 +234,30 @@ describe('flp/WorkspaceConnector', () => {
             expect(features.isVariantAdaptationEnabled).toBe(true);
         });
 
-        test('isAnnotationChangeEnabled is always false', async () => {
+        test('isAnnotationChangeEnabled is false for UI5 version below 1.152', async () => {
             VersionInfo.load.mockResolvedValueOnce({
                 name: 'SAPUI5 Distribution',
-                libraries: [{ name: 'sap.ui.core', version: '1.132.0' }]
+                libraries: [{ name: 'sap.ui.core', version: '1.151.0' }]
             });
             ObjectStorageConnector.loadFeatures.mockResolvedValueOnce({
                 isVariantAdaptationEnabled: false,
-                isAnnotationChangeEnabled: true
+                isAnnotationChangeEnabled: false
             });
             const features = await connector.loadFeatures();
             expect(features.isAnnotationChangeEnabled).toBe(false);
+        });
+
+        test('isAnnotationChangeEnabled is true for UI5 version 1.152 and above', async () => {
+            VersionInfo.load.mockResolvedValueOnce({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: '1.152.0' }]
+            });
+            ObjectStorageConnector.loadFeatures.mockResolvedValueOnce({
+                isVariantAdaptationEnabled: false,
+                isAnnotationChangeEnabled: false
+            });
+            const features = await connector.loadFeatures();
+            expect(features.isAnnotationChangeEnabled).toBe(true);
         });
     });
 });
