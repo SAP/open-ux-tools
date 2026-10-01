@@ -138,9 +138,12 @@ export function analyzeOperationAvailability(
 ): {
     enabled: boolean | 'dynamic';
     dynamicPath?: string;
+    selectionEnables?: boolean;
 } {
     if (operationAvailable === undefined) {
-        return { enabled: !requiresSelection };
+        // No OperationAvailable annotation: a single-instance bound action is disabled until a row is
+        // selected, then enabled. This flip is deterministic (unlike a path-based annotation).
+        return { enabled: !requiresSelection, selectionEnables: requiresSelection === true };
     }
 
     if (typeof operationAvailable === 'boolean') {
@@ -199,7 +202,10 @@ export function buildActionButtonState(
     const actionTarget = item.ActionTarget;
     const isBound = actionTarget?.isBound === true;
     const requiresSelection = isBound && actionTarget?.parameters?.[0]?.isCollection !== true;
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, requiresSelection);
+    const { enabled, dynamicPath, selectionEnables } = analyzeOperationAvailability(
+        operationAvailable,
+        requiresSelection
+    );
 
     return {
         label: (item.Label as string) || '',
@@ -209,6 +215,7 @@ export function buildActionButtonState(
         visible: true,
         enabled,
         dynamicPath,
+        selectionEnables,
         invocationGrouping: item.InvocationGrouping ? extractEnumMemberValue(item.InvocationGrouping) : undefined,
         isCritical: criticalActions?.has(actionMethod) ?? false,
         parameterDialogFields: collectActionParameterNames(actionTarget)
@@ -252,7 +259,10 @@ export function buildActionStateFromSpecModelKey(
     const requiresSelection = isBound && actionDefinition?.parameters?.[0]?.isCollection !== true;
 
     const operationAvailable = findOperationAvailableAnnotation(convertedMetadata, actionMethod);
-    const { enabled, dynamicPath } = analyzeOperationAvailability(operationAvailable, requiresSelection);
+    const { enabled, dynamicPath, selectionEnables } = analyzeOperationAvailability(
+        operationAvailable,
+        requiresSelection
+    );
 
     return {
         label: label ?? '',
@@ -262,6 +272,7 @@ export function buildActionStateFromSpecModelKey(
         visible: true,
         enabled,
         dynamicPath,
+        selectionEnables,
         isCritical: criticalActions?.has(actionMethod) ?? false,
         parameterDialogFields: collectActionParameterNames(actionDefinition)
     };
