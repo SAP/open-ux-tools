@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Bug Fixes
+
+- Use stable ActionIdentifier object instead of translatable label for OData-bound LR table actions [[a104e13](https://github.com/SAP/open-ux-tools/commit/a104e13a356e86fb928aaf932303de2bde21d80e)]
+
 ## 1.15.3
 
 ### Patch Changes
