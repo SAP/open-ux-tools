@@ -510,8 +510,28 @@ describe('update service-metadata command', () => {
         await command.parseAsync(getArgv(['service-metadata', '/app/path']));
 
         // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining("destination 'MY_DEST'"));
-        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('service is accessible'));
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            "The service metadata request is returning an error. Please check that the destination 'MY_DEST' exists and the service is accessible."
+        );
+        expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    test('BAS: invalid XML response is not masked by the destination error', async () => {
+        // Given
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetBackendConfigs.mockReturnValue([
+            { url: 'https://test.example.com', path: '/sap/opu/', destination: 'MY_DEST' }
+        ]);
+        mockMetadata.mockResolvedValueOnce('plain text error response');
+        const command = new Command('update');
+        addServiceUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['service-metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith('The remote service metadata is not valid XML.');
+        expect(loggerMock.error).not.toHaveBeenCalledWith(expect.stringContaining("destination 'MY_DEST'"));
         expect(mockUpdate).not.toHaveBeenCalled();
     });
 
@@ -590,6 +610,50 @@ describe('update service-metadata command', () => {
 
         // Then
         expect(loggerMock.error).toHaveBeenCalledWith('Network error');
+        expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    test('metadata returns invalid XML: logs generic XML error', async () => {
+        // Given
+        mockMetadata.mockResolvedValueOnce('plain text error response');
+        const command = new Command('update');
+        addServiceUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['service-metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith('The remote service metadata is not valid XML.');
+        expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    test('metadata returns JSON with error.message: uses that message as the error', async () => {
+        // Given
+        mockMetadata.mockResolvedValueOnce(JSON.stringify({ error: { message: 'Service not found' } }));
+        const command = new Command('update');
+        addServiceUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['service-metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith(
+            'The service metadata request is returning an error. Error: Service not found'
+        );
+        expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
+    test('metadata returns JSON without error.message: falls back to generic XML error', async () => {
+        // Given
+        mockMetadata.mockResolvedValueOnce(JSON.stringify({ error: { code: '403' } }));
+        const command = new Command('update');
+        addServiceUpdateCommand(command);
+
+        // When
+        await command.parseAsync(getArgv(['service-metadata', '/app/path']));
+
+        // Then
+        expect(loggerMock.error).toHaveBeenCalledWith('The remote service metadata is not valid XML.');
         expect(mockUpdate).not.toHaveBeenCalled();
     });
 

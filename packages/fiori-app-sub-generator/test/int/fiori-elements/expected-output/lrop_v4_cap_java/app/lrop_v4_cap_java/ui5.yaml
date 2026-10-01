@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv4capjava
+  name: testnamespace.lropv4capjava
 type: application
 server:
   customMiddleware:

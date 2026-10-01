@@ -17,8 +17,9 @@
 
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"
-], function (opaTest, runner) {
+    "./pages/JourneyRunner"<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>,
+    "sap/ui/core/library"<% } %>
+], function (opaTest, runner<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>, coreLibrary<% } %>) {
     "use strict";
 
     function journey() {
@@ -27,6 +28,8 @@ sap.ui.define([
         const defaultTableId = <%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '""' %>;
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+            Given.iResetTestData();
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName %>Generated.iSeeThisPage();
@@ -73,6 +76,31 @@ sap.ui.define([
         //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
         // });
 
+<%_ if (tabs && tabs.length > 0) { -%>
+        opaTest("Check table columns and actions per tab", function (Given, When, Then) {
+            <%_ tabs.forEach(function(tab) { _%>
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            <%_ if (tab.createButton.visible && !isALP) { _%>
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckCreate({ visible: true });
+            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressCreate();
+            <%_ } _%>
+            <%_ if (tab.deleteButton.visible) { _%>
+            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressDelete();
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true });
+            <%_ } _%>
+            <%_ tab.toolBarActions.forEach(function(item) { _%>
+            <%_ if (item.visible) { _%>
+            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            <%_ } _%>
+            <%_ }); _%>
+            <%_ if (Object.keys(tab.tableColumns).length > 0) { _%>
+            Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
+            <%_ } _%>
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
+            <%_ }); -%>
+        });
+<%_ } else { -%>
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
         opaTest("Check table columns and actions", function (Given, When, Then) {
             <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
@@ -86,8 +114,25 @@ sap.ui.define([
             <%_ } _%>
             <%_ toolBarActions.forEach(function(item) { _%>
             <%_ if (item.visible) { _%>
+            <%_ if (item.menuActions) { _%>
+            <%_ if (item.splitButton) { _%>
+            // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ } else { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>");
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
+            <%_ item.menuActions.forEach(function(menuAction) { _%>
+            <%_ if (menuAction.visible) { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckMenuAction("<%- menuAction.label %>");
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteMenuAction("<%- menuAction.label %>");
+            <%_ } _%>
+            <%_ }); _%>
+            <%_ } _%>
+            <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
+            <%_ } _%>
             <%_ } _%>
             <%_ }); -%>
             <%_ } -%>
@@ -96,6 +141,15 @@ sap.ui.define([
             <%_ } -%>
         });
 <%_ } -%>
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+        opaTest("Check text annotation for columns", function (Given, When, Then) {
+            <%_ textAnnotationColumns.forEach(function(column) { _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
+            <%_ }); -%>
+        });
+<%_ } -%>
+<%_ } -%>
 
 <%_ if (startLR) { -%>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
@@ -103,20 +157,20 @@ sap.ui.define([
             <%_ if (!hideFilterBar) { -%>
             When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
             <%_ } -%>
-            <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { -%>
-            <%_ tableIdentifiers.forEach(function(tabId) { _%>
-            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tabId %>" });
-            Then.onThe<%- startLR%>Generated.onTable("<%- tabId %>").iCheckRows();
-            <%_ }); -%>
+            <%_ if (tabs && tabs.length > 0) { -%>
+            <%_ const navTabId = navigatedOPTabKey || tableIdentifiers[0]; -%>
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- navTabId %>" });
+            Then.onThe<%- startLR%>Generated.onTable("<%- navTabId %>").iCheckRows();
+            <%_ if (navigatedOP) { -%>
+            When.onThe<%- startLR%>Generated.onTable("<%- navTabId %>").iPressRow(0);
+            Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
+            <%_ } -%>
             <%_ } else { -%>
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
-            <%_ } -%>
             <%_ if (navigatedOP) { -%>
-            <%_ if (tableIdentifiers && tableIdentifiers.length > 0) { _%>
-            When.onThe<%- startLR%>Generated.iGoToView({ key: defaultTableId });
-            <%_ } _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressRow(0);
             Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
+            <%_ } -%>
             <%_ } -%>
         });
 <%_ } -%>

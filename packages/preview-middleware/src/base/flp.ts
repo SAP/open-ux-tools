@@ -344,6 +344,7 @@ export class FlpSandbox {
         const config = structuredClone(this.templateConfig);
         config.ui5.versionMajor = ui5Version.major;
         this.checkDeleteConnectors(config, ui5Version.major, ui5Version.minor, ui5Version.isCdn);
+        config.disableAppVariantStorage = this.adp !== undefined;
         if (!config.ui5.libs.includes('sap.ui.rta')) {
             // sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects
             config.ui5.libs += ',sap.ui.rta';
@@ -532,6 +533,7 @@ export class FlpSandbox {
             if (ui5Version.major === 1 && ui5Version.minor < 120) {
                 this.removeFlexExtensionPointEnabled();
             }
+            this.templateConfig.disableAppVariantStorage = this.adp !== undefined;
             //for consistency reasons, we also add the baseUrl to the HTML here, although it is only used in editor mode
             const html = render(await this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
@@ -1441,7 +1443,7 @@ export class FlpSandbox {
 
         // CF ADP build path mode: serve built resources directly from build output
         if ('cfBuildPath' in config) {
-            const manifest = this.setupCfBuildMode(config.cfBuildPath);
+            const manifest = this.setupCfBuildMode(config.cfBuildPath, adp);
             configureRta(this.rta, layer, variant.id, false, true);
             await this.init(manifest, variant.reference, {}, adp);
             await this.setupAdpCommonHandlers(adp);
@@ -1548,10 +1550,12 @@ export class FlpSandbox {
      * Setup the CF build path mode for the ADP project.
      *
      * @param cfBuildPath path to the build output folder
+     * @param adp AdpPreview instance for proxying manifest requests
      * @returns the manifest
      */
-    private setupCfBuildMode(cfBuildPath: string): Manifest {
+    private setupCfBuildMode(cfBuildPath: string, adp: AdpPreview): Manifest {
         const manifest = readManifestFromBuildPath(cfBuildPath);
+        this.router.use(adp.descriptor.url, adp.cfProxy.bind(adp));
         this.router.use('/', serveStatic(cfBuildPath));
         this.logger.info(`Initialized CF ADP with cfBuildPath, serving from ${cfBuildPath}`);
         return manifest;

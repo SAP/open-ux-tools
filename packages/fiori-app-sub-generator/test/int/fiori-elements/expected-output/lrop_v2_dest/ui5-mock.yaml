@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2dest
+  name: testnamespace.lropv2dest
 type: application
 server:
   customMiddleware:
@@ -32,7 +32,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpacelropv2dest
+            object: testnamespacelropv2dest
             action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp

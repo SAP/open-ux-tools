@@ -334,7 +334,7 @@ function getAnnotationNamespacesForSingleAnnotation(
  * @returns A reference to the namspaces array
  */
 export function getAnnotationNamespaces({ metadata, annotations }: Partial<OdataService>): NamespaceAlias[] {
-    // Enhance service with annotations namespaces
+    // Enhance service with annotation namespaces
     let schemaNamespaces = metadata ? getNamespaces(metadata) : [];
     if (Array.isArray(annotations)) {
         for (const annotationName in annotations) {

@@ -1,4 +1,4 @@
-import type { Element, ExtendedDiagnostic, Position } from '@sap-ux/odata-annotation-core-types';
+import type { Element, ExtendedDiagnostic, Position, Range } from '@sap-ux/odata-annotation-core-types';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 export interface Context {
@@ -11,6 +11,7 @@ export interface Context {
      * Alias used in annotation group.
      */
     groupName?: string;
+    groupNameRange?: Range;
     valueType?: string;
     isCollection?: boolean;
     /**

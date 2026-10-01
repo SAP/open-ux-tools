@@ -2,6 +2,7 @@ import { Authentication } from '@sap-ux/btp-utils';
 import type { Annotations, EntitySetData, ExternalService } from '@sap-ux/axios-extension';
 import type { FloorplanKey } from './app-gen.js';
 import type { CapRuntime } from './cap.js';
+import type { AuthenticationType } from '@sap-ux/store';
 
 /**
  * Shared types used by headless generation from multiple modules
@@ -125,6 +126,7 @@ export interface AppConfig {
         readonly scp?: boolean; // If available key store entry must be available or provided at app runtime
         readonly destination?: string;
         readonly destinationInstance?: string;
+        readonly authenticationType?: AuthenticationType; // Required to write correct ui5.yaml authenticationType
         readonly edmx?: string;
         readonly annotations?: Annotations | Annotations[];
         readonly capService?: {

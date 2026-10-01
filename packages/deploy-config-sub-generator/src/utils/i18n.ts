@@ -11,13 +11,14 @@ export const i18n: i18nNext = i18next.createInstance();
  */
 export async function initI18n(): Promise<void> {
     await i18n.init({
+        resources: { en: { [deployConfigSubGen]: translations } },
         lng: 'en',
         fallbackLng: 'en'
     });
-    i18n.addResourceBundle('en', deployConfigSubGen, translations);
-
     addInquirerCommonTexts();
 }
+
+void initI18n().catch(() => undefined);
 
 /**
  * Helper function facading the call to i18next. Unless a namespace option is provided the local namespace will be used.
@@ -32,5 +33,3 @@ export function t(key: string, options?: TOptions): string {
     }
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
-
-void initI18n().catch(() => undefined);

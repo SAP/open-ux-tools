@@ -254,8 +254,27 @@ describe('getPrompts', () => {
             applyDefaultWhenDirty: true,
             breadcrumb: t('prompts.targetPath.breadcrumb')
         });
+        // Simulate a successful download so the target folder prompt becomes visible
+        (PromptState as any)._admZipInstance = {} as any;
         expect(await (targetFolderPrompt as any)?.when(selectedAnswer)).toBe(true);
         expect(await (targetFolderPrompt as any)?.validate('someother/path', appValue)).toBe(true);
+    });
+
+    it('should not display project folder path prompt when download fails', async () => {
+        mockValidateAppSelection.mockResolvedValue(true);
+        mockFetchAppList.mockResolvedValue(appList);
+        mockFormatAppChoices.mockReturnValue(appList);
+
+        const prompts = await getPrompts(appRootPath);
+
+        const selectedAnswer = {
+            [PromptNames.selectedApp]: { appId: 'app1', repoName: 'repo1' }
+        };
+
+        // admZip is not set — simulates a failed download
+        PromptState.reset();
+        const targetFolderPrompt = prompts.find((p) => p.name === PromptNames.targetFolder);
+        expect(await (targetFolderPrompt as any)?.when(selectedAnswer)).toBe(false);
     });
 
     it('should display GA link when no app is chosen and app list is empty', async () => {
@@ -314,7 +333,7 @@ describe('getPrompts', () => {
         mockFormatAppChoices.mockReturnValue(appList);
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(appList);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue(true);
         mockHasQfaJson.mockReturnValue(true);
 
         const prompts = await getPrompts(appRootPath);

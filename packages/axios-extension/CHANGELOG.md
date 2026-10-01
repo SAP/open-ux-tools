@@ -1,5 +1,25 @@
 # @sap-ux/axios-extension
 
+## 2.1.0
+
+### Minor Changes
+
+#### Features
+
+- Export `getProxyAgentConfig` for reusing the environment-based proxy handling (honours NO_PROXY and BAS) outside the service-provider factory [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+## 2.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- add waitForFirst option to fetchExternalServices to abort on auth failure [[118d3d8](https://github.com/SAP/open-ux-tools/commit/118d3d866ad0003a51a79b3640f3d6cdfe42643b)]
+
 ## 2.0.9
 
 ### Patch Changes

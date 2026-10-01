@@ -35,24 +35,35 @@
     },
     "value": {
         "type": "record",
-        "properties": [
+        "properties": [],
+        "range": "[(0,11)..(2,1)]",
+        "commas": [],
+        "flattenedExpressions": [
             {
-                "type": "record-property",
-                "name": {
-                    "type": "path",
+                "type": "flattened-expression",
+                "path": {
+                    "type": "flattened-path",
                     "value": "AxisScaling.",
                     "segments": [
                         {
-                            "type": "identifier",
-                            "value": "AxisScaling",
-                            "range": "[(1,4)..(1,15)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "AxisScaling",
+                                "range": "[(1,4)..(1,15)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,4)..(1,15)]"
                         },
                         {
-                            "type": "identifier",
-                            "value": "",
-                            "range": "[(1,16)..(1,16)]",
-                            "quoted": false
+                            "type": "flattened-property-segment",
+                            "name": {
+                                "type": "identifier",
+                                "value": "",
+                                "range": "[(1,16)..(1,16)]",
+                                "quoted": false
+                            },
+                            "range": "[(1,16)..(1,16)]"
                         }
                     ],
                     "separators": [
@@ -68,8 +79,6 @@
                 "range": "[(1,4)..(1,16)]"
             }
         ],
-        "range": "[(0,11)..(2,1)]",
-        "commas": [],
         "openToken": {
             "type": "token",
             "value": "{",
