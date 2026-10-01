@@ -552,7 +552,7 @@ describe('AddSubpage controller', () => {
                               },
                               'targetPage': {
                                   'type': 'Component',
-                                  'id': 'to_Booking|BookingsObjectPage',
+                                  'id': 'to_Booking_BookingsObjectPage',
                                   'name': 'sap.fe.templates.ObjectPage',
                                   'routePattern': testCase.expectedPattern,
                                   'settings': {
@@ -568,7 +568,7 @@ describe('AddSubpage controller', () => {
             );
         });
 
-        test('targetPage id uses navProperty|entitySet format to distinguish multiple nav properties targeting the same entity set', async () => {
+        test('targetPage id uses navProperty_entitySet format to distinguish multiple nav properties targeting the same entity set', async () => {
             CommandFactory.getCommandFor.mockClear();
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const executeSpy = jest.fn();
@@ -641,8 +641,8 @@ describe('AddSubpage controller', () => {
 
             const commandCall = CommandFactory.getCommandFor.mock.calls[0];
             // id must include the navProperty so two nav props targeting the same entity set
-            // produce distinct page ids (_Subtype1|Child01ObjectPage vs _NewSubtype|Child01ObjectPage)
-            expect(commandCall[2].parameters.targetPage.id).toBe('_NewSubtype|Child01ObjectPage');
+            // produce distinct page ids (_Subtype1_Child01ObjectPage vs _NewSubtype_Child01ObjectPage)
+            expect(commandCall[2].parameters.targetPage.id).toBe('_NewSubtype_Child01ObjectPage');
         });
     });
 });
