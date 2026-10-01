@@ -15,27 +15,11 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(ObjectPage, Press) {
-    'use strict';
+export const actions = {};
 
-    const CustomPageDefinitions = {
-        actions: {
-            iPressSectionIconTabFilterButton: function (section) {
-                return this.waitFor({
-                    id: new RegExp(`.*--fe::FacetSection::${section}-anchor$`),
-                    actions: new Press()
-                });
-            }
-        },
-        assertions: {}
-    };
+export const assertions = {};
 
-    return new ObjectPage(
-        {
-            appId: 'testnamepsace.lropv4noui5version',
-            componentId: 'TravelObjectPage',
-            contextPath: '/Travel'
-        },
-        CustomPageDefinitions
-    );
-});
+export default class ListReport {
+    actions = actions;
+    assertions = assertions;
+}
