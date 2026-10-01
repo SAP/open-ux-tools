@@ -17,12 +17,14 @@ import {
     TEXT_ARRANGEMENT_HIDDEN,
     STRICT_UOM_FILTERING,
     NO_LIVE_MODE,
-    CLOUD_DEV_ADAPTATION_STATUS
+    CLOUD_DEV_ADAPTATION_STATUS,
+    FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION,
+    NO_SINGLE_FACET_IN_COLLECTION,
+    NO_DEEP_COLLECTION_FACETS
 } from '../language/diagnostics.js';
 
 // Import all rules
 import sapBookmarkPerformance from './sap-bookmark-performance.js';
-import sapBrowserApiError from './sap-browser-api-error.js';
 import sapBrowserApiWarning from './sap-browser-api-warning.js';
 import sapCrossApplicationNavigation from './sap-cross-application-navigation.js';
 import sapForbiddenWindowProperty from './sap-forbidden-window-property.js';
@@ -35,7 +37,6 @@ import sapNoDomInsertion from './sap-no-dom-insertion.js';
 import sapNoDynamicStyleInsertion from './sap-no-dynamic-style-insertion.js';
 import sapNoElementCreation from './sap-no-element-creation.js';
 import sapNoEncodeFileService from './sap-no-encode-file-service.js';
-import sapNoEventProp from './sap-no-event-prop.js';
 import sapNoExecCommand from './sap-no-exec-command.js';
 import sapNoGlobalDefine from './sap-no-global-define.js';
 import sapNoGlobalEvent from './sap-no-global-event.js';
@@ -58,9 +59,6 @@ import sapNoProprietaryBrowserApi from './sap-no-proprietary-browser-api.js';
 import sapNoSessionstorage from './sap-no-sessionstorage.js';
 import sapNoUi5PropWarning from './sap-no-ui5-prop-warning.js';
 import sapNoUi5baseProp from './sap-no-ui5base-prop.js';
-import sapNoUi5eventproviderProp from './sap-no-ui5eventprovider-prop.js';
-import sapNoUi5odatamodelProp from './sap-no-ui5odatamodel-prop.js';
-import sapNoWindowAlert from './sap-no-window-alert.js';
 import sapOpa5AutowaitTrue from './sap-opa5-autowait-true.js';
 import sapTimeoutUsage from './sap-timeout-usage.js';
 import sapUi5Forms from './sap-ui5-forms.js';
@@ -86,12 +84,14 @@ import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
 import cloudDevAdaptationStatus from './sap-cloud-dev-adaptation-status.js';
+import fieldGroupInTableTypeRestriction from './sap-field-group-in-table-type-restriction.js';
+import noSingleFacetInCollection from './sap-no-single-facet-in-collection.js';
+import noDeepCollectionFacets from './sap-no-deep-collection-facets.js';
 
 import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,
-    'sap-browser-api-error': sapBrowserApiError,
     'sap-browser-api-warning': sapBrowserApiWarning,
     'sap-cross-application-navigation': sapCrossApplicationNavigation,
     'sap-forbidden-window-property': sapForbiddenWindowProperty,
@@ -104,7 +104,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-no-dynamic-style-insertion': sapNoDynamicStyleInsertion,
     'sap-no-element-creation': sapNoElementCreation,
     'sap-no-encode-file-service': sapNoEncodeFileService,
-    'sap-no-event-prop': sapNoEventProp,
     'sap-no-exec-command': sapNoExecCommand,
     'sap-no-global-define': sapNoGlobalDefine,
     'sap-no-global-event': sapNoGlobalEvent,
@@ -127,9 +126,6 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     'sap-no-sessionstorage': sapNoSessionstorage,
     'sap-no-ui5-prop-warning': sapNoUi5PropWarning,
     'sap-no-ui5base-prop': sapNoUi5baseProp,
-    'sap-no-ui5eventprovider-prop': sapNoUi5eventproviderProp,
-    'sap-no-ui5odatamodel-prop': sapNoUi5odatamodelProp,
-    'sap-no-window-alert': sapNoWindowAlert,
     'sap-opa5-autowait-true': sapOpa5AutowaitTrue,
     'sap-timeout-usage': sapTimeoutUsage,
     'sap-ui5-forms': sapUi5Forms,
@@ -154,5 +150,8 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [TABLE_PERSONALIZATION]: tablePersonalization,
     [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
     [NO_LIVE_MODE]: noLiveMode,
-    [CLOUD_DEV_ADAPTATION_STATUS]: cloudDevAdaptationStatus
+    [CLOUD_DEV_ADAPTATION_STATUS]: cloudDevAdaptationStatus,
+    [FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION]: fieldGroupInTableTypeRestriction,
+    [NO_SINGLE_FACET_IN_COLLECTION]: noSingleFacetInCollection,
+    [NO_DEEP_COLLECTION_FACETS]: noDeepCollectionFacets
 };

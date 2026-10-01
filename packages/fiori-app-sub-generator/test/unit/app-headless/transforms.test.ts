@@ -1,6 +1,7 @@
 import { t } from '../../../src/utils/i18n.js';
 import { transformExtState } from '../../../src/app-headless/transforms.js';
 import type { FFAppConfig } from '../../../src/types/index.js';
+import { AuthenticationType } from '@sap-ux/store';
 import {
     appConfigInvalidCapServiceName,
     appConfigInvalidEdmx,
@@ -49,6 +50,7 @@ describe('Test headless', () => {
             },
             service: {
                 client: undefined,
+                connectedSystem: { backendSystem: { authenticationType: undefined } },
                 destinationName: 'SomeDestinationName',
                 edmx: expect.stringContaining(
                     '<?xml version="1.0" encoding="utf-8" ?><edmx:DataServices m:DataServiceVersion="2.0"></edmx:DataServices><edmx:Edmx Version="1.0"'
@@ -66,6 +68,7 @@ describe('Test headless', () => {
         const state = transformExtState(appConfigWithValueListMetadata as unknown as FFAppConfig);
         expect(state.service).toEqual({
             client: undefined,
+            connectedSystem: { backendSystem: { authenticationType: undefined } },
             destinationName: 'SomeDestinationName',
             edmx: expect.stringContaining('<?xml version="1.0" encoding="utf-8" ?>'),
             host: undefined,
@@ -110,5 +113,14 @@ describe('Test headless', () => {
         };
         const state = transformExtState(appConfigWithVirtualEndpointsEnabled as unknown as FFAppConfig);
         expect(state.project.enableVirtualEndpoints).toBe(true);
+    });
+
+    test('authenticationType is threaded into connectedSystem when provided', () => {
+        const appConfigWithAuth = {
+            ...appConfigDest,
+            service: { ...appConfigDest.service, authenticationType: AuthenticationType.Basic }
+        };
+        const state = transformExtState(appConfigWithAuth as unknown as FFAppConfig);
+        expect(state.service?.connectedSystem?.backendSystem?.authenticationType).toBe(AuthenticationType.Basic);
     });
 });

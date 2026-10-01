@@ -118,6 +118,7 @@ export async function getAppFeatures(
     let objectPages: PageWithModelV4[] | null = null;
     let fpmPage: PageWithModelV4 | null = null;
     let projectMetadata = metadata;
+    let annotationXmls: string[] = [];
     let resolveLabel: I18nLabelResolver;
     // Read application model to extract control information needed for test generation
     // specification and readApp might not be available due to specification version, fail gracefully
@@ -142,11 +143,23 @@ export async function getAppFeatures(
             }
         }
 
+        // Local annotation files (e.g. webapp/annotations/annotation.xml) are not part of the
+        // service $metadata; read them so annotation-only terms (e.g. UI.TextArrangement,
+        // Common.IsActionCritical) are available when the metadata is converted.
+        const annotationRefs = appAccess.project?.apps['']?.services?.mainService?.annotations ?? [];
+        annotationXmls = annotationRefs
+            .map((annotation) => annotation.local)
+            .filter((path): path is string => !!path)
+            .map((path) => fs?.read(path))
+            .filter((content): content is string => !!content);
+
         resolveLabel = await buildLabelResolver(appAccess, log);
 
-        listReportPage = appModel?.applicationModel ? getListReportPage(appModel.applicationModel) : listReportPage;
-        objectPages = appModel?.applicationModel ? getObjectPages(appModel.applicationModel) : objectPages;
-        fpmPage = appModel?.applicationModel ? getFPMPage(appModel.applicationModel) : fpmPage;
+        if (appModel?.applicationModel) {
+            listReportPage = getListReportPage(appModel.applicationModel);
+            objectPages = getObjectPages(appModel.applicationModel);
+            fpmPage = getFPMPage(appModel.applicationModel);
+        }
     } catch (error) {
         log?.warn(
             'Error analyzing project model using specification. No dynamic tests will be generated. Error: ' +
@@ -168,7 +181,8 @@ export async function getAppFeatures(
                 log,
                 projectMetadata,
                 manifest,
-                resolveLabel
+                resolveLabel,
+                annotationXmls
             );
         }
         if (objectPages) {
@@ -177,9 +191,12 @@ export async function getAppFeatures(
                 listReportPage?.name,
                 log,
                 projectMetadata,
-                manifest,
-                listReportPage?.entitySet,
-                resolveLabel
+                {
+                    manifest,
+                    listReportEntitySet: listReportPage?.entitySet,
+                    resolveLabel,
+                    annotationXmls
+                }
             );
         }
         if (fpmPage) {

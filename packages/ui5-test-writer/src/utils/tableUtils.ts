@@ -6,7 +6,20 @@ type ColumnModelItem = {
     custom?: boolean;
     description?: string;
     schema: { keys: { name: string; value: string }[] };
-    properties?: { availability?: { value?: string } };
+    properties?: {
+        availability?: { value?: string };
+        text?: { value?: string; artifactType?: string };
+    };
+};
+
+/**
+ * A column that carries a text annotation in the spec model. `columnProperty` is the
+ * column's own bound property (used to look up the `UI.TextArrangement` annotation in the
+ * OData metadata); `textProperty` is the `Common.Text` target property (used as the sort name).
+ */
+export type TextAnnotationColumnCandidate = {
+    columnProperty: string;
+    textProperty: string;
 };
 
 export type ColumnAggregations = TreeAggregations & {
@@ -63,6 +76,18 @@ export function transformTableColumns(columnAggregations: ColumnAggregations): T
 }
 
 /**
+ * Returns true when a candidate node is a usable table node, i.e. it directly exposes
+ * `columns` and/or `toolBar` aggregations.
+ *
+ * @param node - candidate tree aggregation node
+ * @returns true if the node carries column/toolbar aggregations
+ */
+function isTableNode(node: TreeAggregation): boolean {
+    const children = getAggregations(node);
+    return !!children['columns'] || !!children['toolBar'];
+}
+
+/**
  * Resolves the table node that actually carries `columns`/`toolBar` aggregations.
  * Single-table List Reports and Object Page sections expose these directly under `table`.
  * Multi-view List Reports nest one table node per tab under `table.views[key]`; the first
@@ -76,17 +101,11 @@ export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation 
     if (!tableAggregation) {
         return undefined;
     }
-    // A usable table node exposes `columns` and/or `toolBar` directly.
-    const isTableNode = (candidate: TreeAggregation): boolean => {
-        const children = getAggregations(candidate);
-        return !!children['columns'] || !!children['toolBar'];
-    };
-    const tableChildren = getAggregations(tableAggregation);
     if (isTableNode(tableAggregation)) {
         return tableAggregation;
     }
     // Multi-view List Report: per-tab nodes live under `views`; return the first usable one, else undefined.
-    const views = tableChildren['views'];
+    const views = getAggregations(tableAggregation)['views'];
     if (!views) {
         return undefined;
     }
@@ -98,6 +117,48 @@ export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation 
         }
     }
     return undefined;
+}
+
+/**
+ * Resolves the per-tab table nodes of a multi-view (Multiple Table Mode) List Report. Each entry pairs
+ * the spec-model view key with the table node carrying that tab's `columns`/`toolBar` aggregations.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns per-view `{ key, node }` entries in model order; empty for single-table List Reports
+ */
+export function resolveViewTableNodes(node: TreeAggregation): { key: string; node: TreeAggregation }[] {
+    const tableAggregation = getAggregations(node)['table'];
+    if (!tableAggregation) {
+        return [];
+    }
+    const views = getAggregations(tableAggregation)['views'];
+    if (!views) {
+        return [];
+    }
+    const viewNodes = getAggregations(views);
+    const result: { key: string; node: TreeAggregation }[] = [];
+    for (const key of Object.keys(viewNodes)) {
+        const viewNode = viewNodes[key] as TreeAggregation;
+        if (isTableNode(viewNode)) {
+            result.push({ key, node: viewNode });
+        }
+    }
+    return result;
+}
+
+/**
+ * Extracts table column data from a resolved table node (one carrying a `columns` aggregation).
+ *
+ * @param tableNode - the table node holding the `columns` aggregation
+ * @returns a map of column identifiers to column state objects for use with iCheckColumns()
+ */
+export function extractTableColumnsFromTableNode(tableNode: TreeAggregation): TableColumnFeatureData {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return {};
+    }
+    const columnItems = getAggregations(columnsAggregation);
+    return transformTableColumns(columnItems as ColumnAggregations);
 }
 
 /**
@@ -113,25 +174,16 @@ export function extractTableColumnsFromNode(node: TreeAggregation): TableColumnF
     if (!tableNode) {
         return {};
     }
-    const columnsAggregation = getAggregations(tableNode)['columns'];
-    if (!columnsAggregation) {
-        return {};
-    }
-    const columnItems = getAggregations(columnsAggregation);
-    return transformTableColumns(columnItems as ColumnAggregations);
+    return extractTableColumnsFromTableNode(tableNode);
 }
 
 /**
- * Extracts Contact-card columns from a spec model node that contains a 'table' aggregation.
+ * Extracts Contact-card columns from a resolved table node (one carrying a `columns` aggregation).
  *
- * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @param tableNode - the table node holding the `columns` aggregation
  * @returns array of Contact-card field descriptors for use with iClickLink/iCheckLink
  */
-export function extractContactCardColumnsFromNode(node: TreeAggregation): ContactCardField[] {
-    const tableNode = resolvePrimaryTableNode(node);
-    if (!tableNode) {
-        return [];
-    }
+export function extractContactCardColumnsFromTableNode(tableNode: TreeAggregation): ContactCardField[] {
     const columnsAggregation = getAggregations(tableNode)['columns'];
     if (!columnsAggregation) {
         return [];
@@ -145,4 +197,62 @@ export function extractContactCardColumnsFromNode(node: TreeAggregation): Contac
         }
     });
     return contactColumns;
+}
+
+/**
+ * Extracts Contact-card columns from a spec model node that contains a 'table' aggregation.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns array of Contact-card field descriptors for use with iClickLink/iCheckLink
+ */
+export function extractContactCardColumnsFromNode(node: TreeAggregation): ContactCardField[] {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
+        return [];
+    }
+    return extractContactCardColumnsFromTableNode(tableNode);
+}
+
+/**
+ * Extracts columns that carry a text annotation (`properties.text.artifactType === 'Annotation'`
+ * with a real value) from a spec model node that contains a 'table' aggregation. The
+ * `UI.TextArrangement` gate is applied later by the caller, as it requires OData metadata not
+ * present in the spec model.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): TextAnnotationColumnCandidate[] {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
+        return [];
+    }
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return [];
+    }
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const candidates: TextAnnotationColumnCandidate[] = [];
+    const seenTextProperties = new Set<string>();
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const text = column.properties?.text;
+        if (text?.artifactType !== 'Annotation' || !text.value || text.value === 'none') {
+            return;
+        }
+        // A text target reached through a navigation property (e.g. "_DunningProcedure/DunningProcedure_Text")
+        // is not exposed as a sortable column in the sort dialog, so it cannot be used as a sort name.
+        if (text.value.includes('/')) {
+            return;
+        }
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (!columnProperty || seenTextProperties.has(text.value)) {
+            return;
+        }
+        seenTextProperties.add(text.value);
+        candidates.push({ columnProperty, textProperty: text.value });
+    });
+    return candidates;
 }

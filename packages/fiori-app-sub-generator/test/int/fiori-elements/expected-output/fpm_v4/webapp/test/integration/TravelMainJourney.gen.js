@@ -22,9 +22,11 @@ sap.ui.define([
     "use strict";
 
     function journey() {
-        QUnit.module("FPM journey");
+        QUnit.module("TravelMain Journey");
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelMainGenerated.iSeeThisPage();

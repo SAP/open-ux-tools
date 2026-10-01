@@ -2,7 +2,9 @@ import {
     appListResultFields,
     downloadTypeConfig,
     generatorTitleConfig,
-    adtSourceTemplateId
+    adtSourceTemplateId,
+    appListFieldsWithoutSourceTemplate,
+    sourceTemplateIdField
 } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
@@ -77,30 +79,51 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
- * @param {AppDownloadType} downloadType - The download type determining which search params to use.
- * @returns {Promise<AppIndex>} A list of applications filtered by source template.
+ * @param {AppDownloadType} downloadType - The download type determining which search parameters to use.
+ * @returns {Promise<AppIndex>} A list of deployed applications. For the ADTQuickDeploy flow, only ADT-deployed apps are returned. For the AbapRepository flow on systems that support it, ADT-deployed apps are excluded.
  */
 async function getAppList(
     provider: AbapServiceProvider,
     appId?: string,
     downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
+    const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
+    const searchParams = appId ? { ...baseSearchParams, 'sap.app/id': appId } : baseSearchParams;
+
     try {
-        const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
-        const searchParams = appId
-            ? {
-                  ...baseSearchParams,
-                  'sap.app/id': appId
-              }
-            : baseSearchParams;
         const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
             // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
-            return results.filter((app) => app['sap.app/sourceTemplate/id'] !== adtSourceTemplateId);
+            const filtered = results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
+            RepoAppDownloadLogger.logger?.debug(
+                `App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
+            );
+            return filtered;
         }
         return results;
     } catch (error) {
-        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
+        if (
+            downloadType === AppDownloadType.AbapRepository &&
+            (error as { response?: { status?: number } })?.response?.status === 400
+        ) {
+            // Older systems may not support sourceTemplateIdField or the sap.app/type search param.
+            // Retry with no search params and without sourceTemplateIdField — return all results as-is
+            // since old systems won't have ADT-deployed apps to filter out anyway.
+            RepoAppDownloadLogger.logger?.debug(`Retrying without ${sourceTemplateIdField} and search params`);
+            try {
+                // sap.app/type=application is also dropped — older systems may reject it too.
+                // Non-application entries in the list are acceptable; they will fail at the download step.
+                const retryResults = await provider.getAppIndex().search({}, appListFieldsWithoutSourceTemplate);
+                RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${retryResults.length} results`);
+                return retryResults;
+            } catch (retryError) {
+                const retryMessage = retryError instanceof Error ? retryError.message : String(retryError);
+                RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: retryMessage }));
+                return [];
+            }
+        }
+        const message = error instanceof Error ? error.message : String(error);
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }
 }
