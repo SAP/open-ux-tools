@@ -116,7 +116,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
 
         const flexSettings = this.rta.getFlexSettings();
         const navProperty = this.model.getProperty('/selectedNavigation/key');
-        const navigation = this.model.getProperty('/navigationData').find((item) => (item.navProperty = navProperty));
+        const navigation = this.model.getProperty('/navigationData').find((item) => (item.navProperty === navProperty));
         const targetEntitySet = navigation?.entitySet ?? '';
 
         const pageDescriptor = this.options.pageDescriptor;
@@ -133,7 +133,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                         entitySet: pageDescriptor.entitySet
                     },
                     childPage: {
-                        id: `ObjectPage|${navProperty}`,
+                        id: `ObjectPage--${navProperty}`,
                         definition: {
                             entitySet: targetEntitySet,
                             navigationProperty: navProperty
@@ -154,7 +154,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                     },
                     targetPage: {
                         type: 'Component',
-                        id: `${navProperty}_${targetEntitySet}ObjectPage`,
+                        id: `${navProperty}--${targetEntitySet}ObjectPage`,
                         name: 'sap.fe.templates.ObjectPage',
                         routePattern,
                         settings: {
