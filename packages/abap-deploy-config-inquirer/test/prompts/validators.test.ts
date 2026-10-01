@@ -965,6 +965,16 @@ describe('Test validators', () => {
             updateDestinationPromptState('Dest2', mockDestinations as any);
             expect(PromptState.abapDeployConfig.destinationAuthType).toBe('NoAuthentication');
         });
+
+        it('should reset transport answers when destination changes (NoAuth → SAML)', () => {
+            PromptState.transportAnswers.areCredentialFieldsVisible = true;
+            PromptState.transportAnswers.transportConfigNeedsCreds = true;
+            PromptState.transportAnswers.transportConfig = {} as any;
+            updateDestinationPromptState('DestSAML', mockDestinations as any);
+            expect(PromptState.transportAnswers.areCredentialFieldsVisible).toBeUndefined();
+            expect(PromptState.transportAnswers.transportConfigNeedsCreds).toBeUndefined();
+            expect(PromptState.transportAnswers.transportConfig).toBeUndefined();
+        });
     });
 
     // Helper functions

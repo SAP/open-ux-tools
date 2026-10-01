@@ -134,6 +134,7 @@ export function updateDestinationPromptState(destinationName: string, destinatio
     if (!destination) {
         return;
     }
+    PromptState.resetTransportAnswers();
     PromptState.abapDeployConfig.destination = destination.Name;
     // Destination.Authentication is typed as string in btp-utils, but the BTP API always
     // returns one of the Authentication enum string values — cast is safe here.
@@ -162,6 +163,7 @@ export async function validateTargetSystem(
     adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
+    PromptState.resetTransportAnswers();
     if (!target || target === TargetSystemType.Url) {
         return true;
     }
@@ -224,6 +226,7 @@ async function validateAdpTargetSystem(
  */
 export function validateUrl(input: string): boolean | string {
     PromptState.resetAbapDeployConfig();
+    PromptState.resetTransportAnswers();
     if (isEmptyString(input)) {
         return false;
     }
