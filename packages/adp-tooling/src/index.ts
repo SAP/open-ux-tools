@@ -12,6 +12,7 @@ export * from './base/credentials.js';
 export * from './base/constants/index.js';
 export * from './base/project-builder.js';
 export * from './base/abap/manifest-service.js';
+export * from './base/abap/key-user-changes.js';
 export { writeKeyUserChanges } from './base/change-utils.js';
 export { promptGeneratorInput, type PromptDefaults } from './base/prompt.js';
 export * from './preview/adp-preview.js';

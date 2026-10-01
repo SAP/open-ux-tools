@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.ovpv4
+  name: testnamespace.ovpv4
 type: application
 server:
   customMiddleware:
@@ -31,7 +31,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpaceovpv4
+            object: testnamespaceovpv4
             action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp

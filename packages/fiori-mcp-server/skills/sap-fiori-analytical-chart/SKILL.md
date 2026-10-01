@@ -4,13 +4,26 @@ description: Add analytical chart (chart + table hybrid) to SAP Fiori Elements L
 argument-hint: Entity, dimension, measure, aggregation
 metadata:
   author: sap-fiori-tools
-  version: "0.0.3"
+  version: "0.0.4"
 ---
 
 # SAP Fiori Analytical Chart
 
 ## Purpose
 Add **analytical chart + table (hybrid view)** to visualize aggregated data.
+
+---
+
+## Prerequisites
+
+**CAP Projects:**
+- ✅ **VS Code or SAP Business Application Studio (BAS)** - Both environments supported
+- ✅ **Fiori MCP Server** - Required for Fiori app modification (VS Code only)
+
+**ABAP RAP Projects:**
+- ✅ **VS Code only** - ABAP Development Tools extension is VS Code-specific
+- ✅ **Fiori MCP Server** - Required for Fiori app modification
+- ✅ **ABAP Development Tools for VS Code extension** - Required for backend development (includes ADT MCP server for RAP operations)
 
 ---
 
@@ -96,7 +109,7 @@ UI.PresentationVariant #TableView: {
 
 ---
 
-## ABAP RAP Implementation (2 Steps + Manifest Configuration)
+## ABAP RAP Implementation (3 Steps + Manifest Configuration)
 
 ### CRITICAL: NEVER EDIT metadata.xml - IT IS READ-ONLY!
 
@@ -189,6 +202,38 @@ annotate view ZC_ENTITY with
   Category;
 }
 ```
+
+### 3. Verify Active Annotations (MANDATORY)
+
+**After activating both DDLS and DDLX, verify the changes are live:**
+
+⚠️ **IMPORTANT: DDLS and DDLX are Separate Objects**
+
+The **projection view (DDLS file)** and **metadata extension (DDLX file)** are **separate ABAP development objects** that happen to share the same entity name.
+
+**Key points:**
+- **DDLS** = Data Definition (projection view) - contains entity definition, associations, fields, and data annotations
+- **DDLX** = Metadata Extension - contains UI annotations (@UI.chart, @UI.presentationVariant, field labels, etc.)
+- **Both must be activated individually** - activating one does NOT activate the other
+- **Both must exist** for the analytical chart to work
+
+**Activation:**
+- Use ABAP ADT MCP to activate ABAP objects
+- Activate the **DDLS file** separately from the **DDLX file**
+
+**Verification Steps:**
+
+1. **Verify Activation Status:**
+   - Check the activation tool output for success messages
+   - Verify no errors were reported during activation
+   - Both DDLS and DDLX must show successful activation
+
+2. **Check OData $metadata:**
+   - Open your service URL in browser: `<service-url>/$metadata`
+   - Search for: `<Annotation Term="UI.Chart" Qualifier="AnalyticalChart">`
+   - Also verify: `<Annotation Term="UI.PresentationVariant" Qualifier="ChartView">`
+   - If these annotations are missing from $metadata, the DDLX is not active OR the service binding needs republishing
+
 ---
 
 ## Manifest Configuration (Common for CAP and RAP)
@@ -264,11 +309,15 @@ cds watch
 
 ### RAP Projects
 ```bash
-npm run start-mock # Needs metadata refresh
+npm run start-mock # Needs metadata refresh - see below
 
 npm start          # No refresh needed - fetches metadata from live backend at runtime
 ```
-- Consult fiori mcp server if available on how to refresh metadata for sap/cloud systems in case of RAP
+
+**Refreshing metadata for `start-mock`:**
+- When using `npm run start-mock`, the app uses locally cached `metadata.xml`
+- After backend changes (DDLS/DDLX activation), refresh the local metadata
+- For full details on testing and metadata refresh, consult the `sap-fiori-app-development` skill
 
 ---
 
@@ -276,27 +325,51 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 **Follow this sequence to avoid errors:**
 
-1. **Modify Projection View (ZC_ENTITY)**
+1. **Modify Projection View (ZC_ENTITY) - DDLS file**
    - Add `@OData.applySupportedForAggregation: #FULL` at top
    - Add `@Aggregation.default: #AVG` to measure field
-   - Activate projection view
+   - **Activate** using ABAP ADT MCP
+   - Verify activation succeeded
 
-2. **Modify Metadata Extension**
-   - Add `@UI.chart` annotation
+2. **Modify Metadata Extension (ZC_ENTITY) - DDLX file**
+   - Add `@UI.chart` annotation with qualifier
    - Add `@UI.presentationVariant` annotations
-   - Activate metadata extension
+   - **Activate** using ABAP ADT MCP
+   - Verify activation succeeded
 
-3. **Update Fiori App Manifest**
+3. **Verify Annotations are Active** (see Step 3 in ABAP RAP Implementation section above)
+
+4. **Update Fiori App Manifest**
    - Add `views.paths` under `targets.<ListReport>.options.settings` (NOT inside `controlConfiguration`)
    - Save manifest.json
 
-4. **Test**
+5. **Test**
    - Run `npm start` (fetches live metadata - no republishing needed)
    - Service binding does NOT need to be republished
+   - If chart doesn't appear, check browser console for "Annotation Path ... not found" error
 
 ---
 
 ## Troubleshooting
+
+### Symptom: Console error "Annotation Path for the primary visualization ... not found"
+
+**Full error message:**
+```
+Annotation Path for the primary visualization com.sap.vocabularies.UI.v1.Chart#AnalyticalChart not found
+```
+
+**Cause:** The metadata extension (DDLX) is NOT active, so the `@UI.chart` annotation is not exposed in the OData $metadata.
+
+**Solution:**
+1. Activate the DDLX file using ABAP ADT MCP
+2. Verify activation succeeded (check tool output for errors)
+3. Verify the annotation appears in $metadata: `<service-url>/$metadata` (search for `Chart#AnalyticalChart`)
+4. Restart the Fiori app: `npm start`
+
+**Note:** Even if you edited the DDLX, it won't take effect until explicitly activated. The DDLS and DDLX are separate objects.
+
+---
 
 ### Symptom: App doesn't load / Blank screen / Chart not visible
 
@@ -314,6 +387,9 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 **Cause 5:** Missing `@Aggregation.default` on measure
 - **Solution:** Add `@Aggregation.default: #AVG` (or #SUM, #MIN, #MAX) to measure field
+
+**Cause 6:** DDLX not activated (see console error above)
+- **Solution:** Activate the metadata extension (DDLX) file using ABAP ADT MCP
 
 ### Symptom: Chart shows but with wrong data
 
@@ -359,4 +435,5 @@ npm start          # No refresh needed - fetches metadata from live backend at r
 
 ## References
 
+- **SAP Fiori Elements Analytical List Report**: https://ui5.sap.com/test-resources/sap/fe/core/fpmExplorer/index.html#/topic/floorplanListReport/analyticalListReport
 - **ABAP RAP Aggregation support**: https://help.sap.com/docs/abap-cloud/abap-rap/projection-view

@@ -5,6 +5,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4.js';
 import UI5Element from 'sap/ui/core/Element';
 import type AppComponent from 'sap/fe/core/AppComponent';
+import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 interface ViewDataType {
     stableId: string;
@@ -163,6 +164,18 @@ export function getPropertyPath(table: UI5Element, property: 'actions' | 'column
         }
     }
     return undefined;
+}
+
+export function hasRouteForNavProperty(
+    manifest: Manifest,
+    sourcePageId: string,
+    navigationProperty: string
+): boolean {
+    const targets = manifest['sap.ui5']?.routing?.targets ?? {};
+    const sourceTarget = targets[sourcePageId];
+
+    // Check if a route exists from the source page for the specified navigation property.
+    return !!sourceTarget?.options?.settings?.navigation?.[navigationProperty]?.detail?.route;
 }
 
 /**

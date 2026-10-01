@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.alpv4
+  name: testnamespace.alpv4
 type: application
 framework:
   name: SAPUI5
@@ -28,7 +28,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpacealpv4
+            object: testnamespacealpv4
             action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression

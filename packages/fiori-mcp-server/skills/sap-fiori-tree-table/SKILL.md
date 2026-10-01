@@ -1,7 +1,7 @@
 ---
 name: sap-fiori-tree-table
-description: Configure hierarchical tree table to SAP Fiori elements application for displaying parent-child recursive hierarchies. Supports CAP and ABAP RAP (OData V4).
-argument-hint: Entity name (and ABAP package for RAP projects)
+description: 'Configure hierarchical tree table to SAP Fiori elements application for displaying parent-child recursive hierarchies. Supports CAP and ABAP RAP (OData V4).'
+argument-hint: 'Entity name (and ABAP package for RAP projects)'
 metadata:
   author: sap-fiori-tools
   version: "0.0.1"

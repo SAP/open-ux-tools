@@ -1,5 +1,49 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Bug Fixes
+
+- Resolved an issue where the "Add Subpage" quick action generated a page ID in an incorrect format for ODATA v4 applications. [[f9088c0](https://github.com/SAP/open-ux-tools/commit/f9088c07570be4fb6c2b5d72c97213cabeffde16)]
+
+## 1.2.21
+
+## 1.2.20
+
+## 1.2.19
+
+## 1.2.18
+
+## 1.2.17
+
+## 1.2.16
+
+## 1.2.15
+
+## 1.2.14
+
+## 1.2.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Add Subpage greyed out when multiple navigation properties target the same entity set [[fb8fd7a](https://github.com/SAP/open-ux-tools/commit/fb8fd7abaf0149663650b31c3010303e619e99f7)]
+
+## 1.2.12
+
+## 1.2.11
+
 ## 1.2.10
 
 ## 1.2.9
