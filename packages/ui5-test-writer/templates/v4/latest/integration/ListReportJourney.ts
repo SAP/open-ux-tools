@@ -225,13 +225,14 @@ function journey() {
         <%_ }); -%>
     });
 <%_ } -%>
-<%_ if (startLR && supportsColumnAdaptationCheck && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
     opaTest("Check columns in adaptation dialog", function (_Given: Given, When: When, Then: Then) {
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iOpenColumnAdaptation();
         <%_ textAnnotationColumns.forEach(function(column) { _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
         <%_ }); -%>
-        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iConfirmColumnAdaptation();
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iConfirmColumnAdaptation();
     });
 <%_ } -%>
 

@@ -189,7 +189,6 @@ describe('ui5-test-writer', () => {
                     startLR: 'TravelList',
                     navigatedOP: undefined,
                     hideFilterBar: false,
-                    supportsColumnAdaptationCheck: false,
                     serviceUri: '/odata/v4/TestService/',
                     name: 'TravelList',
                     appPath: 'project1',
@@ -2087,9 +2086,9 @@ export type Then = Opa5 & BaseArrangements & {
 
         describe('column adaptation dialog test — JS', () => {
             // Inject a textAnnotationColumns entry on top of the real LR features so the generated
-            // journey exercises the new "Check columns in adaptation dialog" opaTest. The test uses the
-            // column-adaptation OPA API that only exists from UI5 1.152.0, so it is emitted only for the
-            // latest bucket when the target ui5Version is undefined (newest) or >= 1.152.0.
+            // journey exercises the "Check columns in adaptation dialog" opaTest. The test uses the
+            // column-adaptation OPA API that only exists from UI5 1.152.0, so it is rendered only by
+            // the `1.152` and `latest` template buckets (ui5Version undefined/newest or >= 1.152.0).
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
@@ -2105,7 +2104,7 @@ export type Then = Opa5 & BaseArrangements & {
                     .contents as string;
 
             it.each([['1.152.0'], [undefined]])(
-                'emits the adaptation-dialog test for the latest bucket (ui5Version %s, JS)',
+                'emits the adaptation-dialog test for the 1.152/latest buckets (ui5Version %s, JS)',
                 async (ui5Version) => {
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     const projectDir = prepareTestFiles('LROPv4');
@@ -2116,6 +2115,7 @@ export type Then = Opa5 & BaseArrangements & {
                     const content = lrJourneyContents();
                     expect(content).toContain('opaTest("Check columns in adaptation dialog"');
                     expect(content).toContain('iOpenColumnAdaptation()');
+                    expect(content).toContain('iAddAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iCheckAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
@@ -2124,7 +2124,7 @@ export type Then = Opa5 & BaseArrangements & {
             it.each([
                 ['1.84', '1.120.0'],
                 ['1.148', '1.148.0'],
-                ['latest below 1.152.0', '1.151.0']
+                ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
             ])('%s omits the adaptation-dialog test (JS)', async (_bucket, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
@@ -2171,7 +2171,7 @@ export type Then = Opa5 & BaseArrangements & {
                     .contents as string;
 
             it.each([['1.152.0'], [undefined]])(
-                'emits the adaptation-dialog test for the latest bucket (ui5Version %s, TS)',
+                'emits the adaptation-dialog test for the 1.152/latest buckets (ui5Version %s, TS)',
                 async (ui5Version) => {
                     readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                     const projectDir = prepareTestFiles('LROPv4');
@@ -2187,6 +2187,7 @@ export type Then = Opa5 & BaseArrangements & {
                     const content = lrJourneyContents();
                     expect(content).toContain('opaTest("Check columns in adaptation dialog"');
                     expect(content).toContain('iOpenColumnAdaptation()');
+                    expect(content).toContain('iAddAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iCheckAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
@@ -2195,7 +2196,7 @@ export type Then = Opa5 & BaseArrangements & {
             it.each([
                 ['1.84', '1.120.0'],
                 ['1.148', '1.148.0'],
-                ['latest below 1.152.0', '1.151.0']
+                ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
             ])('%s omits the adaptation-dialog test (TS)', async (_bucket, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
