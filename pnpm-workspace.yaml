@@ -99,7 +99,7 @@ overrides:
     "@octokit/request-error@<5.1.1": "^5.1.1"
     "@octokit/plugin-paginate-rest@>=1.0.0 <9.2.2": "^9.2.2"
     "@octokit/request@<8.4.1": "^8.4.1"
-    "express>qs": "6.15.2"
+    "express>qs": "6.16.0"
     "get-uri>basic-ftp": ">=5.3.0"
     "@puppeteer/browsers>proxy-agent": ">=6.5.0"
     "minimatch@<3.1.5": "^3.1.5"
