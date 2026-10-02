@@ -3,7 +3,16 @@ import { isAbsolute, join } from 'node:path';
 import { mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
-import { fetchKeyUserChanges, getDefaultProjectName } from '@sap-ux/adp-tooling';
+import {
+    fetchKeyUserChanges,
+    getConfiguredProvider,
+    getDefaultProjectName,
+    getSupportedProject,
+    loadApps,
+    SupportedProject
+} from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
 /** Maximum time to wait for the key user changes fetch before aborting generation. */
 const KEY_USER_CHANGES_TIMEOUT_MS = 60_000;
@@ -81,6 +90,132 @@ function applyOptionalFields(
     }
 }
 
+// Outcome of resolving the project type: a concrete type, a prompt for the user (both types
+// valid and none chosen), or an error (the requested type is not supported).
+type ProjectTypeResolution =
+    | { kind: 'resolved'; projectType: AdaptationProjectType }
+    | { kind: 'inputRequired'; message: string }
+    | { kind: 'error'; message: string };
+
+/**
+ * Builds an error resolution for a projectType the system/application cannot support.
+ *
+ * @param subject - The system or application the message refers to.
+ * @param supported - Human-readable name of the only supported type ("Cloud Ready"/"Classic").
+ * @param requested - The unsupported projectType value that was requested.
+ * @returns An `error` project type resolution.
+ */
+function unsupportedTypeError(subject: string, supported: string, requested: string): ProjectTypeResolution {
+    return {
+        kind: 'error',
+        message: `${subject} supports only ${supported} adaptation projects, but projectType '${requested}' was requested.`
+    };
+}
+
+/**
+ * Resolves the project type when internal features are enabled: Cloud Ready is never available,
+ * so a Cloud-Ready-only system or an explicit cloudReady request is an error and everything else
+ * resolves to Classic (on-premise).
+ *
+ * @param system - The name of the SAP system.
+ * @param supportedProject - The project type(s) the system supports.
+ * @param requested - The project type explicitly requested by the caller, if any.
+ * @returns The project type resolution outcome.
+ */
+function resolveInternalProjectType(
+    system: string,
+    supportedProject: SupportedProject,
+    requested: AdaptationProjectType | undefined
+): ProjectTypeResolution {
+    if (supportedProject === SupportedProject.CLOUD_READY) {
+        return {
+            kind: 'error',
+            message:
+                `System '${system}' supports only Cloud Ready adaptation projects, which cannot be ` +
+                'created while internal features are enabled. Use a system that supports Classic.'
+        };
+    }
+    if (requested === AdaptationProjectType.CLOUD_READY) {
+        return {
+            kind: 'error',
+            message:
+                'Cloud Ready adaptation projects are not available with internal features enabled. ' +
+                'Only Classic adaptation projects can be created.'
+        };
+    }
+    return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
+}
+
+/**
+ * Resolves the project type for a system/application, mirroring the interactive generator:
+ * single-type systems resolve automatically, a mixed system offers a real choice only for a
+ * released cloud application, and a requested type the system cannot support yields an error.
+ *
+ * @param system - The name of the SAP system.
+ * @param application - The application ID to adapt.
+ * @param client - Optional SAP client number.
+ * @param requested - The project type explicitly requested by the caller, if any.
+ * @returns A promise resolving to the project type resolution outcome.
+ */
+async function resolveProjectType(
+    system: string,
+    application: string,
+    client: string | undefined,
+    requested: AdaptationProjectType | undefined
+): Promise<ProjectTypeResolution> {
+    const provider = await getConfiguredProvider({ system, client }, logger);
+    const supportedProject = await getSupportedProject(provider);
+
+    if (isInternalFeaturesSettingEnabled()) {
+        return resolveInternalProjectType(system, supportedProject, requested);
+    }
+
+    if (supportedProject === SupportedProject.CLOUD_READY) {
+        if (requested === AdaptationProjectType.ON_PREMISE) {
+            return unsupportedTypeError(`System '${system}'`, 'Cloud Ready', 'onPremise');
+        }
+        return { kind: 'resolved', projectType: AdaptationProjectType.CLOUD_READY };
+    }
+
+    if (supportedProject === SupportedProject.ON_PREM) {
+        if (requested === AdaptationProjectType.CLOUD_READY) {
+            return unsupportedTypeError(`System '${system}'`, 'Classic', 'cloudReady');
+        }
+        return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
+    }
+
+    const apps = await loadApps(provider, true, supportedProject);
+    const status = apps.find((entry) => entry.id === application)?.cloudDevAdaptationStatus;
+
+    if (status === 'released') {
+        if (requested) {
+            return { kind: 'resolved', projectType: requested };
+        }
+        return {
+            kind: 'inputRequired',
+            message:
+                `The system '${system}' and application '${application}' support BOTH Cloud Ready and ` +
+                'Classic adaptation projects. Ask the user whether they want "Cloud Ready" or "Classic", ' +
+                'then call generate_adaptation_project again with projectType set to ' +
+                "'cloudReady' (for Cloud Ready) or 'onPremise' (for Classic)."
+        };
+    }
+
+    if (status === '') {
+        if (requested === AdaptationProjectType.CLOUD_READY) {
+            return {
+                kind: 'error',
+                message:
+                    `Application '${application}' is a classic application, so Cloud Ready adaptation ` +
+                    'projects are not available. Only Classic adaptation projects can be created.'
+            };
+        }
+        return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
+    }
+
+    return { kind: 'resolved', projectType: requested ?? AdaptationProjectType.ON_PREMISE };
+}
+
 /**
  * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
@@ -93,6 +228,7 @@ export async function generateAdaptationProject(
     const {
         system,
         application,
+        projectType,
         appPath,
         targetFolder,
         projectName,
@@ -113,9 +249,26 @@ export async function generateAdaptationProject(
     }
 
     try {
+        // The zod schema restricts projectType to the AdaptationProjectType values, so the string
+        // is a safe stand-in for the enum type when passed to the resolver.
+        const resolution = await resolveProjectType(
+            system,
+            application,
+            client,
+            projectType as AdaptationProjectType | undefined
+        );
+
+        if (resolution.kind === 'inputRequired') {
+            return { status: 'InputRequired', message: resolution.message };
+        }
+        if (resolution.kind === 'error') {
+            return { status: 'Error', message: resolution.message };
+        }
+
         const jsonInput: Record<string, unknown> & { projectName: string } = {
             system,
             application,
+            projectType: resolution.projectType,
             targetFolder: finalTargetFolder,
             projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
         };
