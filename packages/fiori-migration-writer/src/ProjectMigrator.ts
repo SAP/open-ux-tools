@@ -35,6 +35,7 @@ import type { ImportProjectInfo, Message } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { i18nText } from './i18n.js';
+import { enableMemFs, disableMemFs } from './utils/fs-adapter.js';
 
 export class ProjectMigrator {
     static fs: Editor | undefined;
@@ -58,6 +59,12 @@ export class ProjectMigrator {
     ): Promise<{ result: boolean; messages: Message[] }> {
         let messages: Message[] = [];
         let result = false;
+
+        // Enable mem-fs if provided
+        if (this.fs) {
+            enableMemFs(this.fs);
+        }
+
         try {
             // Load or fetch project information
             const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
@@ -113,6 +120,11 @@ export class ProjectMigrator {
                 type: 'ERROR',
                 description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
             });
+        } finally {
+            // Disable mem-fs after migration (if it was enabled)
+            if (this.fs) {
+                disableMemFs();
+            }
         }
         return { result, messages };
     }

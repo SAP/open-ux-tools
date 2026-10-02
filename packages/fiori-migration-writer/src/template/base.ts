@@ -1,10 +1,10 @@
 import { basename, join } from 'node:path';
-import fs from 'node:fs';
 import type { FioriElementsVersion } from '../project-spec-types.js';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { trueCasePath } from 'true-case-path';
 import { getBaseTemplatesMap, isGenerateIndex } from '../utils/index.js';
+import { isMemFsEnabled, copyFile, deleteFile } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo, TemplateData, TemplateMap } from '../types.js';
 import { applyTemplates } from './template-helpers.js';
 
@@ -77,11 +77,18 @@ export async function applyBaseTemplates(config: ApplyBaseTemplatesConfig): Prom
  * @param projectInfo - Project information
  */
 async function fixLocalServiceCase(projectInfo: ImportProjectInfo): Promise<void> {
+    // Skip in mem-fs mode - not supported
+    if (isMemFsEnabled()) {
+        return;
+    }
+
     const localServicePath = join(projectInfo.rootPath, projectInfo.webappPath, DirName.LocalService);
     try {
         const localServiceRealPath = await trueCasePath(localServicePath);
         // file exists. Check filename cases matches
         if (basename(localServiceRealPath) !== basename(localServicePath)) {
+            // Use copy+delete pattern for mem-fs compatibility
+            const fs = await import('node:fs');
             fs.renameSync(localServiceRealPath, localServicePath);
         }
     } catch {

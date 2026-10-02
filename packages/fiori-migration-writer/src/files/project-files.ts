@@ -153,11 +153,17 @@ export async function copyLibraryFiles(
         result = messages.length === 0;
     } catch (e) {
         messages.length = 0; // Reset
+        const errorDetail =
+            e.name === 'MigrationError' ? e.message.toString() : determineMessage(e) || e.message || String(e);
+        console.error('Library file copy error:', {
+            name: e.name,
+            message: e.message,
+            stack: e.stack,
+            fullError: e
+        });
         messages.push({
             type: 'ERROR',
-            description: `Error copying library files: ${
-                e.name === 'MigrationError' ? e.message.toString() : determineMessage(e)
-            }`
+            description: `Error copying library files: ${errorDetail}`
         });
         result = false;
     }

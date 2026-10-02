@@ -1,12 +1,13 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promises as fsPromises } from 'node:fs';
 import type { Data } from 'ejs';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
 import type { TemplateProperties, SapUxLayer } from '../types.js';
 import { i18nText } from '../i18n.js';
+import { writeFile } from './file-access.js';
+import { createDirectory } from './file-system-utils.js';
 
 // Get current directory using import.meta.url (ESM)
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -106,8 +107,8 @@ export async function generateTemplate(
     // 2. Resolve template data
     const resolvedData = resolveTemplateData(templateData, templateProps);
 
-    // 3. Ensure target directory exists
-    await fsPromises.mkdir(dirname(targetFile), { recursive: true });
+    // 3. Ensure target directory exists (uses fs-adapter)
+    await createDirectory(dirname(targetFile));
 
     // 4. Render template
     const { isRendered = true, opts = {} } = templateProps;
@@ -116,9 +117,9 @@ export async function generateTemplate(
     // 5. Apply file-specific handlers
     content = await applyFileSpecificHandlers(templateName, content, projectRoot, targetFile, templateData);
 
-    // 6. Write file
+    // 6. Write file (uses fs-adapter)
     try {
-        await fsPromises.writeFile(targetFile, content);
+        await writeFile(targetFile, content);
     } catch (e) {
         console.log(`Error writing file ${targetFile} - ${e}`);
     }

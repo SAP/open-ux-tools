@@ -3,10 +3,14 @@
  *
  * These replace @sap/ux-project-access file I/O functions with native implementations.
  * This eliminates dependency on internal packages and makes the code open-source compatible.
+ *
+ * When mem-fs is enabled (via fs-adapter), all operations go through mem-fs.
+ * Otherwise, operations use native Node.js fs.
  */
 import { promises as fs, constants } from 'node:fs';
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
+import * as fsAdapter from './fs-adapter.js';
 
 /**
  * Read a text file asynchronously
@@ -15,6 +19,9 @@ import parseJson from 'json-parse-even-better-errors';
  * @returns File contents as string
  */
 export async function readFile(path: string): Promise<string> {
+    if (fsAdapter.isMemFsEnabled()) {
+        return fsAdapter.readFile(path);
+    }
     return fs.readFile(path, { encoding: 'utf-8' });
 }
 
@@ -25,6 +32,10 @@ export async function readFile(path: string): Promise<string> {
  * @returns Parsed JSON object with indentation metadata for round-trip preservation
  */
 export async function readJSON<T = any>(path: string): Promise<T> {
+    if (fsAdapter.isMemFsEnabled()) {
+        return fsAdapter.readJSON<T>(path);
+    }
+
     const content = await readFile(path);
 
     // Parse with JSON.parse for consistent SyntaxError behavior
@@ -54,6 +65,10 @@ export async function readJSON<T = any>(path: string): Promise<T> {
  * @returns true if file exists, false otherwise
  */
 export async function fileExists(path: string): Promise<boolean> {
+    if (fsAdapter.isMemFsEnabled()) {
+        return fsAdapter.exists(path);
+    }
+
     try {
         await fs.access(path, constants.F_OK);
         return true;
@@ -69,6 +84,10 @@ export async function fileExists(path: string): Promise<boolean> {
  * @param content - Content to write
  */
 export async function writeFile(path: string, content: string): Promise<void> {
+    if (fsAdapter.isMemFsEnabled()) {
+        await fsAdapter.writeFile(path, content);
+        return;
+    }
     await fs.writeFile(path, content, { encoding: 'utf-8' });
 }
 
@@ -90,6 +109,11 @@ export async function updateFile(path: string, content: string): Promise<void> {
  * @param content - Object to write
  */
 export async function updateJSON(path: string, content: object): Promise<void> {
+    if (fsAdapter.isMemFsEnabled()) {
+        await fsAdapter.writeJSON(path, content, 4);
+        return;
+    }
+
     try {
         // Read old contents and indentation of the JSON file
         const oldContentText = await readFile(path);
@@ -114,5 +138,9 @@ export async function updateJSON(path: string, content: object): Promise<void> {
  * @param path - Path to file
  */
 export async function deleteFile(path: string): Promise<void> {
+    if (fsAdapter.isMemFsEnabled()) {
+        await fsAdapter.deleteFile(path);
+        return;
+    }
     await fs.unlink(path);
 }

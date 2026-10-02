@@ -1,6 +1,5 @@
 import { join } from 'node:path';
-import { existsSync } from 'node:fs';
-import { readFile, updateFile, generateTemplate, updateThemeAttribute } from '../utils/index.js';
+import { readFile, updateFile, generateTemplate, updateThemeAttribute, fileExists } from '../utils/index.js';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName, templatesDirPath } from '../index.js';
 import { MigrationTypes } from '../utils/constants.js';
@@ -32,7 +31,7 @@ export async function applyTemplates(
 
     if (
         templateData.project.type === MigrationTypes.projectExtension &&
-        existsSync(join(projectRoot, DirName.Webapp, TemplateFileName.IndexHtml))
+        (await fileExists(join(projectRoot, DirName.Webapp, TemplateFileName.IndexHtml)))
     ) {
         // For project extensions, we usually leave the index.html file unchanged.
         // However, since the Belize theme is no longer available after UI5 version 1.136.0,

@@ -1,10 +1,10 @@
 // CLASSIFICATION: [OPEN]
 import { join, resolve, relative } from 'node:path';
 import { existsSync } from 'node:fs';
-import fsextra from 'fs-extra';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
+import { isMemFsEnabled } from '../utils/fs-adapter.js';
 
 /**
  * Validates the root directory path before using as working directory
@@ -20,7 +20,7 @@ export function validateRootDirectory(path: string): string {
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
         throw new Error('Path contains unsafe characters');
     }
-    // Ensure it's an existing directory
+    // Ensure it's an existing directory (check real fs, not mem-fs)
     if (!existsSync(resolved)) {
         throw new Error('Root directory does not exist');
     }
@@ -130,6 +130,16 @@ export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise
  * @param paths - Legacy paths object
  */
 export function fallbackFsMove(rootPath: string, paths: LegacyPaths): void {
+    // Note: In mem-fs mode, file moves are handled by git (preferred path)
+    // This fallback only works for real file system operations
+    // Mem-fs doesn't support atomic moves, so this is intentionally a no-op in mem-fs mode
+    if (isMemFsEnabled()) {
+        // Skip fallback in mem-fs mode - files should have been moved by git
+        return;
+    }
+
+    // Real file system fallback
+    const fsextra = require('fs-extra');
     if (existsSync(paths.ffLegacyWebappPath)) {
         fsextra.moveSync(paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
     }
@@ -149,13 +159,20 @@ export function fallbackFsMove(rootPath: string, paths: LegacyPaths): void {
  * @param paths - Legacy paths object
  */
 export async function cleanupEmptyDirs(rootPath: string, legacyPath: string, paths: LegacyPaths): Promise<void> {
+    // Note: In mem-fs mode, directory removal isn't needed
+    // Mem-fs only tracks files, not empty directories
+    if (isMemFsEnabled()) {
+        return;
+    }
+
     const fs = await import('node:fs');
+    const fsextra = await import('fs-extra');
 
     const dirsToRemove = [join(rootPath, legacyPath), paths.ffLegacyTestPath, join(rootPath, 'src')];
 
     for (const dir of dirsToRemove) {
         if (existsSync(dir) && fs.default.readdirSync(dir).filter((file) => file !== '.DS_Store').length === 0) {
-            fsextra.removeSync(dir);
+            fsextra.default.removeSync(dir);
         }
     }
 }

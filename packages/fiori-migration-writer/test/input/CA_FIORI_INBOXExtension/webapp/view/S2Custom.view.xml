@@ -1,0 +1,46 @@
+<!--
+
+    Copyright (C) 2009-2014 SAP SE or an SAP affiliate company. All rights reserved
+
+-->
+<core:View xmlns:core="sap.ui.core" xmlns="sap.m" controllerName="cross.fnd.fiori.inbox.view.S2">
+	<Page id="page" title="{i18n>MASTER_TITLE}">
+		<content>
+			<List id="list" mode="{device>/listMode}" selectionChange="_handleSelect" swipe="_handleListSwipe" updateStarted="onUpdateStarted"
+				updateFinished="onUpdateFinished" modeAnimationOn="false" includeItemInSelection="true">
+				<items>
+					<!-- Extends the list item -->
+					<core:ExtensionPoint name="CustomerExtensionForObjectListItem">
+						<ObjectListItem id="MAIN_LIST_ITEM" type="{device>/listItemType}" press="_handleItemPress" class="sapMTextBold" title="{TaskTitle}"
+							intro="{path: 'SupportsRelease', formatter: 'cross.fnd.fiori.inbox.Conversions.formatterStatusForReserved'}" number="{CustomNumberValue}"
+							numberUnit="{CustomNumberUnitValue}">
+							<attributes>
+								<ObjectAttribute id="ATTR1" text="{CreatedByName}"/>
+								<ObjectAttribute id="ATTR2" text="{path: 'CompletionDeadLine', formatter:'cross.fnd.fiori.inbox.Conversions.formatterDueDate'}"/>
+								<ObjectAttribute id="ATTR3" text="{path: 'SubstitutedUserName', formatter:'cross.fnd.fiori.inbox.Conversions.formatterSubstitutedText'}"/>
+								<ObjectAttribute id="ATTR4" text="{CustomObjectAttributeValue}"/>
+							</attributes>
+							<firstStatus>
+								<ObjectStatus id="STAT1"
+									text="{parts: [{path: 'SAP__Origin'}, {path: 'Priority'}], formatter:'cross.fnd.fiori.inbox.Conversions.formatterPriority'}"
+									state="{path: 'Priority', formatter:'cross.fnd.fiori.inbox.Conversions.formatterPriorityState'}"></ObjectStatus>
+							</firstStatus>
+							<secondStatus>
+								<ObjectStatus id="STAT2" text="{path: 'CompletionDeadLine', formatter:'cross.fnd.fiori.inbox.Conversions.formatterDeadLineIndicator'}"
+									state="{path: 'CompletionDeadLine', formatter:'cross.fnd.fiori.inbox.Conversions.formatterDeadLineIndicatorState'}"></ObjectStatus>
+							</secondStatus>
+						</ObjectListItem>
+					</core:ExtensionPoint>
+				</items>
+				<swipeContent>
+					<Button type="Accept" press="_handleSwipeApproved">
+						<!-- swipeContent 'text' modified from _handleListSwipe  -->
+					</Button>
+				</swipeContent>
+			</List>
+		</content>
+		<footer>
+			<Bar id="footer"></Bar>
+		</footer>
+	</Page>
+</core:View>

@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
-import { mkdir } from 'node:fs/promises';
+import { mkdir as fsMkdir } from 'node:fs/promises';
+import { exists, mkdir as memMkdir, isMemFsEnabled } from './fs-adapter.js';
 
 /**
  * stripSpaces
@@ -28,6 +29,9 @@ export const escapeDoubleQuotes = (s: string): string => s.replace(/\\/g, '\\\\'
  * @param directory
  */
 export function doesDirectoryExists(directory: string): boolean {
+    if (isMemFsEnabled()) {
+        return exists(directory);
+    }
     return existsSync(directory);
 }
 
@@ -49,7 +53,11 @@ export function doesPropertyExist(obj: unknown, fieldName: string): boolean {
 export async function createDirectory(directory: string): Promise<boolean> {
     let isCreated = false;
     if (!doesDirectoryExists(directory)) {
-        await mkdir(directory, { recursive: true });
+        if (isMemFsEnabled()) {
+            await memMkdir(directory);
+        } else {
+            await fsMkdir(directory, { recursive: true });
+        }
         isCreated = true;
     }
     return isCreated;

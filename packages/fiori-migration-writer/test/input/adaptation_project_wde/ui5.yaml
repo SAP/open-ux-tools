@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "4.0"
+metadata:
+  name: migrate-test
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: migrate.test
+      version: 1.0.0
+      toolsId: 932167e8-d6e7-4003-98da-f2cf88aedb28
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        adp:
+          target:
+            destination: U1YCLNT120
+            client: '120'
+            url: ''
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
+      configuration:
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - destination: U1YCLNT120
+            client: '120'
+            url: ''
+            path: /sap
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.91.1
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

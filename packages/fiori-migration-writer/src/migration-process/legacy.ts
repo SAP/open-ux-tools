@@ -4,8 +4,8 @@
  */
 
 import { join } from 'node:path';
-import fs, { existsSync } from 'node:fs';
 import { readFile, updateFile, readJSON, updateJSON, fileExists } from '../utils/index.js';
+import { exists, isMemFsEnabled, copyFile, deleteFile } from '../utils/fs-adapter.js';
 import { TemplateFileName } from '../index.js';
 import { FileName } from '../project-spec-types.js';
 import { legacyPath, getFFTestSuiteMap, MigrationError } from '../utils/common.js';
@@ -32,7 +32,7 @@ export async function migrateLegacyFolderStructure(
     }
 
     const paths = buildLegacyPaths(rootPath, legacyPath);
-    if (!existsSync(paths.ffLegacyWebappPath)) {
+    if (!exists(paths.ffLegacyWebappPath)) {
         return { keepIndex, webappPath: projectInfo.webappPath };
     }
 
@@ -56,7 +56,7 @@ export async function migrateLegacyFolderStructure(
     await updateModulePathForTests(paths.ffNewTestPath);
 
     // Update paths in test files
-    if (existsSync(paths.ffNewTestPath)) {
+    if (exists(paths.ffNewTestPath)) {
         await updateTestFilePaths(paths.ffNewTestPath);
     }
 
@@ -129,7 +129,10 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
         await updateFile(testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     } else {
-        fs.renameSync(testSuiteRunner, join(ffNewTestPath, 'testsuite_old.qunit.html'));
+        // Rename using copy+delete pattern (mem-fs compatible)
+        const oldTestSuite = join(ffNewTestPath, 'testsuite_old.qunit.html');
+        await copyFile(testSuiteRunner, oldTestSuite);
+        await deleteFile(testSuiteRunner);
 
         // Update references to testsuite.qunit.html
         if (legacyRunnerContent.includes('testsuite.qunit.html')) {
@@ -182,6 +185,12 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
  * @param ffNewTestPath
  */
 async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
+    // Skip directory listing in mem-fs mode - not supported
+    if (isMemFsEnabled()) {
+        return;
+    }
+
+    const fs = await import('node:fs');
     const htmlFiles = fs.readdirSync(ffNewTestPath).filter((file) => file.endsWith('.html'));
 
     for (const file of htmlFiles) {
