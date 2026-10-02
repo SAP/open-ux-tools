@@ -1,5 +1,4 @@
 import { join } from 'node:path';
-import { existsSync } from 'node:fs';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { createDirectory, fileExists, deleteFile } from '../utils/index.js';
@@ -25,7 +24,7 @@ export async function setupMigrationDirectories(
 
     // Create test directory if webapp exists
     const webAppPath = join(rootPath, projectInfo.webappPath);
-    if (existsSync(webAppPath)) {
+    if (fileExists(webAppPath)) {
         await createDirectory(join(rootPath, projectInfo.webappPath, TemplateFileName.Test));
     }
 }

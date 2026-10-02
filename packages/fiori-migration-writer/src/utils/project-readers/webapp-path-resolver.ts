@@ -2,7 +2,6 @@
  * Utility for resolving webapp path from various project configuration sources
  */
 import { join } from 'node:path';
-import { existsSync } from 'node:fs';
 import { parse } from 'yaml';
 import { DirName, FileName } from '../../project-spec-types.js';
 import { fileExists, readJSON, readFile } from '../../index.js';
@@ -24,7 +23,7 @@ async function resolveFromProjectJson(projectRoot: string): Promise<string | und
         const projectJson = await readJSON(projectJsonPath);
         if (projectJson?.hcpdeploy?.entryPath) {
             const projectWebappPath = join(projectRoot, projectJson.hcpdeploy.entryPath);
-            return existsSync(projectWebappPath) ? projectJson.hcpdeploy.entryPath : undefined;
+            return fileExists(projectWebappPath) ? projectJson.hcpdeploy.entryPath : undefined;
         }
     } catch {
         // Invalid JSON, skip
@@ -49,7 +48,7 @@ async function resolveFromCheProjectJson(projectRoot: string): Promise<string | 
             const settings: any = JSON.parse(projectJson.attributes[sapWattCommonSetting]?.[0]);
             if (settings?.hcpdeploy?.entryPath) {
                 const projectWebappPath = join(projectRoot, settings.hcpdeploy.entryPath);
-                return existsSync(projectWebappPath) ? settings.hcpdeploy.entryPath : undefined;
+                return fileExists(projectWebappPath) ? settings.hcpdeploy.entryPath : undefined;
             }
         }
     } catch {
