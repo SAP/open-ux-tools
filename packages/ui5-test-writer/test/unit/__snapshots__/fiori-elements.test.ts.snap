@@ -211,19 +211,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -640,19 +640,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -1046,19 +1046,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -1452,19 +1452,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -1835,16 +1835,16 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
         });
 
@@ -2911,19 +2911,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -3438,19 +3438,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -3944,19 +3944,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesListTarget.iSeeThisPage();
+            Then.onTheEmployeesListTargetGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesListTarget.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListTargetGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesListTarget.onTable().iCheckRows();
+            Then.onTheEmployeesListTargetGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesListTarget.onTable().iPressRow(0);
-            Then.onTheEmployeesCustomPageTarget.iSeeThisPage();
+            When.onTheEmployeesListTargetGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesCustomPageTargetGenerated.iSeeThisPage();
 
         });
 
@@ -5810,19 +5810,19 @@ server:
             Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheTravelList.onTable().iCheckRows();
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -7507,19 +7507,19 @@ server:
             Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheTravelList.onTable().iCheckRows();
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -9331,19 +9331,19 @@ server:
             Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheTravelList.onTable().iCheckRows();
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -11161,19 +11161,19 @@ server:
             Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mdsk_o4/srvd/dmo/sd_travel_mdsk/0001/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheTravelList.onTable().iCheckRows();
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -16409,19 +16409,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -16822,19 +16822,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 
@@ -17235,19 +17235,19 @@ Object {
             Given.iResetMockData({ ServiceUri: \\"/employee/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheEmployeesList.iSeeThisPage();
+            Then.onTheEmployeesListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+            When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheEmployeesList.onTable().iCheckRows();
+            Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-            When.onTheEmployeesList.onTable().iPressRow(0);
-            Then.onTheEmployeesObjectPage.iSeeThisPage();
+            When.onTheEmployeesListGenerated.onTable().iPressRow(0);
+            Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
         });
 

@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 1.0.60
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Features
+
+- consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
 ## 1.0.59
 
 ### Patch Changes
