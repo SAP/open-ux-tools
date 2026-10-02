@@ -20,11 +20,6 @@ import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 <%_
 const usesFilterFieldIdentifier =
     !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
-const toolBarHasMenu = (toolBarActions || []).some(function(item) { return item.visible && item.menuActions && !item.splitButton; });
-const toolBarHasDialogAction = (toolBarActions || []).some(function(item) {
-    return item.visible && !item.menuActions && !item.custom && item.enabled !== 'dynamic' &&
-        (item.isCritical || (item.parameterDialogFields && item.parameterDialogFields.length > 0));
-});
 -%>
 <% if (usesFilterFieldIdentifier) { -%>
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
@@ -94,11 +89,11 @@ function journey() {
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
         <%_ if (tab.createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckCreate({ visible: true });
-        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressCreate();
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteCreate();
         <%_ } _%>
         <%_ if (tab.deleteButton.visible) { _%>
-        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressDelete();
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true });
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteDelete();
         <%_ } _%>
         <%_ tab.toolBarActions.forEach(function(item) { _%>
         <%_ if (item.visible) { _%>
@@ -106,11 +101,11 @@ function journey() {
         <%_ if (item.labelUnresolved) { _%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text
         <%_ } _%>
-        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { visible: true });
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
         <%_ } else { _%>
-        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
         <%_ } _%>
         <%_ } _%>
         <%_ }); _%>
@@ -130,23 +125,38 @@ function journey() {
         <%_ }); -%>
     });
 <%_ } else { -%>
-<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (_Given: Given, <% if (toolBarHasMenu || toolBarHasDialogAction)  { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
-        <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-        <%_ if (createButton.visible && !isALP) { _%>
+<%_ if (toolBarActions && toolBarActions.length > 0 && createButton.visible && !isALP) { -%>
+    opaTest("Check the create button", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
-        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
-        <%_ } _%>
-        <%_ if (deleteButton.visible) { _%>
-        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
-        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
-        <%_ } _%>
-        <%_ if (!hideFilterBar && toolBarHasDialogAction) { _%>
-        // Populate the table so the actions below have a row to select.
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteCreate();
+    });
+
+<%_ } -%>
+<%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
+    opaTest("Check the delete button", function (_Given: Given, <% if (deleteButton.enabled === true) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+        <%_ if (deleteButton.enabled === true) { _%>
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true, enabled: false });
+        <%_ if (!hideFilterBar) { _%>
+        // Populate the table and select a row so Delete becomes enabled.
         When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } _%>
-        <%_ toolBarActions.forEach(function(item) { _%>
-        <%_ if (item.visible) { _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true, enabled: true });
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteDelete();
+        // Deselect the row so the following actions start with an empty selection.
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        <%_ } else { _%>
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteDelete();
+        <%_ } _%>
+    });
+
+<%_ } -%>
+<%_ (toolBarActions || []).forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+<%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
+<%_ const usesWhen = (item.menuActions && !item.splitButton) || (!item.menuActions && !item.custom && ((item.selectionEnables && !item.isCritical && !hasParamDialog) || ((item.isCritical || hasParamDialog) && item.enabled !== 'dynamic'))); _%>
+    opaTest("Check the <%- item.label %> action", function (_Given: Given, <% if (usesWhen) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         <%_ if (item.menuActions) { _%>
         <%_ if (item.splitButton) { _%>
         // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
@@ -166,13 +176,21 @@ function journey() {
         <%_ if (item.labelUnresolved) { _%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text
         <%_ } _%>
-        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { visible: true });
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction("<%- item.label %>");
         <%_ } else { _%>
-        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
-        <%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
-        <%_ if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
+        // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+        <%_ if (item.selectionEnables && !item.isCritical && !hasParamDialog) { _%>
+        <%_ if (!hideFilterBar) { _%>
+        // Populate the table and select a row so the action becomes enabled.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: true });
+        // Deselect the row so the following actions start with an empty selection.
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+        <%_ } else if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
         // "<%- item.label %>" is conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the <%- hasParamDialog ? 'action parameter dialog' : 'confirmation dialog' %>.
         <%_ if (!hideFilterBar) { _%>
         // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
@@ -190,6 +208,10 @@ function journey() {
         <%_ } _%>
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
         <%_ } else if (item.isCritical || hasParamDialog) { _%>
+        <%_ if (!hideFilterBar) { _%>
+        // Populate the table so the action below has a row to select.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } _%>
         <%_ if (item.enabled !== true) { _%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
         <%_ } _%>
@@ -209,13 +231,15 @@ function journey() {
         <%_ } _%>
         <%_ } _%>
         <%_ } _%>
-        <%_ } _%>
-        <%_ }); -%>
-        <%_ } -%>
-        <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-        <%_ } -%>
     });
+
+<%_ } -%>
+<%_ }); -%>
+<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
+    opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
+        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+    });
+
 <%_ } -%>
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
     opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {

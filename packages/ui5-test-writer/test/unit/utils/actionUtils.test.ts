@@ -126,26 +126,26 @@ describe('findOperationAvailableAnnotation()', () => {
 
 describe('analyzeOperationAvailability()', () => {
     test('returns enabled=true when undefined and not entity-bound', () => {
-        expect(analyzeOperationAvailability(undefined, false)).toEqual({ enabled: true });
+        expect(analyzeOperationAvailability(undefined, false)).toEqual({ enabled: true, selectionEnables: false });
     });
 
-    test('returns enabled=false when undefined and entity-bound', () => {
-        expect(analyzeOperationAvailability(undefined, true)).toEqual({ enabled: false });
+    test('returns enabled=false and selectionEnables when undefined and entity-bound', () => {
+        expect(analyzeOperationAvailability(undefined, true)).toEqual({ enabled: false, selectionEnables: true });
     });
 
     test('returns enabled=true when undefined and isEntityBound not provided', () => {
-        expect(analyzeOperationAvailability(undefined)).toEqual({ enabled: true });
+        expect(analyzeOperationAvailability(undefined)).toEqual({ enabled: true, selectionEnables: false });
     });
 
     test('returns the boolean value when operationAvailable is true', () => {
         expect(analyzeOperationAvailability(true as unknown as any)).toEqual({ enabled: true });
     });
 
-    test('returns the boolean value when operationAvailable is false', () => {
+    test('returns the boolean value when operationAvailable is false (no selectionEnables)', () => {
         expect(analyzeOperationAvailability(false as unknown as any)).toEqual({ enabled: false });
     });
 
-    test('returns dynamic with $Path when object has $Path', () => {
+    test('returns dynamic with $Path when object has $Path (no selectionEnables)', () => {
         const opAvail = { $Path: 'IsApproved' } as any;
         expect(analyzeOperationAvailability(opAvail)).toEqual({ enabled: 'dynamic', dynamicPath: 'IsApproved' });
     });
@@ -224,6 +224,7 @@ describe('buildActionButtonState()', () => {
 
         const result = buildActionButtonState(item, minimalMetadata);
         expect(result.enabled).toBe(false);
+        expect(result.selectionEnables).toBe(true);
     });
 
     test('builds state for collection-bound action (bound, enabled without selection)', () => {
@@ -312,6 +313,7 @@ describe('buildActionStateFromSpecModelKey()', () => {
             visible: true,
             enabled: false,
             dynamicPath: undefined,
+            selectionEnables: true,
             isCritical: false
         });
     });
@@ -345,6 +347,7 @@ describe('buildActionStateFromSpecModelKey()', () => {
             visible: true,
             enabled: true,
             dynamicPath: undefined,
+            selectionEnables: false,
             isCritical: false
         });
     });
@@ -365,6 +368,7 @@ describe('buildActionStateFromSpecModelKey()', () => {
             visible: true,
             enabled: true,
             dynamicPath: undefined,
+            selectionEnables: false,
             isCritical: false
         });
     });

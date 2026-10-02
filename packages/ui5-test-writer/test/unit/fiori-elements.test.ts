@@ -180,7 +180,10 @@ describe('ui5-test-writer', () => {
             // The mock spec models used above do not populate the LR toolbar `actions` aggregation, so a
             // full generateOPAFiles run cannot exercise toolbar-action rendering. Render the real journey
             // template directly with a synthetic critical action to verify the generated test code.
-            const renderListReportJourney = (toolBarActions: Record<string, unknown>[]): string => {
+            const renderListReportJourney = (
+                toolBarActions: Record<string, unknown>[],
+                overrides: Record<string, unknown> = {}
+            ): string => {
                 const templatePath = join(__dirname, '../../templates/v4/latest/integration/ListReportJourney.js');
                 const outPath = join(__dirname, '../test-output/critical/ListReportJourney.gen.js');
                 const editor = create(createStorage());
@@ -202,7 +205,8 @@ describe('ui5-test-writer', () => {
                     textAnnotationColumns: [],
                     tableIdentifiers: [],
                     tabs: [],
-                    toolBarActions
+                    toolBarActions,
+                    ...overrides
                 });
                 return editor.read(outPath);
             };
@@ -240,7 +244,7 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
                 // The non-critical action's execute stays commented out.
                 expect(journey).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: "NS", action: "Copy", unbound: false })'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction({ service: "NS", action: "Copy", unbound: false })'
                 );
             });
 
@@ -315,18 +319,69 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('Deselect the row so the following actions start with an empty selection.');
             });
 
-            it('hoists a single filter-bar search before the action block for multiple critical actions', () => {
+            it('includes a filter-bar search in each critical action block to populate a selectable row', () => {
                 const journey = renderListReportJourney([
                     { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
                     { label: 'Set To New', action: 'setToNew', visible: true, enabled: false, isCritical: true }
                 ]);
-                // Scope to the actions test block; the separate "Navigate to ObjectPage" block has its own search.
-                const actionsBlock = journey.slice(
-                    journey.indexOf('Check table columns and actions'),
+                // Each critical action is now its own opaTest block that populates the table itself.
+                const bookedBlock = journey.slice(
+                    journey.indexOf('Check the Set To Booked action'),
+                    journey.indexOf('Check the Set To New action')
+                );
+                const newBlock = journey.slice(
+                    journey.indexOf('Check the Set To New action'),
                     journey.indexOf('Navigate to ObjectPage')
                 );
-                const searchCount = (actionsBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length;
-                expect(searchCount).toBe(1);
+                expect((bookedBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length).toBe(1);
+                expect((newBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length).toBe(1);
+            });
+
+            it('asserts both selection states for a selection-driven (non-annotated bound) action', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Approve',
+                        action: 'Approve',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        selectionEnables: true
+                    }
+                ]);
+                const block = journey.slice(
+                    journey.indexOf('Check the Approve action'),
+                    journey.indexOf('Navigate to ObjectPage')
+                );
+                // Disabled with no selection, enabled once a row is selected — no mock data needed.
+                expect(block).toContain(
+                    'iCheckAction({ service: "NS", action: "Approve", unbound: false }, { enabled: false })'
+                );
+                expect(block).toContain(
+                    'iCheckAction({ service: "NS", action: "Approve", unbound: false }, { enabled: true })'
+                );
+                expect(block).toContain('onFilterBar().iExecuteSearch()');
+                // One select to enable, one deselect to clean up.
+                expect((block.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).length).toBe(2);
+                expect(block).not.toContain('onMessageDialog');
+            });
+
+            it('splits columns and create/delete into their own opaTest blocks', () => {
+                const journey = renderListReportJourney(
+                    [{ label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }],
+                    {
+                        createButton: { visible: true },
+                        deleteButton: { visible: true },
+                        tableColumns: { TravelID: { header: 'Travel ID' } }
+                    }
+                );
+                expect(journey).toContain('opaTest("Check the create button"');
+                expect(journey).toContain('opaTest("Check the delete button"');
+                expect(journey).toContain('opaTest("Check the Copy action"');
+                expect(journey).toContain('opaTest("Check table columns"');
+                // The single combined block title no longer exists.
+                expect(journey).not.toContain('Check table columns and actions');
+                expect(journey).not.toContain('Check table create and delete buttons');
             });
 
             it('validates the action parameter dialog for a parameterized action and cancels it', () => {
