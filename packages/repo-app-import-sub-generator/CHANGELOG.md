@@ -1,5 +1,56 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.72
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.68 → 3.1.69
+- @sap-ux/fiori-freestyle-writer 3.0.113 → 3.0.114
+- @sap-ux/odata-service-inquirer 3.2.22 → 3.2.22
+
+## 1.2.71
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.67 → 3.1.68
+- @sap-ux/fiori-freestyle-writer 3.0.112 → 3.0.113
+- @sap-ux/odata-service-inquirer 3.2.22 → 3.2.22
+
+## 1.2.70
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.66 → 3.1.67
+- @sap-ux/fiori-freestyle-writer 3.0.111 → 3.0.112
+- @sap-ux/odata-service-inquirer 3.2.22 → 3.2.22
+
+## 1.2.69
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.65 → 3.1.66
+- @sap-ux/fiori-freestyle-writer 3.0.110 → 3.0.111
+- @sap-ux/odata-service-inquirer 3.2.22 → 3.2.22
+
+## 1.2.68
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+- @sap-ux/odata-service-inquirer 3.2.21 → 3.2.22
+- @sap-ux/fiori-elements-writer 3.1.64 → 3.1.65
+- @sap-ux/fiori-freestyle-writer 3.0.109 → 3.0.110
+
 ## 1.2.67
 
 ### Patch Changes
