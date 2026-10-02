@@ -1,42 +1,38 @@
 /**
- * Native Node.js file access utilities
+ * File access utilities using mem-fs-editor
  *
- * These replace @sap/ux-project-access file I/O functions with native implementations.
- * This eliminates dependency on internal packages and makes the code open-source compatible.
- *
- * When mem-fs is enabled (via fs-adapter), all operations go through mem-fs.
- * Otherwise, operations use native Node.js fs.
+ * Uses a global Editor instance managed by fs-adapter for backward compatibility.
+ * Functions can also accept an explicit Editor parameter.
  */
-import { promises as fs, constants } from 'node:fs';
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
-import * as fsAdapter from './fs-adapter.js';
+import type { Editor } from 'mem-fs-editor';
+import { getOrCreateEditor } from './fs-adapter.js';
 
 /**
- * Read a text file asynchronously
+ * Read a text file
  *
- * @param path - Path to file
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param path - Path to file (if first param is Editor)
  * @returns File contents as string
  */
-export async function readFile(path: string): Promise<string> {
-    if (fsAdapter.isMemFsEnabled()) {
-        return fsAdapter.readFile(path);
-    }
-    return fs.readFile(path, { encoding: 'utf-8' });
+export function readFile(pathOrFs: string | Editor, path?: string): string {
+    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+    return fs.read(filePath);
 }
 
 /**
- * Read a JSON file asynchronously
+ * Read a JSON file
  *
- * @param path - Path to JSON file
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param path - Path to file (if first param is Editor)
  * @returns Parsed JSON object with indentation metadata for round-trip preservation
  */
-export async function readJSON<T = any>(path: string): Promise<T> {
-    if (fsAdapter.isMemFsEnabled()) {
-        return fsAdapter.readJSON<T>(path);
-    }
-
-    const content = await readFile(path);
+export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
+    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+    const content = fs.read(filePath);
 
     // Parse with JSON.parse for consistent SyntaxError behavior
     const result = JSON.parse(content);
@@ -61,86 +57,78 @@ export async function readJSON<T = any>(path: string): Promise<T> {
 /**
  * Check if a file exists
  *
- * @param path - Path to file
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param path - Path to file (if first param is Editor)
  * @returns true if file exists, false otherwise
  */
-export async function fileExists(path: string): Promise<boolean> {
-    if (fsAdapter.isMemFsEnabled()) {
-        return fsAdapter.exists(path);
-    }
-
-    try {
-        await fs.access(path, constants.F_OK);
-        return true;
-    } catch {
-        return false;
-    }
+export function fileExists(pathOrFs: string | Editor, path?: string): boolean {
+    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+    return fs.exists(filePath);
 }
 
 /**
- * Write a text file asynchronously
+ * Write a text file
  *
- * @param path - Path to file
- * @param content - Content to write
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param contentOrPath - Content to write, or path (if first param is Editor)
+ * @param content - Content to write (if first param is Editor)
  */
-export async function writeFile(path: string, content: string): Promise<void> {
-    if (fsAdapter.isMemFsEnabled()) {
-        await fsAdapter.writeFile(path, content);
-        return;
-    }
-    await fs.writeFile(path, content, { encoding: 'utf-8' });
+export function writeFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
+    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : contentOrPath;
+    const fileContent = typeof pathOrFs === 'string' ? contentOrPath : content!;
+    fs.write(filePath, fileContent);
 }
 
 /**
- * Update a text file asynchronously
+ * Update a text file
  * Alias for writeFile for backward compatibility
  *
- * @param path - Path to file
- * @param content - Content to write
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param contentOrPath - Content to write, or path (if first param is Editor)
+ * @param content - Content to write (if first param is Editor)
  */
-export async function updateFile(path: string, content: string): Promise<void> {
-    await writeFile(path, content);
+export function updateFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
+    writeFile(pathOrFs, contentOrPath, content);
 }
 
 /**
  * Update a JSON file while preserving indentation
  *
- * @param path - Path to JSON file
- * @param content - Object to write
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param contentOrPath - Object to write, or path (if first param is Editor)
+ * @param content - Object to write (if first param is Editor)
  */
-export async function updateJSON(path: string, content: object): Promise<void> {
-    if (fsAdapter.isMemFsEnabled()) {
-        await fsAdapter.writeJSON(path, content, 4);
-        return;
-    }
+export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | object, content?: object): void {
+    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : (contentOrPath as string);
+    const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : content!;
 
     try {
         // Read old contents and indentation of the JSON file
-        const oldContentText = await readFile(path);
+        const oldContentText = fs.read(filePath);
         const oldContentJson = parseJson(oldContentText);
         const indent = Symbol.for('indent');
 
         // Prepare new JSON file content with previous indentation
-        const result = JSON.stringify(content, null, oldContentJson[indent]) + '\n';
-        await writeFile(path, result);
+        const result = JSON.stringify(fileContent, null, oldContentJson[indent]) + '\n';
+        fs.write(filePath, result);
     } catch {
-        // File does not exist yet — write with 4-space indentation and trailing newline.
-        // Note: this changes output format vs the old mem-fs path which wrote compact JSON
-        // without a trailing newline. Snapshot tests reflect the new format.
-        const newContent = JSON.stringify(content, null, 4) + '\n';
-        await writeFile(path, newContent);
+        // File does not exist yet — write with 4-space indentation and trailing newline
+        const newContent = JSON.stringify(fileContent, null, 4) + '\n';
+        fs.write(filePath, newContent);
     }
 }
 
 /**
- * Delete a file asynchronously
+ * Delete a file
  *
- * @param path - Path to file
+ * @param pathOrFs - Path to file, or Editor instance
+ * @param path - Path to file (if first param is Editor)
  */
-export async function deleteFile(path: string): Promise<void> {
-    if (fsAdapter.isMemFsEnabled()) {
-        await fsAdapter.deleteFile(path);
-        return;
-    }
-    await fs.unlink(path);
+export function deleteFile(pathOrFs: string | Editor, path?: string): void {
+    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+    fs.delete(filePath);
 }

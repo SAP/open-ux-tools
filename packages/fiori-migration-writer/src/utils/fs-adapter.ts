@@ -1,12 +1,15 @@
+/**
+ * Global mem-fs editor management
+ *
+ * Provides a global Editor instance for the migration writer.
+ * Aligns with open-ux-tools pattern of using pure mem-fs-editor.
+ */
 import type { Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import * as fsNode from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { dirname } from 'node:path';
 
 /**
- * Global mem-fs editor instance when mem-fs mode is enabled
+ * Global mem-fs editor instance
  */
 let memFsEditor: Editor | undefined;
 
@@ -20,7 +23,7 @@ export function enableMemFs(editor: Editor): void {
 }
 
 /**
- * Disable mem-fs mode (use real file system)
+ * Disable mem-fs mode
  */
 export function disableMemFs(): void {
     memFsEditor = undefined;
@@ -58,156 +61,45 @@ export function getCurrentEditor(): Editor | undefined {
 }
 
 /**
- * Write file (mem-fs or real fs)
+ * Check if file/directory exists
  *
- * @param path - File path
- * @param content - File content
+ * @param path - Path to check
+ * @returns True if exists
  */
-export async function writeFile(path: string, content: string | Buffer): Promise<void> {
-    if (memFsEditor) {
-        memFsEditor.write(path, content);
-    } else {
-        // Ensure directory exists
-        await fsNode.mkdir(dirname(path), { recursive: true });
-        await fsNode.writeFile(path, content, typeof content === 'string' ? 'utf-8' : undefined);
-    }
+export function exists(path: string): boolean {
+    const fs = getOrCreateEditor();
+    return fs.exists(path);
 }
 
 /**
- * Read file (mem-fs or real fs)
- *
- * @param path - File path
- * @returns File content as string
- */
-export async function readFile(path: string): Promise<string> {
-    if (memFsEditor) {
-        return memFsEditor.read(path, { raw: false }) as string;
-    } else {
-        return await fsNode.readFile(path, 'utf-8');
-    }
-}
-
-/**
- * Read file as buffer (mem-fs or real fs)
- *
- * @param path - File path
- * @returns File content as Buffer
- */
-export async function readFileBuffer(path: string): Promise<Buffer> {
-    if (memFsEditor) {
-        const content = memFsEditor.read(path, { raw: true });
-        if (Buffer.isBuffer(content)) {
-            return content;
-        }
-        if (typeof content === 'string') {
-            return Buffer.from(content, 'utf-8');
-        }
-        // Handle other types (ArrayBuffer, Uint8Array, etc.)
-        return Buffer.from(content as any);
-    } else {
-        return await fsNode.readFile(path);
-    }
-}
-
-/**
- * Copy file (mem-fs or real fs)
+ * Copy file using mem-fs
  *
  * @param src - Source path
  * @param dest - Destination path
  */
-export async function copyFile(src: string, dest: string): Promise<void> {
-    if (memFsEditor) {
-        memFsEditor.copy(src, dest);
-    } else {
-        await fsNode.mkdir(dirname(dest), { recursive: true });
-        await fsNode.copyFile(src, dest);
-    }
+export function copyFile(src: string, dest: string): void {
+    const fs = getOrCreateEditor();
+    fs.copy(src, dest);
 }
 
 /**
- * Check if file exists (mem-fs or real fs)
+ * Delete file using mem-fs
  *
- * @param path - File path
- * @returns True if file exists
+ * @param path - Path to delete
  */
-export function exists(path: string): boolean {
-    if (memFsEditor) {
-        return memFsEditor.exists(path);
-    } else {
-        return existsSync(path);
-    }
+export function deleteFile(path: string): void {
+    const fs = getOrCreateEditor();
+    fs.delete(path);
 }
 
 /**
- * Delete file (mem-fs or real fs)
- *
- * @param path - File path
- */
-export async function deleteFile(path: string): Promise<void> {
-    if (memFsEditor) {
-        memFsEditor.delete(path);
-    } else {
-        try {
-            await fsNode.unlink(path);
-        } catch (err: any) {
-            if (err?.code !== 'ENOENT') {
-                throw err;
-            }
-        }
-    }
-}
-
-/**
- * Create directory (mem-fs or real fs)
+ * Create directory (no-op in mem-fs, directories created implicitly)
  *
  * @param path - Directory path
  */
-export async function mkdir(path: string): Promise<void> {
-    if (memFsEditor) {
-        // mem-fs handles directories implicitly when writing files
-        // No explicit mkdir needed
-    } else {
-        await fsNode.mkdir(path, { recursive: true });
-    }
-}
-
-/**
- * Copy template with EJS processing (mem-fs or real fs)
- *
- * @param from - Template source path
- * @param to - Destination path
- * @param context - Template variables
- * @param options - Copy options
- */
-export function copyTpl(from: string | string[], to: string, context?: Record<string, any>, options?: any): void {
-    if (memFsEditor) {
-        memFsEditor.copyTpl(from, to, context, options);
-    } else {
-        throw new Error('copyTpl requires mem-fs mode to be enabled');
-    }
-}
-
-/**
- * Read JSON file (mem-fs or real fs)
- *
- * @param path - File path
- * @returns Parsed JSON object
- */
-export async function readJSON<T = any>(path: string): Promise<T> {
-    const content = await readFile(path);
-    return JSON.parse(content);
-}
-
-/**
- * Write JSON file (mem-fs or real fs)
- *
- * @param path - File path
- * @param data - Data to write
- * @param space - JSON formatting spaces (default 2)
- */
-export async function writeJSON(path: string, data: any, space: number = 2): Promise<void> {
-    const content = JSON.stringify(data, null, space);
-    await writeFile(path, content);
+export function mkdir(path: string): void {
+    // mem-fs handles directories implicitly when writing files
+    // No explicit mkdir needed
 }
 
 /**

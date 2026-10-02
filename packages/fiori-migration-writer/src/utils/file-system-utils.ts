@@ -1,6 +1,5 @@
-import { existsSync } from 'node:fs';
-import { mkdir as fsMkdir } from 'node:fs/promises';
-import { exists, mkdir as memMkdir, isMemFsEnabled } from './fs-adapter.js';
+import { getOrCreateEditor } from './fs-adapter.js';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * stripSpaces
@@ -26,13 +25,13 @@ export const escapeDoubleQuotes = (s: string): string => s.replace(/\\/g, '\\\\'
 /**
  * Check if directory exists
  *
- * @param directory
+ * @param directoryOrFs - Directory path or Editor instance
+ * @param directory - Directory path (if first param is Editor)
  */
-export function doesDirectoryExists(directory: string): boolean {
-    if (isMemFsEnabled()) {
-        return exists(directory);
-    }
-    return existsSync(directory);
+export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: string): boolean {
+    const fs = typeof directoryOrFs === 'string' ? getOrCreateEditor() : directoryOrFs;
+    const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
+    return fs.exists(dir);
 }
 
 /**
@@ -47,18 +46,14 @@ export function doesPropertyExist(obj: unknown, fieldName: string): boolean {
 
 /**
  * Create directory if it doesn't exist
+ * Note: mem-fs handles directories implicitly, so this is a no-op
  *
- * @param directory
+ * @param directoryOrFs - Directory path or Editor instance
+ * @param directory - Directory path (if first param is Editor)
  */
-export async function createDirectory(directory: string): Promise<boolean> {
-    let isCreated = false;
-    if (!doesDirectoryExists(directory)) {
-        if (isMemFsEnabled()) {
-            await memMkdir(directory);
-        } else {
-            await fsMkdir(directory, { recursive: true });
-        }
-        isCreated = true;
-    }
-    return isCreated;
+export function createDirectory(directoryOrFs: string | Editor, directory?: string): boolean {
+    // mem-fs handles directories implicitly when writing files
+    // Check if it exists for consistency
+    const exists = doesDirectoryExists(directoryOrFs, directory);
+    return !exists; // Return true if it didn't exist (was "created")
 }
