@@ -320,6 +320,9 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     case 'lookup_ui5_documentation':
                         result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
                         break;
+                    case 'migrate_fiori_project':
+                        result = await migrateFioriProject(args as MigrateFioriProjectInput);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;

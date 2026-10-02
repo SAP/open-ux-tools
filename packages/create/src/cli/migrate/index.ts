@@ -357,10 +357,11 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         baseUri,
         ui5SnapshotUrl,
         // Only override specific connection fields - ProjectMigrator will fetch and merge
-        client || destination
+        client || destination || hostname
             ? {
                   ...(client && { sapClient: client }),
-                  ...(destination && { destination })
+                  ...(destination && { destination }),
+                  ...(hostname && { hostname })
               }
             : undefined
     );
