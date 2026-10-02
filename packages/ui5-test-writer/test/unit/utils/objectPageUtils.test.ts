@@ -2653,6 +2653,7 @@ describe('Test getObjectPageFeatures()', () => {
             visible: true,
             enabled: false,
             dynamicPath: undefined,
+            selectionEnables: true,
             isCritical: false
         });
     });
@@ -2723,6 +2724,7 @@ describe('Test getObjectPageFeatures()', () => {
             visible: true,
             enabled: true,
             dynamicPath: undefined,
+            selectionEnables: false,
             isCritical: false
         });
     });
@@ -2900,6 +2902,7 @@ describe('Test getObjectPageFeatures()', () => {
             visible: true,
             enabled: false,
             dynamicPath: undefined,
+            selectionEnables: true,
             isCritical: false
         });
     });

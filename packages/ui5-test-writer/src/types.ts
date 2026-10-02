@@ -285,6 +285,12 @@ export interface ActionButtonState {
      */
     dynamicPath?: string;
     /**
+     * Set when the action has no `Core.OperationAvailable` annotation and is bound to a single
+     * instance: it is disabled with no selection and becomes enabled once a row is selected. Unlike
+     * `'dynamic'`, this flip is deterministic, so the generated test can assert both states.
+     */
+    selectionEnables?: boolean;
+    /**
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */
     invocationGrouping?: string;
