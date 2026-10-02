@@ -333,8 +333,8 @@ describe('ui5-test-writer', () => {
                     journey.indexOf('Check the Set To New action'),
                     journey.indexOf('Navigate to ObjectPage')
                 );
-                expect((bookedBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length).toBe(1);
-                expect((newBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length).toBe(1);
+                expect(bookedBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).toHaveLength(1);
+                expect(newBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).toHaveLength(1);
             });
 
             it('asserts both selection states for a selection-driven (non-annotated bound) action', () => {
@@ -362,7 +362,7 @@ describe('ui5-test-writer', () => {
                 );
                 expect(block).toContain('onFilterBar().iExecuteSearch()');
                 // One select to enable, one deselect to clean up.
-                expect((block.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).length).toBe(2);
+                expect(block.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).toHaveLength(2);
                 expect(block).not.toContain('onMessageDialog');
             });
 
