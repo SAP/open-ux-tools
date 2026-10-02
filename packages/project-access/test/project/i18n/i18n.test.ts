@@ -126,6 +126,191 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
         });
     });
 
+    test('I18n referenced in bundleUrl with fallbackLocale in sap.app.i18n', () => {
+        const manifest = {
+            'sap.app': {
+                i18n: {
+                    bundleUrl: 'app/i18n/i18n.properties',
+                    fallbackLocale: 'en'
+                }
+            },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result).toEqual({
+            'sap.app': join('app/i18n/i18n.properties'),
+            'sap.app.fallbackLocale': join('app/i18n/i18n_en.properties'),
+            models: {}
+        });
+    });
+
+    test('I18n referenced in bundleName with fallbackLocale in sap.app.i18n', () => {
+        const manifest = {
+            'sap.app': {
+                id: 'sample.app',
+                i18n: {
+                    bundleName: 'sample.app.app.bundle.i18n',
+                    fallbackLocale: 'de'
+                }
+            },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result).toEqual({
+            'sap.app': join('app/bundle/i18n.properties'),
+            'sap.app.fallbackLocale': join('app/bundle/i18n_de.properties'),
+            models: {}
+        });
+    });
+
+    test('Empty string fallbackLocale in sap.app.i18n is ignored', () => {
+        const manifest = {
+            'sap.app': {
+                i18n: {
+                    bundleUrl: 'i18n/i18n.properties',
+                    fallbackLocale: ''
+                }
+            },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result['sap.app.fallbackLocale']).toBeUndefined();
+    });
+
+    test('bundleName equal to appId yields default path (empty suffix guard)', () => {
+        const manifest = {
+            'sap.app': {
+                id: 'sample.app',
+                i18n: { bundleName: 'sample.app' }
+            },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result['sap.app']).toEqual(join('i18n/i18n.properties'));
+    });
+
+    test('model bundleName equal to appId yields no model path (empty suffix guard)', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: { bundleName: 'sample.app' },
+                        uri: 'i18n/i18n.properties'
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']).toEqual({ path: join('i18n/i18n.properties') });
+    });
+
+    test('model bundleName without appId resolves using full bundle name', () => {
+        const manifest = {
+            'sap.app': {},
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: { bundleName: 'model.bundle.i18n' }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']).toEqual({ path: join('model/bundle/i18n.properties') });
+    });
+
+    test('null sap.app.i18n does not crash when resolving fallbackLocale', () => {
+        const manifest = {
+            'sap.app': { i18n: null },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        expect(() => getRelativeI18nPropertiesPaths(manifest)).not.toThrow();
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result['sap.app.fallbackLocale']).toBeUndefined();
+    });
+
+    test('Path traversal in sap.app fallbackLocale is rejected', () => {
+        const manifest = {
+            'sap.app': {
+                i18n: {
+                    bundleUrl: 'i18n/i18n.properties',
+                    fallbackLocale: '../../../../etc/passwd'
+                }
+            },
+            'sap.ui5': { models: {} }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result['sap.app.fallbackLocale']).toBeUndefined();
+    });
+
+    test('Path traversal in model settings fallbackLocale is rejected', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app', i18n: 'i18n/i18n.properties' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: {
+                            bundleUrl: 'i18n/i18n.properties',
+                            fallbackLocale: '../../../../etc/passwd'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']?.fallbackLocalePath).toBeUndefined();
+    });
+
+    test('Model with settings but no bundleName or bundleUrl falls through to uri', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: {
+                            enhanceWith: [{ bundleName: 'sample.app.i18n.extra' }]
+                        },
+                        uri: 'i18n/i18n.properties'
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']).toEqual({ path: join('i18n/i18n.properties') });
+    });
+
+    test('fallbackLocale in sap.ui5 model settings', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app', i18n: 'i18n/i18n.properties' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        settings: {
+                            bundleUrl: 'i18n/i18n.properties',
+                            fallbackLocale: 'en'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result).toEqual({
+            'sap.app': join('i18n/i18n.properties'),
+            models: {
+                i18n: {
+                    path: join('i18n/i18n.properties'),
+                    fallbackLocalePath: join('i18n/i18n_en.properties')
+                }
+            }
+        });
+    });
+
     test('All i18n paths filled', () => {
         const manifest = {
             'sap.app': {

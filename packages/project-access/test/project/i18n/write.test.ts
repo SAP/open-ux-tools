@@ -44,8 +44,13 @@ jest.unstable_mockModule('node:fs/promises', () => ({
     mkdir: mockMkdir
 }));
 
-const { createAnnotationI18nEntries, createCapI18nEntries, createManifestI18nEntries, createUI5I18nEntries } =
-    await import('../../../src/project/i18n/index.js');
+const {
+    createAnnotationI18nEntries,
+    createCapI18nEntries,
+    createI18nEntriesAtPath,
+    createManifestI18nEntries,
+    createUI5I18nEntries
+} = await import('../../../src/project/i18n/index.js');
 
 describe('write', () => {
     const memFs = create(createStorage());
@@ -367,6 +372,34 @@ describe('write', () => {
                 root,
                 memFs
             );
+        });
+    });
+    describe('createI18nEntriesAtPath', () => {
+        test('without mem-fs-editor — creates directory and writes entries', async () => {
+            const filePath = join('absolute', 'path', 'to', 'i18n_en.properties');
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
+
+            const result = await createI18nEntriesAtPath(root, filePath, newI18nEntries);
+
+            expect(result).toBeTruthy();
+            expect(mockMkdir).toHaveBeenNthCalledWith(1, dirname(filePath), { recursive: true });
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(
+                1,
+                filePath,
+                newI18nEntries,
+                root,
+                undefined
+            );
+        });
+        test('with mem-fs-editor — skips mkdir and writes entries', async () => {
+            const filePath = join('absolute', 'path', 'to', 'i18n_en.properties');
+            mockCreatePropertiesI18nEntries.mockResolvedValue(true);
+
+            const result = await createI18nEntriesAtPath(root, filePath, newI18nEntries, memFs);
+
+            expect(result).toBeTruthy();
+            expect(mockMkdir).toHaveBeenCalledTimes(0);
+            expect(mockCreatePropertiesI18nEntries).toHaveBeenNthCalledWith(1, filePath, newI18nEntries, root, memFs);
         });
     });
     describe('createManifestI18nEntries', () => {
