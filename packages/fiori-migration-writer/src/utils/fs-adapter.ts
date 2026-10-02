@@ -7,6 +7,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
+import { existsSync } from 'node:fs';
 
 /**
  * Global mem-fs editor instance
@@ -62,13 +63,15 @@ export function getCurrentEditor(): Editor | undefined {
 
 /**
  * Check if file/directory exists
+ * Checks both mem-fs and real filesystem to support mixed testing scenarios
  *
  * @param path - Path to check
  * @returns True if exists
  */
 export function exists(path: string): boolean {
     const fs = getOrCreateEditor();
-    return fs.exists(path);
+    // Check mem-fs first, then fall back to real filesystem
+    return fs.exists(path) || existsSync(path);
 }
 
 /**

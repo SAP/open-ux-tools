@@ -108,7 +108,11 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
         };
 
         // Write manifest to appropriate location
-        if (exists(join(rootPath, projectInfo.webappPath))) {
+        // Check if webapp directory exists (works for both mem-fs and real fs)
+        const shouldWriteToWebapp =
+            projectInfo.webappPath && exists(join(rootPath, projectInfo.webappPath));
+
+        if (shouldWriteToWebapp) {
             await updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
         } else {
             await updateJSON(join(rootPath, FileName.Manifest), manifestJson);
