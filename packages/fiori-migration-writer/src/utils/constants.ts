@@ -1,14 +1,16 @@
-export enum postMigrationAction {
-    appInfo = 'Open App Info',
-    serviceManager = 'Open Service Manager',
-    backToMigration = 'Back'
-}
+export const postMigrationAction = {
+    appInfo: 'Open App Info',
+    serviceManager: 'Open Service Manager',
+    backToMigration: 'Back'
+} as const;
+export type postMigrationAction = (typeof postMigrationAction)[keyof typeof postMigrationAction];
 
-export enum MigrationTypes {
-    project = 'Project',
-    projectExtension = 'ProjectExtension',
-    library = 'Library'
-}
+export const MigrationTypes = {
+    project: 'Project',
+    projectExtension: 'ProjectExtension',
+    library: 'Library'
+} as const;
+export type MigrationTypes = (typeof MigrationTypes)[keyof typeof MigrationTypes];
 
 export const distVar = '${sap.ui5.dist.version}';
 

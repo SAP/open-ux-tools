@@ -19,10 +19,6 @@ export function resolveTemplateData(templateData: Data, templateProps: TemplateP
         return templateData;
     }
 
-    try {
-        return get(templateData, templateProps.templateDataKey as string);
-    } catch {
-        // If extraction fails, return empty object to allow template rendering to continue
-        return {};
-    }
+    // lodash.get returns undefined for missing paths; provide fallback for template rendering
+    return get(templateData, templateProps.templateDataKey as string) ?? {};
 }

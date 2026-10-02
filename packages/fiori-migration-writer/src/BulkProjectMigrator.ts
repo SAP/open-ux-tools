@@ -27,12 +27,13 @@ export class BulkProjectMigrator {
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<MigrationUIProjectInfo[]> {
-        // Migrate all projects in parallel for better performance
-        const migrationPromises = (projects ?? []).map((project, index) =>
-            this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle)
-        );
-
-        return Promise.all(migrationPromises);
+        // Migrate projects sequentially to avoid mem-fs adapter races
+        // The shared module-global mem-fs adapter is enabled/disabled per migration
+        const results: MigrationUIProjectInfo[] = [];
+        for (const [index, project] of (projects ?? []).entries()) {
+            results.push(await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle));
+        }
+        return results;
     }
 
     /**

@@ -1,8 +1,14 @@
 ---
 "@sap-ux/fiori-migration-writer": minor
+"@sap-ux/create": minor
+"@sap-ux/fiori-mcp-server": patch
 ---
 
 FEAT: Introduce new @sap-ux/fiori-migration-writer package
+
+- Add @sap-ux/fiori-migration-writer for programmatic Fiori project migration
+- Add 'migrate' CLI command to @sap-ux/create
+- Add migrate_fiori_project MCP tool to @sap-ux/fiori-mcp-server
 
 This package provides migration capabilities for Fiori projects, extracted from SAP-internal tools to enable open-source collaboration. Key features:
 

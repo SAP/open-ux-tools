@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectMigrator } from '@sap-ux/fiori-migration-writer';
-import { getProjectType } from '@sap-ux/project-access';
 import { getLogger } from '../../tracing/index.js';
 
 interface MigrateCommandOptions {
@@ -194,6 +193,7 @@ async function getProjectPath(projectPath: string | undefined): Promise<string> 
 
 /**
  * Check if project needs force flag for migration.
+ * Uses package.json devDependencies to detect Fiori tools projects.
  *
  * @param resolvedPath - project path
  * @param force - force flag from options
@@ -201,8 +201,23 @@ async function getProjectPath(projectPath: string | undefined): Promise<string> 
  */
 async function checkForceRequired(resolvedPath: string, force: boolean): Promise<boolean> {
     const logger = getLogger();
-    const projectType = await getProjectType(resolvedPath);
-    const isToolsProject = projectType !== undefined && !projectType.includes('webide');
+
+    // Check for Fiori tools indicators in package.json
+    let isToolsProject = false;
+    try {
+        const { readFileSync } = await import('node:fs');
+        const packageJsonPath = resolve(resolvedPath, 'package.json');
+        if (existsSync(packageJsonPath)) {
+            const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+            const devDeps = packageJson.devDependencies || {};
+            // Fiori tools projects have @sap/ux-* or @ui5/* dev dependencies
+            isToolsProject = Object.keys(devDeps).some(
+                (dep) => dep.startsWith('@sap/ux-') || dep.startsWith('@ui5/')
+            );
+        }
+    } catch {
+        // If we can't read package.json, assume not a tools project
+    }
 
     if (isToolsProject && !force) {
         logger.warn('Project appears to be already migrated to Fiori tools.');
@@ -325,28 +340,24 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     // 6. Execute migration
     logger.info('Starting migration...');
 
-    let baseUri = '';
-    if (destination) {
-        // destination is for project config, not for baseUri
-        // baseUri should only be set from hostname
-        baseUri = '';
-    }
+    // Set baseUri: use destination route or construct from hostname
+    let baseUri = destination ? `/${destination}` : '';
     if (hostname) {
         baseUri = `https://${hostname}`;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
 
     // Load project info first, then merge CLI overrides
+    // Pass only the override fields so ProjectMigrator loads full metadata and merges
     const result = await ProjectMigrator.migrate(
         resolvedPath,
         baseUri,
         ui5SnapshotUrl,
-        // Only override specific fields, let migration load the rest
-        client || destination || hostname
+        // Only override specific connection fields - ProjectMigrator will fetch and merge
+        client || destination
             ? {
                   ...(client && { sapClient: client }),
-                  ...(destination && { destination }),
-                  ...(hostname && { hostname })
+                  ...(destination && { destination })
               }
             : undefined
     );

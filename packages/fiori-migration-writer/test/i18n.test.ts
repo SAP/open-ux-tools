@@ -9,7 +9,7 @@ describe('i18n', () => {
         expect(i18nText('ERROR_SYNTAX')).toEqual('A syntax error occurred.');
     });
 
-    it('Resolve nonexistent i18n text', async () => {
+    it('Resolve nonexistent i18n text', () => {
         expect(i18nText('DUMMY')).toEqual('DUMMY');
     });
 });
