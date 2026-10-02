@@ -242,3 +242,44 @@ export const LookupUi5DocumentationInputSchema = zod.object({
                 'configured UI5 base URL and version. Falls back to the public https://ui5.sap.com when omitted or not found.'
         )
 });
+
+/**
+ * Input interface for the 'migrate_fiori_project' tool
+ */
+export const MigrateFioriProjectInputSchema = zod.object({
+    projectPath: zod
+        .string()
+        .min(1)
+        .describe(
+            'Absolute path to the legacy WebIDE Fiori project to migrate. The path must exist and contain a valid Fiori project.'
+        ),
+    destination: zod
+        .string()
+        .optional()
+        .describe(
+            'SAP System destination name for backend connection. Use this OR hostname, not both. ' +
+                'Must contain only alphanumeric characters, hyphens, and underscores.'
+        ),
+    hostname: zod
+        .string()
+        .optional()
+        .describe(
+            'Hostname of the backend system (e.g., "my-sap-server.example.com"). ' +
+                'Use this OR destination, not both. Will be prefixed with https://.'
+        ),
+    client: zod
+        .string()
+        .optional()
+        .describe('SAP client number (3 digits, e.g., "100"). Optional.'),
+    ui5Version: zod
+        .string()
+        .optional()
+        .describe(
+            'UI5 version to use in semantic versioning format (e.g., "1.120.0"). ' +
+                'If not provided, uses the version from the source project.'
+        ),
+    force: zod
+        .boolean()
+        .optional()
+        .describe('Force migration even if the project appears to already be migrated to Fiori tools format.')
+});

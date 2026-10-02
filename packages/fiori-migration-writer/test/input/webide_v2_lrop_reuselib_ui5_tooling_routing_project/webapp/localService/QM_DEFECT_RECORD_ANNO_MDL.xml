@@ -1,0 +1,743 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+	<edmx:Reference
+		Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference>
+	<edmx:Reference
+		Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/></edmx:Reference>
+	<edmx:Reference
+		Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/></edmx:Reference>
+	<edmx:Reference Uri="../../../sap/qm_defect_record_srv/$metadata"><edmx:Include Namespace="QM_DEFECT_RECORD_SRV" Alias="SAP"/></edmx:Reference>
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="qm_defect_record_anno_mdl.v1">
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectCatVHType/DefectCategoryText"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/HasDraftEntity"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/DraftUUID"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/ParentDraftUUID"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/DraftEntityCreationDateTime"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/DraftEntityLastChangeDateTime"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/HasActiveEntity"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/IsActiveEntity"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/DefectInternalID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/Language"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/ItemCounter"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/LongTextID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/Preparation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/Validation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/DefectLongText_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/ItemCounter_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/LongTextID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectLongTextType/DefectLongText"><Annotation Term="UI.MultiLineText"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspSubsetFieldCombination"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionSubsetDate"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionSubsetTime"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionSubsetLongCharKey"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionSubsetShortCharKey"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspSubsetLongNumericKey"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspSubsetShortNumericKey"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/Equipment"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/FunctionalLocation"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspValnResultCriticality"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionResultMeanValue"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionResultHasMeanValue"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionLot"><Annotation Term="Common.SemanticObject" String="InspectionLot"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionSubsetInternalID"><Annotation Term="Common.SemanticObject" String="InspectionSubset"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionSubset"><Annotation Term="Common.SemanticObject" String="InspectionSubset"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/InspectionCharacteristic">
+				<Annotation Term="Common.Text" Path="InspectionSpecificationText"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType/CharacteristicAttributeCode">
+				<Annotation Term="Common.Text" Path="CharacteristicAttributeCodeTxt"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharacteristicsSbstType">
+				<Annotation Term="UI.FieldGroup" Qualifier="CharGroup1">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionLot"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionSubset"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionCharacteristic"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionResultStatusText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspResultValidValuesNumber"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspRsltNonconformingValsNmbr"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="CharGroup2">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionResultMeanValueText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CharacteristicAttributeCode"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspSpecToleranceLimitsText"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="CharGroup3">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Criticality" Path="InspValnResultCriticality"/><PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/WithoutIcon"/><PropertyValue Property="Value" Path="InspectionValuationResult"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecIsQuantitative"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionSpecificationUnit"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecRecordingType"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecUpperLimit"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecHasUpperLimit"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecLowerLimit"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecHasLowerLimit"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecDecimalPlaces"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspCharacteristicSampleSize"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecSampleQuantityFactor"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspCharacteristicSampleUnit"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionResultMeanValue"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspValnResultCriticality"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionResultHasMeanValue"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/CharacteristicAttributeCodeGrp"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/CharacteristicAttributeCodeTxt"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionMethodPlant"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionMethodVersion"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspSpecToleranceLimitsText"><Annotation Term="UI.MultiLineText"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionLot"><Annotation Term="Common.SemanticObject" String="InspectionLot"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/InspectionCharacteristic">
+				<Annotation Term="Common.Text" Path="InspectionSpecificationText"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType/CharacteristicAttributeCode">
+				<Annotation Term="Common.Text" Path="CharacteristicAttributeCodeTxt"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectMngCharcsType">
+				<Annotation Term="UI.FieldGroup" Qualifier="CharGroup1">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionLot"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionCharacteristic"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionResultStatusText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspResultValidValuesNumber"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspRsltNonconformingValsNmbr"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="CharGroup2">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionResultMeanValueText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CharacteristicAttributeCode"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspSpecToleranceLimitsText"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="CharGroup3">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Criticality" Path="InspValnResultCriticality"/><PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/WithoutIcon"/><PropertyValue Property="Value" Path="InspectionValuationResult"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionValuationResult"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.PresentationVariant">
+					<Record>
+						<PropertyValue Property="RequestAtLeast">
+							<Collection>
+								<PropertyPath>InspSpecIsQuantitative</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/QualityTaskInternalId"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/Language"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/ItemCounter"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextCreatedByUser"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextCreatedAt"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextLastChangedByUser"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextLastChangedAt"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/ItemCounter_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextLastChangedAt_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/LongTextLastChangedByUser_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType/QualityTaskProcessorNotes_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType">
+				<Annotation Term="UI.PresentationVariant">
+					<Record>
+						<PropertyValue Property="RequestAtLeast">
+							<Collection>
+								<PropertyPath>LongTextLastChangedAt</PropertyPath>
+								<PropertyPath>QualityTaskProcessorNotes</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectCodeCatalog"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectiveQuantity"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectiveQuantityUnit"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/NumberOfDefects"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspPlanOperationInternalID"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspectionCharacteristic"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspectionSubsetInternalID"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/MaterialSample"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/HasDraftEntity"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DraftUUID"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DraftEntityCreationDateTime"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DraftEntityLastChangeDateTime"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/HasActiveEntity"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/IsActiveEntity"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_CreatedByUserContactCard"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectCategory"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectClass"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectCode"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectCodeGroup"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectInspCharacteristic"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectInspSubsCharacteristic"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectiveQtyUnitOfMeasure"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectStatus"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectStatusText"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_DefectTaskRecord"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_LastChangedByUserContactCard"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_MainWorkCenterPlantStdVH"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_MainWorkCenterStdVH"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_MfgExecDefectRecord"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_Plant"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_ProblemAnalysisStatus"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_ProdnOrdOpBySemKeyStdVH"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_Product"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/to_ProductionOrderStdVH"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectInternalID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/ProblemAnalysisStatus"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/MasterLanguage"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/ProductionOrderSequence"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/MfgOrderSequenceText"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Activation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Assign_to_notification_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Complete_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Complete_problem_analysis_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Edit_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Mark_for_deletion_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Not_relevant_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Preparation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Required_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Set_in_process_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Validate_activation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Validation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectClass_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectCode_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectCodeGroup_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectInternalID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectiveQuantity_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectiveQuantityUnit_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectText_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspectionCharacteristic_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspectionLot_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspectionSubsetInternalID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspPlanOperationInternalID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/MainWorkCenter_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/MainWorkCenterPlant_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Material_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/MaterialSample_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/NumberOfDefects_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Plant_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/ProductionOrder_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/ProductionOrderOperation_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/ProductionOrderSequence_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/QualityIssueReference_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Update_mc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Plant"><Annotation Term="Common.SemanticObject" String="Plant"/>
+				<Annotation Term="Common.SemanticObjectMapping">
+					<Collection>
+						<Record><PropertyValue Property="LocalProperty" PropertyPath="Plant"/><PropertyValue Property="SemanticObjectProperty" String="Plant"/></Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Material"><Annotation Term="Common.SemanticObject" String="Material"/>
+				<Annotation Term="Common.SemanticObjectMapping">
+					<Collection>
+						<Record><PropertyValue Property="LocalProperty" PropertyPath="Material"/><PropertyValue Property="SemanticObjectProperty" String="Product"/></Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/InspectionLot"><Annotation Term="Common.SemanticObject" String="InspectionLot"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/ProductionOrder"><Annotation Term="Common.SemanticObject" String="ProductionOrder"/>
+				<Annotation Term="Common.SemanticObjectMapping">
+					<Collection>
+						<Record><PropertyValue Property="LocalProperty" PropertyPath="ProductionOrder"/><PropertyValue Property="SemanticObjectProperty" String="ProductionOrder"/></Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Defect">
+				<Annotation Term="Common.Text" Path="DefectText"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectCategory">
+				<Annotation Term="Common.Text" Path="to_DefectCategory/DefectCategory_Text"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectCodeGroup">
+				<Annotation Term="Common.Text" Path="to_DefectCodeGroup/DefectCodeGroup_Text"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectCode">
+				<Annotation Term="Common.Text" Path="to_DefectCode/DefectCode_Text"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/DefectLifecycleStatus">
+				<Annotation Term="Common.Text" Path="DefectLifecycleStatus_Text"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType">
+				<Annotation Term="UI.FilterFacets">
+					<Collection>
+						<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Defect - Additional Fields"/><PropertyValue Property="ID" String="DefectDataFacetFilter"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectAdditionalField"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+						<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Defect - Administrative Data"/><PropertyValue Property="ID" String="DefectAdminDataFacetFilter"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectAdministrativeDataFlt"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.QuickCreateFacets">
+					<Collection>
+						<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Defect Info"/><PropertyValue Property="ID" String="DefectQuickCreateFacet1"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectDataQuickCreate"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.QuickViewFacets">
+					<Collection>
+						<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Defect Info"/><PropertyValue Property="ID" String="DefectQuickViewFacet1"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectDataQuickView"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.Facets">
+					<Collection>
+						<Record Type="UI.CollectionFacet"><PropertyValue Property="Label" String="Defect Info"/><PropertyValue Property="ID" String="DefectDataFacet1"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="ID" String="DefectDataFacet1_1"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectData"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="ID" String="DefectDataFacet1_2"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectText"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="ID" String="DefectDataFacet1_ProductionDefect1"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ProductionDefectProductionOrder1"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="ID" String="DefectDataFacet1_ProductionDefect2"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ProductionDefectProductionOrder2"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+								</Collection>
+							</PropertyValue><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+						<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Tasks"/><PropertyValue Property="ID" String="DefectDataFacet2"/><PropertyValue Property="Target" AnnotationPath="to_DefectTaskRecord/@UI.LineItem"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/></Record>
+						<Record Type="UI.CollectionFacet"><PropertyValue Property="Label" String="Reference Objects"/><PropertyValue Property="ID" String="DefectMPEReferenceObjects"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Prüfmerkmal"/><PropertyValue Property="Target" AnnotationPath="to_MfgExecDefectRecord/@UI.FieldGroup#MPEOrderDetails"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+								</Collection>
+							</PropertyValue><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+						<Record Type="UI.CollectionFacet"><PropertyValue Property="Label" String="Reference Objects"/><PropertyValue Property="ID" String="DefectReferenceObjects"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#DefectRefObjects"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+								</Collection>
+							</PropertyValue><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+						<Record Type="UI.CollectionFacet"><PropertyValue Property="Label" String="Inspection Characteristic"/><PropertyValue Property="ID" String="DefectInspCharacteristic"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Prüfpunktmerkmal"/><PropertyValue Property="Target" AnnotationPath="to_DefectInspCharacteristic/@UI.FieldGroup#CharGroup1"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Prüfmerkmal"/><PropertyValue Property="Target" AnnotationPath="to_DefectInspCharacteristic/@UI.FieldGroup#CharGroup2"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String=""/><PropertyValue Property="Target" AnnotationPath="to_DefectInspCharacteristic/@UI.FieldGroup#CharGroup3"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+								</Collection>
+							</PropertyValue><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+						<Record Type="UI.CollectionFacet"><PropertyValue Property="Label" String="Inspection Point Characteristic"/><PropertyValue Property="ID" String="DefectInspSubsetCharacteristic"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String=""/><PropertyValue Property="Target" AnnotationPath="to_DefectInspSubsCharacteristic/@UI.FieldGroup#CharGroup1"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Prüfpunktmerkmal"/><PropertyValue Property="Target" AnnotationPath="to_DefectInspSubsCharacteristic/@UI.FieldGroup#CharGroup2"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String=""/><PropertyValue Property="Target" AnnotationPath="to_DefectInspSubsCharacteristic/@UI.FieldGroup#CharGroup3"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+								</Collection>
+							</PropertyValue><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+						<Record Type="UI.CollectionFacet"><PropertyValue Property="Label" String="Administrative Data"/><PropertyValue Property="ID" String="DefectAdministrativeData"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String=""/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#AdminData1"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+									<Record Type="UI.ReferenceFacet"><PropertyValue Property="Label" String="Verwaltungsdaten"/><PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#AdminData2"/><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+								</Collection>
+							</PropertyValue><Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="AdminData1">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreationDate"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreationTime"/></Record>
+								<Record Type="UI.DataFieldForAnnotation"><PropertyValue Property="Label" String="Created By"/><PropertyValue Property="Target" AnnotationPath="to_CreatedByUserContactCard/@Communication.Contact"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="AdminData2">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="LastChangeDate"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Label" String="Changed At"/><PropertyValue Property="Value" Path="LastChangeTime"/></Record>
+								<Record Type="UI.DataFieldForAnnotation"><PropertyValue Property="Label" String="Changed By"/><PropertyValue Property="Target" AnnotationPath="to_LastChangedByUserContactCard/@Communication.Contact"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectAdditionalField">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="NumberOfDefects"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionLot"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Plant"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="QualityIssueReference"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="to_DefectLongTextTP/DefectLongText"/></Record>
+							</Collection>
+						</PropertyValue><PropertyValue Property="Label" String="Defect - Additional Fields"/></Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectAdministrativeDataFlt">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreationDate"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreationTime"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreatedByUser"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="LastChangeDate"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Label" String="Changed At"/><PropertyValue Property="Value" Path="LastChangeTime"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Label" String="Changed By"/><PropertyValue Property="Value" Path="LastChangedByUser"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectData">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCategory"/></Record>
+							</Collection>
+						</PropertyValue><PropertyValue Property="Label" String="Defect"/></Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectData0">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectLifecycleStatus"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectDataQuickCreate">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Defect"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCode"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="to_DefectLongTextTP/DefectLongText"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectDataQuickView">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Defect"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCode"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="to_DefectLongTextTP/DefectLongText"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectHeader1">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCategory"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectRefObjects">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Material"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Plant"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectText">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectLifecycleStatus"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCode"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCodeGroup"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="QualityIssueReference"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectText0">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCategory"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="to_DefectLongTextTP/DefectLongText"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="ProductionDefectProductionOrder1">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="ProductionOrderOperation"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="ProductionOrder"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Material"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Plant"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="ProductionDefectProductionOrder2">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectiveQuantity"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="MainWorkCenter"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="MainWorkCenterPlant"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.HeaderInfo">
+					<Record><PropertyValue Property="TypeName" String="Defect"/><PropertyValue Property="TypeNamePlural" String="Defects"/>
+						<PropertyValue Property="Title">
+							<Record Type="UI.DataField"><PropertyValue Property="Label" String="Defect"/><PropertyValue Property="Value" Path="Defect"/></Record>
+						</PropertyValue>
+						<PropertyValue Property="Description">
+							<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectText"/></Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.Identification">
+					<Collection>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Defect"/></Record>
+						<Record Type="UI.DataFieldForAction"><PropertyValue Property="Label" String="Complete"/><PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordComplete"/><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+						<Record Type="UI.DataFieldForAction"><PropertyValue Property="Label" String="Set in Process"/><PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordSet_in_process"/><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+						<Record Type="UI.DataFieldForAction"><PropertyValue Property="Label" String="Set to Not Relevant"/><PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordNot_relevant"/><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="Defect"/></Record>
+						<Record Type="UI.DataFieldForAction"><PropertyValue Property="Label" String="Complete"/><PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordComplete"/><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCode"/></Record>
+						<Record Type="UI.DataFieldForAction"><PropertyValue Property="Label" String="Set in Process"/><PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordSet_in_process"/><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCodeGroup"/></Record>
+						<Record Type="UI.DataFieldForAction"><PropertyValue Property="Label" String="Set to Not Relevant"/><PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordNot_relevant"/><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectCategory"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectLifecycleStatus"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="CreationDate"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.PresentationVariant">
+					<Record>
+						<PropertyValue Property="RequestAtLeast">
+							<Collection>
+								<PropertyPath>to_DefectLongTextTP/DefectLongText</PropertyPath>
+								<PropertyPath>InspectionSubsetInternalID</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.SelectionFields">
+					<Collection>
+						<PropertyPath>DefectCategory</PropertyPath>
+						<PropertyPath>Defect</PropertyPath>
+						<PropertyPath>DefectCode</PropertyPath>
+						<PropertyPath>DefectCodeGroup</PropertyPath>
+						<PropertyPath>CreationDate</PropertyPath>
+						<PropertyPath>Material</PropertyPath>
+						<PropertyPath>DefectClass</PropertyPath>
+						<PropertyPath>DefectLifecycleStatus</PropertyPath>
+					</Collection>
+				</Annotation><Annotation Term="Common.SemanticObject" String="Defect"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordCodeVHType/DefectInternalID"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordCodeVHType">
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectInternalID"/><Annotation Term="UI.Hidden"/></Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/NotifTaskPlannedEndTime"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/NotifTaskCompletionTime"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/to_CompletedByUserContactCard"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/to_QaulityTaskTimeZone"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/to_QualityTaskProcessor"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/to_QualityTaskStatus"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskInternalId"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskOrigin"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskArchivingStatus"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/MasterLanguage"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/DefectInternalID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/ChangedDateTime"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/IsDeleted"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Ac_lock_for_arch_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Assign_processor_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Edit_active_i_qualitytasktp_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Foa_execute_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Foa_execute_action_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Foa_repeat_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Foa_set_not_successful_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Foa_set_successful_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Lc_complete_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Lc_set_in_process_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/Validate_activation_ac"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/DefectInternalID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/IsDeleted_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/MasterLanguage_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/NotifTaskCompletionTime_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/NotifTaskPlannedEndDate_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/NotifTaskPlannedEndTime_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskArchivingStatus_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskInternalId_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskOrigin_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskProcessor_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskText_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTask"><Annotation Term="Common.SemanticObject" String="QualityTask"/>
+				<Annotation Term="Common.Text" Path="QualityTaskText"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextSeparate"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskLifecycleStatus">
+				<Annotation Term="Common.Text" Path="to_QualityTaskStatus/QualityTaskLifecycleStatus_Text"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType/QualityTaskProcessor">
+				<Annotation Term="Common.Text" Path="to_QualityTaskProcessor/FullName"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType">
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="QualityTask"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="QualityTaskText"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="QualityTaskLifecycleStatus"/></Record>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Action" String="">
+								<Annotation Term="Core.Messages">
+									<Collection>
+										<Record><PropertyValue Property="message" String="ERROR: Mandatory Value for Action not found"/><PropertyValue Property="severity" String="error"/></Record>
+									</Collection>
+								</Annotation>
+							</PropertyValue><PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/></Record>
+						<Record Type="UI.DataField"><PropertyValue Property="Value" Path="QualityTaskProcessor"/></Record>
+					</Collection>
+				</Annotation>
+				<Annotation Term="UI.PresentationVariant">
+					<Record>
+						<PropertyValue Property="RequestAtLeast">
+							<Collection>
+								<PropertyPath>to_DefectQltyTskProcsrNotes/QualityTaskProcsrNotesPreview</PropertyPath>
+								<PropertyPath>to_DefectQltyTskProcsrNotes/QualityTaskProcessorNotes</PropertyPath>
+								<PropertyPath>QualityTaskArchivingStatus</PropertyPath>
+								<PropertyPath>ChangedDateTime</PropertyPath>
+								<PropertyPath>MasterLanguage</PropertyPath>
+								<PropertyPath>QualityTaskProcessor</PropertyPath>
+								<PropertyPath>QualityTaskText</PropertyPath>
+								<PropertyPath>QualityTaskOrigin</PropertyPath>
+								<PropertyPath>DefectInternalID</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/DefectInternalID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/DefectCategory"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/Plant"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/SerialNumber"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/OperationText"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/OpActyNtwkInstance"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/OpActyNtwkElement"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/ShopFloorItem"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/OrderInternalBillOfOperations"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/OrderIntBillOfOperationsItem"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/MainWorkCenter"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/MainWorkCenterPlant"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/DefectInternalID_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/MainWorkCenter_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/MainWorkCenterPlant_fc"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/ProductionOrder"><Annotation Term="Common.SemanticObject" String="ManufacturingOrderItem"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/InspectionOperation"><Annotation Term="Common.SemanticObject" String="ManufacturingOrderOperation"/>
+				<Annotation Term="Common.Text" Path="OperationText"><Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/></Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType/OpActyNtwkElementExternalID"><Annotation Term="Common.SemanticObject" String="ProductionOrderOperationActy"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_MfgExecDefectRecordType">
+				<Annotation Term="UI.FieldGroup" Qualifier="MPEOrderDetails">
+					<Record>
+						<PropertyValue Property="Data">
+							<Collection>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="SerialNumber"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="ProductionOrder"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="InspectionOperation"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="OperationText"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="OpActyNtwkElementExternalID"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="MfgDefectDecisionName"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="DefectiveQuantity"/></Record>
+								<Record Type="UI.DataField"><PropertyValue Property="Value" Path="ProductionHoldObjectTypeName"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_Customer_VHType/CustomerAccountGroup"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_Customer_VHType/AuthorizationGroup"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_Customer_VHType/IsBusinessPurposeCompleted"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftUUID"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftEntityType"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftAccessType"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/ProcessingStartDateTime"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftIsKeptByUser"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/EnqueueStartDateTime"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftIsCreatedByMe"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftIsLastChangedByMe"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/DraftIsProcessedByMe"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/CreatedByUserDescription"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/LastChangedByUserDescription"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_DraftAdministrativeDataType/InProcessByUserDescription"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_QltyBPWithUserStdVHType/FullName"><Annotation Term="UI.HiddenFilter"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_Supplier_VHType/AuthorizationGroup"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_Supplier_VHType/SupplierAccountGroup"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_Supplier_VHType/IsBusinessPurposeCompleted"><Annotation Term="UI.HiddenFilter"/><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/EmailAddress"><Annotation Term="Communication.IsEmailAddress"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/ContactCardRole"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/ContactCardType"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/ContactCardNavLinkSemanticObj"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/ContactCardNavLinkQueryPart"><Annotation Term="UI.Hidden"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/PhoneNumber"><Annotation Term="Communication.IsPhoneNumber"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/MobilePhoneNumber"><Annotation Term="Communication.IsPhoneNumber"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType/FaxNumber"><Annotation Term="Communication.IsPhoneNumber"/></Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.I_UserContactCardType">
+				<Annotation Term="Communication.Contact">
+					<Record><PropertyValue Property="fn" Path="FullName"/><PropertyValue Property="org" Path="Department"/><PropertyValue Property="role" Path="FunctionalTitleName"/>
+						<PropertyValue Property="n">
+							<Record><PropertyValue Property="given" Path="FirstName"/><PropertyValue Property="surname" Path="LastName"/></Record>
+						</PropertyValue>
+						<PropertyValue Property="tel">
+							<Collection>
+								<Record><PropertyValue Property="type" EnumMember="Communication.PhoneType/fax"/><PropertyValue Property="uri" Path="FaxNumber"/></Record>
+								<Record><PropertyValue Property="type" EnumMember="Communication.PhoneType/cell"/><PropertyValue Property="uri" Path="MobilePhoneNumber"/></Record>
+								<Record><PropertyValue Property="type" EnumMember="Communication.PhoneType/work"/><PropertyValue Property="uri" Path="PhoneNumber"/></Record>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="email">
+							<Collection>
+								<Record><PropertyValue Property="type" EnumMember="Communication.ContactInformationType/work"/><PropertyValue Property="address" Path="EmailAddress"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

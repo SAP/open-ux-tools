@@ -69,6 +69,7 @@
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
+        "@sap-ux/fiori-migration-writer": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",

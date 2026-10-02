@@ -3,4 +3,5 @@
 **/test-output/**
 **/test-data/**
 **/fixtures/**
+.claude/worktrees/**
 **/.che
