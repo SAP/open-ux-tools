@@ -79,7 +79,7 @@ overrides:
     "yaml@>=1.0.0 <1.10.3": ">=1.10.3"
     "yaml@>=2.0.0 <2.8.3": "2.8.3"
     "brace-expansion@>=1.0.0 <1.1.18": "1.1.18"
-    "brace-expansion@>=2.0.0 <2.1.4": "2.1.4"
+    "brace-expansion@>=2.0.0 <2.1.4": "2.1.7"
     "brace-expansion@>=4.0.0 <5.0.9": "5.0.9"
     "@sap/approuter>http-proxy-agent": ">=7.0.0"
     "@sap/approuter>axios": ">=1.18.0"
