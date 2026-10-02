@@ -221,7 +221,7 @@ export async function migrateFioriProject(params: MigrateProjectInput): Promise<
 
         // Check if project is already migrated (unless force is true)
         if (!params.force) {
-            const isAlreadyMigrated = await isFioriToolsProject(projectPath);
+            const isAlreadyMigrated = await isFioriToolsProject(projectPath, '@sap/ux-ui5-tooling');
 
             if (isAlreadyMigrated) {
                 return {
