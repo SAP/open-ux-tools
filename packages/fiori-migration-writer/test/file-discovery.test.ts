@@ -174,7 +174,9 @@ describe('file-discovery', () => {
             expect(libs).toHaveLength(1);
             expect(libs[0].value.type).toBe(ReuseLibType.LIBRARY);
             expect(libs[0].value.name).toBe('my.lib');
-            expect(libs[0].value.libRoot).toBe(libDir);
+            // libRoot should be workspace folder root (no markers found)
+            expect(libs[0].value.libRoot).toBe(testOutputDir);
+            expect(libs[0].value.path).toBe(join(libDir, 'manifest.json'));
         });
 
         test('should find components with type: component', async () => {
@@ -202,6 +204,166 @@ describe('file-discovery', () => {
             expect(libs).toHaveLength(1);
             expect(libs[0].value.type).toBe(ReuseLibType.COMPONENT);
             expect(libs[0].value.name).toBe('my.component');
+            // Verify libRoot is set correctly for components too
+            expect(libs[0].value.libRoot).toBe(testOutputDir);
+        });
+
+        test('should find project root with package.json marker', async () => {
+            // Create nested library structure with package.json at root
+            const projectRoot = join(testOutputDir, 'my-project');
+            const libDir = join(projectRoot, 'src', 'sap', 'company', 'lib', 'mylib');
+            await mkdir(libDir, { recursive: true });
+
+            // Add package.json at project root
+            await writeFile(join(projectRoot, 'package.json'), JSON.stringify({ name: 'my-project' }));
+
+            // Add manifest in nested directory
+            await writeFile(
+                join(libDir, 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': {
+                        id: 'sap.company.lib.mylib',
+                        type: 'library'
+                    }
+                })
+            );
+
+            const folders: readonly ProjectFolder[] = [
+                {
+                    uri: { fsPath: testOutputDir, scheme: 'file' },
+                    name: 'test',
+                    index: 0
+                }
+            ];
+
+            const libs = await getReuseLibs(folders);
+            expect(libs).toHaveLength(1);
+            // libRoot should be project root (where package.json is), not manifest directory
+            expect(libs[0].value.libRoot).toBe(projectRoot);
+            expect(libs[0].value.path).toBe(join(libDir, 'manifest.json'));
+        });
+
+        test('should find project root with .git marker', async () => {
+            const projectRoot = join(testOutputDir, 'git-project');
+            const libDir = join(projectRoot, 'src', 'lib', 'mylib');
+            await mkdir(libDir, { recursive: true });
+            await mkdir(join(projectRoot, '.git'), { recursive: true });
+
+            await writeFile(
+                join(libDir, 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': {
+                        id: 'my.lib',
+                        type: 'library'
+                    }
+                })
+            );
+
+            const folders: readonly ProjectFolder[] = [
+                {
+                    uri: { fsPath: testOutputDir, scheme: 'file' },
+                    name: 'test',
+                    index: 0
+                }
+            ];
+
+            const libs = await getReuseLibs(folders);
+            expect(libs).toHaveLength(1);
+            expect(libs[0].value.libRoot).toBe(projectRoot);
+        });
+
+        test('should find project root with .project.json marker', async () => {
+            const projectRoot = join(testOutputDir, 'webide-project');
+            const libDir = join(projectRoot, 'src', 'lib');
+            await mkdir(libDir, { recursive: true });
+            await writeFile(join(projectRoot, '.project.json'), JSON.stringify({}));
+
+            await writeFile(
+                join(libDir, 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': {
+                        id: 'webide.lib',
+                        type: 'library'
+                    }
+                })
+            );
+
+            const folders: readonly ProjectFolder[] = [
+                {
+                    uri: { fsPath: testOutputDir, scheme: 'file' },
+                    name: 'test',
+                    index: 0
+                }
+            ];
+
+            const libs = await getReuseLibs(folders);
+            expect(libs).toHaveLength(1);
+            expect(libs[0].value.libRoot).toBe(projectRoot);
+        });
+
+        test('should find project root with pom.xml marker', async () => {
+            const projectRoot = join(testOutputDir, 'maven-project');
+            const libDir = join(projectRoot, 'src', 'main', 'resources');
+            await mkdir(libDir, { recursive: true });
+            await writeFile(join(projectRoot, 'pom.xml'), '<project></project>');
+
+            await writeFile(
+                join(libDir, 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': {
+                        id: 'maven.lib',
+                        type: 'library'
+                    }
+                })
+            );
+
+            const folders: readonly ProjectFolder[] = [
+                {
+                    uri: { fsPath: testOutputDir, scheme: 'file' },
+                    name: 'test',
+                    index: 0
+                }
+            ];
+
+            const libs = await getReuseLibs(folders);
+            expect(libs).toHaveLength(1);
+            expect(libs[0].value.libRoot).toBe(projectRoot);
+        });
+
+        test('should use innermost package.json in monorepo scenario', async () => {
+            // Monorepo with nested package.json files
+            const monorepoRoot = join(testOutputDir, 'monorepo');
+            const packageRoot = join(monorepoRoot, 'packages', 'lib-package');
+            const libDir = join(packageRoot, 'src', 'lib');
+            await mkdir(libDir, { recursive: true });
+
+            // Root package.json (monorepo root)
+            await writeFile(join(monorepoRoot, 'package.json'), JSON.stringify({ name: 'monorepo' }));
+            // Package-level package.json (innermost - should win)
+            await writeFile(join(packageRoot, 'package.json'), JSON.stringify({ name: 'lib-package' }));
+
+            await writeFile(
+                join(libDir, 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': {
+                        id: 'monorepo.lib',
+                        type: 'library'
+                    }
+                })
+            );
+
+            const folders: readonly ProjectFolder[] = [
+                {
+                    uri: { fsPath: testOutputDir, scheme: 'file' },
+                    name: 'test',
+                    index: 0
+                }
+            ];
+
+            const libs = await getReuseLibs(folders);
+            expect(libs).toHaveLength(1);
+            // Should find innermost package.json (packageRoot), not monorepo root
+            expect(libs[0].value.libRoot).toBe(packageRoot);
         });
 
         test('should skip applications (type: application)', async () => {
@@ -231,7 +393,7 @@ describe('file-discovery', () => {
         });
 
         test('should use basename as name when sap.app.id is missing', async () => {
-            const libDir = join(testOutputDir, 'fallback-lib');
+            const libDir = join(testOutputDir, 'my-nested', 'lib', 'fallback-lib');
             await mkdir(libDir, { recursive: true });
             await writeFile(
                 join(libDir, 'manifest.json'),
@@ -253,7 +415,10 @@ describe('file-discovery', () => {
 
             const libs = await getReuseLibs(folders);
             expect(libs).toHaveLength(1);
+            // Name should be basename of manifest directory
             expect(libs[0].value.name).toBe('fallback-lib');
+            // libRoot should be workspace folder root
+            expect(libs[0].value.libRoot).toBe(testOutputDir);
         });
 
         test('should skip invalid manifest.json files', async () => {
