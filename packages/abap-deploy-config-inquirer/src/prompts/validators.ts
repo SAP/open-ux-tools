@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { AdaptationProjectType, isAxiosError, type SystemInfo } from '@sap-ux/axios-extension';
-import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { isAbapEnvironmentOnBtp, isS4HC, type Authentication, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
 import { DEFAULT_PACKAGE_ABAP } from '../constants.js';
@@ -134,7 +134,11 @@ export function updateDestinationPromptState(destinationName: string, destinatio
     if (!destination) {
         return;
     }
+    PromptState.resetTransportAnswers();
     PromptState.abapDeployConfig.destination = destination.Name;
+    // Destination.Authentication is typed as string in btp-utils, but the BTP API always
+    // returns one of the Authentication enum string values — cast is safe here.
+    PromptState.abapDeployConfig.destinationAuthType = destination.Authentication as Authentication;
     updatePromptState({
         url: destination?.Host,
         client: destination['sap-client'],
@@ -159,6 +163,7 @@ export async function validateTargetSystem(
     adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
+    PromptState.resetTransportAnswers();
     if (!target || target === TargetSystemType.Url) {
         return true;
     }
@@ -221,6 +226,7 @@ async function validateAdpTargetSystem(
  */
 export function validateUrl(input: string): boolean | string {
     PromptState.resetAbapDeployConfig();
+    PromptState.resetTransportAnswers();
     if (isEmptyString(input)) {
         return false;
     }
