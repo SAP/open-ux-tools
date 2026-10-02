@@ -1,6 +1,8 @@
 import type { GenerateAdaptationProjectOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
 import {
@@ -248,6 +250,8 @@ export async function generateAdaptationProject(
         return { status: 'Error', message: `targetFolder must be an absolute path. Received: "${finalTargetFolder}"` };
     }
 
+    let keyUserChangesFilePath: string | undefined;
+
     try {
         // The zod schema restricts projectType to the AdaptationProjectType values, so the string
         // is a safe stand-in for the enum type when passed to the resolver.
@@ -289,7 +293,10 @@ export async function generateAdaptationProject(
                     'set importKeyUserChanges to false.'
             );
             if (keyUserChanges.length > 0) {
-                jsonInput.keyUserChanges = keyUserChanges;
+                const id = randomUUID();
+                keyUserChangesFilePath = join(tmpdir(), `${id}.txt`);
+                writeFileSync(keyUserChangesFilePath, JSON.stringify({ keyUserChanges }), 'utf8');
+                jsonInput.id = id;
             } else {
                 logger.info(
                     `No key user changes found for '${application}' on '${system}'; proceeding without importing changes.`
@@ -326,5 +333,9 @@ export async function generateAdaptationProject(
         const message = error instanceof Error ? error.message : String(error);
         logger.error(`Error generating adaptation project: ${message}`);
         return { status: 'Error', message: `Error generating adaptation project: ${message}` };
+    } finally {
+        if (keyUserChangesFilePath) {
+            rmSync(keyUserChangesFilePath, { force: true });
+        }
     }
 }

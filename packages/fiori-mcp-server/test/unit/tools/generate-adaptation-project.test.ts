@@ -1,4 +1,6 @@
 import { jest } from '@jest/globals';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const mockRunCmdArgs = jest.fn<any>();
 const mockFetchKeyUserChanges = jest.fn<any>();
@@ -53,14 +55,20 @@ jest.unstable_mockModule('node:child_process', () => ({
 const actualFs = await import('node:fs');
 const mockMkdir = jest.fn<any>().mockResolvedValue(undefined);
 const mockExistsSync = jest.fn<any>().mockReturnValue(false);
+const mockWriteFileSync = jest.fn<any>();
+const mockRmSync = jest.fn<any>();
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
         existsSync: mockExistsSync,
+        writeFileSync: mockWriteFileSync,
+        rmSync: mockRmSync,
         promises: { ...actualFs.promises, mkdir: mockMkdir }
     },
     existsSync: mockExistsSync,
+    writeFileSync: mockWriteFileSync,
+    rmSync: mockRmSync,
     promises: { ...actualFs.promises, mkdir: mockMkdir }
 }));
 
@@ -131,7 +139,7 @@ describe('generateAdaptationProject', () => {
         });
     });
 
-    test('attaches key user changes when import requested and changes exist', async () => {
+    test('stages key user changes to a temp file and forwards the correlation id when changes exist', async () => {
         mockFetchKeyUserChanges.mockResolvedValue([{ content: { foo: 'bar' } }]);
 
         await generateAdaptationProject({
@@ -143,10 +151,21 @@ describe('generateAdaptationProject', () => {
 
         const args = (mockRunCmdArgs.mock.calls[0] as [string, string[], any])[1];
         const payload = JSON.parse(args[3]);
-        expect(payload.keyUserChanges).toEqual([{ content: { foo: 'bar' } }]);
+        // The generator reads changes from {tmpdir}/{id}.txt (generator-adp #5079), not from argv.
+        expect(payload.keyUserChanges).toBeUndefined();
+        expect(typeof payload.id).toBe('string');
+
+        const stagedPath = join(tmpdir(), `${payload.id}.txt`);
+        expect(mockWriteFileSync).toHaveBeenCalledWith(
+            stagedPath,
+            JSON.stringify({ keyUserChanges: [{ content: { foo: 'bar' } }] }),
+            'utf8'
+        );
+        // The staged file is cleaned up after generation.
+        expect(mockRmSync).toHaveBeenCalledWith(stagedPath, { force: true });
     });
 
-    test('proceeds with generation and logs a warning when import requested but no changes returned', async () => {
+    test('proceeds with generation and stages nothing when import requested but no changes returned', async () => {
         mockFetchKeyUserChanges.mockResolvedValue([]);
 
         const result = await generateAdaptationProject({
@@ -158,9 +177,28 @@ describe('generateAdaptationProject', () => {
 
         expect(result.status).toBe('Success');
         expect(mockRunCmdArgs).toHaveBeenCalledTimes(1);
-        // keyUserChanges should not be in the payload when the list is empty
-        const payload = JSON.parse(mockRunCmdArgs.mock.calls[0][1][3] as string);
+        // No changes → nothing staged, no correlation id, nothing to clean up.
+        const payload = JSON.parse((mockRunCmdArgs.mock.calls[0] as [string, string[], any])[1][3]);
         expect(payload.keyUserChanges).toBeUndefined();
+        expect(payload.id).toBeUndefined();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+        expect(mockRmSync).not.toHaveBeenCalled();
+    });
+
+    test('cleans up the staged temp file even when generation fails', async () => {
+        mockFetchKeyUserChanges.mockResolvedValue([{ content: { foo: 'bar' } }]);
+        mockRunCmdArgs.mockRejectedValue(new Error('boom'));
+
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app',
+            importKeyUserChanges: true
+        } as any);
+
+        expect(result.status).toEqual('Error');
+        const stagedPath = (mockWriteFileSync.mock.calls[0] as [string])[0];
+        expect(mockRmSync).toHaveBeenCalledWith(stagedPath, { force: true });
     });
 
     test('returns Error and does not generate when key user changes fetch hangs (timeout)', async () => {
