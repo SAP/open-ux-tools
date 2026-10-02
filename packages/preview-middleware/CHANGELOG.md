@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 1.2.22
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolved an issue where the "Add Subpage" quick action generated a page ID in an incorrect format for ODATA v4 applications. [[f9088c0](https://github.com/SAP/open-ux-tools/commit/f9088c07570be4fb6c2b5d72c97213cabeffde16)]
+
 ## 1.2.21
 
 ### Patch Changes
