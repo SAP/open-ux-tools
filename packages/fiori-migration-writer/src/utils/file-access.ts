@@ -1,13 +1,34 @@
 /**
  * File access utilities using mem-fs-editor
  *
- * Uses a global Editor instance managed by fs-adapter for backward compatibility.
- * Functions can also accept an explicit Editor parameter.
+ * Uses editor from AsyncLocalStorage context set by runWithEditor().
+ * Functions can also accept an explicit Editor parameter for backward compatibility.
+ * If no editor is in context or provided, creates a temporary one (for tests/direct usage).
  */
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
-import { getOrCreateEditor } from './fs-adapter.js';
+import { getCurrentEditor, createMemFsEditor } from './fs-adapter.js';
+
+/**
+ * Get editor from context, parameter, or create a new one
+ * Priority: explicit parameter > context > new instance
+ *
+ * @param editorOrPath
+ */
+function getEditor(editorOrPath: string | Editor): Editor {
+    if (typeof editorOrPath !== 'string') {
+        return editorOrPath;
+    }
+    // Try to get from context
+    const contextEditor = getCurrentEditor();
+    if (contextEditor) {
+        return contextEditor;
+    }
+    // Create a temporary one for backward compatibility (tests, direct API usage)
+    // Note: This won't be automatically committed - caller must handle it
+    return createMemFsEditor();
+}
 
 /**
  * Read a text file
@@ -17,7 +38,7 @@ import { getOrCreateEditor } from './fs-adapter.js';
  * @returns File contents as string
  */
 export function readFile(pathOrFs: string | Editor, path?: string): string {
-    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     return fs.read(filePath);
 }
@@ -30,7 +51,7 @@ export function readFile(pathOrFs: string | Editor, path?: string): string {
  * @returns Parsed JSON object with indentation metadata for round-trip preservation
  */
 export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
-    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     const content = fs.read(filePath);
 
@@ -62,7 +83,7 @@ export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
  * @returns true if file exists, false otherwise
  */
 export function fileExists(pathOrFs: string | Editor, path?: string): boolean {
-    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     return fs.exists(filePath);
 }
@@ -75,7 +96,7 @@ export function fileExists(pathOrFs: string | Editor, path?: string): boolean {
  * @param content - Content to write (if first param is Editor)
  */
 export function writeFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
-    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : contentOrPath;
     const fileContent = typeof pathOrFs === 'string' ? contentOrPath : content!;
     fs.write(filePath, fileContent);
@@ -101,7 +122,7 @@ export function updateFile(pathOrFs: string | Editor, contentOrPath: string, con
  * @param _content - Object to write (if first param is Editor)
  */
 export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | object, _content?: object): void {
-    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : (contentOrPath as string);
     const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : _content!;
 
@@ -128,7 +149,7 @@ export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | ob
  * @param path - Path to file (if first param is Editor)
  */
 export function deleteFile(pathOrFs: string | Editor, path?: string): void {
-    const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
+    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     fs.delete(filePath);
 }

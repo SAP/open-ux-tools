@@ -1,6 +1,6 @@
 import { FioriElementsVersion, FileName } from './project-spec-types.js';
 import { determineMessage, readFile, updateFile } from './utils/index.js';
-import { commit, disableMemFs, isMemFsEnabled, enableMemFs } from './utils/fs-adapter.js';
+import { commit, createMemFsEditor, runWithEditor } from './utils/fs-adapter.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
@@ -38,8 +38,13 @@ import type { Editor } from 'mem-fs-editor';
 import { i18nText } from './i18n.js';
 
 export class ProjectMigrator {
+    /**
+     * Deprecated: Static fs property no longer used.
+     * Each migration now uses its own isolated editor instance via AsyncLocalStorage context.
+     *
+     * @deprecated Set editor context using runWithEditor() instead
+     */
     static fs: Editor | undefined;
-    private static migrationInProgress = false;
 
     /**
      * migrate project
@@ -59,102 +64,80 @@ export class ProjectMigrator {
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<{ result: boolean; messages: Message[] }> {
-        // Prevent concurrent migrations due to shared mem-fs editor
-        if (this.migrationInProgress) {
-            return {
-                result: false,
-                messages: [
-                    {
-                        type: 'ERROR',
-                        description:
-                            'Another migration is in progress. Please wait for it to complete before starting a new migration.'
-                    }
-                ]
-            };
-        }
+        // Create a new isolated editor instance for this migration
+        // This enables concurrent migrations without shared state corruption
+        const editor = this.fs ?? createMemFsEditor();
+        const shouldCommit = !this.fs; // Only commit if we created the editor
 
-        this.migrationInProgress = true;
-        let messages: Message[] = [];
-        let result = false;
+        // Run migration within editor context so all functions have access to it
+        return runWithEditor(editor, async () => {
+            let messages: Message[] = [];
+            let result = false;
 
-        // Track if we created the editor internally (vs caller-provided)
-        const editorProvidedByCaller = !!this.fs;
-        const memFsWasEnabled = isMemFsEnabled();
-
-        // Enable mem-fs if provided
-        if (this.fs) {
-            enableMemFs(this.fs);
-        }
-
-        try {
-            // Load or fetch project information
-            const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
-                projectRoot,
-                importProjectInfo
-            );
-            messages = messages.concat(projectInfoMessages);
-
-            projectInfo.baseUri = baseUri;
-
-            // Resolve UI5 versions for migration
-            const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrl);
-            projectInfo.localUI5Version = ui5Versions?.[0]?.version;
-
-            // Validate project is suitable for migration (not a Fiori app in CAP project)
-            await validateProjectForMigration(projectRoot);
-
-            if (
-                projectInfo &&
-                (projectInfo.isSAPApp ||
-                    projectInfo.FEVersion === FioriElementsVersion.v2 ||
-                    projectInfo.FEVersion === FioriElementsVersion.v4 ||
-                    projectInfo.type === MigrationTypes.projectExtension) &&
-                messages.length === 0
-            ) {
-                // V2 is supported
-                const { messages: copyMessages, result: isSuccess } = await this.copyCommonFiles(
-                    projectInfo,
-                    vscode,
-                    ui5SnapshotUrl,
-                    internalToggle
+            try {
+                // Load or fetch project information
+                const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
+                    projectRoot,
+                    importProjectInfo
                 );
-                messages = messages.concat(copyMessages);
-                result = isSuccess;
-            } else if (projectInfo.uiAdaptation) {
-                const { messages: copyMessages, result: isSuccess } = await this.copyAdaptationFiles(
-                    projectInfo,
-                    ui5SnapshotUrl
-                );
-                messages = messages.concat(copyMessages);
-                result = isSuccess;
-            } else if (projectInfo.type === MigrationTypes.library) {
-                const { messages: copyMessages, result: isSuccess } = await this.copyLibraryFiles(projectInfo);
-                messages = messages.concat(copyMessages);
-                result = isSuccess;
-            } else {
-                messages.push({ type: 'ERROR', description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO') });
+                messages = messages.concat(projectInfoMessages);
+
+                projectInfo.baseUri = baseUri;
+
+                // Resolve UI5 versions for migration
+                const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrl);
+                projectInfo.localUI5Version = ui5Versions?.[0]?.version;
+
+                // Validate project is suitable for migration (not a Fiori app in CAP project)
+                await validateProjectForMigration(projectRoot);
+
+                if (
+                    projectInfo &&
+                    (projectInfo.isSAPApp ||
+                        projectInfo.FEVersion === FioriElementsVersion.v2 ||
+                        projectInfo.FEVersion === FioriElementsVersion.v4 ||
+                        projectInfo.type === MigrationTypes.projectExtension) &&
+                    messages.length === 0
+                ) {
+                    // V2 is supported
+                    const { messages: copyMessages, result: isSuccess } = await this.copyCommonFiles(
+                        projectInfo,
+                        vscode,
+                        ui5SnapshotUrl,
+                        internalToggle
+                    );
+                    messages = messages.concat(copyMessages);
+                    result = isSuccess;
+                } else if (projectInfo.uiAdaptation) {
+                    const { messages: copyMessages, result: isSuccess } = await this.copyAdaptationFiles(
+                        projectInfo,
+                        ui5SnapshotUrl
+                    );
+                    messages = messages.concat(copyMessages);
+                    result = isSuccess;
+                } else if (projectInfo.type === MigrationTypes.library) {
+                    const { messages: copyMessages, result: isSuccess } = await this.copyLibraryFiles(projectInfo);
+                    messages = messages.concat(copyMessages);
+                    result = isSuccess;
+                } else {
+                    messages.push({ type: 'ERROR', description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO') });
+                }
+            } catch (e) {
+                const error = e instanceof Error ? e : new Error(String(e));
+                const useMessage =
+                    typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
+                messages.push({
+                    type: 'ERROR',
+                    description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
+                });
+            } finally {
+                // Commit changes to disk if we created the editor
+                if (shouldCommit) {
+                    await commit();
+                }
             }
-        } catch (e) {
-            const error = e instanceof Error ? e : new Error(String(e));
-            const useMessage = typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
-            messages.push({
-                type: 'ERROR',
-                description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
-            });
-        } finally {
-            // Commit and clean up mem-fs editor
-            if (!editorProvidedByCaller && isMemFsEnabled() && !memFsWasEnabled) {
-                // We created the editor internally - commit changes to disk
-                await commit();
-                disableMemFs();
-            } else if (editorProvidedByCaller) {
-                // Caller provided editor - just disable (caller handles commit)
-                disableMemFs();
-            }
-            // Release the migration lock
-            this.migrationInProgress = false;
-        }
-        return { result, messages };
+            return { result, messages };
+        });
     }
 
     /**
@@ -290,10 +273,6 @@ export class ProjectMigrator {
                 messages: [...messages, { type: 'ERROR', description: createMigrationErrorMessage(e) }]
             };
         }
-    }
-
-    private static async commit() {
-        return commitFileSystemChanges(this.fs);
     }
 
     /**

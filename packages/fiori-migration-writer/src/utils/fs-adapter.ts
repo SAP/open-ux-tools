@@ -1,98 +1,104 @@
 /**
- * Global mem-fs editor management
+ * Mem-fs editor utilities with context-based management
  *
- * Provides a global Editor instance for the migration writer.
- * Aligns with open-ux-tools pattern of using pure mem-fs-editor.
+ * Provides thread-safe, per-invocation Editor instances for the migration writer.
+ * Uses AsyncLocalStorage to track the current migration's editor without requiring
+ * it to be passed through every function call.
  */
 import type { Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import { existsSync } from 'node:fs';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 /**
- * Global mem-fs editor instance
+ * AsyncLocalStorage for tracking the current migration's editor
  */
-let memFsEditor: Editor | undefined;
+const editorContext = new AsyncLocalStorage<Editor>();
 
 /**
- * Enable mem-fs mode with provided editor
+ * Create a new mem-fs editor instance
  *
- * @param editor - Mem-fs editor instance to use for file operations
+ * @returns New mem-fs editor instance
  */
-export function enableMemFs(editor: Editor): void {
-    memFsEditor = editor;
+export function createMemFsEditor(): Editor {
+    const store = createMemFs();
+    return createEditor(store);
 }
 
 /**
- * Disable mem-fs mode
+ * Run a function with an editor in context
+ * The editor will be available to all functions called within the callback
+ *
+ * @param editor - Editor instance to use
+ * @param callback - Function to run with the editor in context
+ * @returns Result of the callback
  */
-export function disableMemFs(): void {
-    memFsEditor = undefined;
+export function runWithEditor<T>(editor: Editor, callback: () => T | Promise<T>): T | Promise<T> {
+    return editorContext.run(editor, callback);
 }
 
 /**
- * Check if mem-fs mode is enabled
+ * Get the current editor from context
  *
- * @returns True if mem-fs mode is active
- */
-export function isMemFsEnabled(): boolean {
-    return memFsEditor !== undefined;
-}
-
-/**
- * Get current mem-fs editor (or create one if needed)
- *
- * @returns Mem-fs editor instance
- */
-export function getOrCreateEditor(): Editor {
-    if (!memFsEditor) {
-        const store = createMemFs();
-        memFsEditor = createEditor(store);
-    }
-    return memFsEditor;
-}
-
-/**
- * Get current mem-fs editor if one is active
- *
- * @returns Current editor or undefined
+ * @returns Current editor or undefined if not in a migration context
  */
 export function getCurrentEditor(): Editor | undefined {
-    return memFsEditor;
+    return editorContext.getStore();
+}
+
+/**
+ * Check if an editor is available in the current context
+ *
+ * @returns True if editor is available
+ */
+export function isMemFsEnabled(): boolean {
+    return getCurrentEditor() !== undefined;
 }
 
 /**
  * Check if file/directory exists
- * Checks both mem-fs and real filesystem to support mixed testing scenarios
+ * Uses editor from context if available, otherwise checks real filesystem
  *
  * @param path - Path to check
  * @returns True if exists
  */
 export function exists(path: string): boolean {
-    const fs = getOrCreateEditor();
-    // Check mem-fs first, then fall back to real filesystem
-    return fs.exists(path) || existsSync(path);
+    const editor = getCurrentEditor();
+    if (editor) {
+        // In mem-fs mode, check both mem-fs and real fs to support mixed scenarios
+        return editor.exists(path) || existsSync(path);
+    }
+    return existsSync(path);
 }
 
 /**
- * Copy file using mem-fs
+ * Copy file using mem-fs or real filesystem
  *
  * @param src - Source path
  * @param dest - Destination path
  */
 export function copyFile(src: string, dest: string): void {
-    const fs = getOrCreateEditor();
-    fs.copy(src, dest);
+    const editor = getCurrentEditor();
+    if (editor) {
+        editor.copy(src, dest);
+    } else {
+        throw new Error('Editor not available. Call runWithEditor() to set up migration context.');
+    }
 }
 
 /**
- * Delete file using mem-fs
+ * Delete file using mem-fs or real filesystem
  *
  * @param path - Path to delete
  */
 export function deleteFile(path: string): void {
-    const fs = getOrCreateEditor();
-    fs.delete(path);
+    const editor = getCurrentEditor();
+    if (editor) {
+        editor.delete(path);
+    } else {
+        throw new Error('Editor not available. Call runWithEditor() to set up migration context.');
+    }
 }
 
 /**
@@ -107,20 +113,22 @@ export function mkdir(_path: string): void {
 
 /**
  * Commit pending mem-fs changes to disk
+ * Uses editor from context
  *
  * @returns Promise that resolves when commit is complete
  */
 export function commit(): Promise<void> {
-    if (memFsEditor) {
-        return new Promise((resolve, reject) => {
-            memFsEditor!.commit((err: Error[]) => {
-                if (err && err.length > 0) {
-                    reject(err[0]);
-                } else {
-                    resolve();
-                }
-            });
-        });
+    const editor = getCurrentEditor();
+    if (!editor) {
+        return Promise.resolve();
     }
-    return Promise.resolve();
+    return new Promise((resolve, reject) => {
+        editor.commit((err: Error[]) => {
+            if (err && err.length > 0) {
+                reject(err[0]);
+            } else {
+                resolve();
+            }
+        });
+    });
 }

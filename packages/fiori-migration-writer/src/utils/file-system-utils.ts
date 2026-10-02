@@ -1,5 +1,24 @@
-import { getOrCreateEditor } from './fs-adapter.js';
 import type { Editor } from 'mem-fs-editor';
+import { getCurrentEditor, createMemFsEditor } from './fs-adapter.js';
+
+/**
+ * Get editor from context, parameter, or create a new one
+ * Priority: explicit parameter > context > new instance
+ *
+ * @param editorOrPath
+ */
+function getEditor(editorOrPath: string | Editor): Editor {
+    if (typeof editorOrPath !== 'string') {
+        return editorOrPath;
+    }
+    // Try to get from context
+    const contextEditor = getCurrentEditor();
+    if (contextEditor) {
+        return contextEditor;
+    }
+    // Create a temporary one for backward compatibility (tests, direct API usage)
+    return createMemFsEditor();
+}
 
 /**
  * stripSpaces
@@ -25,11 +44,11 @@ export const escapeDoubleQuotes = (s: string): string => s.replace(/\\/g, '\\\\'
 /**
  * Check if directory exists
  *
- * @param directoryOrFs - Directory path or Editor instance
+ * @param directoryOrFs - Directory path, or Editor instance
  * @param directory - Directory path (if first param is Editor)
  */
 export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: string): boolean {
-    const fs = typeof directoryOrFs === 'string' ? getOrCreateEditor() : directoryOrFs;
+    const fs = getEditor(directoryOrFs);
     const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
     return fs.exists(dir);
 }
