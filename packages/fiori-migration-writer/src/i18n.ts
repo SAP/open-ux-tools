@@ -32,5 +32,5 @@ export async function initI18n(language = 'en'): Promise<void> {
  * @returns The translated string or the key itself if i18n is not initialized.
  */
 export function i18nText(key: string, options?: TOptions<{ [key: string]: unknown } & TOptionsBase>): string {
-    return i18nInstance.t(key, options);
+    return i18nInstance.isInitialized ? i18nInstance.t(key, options) : key;
 }

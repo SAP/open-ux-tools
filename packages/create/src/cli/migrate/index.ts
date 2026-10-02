@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
-import { ProjectMigrator } from '@sap-ux/fiori-migration-writer';
+import { ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
 import { getLogger } from '../../tracing/index.js';
 
 interface MigrateCommandOptions {
@@ -346,6 +346,9 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         baseUri = `https://${hostname}`;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
+
+    // Initialize i18n for proper error messages
+    await initI18n();
 
     // Load project info first, then merge CLI overrides
     // Pass only the override fields so ProjectMigrator loads full metadata and merges

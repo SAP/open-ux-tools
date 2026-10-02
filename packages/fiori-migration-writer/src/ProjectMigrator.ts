@@ -1,5 +1,6 @@
 import { FioriElementsVersion, FileName } from './project-spec-types.js';
 import { determineMessage, readFile, updateFile } from './utils/index.js';
+import { commit, disableMemFs, isMemFsEnabled, enableMemFs } from './utils/fs-adapter.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
@@ -35,7 +36,6 @@ import type { ImportProjectInfo, Message } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { i18nText } from './i18n.js';
-import { enableMemFs, disableMemFs } from './utils/fs-adapter.js';
 
 export class ProjectMigrator {
     static fs: Editor | undefined;
@@ -59,6 +59,10 @@ export class ProjectMigrator {
     ): Promise<{ result: boolean; messages: Message[] }> {
         let messages: Message[] = [];
         let result = false;
+
+        // Track if we created the editor internally (vs caller-provided)
+        const editorProvidedByCaller = !!this.fs;
+        const memFsWasEnabled = isMemFsEnabled();
 
         // Enable mem-fs if provided
         if (this.fs) {
@@ -121,8 +125,13 @@ export class ProjectMigrator {
                 description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
             });
         } finally {
-            // Disable mem-fs after migration (if it was enabled)
-            if (this.fs) {
+            // Commit and clean up mem-fs editor
+            if (!editorProvidedByCaller && isMemFsEnabled() && !memFsWasEnabled) {
+                // We created the editor internally - commit changes to disk
+                await commit();
+                disableMemFs();
+            } else if (editorProvidedByCaller) {
+                // Caller provided editor - just disable (caller handles commit)
                 disableMemFs();
             }
         }

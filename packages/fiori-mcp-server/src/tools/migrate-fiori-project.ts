@@ -1,4 +1,4 @@
-import { ProjectMigrator } from '@sap-ux/fiori-migration-writer';
+import { ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
 import type { Message, ImportProjectInfo } from '@sap-ux/fiori-migration-writer';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -249,7 +249,7 @@ export async function migrateFioriProject(params: MigrateProjectInput): Promise<
         }
 
         // Build base URI
-        let baseUri = '';
+        let baseUri = destination ? `/${destination}` : '';
         if (hostname) {
             baseUri = `https://${hostname}`;
         }
@@ -269,13 +269,17 @@ export async function migrateFioriProject(params: MigrateProjectInput): Promise<
 
         // Execute migration
         logger.info('Executing migration...');
+
+        // Initialize i18n for proper error messages
+        await initI18n();
+
         const result = await ProjectMigrator.migrate(
             projectPath,
             baseUri,
             ui5SnapshotUrl,
             partialProjectInfo as ImportProjectInfo | undefined,
             undefined, // vscode
-            params.force || false // internalToggle
+            false // internalToggle - keep disabled for public API
         );
 
         // Analyze messages for follow-on actions
