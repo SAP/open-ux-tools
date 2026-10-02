@@ -43,7 +43,7 @@ packageName: "Z_MAINTENANCE"
 // Content JSON
 {
   "metadata": {
-    "package": "Z_MAINTENANCE"  // ← Must match packageName parameter
+    "package": "Z_MAINTENANCE"  // Must match packageName parameter
   },
   "sessionId": "unique_session_id",
   // ... rest of content

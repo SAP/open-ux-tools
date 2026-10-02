@@ -4,7 +4,7 @@
 
 **Time Estimate**: 30-45 minutes
 
-📖 **CRITICAL:** Review [RAP Generator Requirements](./0-rap-generator-requirements.md) before starting.
+📖 **CRITICAL:** Review [RAP Generator Requirements](./rap-generator-requirements.md) before starting.
 
 ---
 
@@ -210,7 +210,8 @@ Modify existing `ZC_*` views to add OData hierarchy annotation.
 @EndUserText.label: 'Employee - Projection View with Hierarchy'
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
-@OData.hierarchy.recursiveHierarchy: [{ entity.name: 'ZI_EMPLOYEE_HD' }]  // ← ADD THIS
+// ADD THIS annotation - links to hierarchy definition
+@OData.hierarchy.recursiveHierarchy: [{ entity.name: 'ZI_EMPLOYEE_HD' }]
 define view entity ZC_EMPLOYEE
   as projection on ZR_EMPLOYEE
 {
@@ -218,8 +219,8 @@ define view entity ZC_EMPLOYEE
   key ParentUUID,
       // ... fields
       _Organization : redirected to parent ZC_ORGANIZATION,
-      _ParentEmployee : redirected to ZC_EMPLOYEE,  // ← ADD THIS
-      _ChildEmployee : redirected to ZC_EMPLOYEE    // ← ADD THIS
+      _ParentEmployee : redirected to ZC_EMPLOYEE,  // ADD THIS
+      _ChildEmployee : redirected to ZC_EMPLOYEE    // ADD THIS
 }
 ```
 
@@ -285,7 +286,7 @@ annotate entity ZC_ORGANIZATION with
       position: 10
     },
     {
-      id: 'Employees',                        // ← ADD THIS FACET
+      id: 'Employees',                        // ADD THIS FACET
       purpose: #STANDARD,
       type: #LINEITEM_REFERENCE,
       label: 'Employees',
@@ -317,7 +318,7 @@ annotate entity ZC_ORGANIZATION with
 @Metadata.layer: #CORE
 @UI: {
   presentationVariant: [{
-    sortOrder: [{ by: 'SiblingOrderNumber', direction: #ASC }]  // ← ADD THIS
+    sortOrder: [{ by: 'SiblingOrderNumber', direction: #ASC }]  // ADD THIS
   }]
 }
 annotate entity ZC_EMPLOYEE with
@@ -327,7 +328,7 @@ annotate entity ZC_EMPLOYEE with
   @UI.hidden: true
   ParentUUID;
   @UI.hidden: true
-  ParentEmployeeUUID;  // ← HIDE hierarchy technical UUID fields
+  ParentEmployeeUUID;  // HIDE hierarchy technical UUID fields
   
   // ... business field annotations (EmployeeID, Name, JobTitle, Location, Status) ...
   
@@ -342,7 +343,7 @@ annotate entity ZC_EMPLOYEE with
   @UI.hidden: true
   LastChangedAt;
   @UI.hidden: true
-  LocalLastChangedAt;  // ← HIDE admin fields from List Report and Object Page
+  LocalLastChangedAt;  // HIDE admin fields from List Report and Object Page
 }
 ```
 
