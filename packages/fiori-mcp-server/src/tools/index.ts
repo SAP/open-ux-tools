@@ -423,8 +423,8 @@ export const tools = [
         annotations: {
             title: 'Migrate Fiori Project',
             readOnlyHint: false,
-            destructiveHint: false, // Non-destructive, adds/modifies but doesn't delete
-            idempotentHint: true, // Can be run multiple times safely with force=true
+            destructiveHint: true, // Deletes lock files, rewrites configuration, and modifies project structure
+            idempotentHint: false, // Output may differ on repeated runs due to template/config changes
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.MigrateFioriProjectInputSchema),

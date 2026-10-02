@@ -10,7 +10,7 @@ import { ProjectAccess } from '../utils/Project.js';
  */
 export async function loadOrFetchProjectInfo(
     projectRoot: string,
-    importProjectInfo?: ImportProjectInfo
+    importProjectInfo?: Partial<ImportProjectInfo>
 ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
     let messages: Message[] = [];
     let projectInfo: ImportProjectInfo;
@@ -20,7 +20,7 @@ export async function loadOrFetchProjectInfo(
 
     if (isCompleteProjectInfo) {
         // Use provided complete project info (tests, programmatic usage)
-        projectInfo = importProjectInfo!;
+        projectInfo = importProjectInfo as ImportProjectInfo;
     } else if (importProjectInfo) {
         // Fetch project info and merge with partial overrides (CLI usage)
         const { messages: projectInfoMsgs, projectInfo: accessProjectInfo } =

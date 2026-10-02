@@ -53,7 +53,7 @@ export class ProjectMigrator {
         projectRoot: string,
         baseUri: string,
         ui5SnapshotUrl: string,
-        importProjectInfo?: ImportProjectInfo,
+        importProjectInfo?: Partial<ImportProjectInfo>,
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<{ result: boolean; messages: Message[] }> {

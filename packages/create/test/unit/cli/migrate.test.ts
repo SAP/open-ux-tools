@@ -21,7 +21,8 @@ const mockMigrate = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/fiori-migration-writer', () => ({
     ProjectMigrator: {
         migrate: (...args: any[]) => mockMigrate(...args)
-    }
+    },
+    initI18n: jest.fn().mockResolvedValue(undefined)
 }));
 
 const mockPrompt = jest.fn() as jest.Mock;
