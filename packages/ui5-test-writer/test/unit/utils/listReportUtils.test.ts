@@ -2269,7 +2269,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         ]);
         // TextLast arrangement: both the code column (CustomerID) and the text property (CustomerName)
         // are sortable, so both are emitted.
-        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
     });
 
     // TextOnly arrangement: the code column renders only the text value, so only the text property is
@@ -2292,14 +2294,18 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
             textOnlyAnnotationXml
         ]);
-        expect(result.textAnnotationColumns).toEqual([{ columnProperty: undefined, textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: undefined, textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
     });
 
     test('includes both properties when a text annotation is maintained without a TextArrangement', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
         // A TextArrangement is not required: the column still gets a sort test for both the code
         // column (CustomerID) and the text property (CustomerName) because a Common.Text is maintained.
-        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
     });
 
     test('emits both properties for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
@@ -2308,7 +2314,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         // column and the text property must produce a sort test. Mirrors that shape with CustomerID /
         // CustomerName: metadata has the Common.Text but no arrangement, and the target is not hidden.
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
-        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
     });
 
     test('returns an empty array when there is no metadata', () => {
@@ -2373,7 +2381,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             undefined,
             [unrelatedLocalAnnotationXml]
         );
-        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
     });
 
     // Regression (fin.test.v4.lr1): the text (sort target) property carries UI.Hidden. The sort test is
@@ -2406,7 +2416,9 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
 
     test('still emits the column when its text (sort target) property is hidden', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataWithHiddenTextProperty);
-        expect(result.textAnnotationColumns).toEqual([{ columnProperty: 'CustomerID', textProperty: 'CustomerName' }]);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
     });
 });
 

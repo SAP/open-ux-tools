@@ -233,7 +233,7 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
     }
     const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
     const candidates: TextAnnotationColumnCandidate[] = [];
-    const seenTextProperties = new Set<string>();
+    const seenColumnProperties = new Set<string>();
     Object.entries(columnItems).forEach(([columnKey, column]) => {
         if (!isDefaultAvailableColumn(column)) {
             return;
@@ -250,10 +250,13 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
             return;
         }
         const columnProperty = getColumnIdentifier(column, columnKey);
-        if (!columnProperty || seenTextProperties.has(text.value)) {
+        // Deduplicate by code column: two distinct columns may share one text target, and each code
+        // column still needs its own sort test. Any duplicate text-property assertions this produces
+        // are deduplicated by the consumer when generating the journey.
+        if (!columnProperty || seenColumnProperties.has(columnProperty)) {
             return;
         }
-        seenTextProperties.add(text.value);
+        seenColumnProperties.add(columnProperty);
         candidates.push({ columnProperty, textProperty: text.value });
     });
     return candidates;

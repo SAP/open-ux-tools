@@ -214,9 +214,11 @@ sap.ui.define([
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending, true);
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.None);
             <%_ } _%>
+            <%_ if (!column.skipTextPropertyTest) { _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.None);
+            <%_ } _%>
             <%_ }); -%>
         });
 <%_ } -%>

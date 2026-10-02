@@ -161,10 +161,15 @@ export type ContactCardField = {
  * property (e.g. "AccountingDocumentType"); it is omitted when the `UI.TextArrangement` is
  * `TextOnly`, because then only the text property is sortable. A `UI.TextArrangement` is not
  * required — a maintained `Common.Text` is enough to emit the text-property sort test.
+ *
+ * When several columns share one `Common.Text` target, each still contributes its own
+ * `columnProperty` sort test, but only the first entry for a given `textProperty` emits the
+ * text-property sort test; the rest set `skipTextPropertyTest` to avoid duplicate assertions.
  */
 export type TextAnnotationColumn = {
     columnProperty?: string;
     textProperty: string;
+    skipTextPropertyTest?: boolean;
 };
 
 export type BodySubSectionFeatureData = {

@@ -254,13 +254,21 @@ export function getListReportFeatures(
     // hidden the emitted test will surface it (typically as a runtime failure), signalling to the
     // developer that the hiding annotation is likely a mistake that should be fixed.
     const meta = convertedMetadata;
+    const seenTextProperties = new Set<string>();
     const textAnnotationColumns: TextAnnotationColumn[] = meta
-        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => ({
-              columnProperty: isTextOnlyArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
-                  ? undefined
-                  : candidate.columnProperty,
-              textProperty: candidate.textProperty
-          }))
+        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => {
+              // Each distinct code column keeps its own sort test, but the text-property sort test is
+              // emitted only once per text target to avoid duplicate assertions.
+              const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
+              seenTextProperties.add(candidate.textProperty);
+              return {
+                  columnProperty: isTextOnlyArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
+                      ? undefined
+                      : candidate.columnProperty,
+                  textProperty: candidate.textProperty,
+                  skipTextPropertyTest
+              };
+          })
         : [];
 
     return {

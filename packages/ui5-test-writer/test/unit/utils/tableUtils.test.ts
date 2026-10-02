@@ -545,7 +545,7 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
     });
 
-    test('de-duplicates columns that share the same text property', () => {
+    test('keeps distinct code columns that share the same text property', () => {
         const node = makeNode({
             'DataField::CustomerID': {
                 schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
@@ -554,6 +554,23 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
             'DataField::CustomerNo': {
                 schema: { keys: [{ name: 'Value', value: 'CustomerNo' }] },
                 properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName' },
+            { columnProperty: 'CustomerNo', textProperty: 'CustomerName' }
+        ]);
+    });
+
+    test('de-duplicates columns that resolve to the same code column', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            },
+            'DataField::CustomerID::dup': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerFullName' } }
             }
         });
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([

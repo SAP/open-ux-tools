@@ -1988,12 +1988,12 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
                     .contents as string;
 
-            // The sort tests ship only in the `latest` bucket and only for UI5 >= 1.151.1. An
-            // unspecified version resolves to the latest bucket and is treated as supported.
+            // The sort tests ship only in the `1.152` and `latest` buckets, i.e. for UI5 >= 1.152.0.
+            // An unspecified version resolves to the latest bucket and is treated as supported.
             it.each([
                 ['unspecified version', undefined],
-                ['1.151.1', '1.151.1'],
-                ['a newer version', '1.152.0']
+                ['1.152 bucket', '1.152.0'],
+                ['a newer version', '1.153.0']
             ])('emits the sort-order test and coreLibrary import for %s (JS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
@@ -2020,12 +2020,13 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.151.1 must NOT emit the sort tests: the
-            // required Fiori Elements sort fix is unavailable there.
+            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
+            // 1.151.x range resolves to the 1.148 bucket, which does not render them.
             it.each([
                 ['1.84 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
-                ['latest bucket below 1.151.1', '1.151.0']
+                ['1.148 bucket at 1.151.1', '1.151.1'],
+                ['1.148 bucket below 1.151.1', '1.151.0']
             ])('omits the sort-order test and coreLibrary import for %s (JS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
@@ -2085,8 +2086,8 @@ export type Then = Opa5 & BaseArrangements & {
         describe('text annotation sort-order test — TS', () => {
             // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
             // exercises the conditional `import { SortOrder } from "sap/ui/core/library"` and the
-            // "Check text annotation for columns" opaTest. Emitted only for the `latest` bucket and
-            // only when the target UI5 version is >= 1.151.1.
+            // "Check text annotation for columns" opaTest. Emitted only for the `1.152` and `latest`
+            // buckets and only when the target UI5 version is >= 1.152.0.
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
@@ -2103,12 +2104,12 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.ts']
                     .contents as string;
 
-            // The sort tests ship only in the `latest` bucket and only for UI5 >= 1.151.1. An
-            // unspecified version resolves to the latest bucket and is treated as supported.
+            // The sort tests ship only in the `1.152` and `latest` buckets, i.e. for UI5 >= 1.152.0.
+            // An unspecified version resolves to the latest bucket and is treated as supported.
             it.each([
                 ['unspecified version', undefined],
-                ['1.151.1', '1.151.1'],
-                ['a newer version', '1.152.0']
+                ['1.152 bucket', '1.152.0'],
+                ['a newer version', '1.153.0']
             ])('emits the sort-order test and SortOrder import for %s (TS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
@@ -2133,12 +2134,13 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.151.1 must NOT emit the sort tests: the
-            // required Fiori Elements sort fix is unavailable there.
+            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
+            // 1.151.x range resolves to the 1.148 bucket, which does not render them.
             it.each([
                 ['1.84 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
-                ['latest bucket below 1.151.1', '1.151.0']
+                ['1.148 bucket at 1.151.1', '1.151.1'],
+                ['1.148 bucket below 1.151.1', '1.151.0']
             ])('omits the sort-order test and SortOrder import for %s (TS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
