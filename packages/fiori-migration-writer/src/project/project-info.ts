@@ -22,18 +22,22 @@ export async function loadOrFetchProjectInfo(
         importProjectInfo.moduleName !== undefined;
 
     if (isCompleteProjectInfo) {
-        // Use provided complete project info (tests, CLI with full data)
+        // Use provided complete project info (tests, programmatic usage)
         projectInfo = importProjectInfo!;
-    } else {
-        // Fetch project info and merge with partial overrides
+    } else if (importProjectInfo) {
+        // Fetch project info and merge with partial overrides (CLI usage)
         const { messages: projectInfoMsgs, projectInfo: accessProjectInfo } =
             await ProjectAccess.getProjectInfo(projectRoot);
         messages = messages.concat(projectInfoMsgs);
 
         // Merge CLI overrides with fetched project info
-        projectInfo = importProjectInfo
-            ? { ...accessProjectInfo, ...importProjectInfo }
-            : accessProjectInfo;
+        projectInfo = { ...accessProjectInfo, ...importProjectInfo };
+    } else {
+        // No project info provided, fetch it
+        const { messages: projectInfoMsgs, projectInfo: accessProjectInfo } =
+            await ProjectAccess.getProjectInfo(projectRoot);
+        messages = messages.concat(projectInfoMsgs);
+        projectInfo = accessProjectInfo;
     }
 
     return { projectInfo, messages };
