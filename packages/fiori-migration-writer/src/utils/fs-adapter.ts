@@ -95,9 +95,9 @@ export function deleteFile(path: string): void {
 /**
  * Create directory (no-op in mem-fs, directories created implicitly)
  *
- * @param path - Directory path
+ * @param _path - Directory path
  */
-export function mkdir(path: string): void {
+export function mkdir(_path: string): void {
     // mem-fs handles directories implicitly when writing files
     // No explicit mkdir needed
 }
