@@ -99,7 +99,7 @@ function journey() {
 <%_ } -%>
 <%_ (toolBarActions || []).forEach(function(item) { -%>
 <%_ if (item.visible) { -%>
-    opaTest("Check the <%- item.label %> action", function (_Given: Given, _When: When, Then: Then) {
+    opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (_Given: Given, _When: When, Then: Then) {
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
     });

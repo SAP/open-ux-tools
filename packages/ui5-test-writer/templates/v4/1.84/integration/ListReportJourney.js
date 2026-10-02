@@ -92,7 +92,7 @@ sap.ui.define([
 <%_ } -%>
 <%_ (toolBarActions || []).forEach(function(item) { -%>
 <%_ if (item.visible) { -%>
-        opaTest("Check the <%- item.label %> action", function (Given, When, Then) {
+        opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (Given, When, Then) {
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
         });

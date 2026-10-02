@@ -156,7 +156,7 @@ function journey() {
 <%_ if (item.visible) { -%>
 <%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
 <%_ const usesWhen = (item.menuActions && !item.splitButton) || (!item.menuActions && !item.custom && ((item.selectionEnables && !item.isCritical && !hasParamDialog) || ((item.isCritical || hasParamDialog) && item.enabled !== 'dynamic'))); _%>
-    opaTest("Check the <%- item.label %> action", function (_Given: Given, <% if (usesWhen) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+    opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (_Given: Given, <% if (usesWhen) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         <%_ if (item.menuActions) { _%>
         <%_ if (item.splitButton) { _%>
         // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
