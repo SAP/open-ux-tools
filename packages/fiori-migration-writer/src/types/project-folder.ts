@@ -29,18 +29,36 @@ export interface ProjectFolder {
 }
 
 /**
- * Type guard to check if value is a ProjectFolder array
+ * Type guard to check if a single value is a valid ProjectFolder
  *
- * @param value
+ * @param value - value to check
+ * @returns true if value is a ProjectFolder
+ */
+function isProjectFolder(value: unknown): value is ProjectFolder {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        'uri' in value &&
+        typeof (value as any).uri === 'object' &&
+        (value as any).uri !== null &&
+        'fsPath' in (value as any).uri &&
+        typeof (value as any).uri.fsPath === 'string' &&
+        'scheme' in (value as any).uri &&
+        typeof (value as any).uri.scheme === 'string' &&
+        'name' in value &&
+        typeof (value as any).name === 'string' &&
+        'index' in value &&
+        typeof (value as any).index === 'number'
+    );
+}
+
+/**
+ * Type guard to check if value is a ProjectFolder array
+ * Validates every element in the array, not just the first one
+ *
+ * @param value - value to check
+ * @returns true if value is an array of ProjectFolders
  */
 export function isProjectFolderArray(value: unknown): value is readonly ProjectFolder[] {
-    return (
-        Array.isArray(value) &&
-        value.length > 0 &&
-        typeof value[0] === 'object' &&
-        value[0] !== null &&
-        'uri' in value[0] &&
-        typeof value[0].uri === 'object' &&
-        'fsPath' in value[0].uri
-    );
+    return Array.isArray(value) && value.length > 0 && value.every(isProjectFolder);
 }

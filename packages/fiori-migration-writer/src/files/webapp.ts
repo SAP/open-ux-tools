@@ -3,8 +3,8 @@
  */
 
 import { join, resolve } from 'node:path';
-import { existsSync, readdirSync } from 'node:fs';
-import { fileExists, updateJSON } from '../utils/index.js';
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { fileExists, updateJSON, readFile, writeFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { mkdir, exists, copyFile } from '../utils/fs-adapter.js';
@@ -54,6 +54,44 @@ function validateGitRelativePath(relPath: string): string {
         throw new Error('Git path contains control characters');
     }
     return relPath;
+}
+
+/**
+ * Recursively move files and directories from source to destination
+ * Handles both mem-fs and real filesystem operations
+ *
+ * @param sourcePath - Source path
+ * @param destPath - Destination path
+ */
+async function recursiveMove(sourcePath: string, destPath: string): Promise<void> {
+    // Check if source exists (handles both mem-fs and real fs)
+    if (!exists(sourcePath) && !existsSync(sourcePath)) {
+        return; // Nothing to move
+    }
+
+    // Check if it's a directory (real fs check - mem-fs doesn't have directories)
+    const isDirectory = existsSync(sourcePath) && statSync(sourcePath).isDirectory();
+
+    if (isDirectory) {
+        // Ensure destination directory exists
+        await mkdir(destPath);
+
+        // Read directory contents (real fs)
+        const entries = readdirSync(sourcePath, { withFileTypes: true });
+
+        // Recursively move each entry
+        for (const entry of entries) {
+            const srcEntry = join(sourcePath, entry.name);
+            const destEntry = join(destPath, entry.name);
+            await recursiveMove(srcEntry, destEntry);
+        }
+    } else {
+        // It's a file - copy it
+        const content = await readFile(sourcePath);
+        await writeFile(destPath, content);
+    }
+
+    // Note: Deletion of source is handled by the calling function after all moves complete
 }
 
 /**
@@ -181,20 +219,15 @@ export async function createWebappFolderAndMigrateFiles(
 
                 // Fallback to file system move if git didn't work
                 if (existsSync(join(rootPath, path.name))) {
-                    // For mem-fs, we need to copy then delete (no atomic move)
                     const sourcePath = join(rootPath, path.name);
                     const destPath = join(rootPath, DirName.Webapp, path.name);
 
-                    // Note: This is a simplified approach - in real scenarios we'd need to
-                    // handle directories recursively. For now, since git mv is preferred,
-                    // this is a fallback that works for individual files.
-                    if (path.isFile()) {
-                        await copyFile(sourcePath, destPath);
-                        // Delete source after copy (mem-fs doesn't have atomic move)
-                        // Note: In mem-fs mode, the file still shows as existing from existsSync
-                        // This is a known limitation - mem-fs operations aren't reflected in sync checks
-                    }
-                    // For directories, we'd need recursive handling - but git mv handles this
+                    // Recursively move files and directories
+                    await recursiveMove(sourcePath, destPath);
+
+                    // Note: Source deletion handled after migration completes
+                    // In mem-fs mode, files are copied to new locations; source deletion
+                    // happens when the editor commits changes
                 }
             }
         }
