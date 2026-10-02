@@ -2416,7 +2416,8 @@ appDescription=This is my new Fiori elements application",
     \\"sap.platform.hcp\\": {
         \\"uri\\": \\"\\"
     }
-}",
+}
+",
     "state": "modified",
   },
   "webapp/test/changes_loader.js": Object {
@@ -6568,185 +6569,186 @@ ERR_SERVICE_TEXT=Sorry, we can't process this request at the moment. If the prob
   },
   "src/custom/webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.12.0\\",
-    \\"sap.app\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"id\\": \\"demo.central.listreport.reuse\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"title\\": \\"{{FULLSCREEN_TITLE}}\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"\${project.version}\\"
-        },
-        \\"ach\\": \\"FI-FIO-GL\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/sap/opu/odata/SAP/FAR_CUSTOMER_LINE_ITEMS/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"odataVersion\\": \\"2.0\\",
-                    \\"annotations\\": [
-                        \\"annotations\\"
-                    ],
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"annotations\\": {
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"uri\\": \\"annotations/annotations.xml\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotations.xml\\"
-                }
-            }
-        },
-        \\"resources\\": \\"resources.json\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
-            \\"version\\": \\"1.0.1\\",
-            \\"toolsId\\": \\"ee3e8072-7ff4-46eb-8aff-1de8e6de9fbd\\"
-        }
-    },
-    \\"sap.ui\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"sap-icon://Fiori5/F0707\\",
-            \\"favIcon\\": \\"./resources/sap/ca/ui/themes/base/img/favicon/F0707_Dsp_GL_Acc_Balances.ico\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": false
-        },
-        \\"supportedThemes\\": [
-            \\"sap_hcb\\",
-            \\"sap_bluecrystal\\"
-        ]
-    },
-    \\"sap.ui5\\": {
-        \\"rootView\\": \\"demo.central.listreport.reuse.view.App\\",
-        \\"resources\\": {},
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"\${sap.ui5.dist.version}\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.m\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.f\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.ui.table\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.ui.unified\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.ushell\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.ui.comp\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.fe.navigation\\": {
-                    \\"lazy\\": false
-                }
-            },
-            \\"components\\": {}
-        },
-        \\"commands\\": {
-            \\"Share\\": {
-                \\"shortcut\\": \\"Shift+Ctrl+S\\"
-            },
-            \\"Enter\\": {
-                \\"shortcut\\": \\"Enter\\"
-            }
-        },
-        \\"config\\": {
-            \\"fullWidth\\": \\"true\\"
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"settings\\": {
-                    \\"bundleName\\": \\"demo.central.listreport.reuse.i18n.i18n\\"
-                }
-            },
-            \\"\\": {
-                \\"preload\\": true,
-                \\"dataSource\\": \\"mainService\\",
-                \\"settings\\": {
-                    \\"metadataUrlParams\\": {
-                        \\"sap-documentation\\": \\"heading,quickinfo\\",
-                        \\"sap-value-list\\": \\"none\\"
-                    }
-                }
-            },
-            \\"@i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            }
-        },
-        \\"routing\\": {
-            \\"config\\": {
-                \\"async\\": true,
-                \\"routerClass\\": \\"sap.m.routing.Router\\",
-                \\"viewType\\": \\"XML\\",
-                \\"viewPath\\": \\"demo.central.listreport.reuse.view\\",
-                \\"controlId\\": \\"fioriContent\\",
-                \\"controlAggregation\\": \\"pages\\",
-                \\"bypassed\\": {
-                    \\"target\\": \\"notFound\\"
-                }
-            },
-            \\"routes\\": [
-                {
-                    \\"pattern\\": \\"\\",
-                    \\"name\\": \\"fullscreen\\",
-                    \\"target\\": \\"fullscreen\\"
-                },
-                {
-                    \\"pattern\\": \\"sap-iapp-state={id}\\",
-                    \\"name\\": \\"localstate-old\\",
-                    \\"target\\": \\"fullscreen\\"
-                },
-                {
-                    \\"pattern\\": \\"{?query}\\",
-                    \\"name\\": \\"localstate-new\\",
-                    \\"target\\": \\"fullscreen\\"
-                }
-            ],
-            \\"targets\\": {
-                \\"fullscreen\\": {
-                    \\"viewName\\": \\"List\\",
-                    \\"viewId\\": \\"fullscreen\\",
-                    \\"viewLevel\\": 1
-                },
-                \\"notFound\\": {
-                    \\"viewName\\": \\"NotFound\\",
-                    \\"viewId\\": \\"notFound\\"
-                }
-            }
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.platform.abap\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"/sap/bc/ui5_ui5/sap/zsfin_listrep\\"
-    },
-    \\"sap.fiori\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"registrationIds\\": [
-            \\"F0711\\"
-        ],
-        \\"archeType\\": \\"transactional\\"
-    }
-}",
+	\\"_version\\": \\"1.12.0\\",
+	\\"sap.app\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"id\\": \\"demo.central.listreport.reuse\\",
+		\\"type\\": \\"application\\",
+		\\"i18n\\": \\"i18n/i18n.properties\\",
+		\\"title\\": \\"{{FULLSCREEN_TITLE}}\\",
+		\\"applicationVersion\\": {
+			\\"version\\": \\"\${project.version}\\"
+		},
+		\\"ach\\": \\"FI-FIO-GL\\",
+		\\"dataSources\\": {
+			\\"mainService\\": {
+				\\"uri\\": \\"/sap/opu/odata/SAP/FAR_CUSTOMER_LINE_ITEMS/\\",
+				\\"type\\": \\"OData\\",
+				\\"settings\\": {
+					\\"odataVersion\\": \\"2.0\\",
+					\\"annotations\\": [
+						\\"annotations\\"
+					],
+					\\"localUri\\": \\"localService/metadata.xml\\"
+				}
+			},
+			\\"annotations\\": {
+				\\"type\\": \\"ODataAnnotation\\",
+				\\"uri\\": \\"annotations/annotations.xml\\",
+				\\"settings\\": {
+					\\"localUri\\": \\"annotations/annotations.xml\\"
+				}
+			}
+		},
+		\\"resources\\": \\"resources.json\\",
+		\\"sourceTemplate\\": {
+			\\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
+			\\"version\\": \\"1.0.1\\",
+			\\"toolsId\\": \\"ee3e8072-7ff4-46eb-8aff-1de8e6de9fbd\\"
+		}
+	},
+	\\"sap.ui\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"technology\\": \\"UI5\\",
+		\\"icons\\": {
+			\\"icon\\": \\"sap-icon://Fiori5/F0707\\",
+			\\"favIcon\\": \\"./resources/sap/ca/ui/themes/base/img/favicon/F0707_Dsp_GL_Acc_Balances.ico\\"
+		},
+		\\"deviceTypes\\": {
+			\\"desktop\\": true,
+			\\"tablet\\": true,
+			\\"phone\\": false
+		},
+		\\"supportedThemes\\": [
+			\\"sap_hcb\\",
+			\\"sap_bluecrystal\\"
+		]
+	},
+	\\"sap.ui5\\": {
+		\\"rootView\\": \\"demo.central.listreport.reuse.view.App\\",
+		\\"resources\\": {},
+		\\"dependencies\\": {
+			\\"minUI5Version\\": \\"\${sap.ui5.dist.version}\\",
+			\\"libs\\": {
+				\\"sap.ui.core\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.m\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.f\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.ui.table\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.ui.unified\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.ushell\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.ui.comp\\": {
+					\\"lazy\\": false
+				},
+				\\"sap.fe.navigation\\": {
+					\\"lazy\\": false
+				}
+			},
+			\\"components\\": {}
+		},
+		\\"commands\\": {
+			\\"Share\\": {
+				\\"shortcut\\": \\"Shift+Ctrl+S\\"
+			},
+			\\"Enter\\": {
+				\\"shortcut\\": \\"Enter\\"
+			}
+		},
+		\\"config\\": {
+			\\"fullWidth\\": \\"true\\"
+		},
+		\\"models\\": {
+			\\"i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"settings\\": {
+					\\"bundleName\\": \\"demo.central.listreport.reuse.i18n.i18n\\"
+				}
+			},
+			\\"\\": {
+				\\"preload\\": true,
+				\\"dataSource\\": \\"mainService\\",
+				\\"settings\\": {
+					\\"metadataUrlParams\\": {
+						\\"sap-documentation\\": \\"heading,quickinfo\\",
+						\\"sap-value-list\\": \\"none\\"
+					}
+				}
+			},
+			\\"@i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			}
+		},
+		\\"routing\\": {
+			\\"config\\": {
+				\\"async\\": true,
+				\\"routerClass\\": \\"sap.m.routing.Router\\",
+				\\"viewType\\": \\"XML\\",
+				\\"viewPath\\": \\"demo.central.listreport.reuse.view\\",
+				\\"controlId\\": \\"fioriContent\\",
+				\\"controlAggregation\\": \\"pages\\",
+				\\"bypassed\\": {
+					\\"target\\": \\"notFound\\"
+				}
+			},
+			\\"routes\\": [
+				{
+					\\"pattern\\": \\"\\",
+					\\"name\\": \\"fullscreen\\",
+					\\"target\\": \\"fullscreen\\"
+				},
+				{
+					\\"pattern\\": \\"sap-iapp-state={id}\\",
+					\\"name\\": \\"localstate-old\\",
+					\\"target\\": \\"fullscreen\\"
+				},
+				{
+					\\"pattern\\": \\"{?query}\\",
+					\\"name\\": \\"localstate-new\\",
+					\\"target\\": \\"fullscreen\\"
+				}
+			],
+			\\"targets\\": {
+				\\"fullscreen\\": {
+					\\"viewName\\": \\"List\\",
+					\\"viewId\\": \\"fullscreen\\",
+					\\"viewLevel\\": 1
+				},
+				\\"notFound\\": {
+					\\"viewName\\": \\"NotFound\\",
+					\\"viewId\\": \\"notFound\\"
+				}
+			}
+		},
+		\\"contentDensities\\": {
+			\\"compact\\": true,
+			\\"cozy\\": true
+		}
+	},
+	\\"sap.platform.abap\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"uri\\": \\"/sap/bc/ui5_ui5/sap/zsfin_listrep\\"
+	},
+	\\"sap.fiori\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"registrationIds\\": [
+			\\"F0711\\"
+		],
+		\\"archeType\\": \\"transactional\\"
+	}
+}
+",
     "state": "modified",
   },
   "src/custom/webapp/model/formatter.js": Object {
@@ -12323,7 +12325,8 @@ appDescription=This is my new Fiori elements application",
     \\"sap.platform.hcp\\": {
         \\"uri\\": \\"\\"
     }
-}",
+}
+",
     "state": "modified",
   },
   "webapp/test/changes_loader.js": Object {
@@ -16209,152 +16212,153 @@ appDescription=This is my new Fiori elements application
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.15.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"namespace1.v4catalog\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"1.0.0\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"ach\\": \\"CA-UI5-FE\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/catalog-admin-noauth/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [
-                        \\"annotation\\"
-                    ],
-                    \\"odataVersion\\": \\"4.0\\",
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"annotation\\": {
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"uri\\": \\"annotations/annotation.xml\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotation.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"resources\\": \\"resources.json\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-            \\"version\\": \\"1.0.0\\",
-            \\"toolsId\\": \\"31c648bb-03ae-41ae-896d-5c27ec33c5a4\\"
+  \\"_version\\": \\"1.15.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"namespace1.v4catalog\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"ach\\": \\"CA-UI5-FE\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/catalog-admin-noauth/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\",
+          \\"localUri\\": \\"localService/metadata.xml\\"
         }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
+      }
     },
-    \\"sap.ui5\\": {
-        \\"resources\\": {
-            \\"js\\": [],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.76.0\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {},
-                \\"sap.fe.templates\\": {}
-            }
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"dataSource\\": \\"mainService\\",
-                \\"settings\\": {
-                    \\"synchronizationMode\\": \\"None\\",
-                    \\"operationMode\\": \\"Server\\",
-                    \\"autoExpandSelect\\": true,
-                    \\"earlyRequests\\": true
-                }
-            }
-        },
-        \\"routing\\": {
-            \\"targets\\": {
-                \\"ProductsList\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"ProductsList\\",
-                    \\"name\\": \\"sap.fe.templates.ListReport\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Products\\",
-                            \\"variantManagement\\": \\"Page\\",
-                            \\"navigation\\": {
-                                \\"Products\\": {
-                                    \\"detail\\": {
-                                        \\"route\\": \\"ProductsObjectPage\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"ProductsObjectPage\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"ProductsObjectPage\\",
-                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Products\\",
-                            \\"navigation\\": {}
-                        }
-                    }
-                }
-            },
-            \\"routes\\": [
-                {
-                    \\"pattern\\": \\":?query:\\",
-                    \\"name\\": \\"ProductsList\\",
-                    \\"target\\": \\"ProductsList\\"
-                },
-                {
-                    \\"pattern\\": \\"Products({key}):?query:\\",
-                    \\"name\\": \\"ProductsObjectPage\\",
-                    \\"target\\": \\"ProductsObjectPage\\"
-                }
-            ]
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.platform.abap\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.fiori\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"transactional\\"
+    \\"offline\\": false,
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+      \\"version\\": \\"1.0.0\\",
+      \\"toolsId\\": \\"31c648bb-03ae-41ae-896d-5c27ec33c5a4\\"
     }
-}",
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"routing\\": {
+      \\"targets\\": {
+        \\"ProductsList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"ProductsList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Products\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Products\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"ProductsObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"ProductsObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"ProductsObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Products\\",
+              \\"navigation\\": {}
+            }
+          }
+        }
+      },
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"ProductsList\\",
+          \\"target\\": \\"ProductsList\\"
+        },
+        {
+          \\"pattern\\": \\"Products({key}):?query:\\",
+          \\"name\\": \\"ProductsObjectPage\\",
+          \\"target\\": \\"ProductsObjectPage\\"
+        }
+      ]
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
     "state": "modified",
   },
   "webapp/test/flpSandbox.html": Object {
@@ -19923,152 +19927,153 @@ appDescription=This is my new Fiori elements application
   },
   "webapp_custom/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.15.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"namespace3.v4catalog\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"1.0.0\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"ach\\": \\"CA-UI5-FE\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/catalog-admin-noauth/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [
-                        \\"annotation\\"
-                    ],
-                    \\"odataVersion\\": \\"4.0\\",
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"annotation\\": {
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"uri\\": \\"annotations/annotation.xml\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotation.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"resources\\": \\"resources.json\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-            \\"version\\": \\"1.0.0\\",
-            \\"toolsId\\": \\"8465c504-18df-4a0a-b6cd-289fbb7724ae\\"
+  \\"_version\\": \\"1.15.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"namespace3.v4catalog\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"ach\\": \\"CA-UI5-FE\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/catalog-admin-noauth/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\",
+          \\"localUri\\": \\"localService/metadata.xml\\"
         }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
+      }
     },
-    \\"sap.ui5\\": {
-        \\"resources\\": {
-            \\"js\\": [],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.76.0\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {},
-                \\"sap.fe.templates\\": {}
-            }
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"dataSource\\": \\"mainService\\",
-                \\"settings\\": {
-                    \\"synchronizationMode\\": \\"None\\",
-                    \\"operationMode\\": \\"Server\\",
-                    \\"autoExpandSelect\\": true,
-                    \\"earlyRequests\\": true
-                }
-            }
-        },
-        \\"routing\\": {
-            \\"targets\\": {
-                \\"ProductsList\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"ProductsList\\",
-                    \\"name\\": \\"sap.fe.templates.ListReport\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Products\\",
-                            \\"variantManagement\\": \\"Page\\",
-                            \\"navigation\\": {
-                                \\"Products\\": {
-                                    \\"detail\\": {
-                                        \\"route\\": \\"ProductsObjectPage\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"ProductsObjectPage\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"ProductsObjectPage\\",
-                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Products\\",
-                            \\"navigation\\": {}
-                        }
-                    }
-                }
-            },
-            \\"routes\\": [
-                {
-                    \\"pattern\\": \\":?query:\\",
-                    \\"name\\": \\"ProductsList\\",
-                    \\"target\\": \\"ProductsList\\"
-                },
-                {
-                    \\"pattern\\": \\"Products({key}):?query:\\",
-                    \\"name\\": \\"ProductsObjectPage\\",
-                    \\"target\\": \\"ProductsObjectPage\\"
-                }
-            ]
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.platform.abap\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.fiori\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"transactional\\"
+    \\"offline\\": false,
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+      \\"version\\": \\"1.0.0\\",
+      \\"toolsId\\": \\"8465c504-18df-4a0a-b6cd-289fbb7724ae\\"
     }
-}",
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"routing\\": {
+      \\"targets\\": {
+        \\"ProductsList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"ProductsList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Products\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Products\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"ProductsObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"ProductsObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"ProductsObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Products\\",
+              \\"navigation\\": {}
+            }
+          }
+        }
+      },
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"ProductsList\\",
+          \\"target\\": \\"ProductsList\\"
+        },
+        {
+          \\"pattern\\": \\"Products({key}):?query:\\",
+          \\"name\\": \\"ProductsObjectPage\\",
+          \\"target\\": \\"ProductsObjectPage\\"
+        }
+      ]
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
     "state": "modified",
   },
   "webapp_custom/test/flpSandbox.html": Object {
@@ -30537,120 +30542,121 @@ card00_title=Coming from SEPRA_PROD_MAN Service",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.7.0\\",
-    \\"start_url\\": \\"start.html\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"namespace1.ovpmigration1\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"\${project.version}\\"
-        },
-        \\"title\\": \\"{{app_title}}\\",
-        \\"description\\": \\"{{app_description}}\\",
-        \\"ach\\": \\"sap\\",
-        \\"resources\\": \\"resources.json\\",
-        \\"dataSources\\": {
-            \\"SEPMRA_PROD_MAN\\": {
-                \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"odataVersion\\": \\"2.0\\",
-                    \\"annotations\\": [
-                        \\"SEPMRA_PROD_MAN_ANNO_MDL\\"
-                    ],
-                    \\"localUri\\": \\"localService/SEPMRA_PROD_MAN/metadata.xml\\"
-                }
-            },
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
-                \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"localService/SEPMRA_PROD_MAN/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
-                }
-            }
-        },
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"OVP.cardtemplate\\",
-            \\"version\\": \\"0.0.0\\",
-            \\"toolsId\\": \\"209321ad-ae50-4bd6-b429-4a7497b7af2d\\"
-        }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        },
-        \\"supportedThemes\\": [
-            \\"sap_fiori_3\\"
-        ]
-    },
-    \\"sap.ui5\\": {
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.65.6\\",
-            \\"libs\\": {
-                \\"sap.ovp\\": {}
-            }
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"@i18n\\": {
-                \\"preload\\": true,
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"SEPMRA_PROD_MAN\\": {
-                \\"dataSource\\": \\"SEPMRA_PROD_MAN\\",
-                \\"settings\\": {
-                    \\"defaultCountMode\\": \\"Inline\\",
-                    \\"metadataUrlParams\\": {
-                        \\"sap-value-list\\": \\"none\\"
-                    }
-                }
-            }
-        },
-        \\"extends\\": {
-            \\"extensions\\": {}
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.fiori\\": {
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"analytical\\"
-    },
-    \\"sap.ovp\\": {
-        \\"globalFilterModel\\": \\"SEPMRA_PROD_MAN\\",
-        \\"globalFilterEntitySet\\": \\"\\",
-        \\"containerLayout\\": \\"fixed\\",
-        \\"enableLiveFilter\\": true,
-        \\"considerAnalyticalParameters\\": true,
-        \\"cards\\": {
-            \\"card00\\": {
-                \\"model\\": \\"SEPMRA_PROD_MAN\\",
-                \\"template\\": \\"sap.ovp.cards.table\\",
-                \\"settings\\": {
-                    \\"title\\": \\"{{card00_title}}\\",
-                    \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
-                    \\"addODataSelect\\": false,
-                    \\"identificationAnnotationPath\\": \\"com.sap.vocabularies.UI.v1.Identification\\",
-                    \\"presentationAnnotationPath\\": \\"com.sap.vocabularies.UI.v1.PresentationVariant\\",
-                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
-                }
-            }
-        }
-    }
-}",
+	\\"_version\\": \\"1.7.0\\",
+	\\"start_url\\": \\"start.html\\",
+	\\"sap.app\\": {
+		\\"id\\": \\"namespace1.ovpmigration1\\",
+		\\"type\\": \\"application\\",
+		\\"i18n\\": \\"i18n/i18n.properties\\",
+		\\"applicationVersion\\": {
+			\\"version\\": \\"\${project.version}\\"
+		},
+		\\"title\\": \\"{{app_title}}\\",
+		\\"description\\": \\"{{app_description}}\\",
+		\\"ach\\": \\"sap\\",
+		\\"resources\\": \\"resources.json\\",
+		\\"dataSources\\": {
+			\\"SEPMRA_PROD_MAN\\": {
+				\\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+				\\"type\\": \\"OData\\",
+				\\"settings\\": {
+					\\"odataVersion\\": \\"2.0\\",
+					\\"annotations\\": [
+						\\"SEPMRA_PROD_MAN_ANNO_MDL\\"
+					],
+					\\"localUri\\": \\"localService/SEPMRA_PROD_MAN/metadata.xml\\"
+				}
+			},
+			\\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+				\\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+				\\"type\\": \\"ODataAnnotation\\",
+				\\"settings\\": {
+					\\"localUri\\": \\"localService/SEPMRA_PROD_MAN/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+				}
+			}
+		},
+		\\"sourceTemplate\\": {
+			\\"id\\": \\"OVP.cardtemplate\\",
+			\\"version\\": \\"0.0.0\\",
+			\\"toolsId\\": \\"209321ad-ae50-4bd6-b429-4a7497b7af2d\\"
+		}
+	},
+	\\"sap.ui\\": {
+		\\"technology\\": \\"UI5\\",
+		\\"icons\\": {
+			\\"icon\\": \\"\\"
+		},
+		\\"deviceTypes\\": {
+			\\"desktop\\": true,
+			\\"tablet\\": true,
+			\\"phone\\": true
+		},
+		\\"supportedThemes\\": [
+			\\"sap_fiori_3\\"
+		]
+	},
+	\\"sap.ui5\\": {
+		\\"dependencies\\": {
+			\\"minUI5Version\\": \\"1.65.6\\",
+			\\"libs\\": {
+				\\"sap.ovp\\": {}
+			}
+		},
+		\\"models\\": {
+			\\"i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			},
+			\\"@i18n\\": {
+				\\"preload\\": true,
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			},
+			\\"SEPMRA_PROD_MAN\\": {
+				\\"dataSource\\": \\"SEPMRA_PROD_MAN\\",
+				\\"settings\\": {
+					\\"defaultCountMode\\": \\"Inline\\",
+					\\"metadataUrlParams\\": {
+						\\"sap-value-list\\": \\"none\\"
+					}
+				}
+			}
+		},
+		\\"extends\\": {
+			\\"extensions\\": {}
+		},
+		\\"contentDensities\\": {
+			\\"compact\\": true,
+			\\"cozy\\": true
+		}
+	},
+	\\"sap.fiori\\": {
+		\\"registrationIds\\": [],
+		\\"archeType\\": \\"analytical\\"
+	},
+	\\"sap.ovp\\": {
+		\\"globalFilterModel\\": \\"SEPMRA_PROD_MAN\\",
+		\\"globalFilterEntitySet\\": \\"\\",
+		\\"containerLayout\\": \\"fixed\\",
+		\\"enableLiveFilter\\": true,
+		\\"considerAnalyticalParameters\\": true,
+		\\"cards\\": {
+			\\"card00\\": {
+				\\"model\\": \\"SEPMRA_PROD_MAN\\",
+				\\"template\\": \\"sap.ovp.cards.table\\",
+				\\"settings\\": {
+					\\"title\\": \\"{{card00_title}}\\",
+					\\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+					\\"addODataSelect\\": false,
+					\\"identificationAnnotationPath\\": \\"com.sap.vocabularies.UI.v1.Identification\\",
+					\\"presentationAnnotationPath\\": \\"com.sap.vocabularies.UI.v1.PresentationVariant\\",
+					\\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+				}
+			}
+		}
+	}
+}
+",
     "state": "modified",
   },
   "webapp/test/changes_loader.js": Object {
@@ -33715,7 +33721,8 @@ archive.zip
     \\"namespace\\": \\"demo.fiori.inbox\\",
     \\"resourceBundle\\": \\"i18n/i18n.properties\\",
     \\"parentResourceRootUrl\\": \\"/destinations/GM4CLNT001/sap/bc/ui5_ui5/sap/CA_FIORI_INBOX\\"
-}",
+}
+",
     "state": "modified",
   },
   "neo-app.json": Object {
@@ -54478,53 +54485,54 @@ cross.fnd.fiori.inbox.model.mockRequests.mockDecisionOptionFuntionImport = funct
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.1.0\\",
-    \\"sap.app\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"id\\": \\"demo.fiori.inbox.SAMPLE_FIORI_INBOXExtension\\",
-        \\"type\\": \\"application\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"1.0.0\\"
-        },
-        \\"title\\": \\"{{SHELL_TITLE}}\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"@sap/ux-app-migrator:extension\\",
-            \\"version\\": \\"1.0.1\\",
-            \\"toolsId\\": \\"e022e98c-b54d-4ca8-a3ac-9126d7fbe3ef\\"
-        }
-    },
-    \\"sap.ui\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"sap-icon://approvals\\",
-            \\"favIcon\\": \\"./resources/sap/ca/ui/themes/base/img/favicon/Approve_Requests.ico\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        },
-        \\"supportedThemes\\": [
-            \\"sap_hcb\\",
-            \\"sap_bluecrystal\\"
-        ]
-    },
-    \\"sap.ui5\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.28.5\\"
-        },
-        \\"extends\\": {
-            \\"component\\": \\"demo.fiori.inbox\\",
-            \\"extensions\\": {}
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    }
-}",
+	\\"_version\\": \\"1.1.0\\",
+	\\"sap.app\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"id\\": \\"demo.fiori.inbox.SAMPLE_FIORI_INBOXExtension\\",
+		\\"type\\": \\"application\\",
+		\\"applicationVersion\\": {
+			\\"version\\": \\"1.0.0\\"
+		},
+		\\"title\\": \\"{{SHELL_TITLE}}\\",
+		\\"sourceTemplate\\": {
+			\\"id\\": \\"@sap/ux-app-migrator:extension\\",
+			\\"version\\": \\"1.0.1\\",
+			\\"toolsId\\": \\"e022e98c-b54d-4ca8-a3ac-9126d7fbe3ef\\"
+		}
+	},
+	\\"sap.ui\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"technology\\": \\"UI5\\",
+		\\"icons\\": {
+			\\"icon\\": \\"sap-icon://approvals\\",
+			\\"favIcon\\": \\"./resources/sap/ca/ui/themes/base/img/favicon/Approve_Requests.ico\\"
+		},
+		\\"deviceTypes\\": {
+			\\"desktop\\": true,
+			\\"tablet\\": true,
+			\\"phone\\": true
+		},
+		\\"supportedThemes\\": [
+			\\"sap_hcb\\",
+			\\"sap_bluecrystal\\"
+		]
+	},
+	\\"sap.ui5\\": {
+		\\"_version\\": \\"1.1.0\\",
+		\\"dependencies\\": {
+			\\"minUI5Version\\": \\"1.28.5\\"
+		},
+		\\"extends\\": {
+			\\"component\\": \\"demo.fiori.inbox\\",
+			\\"extensions\\": {}
+		},
+		\\"contentDensities\\": {
+			\\"compact\\": true,
+			\\"cozy\\": true
+		}
+	}
+}
+",
     "state": "modified",
   },
   "webapp/view/S2Custom.controller.js": Object {
@@ -56765,58 +56773,59 @@ kTg�drنI3��Q����Ѯ����,E�_��� ��%�2��
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.12.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"sap.ui.demo.todo\\",
-        \\"type\\": \\"application\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
-            \\"version\\": \\"1.0.1\\",
-            \\"toolsId\\": \\"b01a1daa-ce66-4458-8ae8-ccc1d09dc267\\"
-        }
-    },
-    \\"sap.ui5\\": {
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.75.0\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {},
-                \\"sap.m\\": {},
-                \\"sap.f\\": {},
-                \\"sap.ui.unified\\": {}
-            }
-        },
-        \\"rootView\\": {
-            \\"viewName\\": \\"sap.ui.demo.todo.view.App\\",
-            \\"type\\": \\"XML\\",
-            \\"async\\": true,
-            \\"id\\": \\"app\\"
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"settings\\": {
-                    \\"bundleName\\": \\"sap.ui.demo.todo.i18n.i18n\\",
-                    \\"supportedLocales\\": [
-                        \\"en\\",
-                        \\"de\\"
-                    ],
-                    \\"fallbackLocale\\": \\"en\\"
-                }
-            },
-            \\"\\": {
-                \\"type\\": \\"sap.ui.model.json.JSONModel\\",
-                \\"uri\\": \\"model/todoitems.json\\"
-            }
-        },
-        \\"resources\\": {
-            \\"css\\": [
-                {
-                    \\"uri\\": \\"css/styles.css\\"
-                }
-            ]
-        }
-    }
-}",
+	\\"_version\\": \\"1.12.0\\",
+	\\"sap.app\\": {
+		\\"id\\": \\"sap.ui.demo.todo\\",
+		\\"type\\": \\"application\\",
+		\\"sourceTemplate\\": {
+			\\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
+			\\"version\\": \\"1.0.1\\",
+			\\"toolsId\\": \\"b01a1daa-ce66-4458-8ae8-ccc1d09dc267\\"
+		}
+	},
+	\\"sap.ui5\\": {
+		\\"dependencies\\": {
+			\\"minUI5Version\\": \\"1.75.0\\",
+			\\"libs\\": {
+				\\"sap.ui.core\\": {},
+				\\"sap.m\\": {},
+				\\"sap.f\\": {},
+				\\"sap.ui.unified\\": {}
+			}
+		},
+		\\"rootView\\": {
+			\\"viewName\\": \\"sap.ui.demo.todo.view.App\\",
+			\\"type\\": \\"XML\\",
+			\\"async\\": true,
+			\\"id\\": \\"app\\"
+		},
+		\\"models\\": {
+			\\"i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"settings\\": {
+					\\"bundleName\\": \\"sap.ui.demo.todo.i18n.i18n\\",
+					\\"supportedLocales\\": [
+						\\"en\\",
+						\\"de\\"
+					],
+					\\"fallbackLocale\\": \\"en\\"
+				}
+			},
+			\\"\\": {
+				\\"type\\": \\"sap.ui.model.json.JSONModel\\",
+				\\"uri\\": \\"model/todoitems.json\\"
+			}
+		},
+		\\"resources\\": {
+			\\"css\\": [
+				{
+					\\"uri\\": \\"css/styles.css\\"
+				}
+			]
+		}
+	}
+}
+",
     "state": "modified",
   },
   "webapp/model/todoitems.json": Object {
@@ -60804,182 +60813,183 @@ w			<Annotations Target=\\"SEPMRA_PROD_MAN.I_DraftAdministrativeDataType/DraftIs
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.8.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"migration_test01\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"\${project.version}\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"tags\\": {
-            \\"keywords\\": []
-        },
-        \\"ach\\": \\"ach-so\\",
-        \\"resources\\": \\"resources.json\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [
-                        \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-                        \\"localAnnotations\\"
-                    ],
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
-                \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
-                }
-            },
-            \\"localAnnotations\\": {
-                \\"uri\\": \\"annotations/annotations.xml\\",
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotations.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.smartTemplate\\",
-            \\"version\\": \\"1.40.12\\",
-            \\"toolsId\\": \\"d11c4c4c-ef73-4f79-9264-086d6d99808e\\"
-        }
+  \\"_version\\": \\"1.8.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"migration_test01\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"\${project.version}\\"
     },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        },
-        \\"supportedThemes\\": [
-            \\"sap_fiori_3\\"
-        ]
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
     },
-    \\"sap.ui5\\": {
-        \\"resources\\": {
-            \\"js\\": [],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"\${sap.ui5.dist.version}\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.ui.generic.app\\": {
-                    \\"lazy\\": false
-                },
-                \\"sap.suite.ui.generic.template\\": {
-                    \\"lazy\\": false
-                }
-            },
-            \\"components\\": {}
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"@i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Review\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Review/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"dataSource\\": \\"mainService\\",
-                \\"preload\\": true,
-                \\"settings\\": {
-                    \\"defaultBindingMode\\": \\"TwoWay\\",
-                    \\"defaultCountMode\\": \\"Inline\\",
-                    \\"refreshAfterChange\\": false,
-                    \\"metadataUrlParams\\": {
-                        \\"sap-value-list\\": \\"none\\"
-                    }
-                }
-            }
-        },
-        \\"extends\\": {
-            \\"extensions\\": {}
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.ui.generic.app\\": {
-        \\"_version\\": \\"1.3.0\\",
+    \\"ach\\": \\"ach-so\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
         \\"settings\\": {
-            \\"forceGlobalRefresh\\": false,
-            \\"objectPageHeaderType\\": \\"Dynamic\\",
-            \\"showDraftToggle\\": false
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"localAnnotations\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+        }
+      },
+      \\"localAnnotations\\": {
+        \\"uri\\": \\"annotations/annotations.xml\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotations.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\",
+      \\"toolsId\\": \\"d11c4c4c-ef73-4f79-9264-086d6d99808e\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_fiori_3\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"\${sap.ui5.dist.version}\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.ui.generic.app\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.suite.ui.generic.template\\": {
+          \\"lazy\\": false
+        }
+      },
+      \\"components\\": {}
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Review\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Review/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"showDraftToggle\\": false
+    },
+    \\"pages\\": {
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"condensedTableLayout\\": true,
+            \\"smartVariantManagement\\": true
+          }
         },
         \\"pages\\": {
-            \\"ListReport|SEPMRA_C_PD_Product\\": {
-                \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+          \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+            \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+            \\"component\\": {
+              \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+            },
+            \\"pages\\": {
+              \\"ObjectPage|to_CollaborativeReview\\": {
+                \\"navigationProperty\\": \\"to_CollaborativeReview\\",
+                \\"entitySet\\": \\"SEPMRA_C_PD_Review\\",
                 \\"component\\": {
-                    \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
-                    \\"list\\": true,
-                    \\"settings\\": {
-                        \\"condensedTableLayout\\": true,
-                        \\"smartVariantManagement\\": true
-                    }
-                },
-                \\"pages\\": {
-                    \\"ObjectPage|SEPMRA_C_PD_Product\\": {
-                        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
-                        \\"component\\": {
-                            \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
-                        },
-                        \\"pages\\": {
-                            \\"ObjectPage|to_CollaborativeReview\\": {
-                                \\"navigationProperty\\": \\"to_CollaborativeReview\\",
-                                \\"entitySet\\": \\"SEPMRA_C_PD_Review\\",
-                                \\"component\\": {
-                                    \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
-                                }
-                            }
-                        }
-                    }
+                  \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
                 }
+              }
             }
+          }
         }
-    },
-    \\"sap.fiori\\": {
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"transactional\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"uri\\": \\"\\"
+      }
     }
-}",
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  }
+}
+",
     "state": "modified",
   },
   "webapp/test/changes_loader.js": Object {
@@ -76942,399 +76952,400 @@ OutputManagement=\\\\u8F38\\\\u51FA\\\\u6982\\\\u89C0
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.7.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"demo.qm.defect.records\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"\${project.version}\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"tags\\": {
-            \\"keywords\\": []
-        },
-        \\"ach\\": \\"QM-QN-DEF\\",
-        \\"resources\\": \\"resources.json\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [
-                        \\"QM_DEFECT_RECORD_ANNO_MDL\\",
-                        \\"localAnnotations\\"
-                    ],
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"QM_DEFECT_RECORD_ANNO_MDL\\": {
-                \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='QM_DEFECT_RECORD_ANNO_MDL',Version='0001')/$value/\\",
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"localService/QM_DEFECT_RECORD_ANNO_MDL.xml\\"
-                }
-            },
-            \\"localAnnotations\\": {
-                \\"uri\\": \\"annotations/annotations.xml\\",
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotations.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.smartTemplate\\",
-            \\"version\\": \\"1.40.12\\",
-            \\"toolsId\\": \\"7be68b5e-6ca6-4adf-b813-b2bc01d9fb15\\"
-        },
-        \\"crossNavigation\\": {
-            \\"inbounds\\": {
-                \\"intent1\\": {
-                    \\"signature\\": {
-                        \\"parameters\\": {
-                            \\"preferredMode\\": {
-                                \\"defaultValue\\": {
-                                    \\"value\\": \\"create\\"
-                                },
-                                \\"required\\": true
-                            },
-                            \\"Plant\\": {
-                                \\"defaultValue\\": {
-                                    \\"format\\": \\"reference\\",
-                                    \\"value\\": \\"UserDefault.Plant\\"
-                                }
-                            }
-                        },
-                        \\"additionalParameters\\": \\"allowed\\"
-                    },
-                    \\"semanticObject\\": \\"Defect\\",
-                    \\"action\\": \\"record\\"
-                },
-                \\"intent2\\": {
-                    \\"signature\\": {
-                        \\"parameters\\": {
-                            \\"Plant\\": {
-                                \\"defaultValue\\": {
-                                    \\"value\\": \\"UserDefault.Plant\\",
-                                    \\"format\\": \\"reference\\"
-                                }
-                            }
-                        },
-                        \\"additionalParameters\\": \\"allowed\\"
-                    },
-                    \\"semanticObject\\": \\"Defect\\",
-                    \\"action\\": \\"display\\"
-                }
-            },
-            \\"outbounds\\": {
-                \\"outCreateQTask\\": {
-                    \\"semanticObject\\": \\"QualityTask\\",
-                    \\"action\\": \\"process\\",
-                    \\"parameters\\": {
-                        \\"QualityTaskOrigin\\": {},
-                        \\"DefectInternalID\\": {},
-                        \\"preferredMode\\": {}
-                    }
-                },
-                \\"outboundEditDisplayQualityTask\\": {
-                    \\"semanticObject\\": \\"QualityTask\\",
-                    \\"action\\": \\"process\\",
-                    \\"parameters\\": {
-                        \\"QualityTaskInternalId\\": {},
-                        \\"DraftUUID\\": {},
-                        \\"IsActiveEntity\\": {},
-                        \\"preferredMode\\": {}
-                    }
-                }
-            }
-        }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        },
-        \\"supportedThemes\\": [
-            \\"sap_hcb\\",
-            \\"sap_belize\\"
-        ]
-    },
-    \\"sap.ui5\\": {
-        \\"flexEnabled\\": false,
-        \\"resources\\": {
-            \\"js\\": [
-                {
-                    \\"uri\\": \\"ext/utilities/DefectInternalIDChangeDocsFormatter.js\\"
-                }
-            ],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"\${sap.ui5.dist.version}\\",
-            \\"libs\\": {
-                \\"sap.collaboration\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.f\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.m\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.suite.ui.generic.template\\": {},
-                \\"sap.ui.comp\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.ui.core\\": {},
-                \\"sap.ui.generic.app\\": {},
-                \\"sap.ui.layout\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.ushell\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.sample.featuretoggle\\": {
-                    \\"minVersion\\": \\"11.15.0-SNAPSHOT\\",
-                    \\"lazy\\": false
-                },
-                \\"sap.se.mi.plm.lib.attachmentservice\\": {
-                    \\"minVersion\\": \\"11.15.0-SNAPSHOT\\",
-                    \\"lazy\\": true
-                },
-                \\"sap.nw.core.changedocs.lib.reuse\\": {
-                    \\"minVersion\\": \\"1.26.0-SNAPSHOT\\",
-                    \\"lazy\\": true
-                },
-                \\"sap.ssuite.fnd.om.outputcontrol\\": {
-                    \\"lazy\\": true
-                }
-            },
-            \\"components\\": {
-                \\"sap.se.mi.plm.lib.attachmentservice.attachment.components.stcomponent\\": {
-                    \\"lazy\\": true
-                },
-                \\"sap.nw.core.changedocs.lib.reuse\\": {
-                    \\"lazy\\": true
-                }
-            }
-        },
-        \\"componentUsages\\": {
-            \\"attachmentReuseComponent\\": {
-                \\"name\\": \\"sap.se.mi.plm.lib.attachmentservice.attachment.components.stcomponent\\",
-                \\"settings\\": {}
-            },
-            \\"ChangedocReuseComponent\\": {
-                \\"name\\": \\"sap.nw.core.changedocs.lib.reuse.changedocscomponent\\"
-            }
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"@i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ListReport|C_DefectRecord\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ListReport/C_DefectRecord/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ObjectPage|C_DefectRecord\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ObjectPage/C_DefectRecord/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"preload\\": true,
-                \\"dataSource\\": \\"mainService\\",
-                \\"settings\\": {
-                    \\"defaultBindingMode\\": \\"TwoWay\\",
-                    \\"defaultCountMode\\": \\"Inline\\",
-                    \\"refreshAfterChange\\": true
-                }
-            }
-        },
-        \\"extends\\": {
-            \\"component\\": \\"sap.suite.ui.generic.template.ListReport\\",
-            \\"minVersion\\": \\"1.1.0\\",
-            \\"extensions\\": {
-                \\"sap.ui.controllerExtensions\\": {
-                    \\"sap.suite.ui.generic.template.ObjectPage.view.Details\\": {
-                        \\"controllerName\\": \\"demo.qm.defect.records.ext.controller.ObjectPageExt\\",
-                        \\"sap.ui.generic.app\\": {
-                            \\"C_DefectRecord\\": {
-                                \\"EntitySet\\": \\"C_DefectRecord\\",
-                                \\"Header\\": {
-                                    \\"Actions\\": {}
-                                },
-                                \\"Sections\\": {
-                                    \\"DefectDataFacet2\\": {
-                                        \\"id\\": \\"DefectDataFacet2\\",
-                                        \\"Actions\\": {
-                                            \\"ActionCreateTask\\": {
-                                                \\"id\\": \\"ActionCreateTask\\",
-                                                \\"text\\": \\"{i18n>ACT_CREATE_TASK}\\",
-                                                \\"press\\": \\"onClickActionCreateTask\\"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    \\"sap.suite.ui.generic.template.ListReport.view.ListReport\\": {
-                        \\"controllerName\\": \\"demo.qm.defect.records.ext.controller.ListReportExt\\",
-                        \\"sap.ui.generic.app\\": {
-                            \\"C_DefectRecord\\": {
-                                \\"EntitySet\\": \\"C_DefectRecord\\",
-                                \\"Actions\\": {}
-                            }
-                        }
-                    }
-                },
-                \\"sap.ui.viewExtensions\\": {
-                    \\"sap.suite.ui.generic.template.ObjectPage.view.Details\\": {
-                        \\"ResponsiveTableColumnsExtension|C_DefectTaskRecord|DefectDataFacet2\\": {
-                            \\"className\\": \\"sap.ui.core.Fragment\\",
-                            \\"fragmentName\\": \\"demo.qm.defect.records.ext.fragment.CDefectTaskRecordTableColumns\\",
-                            \\"type\\": \\"XML\\"
-                        },
-                        \\"ResponsiveTableCellsExtension|C_DefectTaskRecord|DefectDataFacet2\\": {
-                            \\"className\\": \\"sap.ui.core.Fragment\\",
-                            \\"fragmentName\\": \\"demo.qm.defect.records.ext.fragment.CDefectTaskRecordTableCells\\",
-                            \\"type\\": \\"XML\\"
-                        },
-                        \\"ReplaceSubSection|C_DefectRecord|AffectedObjects\\": {
-                            \\"className\\": \\"sap.ui.core.Fragment\\",
-                            \\"fragmentName\\": \\"demo.qm.defect.records.ext.fragment.AffectedObjects\\",
-                            \\"type\\": \\"XML\\"
-                        },
-                        \\"ReplaceFacet|C_DefectRecord|DefectOutputManagement\\": {
-                            \\"className\\": \\"sap.ui.core.mvc.View\\",
-                            \\"viewName\\": \\"demo.qm.defect.records.ext.view.OutputManagement\\",
-                            \\"type\\": \\"XML\\",
-                            \\"sap.ui.generic.app\\": {
-                                \\"title\\": \\"{{OutputManagement}}\\"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.ui.generic.app\\": {
-        \\"_version\\": \\"1.3.0\\",
-        \\"settings\\": {
-            \\"useColumnLayoutForSmartForm\\": false,
-            \\"inboundParameters\\": {
-                \\"DefectCategory\\": {
-                    \\"useForCreate\\": true
-                }
-            },
-            \\"showDraftToggle\\": false
-        },
-        \\"pages\\": [
-            {
-                \\"entitySet\\": \\"C_DefectRecord\\",
-                \\"component\\": {
-                    \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
-                    \\"list\\": true,
-                    \\"settings\\": {
-                        \\"multiSelect\\": true,
-                        \\"smartVariantManagement\\": true
-                    }
-                },
-                \\"pages\\": [
-                    {
-                        \\"entitySet\\": \\"C_DefectRecord\\",
-                        \\"component\\": {
-                            \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\",
-                            \\"settings\\": {
-                                \\"editableHeaderContent\\": false
-                            }
-                        },
-                        \\"embeddedComponents\\": {
-                            \\"simple::Attachments\\": {
-                                \\"id\\": \\"simple::Attachments\\",
-                                \\"componentName\\": \\"sap.se.mi.plm.lib.attachmentservice.attachment.components.stcomponent\\",
-                                \\"title\\": \\"{{ATTACHMENTS}}\\",
-                                \\"leadingSectionIdOrPath\\": \\"DefectAttachments\\",
-                                \\"settings\\": {
-                                    \\"mode\\": \\"{= (\${ui>/editable} && \${DefectLifecycleStatus} !== '20' && \${DefectLifecycleStatus} !== '10' )?'C':'D'}\\",
-                                    \\"objectKey\\": \\"{=\${DefectInternalID}?\${DefectInternalID}:\${DraftUUID}}\\",
-                                    \\"objectType\\": \\"QFGEN\\",
-                                    \\"isDraft\\": true,
-                                    \\"flavor\\": \\"withDocType\\",
-                                    \\"attributeHandling\\": {
-                                        \\"_VisibleAttributes\\": {
-                                            \\"UPLOADEDBY\\": true,
-                                            \\"UPLOADEDON\\": true,
-                                            \\"FILESIZE\\": true,
-                                            \\"ENABLELINK\\": true,
-                                            \\"ATTACHMENTSTATUS\\": true,
-                                            \\"ATTACHMENTTITLE\\": true,
-                                            \\"SOURCE\\": true,
-                                            \\"DIRDETAILS\\": false
-                                        },
-                                        \\"_VisibleActions\\": {
-                                            \\"RENAME\\": true,
-                                            \\"DELETE\\": true,
-                                            \\"ADD\\": true,
-                                            \\"ADDURL\\": false,
-                                            \\"DOWNLOAD\\": true,
-                                            \\"CHECKIN\\": false,
-                                            \\"DOCTYPE\\": false,
-                                            \\"ASSIGN\\": false
-                                        }
-                                    }
-                                }
-                            },
-                            \\"changedoccomponent\\": {
-                                \\"id\\": \\"changedoccomponent\\",
-                                \\"componentUsage\\": \\"ChangedocReuseComponent\\",
-                                \\"title\\": \\"{{ChangeDocTitle}}\\",
-                                \\"settings\\": {
-                                    \\"objectClass\\": [
-                                        \\"QM_DEFECT\\"
-                                    ],
-                                    \\"objectId\\": \\"{path: 'DefectInternalID',formatter:'demo.qm.defect.records.ext.utilities.DefectInternalIDChangeDocsFormatter.convertDefectIDToArray'}\\",
-                                    \\"startDate\\": \\"0\\",
-                                    \\"stRefreshTrigger\\": \\"{DefectLifecycleStatus}\\"
-                                }
-                            }
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    \\"sap.fiori\\": {
-        \\"registrationIds\\": [
-            \\"F2929\\"
-        ],
-        \\"archeType\\": \\"transactional\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"uri\\": \\"\\"
-    }
-}",
+	\\"_version\\": \\"1.7.0\\",
+	\\"sap.app\\": {
+		\\"id\\": \\"demo.qm.defect.records\\",
+		\\"type\\": \\"application\\",
+		\\"i18n\\": \\"i18n/i18n.properties\\",
+		\\"applicationVersion\\": {
+			\\"version\\": \\"\${project.version}\\"
+		},
+		\\"title\\": \\"{{appTitle}}\\",
+		\\"description\\": \\"{{appDescription}}\\",
+		\\"tags\\": {
+			\\"keywords\\": []
+		},
+		\\"ach\\": \\"QM-QN-DEF\\",
+		\\"resources\\": \\"resources.json\\",
+		\\"dataSources\\": {
+			\\"mainService\\": {
+				\\"uri\\": \\"/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/\\",
+				\\"type\\": \\"OData\\",
+				\\"settings\\": {
+					\\"annotations\\": [
+						\\"QM_DEFECT_RECORD_ANNO_MDL\\",
+						\\"localAnnotations\\"
+					],
+					\\"localUri\\": \\"localService/metadata.xml\\"
+				}
+			},
+			\\"QM_DEFECT_RECORD_ANNO_MDL\\": {
+				\\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='QM_DEFECT_RECORD_ANNO_MDL',Version='0001')/$value/\\",
+				\\"type\\": \\"ODataAnnotation\\",
+				\\"settings\\": {
+					\\"localUri\\": \\"localService/QM_DEFECT_RECORD_ANNO_MDL.xml\\"
+				}
+			},
+			\\"localAnnotations\\": {
+				\\"uri\\": \\"annotations/annotations.xml\\",
+				\\"type\\": \\"ODataAnnotation\\",
+				\\"settings\\": {
+					\\"localUri\\": \\"annotations/annotations.xml\\"
+				}
+			}
+		},
+		\\"offline\\": false,
+		\\"sourceTemplate\\": {
+			\\"id\\": \\"ui5template.smartTemplate\\",
+			\\"version\\": \\"1.40.12\\",
+			\\"toolsId\\": \\"7be68b5e-6ca6-4adf-b813-b2bc01d9fb15\\"
+		},
+		\\"crossNavigation\\": {
+			\\"inbounds\\": {
+				\\"intent1\\": {
+					\\"signature\\": {
+						\\"parameters\\": {
+							\\"preferredMode\\": {
+								\\"defaultValue\\": {
+									\\"value\\": \\"create\\"
+								},
+								\\"required\\": true
+							},
+							\\"Plant\\": {
+								\\"defaultValue\\": {
+									\\"format\\": \\"reference\\",
+									\\"value\\": \\"UserDefault.Plant\\"
+								}
+							}
+						},
+						\\"additionalParameters\\": \\"allowed\\"
+					},
+					\\"semanticObject\\": \\"Defect\\",
+					\\"action\\": \\"record\\"
+				},
+				\\"intent2\\": {
+					\\"signature\\": {
+						\\"parameters\\": {
+							\\"Plant\\": {
+								\\"defaultValue\\": {
+									\\"value\\": \\"UserDefault.Plant\\",
+									\\"format\\": \\"reference\\"
+								}
+							}
+						},
+						\\"additionalParameters\\": \\"allowed\\"
+					},
+					\\"semanticObject\\": \\"Defect\\",
+					\\"action\\": \\"display\\"
+				}
+			},
+			\\"outbounds\\": {
+				\\"outCreateQTask\\": {
+					\\"semanticObject\\": \\"QualityTask\\",
+					\\"action\\": \\"process\\",
+					\\"parameters\\": {
+						\\"QualityTaskOrigin\\": {},
+						\\"DefectInternalID\\": {},
+						\\"preferredMode\\": {}
+					}
+				},
+				\\"outboundEditDisplayQualityTask\\": {
+					\\"semanticObject\\": \\"QualityTask\\",
+					\\"action\\": \\"process\\",
+					\\"parameters\\": {
+						\\"QualityTaskInternalId\\": {},
+						\\"DraftUUID\\": {},
+						\\"IsActiveEntity\\": {},
+						\\"preferredMode\\": {}
+					}
+				}
+			}
+		}
+	},
+	\\"sap.ui\\": {
+		\\"technology\\": \\"UI5\\",
+		\\"icons\\": {
+			\\"icon\\": \\"\\",
+			\\"favIcon\\": \\"\\",
+			\\"phone\\": \\"\\",
+			\\"phone@2\\": \\"\\",
+			\\"tablet\\": \\"\\",
+			\\"tablet@2\\": \\"\\"
+		},
+		\\"deviceTypes\\": {
+			\\"desktop\\": true,
+			\\"tablet\\": true,
+			\\"phone\\": true
+		},
+		\\"supportedThemes\\": [
+			\\"sap_hcb\\",
+			\\"sap_belize\\"
+		]
+	},
+	\\"sap.ui5\\": {
+		\\"flexEnabled\\": false,
+		\\"resources\\": {
+			\\"js\\": [
+				{
+					\\"uri\\": \\"ext/utilities/DefectInternalIDChangeDocsFormatter.js\\"
+				}
+			],
+			\\"css\\": []
+		},
+		\\"dependencies\\": {
+			\\"minUI5Version\\": \\"\${sap.ui5.dist.version}\\",
+			\\"libs\\": {
+				\\"sap.collaboration\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.f\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.m\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.suite.ui.generic.template\\": {},
+				\\"sap.ui.comp\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.ui.core\\": {},
+				\\"sap.ui.generic.app\\": {},
+				\\"sap.ui.layout\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.ushell\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.sample.featuretoggle\\": {
+					\\"minVersion\\": \\"11.15.0-SNAPSHOT\\",
+					\\"lazy\\": false
+				},
+				\\"sap.se.mi.plm.lib.attachmentservice\\": {
+					\\"minVersion\\": \\"11.15.0-SNAPSHOT\\",
+					\\"lazy\\": true
+				},
+				\\"sap.nw.core.changedocs.lib.reuse\\": {
+					\\"minVersion\\": \\"1.26.0-SNAPSHOT\\",
+					\\"lazy\\": true
+				},
+				\\"sap.ssuite.fnd.om.outputcontrol\\": {
+					\\"lazy\\": true
+				}
+			},
+			\\"components\\": {
+				\\"sap.se.mi.plm.lib.attachmentservice.attachment.components.stcomponent\\": {
+					\\"lazy\\": true
+				},
+				\\"sap.nw.core.changedocs.lib.reuse\\": {
+					\\"lazy\\": true
+				}
+			}
+		},
+		\\"componentUsages\\": {
+			\\"attachmentReuseComponent\\": {
+				\\"name\\": \\"sap.se.mi.plm.lib.attachmentservice.attachment.components.stcomponent\\",
+				\\"settings\\": {}
+			},
+			\\"ChangedocReuseComponent\\": {
+				\\"name\\": \\"sap.nw.core.changedocs.lib.reuse.changedocscomponent\\"
+			}
+		},
+		\\"models\\": {
+			\\"i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			},
+			\\"@i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			},
+			\\"i18n|sap.suite.ui.generic.template.ListReport|C_DefectRecord\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/ListReport/C_DefectRecord/i18n.properties\\"
+			},
+			\\"i18n|sap.suite.ui.generic.template.ObjectPage|C_DefectRecord\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/ObjectPage/C_DefectRecord/i18n.properties\\"
+			},
+			\\"\\": {
+				\\"preload\\": true,
+				\\"dataSource\\": \\"mainService\\",
+				\\"settings\\": {
+					\\"defaultBindingMode\\": \\"TwoWay\\",
+					\\"defaultCountMode\\": \\"Inline\\",
+					\\"refreshAfterChange\\": true
+				}
+			}
+		},
+		\\"extends\\": {
+			\\"component\\": \\"sap.suite.ui.generic.template.ListReport\\",
+			\\"minVersion\\": \\"1.1.0\\",
+			\\"extensions\\": {
+				\\"sap.ui.controllerExtensions\\": {
+					\\"sap.suite.ui.generic.template.ObjectPage.view.Details\\": {
+						\\"controllerName\\": \\"demo.qm.defect.records.ext.controller.ObjectPageExt\\",
+						\\"sap.ui.generic.app\\": {
+							\\"C_DefectRecord\\": {
+								\\"EntitySet\\": \\"C_DefectRecord\\",
+								\\"Header\\": {
+									\\"Actions\\": {}
+								},
+								\\"Sections\\": {
+									\\"DefectDataFacet2\\": {
+										\\"id\\": \\"DefectDataFacet2\\",
+										\\"Actions\\": {
+											\\"ActionCreateTask\\": {
+												\\"id\\": \\"ActionCreateTask\\",
+												\\"text\\": \\"{i18n>ACT_CREATE_TASK}\\",
+												\\"press\\": \\"onClickActionCreateTask\\"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					\\"sap.suite.ui.generic.template.ListReport.view.ListReport\\": {
+						\\"controllerName\\": \\"demo.qm.defect.records.ext.controller.ListReportExt\\",
+						\\"sap.ui.generic.app\\": {
+							\\"C_DefectRecord\\": {
+								\\"EntitySet\\": \\"C_DefectRecord\\",
+								\\"Actions\\": {}
+							}
+						}
+					}
+				},
+				\\"sap.ui.viewExtensions\\": {
+					\\"sap.suite.ui.generic.template.ObjectPage.view.Details\\": {
+						\\"ResponsiveTableColumnsExtension|C_DefectTaskRecord|DefectDataFacet2\\": {
+							\\"className\\": \\"sap.ui.core.Fragment\\",
+							\\"fragmentName\\": \\"demo.qm.defect.records.ext.fragment.CDefectTaskRecordTableColumns\\",
+							\\"type\\": \\"XML\\"
+						},
+						\\"ResponsiveTableCellsExtension|C_DefectTaskRecord|DefectDataFacet2\\": {
+							\\"className\\": \\"sap.ui.core.Fragment\\",
+							\\"fragmentName\\": \\"demo.qm.defect.records.ext.fragment.CDefectTaskRecordTableCells\\",
+							\\"type\\": \\"XML\\"
+						},
+						\\"ReplaceSubSection|C_DefectRecord|AffectedObjects\\": {
+							\\"className\\": \\"sap.ui.core.Fragment\\",
+							\\"fragmentName\\": \\"demo.qm.defect.records.ext.fragment.AffectedObjects\\",
+							\\"type\\": \\"XML\\"
+						},
+						\\"ReplaceFacet|C_DefectRecord|DefectOutputManagement\\": {
+							\\"className\\": \\"sap.ui.core.mvc.View\\",
+							\\"viewName\\": \\"demo.qm.defect.records.ext.view.OutputManagement\\",
+							\\"type\\": \\"XML\\",
+							\\"sap.ui.generic.app\\": {
+								\\"title\\": \\"{{OutputManagement}}\\"
+							}
+						}
+					}
+				}
+			}
+		},
+		\\"contentDensities\\": {
+			\\"compact\\": true,
+			\\"cozy\\": true
+		}
+	},
+	\\"sap.ui.generic.app\\": {
+		\\"_version\\": \\"1.3.0\\",
+		\\"settings\\": {
+			\\"useColumnLayoutForSmartForm\\": false,
+			\\"inboundParameters\\": {
+				\\"DefectCategory\\": {
+					\\"useForCreate\\": true
+				}
+			},
+			\\"showDraftToggle\\": false
+		},
+		\\"pages\\": [
+			{
+				\\"entitySet\\": \\"C_DefectRecord\\",
+				\\"component\\": {
+					\\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+					\\"list\\": true,
+					\\"settings\\": {
+						\\"multiSelect\\": true,
+						\\"smartVariantManagement\\": true
+					}
+				},
+				\\"pages\\": [
+					{
+						\\"entitySet\\": \\"C_DefectRecord\\",
+						\\"component\\": {
+							\\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\",
+							\\"settings\\": {
+								\\"editableHeaderContent\\": false
+							}
+						},
+						\\"embeddedComponents\\": {
+							\\"simple::Attachments\\": {
+								\\"id\\": \\"simple::Attachments\\",
+								\\"componentName\\": \\"sap.se.mi.plm.lib.attachmentservice.attachment.components.stcomponent\\",
+								\\"title\\": \\"{{ATTACHMENTS}}\\",
+								\\"leadingSectionIdOrPath\\": \\"DefectAttachments\\",
+								\\"settings\\": {
+									\\"mode\\": \\"{= (\${ui>/editable} && \${DefectLifecycleStatus} !== '20' && \${DefectLifecycleStatus} !== '10' )?'C':'D'}\\",
+									\\"objectKey\\": \\"{=\${DefectInternalID}?\${DefectInternalID}:\${DraftUUID}}\\",
+									\\"objectType\\": \\"QFGEN\\",
+									\\"isDraft\\": true,
+									\\"flavor\\": \\"withDocType\\",
+									\\"attributeHandling\\": {
+										\\"_VisibleAttributes\\": {
+											\\"UPLOADEDBY\\": true,
+											\\"UPLOADEDON\\": true,
+											\\"FILESIZE\\": true,
+											\\"ENABLELINK\\": true,
+											\\"ATTACHMENTSTATUS\\": true,
+											\\"ATTACHMENTTITLE\\": true,
+											\\"SOURCE\\": true,
+											\\"DIRDETAILS\\": false
+										},
+										\\"_VisibleActions\\": {
+											\\"RENAME\\": true,
+											\\"DELETE\\": true,
+											\\"ADD\\": true,
+											\\"ADDURL\\": false,
+											\\"DOWNLOAD\\": true,
+											\\"CHECKIN\\": false,
+											\\"DOCTYPE\\": false,
+											\\"ASSIGN\\": false
+										}
+									}
+								}
+							},
+							\\"changedoccomponent\\": {
+								\\"id\\": \\"changedoccomponent\\",
+								\\"componentUsage\\": \\"ChangedocReuseComponent\\",
+								\\"title\\": \\"{{ChangeDocTitle}}\\",
+								\\"settings\\": {
+									\\"objectClass\\": [
+										\\"QM_DEFECT\\"
+									],
+									\\"objectId\\": \\"{path: 'DefectInternalID',formatter:'demo.qm.defect.records.ext.utilities.DefectInternalIDChangeDocsFormatter.convertDefectIDToArray'}\\",
+									\\"startDate\\": \\"0\\",
+									\\"stRefreshTrigger\\": \\"{DefectLifecycleStatus}\\"
+								}
+							}
+						}
+					}
+				]
+			}
+		]
+	},
+	\\"sap.fiori\\": {
+		\\"registrationIds\\": [
+			\\"F2929\\"
+		],
+		\\"archeType\\": \\"transactional\\"
+	},
+	\\"sap.platform.hcp\\": {
+		\\"uri\\": \\"\\"
+	}
+}
+",
     "state": "modified",
   },
   "webapp/test/changes_loader.js": Object {
@@ -83539,154 +83550,155 @@ appDescription=A Fiori Worklist application.
   },
   "webapp/manifest.json": Object {
     "contents": "{
-    \\"_version\\": \\"1.8.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"namespace2.tool_suite_ga_worklist_v2_project\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"1.0.0\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"tags\\": {
-            \\"keywords\\": []
-        },
-        \\"ach\\": \\"\\",
-        \\"resources\\": \\"resources.json\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [
-                        \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-                        \\"annotation\\"
-                    ],
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
-                \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
-                }
-            },
-            \\"annotation\\": {
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"uri\\": \\"annotations/annotation.xml\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotations.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.smartTemplate\\",
-            \\"version\\": \\"1.40.12\\",
-            \\"toolsId\\": \\"f7ab57a0-8f0a-4240-8926-74ca5de1f1e2\\"
+  \\"_version\\": \\"1.8.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"namespace2.tool_suite_ga_worklist_v2_project\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
+    },
+    \\"ach\\": \\"\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
         }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        },
-        \\"supportedThemes\\": [
-            \\"sap_hcb\\",
-            \\"sap_belize\\"
-        ]
-    },
-    \\"sap.ui5\\": {
-        \\"resources\\": {
-            \\"js\\": [],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.65.0\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {},
-                \\"sap.ui.generic.app\\": {},
-                \\"sap.suite.ui.generic.template\\": {},
-                \\"sap.m\\": {
-                    \\"lazy\\": true
-                }
-            },
-            \\"components\\": {}
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"@i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
-            },
-            \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"dataSource\\": \\"mainService\\",
-                \\"preload\\": true,
-                \\"settings\\": {
-                    \\"defaultBindingMode\\": \\"TwoWay\\",
-                    \\"defaultCountMode\\": \\"Inline\\",
-                    \\"refreshAfterChange\\": false
-                }
-            }
-        },
-        \\"extends\\": {
-            \\"extensions\\": {}
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
+      },
+      \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
-    },
-    \\"sap.ui.generic.app\\": {
-        \\"_version\\": \\"1.3.0\\",
-        \\"pages\\": {
-            \\"ListReport|SEPMRA_C_PD_Product\\": {
-                \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
-                \\"component\\": {
-                    \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
-                    \\"list\\": true,
-                    \\"settings\\": {
-                        \\"multiSelect\\": true,
-                        \\"variantManagementHidden\\": false,
-                        \\"smartVariantManagement\\": true,
-                        \\"isWorklist\\": true
-                    }
-                },
-                \\"pages\\": {}
-            }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotations.xml\\"
         }
+      }
     },
-    \\"sap.fiori\\": {
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"transactional\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"uri\\": \\"\\"
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\",
+      \\"toolsId\\": \\"f7ab57a0-8f0a-4240-8926-74ca5de1f1e2\\"
     }
-}",
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_hcb\\",
+      \\"sap_belize\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.65.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.ui.generic.app\\": {},
+        \\"sap.suite.ui.generic.template\\": {},
+        \\"sap.m\\": {
+          \\"lazy\\": true
+        }
+      },
+      \\"components\\": {}
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"pages\\": {
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"multiSelect\\": true,
+            \\"variantManagementHidden\\": false,
+            \\"smartVariantManagement\\": true,
+            \\"isWorklist\\": true
+          }
+        },
+        \\"pages\\": {}
+      }
+    }
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  }
+}
+",
     "state": "modified",
   },
   "webapp/test/changes_loader.js": Object {
