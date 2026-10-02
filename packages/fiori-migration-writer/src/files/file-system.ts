@@ -6,11 +6,11 @@ import type { Editor } from 'mem-fs-editor';
  * @param fs - The mem-fs-editor instance
  */
 export async function commitFileSystemChanges(fs: Editor | undefined): Promise<void> {
-    return new Promise((resolve) => {
-        if (fs) {
-            fs.commit(resolve);
-        } else {
+    return new Promise((resolve, reject) => {
+        if (!fs) {
             resolve();
+            return;
         }
+        fs.commit((error) => (error ? reject(error) : resolve()));
     });
 }
