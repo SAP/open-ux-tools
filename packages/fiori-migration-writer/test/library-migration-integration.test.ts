@@ -5,13 +5,11 @@
  * Addresses review feedback: https://github.wdf.sap.corp/ux-engineering/tools-suite/pull/39527
  */
 
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { ProjectMigrator, MigrationTypes, initI18n } from '@sap-ux/fiori-migration-writer';
-import { getReuseLibs, ReuseLibType } from '@sap-ux/fiori-migration-writer';
+import { ProjectMigrator, MigrationTypes, initI18n, getReuseLibs, ReuseLibType } from '@sap-ux/fiori-migration-writer';
 import type { ProjectFolder } from '@sap-ux/fiori-migration-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

@@ -1,4 +1,3 @@
-import { describe, test, expect, beforeAll } from '@jest/globals';
 import { readManifest, getUI5Version, initI18n } from '../src/index.js';
 import { join } from 'node:path';
 import { writeFileSync, mkdirSync, rmSync } from 'node:fs';

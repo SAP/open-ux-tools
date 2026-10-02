@@ -1,6 +1,3 @@
-/* eslint-disable sonarjs/no-implicit-dependencies */
-/* eslint-disable import/no-unresolved */
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 import { join } from 'node:path';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';

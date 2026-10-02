@@ -1,4 +1,3 @@
-import { describe, test, expect, beforeEach } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createMemFsEditor } from 'mem-fs-editor';

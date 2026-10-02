@@ -7,7 +7,7 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import { fileExists, updateJSON, readFile, writeFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { mkdir, exists, copyFile } from '../utils/fs-adapter.js';
+import { mkdir, exists } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 
@@ -147,8 +147,7 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
 
         // Write manifest to appropriate location
         // Check if webapp directory exists (works for both mem-fs and real fs)
-        const shouldWriteToWebapp =
-            projectInfo.webappPath && exists(join(rootPath, projectInfo.webappPath));
+        const shouldWriteToWebapp = projectInfo.webappPath && exists(join(rootPath, projectInfo.webappPath));
 
         if (shouldWriteToWebapp) {
             await updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);

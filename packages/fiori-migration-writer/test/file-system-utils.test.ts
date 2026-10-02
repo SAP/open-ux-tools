@@ -1,4 +1,3 @@
-import { describe, test, expect, beforeAll } from '@jest/globals';
 import { doesPropertyExist, stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, initI18n } from '../src/index.js';
 
 describe('File System Utils', () => {

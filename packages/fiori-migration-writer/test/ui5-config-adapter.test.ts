@@ -1,4 +1,3 @@
-import { jest, describe, test, expect, beforeAll } from '@jest/globals';
 import {
     generateUI5YamlContent,
     generateUI5LocalYamlContent,

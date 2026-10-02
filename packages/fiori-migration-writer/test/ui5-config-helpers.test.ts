@@ -1,6 +1,5 @@
-import { jest, describe, test, expect, beforeAll } from '@jest/globals';
-import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware, initI18n } from '@sap-ux/fiori-migration-writer';
-import type { TemplateData } from '@sap-ux/fiori-migration-writer';
+import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware, initI18n } from '../src/index.js';
+import type { TemplateData } from '../src/types.js';
 
 jest.setTimeout(30000);
 

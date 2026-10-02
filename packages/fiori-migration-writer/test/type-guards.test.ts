@@ -1,4 +1,3 @@
-import { describe, test, expect } from '@jest/globals';
 import { isProjectFolderArray } from '../src/types/project-folder.js';
 
 describe('Type Guards', () => {

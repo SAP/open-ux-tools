@@ -16,10 +16,7 @@ export async function loadOrFetchProjectInfo(
     let projectInfo: ImportProjectInfo;
 
     // Check if importProjectInfo is complete (has critical fields)
-    const isCompleteProjectInfo =
-        importProjectInfo &&
-        importProjectInfo.type !== undefined &&
-        importProjectInfo.moduleName !== undefined;
+    const isCompleteProjectInfo = importProjectInfo?.type !== undefined && importProjectInfo.moduleName !== undefined;
 
     if (isCompleteProjectInfo) {
         // Use provided complete project info (tests, programmatic usage)

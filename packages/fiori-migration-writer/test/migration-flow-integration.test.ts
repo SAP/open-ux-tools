@@ -1,4 +1,3 @@
-import { describe, test, expect, beforeAll } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ProjectMigrator, initI18n } from '../src/index.js';
