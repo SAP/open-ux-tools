@@ -5,8 +5,8 @@ import { ProjectAccess } from '../utils/Project.js';
  * Loads project information either from provided data or by fetching from project root.
  *
  * @param projectRoot - Root directory of the project
- * @param importProjectInfo - Optional partial project info with overrides (e.g., connection settings)
- * @returns Project info (fetched metadata merged with overrides) and any messages
+ * @param importProjectInfo - Optional project info (complete or partial overrides)
+ * @returns Project info and any messages
  */
 export async function loadOrFetchProjectInfo(
     projectRoot: string,
@@ -15,15 +15,26 @@ export async function loadOrFetchProjectInfo(
     let messages: Message[] = [];
     let projectInfo: ImportProjectInfo;
 
-    // Always fetch project info to get complete metadata
-    const { messages: projectInfoMsgs, projectInfo: accessProjectInfo } =
-        await ProjectAccess.getProjectInfo(projectRoot);
-    messages = messages.concat(projectInfoMsgs);
+    // Check if importProjectInfo is complete (has critical fields)
+    const isCompleteProjectInfo =
+        importProjectInfo &&
+        importProjectInfo.type !== undefined &&
+        importProjectInfo.moduleName !== undefined;
 
-    // Merge CLI overrides with fetched project info
-    projectInfo = importProjectInfo
-        ? { ...accessProjectInfo, ...importProjectInfo }
-        : accessProjectInfo;
+    if (isCompleteProjectInfo) {
+        // Use provided complete project info (tests, CLI with full data)
+        projectInfo = importProjectInfo!;
+    } else {
+        // Fetch project info and merge with partial overrides
+        const { messages: projectInfoMsgs, projectInfo: accessProjectInfo } =
+            await ProjectAccess.getProjectInfo(projectRoot);
+        messages = messages.concat(projectInfoMsgs);
+
+        // Merge CLI overrides with fetched project info
+        projectInfo = importProjectInfo
+            ? { ...accessProjectInfo, ...importProjectInfo }
+            : accessProjectInfo;
+    }
 
     return { projectInfo, messages };
 }

@@ -91,18 +91,19 @@ describe('Type Guards', () => {
             expect(isProjectFolderArray(invalid)).toBe(false);
         });
 
-        test('should allow uri without scheme property', () => {
-            const valid = [
+        test('should reject uri without scheme property', () => {
+            const invalid = [
                 {
                     uri: {
                         fsPath: '/path/to/project'
+                        // Missing scheme property
                     },
                     name: 'project',
                     index: 0
                 }
             ];
-            // This should pass since the guard only checks for fsPath existence
-            expect(isProjectFolderArray(valid)).toBe(true);
+            // Should fail because scheme is required
+            expect(isProjectFolderArray(invalid)).toBe(false);
         });
     });
 });
