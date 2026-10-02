@@ -189,6 +189,7 @@ describe('ui5-test-writer', () => {
                     startLR: 'TravelList',
                     navigatedOP: undefined,
                     hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
                     name: 'TravelList',
                     appPath: 'project1',
                     createButton: { visible: false },
@@ -208,35 +209,63 @@ describe('ui5-test-writer', () => {
 
             it('integrates confirmation-dialog steps into the actions block only for critical actions', () => {
                 const journey = renderListReportJourney([
-                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
-                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                    {
+                        label: 'Set To Booked',
+                        action: 'setToBooked',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: true
+                    },
+                    {
+                        label: 'Copy',
+                        action: 'Copy',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: true,
+                        isCritical: false
+                    }
                 ]);
                 // No separate opaTest block — critical steps live in "Check table columns and actions".
                 expect(journey).not.toContain('Check critical action confirmation dialog');
-                expect(journey).toContain('iCheckAction("Set To Booked"');
-                expect(journey).toContain('onTable(defaultTableId).iExecuteAction("Set To Booked")');
+                expect(journey).toContain('iCheckAction({ service: "NS", action: "setToBooked", unbound: false }');
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "setToBooked", unbound: false })'
+                );
                 expect(journey).toContain('onMessageDialog().iCheckState()');
                 expect(journey).toContain('onMessageDialog().iCancel()');
                 // Bound (enabled !== true) critical action selects a row first.
                 expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
                 // The non-critical action's execute stays commented out.
                 expect(journey).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Copy")'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: "NS", action: "Copy", unbound: false })'
                 );
             });
 
             it('comments out the confirmation-dialog steps for a dynamically-enabled critical action', () => {
                 const journey = renderListReportJourney([
-                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: 'dynamic', isCritical: true }
+                    {
+                        label: 'Set To New',
+                        action: 'setToNew',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: 'dynamic',
+                        isCritical: true
+                    }
                 ]);
                 const lines = journey.split('\n').map((line) => line.trim());
                 // Conditionally enabled (Core.OperationAvailable path) → steps are emitted commented out, never run.
                 expect(lines).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("Set To New");'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction({ service: "NS", action: "setToNew", unbound: false });'
                 );
                 const active = lines.filter((line) => !line.startsWith('//'));
                 expect(active.some((line) => line.includes('onMessageDialog'))).toBe(false);
-                expect(active.some((line) => line.includes('iExecuteAction("Set To New")'))).toBe(false);
+                expect(active.some((line) => line.includes('iExecuteAction({ service: "NS", action: "setToNew"'))).toBe(
+                    false
+                );
             });
 
             it('omits the confirmation-dialog steps when no action is critical', () => {
@@ -253,6 +282,7 @@ describe('ui5-test-writer', () => {
                 editor.copyTpl(templatePath, outPath, {
                     name: 'TravelObjectPage',
                     hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
                     navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
                     headerTitle: undefined,
                     headerSections: [],
@@ -273,6 +303,74 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('onMessageDialog().iCheckState()');
                 expect(journey).toContain('onMessageDialog().iCancel()');
                 expect(journey).toContain('onHeader().iExecuteAction({ service: "TestService", action: "setToBooked"');
+            });
+
+            it('deselects the row after a bound critical action so the next action starts clean', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true }
+                ]);
+                // One select before the action, one deselect after cancelling the dialog.
+                const selectCount = (journey.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).length;
+                expect(selectCount).toBe(2);
+                expect(journey).toContain('Deselect the row so the following actions start with an empty selection.');
+            });
+
+            it('hoists a single filter-bar search before the action block for multiple critical actions', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
+                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: false, isCritical: true }
+                ]);
+                // Scope to the actions test block; the separate "Navigate to ObjectPage" block has its own search.
+                const actionsBlock = journey.slice(
+                    journey.indexOf('Check table columns and actions'),
+                    journey.indexOf('Navigate to ObjectPage')
+                );
+                const searchCount = (actionsBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length;
+                expect(searchCount).toBe(1);
+            });
+
+            it('validates the action parameter dialog for a parameterized action and cancels it', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Deduct Discount',
+                        action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: false,
+                        parameterDialogFields: ['discount_percent']
+                    }
+                ]);
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "deductDiscount", unbound: false })'
+                );
+                expect(journey).toContain(
+                    'onActionDialog().iCheckActionParameterDialogField({ property: "discount_percent" }, undefined, { visible: true })'
+                );
+                expect(journey).toContain('onActionDialog().iCancel()');
+                // A parameter dialog is shown, not the plain confirmation message dialog.
+                expect(journey).not.toContain('onMessageDialog');
+            });
+
+            it('prefers the parameter dialog over the confirmation dialog for a critical parameterized action', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Deduct Discount',
+                        action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: true,
+                        parameterDialogFields: ['discount_percent']
+                    }
+                ]);
+                const activeLines = journey.split('\n').filter((line) => !line.trim().startsWith('//'));
+                expect(
+                    activeLines.some((line) => line.includes('onActionDialog().iCheckActionParameterDialogField'))
+                ).toBe(true);
+                expect(activeLines.some((line) => line.includes('onMessageDialog'))).toBe(false);
             });
         });
 
@@ -1832,7 +1930,11 @@ export type Then = Opa5 & BaseArrangements & {
                 { ui5Version: '1.147.9', expectedBucket: '1.84' },
                 { ui5Version: '1.148.0', expectedBucket: '1.148' },
                 { ui5Version: '1.148.9', expectedBucket: '1.148' },
-                { ui5Version: '1.149.0', expectedBucket: 'latest' },
+                { ui5Version: '1.149.0', expectedBucket: '1.148' },
+                { ui5Version: '1.151.9', expectedBucket: '1.148' },
+                { ui5Version: '1.152.0', expectedBucket: '1.152' },
+                { ui5Version: '1.152.9', expectedBucket: '1.152' },
+                { ui5Version: '1.153.0', expectedBucket: 'latest' },
                 { ui5Version: '1.160.0', expectedBucket: 'latest' }
             ])('ui5Version $ui5Version → bucket $expectedBucket', async ({ ui5Version, expectedBucket }) => {
                 const projectDir = prepareTestFiles('FullScreenLROP');
@@ -2016,7 +2118,8 @@ export type Then = Opa5 & BaseArrangements & {
             it.each([
                 ['1.84', '1.120.0'],
                 ['1.148', '1.148.0'],
-                ['latest', '1.149.0']
+                ['1.152', '1.152.0'],
+                ['latest', '1.153.0']
             ])('bucket %s generates correct FPM output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('CustomOP');
                 fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
@@ -2068,6 +2171,16 @@ describe('removeUnsupportedActions()', () => {
     it('latest: keeps all action types', () => {
         const features = makeFeatures();
         removeUnsupportedActions(features, 'latest');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'CustomTB', 'MenuTB'],
+            header: ['CustomH', 'MenuH', 'KeepH'],
+            section: ['KeepS', 'CustomS', 'MenuS']
+        });
+    });
+
+    it('1.152: keeps all action types (same as latest)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.152');
         expect(labels(features)).toEqual({
             tb: ['KeepTB', 'CustomTB', 'MenuTB'],
             header: ['CustomH', 'MenuH', 'KeepH'],

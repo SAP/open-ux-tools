@@ -18,7 +18,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [STRICT_UOM_FILTERING]:
-                'The "disableStrictUomFiltering" property should not be set to true. Remove this property or set it to false to keep strict unit-of-measure filtering active.'
+                'The `disableStrictUomFiltering` property should not be set to `true`. Remove this property or set it to `false` to keep strict unit-of-measure filtering active.'
         },
         fixable: 'code'
     },
