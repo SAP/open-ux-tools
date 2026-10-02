@@ -4,10 +4,10 @@
 
 import { join, resolve } from 'node:path';
 import { existsSync, readdirSync, statSync } from 'node:fs';
-import { fileExists, updateJSON, readFile, writeFile } from '../utils/index.js';
+import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { mkdir, exists } from '../utils/fs-adapter.js';
+import { mkdir, exists, isMemFsEnabled } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 
@@ -85,13 +85,20 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
             const destEntry = join(destPath, entry.name);
             await recursiveMove(srcEntry, destEntry);
         }
+
+        // Delete the now-empty source directory (real fs only)
+        if (!isMemFsEnabled() && existsSync(sourcePath)) {
+            const { rm } = await import('node:fs/promises');
+            await rm(sourcePath, { recursive: true, force: true });
+        }
     } else {
         // It's a file - copy it
         const content = await readFile(sourcePath);
         await writeFile(destPath, content);
-    }
 
-    // Note: Deletion of source is handled by the calling function after all moves complete
+        // Delete source file after copying
+        await deleteFile(sourcePath);
+    }
 }
 
 /**
@@ -222,11 +229,8 @@ export async function createWebappFolderAndMigrateFiles(
                     const destPath = join(rootPath, DirName.Webapp, path.name);
 
                     // Recursively move files and directories
+                    // Source files are automatically deleted after copy completes
                     await recursiveMove(sourcePath, destPath);
-
-                    // Note: Source deletion handled after migration completes
-                    // In mem-fs mode, files are copied to new locations; source deletion
-                    // happens when the editor commits changes
                 }
             }
         }

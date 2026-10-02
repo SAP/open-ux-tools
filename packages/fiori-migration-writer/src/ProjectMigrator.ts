@@ -39,6 +39,8 @@ import { i18nText } from './i18n.js';
 
 export class ProjectMigrator {
     static fs: Editor | undefined;
+    private static migrationInProgress = false;
+
     /**
      * migrate project
      *
@@ -57,6 +59,21 @@ export class ProjectMigrator {
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<{ result: boolean; messages: Message[] }> {
+        // Prevent concurrent migrations due to shared mem-fs editor
+        if (this.migrationInProgress) {
+            return {
+                result: false,
+                messages: [
+                    {
+                        type: 'ERROR',
+                        description:
+                            'Another migration is in progress. Please wait for it to complete before starting a new migration.'
+                    }
+                ]
+            };
+        }
+
+        this.migrationInProgress = true;
         let messages: Message[] = [];
         let result = false;
 
@@ -134,6 +151,8 @@ export class ProjectMigrator {
                 // Caller provided editor - just disable (caller handles commit)
                 disableMemFs();
             }
+            // Release the migration lock
+            this.migrationInProgress = false;
         }
         return { result, messages };
     }

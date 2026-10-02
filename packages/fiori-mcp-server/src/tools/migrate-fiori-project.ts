@@ -1,8 +1,7 @@
-import { ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
+import { ProjectMigrator, initI18n, isFioriToolsProject } from '@sap-ux/fiori-migration-writer';
 import type { Message, ImportProjectInfo } from '@sap-ux/fiori-migration-writer';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { getProjectType } from '@sap-ux/project-access';
 import { logger } from '../utils/index.js';
 
 export interface MigrateProjectInput {
@@ -222,19 +221,18 @@ export async function migrateFioriProject(params: MigrateProjectInput): Promise<
 
         // Check if project is already migrated (unless force is true)
         if (!params.force) {
-            const projectType = await getProjectType(projectPath);
-            const isToolsProject = projectType !== undefined && !projectType.includes('webide');
+            const isAlreadyMigrated = await isFioriToolsProject(projectPath);
 
-            if (isToolsProject) {
+            if (isAlreadyMigrated) {
                 return {
                     status: 'Warning',
-                    message:
-                        'Project appears to be already migrated to Fiori tools. Use force=true to re-migrate.',
+                    message: 'Project appears to be already migrated to Fiori tools. Use force=true to re-migrate.',
                     projectPath,
                     messages: [
                         {
                             type: 'WARNING',
-                            description: `Project type detected: ${projectType}. Already migrated to Fiori tools.`
+                            description:
+                                'Project already has Fiori tools markers (ui5.yaml, package.json). Already migrated.'
                         }
                     ],
                     followOnActions: [],
@@ -285,10 +283,12 @@ export async function migrateFioriProject(params: MigrateProjectInput): Promise<
         // Analyze messages for follow-on actions
         const followOnActions = result.messages ? analyzeMessages(result.messages) : [];
 
-        // Calculate summary - Message type is 'SUCCESS' not 'INFO'
+        // Calculate summary
+        // Note: filesModified is not accurately tracked by message types
+        // ProjectMigrator returns result:true on success but doesn't emit per-file SUCCESS messages
         const messages = result.messages || [];
         const summary = {
-            filesModified: messages.filter((m) => m.type === 'SUCCESS').length,
+            filesModified: result.result ? 1 : 0, // Indicate migration occurred (actual file count not available)
             warnings: messages.filter((m) => m.type === 'WARNING').length,
             errors: messages.filter((m) => m.type === 'ERROR').length
         };

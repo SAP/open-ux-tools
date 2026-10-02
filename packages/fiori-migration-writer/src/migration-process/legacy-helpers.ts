@@ -87,6 +87,11 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
  * @param _paths - Legacy paths object (unused, paths rebuilt internally for security)
  */
 export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise<void> {
+    // Skip git operations when using mem-fs to avoid mutating real filesystem
+    if (isMemFsEnabled()) {
+        return;
+    }
+
     const runner = new CommandRunner();
 
     try {
