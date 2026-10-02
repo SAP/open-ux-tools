@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import type { SystemLookup } from '@sap-ux/adp-tooling';
 import type {
     AbapServiceProvider,
     AdaptationDescriptor,
@@ -7,11 +8,11 @@ import type {
     KeyUserChangeContent
 } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SystemLookup } from '@sap-ux/adp-tooling';
 
 const mockIsAxiosError = jest.fn<typeof realAxiosExtension.isAxiosError>();
 const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
 const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>();
 const mockGetAdaptationChoices = jest.fn() as jest.Mock;
 const mockGetKeyUserSystemChoices = jest.fn() as jest.Mock;
 const mockGetKeyUserSystemAdditionalMessages = jest.fn() as jest.Mock;
@@ -25,7 +26,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
-    getConfiguredProvider: mockGetConfiguredProvider
+    getConfiguredProvider: mockGetConfiguredProvider,
+    isAuthRequired: mockIsAuthRequired
 }));
 
 jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages', () => ({
@@ -70,8 +72,7 @@ const systemLookup: SystemLookup = {
     getSystems: jest.fn().mockResolvedValue([
         { Name: 'SystemA', Client: '100', Url: '/systema', Authentication: 'NoAuthentication' },
         { Name: 'SystemB', Client: '200', Url: '/systemb', Authentication: 'Basic' }
-    ]),
-    getSystemRequiresAuth: jest.fn()
+    ])
 } as unknown as SystemLookup;
 
 const mockAdaptations: AdaptationDescriptor[] = [
@@ -99,7 +100,6 @@ const getSystemsMock = systemLookup.getSystems as jest.Mock;
 const getKeyUserDataMock = mockLayeredRepository.getKeyUserData as jest.Mock;
 const getFlexVersionsMock = mockLayeredRepository.getFlexVersions as jest.Mock;
 const listAdaptationsMock = mockLayeredRepository.listAdaptations as jest.Mock;
-const getSystemRequiresAuthMock = systemLookup.getSystemRequiresAuth as jest.Mock;
 
 describe('KeyUserImportPrompter', () => {
     const componentId = 'demoapps.rta';
@@ -112,6 +112,7 @@ describe('KeyUserImportPrompter', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsAuthRequired.mockResolvedValue(false);
         mockValidateEmptyString.mockReturnValue(true);
         mockGetAdaptationChoices.mockReturnValue([{ name: 'Default Adaptation', value: mockAdaptations[0] }]);
         mockGetKeyUserSystemChoices.mockReturnValue([
@@ -202,13 +203,13 @@ describe('KeyUserImportPrompter', () => {
                 const result = await prompt?.validate?.(defaultSystem, answers);
 
                 expect(result).toBe(true);
-                expect(getSystemRequiresAuthMock).not.toHaveBeenCalled();
+                expect(mockIsAuthRequired).not.toHaveBeenCalled();
                 expect(mockGetConfiguredProvider).not.toHaveBeenCalled();
                 expect(prompter.changes).toEqual(mockKeyUserChanges);
             });
 
             it('should check auth requirement for non-default system', async () => {
-                getSystemRequiresAuthMock.mockResolvedValue(false);
+                mockIsAuthRequired.mockResolvedValue(false);
                 mockGetConfiguredProvider.mockResolvedValue(defaultProvider);
                 getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
                 listAdaptationsMock.mockResolvedValue({ adaptations: mockAdaptations });
@@ -218,18 +219,18 @@ describe('KeyUserImportPrompter', () => {
                 const result = await prompt?.validate?.('SystemB', answers);
 
                 expect(result).toBe(true);
-                expect(getSystemRequiresAuthMock).toHaveBeenCalledWith('SystemB');
+                expect(mockIsAuthRequired).toHaveBeenCalledWith('SystemB', expect.anything());
                 expect(mockGetConfiguredProvider).toHaveBeenCalled();
             });
 
             it('should return true if auth is required (will show password prompt)', async () => {
-                getSystemRequiresAuthMock.mockResolvedValue(true);
+                mockIsAuthRequired.mockResolvedValue(true);
 
                 const prompt = prompter['getSystemPrompt']();
                 const result = await prompt?.validate?.('SystemB', answers);
 
                 expect(result).toBe(true);
-                expect(getSystemRequiresAuthMock).toHaveBeenCalledWith('SystemB');
+                expect(mockIsAuthRequired).toHaveBeenCalledWith('SystemB', expect.anything());
                 expect(mockGetConfiguredProvider).not.toHaveBeenCalled();
             });
 
@@ -245,7 +246,7 @@ describe('KeyUserImportPrompter', () => {
             });
 
             it('should return error message on exception', async () => {
-                getSystemRequiresAuthMock.mockRejectedValue(new Error('Connection failed'));
+                mockIsAuthRequired.mockRejectedValue(new Error('Connection failed'));
 
                 const prompt = prompter['getSystemPrompt']();
                 const result = await prompt?.validate?.('SystemB', answers);

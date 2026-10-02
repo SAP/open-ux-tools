@@ -6,9 +6,9 @@ import yeomanTest from 'yeoman-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+import type { ChangeDataSourceAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { ChangeDataSourceAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
 import type { Credentials } from '../../../src/types.js';
 
@@ -17,6 +17,7 @@ const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
 const mockGetAdpConfig = jest.fn<typeof realAdpTooling.getAdpConfig>();
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
 const mockManifestServiceCFInit = jest.fn<typeof realAdpTooling.init>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>().mockResolvedValue(true);
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
@@ -26,6 +27,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getAdpConfig: mockGetAdpConfig,
     getAdpProjectData: jest.fn(),
     isCFEnvironment: mockIsCFEnvironment,
+    isAuthRequired: mockIsAuthRequired,
     ManifestServiceCF: { init: mockManifestServiceCFInit }
 }));
 
@@ -33,7 +35,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn().mockResolvedValue({})
 }));
 
-const { ManifestService, SystemLookup, ChangeType } = await import('@sap-ux/adp-tooling');
+const { ManifestService, ChangeType } = await import('@sap-ux/adp-tooling');
 const { default: changeDataSourceGen } = await import('../../../src/change-data-source/index.js');
 
 const manifest = {
@@ -75,8 +77,6 @@ const answers: ChangeDataSourceAnswers & Credentials & { errorMessagePrompt: str
     username: 'user',
     password: 'pass'
 };
-
-jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
 const generatorPath = join(__dirname, 'src/change-data-source/index.ts');
 const tmpDir = resolve(__dirname, 'test-output-change-data-source');
@@ -158,13 +158,11 @@ describe('ChangeDataSourceGenerator', () => {
         handleCrashSpy.mockRestore();
     });
 
-    it('invokes handleRuntimeCrash when system lookup fails during onInit', async () => {
+    it('invokes handleRuntimeCrash when auth check fails during onInit', async () => {
         mockGetVariant.mockResolvedValue(variant);
         mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
-
-        jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockRejectedValueOnce(
-            new Error('system lookup fail')
-        );
+        const authCheckError = '403 Forbidden';
+        mockIsAuthRequired.mockRejectedValueOnce(new Error(authCheckError));
 
         const handleCrashSpy = jest
             .spyOn((changeDataSourceGen as any).prototype, 'handleRuntimeCrash')
@@ -181,7 +179,7 @@ describe('ChangeDataSourceGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(handleCrashSpy).toHaveBeenCalledWith('system lookup fail');
+        expect(handleCrashSpy).toHaveBeenCalledWith(authCheckError);
 
         writingSpy.mockRestore();
         handleCrashSpy.mockRestore();

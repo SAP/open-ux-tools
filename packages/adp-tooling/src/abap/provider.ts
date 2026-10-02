@@ -38,8 +38,8 @@ export async function getConfiguredProvider(
         }
 
         return await createAbapServiceProvider(config, requestOptions, false, logger);
-    } catch (e) {
-        logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${e.message}`);
-        throw new Error(e.message);
+    } catch (error) {
+        logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${error.message}`);
+        throw error;
     }
 }
