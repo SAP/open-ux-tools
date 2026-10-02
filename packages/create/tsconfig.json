@@ -1,77 +1,70 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "../../types/mem-fs-editor.d.ts",
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../abap-deploy-config-inquirer"
+    "extends": "../../tsconfig.json",
+    "include": ["../../types/mem-fs-editor.d.ts", "src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../abap-deploy-config-writer"
-    },
-    {
-      "path": "../adp-tooling"
-    },
-    {
-      "path": "../app-config-writer"
-    },
-    {
-      "path": "../axios-extension"
-    },
-    {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../cap-config-writer"
-    },
-    {
-      "path": "../fiori-migration-writer"
-    },
-    {
-      "path": "../flp-config-inquirer"
-    },
-    {
-      "path": "../inquirer-common"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../mockserver-config-writer"
-    },
-    {
-      "path": "../nodejs-utils"
-    },
-    {
-      "path": "../odata-service-writer"
-    },
-    {
-      "path": "../preview-middleware"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../project-input-validator"
-    },
-    {
-      "path": "../store"
-    },
-    {
-      "path": "../system-access"
-    },
-    {
-      "path": "../ui5-config"
-    },
-    {
-      "path": "../ui5-test-writer"
-    }
-  ]
+    "references": [
+        {
+            "path": "../abap-deploy-config-inquirer"
+        },
+        {
+            "path": "../abap-deploy-config-writer"
+        },
+        {
+            "path": "../adp-tooling"
+        },
+        {
+            "path": "../app-config-writer"
+        },
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../cap-config-writer"
+        },
+        {
+            "path": "../flp-config-inquirer"
+        },
+        {
+            "path": "../inquirer-common"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../mockserver-config-writer"
+        },
+        {
+            "path": "../nodejs-utils"
+        },
+        {
+            "path": "../odata-service-writer"
+        },
+        {
+            "path": "../preview-middleware"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../project-input-validator"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../system-access"
+        },
+        {
+            "path": "../ui5-config"
+        },
+        {
+            "path": "../ui5-test-writer"
+        }
+    ]
 }

@@ -7,7 +7,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import { fileExists, updateJSON } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { mkdir, exists, copyFile } from '../utils/fs-adapter.js';
+import { mkdir, exists } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 
