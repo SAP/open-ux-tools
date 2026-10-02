@@ -98,12 +98,12 @@ export function updateFile(pathOrFs: string | Editor, contentOrPath: string, con
  *
  * @param pathOrFs - Path to file, or Editor instance
  * @param contentOrPath - Object to write, or path (if first param is Editor)
- * @param content - Object to write (if first param is Editor)
+ * @param _content - Object to write (if first param is Editor)
  */
-export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | object, content?: object): void {
+export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | object, _content?: object): void {
     const fs = typeof pathOrFs === 'string' ? getOrCreateEditor() : pathOrFs;
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : (contentOrPath as string);
-    const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : content!;
+    const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : _content!;
 
     try {
         // Read old contents and indentation of the JSON file

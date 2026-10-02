@@ -139,15 +139,16 @@ export function fallbackFsMove(rootPath: string, paths: LegacyPaths): void {
     }
 
     // Real file system fallback
-    const fsextra = require('fs-extra');
+    // Use filesystem operations for cleanup
+    const { default: fse } = await import('fs-extra');
     if (existsSync(paths.ffLegacyWebappPath)) {
-        fsextra.moveSync(paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
+        fse.moveSync(paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
     }
     if (existsSync(paths.ffLegacyTestQunitPath)) {
-        fsextra.moveSync(paths.ffLegacyTestQunitPath, paths.ffNewTestPath);
+        fse.moveSync(paths.ffLegacyTestQunitPath, paths.ffNewTestPath);
     }
     if (existsSync(paths.ffLegacyTestuiveri5Path)) {
-        fsextra.moveSync(paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath);
+        fse.moveSync(paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath);
     }
 }
 
