@@ -40,7 +40,7 @@ export async function migrateLegacyFolderStructure(
     await tryGitMove(rootPath, paths);
 
     // Fallback using node fs to move folders (handles cases where git fails or isn't available)
-    fallbackFsMove(rootPath, paths);
+    await fallbackFsMove(rootPath, paths);
 
     // Remove old src dirs if empty
     await cleanupEmptyDirs(rootPath, legacyPath, paths);

@@ -129,7 +129,7 @@ export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise
  * @param rootPath - Project root path
  * @param paths - Legacy paths object
  */
-export function fallbackFsMove(rootPath: string, paths: LegacyPaths): void {
+export async function fallbackFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
     // Note: In mem-fs mode, file moves are handled by git (preferred path)
     // This fallback only works for real file system operations
     // Mem-fs doesn't support atomic moves, so this is intentionally a no-op in mem-fs mode

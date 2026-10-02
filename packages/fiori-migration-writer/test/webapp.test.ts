@@ -8,7 +8,8 @@ import type { Editor } from 'mem-fs-editor';
 import { createExtensionProjectManifest, createWebappFolderAndMigrateFiles } from '../src/files/webapp.js';
 import type { ImportProjectInfo } from '../src/types.js';
 import { MigrationTypes } from '../src/utils/constants.js';
-import { initI18n } from '../src/index.js';
+import { initI18n, fileExists, readFile, writeFile as writeFileUtil } from '../src/index.js';
+import { enableMemFs, disableMemFs, commit } from '../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -19,10 +20,12 @@ describe('webapp', () => {
     beforeEach(async () => {
         await initI18n();
         fs = createMemFsEditor(createMemFs());
+        enableMemFs(fs); // Set the global editor to our test editor
         await mkdir(testOutputDir, { recursive: true });
     });
 
     afterEach(async () => {
+        disableMemFs(); // Clean up global editor
         await rm(testOutputDir, { recursive: true, force: true });
     });
 
@@ -30,6 +33,8 @@ describe('webapp', () => {
         test('should create manifest.json for extension project when missing', async () => {
             const rootPath = join(testOutputDir, 'extension-no-manifest');
             await mkdir(join(rootPath, 'webapp'), { recursive: true });
+            // Create a file in webapp directory in mem-fs so exists() sees it
+            writeFileUtil(join(rootPath, 'webapp', '.keep'), '');
 
             const projectInfo: ImportProjectInfo = {
                 moduleName: 'test.extension',
@@ -47,7 +52,7 @@ describe('webapp', () => {
 
             // Manifest should be created at webapp/manifest.json
             const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-            const manifestExists = await fs.exists(manifestPath);
+            const manifestExists = fileExists(manifestPath);
             expect(manifestExists).toBe(true);
         });
 
@@ -76,7 +81,7 @@ describe('webapp', () => {
             await createExtensionProjectManifest(rootPath, projectInfo);
 
             // Existing manifest should remain unchanged
-            const content = await fs.read(join(rootPath, 'webapp', 'manifest.json'));
+            const content = readFile(join(rootPath, 'webapp', 'manifest.json'));
             const parsed = JSON.parse(content);
             expect(parsed['sap.app'].id).toBe('existing');
         });
@@ -95,7 +100,7 @@ describe('webapp', () => {
             await createExtensionProjectManifest(rootPath, projectInfo);
 
             // No manifest should be created for LROP
-            const manifestExists = await fs.exists(join(rootPath, 'manifest.json'));
+            const manifestExists = fileExists(join(rootPath, 'manifest.json'));
             expect(manifestExists).toBe(false);
         });
 
