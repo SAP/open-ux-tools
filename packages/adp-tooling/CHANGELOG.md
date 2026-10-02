@@ -1,5 +1,39 @@
 # @sap-ux/adp-tooling
 
+## 1.0.60
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Features
+
+- consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+## 1.0.59
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+
+## 1.0.58
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.43 → 1.0.44
+- @sap-ux/odata-service-writer 1.0.22 → 1.0.23
+- @sap-ux/project-input-validator 1.0.19 → 1.0.20
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
 ## 1.0.57
 
 ### Patch Changes
