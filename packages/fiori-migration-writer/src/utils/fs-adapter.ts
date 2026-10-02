@@ -3,7 +3,7 @@ import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import * as fsNode from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { dirname } from 'node:path';
 
 /**
  * Global mem-fs editor instance when mem-fs mode is enabled

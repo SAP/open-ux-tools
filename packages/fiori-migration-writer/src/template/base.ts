@@ -4,7 +4,7 @@ import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { trueCasePath } from 'true-case-path';
 import { getBaseTemplatesMap, isGenerateIndex } from '../utils/index.js';
-import { isMemFsEnabled, copyFile, deleteFile } from '../utils/fs-adapter.js';
+import { isMemFsEnabled } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo, TemplateData, TemplateMap } from '../types.js';
 import { applyTemplates } from './template-helpers.js';
 

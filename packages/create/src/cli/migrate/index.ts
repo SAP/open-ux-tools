@@ -327,34 +327,29 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 
     let baseUri = '';
     if (destination) {
-        baseUri = `/${destination}`;
-    } else if (hostname) {
+        // destination is for project config, not for baseUri
+        // baseUri should only be set from hostname
+        baseUri = '';
+    }
+    if (hostname) {
         baseUri = `https://${hostname}`;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
 
-    // Build ImportProjectInfo with client if provided
-    const importProjectInfo = client
-        ? {
-              sapClient: client,
-              rootPath: resolvedPath,
-              moduleName: '',
-              moduleDescription: '',
-              sapux: false,
-              scp: false,
-              destination: destination ?? '',
-              appTitle: '',
-              appVersion: '',
-              backends: [],
-              odataVersion: 2 as any,
-              webappPath: '',
-              hostname: hostname ?? '',
-              isFioriToolsProject: false,
-              sapLibs: ''
-          }
-        : undefined;
-
-    const result = await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, importProjectInfo);
+    // Load project info first, then merge CLI overrides
+    const result = await ProjectMigrator.migrate(
+        resolvedPath,
+        baseUri,
+        ui5SnapshotUrl,
+        // Only override specific fields, let migration load the rest
+        client || destination || hostname
+            ? {
+                  ...(client && { sapClient: client }),
+                  ...(destination && { destination }),
+                  ...(hostname && { hostname })
+              }
+            : undefined
+    );
 
     if (result.result) {
         logger.info('✓ Migration completed successfully!');

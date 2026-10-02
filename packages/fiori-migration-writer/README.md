@@ -24,7 +24,7 @@ npm install @sap-ux/fiori-migration-writer
 import { ProjectMigrator } from '@sap-ux/fiori-migration-writer';
 
 // Migrate a project
-await ProjectMigrator.migrate(projectPath);
+await ProjectMigrator.migrate(projectPath, '', 'https://ui5.sap.com');
 ```
 
 ## API
