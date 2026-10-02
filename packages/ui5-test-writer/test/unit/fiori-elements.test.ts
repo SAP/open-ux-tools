@@ -2089,11 +2089,14 @@ export type Then = Opa5 & BaseArrangements & {
             // journey exercises the "Check columns in adaptation dialog" opaTest. The test uses the
             // column-adaptation OPA API that only exists from UI5 1.152.0, so it is rendered only by
             // the `1.152` and `latest` template buckets (ui5Version undefined/newest or >= 1.152.0).
-            const withTextAnnotationColumn = () => {
+            const withTextAnnotationColumn = (columnPersonalizationSupported?: boolean) => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
                         features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        if (columnPersonalizationSupported !== undefined) {
+                            features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
+                        }
                     }
                     return features;
                 });
@@ -2120,6 +2123,18 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
             );
+
+            it('omits the adaptation-dialog test when column personalization is disabled (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn(false);
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
 
             it.each([
                 ['1.84', '1.120.0'],
@@ -2156,11 +2171,14 @@ export type Then = Opa5 & BaseArrangements & {
         describe('column adaptation dialog test — TS', () => {
             // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
             // exercises the "Check columns in adaptation dialog" opaTest.
-            const withTextAnnotationColumn = () => {
+            const withTextAnnotationColumn = (columnPersonalizationSupported?: boolean) => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
                         features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        if (columnPersonalizationSupported !== undefined) {
+                            features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
+                        }
                     }
                     return features;
                 });
@@ -2192,6 +2210,18 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
             );
+
+            it('omits the adaptation-dialog test when column personalization is disabled (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn(false);
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
 
             it.each([
                 ['1.84', '1.120.0'],

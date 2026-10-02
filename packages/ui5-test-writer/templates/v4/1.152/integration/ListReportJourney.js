@@ -214,7 +214,7 @@ sap.ui.define([
             <%_ }); -%>
         });
 <%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0 && columnPersonalizationSupported !== false) { -%>
         opaTest("Check columns in adaptation dialog", function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iOpenColumnAdaptation();
             <%_ textAnnotationColumns.forEach(function(column) { _%>

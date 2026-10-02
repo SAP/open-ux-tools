@@ -270,6 +270,7 @@ export function getListReportFeatures(
         contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
         textAnnotationColumns,
+        columnPersonalizationSupported: isColumnPersonalizationEnabled(manifest, listReportPage.name),
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
         tabs: getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log),
@@ -537,6 +538,50 @@ export function getCustomFilterFieldProperties(
         }
     }
     return custom;
+}
+
+/**
+ * Determines whether the List Report table exposes column personalization (the "Columns" adaptation
+ * dialog opened by `iOpenColumnAdaptation`). The setting lives under the LineItem control configuration
+ * `tableSettings.personalization` and may be a boolean, an object with per-feature flags, or absent.
+ *
+ * Semantics (mirroring Fiori elements):
+ * - absent → enabled (the default)
+ * - `true` → enabled
+ * - `false` → disabled
+ * - object with `column: true` → enabled
+ * - object omitting `column` or with `column: false` → disabled
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @returns true if the column-adaptation dialog is available for the table
+ */
+export function isColumnPersonalizationEnabled(manifest: Manifest | undefined, targetKey: string | undefined): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        | {
+              options?: {
+                  settings?: {
+                      controlConfiguration?: Record<string, unknown>;
+                  };
+              };
+          }
+        | undefined;
+    const lineItemConfig = target?.options?.settings?.controlConfiguration?.['@com.sap.vocabularies.UI.v1.LineItem'] as
+        { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined;
+    const personalization = lineItemConfig?.tableSettings?.personalization;
+    if (personalization === undefined) {
+        return true;
+    }
+    if (typeof personalization === 'boolean') {
+        return personalization;
+    }
+    if (typeof personalization === 'object' && personalization !== null) {
+        return personalization.column === true;
+    }
+    return true;
 }
 
 /**
