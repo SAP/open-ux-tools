@@ -15,6 +15,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/fiori-mcp-server"
     },
+    "homepage": "https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-mcp-server#readme",
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-mcp-server"
     },
