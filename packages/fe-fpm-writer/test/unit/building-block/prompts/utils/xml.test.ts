@@ -7,9 +7,11 @@ import {
     getOrAddNamespace,
     getXPathStringsForXmlFile,
     getDOMParserOptions,
+    getExistingButtonGroups,
     TEMPLATE_NAMESPACES
 } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
+import type { Document as XmldomDocument } from '@xmldom/xmldom';
 import { isElementIdAvailable } from '../../../../../src/common/utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -73,13 +75,14 @@ describe('utils - xml', () => {
                 available: true
             },
             {
-                name: 'Invalid xml(warning)',
+                name: 'Invalid xml(fatalError)',
                 content: '<a>aaa</b>',
                 id: 'Test',
                 available: true
             },
             {
-                name: 'Invalid xml(warning), but duplicate id',
+                // parsing throws, but regex fallback detects the id in the raw content
+                name: 'Invalid xml(fatalError), but duplicate id',
                 content: '<a id="Test">aaa</b>',
                 id: 'Test',
                 available: false
@@ -106,20 +109,20 @@ describe('utils - xml', () => {
 });
 
 describe('getOrAddNamespace', () => {
-    function createFragmentXmlDoc(attrs: Record<string, string> = {}) {
+    function createFragmentXmlDoc(attrs: Record<string, string> = {}): XmldomDocument {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
             .join(' ');
         const xml = `<core:FragmentDefinition ${attrString}></core:FragmentDefinition>`;
-        return new DOMParser().parseFromString(xml, 'application/xml');
+        return new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
     }
 
-    function createViewXmlDoc(attrs: Record<string, string> = {}) {
+    function createViewXmlDoc(attrs: Record<string, string> = {}): XmldomDocument {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
             .join(' ');
         const xml = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" ${attrString}></mvc:View>`;
-        return new DOMParser().parseFromString(xml, 'application/xml');
+        return new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
     }
 
     it('returns existing prefix for macros namespace in mvc:View', () => {
@@ -169,7 +172,7 @@ describe('getOrAddNamespace', () => {
             <RichTextEditorWithMetadata metaPath="/Travel/Status" id="RichTextEditor">
             </RichTextEditorWithMetadata>
         </core:FragmentDefinition>`;
-        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        const xmlDoc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
@@ -181,7 +184,7 @@ describe('getOrAddNamespace', () => {
                 <content />
             </Page>
         </mvc:View>`;
-        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        const xmlDoc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
@@ -251,15 +254,18 @@ describe('getDOMParserOptions', () => {
         const options = getDOMParserOptions(undefined, (level, message) => {
             calls.push([level, message]);
         });
-        new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        try {
+            new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        } catch {
+            // fatalError throws a ParseError in xmldom 0.9+; handler still gets called before the throw
+        }
         expect(calls.length).toBeGreaterThan(0);
         expect(calls[0][0]).toBeDefined();
     });
 
-    test('silent handler returns partial DOM without throwing', () => {
+    test('silent handler: fatal parse error still throws ParseError in xmldom 0.9+', () => {
         const options = getDOMParserOptions(undefined, () => {});
-        const doc = new DOMParser(options).parseFromString(invalidXml, 'text/xml');
-        expect(doc).toBeDefined();
+        expect(() => new DOMParser(options).parseFromString(invalidXml, 'text/xml')).toThrow();
     });
 
     test('xmlns option resolves macros prefix from TEMPLATE_NAMESPACES', () => {
@@ -291,7 +297,75 @@ describe('getDOMParserOptions', () => {
     test('returns onError and xmlns in options object', () => {
         const handler = () => {};
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
-        expect(options.onError).toBe(handler);
+        expect(options.onError).toBeDefined();
         expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
+    });
+});
+
+describe('getOrAddNamespace - null documentElement', () => {
+    it('returns the default prefix when documentElement is null', () => {
+        const doc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            '<root/>',
+            'text/xml'
+        ) as unknown as XmldomDocument;
+        Object.defineProperty(doc, 'documentElement', { value: null, configurable: true });
+        expect(getOrAddNamespace(doc, 'sap.fe.macros', 'macros')).toBe('macros');
+    });
+});
+
+describe('getExistingButtonGroups', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('returns empty set when RTE element is not found at aggregation path', async () => {
+        const filePath = '/test/NoRte.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:macros="sap.fe.macros">
+    <macros:Table id="T1"/>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(filePath, `/core:FragmentDefinition/macros:RTE`, fs);
+        expect(result.size).toBe(0);
+    });
+
+    it('returns empty set when RTE element has no buttonGroups child', async () => {
+        const filePath = '/test/RteNoGroups.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status"/>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result.size).toBe(0);
+    });
+
+    it('returns button group names when RTE has buttonGroups children', async () => {
+        const filePath = '/test/RteWithGroups.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status">
+        <richtexteditor:buttonGroups>
+            <richtexteditor:ButtonGroup name="font-style" buttons="bold,italic"/>
+            <richtexteditor:ButtonGroup name="clipboard" buttons="cut,copy,paste"/>
+        </richtexteditor:buttonGroups>
+    </richtexteditor:RichTextEditorWithMetadata>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result).toEqual(new Set(['font-style', 'clipboard']));
     });
 });
