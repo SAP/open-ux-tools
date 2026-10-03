@@ -6,6 +6,7 @@ import type { ServiceIndex } from './service.js';
 
 export interface ParsedProject {
     projectType: ProjectType;
+    appRoot: string;
     apps: { [name: string]: ParsedApp };
     documents: { [uri: string]: DocumentType };
 }
@@ -25,6 +26,11 @@ export interface FlexChange {
 
 export type PropertyChangeConfig = { property: string; value: boolean; selector: string; changeFileUri: string };
 
+export interface I18nBundle {
+    uri: string;
+    entries: Record<string, string>;
+}
+
 export interface ParsedApp {
     manifest: ParsedManifest;
     services: { [name: string]: ParsedService };
@@ -34,6 +40,7 @@ export interface ParsedApp {
     manifestObject: Manifest;
     projectRootPath: string;
     changes: FlexChange[];
+    i18nBundles: I18nBundle[];
 }
 
 export interface ParsedManifest {
