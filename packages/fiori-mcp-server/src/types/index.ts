@@ -7,7 +7,13 @@ import type {
     ListFioriAppsInputSchema,
     ListFunctionalitiesInputSchema,
     DocSearchInputSchema,
-    DownloadODataServiceMetadataInputSchema
+    DownloadODataServiceMetadataInputSchema,
+    GenerateAdaptationProjectInputSchema,
+    OpenAdaptationEditorInputSchema,
+    AdpControllerExtensionInputSchema,
+    RunRtaWorkflowStepInputSchema,
+    ReadODataMetadataInputSchema,
+    LookupUi5DocumentationInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -16,7 +22,12 @@ import type {
     ListFunctionalitiesOutputSchema,
     FetchServiceMetadataOutputSchema,
     GenerateAppOutputSchema,
-    ListSapSystemsOutputSchema
+    ListSapSystemsOutputSchema,
+    OpenAdaptationEditorOutputSchema,
+    GenerateAdaptationProjectOutputSchema,
+    AdpControllerExtensionOutputSchema,
+    LookupUi5DocumentationOutputSchema,
+    ReadODataMetadataOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -38,9 +49,20 @@ export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOu
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
+export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
+export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
+export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
+export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
+export type ReadODataMetadataInput = zod.infer<typeof ReadODataMetadataInputSchema>;
+export type LookupUi5DocumentationInput = zod.infer<typeof LookupUi5DocumentationInputSchema>;
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
 export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;
+export type OpenAdaptationEditorOutput = zod.infer<typeof OpenAdaptationEditorOutputSchema>;
+export type GenerateAdaptationProjectOutput = zod.infer<typeof GenerateAdaptationProjectOutputSchema>;
+export type AdpControllerExtensionOutput = zod.infer<typeof AdpControllerExtensionOutputSchema>;
+export type LookupUi5DocumentationOutput = zod.infer<typeof LookupUi5DocumentationOutputSchema>;
+export type ReadODataMetadataOutput = zod.infer<typeof ReadODataMetadataOutputSchema>;
 
 /**
  * Interface for functionality handlers

@@ -23744,19 +23744,19 @@ appDescription=A Fiori application.",
             Given.iResetMockData({ ServiceUri: \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
-            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             
-            Then.onTheTravelList.onTable().iCheckRows();
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
 
-            When.onTheTravelList.onTable().iPressRow(0);
-            Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
 
         });
 
