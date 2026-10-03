@@ -75,16 +75,17 @@ describe('utils - xml', () => {
                 available: true
             },
             {
-                name: 'Invalid xml(warning)',
+                name: 'Invalid xml(fatalError)',
                 content: '<a>aaa</b>',
                 id: 'Test',
                 available: true
             },
             {
-                name: 'Invalid xml(warning), but duplicate id',
+                // parsing throws, but regex fallback detects the id in the raw content
+                name: 'Invalid xml(fatalError), but duplicate id',
                 content: '<a id="Test">aaa</b>',
                 id: 'Test',
-                available: true
+                available: false
             },
             {
                 name: 'Invalid xml(error)',

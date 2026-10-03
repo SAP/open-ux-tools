@@ -40,7 +40,7 @@ export function getDOMParserOptions(
             }
         });
     return {
-        onError: (level, msg) => handler(level, msg),
+        onError: handler,
         xmlns
     };
 }
