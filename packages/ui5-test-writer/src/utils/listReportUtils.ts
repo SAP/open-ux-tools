@@ -270,7 +270,11 @@ export function getListReportFeatures(
         contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
         textAnnotationColumns,
-        columnPersonalizationSupported: isColumnPersonalizationEnabled(manifest, listReportPage.name),
+        columnPersonalizationSupported: isColumnPersonalizationEnabled(
+            manifest,
+            listReportPage.name,
+            listReportPage.contextPath
+        ),
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
         tabs: getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log),
@@ -541,6 +545,46 @@ export function getCustomFilterFieldProperties(
 }
 
 /**
+ * Finds the LineItem control-configuration entry for the default table. The manifest key may be the
+ * bare term, a qualified term (`@...LineItem#Qualifier`), or a context-path-prefixed form
+ * (`/EntitySet/@...LineItem[#Qualifier]`), mirroring the resolution in
+ * `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v4.ts`.
+ *
+ * Resolution order:
+ * 1. the bare term, 2. the context-prefixed bare term, 3. the single key whose final path segment is
+ * the LineItem term (bare or qualified), preferring a key that matches `contextPath`.
+ *
+ * @param controlConfiguration - the target's `options.settings.controlConfiguration`
+ * @param contextPath - the page's context path (e.g. `/Travel`), used to match CAP-style prefixed keys
+ * @returns the matched LineItem control-configuration value, or undefined if none
+ */
+function findDefaultTableLineItemConfig(
+    controlConfiguration: Record<string, unknown>,
+    contextPath?: string
+): { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined {
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const direct =
+        controlConfiguration[lineItemTerm] ?? (contextPath && controlConfiguration[`${contextPath}/${lineItemTerm}`]);
+    if (direct) {
+        return direct as { tableSettings?: { personalization?: boolean | Record<string, unknown> } };
+    }
+    const isLineItemKey = (key: string): boolean => {
+        const segment = key.substring(key.lastIndexOf('/') + 1);
+        return segment === lineItemTerm || segment.startsWith(`${lineItemTerm}#`);
+    };
+    const matchingKeys = Object.keys(controlConfiguration).filter(isLineItemKey);
+    // Prefer a key that matches the page's own context path; otherwise, for a single-table LR there is
+    // exactly one LineItem config so an unambiguous match is safe. Multiple matches (multi-table) are
+    // left unresolved to avoid combining settings from unrelated tables.
+    const key =
+        (contextPath && matchingKeys.find((candidate) => candidate.startsWith(`${contextPath}/`))) ??
+        (matchingKeys.length === 1 ? matchingKeys[0] : undefined);
+    return key
+        ? (controlConfiguration[key] as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        : undefined;
+}
+
+/**
  * Determines whether the List Report table exposes column personalization (the "Columns" adaptation
  * dialog opened by `iOpenColumnAdaptation`). The setting lives under the LineItem control configuration
  * `tableSettings.personalization` and may be a boolean, an object with per-feature flags, or absent.
@@ -554,9 +598,14 @@ export function getCustomFilterFieldProperties(
  *
  * @param manifest - the application manifest (may be undefined)
  * @param targetKey - routing target key of the List Report page
+ * @param contextPath - the page's context path, used to resolve CAP-style prefixed LineItem keys
  * @returns true if the column-adaptation dialog is available for the table
  */
-export function isColumnPersonalizationEnabled(manifest: Manifest | undefined, targetKey: string | undefined): boolean {
+export function isColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    contextPath?: string
+): boolean {
     if (!manifest || !targetKey) {
         return true;
     }
@@ -569,8 +618,11 @@ export function isColumnPersonalizationEnabled(manifest: Manifest | undefined, t
               };
           }
         | undefined;
-    const lineItemConfig = target?.options?.settings?.controlConfiguration?.['@com.sap.vocabularies.UI.v1.LineItem'] as
-        { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemConfig = findDefaultTableLineItemConfig(controlConfiguration, contextPath);
     const personalization = lineItemConfig?.tableSettings?.personalization;
     if (personalization === undefined) {
         return true;

@@ -2482,6 +2482,80 @@ describe('Test isColumnPersonalizationEnabled()', () => {
     test('disabled when personalization object omits column', () => {
         expect(isColumnPersonalizationEnabled(makeManifest({ sort: true }), 'MyLR')).toBe(false);
     });
+
+    const makeManifestWithKey = (
+        controlConfigurationKey: string,
+        personalization?: boolean | Record<string, unknown>
+    ): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        [controlConfigurationKey]: {
+                                            tableSettings: personalization === undefined ? {} : { personalization }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('resolves qualified LineItem key (@...LineItem#Main) when personalization is false', () => {
+        const manifest = makeManifestWithKey('@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(false);
+    });
+
+    test('resolves context-prefixed LineItem key when personalization is false', () => {
+        const manifest = makeManifestWithKey('/Travel/@com.sap.vocabularies.UI.v1.LineItem', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('resolves context-prefixed qualified LineItem key when personalization is false', () => {
+        const manifest = makeManifestWithKey('/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('resolves single qualified key without context path (single-table LR)', () => {
+        const manifest = makeManifestWithKey('@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', undefined)).toBe(false);
+    });
+
+    test('does not combine settings from unrelated tables (multi-table ambiguity → enabled)', () => {
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        '/Travel/@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: { personalization: false }
+                                        },
+                                        '/Booking/@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: { personalization: true }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        // No contextPath → ambiguous, must not pick either table's setting
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(true);
+        // With contextPath → resolves the matching table only
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Booking')).toBe(true);
+    });
 });
 
 describe('Test getTableIdentifiers()', () => {
