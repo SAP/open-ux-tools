@@ -58,7 +58,7 @@
         "@sap-devx/yeoman-ui-types": "1.25.1",
         "@types/inquirer": "8.2.6",
         "@types/semver": "7.7.1",
-        "@types/lodash": "4.17.24",
+        "@types/lodash": "4.17.25",
         "jest-extended": "7.0.0"
     },
     "engines": {
