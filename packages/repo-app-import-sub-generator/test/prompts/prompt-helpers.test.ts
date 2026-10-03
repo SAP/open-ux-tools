@@ -130,7 +130,27 @@ describe('fetchAppListForSelectedSystem', () => {
         expect(result).toEqual([]);
     });
 
-    it('should not retry for AbapRepository when the error is not HTTP 400', async () => {
+    it('should retry without sourceTemplate/id and search params for ADTQuickDeploy download type on older systems (HTTP 400)', async () => {
+        const regularApp = { 'sap.app/id': 'adt-app', repoName: 'repo1', url: 'http://url' };
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
+        const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(mockSearch).toHaveBeenNthCalledWith(1, expect.anything(), appListResultFields);
+        expect(mockSearch).toHaveBeenNthCalledWith(2, {}, appListFieldsWithoutSourceTemplate);
+        expect(result).toEqual([regularApp]);
+    });
+
+    it('should not retry when the error is not HTTP 400', async () => {
         const unrelatedError = createAxiosError(500, 'Internal Server Error');
         const mockSearch = jest.fn().mockRejectedValueOnce(unrelatedError);
         const provider = {

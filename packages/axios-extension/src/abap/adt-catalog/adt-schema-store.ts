@@ -34,7 +34,8 @@ export class AdtSchemaStore {
     public updateSchemaData(schemaData: AdtSchemaData): void {
         if (schemaData) {
             this.adtSchema = {};
-            const workspaces = schemaData.service.workspace;
+            const raw = schemaData.service.workspace;
+            const workspaces = Array.isArray(raw) ? raw : raw ? [raw] : [];
             for (const workspace of workspaces) {
                 const collections = workspace.collection;
                 if (!collections) {
