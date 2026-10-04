@@ -78,7 +78,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-backend-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -89,7 +89,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-backend-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -234,7 +234,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-backend-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -245,7 +245,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-backend-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -395,7 +395,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-backend-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -406,7 +406,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-backend-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -551,7 +551,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-backend-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -562,7 +562,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-backend-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -743,7 +743,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-backend-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -754,7 +754,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-backend-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -904,7 +904,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-backend-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -915,7 +915,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-backend-proxy-cf
       configuration:
         port: 35729
         path: webapp
