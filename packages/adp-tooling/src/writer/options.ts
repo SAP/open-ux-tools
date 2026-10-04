@@ -466,7 +466,7 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
     // Add backend-proxy-middleware-cf as the first middleware (after compression)
     ui5Config.addCustomMiddleware([
         {
-            name: 'backend-proxy-middleware-cf',
+            name: 'fiori-tools-backend-proxy-cf',
             afterMiddleware: 'compression',
             configuration: {
                 authenticationMethod: 'route',
@@ -484,7 +484,7 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-appreload',
-            afterMiddleware: 'backend-proxy-middleware-cf',
+            afterMiddleware: 'fiori-tools-backend-proxy-cf',
             configuration: {
                 port: 35729,
                 path: 'webapp',
