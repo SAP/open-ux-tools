@@ -505,6 +505,7 @@ const fioriLanguageConfig: Linter.Config[] = [
     },
     {
         files: ['**/*.xml', '**/*.cds', '**/*.properties'],
+        ignores: ['dist/**/*'],
         language: '@sap-ux/fiori-tools/fiori',
         rules: {
             '@sap-ux/fiori-tools/sap-no-comma-in-section-title': 'warn'
