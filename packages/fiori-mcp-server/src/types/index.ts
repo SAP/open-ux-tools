@@ -13,7 +13,8 @@ import type {
     AdpControllerExtensionInputSchema,
     RunRtaWorkflowStepInputSchema,
     ReadODataMetadataInputSchema,
-    LookupUi5DocumentationInputSchema
+    LookupUi5DocumentationInputSchema,
+    MigrateFioriProjectInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -55,6 +56,7 @@ export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensio
 export type RunRtaWorkflowStepInput = zod.infer<typeof RunRtaWorkflowStepInputSchema>;
 export type ReadODataMetadataInput = zod.infer<typeof ReadODataMetadataInputSchema>;
 export type LookupUi5DocumentationInput = zod.infer<typeof LookupUi5DocumentationInputSchema>;
+export type MigrateFioriProjectInput = zod.infer<typeof MigrateFioriProjectInputSchema>;
 export type DownloadODataServiceMetadataOutput = zod.infer<typeof FetchServiceMetadataOutputSchema>;
 export type GenerateAppOutput = zod.infer<typeof GenerateAppOutputSchema>;
 export type ListSapSystemsOutput = zod.infer<typeof ListSapSystemsOutputSchema>;

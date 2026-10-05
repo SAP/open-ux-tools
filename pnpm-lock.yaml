@@ -2752,6 +2752,9 @@ importers:
       '@sap-ux/fiori-docs-embeddings':
         specifier: workspace:*
         version: link:../fiori-docs-embeddings
+      '@sap-ux/fiori-migration-writer':
+        specifier: workspace:*
+        version: link:../fiori-migration-writer
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n

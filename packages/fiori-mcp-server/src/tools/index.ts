@@ -20,6 +20,7 @@ export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 export { readODataMetadataAdp } from './read-odata-metadata.js';
 export { lookupUi5Documentation } from './lookup-ui5-documentation/index.js';
+export { migrateFioriProject } from './migrate-fiori-project.js';
 
 const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
 
@@ -391,6 +392,43 @@ export const tools = [
         },
         inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+    },
+    {
+        name: 'migrate_fiori_project',
+        description: `Migrates a legacy WebIDE Fiori project to modern SAP Fiori tools format.
+
+        This tool:
+        - Converts WebIDE project structure to Fiori tools structure
+        - Updates package.json with modern dependencies
+        - Creates ui5.yaml and ui5-local.yaml configuration
+        - Migrates manifest.json to current format
+        - Sets up proper webapp folder structure
+        - Configures backend connections (destination or hostname)
+
+        Returns migration result with:
+        - Detailed messages about the migration process
+        - Follow-on action suggestions (e.g., fetch metadata, cleanup backends)
+        - Summary statistics (files modified, warnings, errors)
+
+        Use this when:
+        - Converting old WebIDE projects to work with modern Fiori tools
+        - User asks to "migrate", "modernize", or "update" a legacy Fiori project
+        - Preparing a project for AI-assisted development
+
+        **Important**:
+        - This tool modifies project files in place (non-destructive)
+        - Use force=true to re-migrate already migrated projects
+        - Either destination OR hostname is required for backend connection
+        - Follow-on actions returned by this tool can guide next steps (metadata fetch, cleanup, etc.)`,
+        annotations: {
+            title: 'Migrate Fiori Project',
+            readOnlyHint: false,
+            destructiveHint: true, // Deletes lock files, rewrites configuration, and modifies project structure
+            idempotentHint: false, // Output may differ on repeated runs due to template/config changes
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.MigrateFioriProjectInputSchema),
+        outputSchema: convertToSchema(Output.MigrateFioriProjectOutputSchema)
     },
     ...(adpToolsEnabled ? adpTools : [])
 ] as Tool[];

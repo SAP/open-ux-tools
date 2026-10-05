@@ -162,3 +162,42 @@ export const ExecuteFunctionalityOutputSchema = zod.object({
     /** Timestamp of the execution */
     timestamp: zod.string()
 });
+
+/**
+ * Follow-on action schema for migration
+ */
+const FollowOnActionSchema = zod.object({
+    type: zod.enum(['fetchMetadata', 'cleanupBackends', 'updateDependencies', 'info']),
+    description: zod.string(),
+    priority: zod.enum(['high', 'medium', 'low']),
+    params: zod.record(zod.string(), zod.unknown()).optional()
+});
+
+/**
+ * Migration message schema
+ */
+const MigrationMessageSchema = zod.object({
+    type: zod.enum(['ERROR', 'WARNING', 'SUCCESS']),
+    description: zod.string()
+});
+
+/**
+ * Output interface for the 'migrate_fiori_project' tool
+ */
+export const MigrateFioriProjectOutputSchema = zod.object({
+    status: zod.enum(['Success', 'Warning', 'Error']).describe('Overall status of the migration'),
+    message: zod.string().describe('Summary message about the migration result'),
+    projectPath: zod.string().describe('Path to the migrated project'),
+    messages: zod.array(MigrationMessageSchema).describe('Detailed messages from the migration process'),
+    followOnActions: zod
+        .array(FollowOnActionSchema)
+        .describe('Suggested follow-on actions based on migration messages'),
+    summary: zod
+        .object({
+            filesModified: zod.number().describe('Number of files modified during migration'),
+            warnings: zod.number().describe('Number of warnings generated'),
+            errors: zod.number().describe('Number of errors encountered')
+        })
+        .describe('Summary statistics of the migration'),
+    timestamp: zod.string().describe('ISO timestamp of when the migration was executed')
+});
