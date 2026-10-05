@@ -19,6 +19,10 @@ export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
+export const NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS = 'sap-no-path-hidden-on-interactive-columns';
+export const FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION = 'sap-field-group-in-table-type-restriction';
+export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
+export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
 
 export interface WidthIncludingColumnHeaderDiagnostic {
     type: typeof WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE;
@@ -70,6 +74,7 @@ export interface CreationModeForTable {
 export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
+    property: string;
     pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
@@ -189,6 +194,42 @@ export interface CloudDevAdaptationStatus {
     type: typeof CLOUD_DEV_ADAPTATION_STATUS;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface FieldGroupInTableTypeRestriction {
+    type: typeof FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION;
+    pageNames: string[];
+    tableType: string;
+    pageSectionName?: string;
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
+export interface NoSingleFacetInCollection {
+    type: typeof NO_SINGLE_FACET_IN_COLLECTION;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+export interface NoDeepCollectionFacets {
+    type: typeof NO_DEEP_COLLECTION_FACETS;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
+export interface NoPathHiddenOnInteractiveColumns {
+    type: typeof NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS;
+    pageNames: string[];
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
 
 export type Diagnostic =
     | WidthIncludingColumnHeaderDiagnostic
@@ -207,4 +248,8 @@ export type Diagnostic =
     | TextArrangementHidden
     | StrictUomFiltering
     | NoLiveMode
-    | CloudDevAdaptationStatus;
+    | CloudDevAdaptationStatus
+    | NoPathHiddenOnInteractiveColumns
+    | FieldGroupInTableTypeRestriction
+    | NoSingleFacetInCollection
+    | NoDeepCollectionFacets;

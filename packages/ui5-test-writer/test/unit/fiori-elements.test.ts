@@ -176,6 +176,204 @@ describe('ui5-test-writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
+        describe('critical actions (Common.IsActionCritical)', () => {
+            // The mock spec models used above do not populate the LR toolbar `actions` aggregation, so a
+            // full generateOPAFiles run cannot exercise toolbar-action rendering. Render the real journey
+            // template directly with a synthetic critical action to verify the generated test code.
+            const renderListReportJourney = (toolBarActions: Record<string, unknown>[]): string => {
+                const templatePath = join(__dirname, '../../templates/v4/latest/integration/ListReportJourney.js');
+                const outPath = join(__dirname, '../test-output/critical/ListReportJourney.gen.js');
+                const editor = create(createStorage());
+                editor.copyTpl(templatePath, outPath, {
+                    startPages: ['TravelList'],
+                    startLR: 'TravelList',
+                    navigatedOP: undefined,
+                    hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
+                    name: 'TravelList',
+                    appPath: 'project1',
+                    createButton: { visible: false },
+                    deleteButton: { visible: false },
+                    isALP: false,
+                    filterBarItems: [],
+                    semanticKey: { semanticKeyProperties: [], missingFromFilterBar: [] },
+                    tableColumns: {},
+                    contactCardColumns: [],
+                    textAnnotationColumns: [],
+                    tableIdentifiers: [],
+                    tabs: [],
+                    toolBarActions
+                });
+                return editor.read(outPath);
+            };
+
+            it('integrates confirmation-dialog steps into the actions block only for critical actions', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Set To Booked',
+                        action: 'setToBooked',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: true
+                    },
+                    {
+                        label: 'Copy',
+                        action: 'Copy',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: true,
+                        isCritical: false
+                    }
+                ]);
+                // No separate opaTest block — critical steps live in "Check table columns and actions".
+                expect(journey).not.toContain('Check critical action confirmation dialog');
+                expect(journey).toContain('iCheckAction({ service: "NS", action: "setToBooked", unbound: false }');
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "setToBooked", unbound: false })'
+                );
+                expect(journey).toContain('onMessageDialog().iCheckState()');
+                expect(journey).toContain('onMessageDialog().iCancel()');
+                // Bound (enabled !== true) critical action selects a row first.
+                expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
+                // The non-critical action's execute stays commented out.
+                expect(journey).toContain(
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: "NS", action: "Copy", unbound: false })'
+                );
+            });
+
+            it('comments out the confirmation-dialog steps for a dynamically-enabled critical action', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Set To New',
+                        action: 'setToNew',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: 'dynamic',
+                        isCritical: true
+                    }
+                ]);
+                const lines = journey.split('\n').map((line) => line.trim());
+                // Conditionally enabled (Core.OperationAvailable path) → steps are emitted commented out, never run.
+                expect(lines).toContain(
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction({ service: "NS", action: "setToNew", unbound: false });'
+                );
+                const active = lines.filter((line) => !line.startsWith('//'));
+                expect(active.some((line) => line.includes('onMessageDialog'))).toBe(false);
+                expect(active.some((line) => line.includes('iExecuteAction({ service: "NS", action: "setToNew"'))).toBe(
+                    false
+                );
+            });
+
+            it('omits the confirmation-dialog steps when no action is critical', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }
+                ]);
+                expect(journey).not.toContain('onMessageDialog');
+            });
+
+            it('renders the confirmation-dialog steps for critical Object Page header actions', () => {
+                const templatePath = join(__dirname, '../../templates/v4/latest/integration/ObjectPageJourney.js');
+                const outPath = join(__dirname, '../test-output/critical/ObjectPageJourney.gen.js');
+                const editor = create(createStorage());
+                editor.copyTpl(templatePath, outPath, {
+                    name: 'TravelObjectPage',
+                    hideFilterBar: false,
+                    serviceUri: '/odata/v4/TestService/',
+                    navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
+                    headerTitle: undefined,
+                    headerSections: [],
+                    bodySections: [],
+                    editButton: undefined,
+                    headerActions: [
+                        {
+                            service: 'TestService',
+                            action: 'setToBooked',
+                            unbound: false,
+                            visible: true,
+                            enabled: false,
+                            isCritical: true
+                        }
+                    ]
+                });
+                const journey = editor.read(outPath);
+                expect(journey).toContain('onMessageDialog().iCheckState()');
+                expect(journey).toContain('onMessageDialog().iCancel()');
+                expect(journey).toContain('onHeader().iExecuteAction({ service: "TestService", action: "setToBooked"');
+            });
+
+            it('deselects the row after a bound critical action so the next action starts clean', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true }
+                ]);
+                // One select before the action, one deselect after cancelling the dialog.
+                const selectCount = (journey.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).length;
+                expect(selectCount).toBe(2);
+                expect(journey).toContain('Deselect the row so the following actions start with an empty selection.');
+            });
+
+            it('hoists a single filter-bar search before the action block for multiple critical actions', () => {
+                const journey = renderListReportJourney([
+                    { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
+                    { label: 'Set To New', action: 'setToNew', visible: true, enabled: false, isCritical: true }
+                ]);
+                // Scope to the actions test block; the separate "Navigate to ObjectPage" block has its own search.
+                const actionsBlock = journey.slice(
+                    journey.indexOf('Check table columns and actions'),
+                    journey.indexOf('Navigate to ObjectPage')
+                );
+                const searchCount = (actionsBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length;
+                expect(searchCount).toBe(1);
+            });
+
+            it('validates the action parameter dialog for a parameterized action and cancels it', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Deduct Discount',
+                        action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: false,
+                        parameterDialogFields: ['discount_percent']
+                    }
+                ]);
+                expect(journey).toContain(
+                    'onTable(defaultTableId).iExecuteAction({ service: "NS", action: "deductDiscount", unbound: false })'
+                );
+                expect(journey).toContain(
+                    'onActionDialog().iCheckActionParameterDialogField({ property: "discount_percent" }, undefined, { visible: true })'
+                );
+                expect(journey).toContain('onActionDialog().iCancel()');
+                // A parameter dialog is shown, not the plain confirmation message dialog.
+                expect(journey).not.toContain('onMessageDialog');
+            });
+
+            it('prefers the parameter dialog over the confirmation dialog for a critical parameterized action', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Deduct Discount',
+                        action: 'deductDiscount',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        isCritical: true,
+                        parameterDialogFields: ['discount_percent']
+                    }
+                ]);
+                const activeLines = journey.split('\n').filter((line) => !line.trim().startsWith('//'));
+                expect(
+                    activeLines.some((line) => line.includes('onActionDialog().iCheckActionParameterDialogField'))
+                ).toBe(true);
+                expect(activeLines.some((line) => line.includes('onMessageDialog'))).toBe(false);
+            });
+        });
+
         it('No manifest', async () => {
             const projectDir = prepareTestFiles('Not_Here');
             let error: string | undefined;
@@ -272,6 +470,98 @@ describe('ui5-test-writer', () => {
             const firstJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
             expect(firstJourneyContent).toContain('iCheckColumns');
+        });
+
+        it('generates menu action tests for a regular List Report toolbar menu button', async () => {
+            const appModel = JSON.parse(appModels.V4_MODEL);
+            // Attach a table toolbar with a custom menu button (two child actions) to the List Report.
+            appModel.applicationModel.pages.TravelList.model.root.aggregations.table.aggregations.toolBar = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            MenuActions: {
+                                description: 'My Menu Button',
+                                menuType: 'CustomMenu',
+                                schema: { actionType: 'CustomMenu' },
+                                aggregations: {
+                                    actions: {
+                                        aggregations: {
+                                            myAction1: {
+                                                description: 'Custom Action 1',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            },
+                                            myAction2: {
+                                                description: 'Custom Action 2',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const content =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            expect(content).toContain('onTable(defaultTableId).iCheckAction("My Menu Button")');
+            expect(content).toContain('onTable(defaultTableId).iExecuteAction("My Menu Button")');
+            expect(content).toContain('onTable(defaultTableId).iCheckMenuAction("Custom Action 1")');
+            expect(content).toContain('onTable(defaultTableId).iCheckMenuAction("Custom Action 2")');
+        });
+
+        it('omits the drill-down for a split (default-action) List Report toolbar menu button', async () => {
+            const appModel = JSON.parse(appModels.V4_MODEL);
+            // A menu with a defaultAction renders as a split button whose drop-down cannot be opened via OPA.
+            appModel.applicationModel.pages.TravelList.model.root.aggregations.table.aggregations.toolBar = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            MenuActions: {
+                                description: 'My Menu Button',
+                                menuType: 'CustomMenu',
+                                schema: { actionType: 'CustomMenu' },
+                                properties: { defaultAction: { value: 'myAction2' } },
+                                aggregations: {
+                                    actions: {
+                                        aggregations: {
+                                            myAction1: {
+                                                description: 'Custom Action 1',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            },
+                                            myAction2: {
+                                                description: 'Custom Action 2',
+                                                schema: { actionType: 'Custom' },
+                                                aggregations: {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            readAppMock.mockResolvedValueOnce(appModel);
+            const projectDir = prepareTestFiles('LROPv4');
+            fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+            const content =
+                fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
+            // The button is still asserted, and the (unopenable) drill-down is only present commented out.
+            expect(content).toContain('onTable(defaultTableId).iCheckAction("My Menu Button")');
+            expect(content).toContain('split menu button');
+            expect(content).toContain(
+                '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction("My Menu Button")'
+            );
+            expect(content).not.toContain('iCheckMenuAction');
         });
 
         it('skips testsuite and opaTests harness files when useVirtualPreviewEndpoints is enabled', async () => {
@@ -890,10 +1180,10 @@ export type Then = Opa5 & BaseArrangements & {
             const travelListJourneyContent =
                 fs.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js'].contents;
             expect(travelListJourneyContent).toContain(
-                'onTable().iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+                'onTable(defaultTableId).iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
             );
             expect(travelListJourneyContent).toContain(
-                'onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+                'onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
             );
         });
 
@@ -1424,8 +1714,12 @@ export type Then = Opa5 & BaseArrangements & {
             const lrJourneyPath = Object.keys(dumped).find((p) => p.includes('TravelListJourney.gen.ts'));
             expect(lrJourneyPath).toBeDefined();
             const lrContent = dumped[lrJourneyPath!].contents as string;
-            expect(lrContent).toContain('onTable("").iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")');
-            expect(lrContent).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
+            expect(lrContent).toContain(
+                'onTable(defaultTableId).iClickLink(0, "DataFieldForAnnotation::_Agency::Contact")'
+            );
+            expect(lrContent).toContain(
+                'onDialog(defaultTableId).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
+            );
 
             // ─── No JS leakage ───
             expect(content).not.toContain('sap.ui.define');
@@ -1636,7 +1930,11 @@ export type Then = Opa5 & BaseArrangements & {
                 { ui5Version: '1.147.9', expectedBucket: '1.84' },
                 { ui5Version: '1.148.0', expectedBucket: '1.148' },
                 { ui5Version: '1.148.9', expectedBucket: '1.148' },
-                { ui5Version: '1.149.0', expectedBucket: 'latest' },
+                { ui5Version: '1.149.0', expectedBucket: '1.148' },
+                { ui5Version: '1.151.9', expectedBucket: '1.148' },
+                { ui5Version: '1.152.0', expectedBucket: '1.152' },
+                { ui5Version: '1.152.9', expectedBucket: '1.152' },
+                { ui5Version: '1.153.0', expectedBucket: 'latest' },
                 { ui5Version: '1.160.0', expectedBucket: 'latest' }
             ])('ui5Version $ui5Version → bucket $expectedBucket', async ({ ui5Version, expectedBucket }) => {
                 const projectDir = prepareTestFiles('FullScreenLROP');
@@ -1820,7 +2118,8 @@ export type Then = Opa5 & BaseArrangements & {
             it.each([
                 ['1.84', '1.120.0'],
                 ['1.148', '1.148.0'],
-                ['latest', '1.149.0']
+                ['1.152', '1.152.0'],
+                ['latest', '1.153.0']
             ])('bucket %s generates correct FPM output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('CustomOP');
                 fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
@@ -1872,6 +2171,16 @@ describe('removeUnsupportedActions()', () => {
     it('latest: keeps all action types', () => {
         const features = makeFeatures();
         removeUnsupportedActions(features, 'latest');
+        expect(labels(features)).toEqual({
+            tb: ['KeepTB', 'CustomTB', 'MenuTB'],
+            header: ['CustomH', 'MenuH', 'KeepH'],
+            section: ['KeepS', 'CustomS', 'MenuS']
+        });
+    });
+
+    it('1.152: keeps all action types (same as latest)', () => {
+        const features = makeFeatures();
+        removeUnsupportedActions(features, '1.152');
         expect(labels(features)).toEqual({
             tb: ['KeepTB', 'CustomTB', 'MenuTB'],
             header: ['CustomH', 'MenuH', 'KeepH'],

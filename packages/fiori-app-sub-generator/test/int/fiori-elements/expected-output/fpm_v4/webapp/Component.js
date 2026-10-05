@@ -3,7 +3,7 @@ sap.ui.define(
     function (Component) {
         "use strict";
 
-        return Component.extend("testNameSpace.fpmv4.Component", {
+        return Component.extend("testnamespace.fpmv4.Component", {
             metadata: {
                 manifest: "json"
             }
