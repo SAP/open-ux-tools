@@ -4,7 +4,7 @@ description: Add analytical chart (chart + table hybrid) to SAP Fiori Elements L
 argument-hint: Entity, dimension, measure, aggregation
 metadata:
   author: sap-fiori-tools
-  version: "0.0.4"
+  version: "0.0.5"
 ---
 
 # SAP Fiori Analytical Chart
@@ -140,27 +140,35 @@ UI.PresentationVariant #TableView: {
 
 **CORRECT Example:**
 ```abap
-@OData.applySupportedForAggregation: #FULL  ← MANDATORY! Must be present!
+// MANDATORY! Must be present!
+@OData.applySupportedForAggregation: #FULL
 define root view entity ZC_ENTITY
   provider contract TRANSACTIONAL_QUERY
   as projection on ZR_ENTITY
 {
-  @Aggregation.default: #AVG  ← Specify aggregation method for measure
+  @Aggregation.default: #AVG  // Specify aggregation method for measure
   Amount;
-  Category;  ← Dimension field (no aggregation annotation needed)
+  Category;  // Dimension field (no aggregation annotation needed)
 }
 ```
 
 **WRONG Example:**
 ```abap
 // ❌ WRONG - Don't put on interface view
-@OData.applySupportedForAggregation: #FULL  ← WRONG PLACE!
+// WRONG PLACE!
+@OData.applySupportedForAggregation: #FULL
 define root view entity ZR_ENTITY
   as select from TABLE
 ```
 
 ### 2. Backend Metadata Extension (MANDATORY) - Add Chart, PresentationVariant Annotations
+
+⚠️ **CRITICAL: `@UI.chart` and `@UI.presentationVariant` are ENTITY-LEVEL (header) annotations.**
+Place them in the **header block — BEFORE `annotate view ZC_ENTITY with`** (alongside `@UI.headerInfo.*`), **NOT inside the `{ ... }` field block and NOT on a field** (e.g. the dimension field).
+Attaching `@UI.chart` to a field fails activation with: `Annotation 'UI.chart.qualifier' used at wrong position (wrong scope)`.
+
 ```abap
+// ↓↓↓ HEADER SCOPE: these go BEFORE `annotate view`, never on a field ↓↓↓
 @UI.chart: [{
   qualifier: 'AnalyticalChart',
   title: 'Chart Title',
@@ -300,24 +308,10 @@ The **projection view (DDLS file)** and **metadata extension (DDLX file)** are *
 
 ## Testing
 
-### CAP Projects
-```bash
-npm run watch-<app-name>  # e.g., npm run watch-manage-travel
-# or use generic watch script if available
-cds watch
-```
-
-### RAP Projects
-```bash
-npm run start-mock # Needs metadata refresh - see below
-
-npm start          # No refresh needed - fetches metadata from live backend at runtime
-```
-
-**Refreshing metadata for `start-mock`:**
-- When using `npm run start-mock`, the app uses locally cached `metadata.xml`
-- After backend changes (DDLS/DDLX activation), refresh the local metadata
-- For full details on testing and metadata refresh, consult the `sap-fiori-app-development` skill
+Refer to the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill for detailed testing instructions, including:
+- CAP project testing with watch scripts
+- Standalone Fiori project testing with live backend vs. mock mode
+- Metadata refresh procedures after backend changes
 
 ---
 
