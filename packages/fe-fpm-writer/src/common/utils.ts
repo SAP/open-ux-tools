@@ -127,6 +127,8 @@ export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id:
         logger?.warn(
             `isElementIdAvailable: failed to parse "${viewOrFragmentPath}", falling back to text search: ${e instanceof Error ? e.message : String(e)}`
         );
-        return !new RegExp(`\\bid\\s*=\\s*["']${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`).test(xmlContent);
+        return !new RegExp(String.raw`\bid\s*=\s*["']${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`).test(
+            xmlContent
+        );
     }
 }
