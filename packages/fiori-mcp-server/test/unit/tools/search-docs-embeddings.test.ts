@@ -36,7 +36,9 @@ beforeAll(async () => {
             break;
         } catch (err) {
             await client.close().catch(() => {});
-            if (attempt === 2) throw err;
+            if (attempt === 2) {
+                throw err;
+            }
         }
     }
     if (tools.length === 0) {
