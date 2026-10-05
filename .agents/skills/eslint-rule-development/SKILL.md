@@ -26,7 +26,7 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 
 | Type | Use when | Reference file |
 |---|---|---|
-| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files; also covers rules where text (label, title, description) can be an i18n binding | `references/annotation.md` |
+| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files. Also, covers rules where text, that is, a label, title, or description, can be an i18n binding | `references/annotation.md` |
 | **Manifest JSON rule** | Validates `manifest.json` properties | `references/manifest-json.md` |
 | **Flex change file rule** | Validates `webapp/changes/*.change` (Applicable only to OData V2 flex change properties) | `references/flex-change.md` |
 | **JavaScript / TypeScript rule** | Validates JS/TS application source code (UI5 patterns, global variables, deprecated APIs) | `references/js-ts-rule.md` |
@@ -201,7 +201,7 @@ Summarize what was done:
 | Plugin config & exports | `packages/eslint-plugin-fiori-tools/src/index.ts` |
 | Diagnostic constants | `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts` |
 | Annotation helper utilities | `packages/eslint-plugin-fiori-tools/src/project-context/linker/annotations.ts` |
-| i18n helper utilities (`extractI18nKey`, `getAttrOrChildText`, `collectSectionLabelKeys`, etc.) | `packages/eslint-plugin-fiori-tools/src/project-context/linker/i18n.ts` |
+| i18n helper utilities (`extractI18nKey`, `getAttrOrChildText`, `collectSectionLabelKeys`, for example) | `packages/eslint-plugin-fiori-tools/src/project-context/linker/i18n.ts` |
 | Annotation index key format | `packages/eslint-plugin-fiori-tools/src/project-context/parser/service.ts` (lines 50-57) |
 | Linker types | `packages/eslint-plugin-fiori-tools/src/project-context/linker/types.ts` |
 | V2 linker | `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v2.ts` |

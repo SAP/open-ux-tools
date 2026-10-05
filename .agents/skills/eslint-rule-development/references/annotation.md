@@ -13,7 +13,7 @@
 
 For rules with nested AST walks: also read `src/rules/sap-no-single-facet-in-collection.ts`.
 
-**If the text field can be an i18n binding** (label, title, description with `{@i18n>key}`), also read:
+If the text field can be an i18n binding, that is, a label, title, or description with an `{@i18n>key}`, also read:
 - `packages/eslint-plugin-fiori-tools/src/rules/sap-no-comma-in-section-title.ts` — canonical two-pass example
 - `packages/eslint-plugin-fiori-tools/src/language/i18n/source-code.ts`
 - `packages/eslint-plugin-fiori-tools/src/language/rule-factory.ts`
@@ -315,38 +315,38 @@ import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, setup } from '../t
 
 ---
 
-## When the text field can be an i18n binding
+## When the Text Field Can Be an i18n Binding
 
-Use when the text property (label, title, description) can be a direct string **or** a binding like `{@i18n>myKey}` / `{i18n>myKey}`.
+Use when the text property, that is a label, title, or description, can be a direct string or a binding such as `{@i18n>myKey}` or `{i18n>myKey}`.
 
-Canonical example (read it): `src/rules/sap-no-comma-in-section-title.ts`
+Canonical example: `src/rules/sap-no-comma-in-section-title.ts`
 
-**Two-pass design:** annotation pass checks direct strings and skips bindings; i18n pass walks the same annotation index to find which keys are label keys, then checks their `.properties` values.
+**Two-pass design:** The annotation pass checks direct strings and skips bindings. The i18n pass walks the same annotation index to find which keys are label keys, then checks their `.properties` values.
 
-### What changes vs. the standard annotation pattern
+### What Changes Versus The Standard Annotation Pattern
 
-**1. Diagnostic** — make `annotation` optional, add `i18n` (only one is set per problem):
+**1. Diagnostic**: make `annotation` optional and add `i18n` (only one is set per problem):
 ```typescript
 import type { I18nEntry } from '../language/i18n/source-code.js';
 annotation?: { reference: AnnotationReference; reportedParent: Element };
 i18n?: { uri: fileUri, entry: I18nEntry };
 ```
 
-**2. Annotation pass** — import `extractI18nKey` from `linker/i18n.ts` and skip bindings before checking the value:
+**2. Annotation pass**: import `extractI18nKey` from `linker/i18n.ts` and skip bindings before checking the value:
 ```typescript
 import { extractI18nKey } from '../project-context/linker/i18n.js';
 // inside your check:
 if (extractI18nKey(labelStr) !== undefined) return; // handled by i18n pass
 ```
 
-**3. i18n key collection** — mirror the annotation traversal; populate `Map<key, pageNames[]>` instead of reporting.
+**3. i18n key collection**: mirror the annotation traversal and populate `Map<key, pageNames[]>` instead of reporting.
 
 For **UI.Facets Label** checks specifically, the building blocks in `linker/i18n.ts` cover the full traversal:
-- `extractRecordI18nKey(record, pageName, map)` — extracts one facet record's Label key into the map
-- `collectFacetI18nKeys(entityType, pageName, parsedService, map)` — walks all UI.Facets records for an entity
-- `collectSectionLabelKeys(projectContext)` — iterates all apps/pages, returns `Map<key, pageNames[]>` ready for the i18n check
+- `extractRecordI18nKey(record, pageName, map)`: extracts the `Label` key from a single facet record into the map
+- `collectFacetI18nKeys(entityType, pageName, parsedService, map)`: walks all UI.Facets records for an entity
+- `collectSectionLabelKeys(projectContext)`: iterates all apps and pages and returns `Map<key, pageNames[]>` for the i18n check
 
-Import and call `collectSectionLabelKeys` directly if the rule targets Facet Labels; write a custom collector otherwise:
+Import and call `collectSectionLabelKeys` directly if the rule targets Facet Labels. Otherwise, write a custom collector.
 ```typescript
 import { collectSectionLabelKeys } from '../project-context/linker/i18n.js';
 // OR write a custom collector for other annotation terms:
@@ -357,7 +357,7 @@ function collectTextLabelI18nKeys(ctx: ProjectContext): Map<string, string[]> {
 }
 ```
 
-**4. i18n pass + updated `check()` and `createI18n`:**
+**4. i18n pass, updated `check()`, and `createI18n`:**
 ```typescript
 import { FioriI18nSourceCode } from '../language/i18n/source-code.js';
 
