@@ -2556,6 +2556,60 @@ describe('Test isColumnPersonalizationEnabled()', () => {
         expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
         expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Booking')).toBe(true);
     });
+
+    const makeManifestWithKeys = (entries: Record<string, boolean | Record<string, unknown>>): Manifest => {
+        const controlConfiguration: Record<string, unknown> = {};
+        for (const [key, personalization] of Object.entries(entries)) {
+            controlConfiguration[key] = { tableSettings: { personalization } };
+        }
+        return {
+            'sap.ui5': { routing: { targets: { MyLR: { options: { settings: { controlConfiguration } } } } } }
+        } as unknown as Manifest;
+    };
+
+    test('does not guess among conflicting qualifiers under one context (disabled first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Alt': true
+        });
+        // Two qualified keys under the same context path → default table's qualifier is undetermined.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(true);
+    });
+
+    test('does not guess among conflicting qualifiers under one context (enabled first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Alt': true,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false
+        });
+        // Key order must not change the outcome: still undetermined → enabled.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(true);
+    });
+
+    test('does not mask a disabled default table with an unrelated bare entry (bare first)', () => {
+        const manifest = makeManifestWithKeys({
+            '@com.sap.vocabularies.UI.v1.LineItem': true,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false
+        });
+        // The bare entry belongs to another table; the context-scoped qualified key is the default
+        // table and disables personalization.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('does not mask a disabled default table with an unrelated bare entry (qualified first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false,
+            '@com.sap.vocabularies.UI.v1.LineItem': true
+        });
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('prefers the context-prefixed bare key over an unrelated qualified key', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem': false,
+            '/Booking/@com.sap.vocabularies.UI.v1.LineItem#Main': true
+        });
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
 });
 
 describe('Test getTableIdentifiers()', () => {

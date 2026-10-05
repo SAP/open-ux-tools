@@ -550,35 +550,49 @@ export function getCustomFilterFieldProperties(
  * (`/EntitySet/@...LineItem[#Qualifier]`), mirroring the resolution in
  * `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v4.ts`.
  *
- * Resolution order:
- * 1. the bare term, 2. the context-prefixed bare term, 3. the single key whose final path segment is
- * the LineItem term (bare or qualified), preferring a key that matches `contextPath`.
+ * The entry is only resolved when it can be identified unambiguously, so a disabled default table is
+ * never masked by an unrelated table's entry:
+ * 1. the bare term, or its context-prefixed form, when it is the only LineItem key present;
+ * 2. otherwise, exactly one LineItem key (bare or qualified) matching the page's `contextPath`.
+ *
+ * When several LineItem keys are candidates (e.g. `#Main` and `#Alt` under the same context, or a mix
+ * of bare and qualified keys for multiple tables), the default table's own key cannot be derived from
+ * the available data, so the entry is left unresolved rather than guessed.
  *
  * @param controlConfiguration - the target's `options.settings.controlConfiguration`
  * @param contextPath - the page's context path (e.g. `/Travel`), used to match CAP-style prefixed keys
- * @returns the matched LineItem control-configuration value, or undefined if none
+ * @returns the matched LineItem control-configuration value, or undefined if it cannot be identified
  */
 function findDefaultTableLineItemConfig(
     controlConfiguration: Record<string, unknown>,
     contextPath?: string
 ): { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined {
     const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
-    const direct =
-        controlConfiguration[lineItemTerm] ?? (contextPath && controlConfiguration[`${contextPath}/${lineItemTerm}`]);
-    if (direct) {
-        return direct as { tableSettings?: { personalization?: boolean | Record<string, unknown> } };
-    }
     const isLineItemKey = (key: string): boolean => {
         const segment = key.substring(key.lastIndexOf('/') + 1);
         return segment === lineItemTerm || segment.startsWith(`${lineItemTerm}#`);
     };
-    const matchingKeys = Object.keys(controlConfiguration).filter(isLineItemKey);
-    // Prefer a key that matches the page's own context path; otherwise, for a single-table LR there is
-    // exactly one LineItem config so an unambiguous match is safe. Multiple matches (multi-table) are
-    // left unresolved to avoid combining settings from unrelated tables.
-    const key =
-        (contextPath && matchingKeys.find((candidate) => candidate.startsWith(`${contextPath}/`))) ??
-        (matchingKeys.length === 1 ? matchingKeys[0] : undefined);
+    const lineItemKeys = Object.keys(controlConfiguration).filter(isLineItemKey);
+
+    let key: string | undefined;
+    if (lineItemKeys.length === 1) {
+        // Single-table List Report: exactly one LineItem config, so the match is unambiguous whether
+        // it is bare, qualified, or context-prefixed.
+        key = lineItemKeys[0];
+    } else if (contextPath) {
+        // Multiple LineItem keys: only resolve when exactly one is scoped to this page's context path.
+        // The bare and context-prefixed forms of the default table term are preferred; a single
+        // qualified key under the context path is accepted, but several are left unresolved to avoid
+        // picking an arbitrary qualifier.
+        const bareUnderContext = `${contextPath}/${lineItemTerm}`;
+        if (controlConfiguration[bareUnderContext]) {
+            key = bareUnderContext;
+        } else {
+            const underContext = lineItemKeys.filter((candidate) => candidate.startsWith(`${contextPath}/`));
+            key = underContext.length === 1 ? underContext[0] : undefined;
+        }
+    }
+
     return key
         ? (controlConfiguration[key] as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
         : undefined;
