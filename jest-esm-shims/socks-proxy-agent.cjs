@@ -10,4 +10,5 @@ class SocksProxyAgent extends net.Socket {
 }
 SocksProxyAgent.protocols = ['socks', 'socks4', 'socks4a', 'socks5', 'socks5h'];
 
-module.exports = { SocksProxyAgent };
+module.exports = SocksProxyAgent;
+module.exports.SocksProxyAgent = SocksProxyAgent;

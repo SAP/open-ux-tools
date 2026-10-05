@@ -12,6 +12,9 @@
 //
 // We detect this by checking that the requesting file's path contains @npmcli+agent or
 // one of the other packages in the chain, and redirect to CJS stubs.
+//
+// Both `sync` (require) and `async` (dynamic import) named exports are provided so that
+// Jest 30's findNodeModuleAsync path (used for `await import(...)`) also applies the shims.
 
 'use strict';
 
@@ -36,7 +39,7 @@ const SHIM_MAP = {
     'socks-proxy-agent': path.join(shimDir, 'socks-proxy-agent.cjs'),
 };
 
-module.exports = (request, options) => {
+function resolveRequest(request, options, defaultResolverFn) {
     if (ESM_ONLY_PACKAGES.has(request)) {
         const from = options.basedir || '';
         const isFromEsmChain = ESM_CHAIN_PATTERNS.some((p) => from.includes(p));
@@ -44,5 +47,18 @@ module.exports = (request, options) => {
             return SHIM_MAP[request];
         }
     }
-    return options.defaultResolver(request, options);
-};
+    return defaultResolverFn(request, options);
+}
+
+// sync export: used by Jest for require() and as fallback for import() when no async export
+const sync = (request, options) => resolveRequest(request, options, options.defaultResolver);
+
+// async export: used by Jest 30+ for dynamic import() calls — without this, the shims are
+// never applied to the `await import('@ui5/project/graph')` chain in ui5MappingStrategy.js
+const async_ = async (request, options) => resolveRequest(request, options, options.defaultAsyncResolver);
+
+// Default export keeps backward compatibility with any config that references this file
+// as a plain function resolver (Jest treats a plain function as sync-only).
+module.exports = sync;
+module.exports.sync = sync;
+module.exports.async = async_;

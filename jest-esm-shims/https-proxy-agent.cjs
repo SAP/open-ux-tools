@@ -10,4 +10,7 @@ class HttpsProxyAgent extends https.Agent {
 }
 HttpsProxyAgent.protocols = ['https'];
 
-module.exports = { HttpsProxyAgent };
+// Export the class as the default (for `import HttpsProxyAgent from 'https-proxy-agent'`)
+// and as a named export (for `import { HttpsProxyAgent } from 'https-proxy-agent'`).
+module.exports = HttpsProxyAgent;
+module.exports.HttpsProxyAgent = HttpsProxyAgent;

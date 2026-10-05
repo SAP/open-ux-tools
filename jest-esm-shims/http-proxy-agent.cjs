@@ -12,4 +12,5 @@ class HttpProxyAgent extends http.Agent {
 }
 HttpProxyAgent.protocols = ['http'];
 
-module.exports = { HttpProxyAgent };
+module.exports = HttpProxyAgent;
+module.exports.HttpProxyAgent = HttpProxyAgent;
