@@ -7,7 +7,8 @@ import {
     extractEnumMemberValue,
     buildActionButtonState,
     buildActionStateFromSpecModelKey,
-    collectCriticalActionNames
+    collectCriticalActionNames,
+    collectActionParameterNames
 } from '../../../src/utils/actionUtils.js';
 import { getMergedConvertedMetadata } from '../../../src/utils/metadataXmlUtils.js';
 
@@ -448,6 +449,7 @@ describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from ann
       </EntityType>
       <Action Name="setToNew" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
       <Action Name="setToBooked" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/></Action>
+      <Action Name="deductDiscount" IsBound="true"><Parameter Name="_it" Type="TestService.TravelType"/><Parameter Name="discount_percent" Type="Edm.String"/></Action>
       <EntityContainer Name="Container">
         <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
       </EntityContainer>
@@ -468,6 +470,10 @@ describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from ann
             <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
               <PropertyValue Property="Label" String="Set To Booked"/>
               <PropertyValue Property="Action" String="TestService.setToBooked(TestService.TravelType)"/>
+            </Record>
+            <Record Type="com.sap.vocabularies.UI.v1.DataFieldForAction">
+              <PropertyValue Property="Label" String="Deduct Discount"/>
+              <PropertyValue Property="Action" String="TestService.deductDiscount(TestService.TravelType)"/>
             </Record>
           </Collection>
         </Annotation>
@@ -503,5 +509,42 @@ describe('getMergedConvertedMetadata() surfaces Common.IsActionCritical from ann
         const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, criticalActions);
         const critical = actions.filter((a) => a.isCritical).map((a) => a.action);
         expect(critical).toEqual(expect.arrayContaining(['setToBooked', 'setToNew']));
+    });
+
+    test('LR toolbar action states carry parameterDialogFields from the merged metadata', async () => {
+        const { checkActionButtonStatesFromMetadata } = await import('../../../src/utils/listReportUtils.js');
+        const converted = getMergedConvertedMetadata(metadataXml, [annotationXml]);
+        const { actions } = checkActionButtonStatesFromMetadata(converted!, 'Travel', undefined, new Set());
+        const deductDiscount = actions.find((a) => a.action === 'deductDiscount');
+        // Binding parameter (_it) dropped; only the real input parameter drives the dialog.
+        expect(deductDiscount?.parameterDialogFields).toEqual(['discount_percent']);
+        expect(actions.find((a) => a.action === 'setToBooked')?.parameterDialogFields).toBeUndefined();
+    });
+});
+
+describe('collectActionParameterNames()', () => {
+    const makeAction = (isBound: boolean, names: string[]): Action =>
+        ({
+            isBound,
+            parameters: names.map((name) => ({ name })) as unknown as ActionParameter[]
+        }) as unknown as Action;
+
+    test('drops the binding parameter for a bound action', () => {
+        expect(collectActionParameterNames(makeAction(true, ['_it', 'discount_percent']))).toEqual([
+            'discount_percent'
+        ]);
+    });
+
+    test('keeps all parameters for an unbound action', () => {
+        expect(collectActionParameterNames(makeAction(false, ['reason', 'amount']))).toEqual(['reason', 'amount']);
+    });
+
+    test('returns undefined when a bound action has only the binding parameter', () => {
+        expect(collectActionParameterNames(makeAction(true, ['_it']))).toBeUndefined();
+    });
+
+    test('returns undefined when the action has no parameters or is undefined', () => {
+        expect(collectActionParameterNames(makeAction(true, []))).toBeUndefined();
+        expect(collectActionParameterNames(undefined)).toBeUndefined();
     });
 });

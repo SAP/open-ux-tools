@@ -40,6 +40,8 @@ type WithAnd<T> = {
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 

@@ -32,13 +32,15 @@ const rule: Rule.RuleModule = {
             recommended: false
         },
         messages: {
-            forbiddenWindowProperty: 'Usage of a forbidden window property.'
+            forbiddenWindowProperty: 'Usage of a forbidden window property.',
+            windowAlert:
+                'A window.alert statement should not be part of the code that is committed to GIT! Use sap.m.MessageBox instead.'
         },
         schema: []
     },
     create(context: Rule.RuleContext) {
         const WINDOW_OBJECTS: string[] = [];
-        const FORBIDDEN_PROPERTIES = new Set(['top', 'addEventListener']);
+        const FORBIDDEN_PROPERTIES = new Set(['top', 'addEventListener', 'alert']);
 
         // --------------------------------------------------------------------------
         // Basic Helpers
@@ -90,9 +92,9 @@ const rule: Rule.RuleModule = {
          * Check if a window property access is valid (not forbidden).
          *
          * @param node The AST node to validate
-         * @returns True if the window property access is valid
+         * @returns Object with isValid boolean and the method name
          */
-        function isValid(node: ASTNode): boolean {
+        function checkValidity(node: ASTNode): { isValid: boolean; method: string } {
             let method = '';
 
             if (isIdentifier((node as any).property) && 'name' in (node as any).property) {
@@ -102,7 +104,7 @@ const rule: Rule.RuleModule = {
             if (isLiteral((node as any).property) && 'value' in (node as any).property) {
                 method = (node as any).property.value;
             }
-            return !FORBIDDEN_PROPERTIES.has(method);
+            return { isValid: !FORBIDDEN_PROPERTIES.has(method), method };
         }
 
         // --------------------------------------------------------------------------
@@ -116,8 +118,12 @@ const rule: Rule.RuleModule = {
                 return rememberWindow(node.left, node.right);
             },
             'MemberExpression': function (node: any): void {
-                if (isInteresting(node) && !isValid(node)) {
-                    context.report({ node: node, messageId: 'forbiddenWindowProperty' });
+                if (isInteresting(node)) {
+                    const { isValid, method } = checkValidity(node);
+                    if (!isValid) {
+                        const messageId = method === 'alert' ? 'windowAlert' : 'forbiddenWindowProperty';
+                        context.report({ node: node, messageId });
+                    }
                 }
             }
         };
