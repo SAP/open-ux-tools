@@ -24,7 +24,7 @@ allowBuilds:
   ui5-tooling-transpile: true
   unrs-resolver: true
 
-auditConfig: { ignoreGhsas: [ GHSA-vv9j-gjw2-j8wp, GHSA-86w9-cpqp-85rv, GHSA-vfj7-8cjw-p6xm ] }
+auditConfig: { ignoreGhsas: [ GHSA-vv9j-gjw2-j8wp ] }
 
 overrides:
   "@sap-ux/vocabularies-types": "0.16.0"
