@@ -7,7 +7,14 @@ export default {
     testEnvironment: 'node',
     setupFiles: [resolve(__dirname, 'jest.setup.mjs')],
     moduleNameMapper: {
-        '^(\\.{1,2}/.*)\\.js$': '$1'
+        '^(\\.{1,2}/.*)\\.js$': '$1',
+        // http-proxy-agent@9, https-proxy-agent@9, socks-proxy-agent@10 are ESM-only;
+        // @npmcli/agent does synchronous require() on them which Node cannot fulfil for ESM.
+        // Redirect to CJS stubs for the test environment.
+        '^agent-base$': new URL('./jest-esm-shims/agent-base.cjs', import.meta.url).pathname,
+        '^http-proxy-agent$': new URL('./jest-esm-shims/http-proxy-agent.cjs', import.meta.url).pathname,
+        '^https-proxy-agent$': new URL('./jest-esm-shims/https-proxy-agent.cjs', import.meta.url).pathname,
+        '^socks-proxy-agent$': new URL('./jest-esm-shims/socks-proxy-agent.cjs', import.meta.url).pathname
     },
     moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
     transform: {
