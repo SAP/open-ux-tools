@@ -80,7 +80,7 @@ Behavior definitions have a **known creation issue** with `implementationType: "
   "rootEntity": "ZR_ORGANIZATION",
   "name": "ZR_ORGANIZATION",
   "description": "Organization Behavior Definition",
-  "implementationType": "Unmanaged"  // ← Use "Unmanaged" to create skeleton
+  "implementationType": "Unmanaged"  // Use "Unmanaged" to create skeleton
 }
 ```
 
