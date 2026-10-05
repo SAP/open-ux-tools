@@ -82,7 +82,12 @@ For each rule:
    |  new  | [sap-[name]](docs/rules/sap-[name].md) | Short description | | ✅ |
    ```
    The columns are: `version | rule link | description | recommended (✅ if yes) | recommended-for-s4hana (✅ if yes)`
-8. **Run** individual test: `NODE_OPTIONS="--experimental-vm-modules" npx jest --testPathPatterns="sap-[name]" --no-coverage`
+8. **Verify types and lint** after each rule before moving to the next:
+   ```bash
+   pnpm --filter @sap-ux/eslint-plugin-fiori-tools check-types
+   pnpm --filter @sap-ux/eslint-plugin-fiori-tools lint
+   ```
+9. **Run** individual test: `NODE_OPTIONS="--experimental-vm-modules" npx jest --testPathPatterns="sap-[name]" --no-coverage`
 
 ---
 
@@ -99,6 +104,14 @@ const rule: Rule.RuleModule = {
 };
 export default rule;
 ```
+
+### TypeScript types — use correct ESLint/ESTree types throughout
+- AST node parameters: type as `Rule.Node` (generic) or specific ESTree types (`ESTree.CallExpression`, `ESTree.MemberExpression`, `ESTree.Comment`, etc.) from the `estree` package — already a transitive dep
+- Never use `any`; use `unknown` + type guards or specific ESTree interfaces instead
+- `context.report()` node argument: must be `Rule.Node`. For non-standard nodes like `ESTree.Comment`, cast: `comment as unknown as Rule.Node`
+- Callee/property chain access: always null-guard before accessing `.object`, `.property`, `.name` — the JS source often accesses these unsafely
+- `context.sourceCode` returns `SourceCode` — use its typed methods (`getAllComments(): ESTree.Comment[]`, `getScope(): Scope`, etc.)
+- Run `pnpm --filter @sap-ux/eslint-plugin-fiori-tools check-types` after each rule to catch type errors early
 
 ### Mocha → Jest test conversion
 - Replace `require(...)` with `import ... from '...'`
@@ -177,7 +190,10 @@ NODE_OPTIONS="--experimental-vm-modules" npx jest --testPathPatterns="sap-[name]
 # Full suite after all 11 rules
 pnpm --filter @sap-ux/eslint-plugin-fiori-tools test
 
-# Lint fix + verify
+# TypeScript type checking — must pass with zero errors
+pnpm --filter @sap-ux/eslint-plugin-fiori-tools check-types
+
+# Lint fix + verify — must exit with code 0
 pnpm --filter @sap-ux/eslint-plugin-fiori-tools lint:fix
 pnpm --filter @sap-ux/eslint-plugin-fiori-tools lint
 
