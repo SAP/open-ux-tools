@@ -2685,6 +2685,44 @@ describe('Test isTextOnlyArrangement()', () => {
         const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
         expect(isTextOnlyArrangement(metadata, undefined, 'CustomerID')).toBe(false);
     });
+
+    // UI.TextArrangement can also be maintained as a sibling annotation directly on the property
+    // (not nested inside Common.Text). TextOnly in that shape must still be detected, otherwise the
+    // code column is wrongly treated as sortable and an invalid sort test is generated.
+    const buildSiblingMetadataXml = (enumMember: string): string => `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
+                <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="${enumMember}"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('returns true for a property-level (sibling) TextOnly arrangement', () => {
+        const metadata = convert(
+            parse(buildSiblingMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'))
+        );
+        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(true);
+    });
+
+    test('returns false for a property-level (sibling) non-TextOnly arrangement', () => {
+        const metadata = convert(
+            parse(buildSiblingMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextLast'))
+        );
+        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
+    });
 });
 
 describe('Test getFilterFieldItems() error handling', () => {

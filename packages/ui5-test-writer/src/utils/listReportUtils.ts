@@ -686,9 +686,11 @@ export function isHiddenFilter(
 }
 
 /**
- * Returns true if the property's `UI.TextArrangement` (nested on `Common.Text`) is `TextOnly`.
- * With `TextOnly` the column renders only the text/description value, so it can be sorted by the
- * text property but not by the (hidden) code property — the code-property sort test must be skipped.
+ * Returns true if the property's `UI.TextArrangement` is `TextOnly`. The arrangement may be
+ * maintained either nested on `Common.Text` or as a sibling annotation directly on the property;
+ * both locations are checked. With `TextOnly` the column renders only the text/description value,
+ * so it can be sorted by the text property but not by the (hidden) code property — the code-property
+ * sort test must be skipped.
  *
  * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
  * @param entitySetName - name of the entity set that owns the property (undefined → false)
@@ -705,7 +707,12 @@ export function isTextOnlyArrangement(
     }
     const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
     const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    const textArrangement = property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement;
+    // `UI.TextArrangement` is typed by vocabularies-types only when nested under `Common.Text`, but
+    // the converter also populates it as a sibling directly on the property's UI annotations (that
+    // shape is not in the type). Read the typed nested location first, then fall back to the sibling
+    // location via an indexed access, which the generated type does not declare.
+    const siblingArrangement = (property?.annotations?.UI as Record<string, unknown> | undefined)?.['TextArrangement'];
+    const textArrangement = property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement ?? siblingArrangement;
     // The converted enum value stringifies to e.g. "UI.TextArrangementType/TextOnly".
     return textArrangement !== undefined && String(textArrangement).endsWith('/TextOnly');
 }
