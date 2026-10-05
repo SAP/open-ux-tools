@@ -30,6 +30,9 @@
       "path": "../fiori-docs-embeddings"
     },
     {
+      "path": "../fiori-migration-writer"
+    },
+    {
       "path": "../i18n"
     },
     {
