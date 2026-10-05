@@ -291,10 +291,10 @@ export class ProjectContext {
     private static createForFile(uri: string): ProjectContext {
         // not all project files might be indexed, but eslint still will pick it up
         // try to assign the file to the closest known app root and avoid re-indexing
-        for (const appRoot of this.appRoots.values()) {
-            if (uri.startsWith(appRoot)) {
-                const cachedValue = this.instanceCache.get(appRoot);
-                if (cachedValue?.index.appRoot === appRoot) {
+        for (const appRootUri of this.appRoots.values()) {
+            if (uri.startsWith(appRootUri)) {
+                const cachedValue = this.instanceCache.get(appRootUri);
+                if (cachedValue?.index.appRoot === fileURLToPath(appRootUri)) {
                     this.instanceCache.set(uri, cachedValue);
                     return cachedValue;
                 }
