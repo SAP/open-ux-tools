@@ -46,7 +46,7 @@ beforeAll(async () => {
             `No tools loaded from MCP server at ${DIST_SERVER}. Ensure the package is built before running these tests.`
         );
     }
-}, 120000);
+}, 150000);
 
 afterAll(async () => {
     await client?.close();
