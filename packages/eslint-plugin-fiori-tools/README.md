@@ -120,7 +120,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
-|  new      | [sap-micro-chart-requires-navigation-entity](docs/rules/sap-micro-chart-requires-navigation-entity.md) | Ensures that micro chart measures and dimensions reference properties through a 1:n navigation entity path. | | ✅ |
+|  new      | [sap-micro-chart-requires-navigation-entity](docs/rules/sap-micro-chart-requires-navigation-entity.md) | Ensures that micro chart measures and dimensions reference properties using a 1:n navigation entity path. | | ✅ |
 |  10.14.0  | [sap-no-path-hidden-on-interactive-columns](docs/rules/sap-no-path-hidden-on-interactive-columns.md) | A `UI.Hidden` annotation with a dynamic path must not be used on sortable or filterable columns. | | ✅ |
 |  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
 |  10.11.0  | [sap-no-deep-collection-facets](docs/rules/sap-no-deep-collection-facets.md) | Ensures `UI.CollectionFacet` elements are not nested at third level or deeper. | | ✅ |
