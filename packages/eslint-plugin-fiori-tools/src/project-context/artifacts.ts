@@ -35,9 +35,10 @@ export async function getProjectArtifacts(filePath: string): Promise<WorkerResul
             // Get CAP project i18n properties file paths
             capI18nPaths = getCapI18nFiles(projectRoot, env, cdsFiles).map((path) => capPropertiesPath(path, env));
         }
-        for (const app of artifacts.applications ?? []) {
-            // Get application i18n properties file paths
-            const appI18nPaths = await getI18nPropertiesPaths(app.manifestPath);
+        const apps = artifacts.applications ?? [];
+        // Get applications i18n properties file paths
+        const appI18nPathsResults = await Promise.all(apps.map((app) => getI18nPropertiesPaths(app.manifestPath)));
+        for (const [app, appI18nPaths] of apps.map((app, i) => [app, appI18nPathsResults[i]] as const)) {
             const i18nPaths = [...capI18nPaths, appI18nPaths['sap.app']];
             if (!isCap) {
                 for (const model of Object.values(appI18nPaths.models)) {
