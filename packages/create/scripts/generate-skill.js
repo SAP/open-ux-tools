@@ -8,7 +8,7 @@ const README_PATH = path.resolve(__dirname, '../README.md');
 const PACKAGE_JSON_PATH = path.resolve(__dirname, '../package.json');
 const SKILL_OUTPUT_PATH = path.resolve(
     __dirname,
-    '../../fiori-mcp-server/skills/sap-fiori-create-cli/SKILL.md'
+    '../../../plugins-coding-agents/fiori/skills/sap-fiori-create-cli/SKILL.md'
 );
 const REFERENCES_DIR = path.resolve(path.dirname(SKILL_OUTPUT_PATH), 'references');
 
