@@ -32,6 +32,9 @@
       "path": "../cap-config-writer"
     },
     {
+      "path": "../fiori-migration-writer"
+    },
+    {
       "path": "../flp-config-inquirer"
     },
     {
