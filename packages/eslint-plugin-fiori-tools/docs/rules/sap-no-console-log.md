@@ -1,4 +1,4 @@
-# Detect usage of console log (sap-no-console)
+# Detect usage of console log (sap-no-console-log)
 
 The use of console.log is not allowed.
 
@@ -8,4 +8,4 @@ Console.log is not supported in all browsers and as such use jQuery.sap.log.info
 
 ## Bug report
 
-In case you think the finding is a false positive please open a Github issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).

@@ -1,13 +1,15 @@
-# (JS_CORE_MODEL_USAGE)
+# Avoid `getModel()` on `sap.ui.getCore()` (sap-no-core-model-usage)
 
-_Warning Message: Model should not be set or read from sap.ui.getCore() as we are in a shared environment!_
+Using `sap.ui.getCore().getModel()` or `sap.ui.getCore().setModel()` accesses a shared, global model registry.
+In component-based Fiori applications this causes unexpected cross-contamination between components.
+Use the component's own model API instead.
 
 ## Rule Details
 
 The following patterns are considered warnings:
 
 ```js
-var ui = sap.ui; var oModel = sap.ui.getCore().getModel('oModelTest');
+var oModel = sap.ui.getCore().getModel('oModelTest');
 sap.ui.getCore().setModel();
 ```
 
@@ -19,6 +21,6 @@ myObj.model.getProperty('/path');
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+In case you detect an issue with the check please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading

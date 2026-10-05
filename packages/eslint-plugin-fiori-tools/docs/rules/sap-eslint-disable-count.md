@@ -4,4 +4,4 @@ This rule it's just a warning which reports how many eslint rules are being skip
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+In case you detect an issue with the check please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).

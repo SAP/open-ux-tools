@@ -34,4 +34,4 @@ Upload controls pose security risks as they allow users to upload files directly
 
 ## Bug report
 
-In case you think the finding is a false positive please open a Github issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
