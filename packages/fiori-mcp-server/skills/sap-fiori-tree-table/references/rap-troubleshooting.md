@@ -198,12 +198,12 @@ define hierarchy ZI_TravelActivity_HD
 ```abap
 define view entity ZI_TravelActivity
   as select from ztrvl_act
-  association [0..1] to ZI_TravelRequest as _TravelRequest  // ← MUST have this
+  association [0..1] to ZI_TravelRequest as _TravelRequest  // MUST have this
     on $projection.TravelRequestUUID = _TravelRequest.TravelRequestUUID
   // ... other associations
 {
   // ... fields
-  _TravelRequest  // ← MUST expose this
+  _TravelRequest  // MUST expose this
 }
 ```
 
@@ -227,8 +227,8 @@ define behavior for ZR_TravelActivity alias TravelActivity
   association _ParentActivity
   {
     with draft;
-    link action linkParentActivity;      // ← ADD THIS
-    unlink action unlinkParentActivity;  // ← ADD THIS
+    link action linkParentActivity;      // ADD THIS
+    unlink action unlinkParentActivity;  // ADD THIS
   }
 }
 ```
@@ -261,7 +261,7 @@ define behavior for ZR_TravelActivity alias TravelActivity
   
   instance hierarchy ZI_TravelActivity_HD
   {
-    managed reorder action changeNextSibling;          // ← ADD THIS
+    managed reorder action changeNextSibling;          // ADD THIS
     field ( hierarchy-index ) SiblingOrderNumber;
     ascending association _ParentActivity;
     descending association _ChildActivity { with cascading delete; };
@@ -294,14 +294,14 @@ define behavior for ZR_TravelActivity alias TravelActivity
 ```abap
 define behavior for ZR_TravelRequest alias TravelRequest
 implementation in class zbp_r_travelrequest unique
-early numbering  // ← MUST have this
+early numbering  // MUST have this
 {
   // ... configuration
 }
 
 define behavior for ZR_TravelActivity alias TravelActivity
 implementation in class zbp_r_travelactivity unique
-early numbering  // ← MUST have this
+early numbering  // MUST have this
 {
   // ... configuration
 }
@@ -319,14 +319,14 @@ early numbering  // ← MUST have this
 
 ```abap
 define behavior for ZR_TravelRequest alias TravelRequest
-implementation in class zbp_r_travelrequest unique  // ← MUST have this
+implementation in class zbp_r_travelrequest unique  // MUST have this
 early numbering
 {
   // ... configuration
 }
 
 define behavior for ZR_TravelActivity alias TravelActivity
-implementation in class zbp_r_travelactivity unique  // ← MUST have this
+implementation in class zbp_r_travelactivity unique  // MUST have this
 early numbering
 {
   // ... configuration
@@ -358,12 +358,12 @@ annotate entity ZC_TravelRequest with
       position: 10
     },
     {
-      id: 'TravelActivities',                // ← MUST have this facet
+      id: 'TravelActivities',                // MUST have this facet
       purpose: #STANDARD,
       type: #LINEITEM_REFERENCE,
       label: 'Travel Activities',
       position: 20,
-      targetElement: '_TravelActivity'       // ← Points to child association
+      targetElement: '_TravelActivity'       // Points to child association
     }
   ]
   // ... field annotations
@@ -384,7 +384,7 @@ annotate entity ZC_TravelRequest with
 @Metadata.layer: #CORE
 @UI: {
   presentationVariant: [{
-    sortOrder: [{ by: 'SiblingOrderNumber', direction: #ASC }]  // ← ADD THIS
+    sortOrder: [{ by: 'SiblingOrderNumber', direction: #ASC }]  // ADD THIS
   }]
 }
 annotate entity ZC_TravelActivity with
@@ -429,8 +429,8 @@ annotate entity ZC_TravelActivity with
 @EndUserText.label: 'Travel Itinerary Service'
 define service ZTRAVELITINERARY
 {
-  expose ZC_TravelRequest as TravelRequest;    // ← Root entity
-  expose ZC_TravelActivity as TravelActivity;  // ← Child entity
+  expose ZC_TravelRequest as TravelRequest;    // Root entity
+  expose ZC_TravelActivity as TravelActivity;  // Child entity
 }
 ```
 

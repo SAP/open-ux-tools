@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- update skills to reuse testing fiori app instruction from sap-fiori-app-development skill [[2407541](https://github.com/SAP/open-ux-tools/commit/240754101316160892d1701a578221d197fe3a5d)]
+
 ## 1.15.0
 
 ### Minor Changes
