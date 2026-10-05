@@ -650,7 +650,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         const pointer = getEdmxPointer(document.ast);
         throwIf(!pointer, `No root EDMX element found in ${uri}`);
         const deletions = this.removeReferences(writer, document, aliasInfo, usedNames, pointer!);
-        const inserts = this.addReferences(writer, document, aliasInfo, usedNames, pointer!);
+        const inserts = this.addReferences(writer, document, annotationFile, aliasInfo, usedNames, pointer!);
 
         return deletions || inserts;
     }
@@ -691,7 +691,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     }
 
     private collectReferencesToAdd(
-        document: Document,
+        annotationFile: AnnotationFile,
         aliasInfo: AliasInformation,
         usedNames: Set<string>
     ): Map<string, { serviceKey?: string }> {
@@ -715,7 +715,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 continue;
             }
             const serviceKey = this.metadataService.getServiceKeyByNamespace(name);
-            if (serviceKey && !document.annotationFile.references.some((r) => r.name === name)) {
+            if (serviceKey && !annotationFile.references.some((r) => r.name === name)) {
                 toAdd.set(name, { serviceKey });
             }
         }
@@ -725,11 +725,12 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
     private addReferences(
         writer: XMLWriter,
         document: Document,
+        annotationFile: AnnotationFile,
         aliasInfo: AliasInformation,
         usedNames: Set<string>,
         pointer: string
     ): boolean {
-        const toAdd = this.collectReferencesToAdd(document, aliasInfo, usedNames);
+        const toAdd = this.collectReferencesToAdd(annotationFile, aliasInfo, usedNames);
         for (const [namespace, { serviceKey }] of toAdd) {
             let reference: Reference;
             if (serviceKey) {
@@ -740,7 +741,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 reference = createReference(
                     ns.name,
                     undefined,
-                    this.resolveExternalServiceUri(serviceKey, document.annotationFile.references)
+                    this.resolveExternalServiceUri(serviceKey, annotationFile.references)
                 );
             } else {
                 const vocabularyInfo = this.vocabularyService.getVocabulary(namespace);
