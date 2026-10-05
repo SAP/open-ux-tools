@@ -126,6 +126,7 @@ type ChartPageEntry = {
     chartEntityType: MetadataElement;
     service: ParsedService;
 };
+type PageWithChartLookup = { lookup?: Record<string, ChartLookupItem[]>; entity?: MetadataElement; targetName: string };
 
 /**
  * Returns `true` when the navigation path from `fromEntityType` passes through at least one
@@ -196,6 +197,44 @@ function addChartToPageMap(
 }
 
 /**
+ * Extracts the navigation path segments that precede the `@` in an annotation path.
+ *
+ * @param annotationPath - Raw annotation path string (e.g. `toItems/@UI.Chart`).
+ * @returns Array of navigation segment names; empty when no navigation prefix exists.
+ */
+function getNavSegmentsFromPath(annotationPath: string): string[] {
+    const atIdx = annotationPath.indexOf('@');
+    const navPart = atIdx > 0 ? annotationPath.substring(0, atIdx).replace(/\/$/, '') : '';
+    return navPart ? navPart.split('/').filter(Boolean) : [];
+}
+
+/**
+ * Processes all chart entries for a single page, adding qualifying entries to the map.
+ *
+ * @param chartPageMap - The map being built.
+ * @param page - The page whose charts should be processed.
+ * @param service - The OData service associated with the app that owns this page.
+ */
+function processPageCharts(
+    chartPageMap: Map<IndexedAnnotation, ChartPageEntry>,
+    page: PageWithChartLookup,
+    service: ParsedService
+): void {
+    const charts = page.lookup?.['chart'] ?? [];
+    const pageEntityTypePath = page.entity?.structuredType;
+    for (const chart of charts) {
+        const chartEntityType = chart.annotation?.annotation?.target ?? '';
+        if (pageEntityTypePath && chartEntityType !== pageEntityTypePath) {
+            const navSegments = getNavSegmentsFromPath(chart.annotation?.annotationPath ?? '');
+            if (isReachedViaCollectionNavigation(navSegments, pageEntityTypePath, service)) {
+                continue;
+            }
+        }
+        addChartToPageMap(chartPageMap, chart, chartEntityType, page.targetName, service);
+    }
+}
+
+/**
  * Builds a map from each `IndexedAnnotation` to its page target-names, the page entity, and
  * the owning OData service, collected from `lookup['chart']` entries across all apps in the project.
  *
@@ -205,32 +244,14 @@ function addChartToPageMap(
 function buildChartPageMap(sourceCode: FioriAnnotationSourceCode): Map<IndexedAnnotation, ChartPageEntry> {
     const chartPageMap = new Map<IndexedAnnotation, ChartPageEntry>();
     for (const appKey of Object.keys(sourceCode.projectContext.linkedModel.apps)) {
-        const linkedApp = sourceCode.projectContext.linkedModel.apps[appKey];
         const appIndex = sourceCode.projectContext.index.apps[appKey];
         const service = appIndex ? sourceCode.projectContext.getIndexedServiceForMainService(appIndex) : undefined;
         if (!service) {
             continue;
         }
+        const linkedApp = sourceCode.projectContext.linkedModel.apps[appKey];
         for (const page of linkedApp.pages) {
-            const pageTyped = page as { lookup?: Record<string, ChartLookupItem[]>; entity?: MetadataElement };
-            const charts = pageTyped.lookup?.['chart'] ?? [];
-            const pageEntityTypePath = pageTyped.entity?.structuredType;
-            for (const chart of charts) {
-                const chartEntityType = chart.annotation?.annotation?.target ?? '';
-                if (pageEntityTypePath && chartEntityType !== pageEntityTypePath) {
-                    // Only skip when the path to the chart entity contains a confirmed 1:n hop.
-                    // A to-one (e.g. toAddress/@UI.Chart) still requires the chart measures
-                    // and dimensions to traverse a 1:n navigation from the chart entity.
-                    const rawPath = chart.annotation?.annotationPath ?? '';
-                    const atIdx = rawPath.indexOf('@');
-                    const navPart = atIdx > 0 ? rawPath.substring(0, atIdx).replace(/\/$/, '') : '';
-                    const navSegments = navPart ? navPart.split('/').filter(Boolean) : [];
-                    if (isReachedViaCollectionNavigation(navSegments, pageEntityTypePath, service)) {
-                        continue;
-                    }
-                }
-                addChartToPageMap(chartPageMap, chart, chartEntityType, page.targetName, service);
-            }
+            processPageCharts(chartPageMap, page as PageWithChartLookup, service);
         }
     }
     return chartPageMap;
