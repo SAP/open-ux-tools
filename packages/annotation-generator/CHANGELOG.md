@@ -1,5 +1,16 @@
 # @sap-ux/annotation-generator
 
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.28 → 1.1.0
+- @sap-ux/odata-annotation-core-types 1.0.2 → 1.0.3
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/odata-entity-model 1.0.1 → 1.0.1
+
 ## 1.0.28
 
 ### Patch Changes

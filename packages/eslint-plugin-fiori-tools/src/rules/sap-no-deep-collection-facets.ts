@@ -70,7 +70,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [NO_DEEP_COLLECTION_FACETS]:
-                'UI.CollectionFacet at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
+                '`UI.CollectionFacet` at third level or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.'
         },
         schema: []
     },
