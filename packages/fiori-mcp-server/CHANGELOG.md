@@ -1,5 +1,73 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- generate_adaptation_project now imports key user changes again. The @sap-ux/generator-adp generator reads key user changes from a temp file keyed by the correlation `id` (`{os.tmpdir()}/{id}.txt`) rather than from the CLI JSON payload (since generator-adp #5079), but the MCP tool still passed them inline, so they were silently dropped. The tool now stages the fetched changes into that temp file, hands over the matching `id`, and cleans the file up afterwards. [[7309efa](https://github.com/SAP/open-ux-tools/commit/7309efa1a3895119cf5f8a7e3faa37aeab59d915)]
+
+## 1.15.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- update skills to reuse testing fiori app instruction from sap-fiori-app-development skill [[2407541](https://github.com/SAP/open-ux-tools/commit/240754101316160892d1701a578221d197fe3a5d)]
+
+## 1.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Features
+
+- add MCP tools for adaptation project development, covering project generation, controller extension authoring, RTA workflow automation, and UI5 control documentation lookup [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+## 1.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Features
+
+- Add enableTypeScript (default false), namespace, and viewName to generate_fiori_app_odata project input — generation-only properties that cannot be corrected after scaffolding [[2bdadd6](https://github.com/SAP/open-ux-tools/commit/2bdadd61025d3b0c53888c652f07974d2b5dcfae)]
+
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Expose navigationEntity in entityConfig so AI agents can generate sub-object page navigation [[5adaccb](https://github.com/SAP/open-ux-tools/commit/5adaccb465eb5de57ca8c00bdc6bdbc6137f7de0)]
+
+## 1.12.13
+
+### Patch Changes
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
 ## 1.12.12
 
 ### Patch Changes

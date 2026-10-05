@@ -1,5 +1,53 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Features
+
+- Create sap-no-path-hidden-on-interactive-columns rule to check `UI.Hidden` with a dynamic path is not be used on sortable or filterable columns [[88b131d](https://github.com/SAP/open-ux-tools/commit/88b131dd66cb31c471c603154d9becd547d431d5)]
+
+## 10.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-29
+
+#### Bug Fixes
+
+- Remove orphan eslint rules and enable sap-ui5-no-private-prop rule [[d989d4a](https://github.com/SAP/open-ux-tools/commit/d989d4ace191afc1048e6c922f3fe4a0c7c67e12)]
+
+## 10.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-23
+
+#### Features
+
+- add sap-field-group-in-table-type-restriction rule to flag UI.FieldGroup usage in GridTable, AnalyticalTable, and TreeTable [[b2a5cca](https://github.com/SAP/open-ux-tools/commit/b2a5cca918480042a6f70b27040790cf624d1b30)]
+
+## 10.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
 ## 10.11.3
 
 ### Patch Changes

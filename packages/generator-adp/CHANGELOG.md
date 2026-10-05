@@ -1,5 +1,26 @@
 # @sap-ux/generator-adp
 
+## 1.0.66
+
+### Patch Changes
+
+#### Features
+
+- consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.59 → 1.0.60
+
+## 1.0.65
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+- @sap-ux/adp-tooling 1.0.58 → 1.0.59
+
 ## 1.0.64
 
 ### Patch Changes

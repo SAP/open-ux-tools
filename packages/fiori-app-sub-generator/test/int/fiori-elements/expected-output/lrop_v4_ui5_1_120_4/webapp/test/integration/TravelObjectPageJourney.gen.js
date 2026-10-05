@@ -25,6 +25,8 @@ sap.ui.define([
         QUnit.module("TravelObjectPageObjectPage journey");
 
         opaTest("Navigate to TravelObjectPageObjectPage", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
