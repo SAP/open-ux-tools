@@ -15,20 +15,30 @@ let tools: DynamicStructuredTool[] = [];
 let client: MultiServerMCPClient;
 
 beforeAll(async () => {
-    client = new MultiServerMCPClient({
-        throwOnLoadError: true,
-        prefixToolNameWithServerName: false,
-        additionalToolNamePrefix: '',
-        useStandardContentBlocks: true,
-        mcpServers: {
-            'fiori-mcp-server': {
-                command: 'node',
-                args: [DIST_SERVER],
-                env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
+    // Retry up to 2 times: the MCP initialize handshake has a 60 s SDK timeout,
+    // which Windows CI runners can exceed on a cold start of the bundled ESM server.
+    for (let attempt = 1; attempt <= 2; attempt++) {
+        client = new MultiServerMCPClient({
+            throwOnLoadError: true,
+            prefixToolNameWithServerName: false,
+            additionalToolNamePrefix: '',
+            useStandardContentBlocks: true,
+            mcpServers: {
+                'fiori-mcp-server': {
+                    command: 'node',
+                    args: [DIST_SERVER],
+                    env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
+                }
             }
+        });
+        try {
+            tools = await client.getTools();
+            break;
+        } catch (err) {
+            await client.close().catch(() => {});
+            if (attempt === 2) throw err;
         }
-    });
-    tools = await client.getTools();
+    }
     if (tools.length === 0) {
         throw new Error(
             `No tools loaded from MCP server at ${DIST_SERVER}. Ensure the package is built before running these tests.`
