@@ -8,6 +8,7 @@ import {
     getXPathStringsForXmlFile,
     getDOMParserOptions,
     getExistingButtonGroups,
+    getFilterBarIdsInFile,
     TEMPLATE_NAMESPACES
 } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
@@ -105,6 +106,14 @@ describe('utils - xml', () => {
             fs.write(path, content);
             expect(isElementIdAvailable(fs, path, id)).toEqual(available);
         });
+
+        it('logs a warning via the provided logger when parsing fails', () => {
+            const path = join(projectPath, `webapp/ext/Broken.xml`);
+            fs.write(path, '<a id="Test">aaa</b>');
+            const logger = { warn: jest.fn() };
+            isElementIdAvailable(fs, path, 'Test', logger as never);
+            expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('isElementIdAvailable'));
+        });
     });
 });
 
@@ -195,6 +204,67 @@ describe('getXPathStringsForXmlFile', () => {
 
     beforeAll(() => {
         fs = create(createStorage());
+    });
+
+    it('handles document with no element children (PI-only firstChild)', () => {
+        const viewPath = '/test/PiOnly.view.xml';
+        // A document whose firstChild is a ProcessingInstruction — it has no ELEMENT children,
+        // so the while-loop visits the PI node and the null-guard on node covers the !node branch
+        // via the typed null possibility on firstChild.
+        fs.write(viewPath, `<?xml version="1.0"?><mvc:View xmlns:mvc="sap.ui.core.mvc"/>`);
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        expect(typeof inputChoices).toBe('object');
+    });
+
+    it('uses macros:Page as pageMacroDefinition when macros is the default namespace (empty prefix)', () => {
+        // macrosNamespace returns '' when macros is defined as the default xmlns
+        // the falsy branch on line 116: macrosNamespace ? `${...}:Page` : 'macros:Page'
+        const viewPath = '/test/DefaultNsMacros.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.fe.macros">
+    <Page title="Main"/>
+</mvc:View>`
+        );
+        const { pageMacroDefinition } = getXPathStringsForXmlFile(viewPath, fs);
+        expect(pageMacroDefinition).toBe('macros:Page');
+    });
+
+    it('falls back to macros prefix when macros is default namespace and macros:Page has no items child', () => {
+        // macrosNamespace is '' (falsy) — covers the `macrosNamespace || 'macros'` branch
+        // in addMacrosItemsPathIfMissing (line 82) and the call site (line 136)
+        const viewPath = '/test/DefaultNsMacrosWithPage.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.fe.macros">
+    <Page id="MyPage" title="cp">
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        // synthesized path uses 'macros' as the fallback prefix
+        expect(keys.some((k) => k.includes('macros:items'))).toBe(true);
+    });
+
+    it('synthesizes macros:items using nodeName when macros:Page node already has a prefix', () => {
+        // covers the truthy branch: (node as XmldomElement).prefix ? node.nodeName : `${resolved}:Page`
+        const viewPath = '/test/CpWithPrefix.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp">
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        // The synthesized path uses macros:Page (from node.nodeName) / macros:items
+        expect(keys.some((k) => k.includes('macros:Page/macros:items'))).toBe(true);
     });
 
     it('synthesizes macros:items path when macros:Page exists but has no macros:items child', () => {
@@ -367,5 +437,73 @@ describe('getExistingButtonGroups', () => {
             fs
         );
         expect(result).toEqual(new Set(['font-style', 'clipboard']));
+    });
+
+    it('skips ButtonGroup elements that have no name attribute', async () => {
+        const filePath = '/test/RteGroupNoName.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status">
+        <richtexteditor:buttonGroups>
+            <richtexteditor:ButtonGroup buttons="bold,italic"/>
+        </richtexteditor:buttonGroups>
+    </richtexteditor:RichTextEditorWithMetadata>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result.size).toBe(0);
+    });
+});
+
+describe('getFilterBarIdsInFile', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('returns ids of FilterBar elements', async () => {
+        const filePath = '/test/FilterBarIds.view.xml';
+        fs.write(
+            filePath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
+    <macros:FilterBar id="FB1"/>
+    <macros:FilterBar id="FB2"/>
+</mvc:View>`
+        );
+        const result = await getFilterBarIdsInFile(filePath, fs);
+        expect(result).toEqual(['FB1', 'FB2']);
+    });
+
+    it('skips FilterBar elements with no id attribute', async () => {
+        // covers the falsy branch of `if (id)` in getFilterBarIdsInFile
+        const filePath = '/test/FilterBarNoId.view.xml';
+        fs.write(
+            filePath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
+    <macros:FilterBar metaPath="@com.sap.vocabularies.UI.v1.SelectionFields"/>
+</mvc:View>`
+        );
+        const result = await getFilterBarIdsInFile(filePath, fs);
+        expect(result).toEqual([]);
+    });
+});
+
+describe('getOrAddNamespace - empty prefix', () => {
+    it('adds namespace as default xmlns when prefix is empty string', () => {
+        // covers the `prefix === '' ? 'xmlns' : \`xmlns:\${prefix}\`` truthy branch
+        const xml = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>`;
+        const doc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            xml,
+            'application/xml'
+        ) as unknown as XmldomDocument;
+        const result = getOrAddNamespace(doc, 'sap.fe.macros', '');
+        expect(result).toBe('');
+        expect(doc.documentElement?.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
 });
