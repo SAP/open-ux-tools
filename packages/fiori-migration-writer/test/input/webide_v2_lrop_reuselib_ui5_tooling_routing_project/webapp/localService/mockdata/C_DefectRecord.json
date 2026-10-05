@@ -1,0 +1,590 @@
+[
+	{
+	  "__metadata" : {
+      "id" : "C_DefectRecord(DefectInternalID='%2400000001831',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)",
+      "uri" : "C_DefectRecord(DefectInternalID='%2400000001831',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)",
+      "type" : "QM_DEFECT_RECORD_SRV.C_DefectRecordType"
+    },
+	"Activation_ac" : false,
+    "Complete_ac" : true,
+    "Complete_problem_analysis_ac" : false,
+    "Edit_ac" : true,
+    "Not_relevant_ac" : true,
+    "Preparation_ac" : false,
+    "Required_ac" : false,
+    "Set_in_process_ac" : true,
+    "Validate_activation_ac" : true,
+    "Validation_ac" : false,
+    "DefectClass_fc" : 3,
+    "DefectCode_fc" : 3,
+    "DefectCodeGroup_fc" : 3,
+    "DefectInternalID_fc" : 3,
+    "DefectText_fc" : 7,
+    "InspectionLot_fc" : 3,
+    "Material_fc" : 3,
+    "NumberOfDefects_fc" : 3,
+    "Plant_fc" : 3,
+    "QualityIssueReference_fc" : 3,
+    "Update_mc" : true,
+    "DefectInternalID" : "$00000000372",
+    "Defect" : "372",
+    "DefectCategory" : "06",
+    "IsDeleted" : false,
+    "DefectCodeCatalog" : "3",
+    "DefectCodeGroup" : "01",
+    "DefectCode" : "A",
+    "QualityIssueReference" : "",
+    "DefectText" : "tt",
+    "DefectLifecycleStatus" : "00",
+    "DefectLifecycleStatus_Text" : "Created",
+    "ProblemAnalysisStatus" : "",
+    "MasterLanguage" : "E",
+    "Plant" : "",
+    "Material" : "",
+    "NumberOfDefects" : 0,
+    "CreationDate" : "\/Date(1492473600000)\/",
+    "CreationTime" : "PT16H01M18S",
+    "InspectionLot" : "000000000000",
+    "DefectClass" : "",
+    "DraftUUID" : "00000000-0000-0000-0000-000000000000",
+    "DraftEntityCreationDateTime" : null,
+    "DraftEntityLastChangeDateTime" : null,
+    "HasActiveEntity" : false,
+    "HasDraftEntity" : false,
+    "IsActiveEntity" : true,
+    "InspectionSubsetInternalID": null,
+    "InspectionSubsetInternalID_fc": 3,
+    "DraftAdministrativeData" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/DraftAdministrativeData"
+      }
+    },
+    "SiblingEntity" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/SiblingEntity"
+      },
+      "IsActiveEntity" : true
+    },
+    "to_DefectCategory" : {
+      "__metadata" : {
+        "id" : "I_DefectCategory('06')",
+        "uri" : "I_DefectCategory('06')",
+        "type" : "QM_DEFECT_RECORD_SRV.I_DefectCategoryType"
+      },
+      "DefectCategory" : "06",
+      "DefectCategory_Text" : "Generic Defect"
+    },
+    "to_DefectClass" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/to_DefectClass"
+      }
+    },
+    "to_DefectCode" : null,
+    "to_DefectCodeGroup" : null,
+	"to_DefectLongTextTP": {
+      "__metadata": {
+        "id": "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)",
+        "uri": "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)",
+        "type": "QM_DEFECT_RECORD_SRV.C_DefectLongTextType"
+      },
+      "Preparation_ac": false,
+      "Validation_ac": false,
+      "DefectLongText_fc": 3,
+      "ItemCounter_fc": 3,
+      "LongTextID_fc": 3,
+      "DefectInternalID": "$00000000372",
+      "Language": "EN",
+      "ItemCounter": 1,
+      "LongTextID": "LTXT",
+      "DefectLongText": "wtewtre\nertret\net\net\nert\nert\nerte\nrter\nter\ntert\ner\ntert\nertert",
+      "HasDraftEntity": false,
+      "DraftUUID": "00000000-0000-0000-0000-000000000000",
+      "ParentDraftUUID": "00000000-0000-0000-0000-000000000000",
+      "DraftEntityCreationDateTime": null,
+      "DraftEntityLastChangeDateTime": null,
+      "HasActiveEntity": false,
+      "IsActiveEntity": true,
+      "DraftAdministrativeData": {
+        "__deferred": {
+          "uri": "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/DraftAdministrativeData"
+        }
+      }
+    },
+    "to_DefectStatus" : {
+      "__deferred" : {
+        "uri" : "hC_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/to_DefectStatus"
+      }
+    },
+    "to_DefectStatusText" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000372',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/to_DefectStatusText"
+      }
+    },
+    "to_ProblemAnalysisStatus" : null,
+    "to_DefectQltyTskProcsrNotes": null
+    },
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    {
+	  "__metadata" : {
+      "id" : "C_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)",
+      "uri" : "C_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'00000000-0000-0000-0000-000000000000',IsActiveEntity=true)",
+      "type" : "QM_DEFECT_RECORD_SRV.C_DefectRecordType"
+    },
+	"Activation_ac" : false,
+    "Complete_ac" : true,
+    "Complete_problem_analysis_ac" : false,
+    "Edit_ac" : false,
+    "Not_relevant_ac" : true,
+    "Preparation_ac" : false,
+    "Required_ac" : false,
+    "Set_in_process_ac" : true,
+    "Validate_activation_ac" : true,
+    "Validation_ac" : true,
+    "DefectClass_fc" : 3,
+    "DefectCode_fc" : 3,
+    "DefectCodeGroup_fc" : 3,
+    "DefectInternalID_fc" : 3,
+    "DefectText_fc" : 7,
+    "InspectionLot_fc" : 3,
+    "Material_fc" : 3,
+    "NumberOfDefects_fc" : 3,
+    "Plant_fc" : 3,
+    "QualityIssueReference_fc" : 3,
+    "Update_mc" : true,
+    "DefectInternalID" : "$00000000373",
+    "Defect" : "373",
+    "DefectCategory" : "06",
+    "IsDeleted" : false,
+    "DefectCodeCatalog" : "3",
+    "DefectCodeGroup" : "01",
+    "DefectCode" : "A",
+    "QualityIssueReference" : "",
+    "DefectText" : "tt",
+    "DefectLifecycleStatus" : "00",
+    "DefectLifecycleStatus_Text" : "Created",
+    "ProblemAnalysisStatus" : "",
+    "MasterLanguage" : "E",
+    "Plant" : "",
+    "Material" : "",
+    "NumberOfDefects" : 0,
+    "CreationDate" : "\/Date(1492473600000)\/",
+    "CreationTime" : "PT16H01M18S",
+    "InspectionLot" : "000000000000",
+    "DefectClass" : "",
+    "DraftUUID" : "10000000-1000-1000-1000-100000000000",
+    "DraftEntityCreationDateTime" : null,
+    "DraftEntityLastChangeDateTime" : null,
+    "HasActiveEntity" : true,
+    "HasDraftEntity" : false,
+    "IsActiveEntity" : false,
+    "InspectionSubsetInternalID": null,
+    "InspectionSubsetInternalID_fc": 3,
+    "DraftAdministrativeData" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=true)/DraftAdministrativeData"
+      }
+    },
+    "SiblingEntity" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=true)/SiblingEntity"
+      },
+      "IsActiveEntity" : true
+    },
+    "to_DefectCategory" : {
+      "__metadata" : {
+        "id" : "I_DefectCategory('06')",
+        "uri" : "I_DefectCategory('06')",
+        "type" : "QM_DEFECT_RECORD_SRV.I_DefectCategoryType"
+      },
+      "DefectCategory" : "06",
+      "DefectCategory_Text" : "Generic Defect"
+    },
+    "to_DefectClass" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=true)/to_DefectClass"
+      }
+    },
+    "to_DefectCode" : null,
+    "to_DefectCodeGroup" : null,
+    "to_DefectLongTextTP" : null,
+    "to_DefectStatus" : {
+      "__deferred" : {
+        "uri" : "hC_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=true)/to_DefectStatus"
+      }
+    },
+    "to_DefectStatusText" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000373',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=true)/to_DefectStatusText"
+      }
+    },
+    "to_ProblemAnalysisStatus" : null,
+    "to_DefectQltyTskProcsrNotes": null
+    },
+    
+
+
+    {
+	  "__metadata" : {
+      "id" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+      "uri" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+      "type" : "QM_DEFECT_RECORD_SRV.C_DefectRecordType"
+    },
+	"Activation_ac" : false,
+    "Complete_ac" : true,
+    "Complete_problem_analysis_ac" : false,
+    "Edit_ac" : false,
+    "Not_relevant_ac" : true,
+    "Preparation_ac" : false,
+    "Required_ac" : false,
+    "Set_in_process_ac" : true,
+    "Validate_activation_ac" : true,
+    "Validation_ac" : true,
+    "DefectClass_fc" : 3,
+    "DefectCode_fc" : 3,
+    "DefectCodeGroup_fc" : 3,
+    "DefectInternalID_fc" : 3,
+    "DefectText_fc" : 7,
+    "InspectionLot_fc" : 3,
+    "Material_fc" : 3,
+    "NumberOfDefects_fc" : 3,
+    "Plant_fc" : 3,
+    "QualityIssueReference_fc" : 3,
+    "Update_mc" : true,
+    "DefectInternalID" : "$00000000374",
+    "Defect" : "374",
+    "DefectCategory" : "06",
+    "IsDeleted" : false,
+    "DefectCodeCatalog" : "3",
+    "DefectCodeGroup" : "01",
+    "DefectCode" : "A",
+    "QualityIssueReference" : "",
+    "DefectText" : "$00000000374",
+    "DefectLifecycleStatus" : "00",
+    "DefectLifecycleStatus_Text" : "Created",
+    "ProblemAnalysisStatus" : "",
+    "MasterLanguage" : "E",
+    "Plant" : "",
+    "Material" : "",
+    "NumberOfDefects" : 0,
+    "CreationDate" : "\/Date(1492473600000)\/",
+    "CreationTime" : "PT16H01M18S",
+    "InspectionLot" : "000000000000",
+    "DefectClass" : "",
+    "DraftUUID" : "10000000-1000-1000-1000-100000000000",
+    "DraftEntityCreationDateTime" : null,
+    "DraftEntityLastChangeDateTime" : null,
+    "HasActiveEntity" : true,
+    "HasDraftEntity" : true,
+    "IsActiveEntity" : false,
+    "InspectionSubsetInternalID": null,
+    "InspectionSubsetInternalID_fc": 3,
+    "DraftAdministrativeData" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/DraftAdministrativeData"
+      }
+    },
+    "SiblingEntity" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/SiblingEntity"
+      },
+      "IsActiveEntity" : true
+    },
+    "to_DefectCategory" : {
+      "__metadata" : {
+        "id" : "I_DefectCategory('06')",
+        "uri" : "I_DefectCategory('06')",
+        "type" : "QM_DEFECT_RECORD_SRV.I_DefectCategoryType"
+      },
+      "DefectCategory" : "06",
+      "DefectCategory_Text" : "Generic Defect"
+    },
+    "to_DefectClass" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectClass"
+      }
+    },
+    "to_DefectCode" : null,
+    "to_DefectCodeGroup" : null,
+    "to_DefectLongTextTP" : null,
+    "to_DefectStatus" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectStatus"
+      }
+    },
+    "to_DefectStatusText" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000374',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectStatusText"
+      }
+    },
+    "to_ProblemAnalysisStatus" : null,
+    "to_DefectQltyTskProcsrNotes": null
+    },
+    
+    
+    {
+	  "__metadata" : {
+      "id" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+      "uri" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+      "type" : "QM_DEFECT_RECORD_SRV.C_DefectRecordType"
+    },
+	"Activation_ac" : false,
+    "Complete_ac" : true,
+    "Complete_problem_analysis_ac" : false,
+    "Edit_ac" : false,
+    "Not_relevant_ac" : true,
+    "Preparation_ac" : false,
+    "Required_ac" : false,
+    "Set_in_process_ac" : true,
+    "Validate_activation_ac" : true,
+    "Validation_ac" : true,
+    "DefectClass_fc" : 3,
+    "DefectCode_fc" : 3,
+    "DefectCodeGroup_fc" : 3,
+    "DefectInternalID_fc" : 3,
+    "DefectText_fc" : 7,
+    "InspectionLot_fc" : 3,
+    "Material_fc" : 3,
+    "NumberOfDefects_fc" : 3,
+    "Plant_fc" : 3,
+    "QualityIssueReference_fc" : 3,
+    "Update_mc" : true,
+    "DefectInternalID" : "$00000000375",
+    "Defect" : "375",
+    "DefectCategory" : "06",
+    "IsDeleted" : false,
+    "DefectCodeCatalog" : "3",
+    "DefectCodeGroup" : "",
+    "DefectCode" : "",
+    "QualityIssueReference" : "",
+    "DefectText" : "$00000000375",
+    "DefectLifecycleStatus" : "00",
+    "DefectLifecycleStatus_Text" : "Created",
+    "ProblemAnalysisStatus" : "",
+    "MasterLanguage" : "E",
+    "Plant" : "",
+    "Material" : "",
+    "NumberOfDefects" : 0,
+    "CreationDate" : "\/Date(1492473600000)\/",
+    "CreationTime" : "PT16H01M18S",
+    "InspectionLot" : "000000000000",
+    "DefectClass" : "",
+    "DraftUUID" : "10000000-1000-1000-1000-100000000000",
+    "DraftEntityCreationDateTime" : null,
+    "DraftEntityLastChangeDateTime" : null,
+    "HasActiveEntity" : true,
+    "HasDraftEntity" : true,
+    "IsActiveEntity" : false,
+    "InspectionSubsetInternalID": null,
+    "InspectionSubsetInternalID_fc": 3,
+    "DraftAdministrativeData" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/DraftAdministrativeData"
+      }
+    },
+    "SiblingEntity" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/SiblingEntity"
+      },
+      "IsActiveEntity" : true
+    },
+    "to_DefectCategory" : {
+      "__metadata" : {
+        "id" : "I_DefectCategory('06')",
+        "uri" : "I_DefectCategory('06')",
+        "type" : "QM_DEFECT_RECORD_SRV.I_DefectCategoryType"
+      },
+      "DefectCategory" : "06",
+      "DefectCategory_Text" : "Generic Defect"
+    },
+    "to_DefectClass" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectClass"
+      }
+    },
+    "to_DefectCode" : null,
+    "to_DefectCodeGroup" : null,
+    "to_DefectLongTextTP": {
+      "__metadata": {
+        "id": "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+        "uri": "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+        "type": "QM_DEFECT_RECORD_SRV.C_DefectLongTextType"
+      },
+      "Preparation_ac": false,
+      "Validation_ac": false,
+      "DefectLongText_fc": 3,
+      "ItemCounter_fc": 3,
+      "LongTextID_fc": 3,
+      "DefectInternalID": "$00000000375",
+      "Language": "EN",
+      "ItemCounter": 1,
+      "LongTextID": "LTXT",
+      "DefectLongText": "Lorem ipsum",
+      "HasDraftEntity": false,
+      "DraftUUID": "00000000-0000-0000-0000-000000000000",
+      "ParentDraftUUID": "00000000-0000-0000-0000-000000000000",
+      "DraftEntityCreationDateTime": null,
+      "DraftEntityLastChangeDateTime": null,
+      "HasActiveEntity": false,
+      "IsActiveEntity": true,
+      "DraftAdministrativeData": {
+        "__deferred": {
+          "uri": "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/DraftAdministrativeData"
+        }
+      }
+    },
+    "to_DefectStatus" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectStatus"
+      }
+    },
+    "to_DefectStatusText" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000375',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectStatusText"
+      }
+    },
+    "to_ProblemAnalysisStatus" : null,
+    "to_DefectQltyTskProcsrNotes": null
+    },
+    
+       
+	{
+	  "__metadata" : {
+      "id" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+      "uri" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+      "type" : "QM_DEFECT_RECORD_SRV.C_DefectRecordType"
+    },
+	"Activation_ac" : false,
+    "Complete_ac" : true,
+    "Complete_problem_analysis_ac" : false,
+    "Edit_ac" : false,
+    "Not_relevant_ac" : true,
+    "Preparation_ac" : false,
+    "Required_ac" : false,
+    "Set_in_process_ac" : true,
+    "Validate_activation_ac" : true,
+    "Validation_ac" : true,
+    "DefectClass_fc" : 3,
+    "DefectCode_fc" : 3,
+    "DefectCodeGroup_fc" : 3,
+    "DefectInternalID_fc" : 3,
+    "DefectText_fc" : 7,
+    "InspectionLot_fc" : 3,
+    "Material_fc" : 3,
+    "NumberOfDefects_fc" : 3,
+    "Plant_fc" : 3,
+    "QualityIssueReference_fc" : 3,
+    "Update_mc" : true,
+    "DefectInternalID" : "$00000000376",
+    "Defect" : "376",
+    "DefectCategory" : "06",
+    "IsDeleted" : true,
+    "DefectCodeCatalog" : "3",
+    "DefectCodeGroup" : "",
+    "DefectCode" : "",
+    "QualityIssueReference" : "",
+    "DefectText" : "$00000000376",
+    "DefectLifecycleStatus" : "00",
+    "DefectLifecycleStatus_Text" : "Created",
+    "ProblemAnalysisStatus" : "",
+    "MasterLanguage" : "E",
+    "Plant" : "",
+    "Material" : "",
+    "NumberOfDefects" : 0,
+    "CreationDate" : "\/Date(1492473600000)\/",
+    "CreationTime" : "PT16H01M18S",
+    "InspectionLot" : "000000000000",
+    "DefectClass" : "",
+    "DraftUUID" : "10000000-1000-1000-1000-100000000000",
+    "DraftEntityCreationDateTime" : null,
+    "DraftEntityLastChangeDateTime" : null,
+    "HasActiveEntity" : true,
+    "HasDraftEntity" : true,
+    "IsActiveEntity" : false,
+    "InspectionSubsetInternalID": null,
+    "InspectionSubsetInternalID_fc": 3,
+    "DraftAdministrativeData" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/DraftAdministrativeData"
+      }
+    },
+    "SiblingEntity" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/SiblingEntity"
+      },
+      "IsActiveEntity" : true
+    },
+    "to_DefectCategory" : {
+      "__metadata" : {
+        "id" : "I_DefectCategory('06')",
+        "uri" : "I_DefectCategory('06')",
+        "type" : "QM_DEFECT_RECORD_SRV.I_DefectCategoryType"
+      },
+      "DefectCategory" : "06",
+      "DefectCategory_Text" : "Generic Defect"
+    },
+    "to_DefectClass" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectClass"
+      }
+    },
+    "to_DefectCode" : null,
+    "to_DefectCodeGroup" : null,
+    "to_DefectLongTextTP": {
+      "__metadata": {
+        "id": "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+        "uri": "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)",
+        "type": "QM_DEFECT_RECORD_SRV.C_DefectLongTextType"
+      },
+      "Preparation_ac": false,
+      "Validation_ac": false,
+      "DefectLongText_fc": 3,
+      "ItemCounter_fc": 3,
+      "LongTextID_fc": 3,
+      "DefectInternalID": "$00000000376",
+      "Language": "EN",
+      "ItemCounter": 1,
+      "LongTextID": "LTXT",
+      "DefectLongText": "Lorem ipsum",
+      "HasDraftEntity": false,
+      "DraftUUID": "00000000-0000-0000-0000-000000000000",
+      "ParentDraftUUID": "00000000-0000-0000-0000-000000000000",
+      "DraftEntityCreationDateTime": null,
+      "DraftEntityLastChangeDateTime": null,
+      "HasActiveEntity": false,
+      "IsActiveEntity": true,
+      "DraftAdministrativeData": {
+        "__deferred": {
+          "uri": "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/DraftAdministrativeData"
+        }
+      }
+    },
+    "to_DefectStatus" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectStatus"
+      }
+    },
+    "to_DefectStatusText" : {
+      "__deferred" : {
+        "uri" : "C_DefectRecord(DefectInternalID='%2400000000376',DraftUUID=guid'10000000-1000-1000-1000-100000000000',IsActiveEntity=false)/to_DefectStatusText"
+      }
+    },
+    "to_ProblemAnalysisStatus" : null,
+    "to_DefectQltyTskProcsrNotes": null
+    }
+
+]

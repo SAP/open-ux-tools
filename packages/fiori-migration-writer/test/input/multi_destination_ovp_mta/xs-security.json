@@ -1,0 +1,12 @@
+{
+  "xsappname": "multi_destination_ovp_mta",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "role-templates": [
+    {
+      "name": "Token_Exchange",
+      "description": "UAA",
+      "scope-references": ["uaa.user"]
+    }
+  ]
+}

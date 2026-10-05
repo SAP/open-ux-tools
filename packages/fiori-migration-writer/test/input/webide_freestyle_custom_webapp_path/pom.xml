@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.sap.fiori</groupId>
+	<artifactId>fin.central.listreport.reuse</artifactId>
+	<version>3.3.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>fin.central.listreport.reuse</name>
+	<description>Copy Template for Listreports</description>
+
+	<parent>
+		<groupId>com.sap.fiori</groupId>
+		<artifactId>fnf-parent-pom</artifactId>
+		<version>1.33.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<web.context.name>${project.artifactId}</web.context.name>
+	</properties>
+
+	<dependencies>
+ 	   	<dependency>
+    	  	<groupId>com.sap.ui5</groupId>
+          	<artifactId>fiori</artifactId>
+       	</dependency>	
+	</dependencies>
+
+	<!-- uncomment this section below for translation, see more details https://wiki.example.com/wiki/display/fiorisuite/File+adaptions -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.sap.ldi</groupId>
+				<artifactId>translation-plugin</artifactId>
+				<configuration>  <!-- plugin ensures that the checkin to B0Y happens -->
+					<translationDomain>FI</translationDomain>
+					<translationDeveloper>D027132</translationDeveloper>
+					<translationCollection>FIORI_SampleLineItems</translationCollection>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

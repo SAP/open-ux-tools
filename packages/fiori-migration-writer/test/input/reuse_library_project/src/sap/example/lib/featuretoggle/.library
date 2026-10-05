@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<library xmlns="http://www.sap.com/sap.ui.library.xsd">
+    <name>sap.example.lib.featuretoggle</name>
+    <vendor>SAP SE</vendor>
+    <version>${version}</version>
+    <copyright>${copyright}</copyright>
+    <documentation>Feature Toggle Library</documentation>
+<dependencies>
+	<dependency>
+		<libraryName>sap.ui.core</libraryName>
+	</dependency>
+</dependencies>
+</library>

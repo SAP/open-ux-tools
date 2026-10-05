@@ -1,0 +1,51 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "com.example.backend.variants",
+    "type": "application",
+    "title": "Backend Configuration Variants",
+    "description": "Tests various backend URL formats",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/VARIANT_SRV/?sap-client=200&sap-language=EN",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      },
+      "secondService": {
+        "uri": "https://backend-system.dummy.example.com:8443/sap/opu/odata/sap/DIRECT_SRV/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5"
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.96.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {}
+      }
+    },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "settings": {
+          "defaultCountMode": "Inline"
+        }
+      },
+      "secondary": {
+        "dataSource": "secondService"
+      }
+    }
+  }
+}

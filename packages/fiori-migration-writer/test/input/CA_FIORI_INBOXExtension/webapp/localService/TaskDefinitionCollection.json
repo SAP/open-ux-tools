@@ -1,0 +1,169 @@
+[{
+	"SAP__Origin": "Q7D_004_TGW",
+	"TaskDefinitionID": "TS21500004",
+	"TaskName": "TaskName 1",
+	"Category": "Category 1",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS21500004')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS21500004')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "Q7D_004_TGW",
+	"TaskDefinitionID": "TS21500006",
+	"TaskName": "Capital Expenditure",
+	"Category": "Category 2",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS21500006')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS21500006')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "Q7D_004_TGW",
+	"TaskDefinitionID": "TS02700002",
+	"TaskName": "Process Employee Requests",
+	"Category": "Category 3",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS02700002')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS02700002')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "Q7D_004_TGW",
+	"TaskDefinitionID": "TS21500004",
+	"TaskName": "Credit Limit",
+	"Category": "Category 4",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS21500004')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS21500004')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "Q7D_004_TGW",
+	"TaskDefinitionID": "TS02700001",
+	"TaskName": "Employee Leave Requests",
+	"Category": "Category 4",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS02700001')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='Q7D_004_TGW',TaskDefinitionID='TS02700001')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "SAP__Origin 5",
+	"TaskDefinitionID": "TaskDefinitionID 5",
+	"TaskName": "TaskName 5",
+	"Category": "Category 5",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 5',TaskDefinitionID='TaskDefinitionID 5')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 5',TaskDefinitionID='TaskDefinitionID 5')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "SAP__Origin 6",
+	"TaskDefinitionID": "TaskDefinitionID 6",
+	"TaskName": "TaskName 6",
+	"Category": "Category 6",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 6',TaskDefinitionID='TaskDefinitionID 6')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 6',TaskDefinitionID='TaskDefinitionID 6')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "SAP__Origin 7",
+	"TaskDefinitionID": "TaskDefinitionID 7",
+	"TaskName": "TaskName 7",
+	"Category": "Category 7",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 7',TaskDefinitionID='TaskDefinitionID 7')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 7',TaskDefinitionID='TaskDefinitionID 7')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "SAP__Origin 8",
+	"TaskDefinitionID": "TaskDefinitionID 8",
+	"TaskName": "TaskName 8",
+	"Category": "Category 8",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 8',TaskDefinitionID='TaskDefinitionID 8')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 8',TaskDefinitionID='TaskDefinitionID 8')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "SAP__Origin 9",
+	"TaskDefinitionID": "TaskDefinitionID 9",
+	"TaskName": "TaskName 9",
+	"Category": "Category 9",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 9',TaskDefinitionID='TaskDefinitionID 9')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 9',TaskDefinitionID='TaskDefinitionID 9')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "SAP__Origin 10",
+	"TaskDefinitionID": "TaskDefinitionID 10",
+	"TaskName": "TaskName 10",
+	"Category": "Category 10",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 10',TaskDefinitionID='TaskDefinitionID 10')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='SAP__Origin 10',TaskDefinitionID='TaskDefinitionID 10')/CustomAttributeDefinitionData"
+		}
+	}
+}, {
+	"SAP__Origin": "QE4_910_TGW",
+	"TaskDefinitionID": "TS20000166",
+	"TaskName": "TaskName 10",
+	"Category": "Category 10",
+	"__metadata": {
+		"uri": "TaskDefinitionCollection(SAP__Origin='QE4_910_TGW',TaskDefinitionID='TS20000166')",
+		"type": "TASKPROCESSING.TaskDefinition"
+	},
+	"CustomAttributeDefinitionData": {
+		"__deferred": {
+			"uri": "TaskDefinitionCollection(SAP__Origin='QE4_910_TGW',TaskDefinitionID='TS20000166')/CustomAttributeDefinitionData"
+		}
+	}
+}]

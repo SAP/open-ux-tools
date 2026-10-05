@@ -1,0 +1,28 @@
+{
+  "welcomeFile": "/webapp/index.html",
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      }
+    },
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "BACKEND_WITH_CLIENT",
+        "entryPath": "/sap/opu/odata"
+      }
+    }
+  ],
+  "destination": {
+    "name": "BACKEND_WITH_CLIENT",
+    "url": "https://backend-system.dummy.example.com:8443",
+    "host": "backend-system.dummy.example.com",
+    "client": "200",
+    "path": "/sap"
+  }
+}

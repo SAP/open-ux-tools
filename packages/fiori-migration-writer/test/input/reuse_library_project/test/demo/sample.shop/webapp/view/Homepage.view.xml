@@ -1,0 +1,73 @@
+<mvc:View controllerName="Demo.controller.Homepage" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:l="sap.ui.layout"
+	xmlns:f="sap.f">
+	<f:DynamicPage id="productListPage">
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:actions>
+					<Button id="productListHeaderButton" icon="sap-icon://cart" press="onShoppingCartPressed" tooltip="Shopping Cart" type="Transparent"/>
+				</f:actions>
+			</f:DynamicPageTitle>
+		</f:title>
+		<f:content>
+			<Table id="catalogTable" selectionChange="onItemSelected" class="sapUiForceWidthAuto sapUiResponsiveMargin" width="auto" mode="MultiSelect"
+				inset="false" items="{/products}" noDataText="No Data Found">
+				<headerToolbar>
+					<OverflowToolbar id="tableToolbar">
+						<Title id="catalogTitle" text="Products (20)"/>
+						<ToolbarSpacer id="toolbarSpacer"/>
+						<Button id="addItemsToWishlist" text="{productListView>/addItemsToWishListText}" press="onAddToWishListPressed"
+							enabled="{productListView>/hasSelectedItems}" visible="false" type="Transparent"/>
+						<Button id="addItemsToCartButton" text="{productListView>/addItemsToCartText}" press="onAddItemsToCartPressed"
+							enabled="{productListView>/hasSelectedItems}" type="Transparent" visible="false"/>
+						<OverflowToolbarButton id="sortButton" icon="sap-icon://sort" text="{i18n>xbut.sort}" tooltip="{i18n>xbut.sort}" press="onSortPressed"/>
+						<OverflowToolbarButton id="groupButton" icon="sap-icon://group-2" text="{i18n>xbut.group}" tooltip="{i18n>xbut.group}"
+							press="onGroupPressed"/>
+						<OverflowToolbarButton id="personalizationButton" enabled="{productListView>/personalizationActive}" text="{i18n>xbut.personalization}"
+							tooltip="{i18n>xbut.personalization}" icon="sap-icon://action-settings" press="onPersonalizationPressed"/>
+					</OverflowToolbar>
+				</headerToolbar>
+				<columns>
+					<Column id="id-product">
+						<ObjectIdentifier text="Name"/>
+					</Column>
+					<Column id="descriptionColumn" width="25%" demandPopin="true" popinDisplay="Inline" hAlign="Left" class="sapMTableContentMargin">
+						<header>
+							<Label id="descriptionLabel" text="Description"/>
+						</header>
+					</Column>
+					<Column id="ratingColumn" width="16%"  demandPopin="true" popinDisplay="Inline" hAlign="Left"
+						class="sapMTableContentMargin">
+						<header>
+							<Label id="ratingLabel" text="Average Rating"/>
+						</header>
+					</Column>
+					<Column id="priceColumn" width="10%"  demandPopin="true" popinDisplay="Inline" hAlign="Right"
+						class="sapMTableContentMargin">
+						<header>
+							<Label id="priceLabel" text="Price"/>
+						</header>
+					</Column>
+				</columns>
+				<ColumnListItem>
+					<cells>
+						<l:VerticalLayout id="nameAvailabilityVerticalLayout" width="100%">
+							<ObjectIdentifier id="availabilityNameObjectIdentifier" title="{Name}"/>
+						</l:VerticalLayout>
+						<Text id="desctiptionText" text="{Description}" maxLines="2"/>
+						<l:HorizontalLayout >
+							<RatingIndicator id="ratingIndicator"
+								value="{path: 'AverageRating', type: 'sap.ui.model.odata.type.Decimal', formatOptions: { parseAsString: true, maxIntegerDigits: 2, maxFractionDigits: 2} }"
+								iconSize="1rem" class="sapUiTinyMarginTop"/>
+							<Label id="ratingCount"
+								text="{path: 'RatingCount', type : 'sap.ui.model.type.Float', constraints : { minimum: 0, maximum: 9999999999 }, formatOptions: { parseAsString: true, maxIntegerDigits: 10, maxFractionDigits: 3 }}"
+								class="sapUiTinyMarginTop"/>
+						</l:HorizontalLayout>
+						<ObjectNumber
+							number="{ parts:[{path:'Price'},{path:'CurrencyCode'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
+							unit="{CurrencyCode}"/>
+					</cells>
+				</ColumnListItem>
+			</Table>
+		</f:content>
+	</f:DynamicPage>
+</mvc:View>

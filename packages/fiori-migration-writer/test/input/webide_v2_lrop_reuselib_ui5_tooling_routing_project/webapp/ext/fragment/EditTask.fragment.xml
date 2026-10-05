@@ -1,0 +1,44 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:smartForm="sap.ui.comp.smartform" xmlns:smartField="sap.ui.comp.smartfield" xmlns="sap.m">
+	<Dialog title="{i18n>EditTaskDialogTitle}" class="sapUiSizeCompact" draggable="true">
+		<f:SimpleForm id="dialog" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3"
+			emptySpanL="4" emptySpanM="4" columnsL="1" columnsM="1" class="editableForm">
+			<f:content>
+				
+				<smartField:SmartLabel labelFor="QualityTaskInternalId"/>
+				<smartField:SmartField value="{QualityTaskInternalId}" id="QualityTaskInternalId" editable="false"/>
+				
+				<smartField:SmartLabel labelFor="QualityTask"/>
+				<smartField:SmartField value="{QualityTask}" id="QualityTask" editable="false"/>
+				
+				<smartField:SmartLabel labelFor="QualityTaskText" required = "true"/>
+				<smartField:SmartField value="{QualityTaskText}" id="QualityTaskText" mandatory="true" change="onValueChange" editable="true"/>
+				
+				<smartField:SmartLabel labelFor="DefectInternalID"/>
+				<smartField:SmartField value="{DefectInternalID}" id="DefectInternalID" mandatory="false"/>
+				
+				<smartField:SmartLabel labelFor="ChangedDateTime"/>
+				<smartField:SmartField value="{ChangedDateTime}" id="ChangedDateTime" mandatory="false"/>
+
+                <smartField:SmartLabel labelFor="QualityTaskProcessor"/>
+                <smartField:SmartField value="{QualityTaskProcessor}"
+                                          id="QualityTaskProcessor"
+                                   mandatory="false"
+                                      change="onValueChange"
+                                     editable= "true"
+                               showValueHelp="true"
+                               maxLength="10"/>
+                                      
+                <Label labelFor="QualityTaskProcessorNotes" text="{i18n>QualityTaskProcessorNotesLabel}"/>
+                <TextArea id="QualityTaskProcessorNotes" rows="3"  change="onValueChange"/>
+
+			</f:content>
+		</f:SimpleForm>
+		<beginButton>
+			<Button text="{i18n>Save}" press="onEditTaskPress"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>Cancel}" press="onCloseEditDialog"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>
