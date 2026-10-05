@@ -84,6 +84,23 @@ function applyOptionalFields(
 }
 
 /**
+ * Best-effort removal of the staged key user changes temp file; a cleanup failure is logged, not thrown.
+ *
+ * @param filePath - Absolute path to the staged temp file, or `undefined` if nothing was staged.
+ */
+function cleanupKeyUserChangesFile(filePath: string | undefined): void {
+    if (!filePath) {
+        return;
+    }
+    try {
+        rmSync(filePath, { force: true });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        logger.warn(`Failed to clean up key user changes temp file '${filePath}': ${message}`);
+    }
+}
+
+/**
  * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
  * @param params - Input parameters for the adaptation project generation.
@@ -181,8 +198,6 @@ export async function generateAdaptationProject(
         logger.error(`Error generating adaptation project: ${message}`);
         return { status: 'Error', message: `Error generating adaptation project: ${message}` };
     } finally {
-        if (keyUserChangesFilePath) {
-            rmSync(keyUserChangesFilePath, { force: true });
-        }
+        cleanupKeyUserChangesFile(keyUserChangesFilePath);
     }
 }

@@ -176,6 +176,25 @@ describe('generateAdaptationProject', () => {
         expect(mockRmSync).toHaveBeenCalledWith(stagedPath, { force: true });
     });
 
+    test('does not mask a successful result when temp file cleanup throws', async () => {
+        mockFetchKeyUserChanges.mockResolvedValue([{ content: { foo: 'bar' } }]);
+        mockRmSync.mockImplementation(() => {
+            throw new Error('EPERM');
+        });
+
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app',
+            importKeyUserChanges: true
+        } as any);
+
+        expect(result.status).toBe('Success');
+        expect(mockLoggerWarn).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to clean up key user changes temp file')
+        );
+    });
+
     test('returns Error and does not generate when key user changes fetch hangs (timeout)', async () => {
         // Never resolves — the tool must time out rather than hang forever.
         mockFetchKeyUserChanges.mockImplementation(() => new Promise(() => {}));
