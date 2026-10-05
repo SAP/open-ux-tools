@@ -70,8 +70,18 @@ For each rule:
 3. **Register** in `src/rules/index.ts` (alphabetical import + entry)
 4. **Register** in `src/index.ts` under `recommended-for-s4hana` at correct severity (alphabetical)
 5. **Write** `test/rules/sap-[name].test.ts` — convert from Mocha to Jest; use `{ message: '...' }` not `{ messageId: '...' }` in `errors`
-6. **Write** `docs/rules/sap-[name].md` (use `docs/rules/TEMPLATE.md`)
-7. **Update** README.md rules table (add new row at top with `new` version)
+6. **Port** `docs/rules/sap-[name].md` from `eslint-plugin-fiori-custom/docs/rules/sap-[name].md`:
+   - Copy the source doc as a starting point
+   - Update the H1 title to match the target format: `# <One sentence description> (sap-[name])`
+   - Update warning messages to match the TypeScript rule's actual `messageId` strings
+   - Replace JS code examples with equivalent JS/TS examples if needed
+   - Add a `## Bug Report` section linking to `https://github.com/SAP/open-ux-tools/issues`
+   - See `docs/rules/TEMPLATE.md` for the expected structure; compare with `docs/rules/sap-browser-api-warning.md` as a JS/TS rule example
+7. **Update** README.md rules table — add a new row at the **top** of the table:
+   ```markdown
+   |  new  | [sap-[name]](docs/rules/sap-[name].md) | Short description | | ✅ |
+   ```
+   The columns are: `version | rule link | description | recommended (✅ if yes) | recommended-for-s4hana (✅ if yes)`
 8. **Run** individual test: `NODE_OPTIONS="--experimental-vm-modules" npx jest --testPathPatterns="sap-[name]" --no-coverage`
 
 ---
@@ -144,7 +154,7 @@ The three security rules (`sap-browser-api-error`, `sap-no-upload`, `sap-unescap
 |---|---|
 | `src/rules/sap-[name].ts` | Rule implementation |
 | `test/rules/sap-[name].test.ts` | Jest tests |
-| `docs/rules/sap-[name].md` | Rule documentation |
+| `docs/rules/sap-[name].md` | Rule doc — ported from `eslint-plugin-fiori-custom/docs/rules/sap-[name].md`, updated to match target format and actual message strings |
 | `src/rules/utils/controller-hook.ts` | Shared ControllerHook utility (Groups 3+4 only) |
 
 ## Files Modified
