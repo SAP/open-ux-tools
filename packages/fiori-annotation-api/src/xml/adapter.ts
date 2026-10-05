@@ -769,7 +769,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 return uri;
             }
             const mainBase = mainRef.uri.substring(0, mainRef.uri.lastIndexOf('/') + 1);
-            const resolved = new URL(uri, 'http://dummy' + mainBase);
+            const resolved = new URL(uri, 'https://dummy' + mainBase);
             return resolved.pathname.replace(/;[^/]*/g, '');
         } catch {
             return uri;
