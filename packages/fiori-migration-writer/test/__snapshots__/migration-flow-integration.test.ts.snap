@@ -12357,7 +12357,7 @@ strict-ssl = false
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
             \\"runtimeExecutable\\": \\"npm\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite-tmp3/packages/lib/app-migrator/test/input/tool_suite_beta_lrop_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
             },
@@ -12378,7 +12378,7 @@ strict-ssl = false
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
             \\"runtimeExecutable\\": \\"npm\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite-tmp3/packages/lib/app-migrator/test/input/tool_suite_beta_lrop_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
             },
@@ -12399,7 +12399,7 @@ strict-ssl = false
             \\"name\\": \\"Start tool_suite_beta_lrop_v2_project Mock\\",
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite-tmp3/packages/lib/app-migrator/test/input/tool_suite_beta_lrop_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"runtimeExecutable\\": \\"npm\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
@@ -12417,7 +12417,7 @@ strict-ssl = false
             \\"name\\": \\"Start tool_suite_beta_lrop_v2_project Mock with UI5 Version\\",
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite-tmp3/packages/lib/app-migrator/test/input/tool_suite_beta_lrop_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"runtimeExecutable\\": \\"npm\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
@@ -105661,7 +105661,7 @@ strict-ssl = false
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
             \\"runtimeExecutable\\": \\"npm\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite/packages/lib/app-migrator/test/input/tool_suite_ga_worklist_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
             },
@@ -105682,7 +105682,7 @@ strict-ssl = false
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
             \\"runtimeExecutable\\": \\"npm\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite/packages/lib/app-migrator/test/input/tool_suite_ga_worklist_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
             },
@@ -105703,7 +105703,7 @@ strict-ssl = false
             \\"name\\": \\"Start tool_suite_ga_worklist_v2_project Mock\\",
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite/packages/lib/app-migrator/test/input/tool_suite_ga_worklist_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"runtimeExecutable\\": \\"npm\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
@@ -105721,7 +105721,7 @@ strict-ssl = false
             \\"name\\": \\"Start tool_suite_ga_worklist_v2_project Mock with UI5 Version\\",
             \\"type\\": \\"node\\",
             \\"request\\": \\"launch\\",
-            \\"cwd\\": \\"/Users/i058153/git/SAPDevelop/tools-suite/packages/lib/app-migrator/test/input/tool_suite_ga_worklist_v2_project\\",
+            \\"cwd\\": \\"${workspaceFolder}\\",
             \\"runtimeExecutable\\": \\"npm\\",
             \\"windows\\": {
                 \\"runtimeExecutable\\": \\"npm.cmd\\"
