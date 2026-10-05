@@ -1,0 +1,35 @@
+# Ignore Eclipse project and settings files
+.classpath
+.settings
+.project
+
+# Ignore target folders in projects
+target/
+
+# Ignore Intellij project and settings
+.idea/
+*.iml
+*.ipr
+
+# Ignore Visual Studio files and directories
+bin/
+obj/
+packages/
+*.pubxml
+*.user
+*.suo
+
+#Ignore OSX directory files
+.DS_Store
+UIAdaptation_index.html
+changes_preview.js
+visual_ext_index.html
+/webapp/visual_ext_index.html
+fioriHtmlRunner.html
+.*/fioriHtmlRunner.html
+mock_preview_sapui5.html
+.*/mock_preview_sapui5.html
+sap-ui-cachebuster-info.json
+extended_runnable_file.html
+.*/extended_runnable_file.html
+/.user.project.json

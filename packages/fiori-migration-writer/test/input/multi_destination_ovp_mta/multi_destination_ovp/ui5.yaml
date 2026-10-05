@@ -1,0 +1,28 @@
+specVersion: '1.0'
+metadata:
+  name: multi_destination_ovp
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  customTasks:
+    - name: webide-extension-task-updateManifestJson
+      configuration:
+        appFolder: webapp
+        destDir: dist
+    - name: webide-extension-task-resources
+      afterTask: generateVersionInfo
+      configuration:
+        nameSpace: multi_destination_ovp 
+    - name: webide-extension-task-copyFile
+      afterTask: webide-extension-task-resources
+      configuration:
+        srcFile: "/xs-app.json" 
+        destFile: "/xs-app.json" 
+    - name: webide-extension-task-lint
+      afterTask: webide-extension-task-copyFile
+      configuration:
+        destDir: dist
+        appFolder: webapp
+        nameSpace: multi_destination_ovp

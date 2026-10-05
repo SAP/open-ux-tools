@@ -1,0 +1,10 @@
+{
+"applications" : { 
+            "Customer-manageLineItems" : {
+                "additionalInformation" : "SAPUI5.Component=fin.ar.lineitems.display",
+                "applicationType" : "URL",
+                "url" : "/fin.ar.lineitems.display",
+                "description" : "Customer Line Items"
+            }
+    }
+}
