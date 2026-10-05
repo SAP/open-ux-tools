@@ -142,7 +142,6 @@ overrides:
   "@sap/bas-sdk>ws": "8.21.0"
   "http-proxy-agent@4>@tootallnate/once": ">=3.0.1"
   "@tootallnate/once": ">=3.0.1"
-  "make-fetch-happen@>=16": "15.0.6"
   esbuild-loader: ">=4.0.0"
   qs: "6.16.0"
   axios: ">=1.18.0"

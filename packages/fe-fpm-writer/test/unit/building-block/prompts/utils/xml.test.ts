@@ -114,6 +114,15 @@ describe('utils - xml', () => {
             isElementIdAvailable(fs, path, 'Test', logger as never);
             expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('isElementIdAvailable'));
         });
+
+        it('correctly handles id with regex metacharacters in the fallback text search', () => {
+            const path = join(projectPath, `webapp/ext/BrokenMetaId.xml`);
+            // 'filter.bar' contains a dot — without escaping, the regex would match 'filter-bar' too
+            fs.write(path, '<a id="filter-bar">aaa</b>');
+            expect(isElementIdAvailable(fs, path, 'filter.bar')).toBe(true);
+            fs.write(path, '<a id="filter.bar">aaa</b>');
+            expect(isElementIdAvailable(fs, path, 'filter.bar')).toBe(false);
+        });
     });
 });
 
@@ -367,7 +376,7 @@ describe('getDOMParserOptions', () => {
     test('returns onError and xmlns in options object', () => {
         const handler = () => {};
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
-        expect(options.onError).toBeDefined();
+        expect(options.onError).toBe(handler);
         expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
     });
 });
