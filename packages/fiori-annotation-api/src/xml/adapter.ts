@@ -739,7 +739,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     continue;
                 }
                 reference = createReference(
-                    ns.name,
+                    namespace,
                     undefined,
                     this.resolveExternalServiceUri(serviceKey, annotationFile.references)
                 );
