@@ -26,6 +26,7 @@ function renderJourney(bodySections: unknown[]): string {
         headerSections: [],
         editButton: undefined,
         headerTitle: undefined,
+        serviceUri: '/odata/v4/TestService/',
         bodySections
     });
     return fs.read(out);

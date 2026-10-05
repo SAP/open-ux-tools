@@ -19,6 +19,8 @@ export const STRICT_UOM_FILTERING = 'sap-strict-uom-filtering';
 export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
+export const NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS = 'sap-no-path-hidden-on-interactive-columns';
+export const FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION = 'sap-field-group-in-table-type-restriction';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
 export const NO_DEEP_COLLECTION_FACETS = 'sap-no-deep-collection-facets';
 export const GROUPING_SUPPORTED_TABLE_TYPES_ONLY = 'sap-grouping-supported-table-types-only';
@@ -193,6 +195,17 @@ export interface CloudDevAdaptationStatus {
     type: typeof CLOUD_DEV_ADAPTATION_STATUS;
     manifest: ManifestPropertyDiagnosticData;
 }
+export interface FieldGroupInTableTypeRestriction {
+    type: typeof FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION;
+    pageNames: string[];
+    tableType: string;
+    pageSectionName?: string;
+    annotation: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+}
+
 export interface NoSingleFacetInCollection {
     type: typeof NO_SINGLE_FACET_IN_COLLECTION;
     pageNames: string[];
@@ -218,7 +231,12 @@ export interface GroupingSupportedTableTypesOnly {
     /** Set when grouping is enabled via manifest personalization settings. */
     manifest?: ManifestPropertyDiagnosticData;
     /** Set when grouping is configured via a UI.PresentationVariant GroupBy annotation. */
-    annotation?: {
+    annotation?: { reference: AnnotationReference; reportedParent: Element };
+}
+export interface NoPathHiddenOnInteractiveColumns {
+    type: typeof NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS;
+    pageNames: string[];
+    annotation: {
         reference: AnnotationReference;
         reportedParent: Element;
     };
@@ -243,5 +261,7 @@ export type Diagnostic =
     | NoLiveMode
     | CloudDevAdaptationStatus
     | GroupingSupportedTableTypesOnly
+    | NoPathHiddenOnInteractiveColumns
+    | FieldGroupInTableTypeRestriction
     | NoSingleFacetInCollection
     | NoDeepCollectionFacets;

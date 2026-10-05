@@ -355,11 +355,8 @@ const baseFioriToolsRules = {
     '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
     '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
     '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
-    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
-    // Off rules (alphabetical)
-    '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
-    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
-    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
+    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'warn',
+    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn'
 } as Linter.RulesRecord;
 
 const prodConfig: Linter.Config[] = [
@@ -498,10 +495,12 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
             '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
             '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn',
+            '@sap-ux/fiori-tools/sap-no-path-hidden-on-interactive-columns': 'warn',
             '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
             '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
             '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn',
             '@sap-ux/fiori-tools/sap-grouping-supported-table-types-only': 'warn',
+            '@sap-ux/fiori-tools/sap-field-group-in-table-type-restriction': 'warn',
             '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn',
             '@sap-ux/fiori-tools/sap-no-deep-collection-facets': 'warn'
         }
