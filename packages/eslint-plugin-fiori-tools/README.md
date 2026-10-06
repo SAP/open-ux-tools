@@ -121,6 +121,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
 |  new      | [sap-grouping-supported-table-types-only](docs/rules/sap-grouping-supported-table-types-only.md) | Ensures table grouping is enabled only for supported `AnalyticalTable` or `ResponsiveTable` table types. | | ✅ |
+|  10.15.0      | [sap-no-comma-in-section-title](docs/rules/sap-no-comma-in-section-title.md) | Ensures that section and subsection titles in object pages for SAP Fiori elements applications do not contain commas. | | ✅ |
 |  10.14.0  | [sap-no-path-hidden-on-interactive-columns](docs/rules/sap-no-path-hidden-on-interactive-columns.md) | A `UI.Hidden` annotation with a dynamic path must not be used on sortable or filterable columns. | | ✅ |
 |  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
 |  10.11.0  | [sap-no-deep-collection-facets](docs/rules/sap-no-deep-collection-facets.md) | Ensures `UI.CollectionFacet` elements are not nested at third level or deeper. | | ✅ |
