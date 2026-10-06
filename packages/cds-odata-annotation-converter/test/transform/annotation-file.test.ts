@@ -13,6 +13,9 @@ import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// CDS compiler initialization can be slow on CI runners
+jest.setTimeout(30000);
+
 const testDataFolder = '../data';
 const cdsProjectFolder = 'bookshop';
 const cdsServiceName = 'AdminService';
