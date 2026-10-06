@@ -101,14 +101,14 @@ sap.ui.define([
             <%_ }); -%>
         });
 <%_ } else { -%>
-<%_ if (toolBarActions && toolBarActions.length > 0 && createButton.visible && !isALP) { -%>
+<%_ if (createButton.visible && !isALP) { -%>
         opaTest("Check the create button", function (Given, When, Then) {
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
         });
 
 <%_ } -%>
-<%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
+<%_ if (deleteButton.visible) { -%>
         opaTest("Check the delete button", function (Given, When, Then) {
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });

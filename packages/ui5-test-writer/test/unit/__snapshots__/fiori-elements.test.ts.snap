@@ -20524,6 +20524,16 @@ sap.ui.define([
         //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
+        opaTest(\\"Check the create button\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteCreate();
+        });
+
+        opaTest(\\"Check the delete button\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteDelete();
+        });
+
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
@@ -22385,6 +22395,16 @@ sap.ui.define([
         //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
+        opaTest(\\"Check the create button\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteCreate();
+        });
+
+        opaTest(\\"Check the delete button\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteDelete();
+        });
+
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
@@ -24241,6 +24261,16 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
         //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
+
+        opaTest(\\"Check the create button\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckCreate({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteCreate();
+        });
+
+        opaTest(\\"Check the delete button\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteDelete();
+        });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data

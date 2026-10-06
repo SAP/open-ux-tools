@@ -118,14 +118,14 @@ sap.ui.define([
             <%_ }); -%>
         });
 <%_ } else { -%>
-<%_ if (toolBarActions && toolBarActions.length > 0 && createButton.visible && !isALP) { -%>
+<%_ if (createButton.visible && !isALP) { -%>
         opaTest("Check the create button", function (Given, When, Then) {
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteCreate();
         });
 
 <%_ } -%>
-<%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
+<%_ if (deleteButton.visible) { -%>
         opaTest("Check the delete button", function (Given, When, Then) {
             <%_ /* deleteButton.enabled = Capabilities Deletable (not current UI state); when deletable, Delete is selection-gated: disabled with no selection, enabled once a row is selected. */ -%>
             <%_ const deleteIsSelectionGated = deleteButton.enabled === true; _%>

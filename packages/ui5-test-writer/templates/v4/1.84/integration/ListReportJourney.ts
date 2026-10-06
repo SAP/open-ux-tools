@@ -83,14 +83,14 @@ function journey() {
     //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
-<%_ if (toolBarActions && toolBarActions.length > 0 && createButton.visible && !isALP) { -%>
+<%_ if (createButton.visible && !isALP) { -%>
     opaTest("Check the create button", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
     });
 
 <%_ } -%>
-<%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
+<%_ if (deleteButton.visible) { -%>
     opaTest("Check the delete button", function (_Given: Given, _When: When, Then: Then) {
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
