@@ -2,6 +2,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AnnotationReference } from '../project-context/parser/index.js';
 import type { Element } from '@sap-ux/odata-annotation-core';
 import type { SourceLocation } from '@eslint/core';
+import type { I18nEntry } from '../language/i18n/source-code.js';
 export const WIDTH_INCLUDING_COLUMN_HEADER_RULE_TYPE = 'sap-width-including-column-header';
 export const ANCHOR_BAR_VISIBLE = 'sap-anchor-bar-visible';
 export const FLEX_ENABLED = 'sap-flex-enabled';
@@ -20,6 +21,7 @@ export const DESCRIPTION_COLUMN_LABEL = 'sap-description-column-label';
 export const NO_LIVE_MODE = 'sap-no-live-mode';
 export const CLOUD_DEV_ADAPTATION_STATUS = 'sap-cloud-dev-adaptation-status';
 export const NO_INLINE_DELETE_WITH_MULTISELECT = 'sap-no-inline-delete-with-multiselect';
+export const NO_COMMA_IN_SECTION_TITLE = 'sap-no-comma-in-section-title';
 export const NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS = 'sap-no-path-hidden-on-interactive-columns';
 export const FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION = 'sap-field-group-in-table-type-restriction';
 export const NO_SINGLE_FACET_IN_COLLECTION = 'sap-no-single-facet-in-collection';
@@ -223,6 +225,19 @@ export interface NoDeepCollectionFacets {
     };
 }
 
+export interface NoCommaInSectionTitle {
+    type: typeof NO_COMMA_IN_SECTION_TITLE;
+    pageNames: string[];
+    annotation?: {
+        reference: AnnotationReference;
+        reportedParent: Element;
+    };
+    i18n?: {
+        uri: string;
+        entry: I18nEntry;
+    };
+}
+
 export interface NoPathHiddenOnInteractiveColumns {
     type: typeof NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS;
     pageNames: string[];
@@ -261,4 +276,5 @@ export type Diagnostic =
     | NoPathHiddenOnInteractiveColumns
     | FieldGroupInTableTypeRestriction
     | NoSingleFacetInCollection
+    | NoCommaInSectionTitle
     | NoDeepCollectionFacets;
