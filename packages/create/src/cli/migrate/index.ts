@@ -169,11 +169,16 @@ async function promptConfirm(name: string, message: string, initial: boolean): P
 export function addMigrateCommand(program: Command): void {
     program
         .command('migrate [project-path]')
-        .description('Migrate legacy WebIDE Fiori project to modern Fiori tools format')
-        .option('-d, --destination <name>', 'SAP System destination name')
+        .description(
+            'Migrate legacy WebIDE Fiori project to modern Fiori tools format. In BAS, a destination is required. Outside BAS, hostname and client are required; destination is optional.'
+        )
+        .option('-d, --destination <name>', 'SAP System destination name (required in BAS)')
         .option('-s, --sap-system-name <name>', 'SAP System name (alias for destination)')
-        .option('-H, --hostname <host>', 'Hostname (required if destination not provided)')
-        .option('-c, --client <client>', 'SAP Client (optional)')
+        .option('-H, --hostname <host>', 'Backend hostname (required outside BAS unless resolved from a saved system)')
+        .option(
+            '-c, --client <client>',
+            'SAP Client (required outside BAS unless resolved from destination or saved system)'
+        )
         .option('-u, --ui5-version <version>', 'UI5 version (defaults to source project version)')
         .option('-f, --force', 'Force migration even if project is already a Fiori tools project')
         .option('-n, --skip-install', 'Skip the `npm install` step after migration')
