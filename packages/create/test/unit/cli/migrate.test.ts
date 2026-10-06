@@ -13,8 +13,11 @@ jest.unstable_mockModule('../../../src/tracing/logger', () => ({
 }));
 
 const mockIsAppStudio = jest.fn() as jest.Mock;
+const mockListDestinations = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
-    isAppStudio: () => mockIsAppStudio()
+    DestinationProxyType: { ON_PREMISE: 'OnPremise' },
+    isAppStudio: () => mockIsAppStudio(),
+    listDestinations: () => mockListDestinations()
 }));
 
 const mockGetService = jest.fn() as jest.Mock;
@@ -71,6 +74,7 @@ describe('migrate command', () => {
         } as Partial<ToolsLogger> as ToolsLogger;
         mockGetLogger.mockReturnValue(loggerMock);
         mockIsAppStudio.mockReturnValue(false);
+        mockListDestinations.mockResolvedValue({});
         mockFindSystemByUrl.mockResolvedValue(undefined);
         mockGetProjectInfo.mockResolvedValue({ projectInfo: { hostname: '', sapClient: '' }, messages: [] });
         mockMigrate.mockResolvedValue({
@@ -282,7 +286,8 @@ describe('migrate command', () => {
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), savedSystem.url, '', {
             destination: savedSystem.name,
             hostname: savedSystem.url,
-            sapClient: savedSystem.client
+            sapClient: savedSystem.client,
+            scp: false
         });
     });
 
@@ -305,6 +310,35 @@ describe('migrate command', () => {
 
         expect(mockGetService).not.toHaveBeenCalled();
         expect(mockFindSystemByUrl).not.toHaveBeenCalled();
+    });
+
+    test('should use a matching BAS destination', async () => {
+        const destination = {
+            Name: 'DEMOCLNT001',
+            Host: 'https://demo.example.test',
+            ProxyType: 'OnPremise',
+            'sap-client': '001'
+        };
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { destination: destination.Name, hostname: destination.Host, sapClient: '' },
+            messages: []
+        });
+        mockListDestinations.mockResolvedValue({ [destination.Name]: destination });
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockGetService).not.toHaveBeenCalled();
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), destination.Host, '', {
+            destination: destination.Name,
+            hostname: destination.Host,
+            sapClient: destination['sap-client'],
+            scp: true
+        });
     });
 
     test('should prompt for project path when not provided', async () => {
