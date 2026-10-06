@@ -536,7 +536,12 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
             logger.warn('`npm install` was skipped. Install project dependencies before running the application.');
         } else {
             logger.info('Installing project dependencies...');
-            runNpmInstallCommand(resolvedPath, [], { logger });
+            const installError = await runNpmInstallCommand(resolvedPath, [], { logger });
+            if (installError) {
+                logger.error(
+                    `Migration completed, but dependency installation failed. Resolve the npm error above before running the project.`
+                );
+            }
         }
     } else {
         logger.error('✗ Migration failed');

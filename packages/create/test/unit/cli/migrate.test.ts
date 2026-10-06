@@ -284,6 +284,18 @@ describe('migrate command', () => {
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('npm install'));
     });
 
+    test('should report dependency installation failures after migration', async () => {
+        mockRunNpmInstallCommand.mockResolvedValueOnce(new Error('Dependency conflict'));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']));
+
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('dependency installation failed'));
+    });
+
     test('should use sap-system-name as destination alias', async () => {
         const command = new Command('sap-ux');
         addMigrateCommand(command);
