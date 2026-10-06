@@ -248,9 +248,8 @@ export type ListReportFeatures = {
      */
     textAnnotationColumns?: TextAnnotationColumn[];
     /**
-     * Whether the table exposes column personalization (the "Columns" adaptation dialog). When
-     * disabled the column-adaptation test is omitted, as `iOpenColumnAdaptation` has no dialog to
-     * open. Absent/true means enabled (the Fiori elements default).
+     * Whether the table exposes column personalization (the "Columns" adaptation dialog).
+     * Absent/true means enabled (the Fiori elements default).
      */
     columnPersonalizationSupported?: boolean;
     isALP?: boolean;

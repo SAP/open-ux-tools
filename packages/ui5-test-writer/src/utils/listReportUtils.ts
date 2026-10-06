@@ -545,19 +545,7 @@ export function getCustomFilterFieldProperties(
 }
 
 /**
- * Finds the LineItem control-configuration entry for the default table. The manifest key may be the
- * bare term, a qualified term (`@...LineItem#Qualifier`), or a context-path-prefixed form
- * (`/EntitySet/@...LineItem[#Qualifier]`), mirroring the resolution in
- * `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v4.ts`.
- *
- * The entry is only resolved when it can be identified unambiguously, so a disabled default table is
- * never masked by an unrelated table's entry:
- * 1. the bare term, or its context-prefixed form, when it is the only LineItem key present;
- * 2. otherwise, exactly one LineItem key (bare or qualified) matching the page's `contextPath`.
- *
- * When several LineItem keys are candidates (e.g. `#Main` and `#Alt` under the same context, or a mix
- * of bare and qualified keys for multiple tables), the default table's own key cannot be derived from
- * the available data, so the entry is left unresolved rather than guessed.
+ * Finds the LineItem control-configuration entry for the default table.
  *
  * @param controlConfiguration - the target's `options.settings.controlConfiguration`
  * @param contextPath - the page's context path (e.g. `/Travel`), used to match CAP-style prefixed keys
@@ -576,14 +564,9 @@ function findDefaultTableLineItemConfig(
 
     let key: string | undefined;
     if (lineItemKeys.length === 1) {
-        // Single-table List Report: exactly one LineItem config, so the match is unambiguous whether
-        // it is bare, qualified, or context-prefixed.
         key = lineItemKeys[0];
     } else if (contextPath) {
         // Multiple LineItem keys: only resolve when exactly one is scoped to this page's context path.
-        // The bare and context-prefixed forms of the default table term are preferred; a single
-        // qualified key under the context path is accepted, but several are left unresolved to avoid
-        // picking an arbitrary qualifier.
         const bareUnderContext = `${contextPath}/${lineItemTerm}`;
         if (controlConfiguration[bareUnderContext]) {
             key = bareUnderContext;
@@ -599,16 +582,7 @@ function findDefaultTableLineItemConfig(
 }
 
 /**
- * Determines whether the List Report table exposes column personalization (the "Columns" adaptation
- * dialog opened by `iOpenColumnAdaptation`). The setting lives under the LineItem control configuration
- * `tableSettings.personalization` and may be a boolean, an object with per-feature flags, or absent.
- *
- * Semantics (mirroring Fiori elements):
- * - absent → enabled (the default)
- * - `true` → enabled
- * - `false` → disabled
- * - object with `column: true` → enabled
- * - object omitting `column` or with `column: false` → disabled
+ * Determines whether the List Report table exposes column personalization (the "Columns" adaptation dialog).
  *
  * @param manifest - the application manifest (may be undefined)
  * @param targetKey - routing target key of the List Report page
