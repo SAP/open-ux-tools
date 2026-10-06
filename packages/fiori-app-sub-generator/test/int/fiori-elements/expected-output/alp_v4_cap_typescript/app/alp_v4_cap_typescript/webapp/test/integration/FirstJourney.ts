@@ -6,6 +6,8 @@ function journey() {
     QUnit.module("First journey");
 
     opaTest("Start application", function (Given: Given, _When: When, _Then: Then) {
+        Given.iResetMockData({ ServiceUri: "/admin/" });
+        Given.iResetTestData();
         Given.iStartMyApp();
         
     });

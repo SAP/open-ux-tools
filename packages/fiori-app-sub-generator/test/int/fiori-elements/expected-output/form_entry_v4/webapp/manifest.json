@@ -1,7 +1,7 @@
 {
   "_version": "1.33.0",
   "sap.app": {
-    "id": "testNameSpace.formentryv4",
+    "id": "testnamespace.formentryv4",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -70,7 +70,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "testNameSpace.formentryv4.i18n.i18n"
+          "bundleName": "testnamespace.formentryv4.i18n.i18n"
         }
       },
       "": {

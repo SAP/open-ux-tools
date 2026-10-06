@@ -1,5 +1,49 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- Migration to a new AST format of the CDS flattened annotations [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cds-annotation-parser 1.0.7 → 1.1.0
+- @sap-ux/text-document-utils 1.0.2 → 1.0.3
+- @sap-ux/odata-annotation-core 1.0.2 → 1.0.3
+- @sap-ux/odata-vocabularies 1.1.1 → 1.1.2
+
+## 1.0.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Update @sap/ux-cds-compiler-facade to 1.25.0 and fix imports to use named exports [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+## 1.0.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.1 → 1.0.2
+- @sap-ux/cds-annotation-parser 1.0.6 → 1.0.7
+- @sap-ux/odata-annotation-core 1.0.1 → 1.0.2
+- @sap-ux/odata-vocabularies 1.1.0 → 1.1.1
+
 ## 1.0.9
 
 ### Patch Changes

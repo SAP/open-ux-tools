@@ -1,7 +1,12 @@
 import type { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { type AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
+import {
+    type AttributesAnswers,
+    FlexLayer,
+    getDefaultProjectName,
+    validateUI5VersionExists
+} from '@sap-ux/adp-tooling';
 import {
     validateEmptyString,
     validateNamespaceAdp,
@@ -27,7 +32,7 @@ import { attributePromptNames, SystemType } from '../types.js';
 import { getProjectNameTooltip } from './helper/tooltip.js';
 import { getVersionAdditionalMessages } from './helper/additional-messages.js';
 import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps.js';
-import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values.js';
+import { getDefaultNamespace, getDefaultVersion } from './helper/default-values.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**

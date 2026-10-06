@@ -18,27 +18,48 @@ import type { actions as ListReportActions, assertions as ListReportAssertions }
 <% if (pages.some(p => p.template === 'ObjectPage')) { -%>
 import type { actions as ObjectPageActions, assertions as ObjectPageAssertions } from "sap/fe/test/ObjectPage";
 <% } -%>
-<% if (pages.some(p => p.template === 'ListReport' || p.template === 'ObjectPage')) { -%>
+<% if (pages.some(p => p.template === 'ListReport' || p.template === 'ObjectPage' || p.template === 'FPM')) { -%>
 import type { actions as TemplatePageActions, assertions as TemplatePageAssertions } from "sap/fe/test/TemplatePage";
 <% } -%>
 import type Shell from "sap/fe/test/Shell";
 import type BaseArrangements from "sap/fe/test/BaseArrangements";
-<% pages.filter((p) => p.template === 'ListReport' || p.template === 'ObjectPage').forEach(function(page) { -%>
+<% pages.filter((p) => p.template === 'ListReport' || p.template === 'ObjectPage' || p.template === 'FPM').forEach(function(page) { -%>
 import type { actions as <%- page.targetKey %>GeneratedCustomActions, assertions as <%- page.targetKey %>GeneratedCustomAssertions } from "../pages/<%- page.targetKey %>.gen";
 <% }); -%>
+
+/**
+ * Enables OPA5 fluent `.and` chaining on page objects and their sub-objects.
+ *
+ * @example
+ * Then.onTheObjectPageGenerated.iCheckSection({ section: "A" }).and.iCheckSection({ section: "B" });
+ * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
+ */
+type WithAnd<T> = {
+    [K in keyof T | 'and']: K extends 'and'
+        ? WithAnd<T>
+        : K extends keyof T
+        ? T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+            : T[K]
+        : never;
+};
 
 export type Given = Opa5 & BaseArrangements & {
     iTearDownMyApp: () => Given;
     iStartMyApp: (sAppHash?: string, mInUrlParameters?: object) => Given;
+    iResetMockData: (oAppInfo?: { AppId?: string; ServiceUri?: string }) => Given;
+    iResetTestData: () => Given;
     and: Given;
 };
 
 export type When = Opa5 & BaseArrangements & {
 <% pages.forEach(function(page) { -%>
 <% if (page.template === 'ListReport') { -%>
-    onThe<%- page.targetKey %>Generated: Opa5 & ListReportActions & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions;
+    onThe<%- page.targetKey %>Generated: WithAnd<Opa5 & ListReportActions & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions>;
 <% } else if (page.template === 'ObjectPage') { -%>
-    onThe<%- page.targetKey %>Generated: Opa5 & ObjectPageActions & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions;
+    onThe<%- page.targetKey %>Generated: WithAnd<Opa5 & ObjectPageActions & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions>;
+<% } else if (page.template === 'FPM') { -%>
+    onThe<%- page.targetKey %>Generated: WithAnd<Opa5 & TemplatePageActions & typeof <%- page.targetKey %>GeneratedCustomActions>;
 <% } -%>
 <% }); -%>
     onTheShell: Shell;
@@ -47,9 +68,11 @@ export type When = Opa5 & BaseArrangements & {
 export type Then = Opa5 & BaseArrangements & {
 <% pages.forEach(function(page) { -%>
 <% if (page.template === 'ListReport') { -%>
-    onThe<%- page.targetKey %>Generated: Opa5 & ListReportAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions;
+    onThe<%- page.targetKey %>Generated: WithAnd<Opa5 & ListReportAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions>;
 <% } else if (page.template === 'ObjectPage') { -%>
-    onThe<%- page.targetKey %>Generated: Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions;
+    onThe<%- page.targetKey %>Generated: WithAnd<Opa5 & ObjectPageAssertions & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions>;
+<% } else if (page.template === 'FPM') { -%>
+    onThe<%- page.targetKey %>Generated: WithAnd<Opa5 & TemplatePageAssertions & typeof <%- page.targetKey %>GeneratedCustomAssertions>;
 <% } -%>
 <% }); -%>
     onTheShell: Shell;

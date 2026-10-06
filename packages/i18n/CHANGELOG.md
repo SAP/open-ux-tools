@@ -1,5 +1,21 @@
 # @sap-ux/i18n
 
+## 1.0.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.2 → 1.0.3
+
+## 1.0.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.1 → 1.0.2
+
 ## 1.0.2
 
 ### Patch Changes

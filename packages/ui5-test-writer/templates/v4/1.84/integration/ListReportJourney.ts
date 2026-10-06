@@ -25,6 +25,9 @@ const usesFilterFieldIdentifier =
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+import { SortOrder } from "sap/ui/core/library";
+<%_ } -%>
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
@@ -32,6 +35,8 @@ function journey() {
     const defaultTableId = <%- tableIdentifiers && tableIdentifiers.length > 0 ? '"' + tableIdentifiers[0] + '"' : '""' %>;
 
     opaTest("Start application", function (Given: Given, _When: When, Then: Then) {
+        Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+        Given.iResetTestData();
         Given.iStartMyApp();
         <%_ startPages.forEach(function(pageName) { %>
         Then.onThe<%- pageName %>Generated.iSeeThisPage();
@@ -74,6 +79,8 @@ function journey() {
     //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField("Search Term");
     //     When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
     //     Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckRows();
+    //     When.onThe<%- startLR%>Generated.onFilterBar().iChangeSearchField(undefined);
+    //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
 <%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
@@ -97,6 +104,14 @@ function journey() {
         <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
         Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
         <%_ } -%>
+    });
+<%_ } -%>
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+    opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {
+        <%_ textAnnotationColumns.forEach(function(column) { _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
+        <%_ }); -%>
     });
 <%_ } -%>
 

@@ -24,7 +24,7 @@ let odataServiceAnswers: Partial<Service> = {
 };
 const ui5ApplicationAnswers: Partial<UI5ApplicationAnswers> = {
     name: 'testAppName',
-    namespace: 'testNamespace',
+    namespace: 'testnamespace',
     description: 'testDescription',
     title: 'testTitle',
     targetFolder: '/test/target/folder',
@@ -515,7 +515,7 @@ describe('Test FioriAppGenerator', () => {
             namespace: ui5ApplicationAnswers.namespace,
             description: ui5ApplicationAnswers.description,
             localUI5Version: '3.2.1',
-            flpAppId: 'testNamespacetestAppName-display'
+            flpAppId: 'testnamespacetestAppName-display'
         });
     });
 
@@ -576,7 +576,7 @@ describe('Test FioriAppGenerator', () => {
             description: ui5ApplicationAnswers.description,
             enableNpmWorkspaces: undefined,
             localUI5Version: '3.2.1',
-            flpAppId: 'testNamespacetestAppName-display'
+            flpAppId: 'testnamespacetestAppName-display'
         });
     });
 
@@ -620,7 +620,7 @@ describe('Test FioriAppGenerator', () => {
             localUI5Version: '3.2.1',
             addDeployConfig: true,
             addFlpConfig: true,
-            flpAppId: 'testNamespacetestAppName-display'
+            flpAppId: 'testnamespacetestAppName-display'
         });
 
         expect(mockAddDeployGen).toHaveBeenCalledWith(

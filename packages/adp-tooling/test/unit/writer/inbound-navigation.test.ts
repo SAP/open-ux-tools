@@ -32,7 +32,9 @@ jest.unstable_mockModule('../../../src/base/helper', () => ({
 
 const mockRemoveAndCreateI18nEntries = jest.fn() as jest.Mock;
 const SapShortTextType = { TableTitle: 'XTIT' };
+const realUxI18n = await import('@sap-ux/i18n');
 jest.unstable_mockModule('@sap-ux/i18n', () => ({
+    ...realUxI18n,
     removeAndCreateI18nEntries: mockRemoveAndCreateI18nEntries,
     SapShortTextType,
     createPropertiesI18nEntries: jest.fn(),

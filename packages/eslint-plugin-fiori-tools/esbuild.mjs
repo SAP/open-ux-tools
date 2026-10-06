@@ -2,7 +2,7 @@ import { context, build } from 'esbuild';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,6 +11,19 @@ const __dirname = dirname(__filename);
 // Resolve via package.json (not the main entry) so dirname() gives the package
 // root regardless of where the main field points.
 const req = createRequire(join(__dirname, 'package.json'));
+const { makeLicensePlugin } = req('../../esbuildLicensePlugin.cjs');
+
+// Fail fast if @babel/eslint-parser is not installed — esbuild would silently leave it
+// as an unbundled external import if it can't resolve it, producing a broken bundle.
+try {
+    req.resolve('@babel/eslint-parser/package.json');
+} catch {
+    throw new Error(
+        '[esbuild] @babel/eslint-parser is not installed. ' +
+        'Run `pnpm install` before building.'
+    );
+}
+
 const babelEslintParserRoot = dirname(req.resolve('@babel/eslint-parser/package.json'));
 const babelEslintParserWorker = resolve(babelEslintParserRoot, 'lib/worker/index.js');
 
@@ -37,6 +50,15 @@ const cjsCompatBanner = [
 const patchBabelEslintParser = {
     name: 'patch-babel-eslint-parser',
     setup(build) {
+        // Redirect "@babel/parser" imports to the version from our dep tree.
+        // Needed because the patched static import is processed in the context of
+        // @babel/eslint-parser's location in the pnpm store, where @babel/parser
+        // is not a sibling — we resolve it explicitly from this package's root.
+        const babelParserEntry = req.resolve('@babel/parser');
+        build.onResolve({ filter: /^@babel\/parser$/ }, () => ({
+            path: babelParserEntry
+        }));
+
         build.onLoad({ filter: /@babel[\\/]eslint-parser[\\/]lib[\\/]index\.js$/ }, (args) => {
             let source = readFileSync(args.path, 'utf8');
             const patched = source.replace(
@@ -86,7 +108,9 @@ const buildOptions = {
     sourcemap: !production,
     banner: { js: cjsCompatBanner },
     external: externalDependencies,
-    plugins: [patchBabelEslintParser]
+    legalComments: 'linked',
+    metafile: true,
+    plugins: [patchBabelEslintParser, makeLicensePlugin()]
 };
 
 if (watch) {
@@ -95,4 +119,24 @@ if (watch) {
     console.log('[watch] watching for changes...');
 } else {
     await build(buildOptions);
+    // Verify that @babel packages were actually bundled and not left as external imports.
+    // esbuild silently externalizes unresolvable packages — this catches a broken bundle
+    // before it gets cached by Nx and published.
+    // Scan all emitted JS files: with splitting:true esbuild can place shared code in
+    // any chunk, not just index.js.
+    const findJsFiles = (dir) =>
+        readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+            const entryPath = join(dir, entry.name);
+            return entry.isDirectory() ? findJsFiles(entryPath) : entryPath.endsWith('.js') ? [entryPath] : [];
+        });
+    const leakedImports = findJsFiles(join(__dirname, 'lib')).flatMap((bundleFile) =>
+        [...readFileSync(bundleFile, 'utf8').matchAll(/\bfrom\s+['"](@babel\/[^'"]+)['"]/g)].map((m) => m[1])
+    );
+    if (leakedImports.length > 0) {
+        throw new Error(
+            `[esbuild] Bundle validation failed: @babel packages were not bundled.\n` +
+            `Leaked external imports: ${[...new Set(leakedImports)].join(', ')}\n` +
+            `Check that @babel/* devDependencies are installed and the patchBabelEslintParser plugin is working.`
+        );
+    }
 }

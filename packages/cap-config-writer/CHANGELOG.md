@@ -1,5 +1,106 @@
 # @sap-ux/cap-config-writer
 
+## 1.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/fiori-generator-shared 1.2.17 → 1.2.18
+
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.16 → 1.2.17
+
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.15 → 1.2.16
+
+## 1.0.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/fiori-generator-shared 1.2.14 → 1.2.15
+
+## 1.0.36
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.13 → 1.2.14
+
+## 1.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.12 → 1.2.13
+
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.11 → 1.2.12
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.10 → 1.2.11
+
+## 1.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/fiori-generator-shared 1.2.9 → 1.2.10
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/fiori-generator-shared 1.2.8 → 1.2.9
+
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.7 → 1.2.8
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/fiori-generator-shared 1.2.6 → 1.2.7
+
 ## 1.0.28
 
 ### Patch Changes

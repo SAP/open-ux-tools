@@ -2,6 +2,7 @@ import * as appInsights from 'applicationinsights';
 import { configAzureTelemetryClient } from './azure-client-config.js';
 import { TelemetrySettings } from '../config-state.js';
 import { EventName } from '../types/index.js';
+import { ClientFactory } from '../client/index.js';
 
 const parseErrorStack = (errorStack: string): string[] => {
     const regexps = [/sap-ux.+/gi, /[-a-zA-Z]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
@@ -44,14 +45,19 @@ const parseErrorStack = (errorStack: string): string[] => {
     return parsedStack;
 };
 
-let reportingTelemetryClient: appInsights.TelemetryClient;
+let reportingTelemetryClient: appInsights.TelemetryClient | undefined;
 
-export const reportRuntimeError = (error: Error): void => {
-    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
-        reportingTelemetryClient = new appInsights.TelemetryClient(TelemetrySettings.azureInstrumentationKey);
+const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
+    if (!reportingTelemetryClient) {
+        reportingTelemetryClient = new appInsights.TelemetryClient(
+            ClientFactory.buildConnectionString(TelemetrySettings.azureInstrumentationKey)
+        );
         configAzureTelemetryClient(reportingTelemetryClient);
     }
+    return reportingTelemetryClient;
+};
 
+export const reportRuntimeError = (error: Error): void => {
     const properties: { [key: string]: string } = { message: error.message };
     if (error.stack) {
         const parsedStack = parseErrorStack(error.stack);
@@ -65,7 +71,7 @@ export const reportRuntimeError = (error: Error): void => {
         measurements: {}
     };
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
-        reportingTelemetryClient.trackEvent(telemetryEvent);
+        getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };
 
@@ -82,6 +88,6 @@ export const reportEnableTelemetryOnOff = (
         measurements: {}
     };
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
-        reportingTelemetryClient.trackEvent(telemetryEvent);
+        getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };

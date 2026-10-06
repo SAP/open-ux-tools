@@ -60,8 +60,8 @@ export class AddControllerToPageQuickAction
         )[0];
         if (control) {
             const controlInfo = getControllerInfoForControl(control);
-            const data = await getExistingController(controlInfo.controllerName);
-            this.controllerExists = data?.controllerExists;
+            const data = await getExistingController(controlInfo.controllerName, controlInfo.viewId);
+            this.controllerExists = data?.baseControllerExists || data?.instanceControllerExists;
             const isActiveAction = isControllerExtensionEnabledForControl(
                 control,
                 isReuseComponent,

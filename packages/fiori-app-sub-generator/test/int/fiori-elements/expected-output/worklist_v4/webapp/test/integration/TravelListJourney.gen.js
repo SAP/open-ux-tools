@@ -27,6 +27,8 @@ sap.ui.define([
         const defaultTableId = "";
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -38,6 +40,8 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
         opaTest("Check table columns and actions", function (Given, When, Then) {

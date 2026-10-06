@@ -31,9 +31,12 @@ export interface FragmentsResponse {
 }
 
 export interface CodeExtResponse {
-    controllerExists: boolean;
-    controllerPath: string;
-    controllerPathFromRoot: string;
+    baseControllerExists: boolean;
+    baseControllerPath: string;
+    baseControllerPathFromRoot: string;
+    instanceControllerExists: boolean;
+    instanceControllerPath: string;
+    instanceControllerPathFromRoot: string;
     isRunningInBAS: boolean;
     isTsSupported: boolean;
 }
@@ -172,10 +175,14 @@ export async function getDataSourceAnnotationFileMap(): Promise<AnnotationDataSo
  * Checks for existing controller in the project's workspace
  *
  * @param controllerName Name of the controller
+ * @param viewId ID of the current view, used to detect an existing instance-specific extension
  * @returns {CodeExtResponse} Returns path to existing controller if found
  */
-export async function getExistingController(controllerName: string): Promise<CodeExtResponse> {
+export async function getExistingController(controllerName: string, viewId?: string): Promise<CodeExtResponse> {
     const params = new URLSearchParams({ name: controllerName });
+    if (viewId) {
+        params.append('viewId', viewId);
+    }
     const url = `${ApiEndpoints.CODE_EXT}?${params.toString()}` as ApiEndpoints;
     return request<CodeExtResponse>(url, RequestMethod.GET);
 }

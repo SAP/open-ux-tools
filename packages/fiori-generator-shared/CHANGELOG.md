@@ -1,5 +1,119 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.2.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/telemetry 2.0.7 → 2.0.8
+
+## 1.2.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.6 → 2.0.7
+
+## 1.2.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.10 → 2.1.0
+
+## 1.2.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/axios-extension 2.0.10 → 2.0.10
+- @sap-ux/telemetry 2.0.5 → 2.0.6
+
+## 1.2.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- add authenticationType field to AppConfig service type [[41e9341](https://github.com/SAP/open-ux-tools/commit/41e934192805ce9fc954bc34b42f9085b3ea2b36)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+
+## 1.2.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.4 → 2.0.5
+
+## 1.2.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.3 → 2.0.4
+
+## 1.2.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.2 → 2.0.3
+
+## 1.2.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/telemetry 2.0.1 → 2.0.2
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+
+## 1.2.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/telemetry 2.0.0 → 2.0.1
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+
+## 1.2.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 1.0.25 → 2.0.0
+
+## 1.2.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/telemetry 1.0.24 → 1.0.25
+
 ## 1.2.6
 
 ### Patch Changes

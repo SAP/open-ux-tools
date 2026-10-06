@@ -1,28 +1,47 @@
 # OData V4 - `sap.fe.test` Library
 
+## Generating or Regenerating the Test Scaffold
+
+When the user's request is generic (e.g. "generate OPA5 tests", "create OPA5 tests", "update OPA5 tests") **and not asking for a specific journey, page object, or scenario**, or when the integration test folder is missing entirely, run in the project root:
+
+```bash
+npx --yes @sap-ux/create@latest generate opa5-tests
+```
+
+This inspects the app's OData metadata, annotations, and `manifest.json` to produce a complete set of OPA5 test files. Confirm which files were written and tell the user how to run the tests (check `package.json`, e.g. `npm run int-test`).
+
+**Stop after this command.** Do not read, review, or fix patterns in `.gen.js` / `.gen.ts` files - they are tool-owned scaffolding and will be overwritten on re-generation.
+
+> Regeneration overwrites existing generated files. Always keep custom test logic in separate journey files to avoid it being overwritten.
+
+If the request is more specific (e.g. "add a journey for the delete action", "fix the failing filter test", "add an OPA5 test for navigation to the object page"), skip this and follow the standard workflow below.
+
+---
+
 ## Generated Test Structure
 
-When SAP Fiori tools generates an application, the integration test scaffold is created automatically (e.g. under `webapp/test/integration/` for ui5 cli type `application`).
-The journey and page object files are always physically present:
+The scaffold command generates (or regenerates) the integration test structure automatically (e.g. under `webapp/test/integration/` for ui5 cli type `application`).
+After running it, the structure looks like this (`.gen.*` files are tool-owned; custom files like `MyCustomJourney.ts` are added by you):
 
 ```
-webapp/test/integration/
-├── FirstJourney.js         <- starter journey: start app, load table, navigate, teardown
-└── pages/
-    ├── JourneyRunner.js    <- shared JourneyRunner instance (Fiori-specific)
-    ├── <EntityName>.js     <- ListReport page object per entity
-    └── <Entity>ObjectPage.js <- ObjectPage page object per entity
+webapp/test/integration/                          (TypeScript - e.g. List Report / Object Page)
+├── <EntityName>ListJourney.gen.ts                <- generated (tool-owned, do not edit)
+├── <EntityName>ObjectPageJourney.gen.ts          <- generated (tool-owned, do not edit)
+├── MyCustomJourney.ts                            <- custom journey (place here, import in pages/JourneyRunner.ts)
+├── pages/
+│   ├── JourneyRunner.ts                          <- generated and hand-maintained (shared JourneyRunner instance - add custom journeys here)
+│   ├── <EntityName>List.gen.ts                   <- generated page object (tool-owned, do not edit)
+│   ├── <EntityName>ObjectPage.gen.ts             <- generated page object (tool-owned, do not edit)
+│   └── MyCustomObjectPage.ts                     <- custom page object (place here, use in MyCustomJourney.ts)
+└── types/
+    └── OpaJourneyTypes.gen.d.ts                  <- generated type declarations (tool-owned, do not edit — import types from here in custom journeys)
 ```
 
 Journey and page object files can be JavaScript (`.js`) or TypeScript (`.ts`) - both are supported. When the project uses TypeScript, generate `.ts` files and import them accordingly.
 
 The test suite entry point (`opaTests.qunit.html` and `OpaTests.qunit.js`) may or may not be physically present - see `SKILL.md` "Test Endpoint and Running Tests" section for details on virtual vs. physical setup.
 
-### Regenerating Test Files
-
-Use the **Application Info** command in SAP Fiori tools (VS Code extension or SAP Business Application Studio) to regenerate journey files. The tooling inspects the project's OData annotations via `@sap/ux-specification` to produce tests reflecting the actual features (filter bars, tables, actions, navigation) at generation time.
-
-> Regeneration overwrites existing generated files. Always keep custom test logic in separate journey files to avoid it being overwritten.
+> **Anti-patterns described in this guide apply to custom files only.** `.gen.js` / `.gen.ts` files are tool-owned scaffolding — do not flag or fix patterns inside them.
 
 ---
 
@@ -30,7 +49,7 @@ Use the **Application Info** command in SAP Fiori tools (VS Code extension or SA
 
 SAP Fiori Elements apps use `sap.fe.test.JourneyRunner` instead of raw `Opa5.extendConfig`. This is the key structural difference from generic OPA5 projects.
 
-**Never call `Opa5.extendConfig` directly in V4 projects.** All OPA configuration - including `autoWait`, `timeout`, and other options - must go through the `opaConfig` property of the `JourneyRunner` constructor in `pages/JourneyRunner.js`.
+**Never call `Opa5.extendConfig` directly in V4 projects.** All OPA configuration - including `autoWait`, `timeout`, and other options - must go through the `opaConfig` property of the `JourneyRunner` constructor in `pages/JourneyRunner.js` or `pages/JourneyRunner.ts`.
 
 ```javascript
 const runner = new JourneyRunner({

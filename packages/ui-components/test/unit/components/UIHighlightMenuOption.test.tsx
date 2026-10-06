@@ -1,109 +1,76 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render } from '@testing-library/react';
 import type { UIHighlightMenuOptionProps } from '../../../src/components/UIContextualMenu/UIHighlightMenuOption';
 import { UIHighlightMenuOption } from '../../../src/components/UIContextualMenu/UIHighlightMenuOption';
 
 describe('<UIHighlightMenuOption />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIHighlightMenuOptionProps>;
-    const hidlightSelector = '.ts-Menu-option--highlighted';
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UIHighlightMenuOption text="" />);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
+    const highlightSelector = '.ts-Menu-option--highlighted';
 
     it('Should render a ComboboxSearchOption component', () => {
         const text = 'Dummy Text';
-        wrapper.setProps({
-            text
-        });
-        expect(wrapper.find('.ts-Menu-option').text()).toEqual(text);
+        const { container } = render(<UIHighlightMenuOption text={text} />);
+        expect(container.querySelector('.ts-Menu-option')?.textContent).toEqual(text);
     });
 
     it('Check search highlighting', () => {
         const text = 'Test query 12321';
-        // Single occureance
-        let query = 'q';
-        wrapper.setProps({
-            text,
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(1);
-        expect(wrapper.find(hidlightSelector).text()).toEqual(query);
-        // Multiple occureance
-        wrapper.setProps({
-            query: 'e'
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(2);
+        const props: UIHighlightMenuOptionProps = { text, query: 'q' };
+        const { container, rerender } = render(<UIHighlightMenuOption {...props} />);
+
+        // Single occurrence
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(1);
+        expect(container.querySelector(highlightSelector)?.textContent).toEqual('q');
+
+        // Multiple occurrences
+        rerender(<UIHighlightMenuOption text={text} query="e" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(2);
+
         // One larger query
-        query = 'er';
-        wrapper.setProps({
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(1);
-        expect(wrapper.find(hidlightSelector).text()).toEqual(query);
+        rerender(<UIHighlightMenuOption text={text} query="er" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(1);
+        expect(container.querySelector(highlightSelector)?.textContent).toEqual('er');
+
         // Case insensitive
-        wrapper.setProps({
-            query: 'EST'
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(1);
-        expect(wrapper.find(hidlightSelector).text()).toEqual('est');
+        rerender(<UIHighlightMenuOption text={text} query="EST" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(1);
+        expect(container.querySelector(highlightSelector)?.textContent).toEqual('est');
+
         // Beginning
-        wrapper.setProps({
-            query: 'te'
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(1);
-        expect(wrapper.find(hidlightSelector).text()).toEqual('Te');
+        rerender(<UIHighlightMenuOption text={text} query="te" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(1);
+        expect(container.querySelector(highlightSelector)?.textContent).toEqual('Te');
+
         // Ending
-        wrapper.setProps({
-            query: '21'
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(1);
-        // No occureance
-        wrapper.setProps({
-            query: '404'
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(0);
+        rerender(<UIHighlightMenuOption text={text} query="21" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(1);
+
+        // No occurrence
+        rerender(<UIHighlightMenuOption text={text} query="404" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(0);
     });
 
-    it('Continues occuriences - same combination', () => {
+    it('Continues occurrences - same combination', () => {
         const text = 'Dummmmmmmmyyyyyy';
         const query = 'mm';
-        wrapper.setProps({
-            text,
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(4);
+        const { container } = render(<UIHighlightMenuOption text={text} query={query} />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(4);
     });
 
-    it('Continues occuriences - different combination', () => {
+    it('Continues occurrences - different combination', () => {
         const text = 'Dudududummy';
-        let query = 'du';
-        wrapper.setProps({
-            text,
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(4);
+        const { container, rerender } = render(<UIHighlightMenuOption text={text} query="du" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(4);
+
         // Append more
-        query = 'dud';
-        wrapper.setProps({
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(2);
+        rerender(<UIHighlightMenuOption text={text} query="dud" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(2);
+
         // Append one more
-        query = 'dudu';
-        wrapper.setProps({
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(2);
+        rerender(<UIHighlightMenuOption text={text} query="dudu" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(2);
+
         // And one more
-        query = 'dudud';
-        wrapper.setProps({
-            query
-        });
-        expect(wrapper.find(hidlightSelector).length).toEqual(1);
+        rerender(<UIHighlightMenuOption text={text} query="dudud" />);
+        expect(container.querySelectorAll(highlightSelector)).toHaveLength(1);
     });
 });

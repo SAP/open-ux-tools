@@ -1,5 +1,53 @@
 # @sap-ux/project-input-validator
 
+## 1.0.21
+
+### Patch Changes
+
+#### Features
+
+- Export VIEW_NAME_REGEX, VIEW_NAME_MAX_LENGTH constants and validateViewName function for reuse across packages [[2bdadd6](https://github.com/SAP/open-ux-tools/commit/2bdadd61025d3b0c53888c652f07974d2b5dcfae)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.0 → 2.2.1
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
 ## 1.0.15
 
 ### Patch Changes

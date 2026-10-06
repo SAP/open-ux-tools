@@ -22,20 +22,14 @@ sap.ui.define([
     "use strict";
 
     function journey() {
-        QUnit.module("FPM journey");
+        QUnit.module("<%- name %> Journey");
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+            Given.iResetTestData();
             Given.iStartMyApp();
             <%_ startPages.forEach(function(pageName) { %>
             Then.onThe<%- pageName %>Generated.iSeeThisPage();
-            <%_ if (filterBarItems && filterBarItems.length > 0) { -%>
-                <%_ filterBarItems.forEach(function(item) { _%>
-            Then.onThe<%- pageName%>Generated.onFilterBar().iCheckFilterField({ property: "<%- item %>" });
-                <%_ }); -%>
-            <%_ } -%>
-            <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { _%>
-            Then.onThe<%- pageName %>Generated.onTable().iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-            <%_ } %>
             <%_ }); -%>
         });
 
