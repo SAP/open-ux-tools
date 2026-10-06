@@ -3,6 +3,7 @@ import {
     downloadTypeConfig,
     generatorTitleConfig,
     adtSourceTemplateIds,
+    adtSourceTemplateId,
     adtSourceTemplateIdCorrected,
     appListFieldsWithoutSourceTemplate,
     sourceTemplateIdField
@@ -88,13 +89,20 @@ async function getAppList(
     appId?: string,
     downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
-    const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
-    const searchParams = appId ? { ...baseSearchParams, 'sap.app/id': appId } : baseSearchParams;
+    const appIndex = provider.getAppIndex();
+
+    const buildSearchParams = (templateId: string): Record<string, string> => ({
+        [sourceTemplateIdField]: templateId,
+        ...(appId ? { 'sap.app/id': appId } : {})
+    });
 
     try {
-        const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
-            // For ABAP Repository downloads, filter out apps with any known ADT source template ID.
+            const baseSearchParams = appId
+                ? { ...downloadTypeConfig[downloadType].searchParams, 'sap.app/id': appId }
+                : downloadTypeConfig[downloadType].searchParams;
+            const results = await appIndex.search(baseSearchParams, appListResultFields);
+            // Filter out apps with any known ADT source template ID.
             const filtered = results.filter(
                 (app) => !adtSourceTemplateIds.includes(app[sourceTemplateIdField] as string)
             );
@@ -103,17 +111,16 @@ async function getAppList(
             );
             return filtered;
         }
-        // For ADTQuickDeploy, also search for the corrected template ID.
-        // The app index API does not support OR filters, so a second search is required.
-        const correctedSearchParams = {
-            [sourceTemplateIdField]: adtSourceTemplateIdCorrected,
-            ...(appId ? { 'sap.app/id': appId } : {})
-        };
-        const correctedIdResults = await provider.getAppIndex().search(correctedSearchParams, appListResultFields);
+
+        // The app index API does not support OR filters, so search for both template IDs concurrently.
+        const [legacyResults, correctedResults] = await Promise.all([
+            appIndex.search(buildSearchParams(adtSourceTemplateId), appListResultFields),
+            appIndex.search(buildSearchParams(adtSourceTemplateIdCorrected), appListResultFields)
+        ]);
         // An app can only carry one template ID at a time, so duplicates should not occur in practice.
-        // Dedup by sap.app/id as a safeguard against unexpected backend behaviour.
-        const legacyAppIds = new Set(results.map((app) => app['sap.app/id']));
-        return [...results, ...correctedIdResults.filter((app) => !legacyAppIds.has(app['sap.app/id']))];
+        // Filter out any apps already returned by the legacy search to avoid showing the same app twice.
+        const legacyAppIds = new Set(legacyResults.map((app) => app['sap.app/id']));
+        return [...legacyResults, ...correctedResults.filter((app) => !legacyAppIds.has(app['sap.app/id']))];
     } catch (error) {
         if (
             downloadType === AppDownloadType.AbapRepository &&
@@ -126,7 +133,7 @@ async function getAppList(
             try {
                 // sap.app/type=application is also dropped — older systems may reject it too.
                 // Non-application entries in the list are acceptable; they will fail at the download step.
-                const retryResults = await provider.getAppIndex().search({}, appListFieldsWithoutSourceTemplate);
+                const retryResults = await appIndex.search({}, appListFieldsWithoutSourceTemplate);
                 RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${retryResults.length} results`);
                 return retryResults;
             } catch (retryError) {
