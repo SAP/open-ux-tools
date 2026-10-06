@@ -1,8 +1,28 @@
  # Micro Chart Measures and Dimensions Must Use a 1:n Navigation Entity Path (`sap-micro-chart-requires-navigation-entity`)
 
-Validates that `UI.Chart` annotations referenced from page-visible locations only reference properties through a 1:n navigation property. Micro charts cannot display data from properties of the same entity in SAP Fiori elements applications. They require a collection of related records accessed using navigation. Using direct entity properties causes the micro chart to not be displayed or show no data.
+Validates that `UI.Chart` annotations of certain micro chart types, referenced from page-visible locations, only reference properties through a 1:n navigation property. Micro charts of this kind cannot display data from properties of the same entity in SAP Fiori elements applications. They require a collection of related records accessed via navigation. Using direct entity properties causes the micro chart to not be displayed or show no data.
 
 ## Rule Details
+
+### Chart types checked
+
+The rule only applies to micro chart types that visualise a series of data points and therefore need a 1:n navigation entity:
+
+| ChartType | Rule applies |
+|---|---|
+| `Line` | ✅ checked |
+| `Area` | ✅ checked |
+| `Column` | ✅ checked |
+| `StackedBar` | ✅ checked |
+| `Comparison` | ✅ checked |
+| `Bullet` | ❌ excluded (uses 1:1 navigation) |
+| `Pie` (Harvey Ball) | ❌ excluded (uses 1:1 navigation) |
+| `Donut` (Radial) | ❌ excluded (uses 1:1 navigation) |
+| Any other / not set | ❌ skipped |
+
+Charts with no `ChartType` property are skipped entirely.
+
+### Page visibility
 
 The rule only checks charts that are actually displayed on a page. A chart is considered visible when it is referenced using a `UI.DataFieldForAnnotation` record in one of the following:
 
@@ -12,14 +32,14 @@ The rule only checks charts that are actually displayed on a page. A chart is co
 
 `UI.Chart` annotations that are not referenced from any of these locations are ignored.
 
-For every visible chart, every `PropertyPath` in the `Measures` and `Dimensions` collections must include a `/` navigation separator, for example, `to_History/Revenue`. Each path that references a property of the chart's own entity (no `/`) is flagged individually. One warning per invalid `PropertyPath`, is displayed with the message identifying whether the violation is in a measure or a dimension.
+For every visible chart of a checked type, every `PropertyPath` in the `Measures` and `Dimensions` collections must include a `/` navigation separator, for example, `to_History/Revenue`. Each path that references a property of the chart's own entity (no `/`) is flagged individually. One warning per invalid `PropertyPath` is displayed, identifying whether the violation is in a measure or a dimension.
 
 **Cross-entity chart references (navigation annotation paths)**
 
 When a `DataFieldForAnnotation.Target` references a chart using a navigation prefix, for example, `to_Items/@UI.Chart`, the rule resolves the multiplicity of that navigation before deciding whether to check the chart:
 
-- **1:n navigation**, for example incidentFlow/@UI.Chart`: the chart entity is a collection row. Each row already represents a distinct data point, so direct scalar properties are valid measures or dimensions without any further navigation. The rule skips these charts.
-- **To-one navigation**, for example `processingThreshold/@UI.Chart`: the chart entity is still a single-row context, that is, the same record as the page entity. Direct properties of that entity do not supply multiple data points, so the rule still runs and reports violations.
+- **1:n navigation**, for example `incidentFlow/@UI.Chart`: the chart entity is a collection row. Each row already represents a distinct data point, so direct scalar properties are valid measures or dimensions without any further navigation. The rule skips these charts.
+- **To-one navigation**, for example `processingThreshold/@UI.Chart`: the chart entity is still a single-row context. Direct properties of that entity do not supply multiple data points, so the rule still runs and reports violations (for checked chart types only).
 - **Unresolvable navigation**: when the multiplicity cannot be determined from the service metadata, the rule runs the check as a safe fallback.
 
 **Warning (measure):** Micro chart measure must reference a property from a 1:n navigation entity, for example, "to_History/Revenue" instead of "Revenue".
@@ -29,7 +49,7 @@ When a `DataFieldForAnnotation.Target` references a chart using a navigation pre
 The following patterns are considered warnings:
 
 ```xml
-<!-- ⚠ WRONG: Chart is referenced from a table column and measures use a direct property -->
+<!-- ⚠ WRONG: Line chart is referenced from a table column and measures use a direct property -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.LineItem">
         <Collection>
@@ -57,7 +77,7 @@ The following patterns are considered warnings:
 ```
 
 ```xml
-<!-- ⚠ WRONG: Chart is referenced from a table column and dimensions use a direct property -->
+<!-- ⚠ WRONG: Area chart is referenced from a table column and dimensions use a direct property -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.LineItem">
         <Collection>
@@ -68,7 +88,7 @@ The following patterns are considered warnings:
     </Annotation>
     <Annotation Term="UI.Chart" Qualifier="MicroChart">
         <Record>
-            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Area"/>
             <PropertyValue Property="Measures">
                 <Collection>
                     <PropertyPath>to_Items/MonthlyRevenue</PropertyPath>
@@ -85,11 +105,11 @@ The following patterns are considered warnings:
 ```
 
 ```cds
-// ⚠ WRONG: Chart referenced from a table column and measures use a direct property (no navigation)
+// ⚠ WRONG: Column chart referenced from a table column and measures use a direct property (no navigation)
 annotate service.SalesOrder with @(
     UI.LineItem: [{$Type: 'UI.DataFieldForAnnotation', Target: '@UI.Chart#MicroChart'}],
     UI.Chart #MicroChart: {
-        ChartType: #Line,
+        ChartType: #Column,
         Measures: [TotalAmount],
         Dimensions: [to_Items/Month]
     }
@@ -97,7 +117,7 @@ annotate service.SalesOrder with @(
 ```
 
 ```cds
-// ⚠ WRONG: Chart referenced from a table column and dimensions use a direct property (no navigation)
+// ⚠ WRONG: Area chart referenced from a table column and dimensions use a direct property (no navigation)
 annotate service.SalesOrder with @(
     UI.LineItem: [{$Type: 'UI.DataFieldForAnnotation', Target: '@UI.Chart#MicroChart'}],
     UI.Chart #MicroChart: {
@@ -109,7 +129,7 @@ annotate service.SalesOrder with @(
 ```
 
 ```xml
-<!-- ⚠ WRONG: Chart referenced using to-one navigation. Its direct properties still need a 1:n hop -->
+<!-- ⚠ WRONG: Line chart referenced via to-one navigation. Its direct properties still need a 1:n hop -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.LineItem">
         <Collection>
@@ -122,7 +142,7 @@ annotate service.SalesOrder with @(
 <Annotations Target="MyService.ShippingAddress">
     <Annotation Term="UI.Chart" Qualifier="AddressChart">
         <Record>
-            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
             <PropertyValue Property="Measures">
                 <Collection>
                     <PropertyPath>Street</PropertyPath>
@@ -141,7 +161,7 @@ annotate service.SalesOrder with @(
 The following patterns are not considered warnings:
 
 ```xml
-<!-- ✅ CORRECT: Chart referenced from a table column. Both measures and dimensions navigate using a 1:n association -->
+<!-- ✅ CORRECT: Line chart referenced from a table column. Both measures and dimensions navigate using a 1:n association -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.LineItem">
         <Collection>
@@ -169,7 +189,7 @@ The following patterns are not considered warnings:
 ```
 
 ```xml
-<!-- ✅ CORRECT: Chart referenced from a field group in the header of an object page using a UI.FieldGroup -->
+<!-- ✅ CORRECT: Column chart referenced from a field group in the header of an object page -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.HeaderFacets">
         <Collection>
@@ -230,7 +250,7 @@ annotate service.SalesOrder with @(
 <Annotations Target="MyService.SalesOrderItem">
     <Annotation Term="UI.Chart" Qualifier="ItemChart">
         <Record>
-            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
             <PropertyValue Property="Measures">
                 <Collection>
                     <PropertyPath>Quantity</PropertyPath>
@@ -246,12 +266,82 @@ annotate service.SalesOrder with @(
 </Annotations>
 ```
 
+```xml
+<!-- ✅ CORRECT: Bullet chart — uses 1:1 navigation, excluded from this rule -->
+<Annotations Target="MyService.SalesOrder">
+    <Annotation Term="UI.LineItem">
+        <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="@UI.Chart#BulletChart"/>
+            </Record>
+        </Collection>
+    </Annotation>
+    <Annotation Term="UI.Chart" Qualifier="BulletChart">
+        <Record>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bullet"/>
+            <PropertyValue Property="Measures">
+                <Collection>
+                    <PropertyPath>CreditExposure</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
+```
+
+```xml
+<!-- ✅ CORRECT: Harvey Ball (Pie) chart — uses 1:1 navigation, excluded from this rule -->
+<Annotations Target="MyService.SalesOrder">
+    <Annotation Term="UI.LineItem">
+        <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="@UI.Chart#HarveyBall"/>
+            </Record>
+        </Collection>
+    </Annotation>
+    <Annotation Term="UI.Chart" Qualifier="HarveyBall">
+        <Record>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Pie"/>
+            <PropertyValue Property="Measures">
+                <Collection>
+                    <PropertyPath>CreditExposure</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
+```
+
+```xml
+<!-- ✅ CORRECT: Radial (Donut) chart — uses 1:1 navigation, excluded from this rule -->
+<Annotations Target="MyService.SalesOrder">
+    <Annotation Term="UI.LineItem">
+        <Collection>
+            <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="@UI.Chart#RadialChart"/>
+            </Record>
+        </Collection>
+    </Annotation>
+    <Annotation Term="UI.Chart" Qualifier="RadialChart">
+        <Record>
+            <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
+            <PropertyValue Property="Measures">
+                <Collection>
+                    <PropertyPath>CreditExposure</PropertyPath>
+                </Collection>
+            </PropertyValue>
+        </Record>
+    </Annotation>
+</Annotations>
+```
+
 ### How to Fix
 
-1. Identify the entity that the `UI.Chart` annotation targets.
-2. Add a 1:n association (composition or association to many) from that entity to a related collection entity.
-3. Update the `Measures` and `Dimensions` `PropertyPath` values to reference properties through that navigation, for example `to_Items/Revenue` instead of `Revenue`.
-4. Ensure that the chart is referenced from a `UI.DataFieldForAnnotation` inside a `UI.LineItem` table or a `UI.FieldGroup` header facet. Charts that are not wired into a page are not checked by this rule.
+1. Check the `ChartType` of the `UI.Chart` annotation. If it is `Bullet`, `Pie` (Harvey Ball), or `Donut` (Radial), this rule does not apply.
+2. For checked chart types (`Line`, `Area`, `Column`, `StackedBar`, `Comparison`): identify the entity that the `UI.Chart` annotation targets.
+3. Add a 1:n association (composition or association to many) from that entity to a related collection entity.
+4. Update the `Measures` and `Dimensions` `PropertyPath` values to reference properties through that navigation, for example `to_Items/Revenue` instead of `Revenue`.
+5. Ensure that the chart is referenced from a `UI.DataFieldForAnnotation` inside a `UI.LineItem` table or a `UI.FieldGroup` header facet. Charts that are not wired into a page are not checked by this rule.
 
 ## Bug Report
 
