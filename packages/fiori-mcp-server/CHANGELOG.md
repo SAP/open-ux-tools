@@ -1,5 +1,25 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace opa5_docu.md and fiori-tools-opa-guide.md with OPA5 skill reference files as embeddings source [[3c76112](https://github.com/SAP/open-ux-tools/commit/3c7611299ff6b7b8f610285e2846430fffd859dd)]
+
 ## 1.15.2
 
 ### Patch Changes
