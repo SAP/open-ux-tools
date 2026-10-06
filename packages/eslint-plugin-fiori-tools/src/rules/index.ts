@@ -20,6 +20,7 @@ import {
     NO_LIVE_MODE,
     CLOUD_DEV_ADAPTATION_STATUS,
     MICRO_CHART_REQUIRES_NAVIGATION_ENTITY,
+    NO_COMMA_IN_SECTION_TITLE,
     FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION,
     NO_SINGLE_FACET_IN_COLLECTION,
     NO_DEEP_COLLECTION_FACETS
@@ -88,6 +89,7 @@ import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
 import cloudDevAdaptationStatus from './sap-cloud-dev-adaptation-status.js';
 import microChartRequiresNavigationEntity from './sap-micro-chart-requires-navigation-entity.js';
+import noCommaInSectionTitle from './sap-no-comma-in-section-title.js';
 import fieldGroupInTableTypeRestriction from './sap-field-group-in-table-type-restriction.js';
 import noSingleFacetInCollection from './sap-no-single-facet-in-collection.js';
 import noDeepCollectionFacets from './sap-no-deep-collection-facets.js';
@@ -157,6 +159,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [NO_LIVE_MODE]: noLiveMode,
     [CLOUD_DEV_ADAPTATION_STATUS]: cloudDevAdaptationStatus,
     [MICRO_CHART_REQUIRES_NAVIGATION_ENTITY]: microChartRequiresNavigationEntity,
+    [NO_COMMA_IN_SECTION_TITLE]: noCommaInSectionTitle,
     [FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION]: fieldGroupInTableTypeRestriction,
     [NO_SINGLE_FACET_IN_COLLECTION]: noSingleFacetInCollection,
     [NO_DEEP_COLLECTION_FACETS]: noDeepCollectionFacets

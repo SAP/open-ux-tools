@@ -474,7 +474,7 @@ const typescriptConfig: Linter.Config[] = [
     }
 ];
 
-// Fiori language rules (for manifest.json, XML views, CDS, .change files)
+// Fiori language rules (for manifest.json, XML, CDS annotations, .change files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
         files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change'],
@@ -503,6 +503,14 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-field-group-in-table-type-restriction': 'warn',
             '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn',
             '@sap-ux/fiori-tools/sap-no-deep-collection-facets': 'warn'
+        }
+    },
+    {
+        files: ['**/*.xml', '**/*.cds', '**/*.properties'],
+        ignores: ['dist/**/*'],
+        language: '@sap-ux/fiori-tools/fiori',
+        rules: {
+            '@sap-ux/fiori-tools/sap-no-comma-in-section-title': 'warn'
         }
     }
 ];
