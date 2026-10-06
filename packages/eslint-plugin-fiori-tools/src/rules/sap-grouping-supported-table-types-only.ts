@@ -112,7 +112,9 @@ function mergeOrAddAnnotationProblem(
     annotation: IndexedAnnotation,
     propertyValue: Element
 ): void {
-    const existingIndex = problems.findIndex((p) => p.annotation?.reference.value === propertyValue);
+    const existingIndex = problems.findIndex(
+        (p) => p.annotation?.reference.value === propertyValue && p.tableType === tableType
+    );
     if (existingIndex >= 0) {
         const existing = problems[existingIndex];
         if (!existing.pageNames?.includes(pageName)) {
