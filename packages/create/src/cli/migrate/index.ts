@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectAccess, ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { DestinationProxyType, isAppStudio, listDestinations, type Destination } from '@sap-ux/btp-utils';
 import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
 import { runNpmInstallCommand } from '../../common/index.js';
 import { getLogger } from '../../tracing/index.js';
@@ -19,7 +19,7 @@ interface MigrateCommandOptions {
     skipInstall?: boolean;
 }
 
-type SavedSystem = Pick<BackendSystem, 'name' | 'url' | 'client'>;
+type MigrationSystem = Pick<BackendSystem, 'name' | 'url' | 'client'> & { scp: boolean };
 
 /**
  * Validate a path to prevent directory traversal attacks.
@@ -316,29 +316,86 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
 }
 
 /**
- * Resolve a legacy project's backend to a saved system outside SAP Business Application Studio.
+ * Resolve a legacy project's backend to a saved system or BAS destination.
  *
  * @param projectPath - legacy project root
- * @returns matched saved system, if available
+ * @returns matched system, if available
  */
-async function findSavedSystem(projectPath: string): Promise<SavedSystem | undefined> {
+async function findMigrationSystem(projectPath: string): Promise<MigrationSystem | undefined> {
     const logger = getLogger();
-    if (isAppStudio()) {
-        return undefined;
-    }
-
     try {
         const { projectInfo } = await ProjectAccess.getProjectInfo(projectPath);
+        if (isAppStudio()) {
+            return await findBASDestination(projectInfo.destination, projectInfo.hostname);
+        }
+
         if (!projectInfo.hostname) {
             return undefined;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger });
-        return await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
+        const savedSystem = await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
+        return savedSystem ? { ...savedSystem, scp: false } : undefined;
     } catch (error) {
-        logger.debug(`Unable to resolve a saved system: ${(error as Error).message}`);
+        logger.debug(`Unable to resolve a migration system: ${(error as Error).message}`);
         return undefined;
     }
+}
+
+/**
+ * Match the legacy project backend to a BAS destination.
+ *
+ * @param destinationName - destination parsed from the legacy project
+ * @param hostname - backend hostname parsed from the legacy project
+ * @returns matching BAS destination, if available
+ */
+async function findBASDestination(
+    destinationName: string | undefined,
+    hostname: string | undefined
+): Promise<MigrationSystem | undefined> {
+    const destinations = await listDestinations();
+    const systems = Object.values(destinations).map((destination) => toMigrationSystem(destination));
+    const destinationMatch = destinationName ? systems.find((system) => system.name === destinationName) : undefined;
+    if (destinationMatch) {
+        return destinationMatch;
+    }
+
+    if (!hostname) {
+        return undefined;
+    }
+
+    try {
+        const sourceOrigin = new URL(hostname).origin;
+        const matches = systems.filter((system) => new URL(system.url).origin === sourceOrigin);
+        if (matches.length === 1) {
+            return matches[0];
+        }
+        if (matches.length > 1) {
+            const answer = await prompts({
+                type: 'select',
+                name: 'system',
+                message: 'Select the SAP Business Application Studio destination:',
+                choices: matches.map((system) => ({
+                    title: `${system.name} (${system.client || 'default client'})`,
+                    value: system
+                }))
+            });
+            return answer.system as MigrationSystem | undefined;
+        }
+    } catch {
+        // Invalid source or destination URLs cannot be matched safely.
+    }
+
+    return undefined;
+}
+
+function toMigrationSystem(destination: Destination): MigrationSystem {
+    return {
+        name: destination.Name,
+        url: destination.Host,
+        client: destination['sap-client'] || undefined,
+        scp: destination.ProxyType === DestinationProxyType.ON_PREMISE
+    };
 }
 
 /**
@@ -360,13 +417,13 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         return;
     }
 
-    const savedSystem = await findSavedSystem(resolvedPath);
+    const matchedSystem = await findMigrationSystem(resolvedPath);
 
     // 3. Get destination or hostname
     const resolvedOptions = {
         ...options,
-        destination: options.destination ?? options.sapSystemName ?? savedSystem?.name,
-        client: options.client ?? savedSystem?.client
+        destination: options.destination ?? options.sapSystemName ?? matchedSystem?.name,
+        client: options.client ?? matchedSystem?.client
     };
     const { destination, hostname } = await getDestinationOrHostname(resolvedOptions);
 
@@ -385,8 +442,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     let baseUri = destination ? `/${destination}` : '';
     if (hostname) {
         baseUri = `https://${hostname}`;
-    } else if (!options.destination && !options.sapSystemName && savedSystem?.url) {
-        baseUri = savedSystem.url;
+    } else if (!options.destination && !options.sapSystemName && matchedSystem?.url) {
+        baseUri = matchedSystem.url;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
 
@@ -405,7 +462,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
                   ...(sapClient && { sapClient }),
                   ...(destination && { destination }),
                   ...(hostname && { hostname }),
-                  ...(!hostname && savedSystem?.url && { hostname: savedSystem.url })
+                  ...(!hostname && matchedSystem?.url && { hostname: matchedSystem.url }),
+                  ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
               }
             : undefined
     );
