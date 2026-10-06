@@ -594,4 +594,5 @@ Options:
 - `-c, --client <client>` - SAP Client (optional)
 - `-u, --ui5-version <version>` - UI5 version (defaults to source project version)
 - `-f, --force` - Force migration even if project is already a Fiori tools project
+- `-n, --skip-install` - Skip the `npm install` step after migration
 
