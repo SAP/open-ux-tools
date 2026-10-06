@@ -1,6 +1,6 @@
 import { readFile, writeFile, readdir } from 'fs/promises';
 import { join } from 'path';
-import { URL } from 'url';
+import { URL, fileURLToPath } from 'url';
 
 import { buildAst } from '@xml-tools/ast';
 import { parse } from '@xml-tools/parser';
@@ -10,7 +10,7 @@ const { format, resolveConfig } = prettier;
 
 import { convertDocument, convertMetadataDocument } from '../dist/parser/index.js';
 
-const __dirname = new URL('.', import.meta.url).pathname;
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const FIXTURE_ROOT = join(__dirname, '..', 'test', 'parser', 'fixtures');
 

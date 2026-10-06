@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 const __dirname = import.meta.dirname;
 
 export default {
@@ -20,7 +21,7 @@ export default {
         '^https-proxy-agent$': '<rootDir>/../../jest-esm-shims/https-proxy-agent.cjs',
         '^socks-proxy-agent$': '<rootDir>/../../jest-esm-shims/socks-proxy-agent.cjs'
     },
-    resolver: new URL('./jest-esm-shims/resolver.cjs', import.meta.url).pathname,
+    resolver: fileURLToPath(new URL('./jest-esm-shims/resolver.cjs', import.meta.url)),
     moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
     transform: {
         '^.+\\.[jt]s$': [
