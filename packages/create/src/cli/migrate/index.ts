@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
-import { ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
+import { ProjectAccess, ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
 import { runNpmInstallCommand } from '../../common/index.js';
 import { getLogger } from '../../tracing/index.js';
 
@@ -337,6 +337,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 
     // 5. Get UI5 version
     const ui5Version = await getUI5Version(options.ui5Version);
+    const sapClient =
+        client ?? (destination ? ProjectAccess.getClientFromDestinationName(destination) || undefined : undefined);
 
     // 6. Execute migration
     logger.info('Starting migration...');
@@ -358,9 +360,9 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         baseUri,
         ui5SnapshotUrl,
         // Only override specific connection fields - ProjectMigrator will fetch and merge
-        client || destination || hostname
+        sapClient || destination || hostname
             ? {
-                  ...(client && { sapClient: client }),
+                  ...(sapClient && { sapClient }),
                   ...(destination && { destination }),
                   ...(hostname && { hostname })
               }
