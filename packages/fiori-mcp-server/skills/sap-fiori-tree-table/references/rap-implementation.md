@@ -40,13 +40,13 @@
 - User wants: "display", "view", "browse", "show", "list"
 - Hierarchy appears: On main List Report page only
 - No editing needed
-- 📖 **Reference:** [Read-Only Treeviews Guide](./detailed-guides/1-read-only-treeviews.md)
+- 📖 **Reference:** [Read-Only Treeviews Guide](./rap-read-only-treeviews.md)
 
 **Use EDITABLE when:**
 - User wants: "edit", "create", "delete", "manage", "modify"
 - Hierarchy appears: On Object Page (as child composition)
 - Transactional operations required
-- 📖 **Reference:** [Editable Treeviews Guide](./detailed-guides/2-editable-treeviews.md)
+- 📖 **Reference:** [Editable Treeviews Guide](./rap-editable-treeviews.md)
 
 **When in doubt, ask:**
 > "1. Where should the hierarchy appear? (List Report only, or Object Page subsection?)
@@ -73,8 +73,8 @@ Examine `webapp/localService/mainService/metadata.xml` for:
 ### 2. Implement Hierarchy in Backend
 
 **Implementation Guides:**
-- **[Read-Only Treeviews Guide](./detailed-guides/1-read-only-treeviews.md)** - 6-step implementation for read-only hierarchies
-- **[Editable Treeviews Guide](./detailed-guides/2-editable-treeviews.md)** - 9-step implementation with draft, directories, and actions
+- **[Read-Only Treeviews Guide](./rap-read-only-treeviews.md)** - 6-step implementation for read-only hierarchies
+- **[Editable Treeviews Guide](./rap-editable-treeviews.md)** - 9-step implementation with draft, directories, and actions
 
 ### 3. Configure TreeTable in Manifest
 Update List Report target in `webapp/manifest.json`:
@@ -106,11 +106,11 @@ Consult Fiori MCP server if available on how to refresh metadata for SAP/cloud s
 
 **"Element X must not be search enabled in baseview"**
 - Remove `@Search.searchable` and `@Search.defaultSearchElement` annotations from projection view with `@OData.hierarchy.recursiveHierarchy`
-- See detailed solution in [Troubleshooting Guide](./detailed-guides/2.4-troubleshooting-checklist.md)
+- See detailed solution in [Troubleshooting Guide](./rap-troubleshooting.md)
 
 **"Primary keys do not match"**
 - Child table must have composite key (child UUID + parent UUID both as keys)
-- See detailed solution in [Troubleshooting Guide](./detailed-guides/2.4-troubleshooting-checklist.md)
+- See detailed solution in [Troubleshooting Guide](./rap-troubleshooting.md)
 
 ---
 
