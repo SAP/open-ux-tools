@@ -1,5 +1,13 @@
 # @sap-ux/project-integrity
 
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.1 → 2.2.2
+
 ## 1.0.19
 
 ### Patch Changes
