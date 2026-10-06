@@ -5,7 +5,7 @@ import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const packageRoot = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
-const skillsRoot = path.join(packageRoot, '..', 'fiori-mcp-server', 'skills');
+const skillsRoot = path.join(packageRoot, '..', '..', 'plugins-coding-agents', 'fiori', 'skills');
 const destRoot = path.join(packageRoot, 'data_local', 'skills_copy');
 
 const SKILLS_TO_EMBED = ['sap-fiori-opa5-test-development'];
