@@ -19,6 +19,9 @@ jest.unstable_mockModule('../../../src/common/index.js', () => ({
 
 const mockMigrate = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/fiori-migration-writer', () => ({
+    ProjectAccess: {
+        getClientFromDestinationName: (destination: string) => (destination.endsWith('001') ? '001' : '')
+    },
     ProjectMigrator: {
         migrate: (...args: any[]) => mockMigrate(...args)
     },
@@ -220,6 +223,20 @@ describe('migrate command', () => {
         await command.parseAsync(getArgv(['migrate', testProjectRoot, '--sap-system-name', 'mySystem']));
 
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/mySystem', '', { destination: 'mySystem' });
+    });
+
+    test('should derive the SAP client from a destination suffix', async () => {
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'ER9CLNT001']));
+
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/ER9CLNT001', '', {
+            destination: 'ER9CLNT001',
+            sapClient: '001'
+        });
     });
 
     test('should prompt for project path when not provided', async () => {
