@@ -8,7 +8,7 @@
     "start": "ui5 serve"
   },
   "devDependencies": {
-    "@sap-ux/ui5-tooling": "1",
+    "@sap/ux-ui5-tooling": "^1.33.0",
     "@ui5/cli": "^3.0.0"
   }
 }

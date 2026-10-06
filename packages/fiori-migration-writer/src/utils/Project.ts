@@ -349,8 +349,12 @@ export class ProjectAccess {
 
     public static hasUI5Tooling(packageJSON?: Package): boolean {
         return !!(
-            (packageJSON?.dependencies && '@sap-ux/ui5-tooling' in packageJSON.dependencies) ||
-            (packageJSON?.devDependencies && '@sap-ux/ui5-tooling' in packageJSON.devDependencies)
+            (packageJSON?.dependencies &&
+                ('@sap-ux/ui5-tooling' in packageJSON.dependencies ||
+                    '@sap/ux-ui5-tooling' in packageJSON.dependencies)) ||
+            (packageJSON?.devDependencies &&
+                ('@sap-ux/ui5-tooling' in packageJSON.devDependencies ||
+                    '@sap/ux-ui5-tooling' in packageJSON.devDependencies))
         );
     }
 }
