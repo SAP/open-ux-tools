@@ -127,8 +127,23 @@ sap.ui.define([
 <%_ } -%>
 <%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
         opaTest("Check the delete button", function (Given, When, Then) {
-            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
+            <%_ /* deleteButton.enabled = Capabilities Deletable (not current UI state); when deletable, Delete is selection-gated: disabled with no selection, enabled once a row is selected. */ -%>
+            <%_ const deleteIsSelectionGated = deleteButton.enabled === true; _%>
+            <%_ if (deleteIsSelectionGated) { _%>
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true, enabled: false });
+            <%_ if (!hideFilterBar) { _%>
+            // Populate the table and select a row so Delete becomes enabled.
+            When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true, enabled: true });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteDelete();
+            // Deselect the row so the following actions start with an empty selection.
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            <%_ } else { _%>
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
+            // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iExecuteDelete();
+            <%_ } _%>
         });
 
 <%_ } -%>
@@ -160,7 +175,16 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
             <%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
-            <%_ if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
+            <%_ if (item.selectionEnables && !item.isCritical && !hasParamDialog) { _%>
+            <%_ if (!hideFilterBar) { _%>
+            // Populate the table and select a row so the action becomes enabled.
+            When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: true });
+            // Deselect the row so the following actions start with an empty selection.
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iSelectRows(0);
+            <%_ } else if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
             // "<%- item.label %>" is conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the <%- hasParamDialog ? 'action parameter dialog' : 'confirmation dialog' %>.
             <%_ if (!hideFilterBar) { _%>
             // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
@@ -218,8 +242,8 @@ sap.ui.define([
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
             <%_ }); -%>
         });
-<%_ } -%>
 
+<%_ } -%>
 <%_ if (contactCardColumns.length > 0) { -%>
         opaTest("Check contact card links", function (Given, When, Then) {
             // Reveal popin details so low-priority (e.g. contact-card) columns become clickable

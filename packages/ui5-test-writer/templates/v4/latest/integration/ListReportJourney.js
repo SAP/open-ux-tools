@@ -127,7 +127,9 @@ sap.ui.define([
 <%_ } -%>
 <%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
         opaTest("Check the delete button", function (Given, When, Then) {
-            <%_ if (deleteButton.enabled === true) { _%>
+            <%_ /* deleteButton.enabled = Capabilities Deletable (not current UI state); when deletable, Delete is selection-gated: disabled with no selection, enabled once a row is selected. */ -%>
+            <%_ const deleteIsSelectionGated = deleteButton.enabled === true; _%>
+            <%_ if (deleteIsSelectionGated) { _%>
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true, enabled: false });
             <%_ if (!hideFilterBar) { _%>
             // Populate the table and select a row so Delete becomes enabled.
@@ -240,8 +242,8 @@ sap.ui.define([
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
             <%_ }); -%>
         });
-<%_ } -%>
 
+<%_ } -%>
 <%_ if (contactCardColumns.length > 0) { -%>
         opaTest("Check contact card links", function (Given, When, Then) {
             // Reveal popin details so low-priority (e.g. contact-card) columns become clickable

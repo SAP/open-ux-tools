@@ -119,8 +119,8 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
         <%_ }); -%>
     });
-<%_ } -%>
 
+<%_ } -%>
 <%_ if (startLR) { -%>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data

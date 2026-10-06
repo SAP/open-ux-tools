@@ -133,8 +133,10 @@ function journey() {
 
 <%_ } -%>
 <%_ if (toolBarActions && toolBarActions.length > 0 && deleteButton.visible) { -%>
-    opaTest("Check the delete button", function (_Given: Given, <% if (deleteButton.enabled === true) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
-        <%_ if (deleteButton.enabled === true) { _%>
+<%_ /* deleteButton.enabled = Capabilities Deletable (not current UI state); when deletable, Delete is selection-gated: disabled with no selection, enabled once a row is selected. */ -%>
+<%_ const deleteIsSelectionGated = deleteButton.enabled === true; -%>
+    opaTest("Check the delete button", function (_Given: Given, <% if (deleteIsSelectionGated) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
+        <%_ if (deleteIsSelectionGated) { _%>
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true, enabled: false });
         <%_ if (!hideFilterBar) { _%>
         // Populate the table and select a row so Delete becomes enabled.
@@ -248,8 +250,8 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
         <%_ }); -%>
     });
-<%_ } -%>
 
+<%_ } -%>
 <%_ if (contactCardColumns.length > 0) { -%>
     opaTest("Check contact card links", function (_Given: Given, When: When, Then: Then) {
         // Reveal popin details so low-priority (e.g. contact-card) columns become clickable; no-op on grid/analytical tables.

@@ -112,8 +112,8 @@ sap.ui.define([
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
             <%_ }); -%>
         });
-<%_ } -%>
 
+<%_ } -%>
 <%_ if (startLR) { -%>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
