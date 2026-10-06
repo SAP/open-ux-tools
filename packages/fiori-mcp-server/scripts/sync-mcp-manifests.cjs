@@ -7,28 +7,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const { readJson } = require('../../../scripts/lib/read-json.cjs');
 
 const pkgPath = path.join(__dirname, '..', 'package.json');
 const serverJsonPath = path.join(__dirname, '..', 'server.json');
 // Climb from packages/fiori-mcp-server/scripts/ → repo root → plugins-coding-agents/fiori
 const mcpJsonPath = path.join(__dirname, '..', '..', '..', 'plugins-coding-agents', 'fiori', '.mcp.json');
-
-/**
- * Reads and parses a JSON file, throwing a clear error if the file is missing or contains invalid JSON.
- * @param {string} filePath
- * @returns {object}
- */
-function readJson(filePath) {
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`File not found: ${filePath}`);
-    }
-    const content = fs.readFileSync(filePath, 'utf8');
-    try {
-        return JSON.parse(content);
-    } catch (e) {
-        throw new Error(`Invalid JSON in ${filePath}: ${e.message}`);
-    }
-}
 
 try {
     const pkg = readJson(pkgPath);

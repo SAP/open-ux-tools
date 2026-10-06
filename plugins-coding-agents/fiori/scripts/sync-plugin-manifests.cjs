@@ -7,27 +7,22 @@
 
 const fs = require('fs');
 const path = require('path');
+const { readJson } = require('../../../scripts/lib/read-json.cjs');
 
 const pluginRoot = path.join(__dirname, '..');
 const pluginPkgPath = path.join(pluginRoot, 'package.json');
 const claudePluginJsonPath = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
 const awesomeCopilotPluginJsonPath = path.join(pluginRoot, '.github', 'plugin', 'plugin.json');
 
-/**
- * Reads and parses a JSON file, throwing a clear error if the file is missing or contains invalid JSON.
- * @param {string} filePath
- * @returns {object}
- */
-function readJson(filePath) {
-    if (!fs.existsSync(filePath)) {
-        throw new Error(`File not found: ${filePath}`);
-    }
-    const content = fs.readFileSync(filePath, 'utf8');
-    try {
-        return JSON.parse(content);
-    } catch (e) {
-        throw new Error(`Invalid JSON in ${filePath}: ${e.message}`);
-    }
+function deepEqual(a, b) {
+    if (a === b) return true;
+    if (typeof a !== typeof b || a === null || b === null) return false;
+    if (typeof a !== 'object') return false;
+    if (Array.isArray(a) !== Array.isArray(b)) return false;
+    const aKeys = Object.keys(a).sort();
+    const bKeys = Object.keys(b).sort();
+    if (aKeys.length !== bKeys.length) return false;
+    return aKeys.every((k, i) => bKeys[i] === k && deepEqual(a[k], b[k]));
 }
 
 try {
@@ -36,6 +31,20 @@ try {
     const awesomeCopilotPluginJson = readJson(awesomeCopilotPluginJsonPath);
 
     const { version: pluginVersion } = pluginPkg;
+
+    // Warn if shared metadata fields have drifted — run unconditionally so drift
+    // is surfaced even when no version bump is needed.
+    const SHARED_FIELDS = ['description', 'keywords', 'author', 'homepage', 'repository', 'license'];
+    for (const field of SHARED_FIELDS) {
+        if (!deepEqual(claudePluginJson[field], awesomeCopilotPluginJson[field])) {
+            console.warn(
+                `⚠️  Metadata drift detected in field "${field}":\n` +
+                `   .claude-plugin/plugin.json: ${JSON.stringify(claudePluginJson[field])}\n` +
+                `   .github/plugin/plugin.json: ${JSON.stringify(awesomeCopilotPluginJson[field])}\n` +
+                `   Update both files manually to keep them in sync.`
+            );
+        }
+    }
 
     if (claudePluginJson.version === pluginVersion && awesomeCopilotPluginJson.version === pluginVersion) {
         console.log(`Plugin version unchanged (${pluginVersion}) — nothing to sync.`);
@@ -50,21 +59,6 @@ try {
             `  .github/plugin/plugin.json: ${awesomeCopilotPluginJson.version}\n` +
             `  Manually align both files before running the release.`
         );
-    }
-
-    // Warn if shared metadata fields have drifted between the two manifests
-    const SHARED_FIELDS = ['description', 'keywords', 'author', 'homepage', 'repository', 'license'];
-    for (const field of SHARED_FIELDS) {
-        const claudeVal = JSON.stringify(claudePluginJson[field]);
-        const copilotVal = JSON.stringify(awesomeCopilotPluginJson[field]);
-        if (claudeVal !== copilotVal) {
-            console.warn(
-                `⚠️  Metadata drift detected in field "${field}":\n` +
-                `   .claude-plugin/plugin.json: ${claudeVal}\n` +
-                `   .github/plugin/plugin.json: ${copilotVal}\n` +
-                `   Update both files manually to keep them in sync.`
-            );
-        }
     }
 
     claudePluginJson.version = pluginVersion;
