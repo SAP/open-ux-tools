@@ -288,7 +288,7 @@ describe('getAppConfig', () => {
             appDownloadType: AppDownloadType.ADTQuickDeploy
         };
         const result = await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.dataSourcesNotFound'));
+        expect(RepoAppDownloadLogger.logger.warn).toHaveBeenCalledWith(t('error.dataSourcesNotFound'));
     });
 
     it('should log an error when sourceTemplate id does not match adtSourceTemplateId', async () => {
@@ -308,7 +308,7 @@ describe('getAppConfig', () => {
 
         await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
 
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+        expect(RepoAppDownloadLogger.logger.warn).toHaveBeenCalledWith(
             t('error.readManifestErrors.sourceTemplateNotSupported')
         );
     });
@@ -330,7 +330,7 @@ describe('getAppConfig', () => {
 
         await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
 
-        expect(RepoAppDownloadLogger.logger.error).not.toHaveBeenCalledWith(
+        expect(RepoAppDownloadLogger.logger.warn).not.toHaveBeenCalledWith(
             t('error.readManifestErrors.sourceTemplateNotSupported')
         );
     });
@@ -352,7 +352,7 @@ describe('getAppConfig', () => {
 
         await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
 
-        expect(RepoAppDownloadLogger.logger.error).not.toHaveBeenCalledWith(
+        expect(RepoAppDownloadLogger.logger.warn).not.toHaveBeenCalledWith(
             t('error.readManifestErrors.sourceTemplateNotSupported')
         );
     });

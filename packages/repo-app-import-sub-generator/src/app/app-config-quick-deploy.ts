@@ -40,10 +40,10 @@ export async function getAppConfig(
         context.serviceProvider = serviceProvider;
 
         if (!adtSourceTemplateIds.includes(manifest?.['sap.app']?.sourceTemplate?.id ?? '')) {
-            RepoAppDownloadLogger.logger?.error(t('error.readManifestErrors.sourceTemplateNotSupported'));
+            RepoAppDownloadLogger.logger?.warn(t('error.readManifestErrors.sourceTemplateNotSupported'));
         }
         if (!manifest?.['sap.app']?.dataSources) {
-            RepoAppDownloadLogger.logger?.error(t('error.dataSourcesNotFound'));
+            RepoAppDownloadLogger.logger?.warn(t('error.dataSourcesNotFound'));
         }
 
         const odataVersion = manifest?.['sap.app']?.dataSources?.mainService?.settings?.odataVersion?.startsWith('4')
