@@ -1,17 +1,17 @@
-# sap-grouping-supported-table-types-only
+# Grouping Is Only Supported for `AnalyticalTable` and `ResponsiveTable` (`sap-grouping-supported-table-types-only`)
 
 Grouping is only supported for `AnalyticalTable` and `ResponsiveTable` table types. Using a grouping configuration with `GridTable` or `TreeTable` types either has no effect or causes unexpected UI behaviour.
 
-Grouping can be configured in two independent places:
+Grouping can be configured in the following ways:
 
-- **Manifest** (`personalization.group` or `personalization = true` for V4 apps)
-- **Annotation** (`UI.PresentationVariant.GroupBy` with a non-empty `PropertyPath` collection)
+- `manifest.json` file: `personalization.group` or `personalization = true` for OData V4 apps
+- **Annotation**: UI.PresentationVariant.GroupBy` with a non-empty `PropertyPath` collection
 
 The rule checks manifest settings first. If grouping is enabled in the manifest, the manifest node is reported and the annotation check is skipped for that table. The annotation check only runs when the manifest does not enable grouping.
 
 When a `UI.PresentationVariant GroupBy` annotation affects tables on multiple pages, the rule reports it once and lists all affected page names.
 
-## Rule details
+## Rule Details
 
 ### Incorrect
 
@@ -55,7 +55,7 @@ annotate service.Incidents with @(
 }
 ```
 
-## Supported table types
+## Supported Table Types
 
 | Table type | Grouping supported |
 |---|---|
@@ -66,11 +66,15 @@ annotate service.Incidents with @(
 
 ## Applicability
 
-| Application type | Manifest check | Annotation check |
+| Application Type | Manifest Check | Annotation Check |
 |---|---|---|
-| Fiori Elements V4 | Yes | Yes |
-| Fiori Elements V2 | No | Yes |
+| SAP Fiori elements for OData V4 | Yes | Yes |
+| SAP Fiori elements for OData V2 | No | Yes |
 
 ## Configuration
 
 This rule is part of the `recommended-for-s4hana` configuration and is enabled as a warning by default.
+
+## Bug Report
+
+If you encounter an issue with this rule, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
