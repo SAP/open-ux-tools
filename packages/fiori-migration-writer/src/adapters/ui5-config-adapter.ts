@@ -46,14 +46,6 @@ export async function generateUI5YamlContent(
     });
     config.setType('application');
 
-    // Add framework section with UI5 version (needed for UI5 CLI to serve correct version)
-    const hasFrameworkSection = !!(templateData.project.ui5Version && templateData.ui5Yaml?.sapUiLibs);
-    if (hasFrameworkSection && templateData.ui5Yaml?.sapUiLibs) {
-        const libraries = [...templateData.ui5Yaml.sapUiLibs];
-        const theme = templateData.ui5Yaml?.ui5Theme || 'sap_horizon';
-        config.addUI5Framework('SAPUI5', templateData.project.ui5Version!, libraries, theme);
-    }
-
     // Build backend configuration using helpers
     let backends: FioriToolsProxyConfigBackend[] = [];
 
@@ -85,9 +77,7 @@ export async function generateUI5YamlContent(
     }
 
     // Add fiori-tools-proxy middleware with all backends
-    // When framework section is present, don't add version to proxy config (framework handles UI5 serving)
-    const shouldSetProxyVersion = setUI5Version && !hasFrameworkSection;
-    const proxyConfig: FioriToolsProxyConfig = buildProxyConfig(backends, templateData, shouldSetProxyVersion);
+    const proxyConfig: FioriToolsProxyConfig = buildProxyConfig(backends, templateData, setUI5Version);
     config.addFioriToolsProxyMiddleware(proxyConfig);
 
     // Add fiori-tools-appreload middleware
