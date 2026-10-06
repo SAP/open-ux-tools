@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectAccess, ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
 import { DestinationProxyType, isAppStudio, listDestinations, type Destination } from '@sap-ux/btp-utils';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
 import { runNpmInstallCommand } from '../../common/index.js';
 import { getLogger } from '../../tracing/index.js';
@@ -485,14 +486,11 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 
     // Initialize i18n for proper error messages
     await initI18n();
+    const internalToggle = isInternalFeaturesSettingEnabled();
 
     // Load project info first, then merge CLI overrides
     // Pass only the override fields so ProjectMigrator loads full metadata and merges
-    const result = await ProjectMigrator.migrate(
-        resolvedPath,
-        baseUri,
-        ui5SnapshotUrl,
-        // Only override specific connection fields - ProjectMigrator will fetch and merge
+    const migrationProjectInfo =
         sapClient || destination || hostname
             ? {
                   ...(sapClient && { sapClient }),
@@ -500,8 +498,10 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
                   ...(migrationHostname && { hostname: migrationHostname }),
                   ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
               }
-            : undefined
-    );
+            : undefined;
+    const result = internalToggle
+        ? await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, migrationProjectInfo, undefined, true)
+        : await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, migrationProjectInfo);
 
     // Commit mem-fs-editor changes to disk
     logger.info('Writing files to disk...');

@@ -41,6 +41,7 @@
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/fiori-migration-writer": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
