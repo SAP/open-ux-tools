@@ -114,6 +114,33 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
         expect(proxyMiddleware.configuration.ui5.version).toBe('1.120.0');
     });
 
+    test('should not add a framework section when including the UI5 proxy version', async () => {
+        const templateData = createTemplateData({
+            project: { name: 'test-app', ui5Version: '1.120.0' },
+            ui5Yaml: {
+                name: 'test-app',
+                ui5Url: 'https://ui5.sap.com',
+                ui5Version: '1.120.0',
+                sapUiLibs: ['sap.m']
+            }
+        });
+
+        const result = await generateUI5YamlContent(
+            templateData,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            true
+        );
+        const parsed = parse(result);
+        const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');
+
+        expect(parsed.framework).toBeUndefined();
+        expect(proxyMiddleware.configuration.ui5.version).toBe('1.120.0');
+    });
+
     test('should not include UI5 version in proxy when setUI5Version is false', async () => {
         const templateData = createTemplateData({
             ui5Yaml: {
