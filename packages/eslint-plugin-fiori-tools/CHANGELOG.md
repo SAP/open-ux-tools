@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Features
+
+- Create sap-no-path-hidden-on-interactive-columns rule to check `UI.Hidden` with a dynamic path is not be used on sortable or filterable columns [[88b131d](https://github.com/SAP/open-ux-tools/commit/88b131dd66cb31c471c603154d9becd547d431d5)]
+
 ## 10.13.0
 
 ### Minor Changes
