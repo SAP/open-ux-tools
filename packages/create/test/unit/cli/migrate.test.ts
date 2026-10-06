@@ -20,6 +20,11 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     listDestinations: () => mockListDestinations()
 }));
 
+const mockIsInternalFeaturesSettingEnabled = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: () => mockIsInternalFeaturesSettingEnabled()
+}));
+
 const mockGetService = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: (...args: unknown[]) => mockGetService(...args)
@@ -75,6 +80,7 @@ describe('migrate command', () => {
         } as Partial<ToolsLogger> as ToolsLogger;
         mockGetLogger.mockReturnValue(loggerMock);
         mockIsAppStudio.mockReturnValue(false);
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
         mockListDestinations.mockResolvedValue({});
         mockFindSystemByUrl.mockResolvedValue(undefined);
         mockGetProjectInfo.mockResolvedValue({ projectInfo: { hostname: '', sapClient: '' }, messages: [] });
@@ -155,6 +161,25 @@ describe('migrate command', () => {
             hostname: 'myhost.com:443',
             sapClient: '100'
         });
+    });
+
+    test('should pass internal enablement to the migration writer', async () => {
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']));
+
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.any(String),
+            'https://myhost.com',
+            '',
+            expect.objectContaining({ hostname: 'myhost.com', sapClient: '100' }),
+            undefined,
+            true
+        );
     });
 
     test('should handle migration failure', async () => {
