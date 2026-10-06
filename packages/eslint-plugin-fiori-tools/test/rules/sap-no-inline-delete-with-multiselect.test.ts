@@ -33,7 +33,14 @@ const OP_BASE_PATH = [
 ];
 
 const OP_TABLE_SETTINGS_PATH = [...OP_BASE_PATH, 'tableSettings'];
-const OP_SECTION_TABLE_SETTINGS_PATH = [...OP_BASE_PATH, 'sections', 'SalesOrderItems', 'tableSettings'];
+const OP_SECTION_TABLE_SETTINGS_PATH = [
+    ...OP_BASE_PATH,
+    'sections',
+    'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+    'tableSettings'
+];
+// A section key that has no matching annotation — creates an orphan section
+const OP_ORPHAN_SECTION_TABLE_SETTINGS_PATH = [...OP_BASE_PATH, 'sections', 'SalesOrderItems', 'tableSettings'];
 
 ruleTester.run(TEST_NAME, noInlineDeleteWithMultiselectRule, {
     valid: [
@@ -92,6 +99,17 @@ ruleTester.run(TEST_NAME, noInlineDeleteWithMultiselectRule, {
                 filename: V2_MANIFEST_PATH,
                 code: getManifestAsCode(V2_MANIFEST, [
                     { path: [...OP_SECTION_TABLE_SETTINGS_PATH, 'inlineDelete'], value: true }
+                ])
+            },
+            []
+        ),
+        createValidTest(
+            {
+                name: 'V2 object page - inlineDelete and multiSelect enabled in different sections - no issue',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    { path: [...OP_SECTION_TABLE_SETTINGS_PATH, 'inlineDelete'], value: true },
+                    { path: [...OP_ORPHAN_SECTION_TABLE_SETTINGS_PATH, 'multiSelect'], value: true }
                 ])
             },
             []

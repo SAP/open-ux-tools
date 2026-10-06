@@ -84,6 +84,52 @@ Object {
 }
 `;
 
+exports[`FE V2 Linker linkTableSettings section level - object page inlineDelete 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS",
+    "pages",
+    "ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "inlineDelete",
+  ],
+  "valueInFile": true,
+  "values": Array [
+    true,
+    false,
+  ],
+}
+`;
+
+exports[`FE V2 Linker linkTableSettings section level - object page multiSelect 1`] = `
+Object {
+  "configurationPath": Array [
+    "sap.ui.generic.app",
+    "pages",
+    "AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS",
+    "pages",
+    "ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS",
+    "component",
+    "settings",
+    "sections",
+    "to_Product::com.sap.vocabularies.UI.v1.LineItem",
+    "tableSettings",
+    "multiSelect",
+  ],
+  "valueInFile": true,
+  "values": Array [
+    true,
+    false,
+  ],
+}
+`;
+
 exports[`FE V2 Linker linkTableSettings section level - object page orphan-section 1`] = `
 Object {
   "configurationPath": Array [
