@@ -298,65 +298,20 @@ function createSectionTableConfiguration(
 }
 
 /**
- * Finds section settings from configuration
- *
- * @param configuration
- */
-function findSectionSettings(configuration: ManifestPageSettings): {
-    sectionKey: string;
-    createMode?: string;
-    tableType?: string;
-    copy?: boolean;
-    inlineDelete?: boolean;
-    multiSelect?: boolean;
-} {
-    let sectionEntityKey = '';
-    let createMode: string | undefined;
-    let tableType: string | undefined;
-    let copy: boolean | undefined;
-    let inlineDelete: boolean | undefined;
-    let multiSelect: boolean | undefined;
-
-    for (const [key, value] of Object.entries(configuration.component?.settings?.sections ?? {})) {
-        if (value.createMode !== undefined) {
-            sectionEntityKey = key;
-            createMode = value.createMode;
-        }
-        if (value.tableSettings?.type !== undefined) {
-            sectionEntityKey = key;
-            tableType = value.tableSettings.type;
-        }
-        if (value.tableSettings?.copy !== undefined) {
-            sectionEntityKey = key;
-            copy = value.tableSettings.copy;
-        }
-        if (value.tableSettings?.inlineDelete !== undefined) {
-            sectionEntityKey = key;
-            inlineDelete = value.tableSettings.inlineDelete;
-        }
-        if (value.tableSettings?.multiSelect !== undefined) {
-            sectionEntityKey = key;
-            multiSelect = value.tableSettings.multiSelect;
-        }
-    }
-
-    return { sectionKey: sectionEntityKey, createMode, tableType, copy, inlineDelete, multiSelect };
-}
-
-/**
  * Creates linked table for a section
  *
- * @param table
- * @param minUI5Version
- * @param pathToPage
- * @param sectionSettings
- * @param sectionSettings.sectionKey
- * @param sectionSettings.createMode
- * @param sectionSettings.tableType
- * @param sectionSettings.copy
- * @param sectionSettings.inlineDelete
- * @param sectionSettings.multiSelect
- * @param pageTableChanges
+ * @param table - Table annotation node to link
+ * @param minUI5Version - Minimum UI5 version from the app manifest
+ * @param pathToPage - Manifest path segments leading to the page
+ * @param sectionSettings - Settings resolved from the manifest section configuration
+ * @param sectionSettings.sectionKey - Manifest section key (e.g. `to_Product::com.sap.vocabularies.UI.v1.LineItem`)
+ * @param sectionSettings.createMode - Create mode for the section table
+ * @param sectionSettings.tableType - Table type override for the section
+ * @param sectionSettings.copy - Whether copy action is enabled for the section table
+ * @param sectionSettings.inlineDelete - Whether inline delete is enabled for the section table
+ * @param sectionSettings.multiSelect - Whether multi-select is enabled for the section table
+ * @param pageTableChanges - Flex changes scoped to this page and section
+ * @returns Linked table node with configuration and annotation
  */
 function createLinkedTableForSection(
     table: TableNode,
@@ -785,7 +740,15 @@ function linkObjectPageSections(
         };
         controls[`${section.type}|${configurationKey}`] = linkedSection;
 
-        const sectionSettings = findSectionSettings(configuration);
+        const sectionConfig = configuration.component?.settings?.sections?.[configurationKey];
+        const sectionSettings = {
+            sectionKey: configurationKey,
+            createMode: sectionConfig?.createMode,
+            tableType: sectionConfig?.tableSettings?.type,
+            copy: sectionConfig?.tableSettings?.copy,
+            inlineDelete: sectionConfig?.tableSettings?.inlineDelete,
+            multiSelect: sectionConfig?.tableSettings?.multiSelect
+        };
         const pageSectionTableChanges = getPageChanges(app.changes, page, section);
         const linkedTable = createLinkedTableForSection(
             table,
