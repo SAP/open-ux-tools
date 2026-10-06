@@ -12,6 +12,22 @@ jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     setLogLevelVerbose: jest.fn()
 }));
 
+const mockIsAppStudio = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: () => mockIsAppStudio()
+}));
+
+const mockGetService = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getService: (...args: unknown[]) => mockGetService(...args)
+}));
+
+const mockFindSystemByUrl = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../src/cli/utils/system-lookup.js', () => ({
+    findSystemByUrl: (...args: unknown[]) => mockFindSystemByUrl(...args)
+}));
+
+const mockGetProjectInfo = jest.fn() as jest.Mock;
 const mockRunNpmInstallCommand = jest.fn() as jest.Mock;
 jest.unstable_mockModule('../../../src/common/index.js', () => ({
     runNpmInstallCommand: (...args: unknown[]) => mockRunNpmInstallCommand(...args)
@@ -20,6 +36,7 @@ jest.unstable_mockModule('../../../src/common/index.js', () => ({
 const mockMigrate = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/fiori-migration-writer', () => ({
     ProjectAccess: {
+        getProjectInfo: (...args: unknown[]) => mockGetProjectInfo(...args),
         getClientFromDestinationName: (destination: string) => (destination.endsWith('001') ? '001' : '')
     },
     ProjectMigrator: {
@@ -53,6 +70,9 @@ describe('migrate command', () => {
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
         mockGetLogger.mockReturnValue(loggerMock);
+        mockIsAppStudio.mockReturnValue(false);
+        mockFindSystemByUrl.mockResolvedValue(undefined);
+        mockGetProjectInfo.mockResolvedValue({ projectInfo: { hostname: '', sapClient: '' }, messages: [] });
         mockMigrate.mockResolvedValue({
             result: true,
             messages: [],
@@ -237,6 +257,54 @@ describe('migrate command', () => {
             destination: 'ER9CLNT001',
             sapClient: '001'
         });
+    });
+
+    test('should use a matched saved system outside BAS', async () => {
+        const savedSystem = {
+            name: 'ER9CLNT001',
+            url: 'https://backend.example.com',
+            client: '001'
+        };
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { hostname: savedSystem.url, sapClient: savedSystem.client },
+            messages: []
+        });
+        mockGetService.mockResolvedValue({});
+        mockFindSystemByUrl.mockResolvedValue(savedSystem);
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockFindSystemByUrl).toHaveBeenCalledWith(savedSystem.url, savedSystem.client, {});
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), savedSystem.url, '', {
+            destination: savedSystem.name,
+            hostname: savedSystem.url,
+            sapClient: savedSystem.client
+        });
+    });
+
+    test('should not query saved systems in BAS', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { hostname: 'https://backend.example.com', sapClient: '001' },
+            messages: []
+        });
+        mockPrompt
+            .mockResolvedValueOnce({ useDestination: true })
+            .mockResolvedValueOnce({ dest: 'ER9CLNT001' })
+            .mockResolvedValueOnce({ clientValue: '' })
+            .mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockGetService).not.toHaveBeenCalled();
+        expect(mockFindSystemByUrl).not.toHaveBeenCalled();
     });
 
     test('should prompt for project path when not provided', async () => {

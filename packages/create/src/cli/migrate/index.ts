@@ -3,8 +3,11 @@ import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectAccess, ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
 import { runNpmInstallCommand } from '../../common/index.js';
 import { getLogger } from '../../tracing/index.js';
+import { findSystemByUrl } from '../utils/system-lookup.js';
 
 interface MigrateCommandOptions {
     destination?: string;
@@ -15,6 +18,8 @@ interface MigrateCommandOptions {
     force?: boolean;
     skipInstall?: boolean;
 }
+
+type SavedSystem = Pick<BackendSystem, 'name' | 'url' | 'client'>;
 
 /**
  * Validate a path to prevent directory traversal attacks.
@@ -311,6 +316,32 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
 }
 
 /**
+ * Resolve a legacy project's backend to a saved system outside SAP Business Application Studio.
+ *
+ * @param projectPath - legacy project root
+ * @returns matched saved system, if available
+ */
+async function findSavedSystem(projectPath: string): Promise<SavedSystem | undefined> {
+    const logger = getLogger();
+    if (isAppStudio()) {
+        return undefined;
+    }
+
+    try {
+        const { projectInfo } = await ProjectAccess.getProjectInfo(projectPath);
+        if (!projectInfo.hostname) {
+            return undefined;
+        }
+
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger });
+        return await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
+    } catch (error) {
+        logger.debug(`Unable to resolve a saved system: ${(error as Error).message}`);
+        return undefined;
+    }
+}
+
+/**
  * Execute the migration command.
  *
  * @param projectPath - path to the project to migrate
@@ -329,11 +360,18 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         return;
     }
 
+    const savedSystem = await findSavedSystem(resolvedPath);
+
     // 3. Get destination or hostname
-    const { destination, hostname } = await getDestinationOrHostname(options);
+    const resolvedOptions = {
+        ...options,
+        destination: options.destination ?? options.sapSystemName ?? savedSystem?.name,
+        client: options.client ?? savedSystem?.client
+    };
+    const { destination, hostname } = await getDestinationOrHostname(resolvedOptions);
 
     // 4. Get optional client
-    const client = await getClient(options.client);
+    const client = await getClient(resolvedOptions.client);
 
     // 5. Get UI5 version
     const ui5Version = await getUI5Version(options.ui5Version);
@@ -347,6 +385,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     let baseUri = destination ? `/${destination}` : '';
     if (hostname) {
         baseUri = `https://${hostname}`;
+    } else if (!options.destination && !options.sapSystemName && savedSystem?.url) {
+        baseUri = savedSystem.url;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
 
@@ -364,7 +404,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
             ? {
                   ...(sapClient && { sapClient }),
                   ...(destination && { destination }),
-                  ...(hostname && { hostname })
+                  ...(hostname && { hostname }),
+                  ...(!hostname && savedSystem?.url && { hostname: savedSystem.url })
               }
             : undefined
     );
