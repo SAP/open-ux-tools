@@ -81,18 +81,18 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 code: CAP_ANNOTATIONS + CDS_MICRO_CHART_VALID
             },
             []
+        ),
+        createValidTest(
+            {
+                // Bar is not in the 1:n-required set (Line/Area/Column/StackedBar/Comparison), so no check.
+                name: 'CDS: Bar chart (non-micro-chart type) - not reported',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_NON_MICRO_CHART
+            },
+            []
         )
     ],
     invalid: [
-        createInvalidTest(
-            {
-                name: 'CDS: Bar chart with direct Measures - reported',
-                filename: CAP_ANNOTATIONS_PATH,
-                code: CAP_ANNOTATIONS + CDS_NON_MICRO_CHART,
-                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
-            },
-            []
-        ),
         createInvalidTest(
             {
                 name: 'CDS: micro chart Measures without navigation',

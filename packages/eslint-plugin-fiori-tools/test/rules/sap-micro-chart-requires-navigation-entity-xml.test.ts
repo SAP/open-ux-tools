@@ -327,10 +327,10 @@ const V4_MICRO_CHART_CROSS_ENTITY_1N_VALID = `
         </Annotation>
     </Annotations>`;
 
-// Chart on ProcessingThreshold, referenced via the to-one processingThreshold navigation from Incidents.
+// Chart referenced via the to-one processingThreshold navigation from Incidents.
 // Because processingThreshold is NOT collection-valued, the chart entity is still in a single-row
-// context — its direct properties are invalid and the rule must fire.
-const V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_INVALID = `
+// context — but Bar is not in the 1:n-required set, so the rule does not fire.
+const V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_VALID = `
     <Annotations Target="IncidentService.Incidents">
         <Annotation Term="UI.LineItem">
             <Collection>
@@ -344,6 +344,103 @@ const V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_INVALID = `
         <Annotation Term="UI.Chart" Qualifier="ThresholdChart">
             <Record>
                 <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>processingDays</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>processingLimit</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
+// Bullet chart (1:1 navigation type) with direct properties — excluded from 1:n rule.
+// V4_MICRO_CHART_DATAPOINT_ONLY_MEASURES already covers Bullet; kept for documentation.
+
+// Harvey Ball micro chart uses ChartType/Pie — excluded from 1:n rule.
+const V4_MICRO_CHART_HARVEY_BALL = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.Chart#HarveyBall"/>
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="HarveyBall">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Pie"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>status</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
+// Radial micro chart uses ChartType/Donut — excluded from 1:n rule.
+const V4_MICRO_CHART_RADIAL = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.Chart#Radial"/>
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="Radial">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>status</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
+// Chart with no ChartType defined — skipped entirely.
+const V4_MICRO_CHART_NO_CHART_TYPE = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.Chart#NoType"/>
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="NoType">
+            <Record>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>status</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
+// Chart on ProcessingThreshold (to-one nav) with a 1:n-required type — rule fires.
+const V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_INVALID = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="processingThreshold/@UI.Chart#ThresholdChart"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.ProcessingThreshold">
+        <Annotation Term="UI.Chart" Qualifier="ThresholdChart">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
                 <PropertyValue Property="Measures">
                     <Collection>
                         <PropertyPath>processingDays</PropertyPath>
@@ -409,6 +506,60 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_1N_VALID)
             },
             []
+        ),
+        createValidTest(
+            {
+                // Bar is not in the 1:n-required set (Line/Area/Column/StackedBar/Comparison), so no check.
+                name: 'V4: Bar chart (non-micro-chart type) - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NON_MICRO_CHART)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Bullet uses 1:1 navigation; excluded from the 1:n rule.
+                name: 'V4: Bullet chart with direct Measures - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_DATAPOINT_ONLY_MEASURES)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Harvey Ball (Pie) uses 1:1 navigation; excluded from the 1:n rule.
+                name: 'V4: Harvey Ball (Pie) chart with direct Measures - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_HARVEY_BALL)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Radial (Donut) uses 1:1 navigation; excluded from the 1:n rule.
+                name: 'V4: Radial (Donut) chart with direct Measures - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_RADIAL)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // No ChartType defined — rule is skipped entirely.
+                name: 'V4: chart with no ChartType - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_NO_CHART_TYPE)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Bar chart on to-one cross-entity: Bar is not in the 1:n-required set, so no check.
+                name: 'V4: Bar chart on to-one cross-entity with direct properties - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_VALID)
+            },
+            []
         )
     ],
     invalid: [
@@ -418,15 +569,6 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_DIMENSIONS_INVALID),
                 errors: [{ message: EXPECTED_DIMENSION_MESSAGE }]
-            },
-            []
-        ),
-        createInvalidTest(
-            {
-                name: 'V4: Bar chart with direct Measures - reported',
-                filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_NON_MICRO_CHART),
-                errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]
             },
             []
         ),
@@ -470,18 +612,8 @@ ruleTester.run(TEST_NAME, microChartRule, {
         ),
         createInvalidTest(
             {
-                name: 'V4: DataPoint-based chart with only Measures and no navigation - reported',
-                filename: V4_ANNOTATIONS_PATH,
-                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_DATAPOINT_ONLY_MEASURES),
-                errors: [{ message: EXPECTED_MEASURE_MESSAGE }]
-            },
-            []
-        ),
-        createInvalidTest(
-            {
-                // Chart referenced via the to-one processingThreshold navigation from Incidents.
-                // The chart entity is NOT a collection row — direct properties still require a 1:n hop.
-                name: 'V4: chart on to-one cross-entity with direct properties - reported',
+                // Line chart on to-one cross-entity: Line IS in the 1:n-required set, rule fires.
+                name: 'V4: Line chart on to-one cross-entity with direct properties - reported',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_TO_ONE_INVALID),
                 errors: [{ message: EXPECTED_MEASURE_MESSAGE }, { message: EXPECTED_DIMENSION_MESSAGE }]

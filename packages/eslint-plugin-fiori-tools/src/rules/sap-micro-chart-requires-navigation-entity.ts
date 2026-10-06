@@ -1,5 +1,5 @@
 import type { Element, MetadataElement } from '@sap-ux/odata-annotation-core';
-import { Edm, elementsWithName } from '@sap-ux/odata-annotation-core';
+import { Edm, elementsWithName, getElementAttribute } from '@sap-ux/odata-annotation-core';
 import { createFioriRule } from '../language/rule-factory.js';
 import type { FioriRuleDefinition } from '../types.js';
 import type { MicroChartRequiresNavigationEntity } from '../language/diagnostics.js';
@@ -14,6 +14,38 @@ import {
 
 /** Annotation record properties whose `PropertyPath` values must use a 1:n navigation path. */
 const MICRO_CHART_CHECKED_PROPS = ['Measures', 'Dimensions'] as const;
+
+/**
+ * UI.ChartType short names that require 1:n navigation for Measures and Dimensions.
+ * Bullet (Harvey Ball = Pie, Radial = Donut) are excluded as they use 1:1 navigation.
+ * Charts with no ChartType defined are also skipped.
+ */
+const MICRO_CHART_1N_TYPES = new Set(['Line', 'Area', 'Column', 'StackedBar', 'Comparison']);
+
+/**
+ * Reads the short ChartType name from a UI.Chart record element (e.g. `"Line"` from `"UI.ChartType/Line"`).
+ * Handles both the inline-attribute form and the child-element form of EnumMember.
+ *
+ * @param record - The `Edm.Record` element of the UI.Chart annotation.
+ * @returns The short enum member name, or `undefined` if no ChartType property is present.
+ */
+function getChartTypeShortName(record: Element): string | undefined {
+    const propValueEl = getPropertyValueElement(record, 'ChartType');
+    if (!propValueEl) {
+        return undefined;
+    }
+    const enumAttr = getElementAttribute(propValueEl, Edm.EnumMember);
+    let enumValue: string | undefined = enumAttr?.value;
+    if (!enumValue) {
+        const [enumEl] = elementsWithName(Edm.EnumMember, propValueEl);
+        enumValue = enumEl ? getElementText(enumEl) : undefined;
+    }
+    if (!enumValue) {
+        return undefined;
+    }
+    const slashIdx = enumValue.lastIndexOf('/');
+    return slashIdx >= 0 ? enumValue.substring(slashIdx + 1) : enumValue;
+}
 
 /**
  * Returns `true` when `pathValue` violates the 1:n navigation requirement.
@@ -87,6 +119,11 @@ function checkChartAnnotation(
     const annotationElement = annotation.top.value;
     const [record] = elementsWithName(Edm.Record, annotationElement);
     if (!record) {
+        return;
+    }
+
+    const chartType = getChartTypeShortName(record);
+    if (!chartType || !MICRO_CHART_1N_TYPES.has(chartType)) {
         return;
     }
 
