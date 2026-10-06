@@ -263,7 +263,7 @@ function validateChangesets() {
 }
 
 function toSafeName(name) {
-    return name.replace(/[@/]/g, '-').replace(/^-+/, '');
+    return name.replace(/^@/, '').replace(/\//g, '__');
 }
 
 function fixCascadeChangesets() {
@@ -293,16 +293,29 @@ function fixCascadeChangesets() {
 
     const pkgMap = buildPackageMap();
     const { bundlerCascades, aliasCascades } = findMissingCascades(packagesWithChangesets, pkgMap);
-    /** @type {Map<string, Set<string>>} */
-    const allMissing = new Map([...bundlerCascades, ...aliasCascades]);
+
+    // Merge both maps without overwriting: packages that are both a bundler and an alias
+    // consumer need deps from both sets in the same changeset.
+    /** @type {Map<string, { deps: Set<string>; isBundler: boolean }>} */
+    const allMissing = new Map();
+    for (const [pkg, deps] of bundlerCascades) {
+        allMissing.set(pkg, { deps: new Set(deps), isBundler: true });
+    }
+    for (const [pkg, deps] of aliasCascades) {
+        if (allMissing.has(pkg)) {
+            for (const d of deps) allMissing.get(pkg).deps.add(d);
+        } else {
+            allMissing.set(pkg, { deps: new Set(deps), isBundler: false });
+        }
+    }
 
     if (allMissing.size === 0) {
         console.log('No cascade changesets needed');
         return;
     }
 
-    for (const [bundler, deps] of allMissing.entries()) {
-        const filename = `cascade-${toSafeName(bundler)}.md`;
+    for (const [pkg, { deps, isBundler }] of allMissing.entries()) {
+        const filename = `cascade-${toSafeName(pkg)}.md`;
         const filepath = path.join(CHANGESET_DIR, filename);
 
         if (fs.existsSync(filepath)) {
@@ -311,7 +324,10 @@ function fixCascadeChangesets() {
         }
 
         const depList = [...deps].join(', ');
-        const content = `---\n"${bundler}": patch\n---\n\nBUMP: Rebuild bundle with updated ${depList}\n`;
+        const message = isBundler
+            ? `BUMP: Rebuild bundle with updated ${depList}`
+            : `BUMP: Update pinned version of ${depList}`;
+        const content = `---\n"${pkg}": patch\n---\n\n${message}\n`;
         fs.writeFileSync(filepath, content);
         console.log(`Generated: .changeset/${filename} (triggered by: ${depList})`);
     }

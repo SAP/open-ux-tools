@@ -62,6 +62,9 @@ jobs:
                   author-email: 'github-actions[bot]@users.noreply.github.com'
                   commit-message: 'chore: add changeset for dependency update'
 
+            - name: Pull latest (ensure dep changeset file is present locally)
+              run: git pull
+
             - name: Generate cascade changesets
               run: node scripts/validate-changesets.mjs --fix
 
@@ -74,7 +77,7 @@ jobs:
                     echo "No cascade changesets to commit"
                   else
                     git commit -m "chore: add cascade changesets for bundled dependencies" --no-verify
-                    git push --no-verify
+                    git push origin HEAD:${{ github.head_ref }} --no-verify
                   fi
 
     # Job 2: Run manifest-specific updates (only for @ui5/manifest PRs)
