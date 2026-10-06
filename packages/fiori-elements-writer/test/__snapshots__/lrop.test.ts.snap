@@ -23773,6 +23773,7 @@ appDescription=A Fiori application.",
             Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
+
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
@@ -24751,6 +24752,7 @@ function journey() {
         Given.iStartMyApp();
         Then.onTheTravelListGenerated.iSeeThisPage();
     });
+
 
     opaTest(\\"Navigate to ObjectPage\\", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
