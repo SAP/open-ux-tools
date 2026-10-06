@@ -14,13 +14,16 @@ export function runNpmInstallCommand(
     basePath: string,
     installArgs: string[] = [],
     options?: { logger?: Logger }
-): void {
+): Promise<Error | undefined> {
     const logger = options?.logger;
-    execNpmCommand(['install', ...installArgs], { cwd: basePath, logger: logger })
+    return execNpmCommand(['install', ...installArgs], { cwd: basePath, logger: logger })
         .then(() => {
             logger?.info('npm install completed successfully.');
+            return undefined;
         })
         .catch((error) => {
-            logger?.error(`npm install failed. '${(error as Error).message}'`);
+            const installError = error as Error;
+            logger?.error(`npm install failed. '${installError.message}'`);
+            return installError;
         });
 }
