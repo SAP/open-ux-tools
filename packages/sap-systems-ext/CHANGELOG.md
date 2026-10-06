@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.38
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
 ## 1.0.37
 
 ### Patch Changes
