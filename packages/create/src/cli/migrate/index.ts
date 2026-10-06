@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
+import { runNpmInstallCommand } from '../../common/index.js';
 import { getLogger } from '../../tracing/index.js';
 
 interface MigrateCommandOptions {
@@ -12,6 +13,7 @@ interface MigrateCommandOptions {
     client?: string;
     ui5Version?: string;
     force?: boolean;
+    skipInstall?: boolean;
 }
 
 /**
@@ -161,6 +163,7 @@ export function addMigrateCommand(program: Command): void {
         .option('-c, --client <client>', 'SAP Client (optional)')
         .option('-u, --ui5-version <version>', 'UI5 version (defaults to source project version)')
         .option('-f, --force', 'Force migration even if project is already a Fiori tools project')
+        .option('-n, --skip-install', 'Skip the `npm install` step after migration')
         .action(async (projectPath: string | undefined, options: MigrateCommandOptions) => {
             await migrate(projectPath, options);
         });
@@ -391,6 +394,13 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
                     logger.info(logMessage);
                 }
             });
+        }
+
+        if (options.skipInstall) {
+            logger.warn('`npm install` was skipped. Install project dependencies before running the application.');
+        } else {
+            logger.info('Installing project dependencies...');
+            runNpmInstallCommand(resolvedPath, [], { logger });
         }
     } else {
         logger.error('✗ Migration failed');

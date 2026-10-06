@@ -12,6 +12,11 @@ jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     setLogLevelVerbose: jest.fn()
 }));
 
+const mockRunNpmInstallCommand = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../src/common/index.js', () => ({
+    runNpmInstallCommand: (...args: unknown[]) => mockRunNpmInstallCommand(...args)
+}));
+
 const mockMigrate = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/fiori-migration-writer', () => ({
     ProjectMigrator: {
@@ -88,6 +93,9 @@ describe('migrate command', () => {
             })
         );
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('successfully'));
+        expect(mockRunNpmInstallCommand).toHaveBeenCalledWith(expect.stringContaining('bare-minimum'), [], {
+            logger: loggerMock
+        });
     });
 
     test('should migrate with hostname', async () => {
@@ -189,6 +197,18 @@ describe('migrate command', () => {
         await command.parseAsync(getArgv(['migrate', migratedProjectRoot, '--destination', 'myDest', '--force']));
 
         expect(mockMigrate).toHaveBeenCalled();
+    });
+
+    test('should skip dependency installation when requested', async () => {
+        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--skip-install']));
+
+        expect(mockRunNpmInstallCommand).not.toHaveBeenCalled();
+        expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('npm install'));
     });
 
     test('should use sap-system-name as destination alias', async () => {
