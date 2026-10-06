@@ -1,4 +1,4 @@
-import { ProjectMigrator, initI18n, MigrationTypes } from '../src/index.js';
+import { ProjectAccess, ProjectMigrator, initI18n, MigrationTypes } from '../src/index.js';
 import { loadProjectIntoMemFs, fileExistsInMemFs } from './helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from './test-constants.js';
 import { join, dirname } from 'node:path';
@@ -37,6 +37,9 @@ describe('Library Project - Coverage Tests', () => {
 
         // Verify generated files for library
         expect(fileExistsInMemFs(updatedFs, testInputBase, 'package.json')).toBe(true);
+        const packageJson = JSON.parse(updatedFs.read(join(testInputBase, 'package.json')).toString());
+        expect(packageJson.devDependencies).toHaveProperty('@sap/ux-ui5-tooling', '^1.33.0');
+        expect(packageJson.devDependencies).not.toHaveProperty('@sap-ux/ui5-tooling');
     });
 
     it('should detect UI5 tooling dependencies in library', async () => {
@@ -51,6 +54,11 @@ describe('Library Project - Coverage Tests', () => {
         const packageJson = JSON.parse(fs.read(packageJsonPath).toString());
 
         expect(packageJson.devDependencies).toBeDefined();
-        expect(packageJson.devDependencies['@sap-ux/ui5-tooling']).toBeDefined();
+        expect(packageJson.devDependencies['@sap/ux-ui5-tooling']).toBeDefined();
+    });
+
+    it('should recognize legacy and public UI5 tooling dependencies', () => {
+        expect(ProjectAccess.hasUI5Tooling({ devDependencies: { '@sap-ux/ui5-tooling': '1' } })).toBe(true);
+        expect(ProjectAccess.hasUI5Tooling({ devDependencies: { '@sap/ux-ui5-tooling': '^1.33.0' } })).toBe(true);
     });
 });

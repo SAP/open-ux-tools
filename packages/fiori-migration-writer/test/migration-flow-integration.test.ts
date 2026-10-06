@@ -63,7 +63,7 @@ describe('Migration Integration Tests', () => {
             const packageJson = getFileFromMemFs(updatedFs, projectPath, 'package.json');
             expect(packageJson).toBeDefined();
             const pkg = JSON.parse(packageJson!);
-            expect(pkg.devDependencies).toHaveProperty('@sap-ux/ui5-tooling');
+            expect(pkg.devDependencies).toHaveProperty('@sap/ux-ui5-tooling');
             expect(pkg.devDependencies).toHaveProperty('@ui5/cli');
 
             // Snapshot test for full output

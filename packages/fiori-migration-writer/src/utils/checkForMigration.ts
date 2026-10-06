@@ -40,7 +40,8 @@ export const checkForMigration = async (
     try {
         project = await ProjectAccess.getProjectInfo(projectRoot, type, undefined, libPath);
         packageJson = await readJSON(join(projectRoot, FileName.Package));
-        hasUi5Tooling = hasDependency(packageJson, '@sap-ux/ui5-tooling') ? true : false;
+        hasUi5Tooling =
+            hasDependency(packageJson, '@sap-ux/ui5-tooling') || hasDependency(packageJson, '@sap/ux-ui5-tooling');
     } catch {
         // Ignore error and continue below
     }
