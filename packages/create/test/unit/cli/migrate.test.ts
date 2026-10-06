@@ -65,6 +65,7 @@ describe('migrate command', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockPrompt.mockReset();
 
         loggerMock = {
             debug: jest.fn(),
@@ -103,6 +104,8 @@ describe('migrate command', () => {
                 testProjectRoot,
                 '--destination',
                 'myDest',
+                '--hostname',
+                'myhost.com',
                 '--client',
                 '100',
                 '--ui5-version',
@@ -112,11 +115,12 @@ describe('migrate command', () => {
 
         expect(mockMigrate).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
-            '/myDest',
+            'https://myhost.com',
             'https://ui5.sap.com/1.120.0',
             expect.objectContaining({
                 sapClient: '100',
-                destination: 'myDest'
+                destination: 'myDest',
+                hostname: 'myhost.com'
             })
         );
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('successfully'));
@@ -126,7 +130,7 @@ describe('migrate command', () => {
     });
 
     test('should migrate with hostname', async () => {
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '100' }).mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
@@ -134,7 +138,8 @@ describe('migrate command', () => {
         await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com']));
 
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com', '', {
-            hostname: 'myhost.com'
+            hostname: 'myhost.com',
+            sapClient: '100'
         });
     });
 
@@ -153,7 +158,7 @@ describe('migrate command', () => {
         addMigrateCommand(command);
 
         await expect(
-            command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--client', '100']))
+            command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']))
         ).rejects.toThrow('Migration failed');
 
         expect(loggerMock.error).toHaveBeenCalled();
@@ -168,7 +173,7 @@ describe('migrate command', () => {
         addMigrateCommand(command);
 
         await expect(
-            command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--client', '100']))
+            command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']))
         ).rejects.toThrow('Unexpected error');
     });
 
@@ -185,12 +190,11 @@ describe('migrate command', () => {
             }
         });
 
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
-
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest']));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']));
 
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('SUCCESS'));
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('WARNING'));
@@ -204,6 +208,7 @@ describe('migrate command', () => {
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
+        mockPrompt.mockResolvedValueOnce({ version: '' });
         await command.parseAsync(
             getArgv(['migrate', migratedProjectRoot, '--destination', 'myDest', '--client', '100'])
         );
@@ -216,49 +221,67 @@ describe('migrate command', () => {
     test('should force migrate when flag provided', async () => {
         const migratedProjectRoot = join(__dirname, '../../fixtures/migrated-project');
 
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
-
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', migratedProjectRoot, '--destination', 'myDest', '--force']));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+        await command.parseAsync(
+            getArgv(['migrate', migratedProjectRoot, '--hostname', 'myhost.com', '--client', '100', '--force'])
+        );
 
         expect(mockMigrate).toHaveBeenCalled();
     });
 
     test('should skip dependency installation when requested', async () => {
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
-
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--skip-install']));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+        await command.parseAsync(
+            getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100', '--skip-install'])
+        );
 
         expect(mockRunNpmInstallCommand).not.toHaveBeenCalled();
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('npm install'));
     });
 
     test('should use sap-system-name as destination alias', async () => {
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
-
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--sap-system-name', 'mySystem']));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+        await command.parseAsync(
+            getArgv([
+                'migrate',
+                testProjectRoot,
+                '--sap-system-name',
+                'mySystem',
+                '--hostname',
+                'myhost.com',
+                '--client',
+                '100'
+            ])
+        );
 
-        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/mySystem', '', { destination: 'mySystem' });
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com', '', {
+            destination: 'mySystem',
+            hostname: 'myhost.com',
+            sapClient: '100'
+        });
     });
 
     test('should derive the SAP client from a destination suffix', async () => {
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '' });
-
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'ER9CLNT001']));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+        await command.parseAsync(
+            getArgv(['migrate', testProjectRoot, '--destination', 'ER9CLNT001', '--hostname', 'myhost.com'])
+        );
 
-        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/ER9CLNT001', '', {
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com', '', {
             destination: 'ER9CLNT001',
+            hostname: 'myhost.com',
             sapClient: '001'
         });
     });
@@ -298,7 +321,6 @@ describe('migrate command', () => {
             messages: []
         });
         mockPrompt
-            .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'ER9CLNT001' })
             .mockResolvedValueOnce({ clientValue: '' })
             .mockResolvedValueOnce({ version: '' });
@@ -346,7 +368,8 @@ describe('migrate command', () => {
             .mockResolvedValueOnce({ confirmPath: true })
             .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'myDest' })
-            .mockResolvedValueOnce({ clientValue: '' })
+            .mockResolvedValueOnce({ host: 'myhost.com' })
+            .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
@@ -364,7 +387,8 @@ describe('migrate command', () => {
             .mockResolvedValueOnce({ customPath: testProjectRoot })
             .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'myDest' })
-            .mockResolvedValueOnce({ clientValue: '' })
+            .mockResolvedValueOnce({ host: 'myhost.com' })
+            .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
@@ -380,7 +404,8 @@ describe('migrate command', () => {
         mockPrompt
             .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'promptDest' })
-            .mockResolvedValueOnce({ clientValue: '' })
+            .mockResolvedValueOnce({ host: 'myhost.com' })
+            .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
@@ -389,14 +414,18 @@ describe('migrate command', () => {
         await command.parseAsync(getArgv(['migrate', testProjectRoot]));
 
         expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ name: 'useDestination' }));
-        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/promptDest', '', { destination: 'promptDest' });
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com', '', {
+            destination: 'promptDest',
+            hostname: 'myhost.com',
+            sapClient: '100'
+        });
     });
 
     test('should prompt for hostname when destination declined', async () => {
         mockPrompt
             .mockResolvedValueOnce({ useDestination: false })
             .mockResolvedValueOnce({ host: 'myhost.com' })
-            .mockResolvedValueOnce({ clientValue: '' })
+            .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
@@ -405,21 +434,31 @@ describe('migrate command', () => {
         await command.parseAsync(getArgv(['migrate', testProjectRoot]));
 
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com', '', {
-            hostname: 'myhost.com'
+            hostname: 'myhost.com',
+            sapClient: '100'
         });
     });
 
     test('should prompt for UI5 version when not provided', async () => {
-        mockPrompt.mockResolvedValueOnce({ clientValue: '' }).mockResolvedValueOnce({ version: '1.108.0' });
+        mockPrompt.mockResolvedValueOnce({ clientValue: '100' }).mockResolvedValueOnce({ version: '1.108.0' });
 
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest']));
+        await command.parseAsync(
+            getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--hostname', 'myhost.com'])
+        );
 
-        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), '/myDest', 'https://ui5.sap.com/1.108.0', {
-            destination: 'myDest'
-        });
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.any(String),
+            'https://myhost.com',
+            'https://ui5.sap.com/1.108.0',
+            {
+                destination: 'myDest',
+                hostname: 'myhost.com',
+                sapClient: '100'
+            }
+        );
     });
 
     test('should prompt for client when not provided', async () => {
@@ -428,14 +467,16 @@ describe('migrate command', () => {
         const command = new Command('sap-ux');
         addMigrateCommand(command);
 
-        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest']));
+        await command.parseAsync(
+            getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--hostname', 'myhost.com'])
+        );
 
         expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ name: 'clientValue' }));
         expect(mockMigrate).toHaveBeenCalledWith(
             expect.any(String),
-            '/myDest',
+            'https://myhost.com',
             '',
-            expect.objectContaining({ sapClient: '200' })
+            expect.objectContaining({ hostname: 'myhost.com', sapClient: '200' })
         );
     });
 });

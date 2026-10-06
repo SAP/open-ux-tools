@@ -76,6 +76,14 @@ function validateHostname(hostname: string): string {
     return hostname;
 }
 
+function getHostnameFromUrl(url: string): string | undefined {
+    try {
+        return new URL(url).hostname;
+    } catch {
+        return undefined;
+    }
+}
+
 /**
  * Validate a SAP client number.
  *
@@ -248,6 +256,7 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
     destination?: string;
     hostname?: string;
 }> {
+    const appStudio = isAppStudio();
     let destination = options.destination ?? options.sapSystemName;
     let hostname = options.hostname ? validateHostname(options.hostname) : undefined;
 
@@ -256,16 +265,22 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
         destination = validateDestination(destination);
     }
 
-    if (!destination && !hostname) {
-        const useDestination = await promptConfirm('useDestination', 'Use SAP System destination?', true);
+    if (appStudio && !destination) {
+        destination = validateDestination(
+            await promptRequiredText('dest', 'Enter SAP Business Application Studio destination:', 'Destination')
+        );
+    } else if (!appStudio && !hostname) {
+        if (!destination) {
+            const useDestination = await promptConfirm('useDestination', 'Use SAP System destination?', true);
 
-        if (useDestination) {
-            const dest = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
-            destination = validateDestination(dest);
-        } else {
-            const host = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
-            hostname = validateHostname(host);
+            if (useDestination) {
+                const dest = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
+                destination = validateDestination(dest);
+            }
         }
+
+        const host = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
+        hostname = validateHostname(host);
     }
 
     return { destination, hostname };
@@ -280,6 +295,10 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
 async function getClient(optionClient?: string): Promise<string | undefined> {
     if (optionClient) {
         return validateClient(optionClient);
+    }
+
+    if (!isAppStudio()) {
+        return validateClient(await promptRequiredText('clientValue', 'SAP Client:', 'SAP Client'));
     }
 
     const response = await prompts({
@@ -423,7 +442,14 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     const resolvedOptions = {
         ...options,
         destination: options.destination ?? options.sapSystemName ?? matchedSystem?.name,
-        client: options.client ?? matchedSystem?.client
+        hostname: options.hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined),
+        client:
+            options.client ??
+            matchedSystem?.client ??
+            (options.destination || options.sapSystemName
+                ? ProjectAccess.getClientFromDestinationName(options.destination ?? options.sapSystemName ?? '') ||
+                  undefined
+                : undefined)
     };
     const { destination, hostname } = await getDestinationOrHostname(resolvedOptions);
 
@@ -446,6 +472,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         baseUri = matchedSystem.url;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
+    const migrationHostname = options.hostname ?? matchedSystem?.url ?? hostname;
 
     // Initialize i18n for proper error messages
     await initI18n();
@@ -461,8 +488,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
             ? {
                   ...(sapClient && { sapClient }),
                   ...(destination && { destination }),
-                  ...(hostname && { hostname }),
-                  ...(!hostname && matchedSystem?.url && { hostname: matchedSystem.url }),
+                  ...(migrationHostname && { hostname: migrationHostname }),
                   ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
               }
             : undefined
