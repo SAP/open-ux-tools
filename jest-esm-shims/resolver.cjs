@@ -19,7 +19,7 @@
 'use strict';
 
 const path = require('node:path');
-const shimDir = path.join(__dirname);
+const shimDir = __dirname;
 
 const ESM_ONLY_PACKAGES = new Set(['agent-base', 'http-proxy-agent', 'https-proxy-agent', 'socks-proxy-agent']);
 
