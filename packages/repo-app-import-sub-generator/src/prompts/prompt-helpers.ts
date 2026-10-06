@@ -2,7 +2,8 @@ import {
     appListResultFields,
     downloadTypeConfig,
     generatorTitleConfig,
-    adtSourceTemplateId,
+    adtSourceTemplateIds,
+    adtSourceTemplateIdCorrected,
     appListFieldsWithoutSourceTemplate,
     sourceTemplateIdField
 } from '../utils/constants.js';
@@ -93,14 +94,26 @@ async function getAppList(
     try {
         const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
-            // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
-            const filtered = results.filter((app) => app[sourceTemplateIdField] !== adtSourceTemplateId);
+            // For ABAP Repository downloads, filter out apps with any known ADT source template ID.
+            const filtered = results.filter(
+                (app) => !adtSourceTemplateIds.includes(app[sourceTemplateIdField] as string)
+            );
             RepoAppDownloadLogger.logger?.debug(
                 `App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
             );
             return filtered;
         }
-        return results;
+        // For ADTQuickDeploy, also search for the corrected template ID.
+        // The app index API does not support OR filters, so a second search is required.
+        const correctedSearchParams = {
+            [sourceTemplateIdField]: adtSourceTemplateIdCorrected,
+            ...(appId ? { 'sap.app/id': appId } : {})
+        };
+        const correctedIdResults = await provider.getAppIndex().search(correctedSearchParams, appListResultFields);
+        // An app can only carry one template ID at a time, so duplicates should not occur in practice.
+        // Dedup by sap.app/id as a safeguard against unexpected backend behaviour.
+        const legacyAppIds = new Set(results.map((app) => app['sap.app/id']));
+        return [...results, ...correctedIdResults.filter((app) => !legacyAppIds.has(app['sap.app/id']))];
     } catch (error) {
         if (
             downloadType === AppDownloadType.AbapRepository &&

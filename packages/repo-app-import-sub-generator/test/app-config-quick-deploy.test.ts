@@ -4,7 +4,12 @@ import { TransportChecksService } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { AppInfo, QfaJsonConfig } from '../src/app/types.js';
 import { t } from '../src/utils/i18n.js';
-import { fioriAppSourcetemplateId, qfaJsonFileName, adtSourceTemplateId } from '../src/utils/constants.js';
+import {
+    fioriAppSourcetemplateId,
+    qfaJsonFileName,
+    adtSourceTemplateId,
+    adtSourceTemplateIdCorrected
+} from '../src/utils/constants.js';
 import { join } from 'node:path';
 import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { AppDownloadType } from '../src/app/types.js';
@@ -312,6 +317,28 @@ describe('getAppConfig', () => {
         mockReadManifest.mockReturnValue({
             'sap.app': {
                 sourceTemplate: { id: adtSourceTemplateId },
+                dataSources: { mainService: { uri: '/odata/service', settings: { odataVersion: '4.0' } } },
+                applicationVersion: { version: '1.0.0' }
+            }
+        });
+        PromptState.systemSelection = { connectedSystem: mockSystem.connectedSystem };
+        const context = {
+            qfaJson: mockQfaJson,
+            serviceProvider: mockSystem.connectedSystem?.serviceProvider as AbapServiceProvider,
+            appDownloadType: AppDownloadType.ADTQuickDeploy
+        };
+
+        await getAppConfig(mockApp, '/path/to/project', context, mockSystem, mockFs);
+
+        expect(RepoAppDownloadLogger.logger.error).not.toHaveBeenCalledWith(
+            t('error.readManifestErrors.sourceTemplateNotSupported')
+        );
+    });
+
+    it('should not log sourceTemplate error when sourceTemplate id matches corrected adtSourceTemplateId', async () => {
+        mockReadManifest.mockReturnValue({
+            'sap.app': {
+                sourceTemplate: { id: adtSourceTemplateIdCorrected },
                 dataSources: { mainService: { uri: '/odata/service', settings: { odataVersion: '4.0' } } },
                 applicationVersion: { version: '1.0.0' }
             }

@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../utils/i18n.js';
 import type { AppInfo, AppDownloadContext, AdtQuickDeployContext } from '../app/types.js';
 import { readManifest } from '../utils/file-helpers.js';
-import { fioriAppSourcetemplateId, adtSourceTemplateId } from '../utils/constants.js';
+import { fioriAppSourcetemplateId, adtSourceTemplateIds } from '../utils/constants.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger.js';
@@ -39,7 +39,7 @@ export async function getAppConfig(
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
         context.serviceProvider = serviceProvider;
 
-        if (manifest?.['sap.app']?.sourceTemplate?.id !== adtSourceTemplateId) {
+        if (!adtSourceTemplateIds.includes(manifest?.['sap.app']?.sourceTemplate?.id ?? '')) {
             RepoAppDownloadLogger.logger?.error(t('error.readManifestErrors.sourceTemplateNotSupported'));
         }
         if (!manifest?.['sap.app']?.dataSources) {
