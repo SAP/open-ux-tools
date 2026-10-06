@@ -64,16 +64,16 @@ function validateDestination(destination: string): string {
  * @throws Error if hostname contains unsafe characters
  */
 function validateHostname(hostname: string): string {
-    // RFC-compliant hostname: alphanumeric and hyphens, segments separated by dots
-    // No leading/trailing hyphens in segments, no consecutive dots
+    const strippedHostname = hostname.replace(/^https?:\/\//i, '');
+    // RFC-compliant hostname with an optional port.
     if (
-        !/^(?!-)(?!.*-$)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/.test(
-            hostname
+        !/^(?!-)(?!.*-$)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(:\d+)?$/.test(
+            strippedHostname
         )
     ) {
         throw new Error('Invalid hostname format');
     }
-    return hostname;
+    return strippedHostname;
 }
 
 function getHostnameFromUrl(url: string): string | undefined {
@@ -279,7 +279,11 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
             const useDestination = await promptConfirm('useDestination', 'Use SAP System destination?', true);
 
             if (useDestination) {
-                const dest = await promptRequiredText('dest', 'Enter destination/SAP System name:', 'Destination');
+                const dest = await promptRequiredText(
+                    'dest',
+                    'Enter BTP destination or SAP system name (letters, numbers, hyphens, underscores only):',
+                    'Destination'
+                );
                 destination = validateDestination(dest);
             }
         }
@@ -477,7 +481,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         baseUri = matchedSystem.url;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
-    const migrationHostname = options.hostname ?? matchedSystem?.url ?? hostname;
+    const migrationHostname = hostname ?? matchedSystem?.url;
 
     // Initialize i18n for proper error messages
     await initI18n();

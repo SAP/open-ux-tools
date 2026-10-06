@@ -143,6 +143,20 @@ describe('migrate command', () => {
         });
     });
 
+    test('should accept a hostname with protocol and port', async () => {
+        mockPrompt.mockResolvedValueOnce({ clientValue: '100' }).mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        addMigrateCommand(command);
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'https://myhost.com:443']));
+
+        expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), 'https://myhost.com:443', '', {
+            hostname: 'myhost.com:443',
+            sapClient: '100'
+        });
+    });
+
     test('should handle migration failure', async () => {
         mockMigrate.mockResolvedValue({
             result: false,
@@ -308,7 +322,7 @@ describe('migrate command', () => {
         expect(mockFindSystemByUrl).toHaveBeenCalledWith(savedSystem.url, savedSystem.client, {});
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), savedSystem.url, '', {
             destination: savedSystem.name,
-            hostname: savedSystem.url,
+            hostname: 'backend.example.com',
             sapClient: savedSystem.client,
             scp: false
         });
@@ -357,7 +371,7 @@ describe('migrate command', () => {
         expect(mockGetService).not.toHaveBeenCalled();
         expect(mockMigrate).toHaveBeenCalledWith(expect.any(String), destination.Host, '', {
             destination: destination.Name,
-            hostname: destination.Host,
+            hostname: 'demo.example.test',
             sapClient: destination['sap-client'],
             scp: true
         });
