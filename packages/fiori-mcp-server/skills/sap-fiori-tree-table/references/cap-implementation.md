@@ -30,7 +30,7 @@ Add self-referencing managed association to `db/schema.cds`:
 ```cds
 entity <EntityName> : cuid, managed {
   // ... existing fields ...
-  parent : Association to <EntityName>;  // ← Add this managed association
+  parent : Association to <EntityName>;  // Add this managed association
   // ... rest of entity ...
 }
 ```
@@ -40,7 +40,7 @@ entity <EntityName> : cuid, managed {
 entity <EntityName> : managed {
   key categoryID : String(10);  // Your business key
   // ... existing fields ...
-  parent : Association to <EntityName>;  // ← Add this managed association
+  parent : Association to <EntityName>;  // Add this managed association
   // ... rest of entity ...
 }
 ```
@@ -54,7 +54,7 @@ Add to service entity in `srv/<service>.cds`:
 
 ```cds
 service <ServiceName> @(path: '/<path>') {
-  @hierarchy  // ← Add this annotation
+  @hierarchy  // Add this annotation
   entity <EntityName> as projection on db.<EntityName> {
     *,
     // ... redirected associations ...
