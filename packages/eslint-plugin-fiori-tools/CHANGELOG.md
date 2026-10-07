@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Features
+
+- add sap-no-comma-in-section-title rule to prevent commas in object page section titles [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
 ## 10.14.0
 
 ### Minor Changes
