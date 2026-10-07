@@ -8,7 +8,7 @@
             "args": [
                 "--yes",
                 "--ignore-scripts",
-                "@sap-ux/fiori-mcp-server@1.15.4",
+                "@sap-ux/fiori-mcp-server@1.15.5",
                 "fiori-mcp"
             ]
         }
