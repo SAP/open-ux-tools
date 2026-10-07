@@ -113,9 +113,12 @@ export async function generateUI5YamlContent(
  * Generate ui5-local.yaml content using @sap-ux/ui5-config builder
  *
  * ui5-local.yaml differs from ui5.yaml in that it:
- * - Includes framework section with SAPUI5 libraries
+ * - Does not set UI5 version in proxy middleware (relies on local framework)
  * - May include sap-fe-mockserver middleware for mock data
- * - Does not set UI5 version in proxy middleware
+ *
+ * Note: Both ui5.yaml and ui5-local.yaml include framework section with SAPUI5 libraries
+ * when localUI5Version and sapUiLibs are provided. The @sap-ux/ui5-config library
+ * auto-adds the framework section based on these settings.
  *
  * @param templateData - Migration template data containing project configuration
  * @param neoappDestinations - Optional array of neo-app destinations
