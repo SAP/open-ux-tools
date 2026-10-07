@@ -1,14 +1,14 @@
- # Micro Chart Measures and Dimensions Must Use a 1:n Navigation Entity Path (`sap-micro-chart-requires-navigation-entity`)
+ # Micro Chart Measures and Dimensions Must Use a 1:N Navigation Entity Path (`sap-micro-chart-requires-navigation-entity`)
 
-Validates that `UI.Chart` annotations of certain micro chart types, referenced from page-visible locations, only reference properties through a 1:n navigation property. Micro charts of this kind cannot display data from properties of the same entity in SAP Fiori elements applications. They require a collection of related records accessed via navigation. Using direct entity properties causes the micro chart to not be displayed or show no data.
+Validates that `UI.Chart` annotations of certain micro chart types, referenced from visible locations, only reference properties using a 1:n navigation property. Micro charts of this kind cannot display data from properties of the same entity in SAP Fiori elements applications. They require a collection of related records accessed via navigation. Using direct entity properties causes the micro chart to not be displayed or show no data.
 
 ## Rule Details
 
-### Chart types checked
+### Chart Types Checked
 
 The rule only applies to micro chart types that visualise a series of data points and therefore need a 1:n navigation entity:
 
-| ChartType | Rule applies |
+| Chart Type | Rule Applies |
 |---|---|
 | `Line` | ✅ checked |
 | `Area` | ✅ checked |
@@ -20,9 +20,9 @@ The rule only applies to micro chart types that visualise a series of data point
 | `Donut` (Radial) | ❌ excluded (uses 1:1 navigation) |
 | Any other / not set | ❌ skipped |
 
-Charts with no `ChartType` property are skipped entirely.
+Charts without a `ChartType` property are skipped entirely.
 
-### Page visibility
+### Page Visibility
 
 The rule only checks charts that are actually displayed on a page. A chart is considered visible when it is referenced using a `UI.DataFieldForAnnotation` record in one of the following:
 
@@ -267,7 +267,7 @@ annotate service.SalesOrder with @(
 ```
 
 ```xml
-<!-- ✅ CORRECT: Bullet chart — uses 1:1 navigation, excluded from this rule -->
+<!-- ✅ CORRECT: Bullet chart uses 1:1 navigation, so is excluded from this rule -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.LineItem">
         <Collection>
@@ -290,7 +290,7 @@ annotate service.SalesOrder with @(
 ```
 
 ```xml
-<!-- ✅ CORRECT: Harvey Ball (Pie) chart — uses 1:1 navigation, excluded from this rule -->
+<!-- ✅ CORRECT: Harvey Ball (Pie) chart uses 1:1 navigation, so is excluded from this rule -->
 <Annotations Target="MyService.SalesOrder">
     <Annotation Term="UI.LineItem">
         <Collection>
