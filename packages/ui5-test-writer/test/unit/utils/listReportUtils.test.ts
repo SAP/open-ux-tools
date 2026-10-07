@@ -2299,15 +2299,6 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         ]);
     });
 
-    test('includes both properties when a text annotation is maintained without a TextArrangement', () => {
-        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
-        // A TextArrangement is not required: the column still gets a sort test for both the code
-        // column (CustomerID) and the text property (CustomerName) because a Common.Text is maintained.
-        expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
-        ]);
-    });
-
     test('emits both properties for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
         // Regression (fin.test.v4.lr1): CompanyCode carries a Common.Text (CompanyCodeName) with no
         // UI.TextArrangement, and once the (initially UI.Hidden) target was un-hidden, both the code

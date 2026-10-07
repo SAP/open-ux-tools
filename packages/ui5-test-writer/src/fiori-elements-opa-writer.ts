@@ -85,6 +85,7 @@ export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Ve
 }
 
 /**
+ * Generate OPA test files for a Fiori elements for OData V4 application.
  * Note: this can potentially overwrite existing files in the webapp/test folder.
  *
  * @param basePath - the absolute target path where the application will be generated
