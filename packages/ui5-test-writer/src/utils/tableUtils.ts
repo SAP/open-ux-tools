@@ -250,9 +250,7 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
             return;
         }
         const columnProperty = getColumnIdentifier(column, columnKey);
-        // Deduplicate by code column: two distinct columns may share one text target, and each code
-        // column still needs its own sort test. Any duplicate text-property assertions this produces
-        // are deduplicated by the consumer when generating the journey.
+        // Deduplicate by code column: distinct columns may share one text target.
         if (!columnProperty || seenColumnProperties.has(columnProperty)) {
             return;
         }

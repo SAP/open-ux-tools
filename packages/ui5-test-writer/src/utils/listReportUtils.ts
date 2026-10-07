@@ -247,18 +247,13 @@ export function getListReportFeatures(
                   )
             : undefined;
 
-    // Any column with a maintained text annotation gets a sort-order test for its text (sort target)
-    // property. A UI.TextArrangement annotation is not required for the text-property test. The code
-    // column is additionally sorted, except under TextOnly, where the code column is not sortable.
-    // The text target's UI.Hidden state is intentionally NOT consulted: if the sort target column is
-    // hidden the emitted test will surface it (typically as a runtime failure), signalling to the
-    // developer that the hiding annotation is likely a mistake that should be fixed.
+    // A maintained text annotation emits a sort test for the text target property (no TextArrangement
+    // required). The code column is also sorted, except under TextOnly where it is not sortable.
     const meta = convertedMetadata;
     const seenTextProperties = new Set<string>();
     const textAnnotationColumns: TextAnnotationColumn[] = meta
         ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => {
-              // Each distinct code column keeps its own sort test, but the text-property sort test is
-              // emitted only once per text target to avoid duplicate assertions.
+              // Dedupe the text-property sort test per text target; each code column keeps its own.
               const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
               seenTextProperties.add(candidate.textProperty);
               return {
@@ -686,16 +681,14 @@ export function isHiddenFilter(
 }
 
 /**
- * Returns true if the property's `UI.TextArrangement` is `TextOnly`. The arrangement may be
- * maintained either nested on `Common.Text` or as a sibling annotation directly on the property;
- * both locations are checked. With `TextOnly` the column renders only the text/description value,
- * so it can be sorted by the text property but not by the (hidden) code property — the code-property
- * sort test must be skipped.
+ * Returns true if the property's `UI.TextArrangement` is `TextOnly`, checking both the nested
+ * (`Common.Text`) and sibling (property-level) locations. Under `TextOnly` the code property is not
+ * sortable, so its sort test must be skipped.
  *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property's text arrangement is TextOnly
+ * @param convertedMetadata - converted OData metadata (metadata merged with local annotations)
+ * @param entitySetName - entity set owning the property (undefined → false)
+ * @param propertyName - property to inspect
+ * @returns true if the text arrangement is TextOnly
  */
 export function isTextOnlyArrangement(
     convertedMetadata: ConvertedMetadata,
@@ -707,10 +700,8 @@ export function isTextOnlyArrangement(
     }
     const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
     const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // `UI.TextArrangement` is typed by vocabularies-types only when nested under `Common.Text`, but
-    // the converter also populates it as a sibling directly on the property's UI annotations (that
-    // shape is not in the type). Read the typed nested location first, then fall back to the sibling
-    // location via an indexed access, which the generated type does not declare.
+    // The converter also populates TextArrangement as a property-level sibling of Common.Text, a
+    // shape vocabularies-types does not declare — hence the indexed access.
     const siblingArrangement = (property?.annotations?.UI as Record<string, unknown> | undefined)?.['TextArrangement'];
     const textArrangement = property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement ?? siblingArrangement;
     // The converted enum value stringifies to e.g. "UI.TextArrangementType/TextOnly".
