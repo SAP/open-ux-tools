@@ -65,15 +65,22 @@ export class BulkProjectMigrator {
 
         // Commit changes to disk for this project
         if (result) {
-            await new Promise<void>((resolve, reject) => {
-                fs.commit((err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
+            try {
+                await new Promise<void>((resolve, reject) => {
+                    fs.commit((err) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
                 });
-            });
+            } catch (error) {
+                // Handle both callback errors and synchronous throws from fs.commit
+                throw new Error(
+                    `Failed to commit migration changes: ${error instanceof Error ? error.message : String(error)}`
+                );
+            }
         }
 
         uxTelemetryPerf.endMark(markName);
@@ -142,18 +149,21 @@ export class BulkProjectMigrator {
      * @param result.messages
      */
     private determineStatus(result: { result: boolean; messages: Message[] }): 'ERROR' | 'WARNING' | 'SUCCESS' {
-        let status: 'ERROR' | 'WARNING' | 'SUCCESS' = result.result === true ? 'SUCCESS' : 'ERROR';
-
-        if (
-            result.messages.length &&
-            result.messages.every((message) => message.type !== 'ERROR') &&
-            result.messages.some((message) => message.type === 'WARNING')
-        ) {
-            status = 'WARNING';
-        } else if (result.messages.length && result.messages.some((message) => message.type === 'ERROR')) {
-            status = 'ERROR';
+        // If migration result is false, it's definitely an error
+        if (result.result === false) {
+            return 'ERROR';
         }
 
-        return status;
+        // Migration succeeded (result.result === true), now check message severity
+        if (result.messages.some((message) => message.type === 'ERROR')) {
+            // Has ERROR messages even though migration succeeded - likely non-fatal errors
+            return 'ERROR';
+        } else if (result.messages.some((message) => message.type === 'WARNING')) {
+            // Has warnings but no errors
+            return 'WARNING';
+        }
+
+        // No errors or warnings
+        return 'SUCCESS';
     }
 }

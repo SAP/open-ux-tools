@@ -161,12 +161,7 @@ export async function copyLibraryFiles(
         messages.length = 0; // Reset
         const errorDetail =
             e.name === 'MigrationError' ? e.message.toString() : determineMessage(e) || e.message || String(e);
-        console.error('Library file copy error:', {
-            name: e.name,
-            message: e.message,
-            stack: e.stack,
-            fullError: e
-        });
+        // Error details are captured in the message below - no need to log to console in production
         messages.push({
             type: 'ERROR',
             description: `Error copying library files: ${errorDetail}`
