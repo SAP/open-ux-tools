@@ -254,7 +254,7 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
                     i18n: {
                         type: 'sap.ui.model.resource.ResourceModel',
                         uri: 'i18n/i18n.properties',
-                        fallbackLocale: 'en'
+                        settings: { fallbackLocale: 'en' }
                     }
                 }
             }
@@ -274,7 +274,7 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
                     i18n: {
                         type: 'sap.ui.model.resource.ResourceModel',
                         uri: 'i18n/i18n.properties',
-                        fallbackLocale: ''
+                        settings: { fallbackLocale: '' }
                     }
                 }
             }
@@ -291,7 +291,7 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
                     i18n: {
                         type: 'sap.ui.model.resource.ResourceModel',
                         uri: 'i18n/i18n.properties',
-                        fallbackLocale: '../../../../etc/passwd'
+                        settings: { fallbackLocale: '../../../../etc/passwd' }
                     }
                 }
             }
