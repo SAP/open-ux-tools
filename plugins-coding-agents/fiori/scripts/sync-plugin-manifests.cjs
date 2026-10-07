@@ -51,8 +51,13 @@ try {
         process.exit(0);
     }
 
-    // Validate both manifests are in sync before updating — catches manual drift
-    if (claudePluginJson.version !== awesomeCopilotPluginJson.version) {
+    // Validate both manifests are in sync before updating — catches manual drift.
+    // Exclude the case where one manifest already matches the target version (valid intermediate state).
+    if (
+        claudePluginJson.version !== awesomeCopilotPluginJson.version &&
+        claudePluginJson.version !== pluginVersion &&
+        awesomeCopilotPluginJson.version !== pluginVersion
+    ) {
         throw new Error(
             `Plugin manifest versions are out of sync:\n` +
             `  .claude-plugin/plugin.json: ${claudePluginJson.version}\n` +

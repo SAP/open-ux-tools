@@ -40,9 +40,16 @@ try {
     if (!fioriMcpServer) {
         throw new Error('Expected mcpServers["fiori-mcp"] in .mcp.json');
     }
-    fioriMcpServer.args = fioriMcpServer.args.map((arg) =>
+    if (!Array.isArray(fioriMcpServer.args)) {
+        throw new Error('Expected mcpServers["fiori-mcp"].args to be an array in .mcp.json');
+    }
+    const updatedArgs = fioriMcpServer.args.map((arg) =>
         arg.startsWith('@sap-ux/fiori-mcp-server@') ? `@sap-ux/fiori-mcp-server@${version}` : arg
     );
+    if (updatedArgs.every((arg, i) => arg === fioriMcpServer.args[i])) {
+        throw new Error(`No "@sap-ux/fiori-mcp-server@<version>" entry found in mcpServers["fiori-mcp"].args — unable to update pin in .mcp.json`);
+    }
+    fioriMcpServer.args = updatedArgs;
 
     fs.writeFileSync(serverJsonPath, JSON.stringify(serverJson, null, 4) + '\n');
     console.log(`Updated server.json to version ${version}`);
