@@ -11,7 +11,7 @@ The rule applies to all OData V2 page types:
 
 When both `inlineDelete: true` and `multiSelect: true` are found in the same `tableSettings` block, the rule emits a warning.
 
-### Warning Message: `inlineDelete` and `multiSelect` cannot both be enabled in the same table settings. The application will fail to load
+### Warning Message: `inlineDelete` and `multiSelect` cannot both be enabled in the same table settings.
 
 The following patterns are considered warnings:
 
