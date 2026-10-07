@@ -1,5 +1,17 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.74
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Bug Fixes
+
+- support corrected ADT source template ID alongside legacy typo for backward compatibility [[f8a6f21](https://github.com/SAP/open-ux-tools/commit/f8a6f21e328d4b1aacb675bbf0294d7f4073b6b1)]
+
 ## 1.2.73
 
 ### Patch Changes
