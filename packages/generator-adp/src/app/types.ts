@@ -200,9 +200,11 @@ export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
  */
 export enum keyUserPromptNames {
     keyUserSystem = 'keyUserSystem',
+    keyUserSystemValidationCli = 'keyUserSystemValidationCli',
     keyUserUsername = 'keyUserUsername',
     keyUserPassword = 'keyUserPassword',
     keyUserAdaptation = 'keyUserAdaptation',
+    keyUserAdaptationValidationCli = 'keyUserAdaptationValidationCli',
     keyUserRestrictedViewsLabel = 'keyUserRestrictedViewsLabel'
 }
 
@@ -235,9 +237,11 @@ export interface KeyUserRestrictedViewsLabelPromptOptions {
  */
 export type KeyUserImportPromptOptions = Partial<{
     [keyUserPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserPromptNames.keyUserSystemValidationCli]: CliValidationPromptOptions;
     [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
     [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
     [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+    [keyUserPromptNames.keyUserAdaptationValidationCli]: CliValidationPromptOptions;
     [keyUserPromptNames.keyUserRestrictedViewsLabel]: KeyUserRestrictedViewsLabelPromptOptions;
 }>;
 

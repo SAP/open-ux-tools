@@ -132,12 +132,14 @@ describe('KeyUserImportPrompter', () => {
     describe('getPrompts', () => {
         it('should return all prompts by default', () => {
             const prompts = prompter.getPrompts();
-            expect(prompts).toHaveLength(5);
+            expect(prompts).toHaveLength(7);
             expect(prompts.map((p) => p.name)).toEqual([
                 keyUserPromptNames.keyUserSystem,
+                keyUserPromptNames.keyUserSystemValidationCli,
                 keyUserPromptNames.keyUserUsername,
                 keyUserPromptNames.keyUserPassword,
                 keyUserPromptNames.keyUserAdaptation,
+                keyUserPromptNames.keyUserAdaptationValidationCli,
                 keyUserPromptNames.keyUserRestrictedViewsLabel
             ]);
         });
@@ -147,10 +149,12 @@ describe('KeyUserImportPrompter', () => {
                 [keyUserPromptNames.keyUserSystem]: { hide: true },
                 [keyUserPromptNames.keyUserPassword]: { hide: true }
             });
-            expect(prompts).toHaveLength(3);
+            expect(prompts).toHaveLength(5);
             expect(prompts.map((p) => p.name)).toEqual([
+                keyUserPromptNames.keyUserSystemValidationCli,
                 keyUserPromptNames.keyUserUsername,
                 keyUserPromptNames.keyUserAdaptation,
+                keyUserPromptNames.keyUserAdaptationValidationCli,
                 keyUserPromptNames.keyUserRestrictedViewsLabel
             ]);
         });
@@ -227,6 +231,46 @@ describe('KeyUserImportPrompter', () => {
             getKeyUserDataMock.mockResolvedValue({ contents: mockKeyUserChanges });
 
             expect(await resolveLabelWhen()).toBe(false);
+        });
+    });
+
+    describe('CLI validation prompts', () => {
+        const getPromptWhen = (name: string): ((answers: unknown) => Promise<boolean>) => {
+            const prompt = prompter.getPrompts().find((p) => p.name === name);
+            return prompt?.when as (answers: unknown) => Promise<boolean>;
+        };
+
+        beforeEach(() => {
+            getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
+            listAdaptationsMock.mockResolvedValue({ adaptations: mockAdaptations });
+        });
+
+        it('should load the key-user changes via the system validation prompt (list validate does not run in CLI)', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [{ content: { changeType: 'updateVariant', content: { contexts: { role: ['someRole'] } } } }]
+            });
+
+            const when = getPromptWhen(keyUserPromptNames.keyUserSystemValidationCli);
+            const shown = await when({ keyUserSystem: defaultSystem });
+
+            expect(shown).toBe(false);
+            expect(prompter.changes).toHaveLength(1);
+            expect(prompter.detectRestrictedViews()).toBe(true);
+        });
+
+        it('should skip the system validation prompt when no system is selected', async () => {
+            const when = getPromptWhen(keyUserPromptNames.keyUserSystemValidationCli);
+
+            expect(await when({ keyUserSystem: '' })).toBe(false);
+            expect(getFlexVersionsMock).not.toHaveBeenCalled();
+        });
+
+        it('should throw from the system validation prompt when validation fails', async () => {
+            listAdaptationsMock.mockResolvedValue({ adaptations: [] });
+
+            const when = getPromptWhen(keyUserPromptNames.keyUserSystemValidationCli);
+
+            await expect(when({ keyUserSystem: defaultSystem })).rejects.toThrow();
         });
     });
 

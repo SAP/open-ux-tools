@@ -342,7 +342,10 @@ export default class extends Generator {
                     this.logger
                 );
                 const keyUserQuestions = this.keyUserPrompter.getPrompts({
-                    keyUserSystem: { default: this.configAnswers.system }
+                    keyUserSystem: { default: this.configAnswers.system },
+                    keyUserSystemValidationCli: { hide: !this.isCli },
+                    keyUserAdaptationValidationCli: { hide: !this.isCli },
+                    keyUserRestrictedViewsLabel: { hide: this.isCli }
                 });
                 await this.prompt(keyUserQuestions);
             }
@@ -487,6 +490,12 @@ export default class extends Generator {
                 .catch((error) => {
                     this.logger.error(`Failed to send telemetry: ${error}`);
                 });
+        }
+
+        if (this.isCli && this.keyUserPrompter?.detectRestrictedViews()) {
+            this.logger.warn(
+                `${t('prompts.keyUserRestrictedViewsLabel')} ${t('prompts.keyUserRestrictedViewsDocLink')}`
+            );
         }
 
         if (this.isCli || this.isCfEnv || this.shouldCreateExtProject) {

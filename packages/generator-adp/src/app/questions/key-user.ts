@@ -123,6 +123,7 @@ export class KeyUserImportPrompter {
     getPrompts(promptOptions?: KeyUserImportPromptOptions): KeyUserImportQuestion[] {
         const keyedPrompts: Record<keyUserPromptNames, KeyUserImportQuestion> = {
             [keyUserPromptNames.keyUserSystem]: this.getSystemPrompt(promptOptions?.[keyUserPromptNames.keyUserSystem]),
+            [keyUserPromptNames.keyUserSystemValidationCli]: this.getSystemValidationPromptForCli(),
             [keyUserPromptNames.keyUserUsername]: this.getUsernamePrompt(
                 promptOptions?.[keyUserPromptNames.keyUserUsername]
             ),
@@ -132,6 +133,7 @@ export class KeyUserImportPrompter {
             [keyUserPromptNames.keyUserAdaptation]: this.getAdaptationPrompt(
                 promptOptions?.[keyUserPromptNames.keyUserAdaptation]
             ),
+            [keyUserPromptNames.keyUserAdaptationValidationCli]: this.getAdaptationValidationPromptForCli(),
             [keyUserPromptNames.keyUserRestrictedViewsLabel]: this.getRestrictedViewsLabelPrompt()
         };
 
@@ -237,6 +239,53 @@ export class KeyUserImportPrompter {
     }
 
     /**
+     * Only used in the CLI context: the system prompt is of type `list`, whose `validate` does not
+     * run on CLI, so the key-user data (flex versions, adaptations and — for a single DEFAULT
+     * adaptation — the changes) would never be loaded. This hidden prompt triggers that loading
+     * once the system has been selected.
+     *
+     * @returns {KeyUserImportQuestion} Dummy prompt that runs in the CLI only.
+     */
+    private getSystemValidationPromptForCli(): KeyUserImportQuestion {
+        return {
+            name: keyUserPromptNames.keyUserSystemValidationCli,
+            when: async (answers: KeyUserImportAnswers): Promise<boolean> => {
+                if (!answers.keyUserSystem) {
+                    return false;
+                }
+                const result = await this.validateSystem(answers.keyUserSystem, answers);
+                if (typeof result === 'string') {
+                    throw new Error(result);
+                }
+                return false;
+            }
+        } as KeyUserImportQuestion;
+    }
+
+    /**
+     * Only used in the CLI context: the adaptation prompt is of type `list`, whose `validate` does
+     * not run on CLI, so the key-user changes for the selected adaptation would never be loaded.
+     * This hidden prompt triggers that loading once an adaptation has been selected.
+     *
+     * @returns {KeyUserImportQuestion} Dummy prompt that runs in the CLI only.
+     */
+    private getAdaptationValidationPromptForCli(): KeyUserImportQuestion {
+        return {
+            name: keyUserPromptNames.keyUserAdaptationValidationCli,
+            when: async (answers: KeyUserImportAnswers): Promise<boolean> => {
+                if (this.adaptations.length <= 1) {
+                    return false;
+                }
+                const result = await this.validateKeyUserChanges(answers.keyUserAdaptation?.id);
+                if (typeof result === 'string') {
+                    throw new Error(result);
+                }
+                return false;
+            }
+        } as KeyUserImportQuestion;
+    }
+
+    /**
      * Returns the restricted views label prompt.
      *
      * @returns {KeyUserImportQuestion} The restricted views label prompt.
@@ -249,7 +298,7 @@ export class KeyUserImportPrompter {
             guiOptions: {
                 type: 'label',
                 link: {
-                    text: 'documentation.',
+                    text: t('prompts.keyUserRestrictedViewsLinkText'),
                     // Placeholder URL - replace with the real ADP restricted-views documentation link
                     url: 'https://help.sap.com/docs/'
                 }
@@ -437,7 +486,7 @@ export class KeyUserImportPrompter {
      *
      * @returns {boolean} `true` if at least one change has a restricted view.
      */
-    private detectRestrictedViews(): boolean {
+    detectRestrictedViews(): boolean {
         return this.keyUserChanges.some((change) => {
             if (isViewRestrictionOnlyChange(change.content)) {
                 return true;
