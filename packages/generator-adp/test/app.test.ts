@@ -51,6 +51,7 @@ const mockIsCfInstalled = jest.fn<typeof realAdpTooling.isCfInstalled>();
 const mockLoadCfConfig = jest.fn<typeof realAdpTooling.loadCfConfig>();
 const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
 const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
 const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
 const mockGetApprouterType = jest.fn<typeof realAdpTooling.getApprouterType>();
 const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
@@ -158,6 +159,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     loadCfConfig: mockLoadCfConfig,
     isLoggedInCf: mockIsLoggedInCf,
     getMtaServices: mockGetMtaServices,
+    getAdpServiceInstances: mockGetAdpServiceInstances,
     getModuleNames: mockGetModuleNames,
     getApprouterType: mockGetApprouterType,
     hasApprouter: mockHasApprouter,
@@ -257,7 +259,7 @@ const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 const { default: adpGenerator } = await import('../src/app/index.js');
 const { ConfigPrompter } = await import('../src/app/questions/configuration.js');
 const { KeyUserImportPrompter } = await import('../src/app/questions/key-user.js');
-const { TargetEnv } = await import('../src/app/types.js');
+const { TargetEnv, MtaMode } = await import('../src/app/types.js');
 const { EventName } = await import('../src/telemetry/index.js');
 const { initI18n, t } = await import('../src/utils/i18n.js');
 const { workspaceChoices } = await import('../src/utils/workspace.js');
@@ -1083,6 +1085,42 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect.any(String)
             );
             expect(executeCommandSpy).not.toHaveBeenCalled();
+        });
+
+        it('should bind a live CF service instance for a new MTA without a declared service', async () => {
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({
+                    ...answersCf,
+                    projectLocation: cfTestOutputDir,
+                    mtaMode: MtaMode.New,
+                    mtaId: 'my-mta',
+                    businessService: undefined,
+                    serviceInstance: { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
+                });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['my-instance'] },
+                expect.any(Object)
+            );
+            expect(mockGenerateCf).toHaveBeenCalledWith(
+                join(cfTestOutputDir, 'my-mta'),
+                expect.any(Object),
+                expect.any(Object),
+                expect.any(Object)
+            );
         });
 
         it('should call composeWith for FLP sub-generator when CF inbounds are available', async () => {

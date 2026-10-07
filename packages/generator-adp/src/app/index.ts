@@ -71,14 +71,16 @@ import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/d
 import { validateJsonInput } from './questions/helper/validators.js';
 import {
     TargetEnv,
+    MtaMode,
     type TargetEnvAnswers,
     type AdpGeneratorOptions,
     type AttributePromptOptions,
     type JsonInput,
     type JsonInputFile,
-    type OptionalPromptsConfig
+    type OptionalPromptsConfig,
+    type ProjectLocationAnswers
 } from './types.js';
-import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
+import { getMtaIdPrompt, getMtaModePrompt, getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
 import type { AdpTelemetryData } from '../types.js';
 import { KeyUserImportPrompter } from './questions/key-user.js';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
@@ -509,6 +511,10 @@ export default class extends Generator {
 
     /**
      * Prompts the user for the CF project path.
+     *
+     * Offers a choice between creating a new MTA project (the generator scaffolds the folder and,
+     * during writing, its `mta.yaml`) or reusing an existing one. For a new MTA project the selected
+     * folder is the parent directory and the entered MTA name becomes the project folder.
      */
     private async _promptForCfProjectPath(): Promise<void> {
         if (this.isMtaYamlFound) {
@@ -516,8 +522,17 @@ export default class extends Generator {
             getYamlContent(join(path, 'mta.yaml'));
             this.logger.log(`Project path information: ${path}`);
         } else {
-            const pathAnswers = await this.prompt([getProjectPathPrompt(this.logger, this.vscode)]);
-            const path = this.destinationRoot(fs.realpathSync(pathAnswers.projectLocation, 'utf-8'));
+            const pathAnswers = await this.prompt<ProjectLocationAnswers>([
+                getMtaModePrompt(),
+                getProjectPathPrompt(this.logger, this.vscode),
+                getMtaIdPrompt()
+            ]);
+            const selectedLocation = fs.realpathSync(pathAnswers.projectLocation, 'utf-8');
+            const resolvedRoot =
+                pathAnswers.mtaMode === MtaMode.New && pathAnswers.mtaId
+                    ? join(selectedLocation, pathAnswers.mtaId)
+                    : selectedLocation;
+            const path = this.destinationRoot(resolvedRoot);
             this.logger.log(`Project path information: ${path}`);
         }
     }
@@ -535,6 +550,7 @@ export default class extends Generator {
         if (this.isCfEnv) {
             telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
             telemetryData.projectType = 'cf';
+            telemetryData.cfServiceOffering = this.cfServicesAnswers?.serviceInstance?.service ?? '';
         } else {
             telemetryData.projectType =
                 this._getProjectType() === AdaptationProjectType.CLOUD_READY ? 'cloudReady' : 'onPremise';
@@ -689,9 +705,13 @@ export default class extends Generator {
         const backendUrls = this.cfPrompter.backendUrls;
         const oauthPaths = this.cfPrompter.oauthPaths;
 
+        // In new-MTA / no-existing-service modes the businessService prompt is hidden; use the
+        // selected live service instance name to resolve/create the service keys instead.
+        const businessServiceName =
+            this.cfServicesAnswers.businessService || this.cfServicesAnswers.serviceInstance?.name || '';
         const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
-                names: [this.cfServicesAnswers.businessService ?? '']
+                names: [businessServiceName]
             },
             this.logger
         );

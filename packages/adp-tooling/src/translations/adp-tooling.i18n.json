@@ -97,6 +97,7 @@
         "failedToGetServiceInstanceKeys": "Failed to retrieve the service instance keys. Error: {{error}}",
         "noValidJsonForServiceInstance": "The JSON is not valid for the service instance. Ensure it is valid and try again.",
         "failedToGetServiceInstance": "Failed to retrieve the service instance with params: {{uriParameters}}. Error: {{error}}",
+        "failedToGetAdpServiceInstances": "Failed to retrieve the CF service instances. Error: {{error}}",
         "failedToGetOrCreateServiceKeys": "Failed to retrieve or create service keys for the instance: {{serviceInstanceName}}. Error: {{error}}",
         "mtaProjectPathMissing": "The MTA project path is missing. Provide the path to a valid MTA project.",
         "noBusinessServicesFound": "No business services found. Specify the business services in the resource section of the mta.yaml file: - name: <arbitrary name of resource such as my_service> type: org.cloudfoundry.<managed|existing>-service parameters: service: <business service name such as my-service-name> service-name: <business service instance name such as my_service_instance_name> service-plan: <plan name such as standard>",

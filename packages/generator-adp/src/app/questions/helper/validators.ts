@@ -1,11 +1,13 @@
 import fs from 'node:fs';
+import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getMtaServices, isMtaProject } from '@sap-ux/adp-tooling';
+import { isMtaProject } from '@sap-ux/adp-tooling';
 import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n.js';
+import { MtaMode } from '../../types.js';
 import { isString } from '../../../utils/type-guards.js';
 
 interface JsonInputParams {
@@ -112,13 +114,23 @@ export async function validateEnvironment(
 }
 
 /**
- * Validates the project path.
+ * Validates the project path for the CF Project Path page.
  *
- * @param {string} projectPath - The path to the project.
+ * In `existing` mode the path must be an existing MTA project; a missing service definition is no
+ * longer an error since the new service-instance dropdown lets the developer bind one. In `new`
+ * mode the path is the parent folder in which a new MTA project will be scaffolded, so it only has
+ * to exist (the MTA name/uniqueness is validated by the dedicated name prompt).
+ *
+ * @param {string} projectPath - The path to the project (existing MTA root, or parent folder for new).
  * @param {ToolsLogger} logger - The logger.
+ * @param {MtaMode} [mtaMode] - The selected MTA mode; defaults to `existing`.
  * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
  */
-export async function validateProjectPath(projectPath: string, logger: ToolsLogger): Promise<string | boolean> {
+export async function validateProjectPath(
+    projectPath: string,
+    logger: ToolsLogger,
+    mtaMode: MtaMode = MtaMode.Existing
+): Promise<string | boolean> {
     const validationResult = validateEmptyString(projectPath);
     if (typeof validationResult === 'string') {
         return validationResult;
@@ -128,18 +140,40 @@ export async function validateProjectPath(projectPath: string, logger: ToolsLogg
         return t('error.projectDoesNotExist');
     }
 
+    if (mtaMode === MtaMode.New) {
+        return true;
+    }
+
     if (!isMtaProject(projectPath)) {
         return t('error.projectDoesNotExistMta');
     }
 
-    try {
-        const services = await getMtaServices(projectPath, logger);
-        if (services.length < 1) {
-            return t('error.noAdaptableBusinessServiceFoundInMta');
-        }
-    } catch (e) {
-        logger?.error(`Failed to get MTA services: ${e.message}`);
-        return t('error.noAdaptableBusinessServiceFoundInMta');
+    return true;
+}
+
+/**
+ * Validates the MTA project name entered when creating a new MTA project.
+ *
+ * Ensures the name is non-empty, uses only allowed characters (letters, numbers, dots,
+ * underscores, hyphens; starting with a letter or number) and that no folder with that name
+ * already exists in the selected parent location.
+ *
+ * @param {string} value - The MTA project name to validate.
+ * @param {string} [parentPath] - The parent folder the new MTA project will be created in.
+ * @returns {string | boolean} Returns true if valid, otherwise an error message.
+ */
+export function validateMtaId(value: string, parentPath?: string): string | boolean {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(value)) {
+        return t('error.mtaIdInvalid');
+    }
+
+    if (parentPath && fs.existsSync(join(parentPath, value))) {
+        return t('error.mtaIdAlreadyExists');
     }
 
     return true;

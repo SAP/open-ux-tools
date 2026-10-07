@@ -213,6 +213,11 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
 
     const ui5Version = getLatestVersion(params.publicVersions);
 
+    // In new-MTA / no-existing-service modes the businessService prompt is hidden and the selected
+    // live service instance drives everything, so fall back to its name.
+    const serviceInstance = params.cfServicesAnswers.serviceInstance;
+    const businessService = params.cfServicesAnswers.businessService || serviceInstance?.name || '';
+
     return {
         app: {
             id: baseApp.appId,
@@ -228,13 +233,14 @@ export function getCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
             space: params.cfConfig.space,
             html5RepoRuntimeGuid: params.html5RepoRuntimeGuid,
             approuter: params.cfServicesAnswers.approuter ?? AppRouterType.MANAGED,
-            businessService: params.cfServicesAnswers.businessService ?? '',
+            businessService,
             businessSolutionName: params.cfServicesAnswers.businessSolutionName,
             serviceInstanceGuid: params.serviceInstanceGuid,
             backendUrls: params.backendUrls,
             oauthPaths: params.oauthPaths,
             serviceInfo: params.serviceInfo,
-            spaceGuid: params.spaceGuid
+            spaceGuid: params.spaceGuid,
+            existingService: serviceInstance
         },
         project: {
             name: params.attributeAnswers.projectName,

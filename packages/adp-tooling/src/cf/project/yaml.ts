@@ -12,6 +12,7 @@ import type {
     MtaResource,
     MtaRequire,
     CfUI5Yaml,
+    CfServiceInstanceChoice,
     MtaYaml,
     ServiceKeys
 } from '../../types.js';
@@ -21,6 +22,7 @@ import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader.js';
 import { getServiceKeyDestinations } from '../app/discovery.js';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
+const CF_EXISTING_SERVICE = 'org.cloudfoundry.existing-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
 const SAP_APPLICATION_CONTENT = 'com.sap.application.content';
 
@@ -42,6 +44,72 @@ interface AdjustMtaYamlParams {
  */
 export function isMtaProject(selectedPath: string): boolean {
     return fs.existsSync(path.join(selectedPath, 'mta.yaml'));
+}
+
+/**
+ * Appends an `org.cloudfoundry.existing-service` resource for a live CF service instance to the
+ * project's `mta.yaml`, binding the ADP project to that instance without any manual yaml edits.
+ *
+ * Reads and writes through the mem-fs editor so it composes with {@link adjustMtaYaml} (which also
+ * writes to mem-fs) when called afterwards. The resource name defaults to the instance name; if a
+ * resource with that name already exists a short numeric suffix is appended to keep names unique.
+ * Idempotent: skips when an equivalent existing-service resource is already present.
+ *
+ * @param {string} projectPath - The root path of the MTA project.
+ * @param {CfServiceInstanceChoice} instance - The selected service instance (name, offering, plan).
+ * @param {Editor} memFs - The mem-fs editor instance.
+ * @param {ToolsLogger} [logger] - Optional logger.
+ */
+export function addExistingServiceToMta(
+    projectPath: string,
+    instance: CfServiceInstanceChoice,
+    memFs: Editor,
+    logger?: ToolsLogger
+): void {
+    const mtaYamlPath = path.join(projectPath, 'mta.yaml');
+    if (!memFs.exists(mtaYamlPath)) {
+        logger?.debug(`No mta.yaml found at ${mtaYamlPath}, skipping existing-service resource`);
+        return;
+    }
+
+    const yamlContent = yaml.load(memFs.read(mtaYamlPath)) as MtaYaml;
+    if (!yamlContent) {
+        return;
+    }
+
+    yamlContent.resources = yamlContent.resources ?? [];
+
+    const alreadyBound = yamlContent.resources.some(
+        (resource: MtaResource) =>
+            resource.type === CF_EXISTING_SERVICE && resource.parameters?.['service-name'] === instance.name
+    );
+    if (alreadyBound) {
+        logger?.debug(`Existing-service resource for '${instance.name}' already present, skipping`);
+        return;
+    }
+
+    let resourceName = instance.name;
+    const existingNames = new Set(yamlContent.resources.map((resource: MtaResource) => resource.name));
+    if (existingNames.has(resourceName)) {
+        let suffix = 1;
+        while (existingNames.has(`${instance.name}-${suffix}`)) {
+            suffix++;
+        }
+        resourceName = `${instance.name}-${suffix}`;
+    }
+
+    yamlContent.resources.push({
+        name: resourceName,
+        type: CF_EXISTING_SERVICE,
+        parameters: {
+            service: instance.service,
+            'service-plan': instance.servicePlan,
+            'service-name': instance.name
+        }
+    });
+
+    memFs.write(mtaYamlPath, yaml.dump(yamlContent, { lineWidth: -1 }));
+    logger?.debug(`Added existing-service resource '${resourceName}' for instance '${instance.name}'`);
 }
 
 /**
@@ -501,7 +569,9 @@ export async function adjustMtaYaml(
     logger?: ToolsLogger
 ): Promise<MtaYaml> {
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
-    const loadedYamlContent = getYamlContent(mtaYamlPath);
+    // Tolerate a missing mta.yaml so the new-MTA flow (no yaml yet) falls back to the default
+    // scaffold; existing MTA projects still read their yaml from disk as before.
+    const loadedYamlContent = memFs.exists(mtaYamlPath) ? getYamlContent<MtaYaml>(mtaYamlPath) : undefined;
 
     const defaultYaml: MtaYaml = {
         ID: projectPath.split(path.sep).pop() ?? '',
@@ -512,7 +582,7 @@ export async function adjustMtaYaml(
     };
 
     if (!appRouterType) {
-        appRouterType = getRouterType(loadedYamlContent);
+        appRouterType = getRouterType(loadedYamlContent ?? defaultYaml);
     }
 
     const yamlContent = Object.assign(defaultYaml, loadedYamlContent);

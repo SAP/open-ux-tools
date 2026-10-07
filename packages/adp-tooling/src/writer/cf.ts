@@ -8,6 +8,7 @@ import { readUi5Yaml } from '@sap-ux/project-access';
 
 import {
     adjustMtaYaml,
+    addExistingServiceToMta,
     getOrCreateServiceInstanceKeys,
     getCfUi5AppInfo,
     getProjectNameForXsSecurity
@@ -60,6 +61,12 @@ export async function generateCf(
         config.options?.templatePathOverwrite,
         logger
     );
+
+    // Bind the ADP project to the selected live CF service instance by appending an
+    // `org.cloudfoundry.existing-service` resource. Skipped in the reuse case (existingService unset).
+    if (cf.existingService) {
+        addExistingServiceToMta(basePath, cf.existingService, fs, logger);
+    }
 
     if (fullConfig.app.i18nModels) {
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);

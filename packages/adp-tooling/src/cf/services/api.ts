@@ -18,6 +18,7 @@ import type {
     GetServiceInstanceParams,
     ServiceInstance,
     CfServiceInstance,
+    CfServiceInstanceChoice,
     MtaYaml,
     ServiceInfo,
     CfUi5AppInfo,
@@ -47,6 +48,98 @@ const PARAM_MAP: Map<string, string> = new Map([
     ['planNames', 'service_plan_names'],
     ['names', 'names']
 ]);
+
+/**
+ * Service offerings that must not be offered as bindable ADP service instances.
+ */
+const EXCLUDED_SERVICE_OFFERINGS = new Set(['destination', 'xsuaa', 'html5-apps-repo']);
+
+/**
+ * A CF v3 service_plan resource as returned in the `included` block of an expanded query.
+ */
+interface CfIncludedServicePlan {
+    guid: string;
+    name: string;
+    relationships: {
+        service_offering: {
+            data: {
+                guid: string;
+            };
+        };
+    };
+}
+
+/**
+ * A CF v3 service_offering resource as returned in the `included` block of an expanded query.
+ */
+interface CfIncludedServiceOffering {
+    guid: string;
+    name: string;
+}
+
+/**
+ * CF v3 service_instances response with expanded service_plan and service_offering fields.
+ */
+interface CfServiceInstancesExpandedResponse extends CfAPIResponse<CfServiceInstance> {
+    included?: {
+        service_plans?: CfIncludedServicePlan[];
+        service_offerings?: CfIncludedServiceOffering[];
+    };
+}
+
+/**
+ * Lists the live managed CF service instances in a space that can be bound to an ADP project.
+ *
+ * Uses CF v3 field expansion to resolve each instance's plan name and offering name in a single
+ * call, then filters out offerings that are not meaningful ADP bindings (destination, xsuaa,
+ * html5-apps-repo).
+ *
+ * @param {string} spaceGuid - The space GUID to scope the query to.
+ * @param {ToolsLogger} [logger] - Optional logger.
+ * @returns {Promise<CfServiceInstanceChoice[]>} The bindable service instances with offering + plan.
+ */
+export async function getAdpServiceInstances(
+    spaceGuid: string,
+    logger?: ToolsLogger
+): Promise<CfServiceInstanceChoice[]> {
+    try {
+        const uri =
+            `/v3/service_instances?type=managed&space_guids=${spaceGuid}` +
+            `&fields[service_plan]=name,guid,relationships.service_offering` +
+            `&fields[service_plan.service_offering]=name,guid&per_page=1000`;
+        const json = await requestCfApi<CfServiceInstancesExpandedResponse>(uri);
+
+        const plansByGuid = new Map<string, CfIncludedServicePlan>(
+            (json.included?.service_plans ?? []).map((plan) => [plan.guid, plan])
+        );
+        const offeringsByGuid = new Map<string, CfIncludedServiceOffering>(
+            (json.included?.service_offerings ?? []).map((offering) => [offering.guid, offering])
+        );
+
+        const instances: CfServiceInstanceChoice[] = [];
+        for (const instance of json.resources ?? []) {
+            const plan = plansByGuid.get(instance.relationships?.service_plan?.data?.guid ?? '');
+            const offering = offeringsByGuid.get(plan?.relationships?.service_offering?.data?.guid ?? '');
+            const offeringName = offering?.name ?? '';
+
+            if (!offeringName || EXCLUDED_SERVICE_OFFERINGS.has(offeringName)) {
+                continue;
+            }
+
+            instances.push({
+                name: instance.name,
+                service: offeringName,
+                servicePlan: plan?.name ?? ''
+            });
+        }
+
+        return instances.sort((a, b) => a.name.localeCompare(b.name));
+    } catch (e) {
+        const errorMessage = t('error.failedToGetAdpServiceInstances', { error: e.message });
+        logger?.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+}
 
 /**
  * Get the business service info.
