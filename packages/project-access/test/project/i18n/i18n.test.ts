@@ -246,6 +246,60 @@ describe('Test getRelativeI18nPropertiesPaths()', () => {
         expect(result['sap.app.fallbackLocale']).toBeUndefined();
     });
 
+    test('fallbackLocale in sap.ui5 model uri', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        uri: 'i18n/i18n.properties',
+                        fallbackLocale: 'en'
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']).toEqual({
+            path: join('i18n/i18n.properties'),
+            fallbackLocalePath: join('i18n/i18n_en.properties')
+        });
+    });
+
+    test('Empty string fallbackLocale in sap.ui5 model uri is ignored', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        uri: 'i18n/i18n.properties',
+                        fallbackLocale: ''
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']?.fallbackLocalePath).toBeUndefined();
+    });
+
+    test('Path traversal in sap.ui5 model uri fallbackLocale is rejected', () => {
+        const manifest = {
+            'sap.app': { id: 'sample.app' },
+            'sap.ui5': {
+                models: {
+                    i18n: {
+                        type: 'sap.ui.model.resource.ResourceModel',
+                        uri: 'i18n/i18n.properties',
+                        fallbackLocale: '../../../../etc/passwd'
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        const result = getRelativeI18nPropertiesPaths(manifest);
+        expect(result.models['i18n']?.fallbackLocalePath).toBeUndefined();
+    });
+
     test('Path traversal in model settings fallbackLocale is rejected', () => {
         const manifest = {
             'sap.app': { id: 'sample.app', i18n: 'i18n/i18n.properties' },
