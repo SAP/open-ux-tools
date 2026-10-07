@@ -122,7 +122,13 @@ export class ProjectAccess {
         if (isReuseLib === undefined) {
             isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType, manifest);
         }
-        if (manifest && !isReuseLib && !isProjectExtension) {
+
+        // Check if it's an adaptation project BEFORE deciding it's a regular project
+        // Adaptation projects have manifests but should use processAdaptationProject
+        const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
+        const isAdaptationProject = adaptationCheck !== undefined;
+
+        if (manifest && !isReuseLib && !isProjectExtension && !isAdaptationProject) {
             const result = await processRegularProject({
                 projectRoot,
                 manifest,

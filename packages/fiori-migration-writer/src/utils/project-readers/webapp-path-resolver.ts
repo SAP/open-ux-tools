@@ -107,6 +107,17 @@ export async function getWebappPath(projectRoot: string, type?: MigrationTypes, 
         return '';
     }
 
+    // Check for legacy Maven/Java structure: src/main/webapp
+    const legacyMavenPath = join('src', 'main', DirName.Webapp);
+    const legacyMavenFullPath = join(projectRoot, legacyMavenPath);
+    if (await fileExists(legacyMavenFullPath)) {
+        // Verify it actually has webapp content (manifest.json)
+        const legacyManifestPath = join(legacyMavenFullPath, FileName.Manifest);
+        if (await fileExists(legacyManifestPath)) {
+            return legacyMavenPath;
+        }
+    }
+
     // Try library-specific path
     if (type === MigrationTypes.library) {
         const libWebappPath = resolveForLibrary(projectRoot, libPath);

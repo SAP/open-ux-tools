@@ -46,7 +46,14 @@ export async function handlePackageJsonFile(
         return templateContent;
     }
 
-    const currentFileContent = await readJSON(targetFile);
+    let currentFileContent: any;
+    try {
+        currentFileContent = await readJSON(targetFile);
+    } catch (error) {
+        // If file can't be read (shouldn't happen after fileExists check, but handle it anyway)
+        // This can occur in legacy projects where package.json doesn't exist yet
+        return templateContent;
+    }
     const templateContentJSON = JSON.parse(templateContent);
 
     // Rename old scripts that have same name as new ones

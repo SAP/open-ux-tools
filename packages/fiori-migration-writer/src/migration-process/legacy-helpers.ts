@@ -94,82 +94,84 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
 
     // Move webapp files from src/main/webapp to webapp
     if (exists(paths.ffLegacyWebappPath)) {
-        // Get all files from mem-fs store
-        // Note: paths in mem-fs might not have leading slash, so normalize
-        const allFiles = (fs as any).dump('/');
-        const normalizedLegacyPath = paths.ffLegacyWebappPath.startsWith('/')
-            ? paths.ffLegacyWebappPath.substring(1)
-            : paths.ffLegacyWebappPath;
+        // Iterate through all files in mem-fs store
+        // mem-fs stores files with absolute paths as keys
+        const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
-        const legacyFiles = Object.entries(allFiles).filter(
-            ([path]) => path.startsWith(normalizedLegacyPath + '/') || path.startsWith(paths.ffLegacyWebappPath + '/')
-        );
+        (fs as any).store.each((file: any) => {
+            const filePath = file.path;
 
-        for (const [filePath, _content] of legacyFiles) {
-            // Calculate relative path - handle both with and without leading slash
-            const basePath = filePath.startsWith(normalizedLegacyPath + '/')
-                ? normalizedLegacyPath
-                : paths.ffLegacyWebappPath;
-            const relativePath = filePath.substring(basePath.length + 1);
-            const newPath = join(rootPath, DirName.Webapp, relativePath);
+            // Check if this file is under the legacy webapp path
+            if (filePath === paths.ffLegacyWebappPath || filePath.startsWith(paths.ffLegacyWebappPath + '/')) {
+                // Calculate relative path from legacy webapp
+                const relativePath = filePath === paths.ffLegacyWebappPath
+                    ? ''
+                    : filePath.substring(paths.ffLegacyWebappPath.length + 1);
+                const newPath = relativePath
+                    ? join(rootPath, DirName.Webapp, relativePath)
+                    : join(rootPath, DirName.Webapp);
 
-            // Ensure file path has leading slash for fs.read()
-            const readPath = filePath.startsWith('/') ? filePath : '/' + filePath;
-            const fileContent = fs.read(readPath);
+                filesToMove.push({ oldPath: filePath, newPath });
+            }
+        });
+
+        // Move files (do this after iteration to avoid modifying during iteration)
+        for (const { oldPath, newPath } of filesToMove) {
+            const fileContent = fs.read(oldPath);
             fs.write(newPath, fileContent);
-            fs.delete(readPath);
+            fs.delete(oldPath);
         }
     }
 
     // Move test/qunit to webapp/test
     if (exists(paths.ffLegacyTestQunitPath)) {
-        const allFiles = (fs as any).dump('/');
-        const normalizedLegacyPath = paths.ffLegacyTestQunitPath.startsWith('/')
-            ? paths.ffLegacyTestQunitPath.substring(1)
-            : paths.ffLegacyTestQunitPath;
+        const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
-        const legacyFiles = Object.entries(allFiles).filter(
-            ([path]) =>
-                path.startsWith(normalizedLegacyPath + '/') || path.startsWith(paths.ffLegacyTestQunitPath + '/')
-        );
+        (fs as any).store.each((file: any) => {
+            const filePath = file.path;
 
-        for (const [filePath, _content] of legacyFiles) {
-            const basePath = filePath.startsWith(normalizedLegacyPath + '/')
-                ? normalizedLegacyPath
-                : paths.ffLegacyTestQunitPath;
-            const relativePath = filePath.substring(basePath.length + 1);
-            const newPath = join(paths.ffNewTestPath, 'qunit', relativePath);
+            if (filePath === paths.ffLegacyTestQunitPath || filePath.startsWith(paths.ffLegacyTestQunitPath + '/')) {
+                const relativePath = filePath === paths.ffLegacyTestQunitPath
+                    ? ''
+                    : filePath.substring(paths.ffLegacyTestQunitPath.length + 1);
+                const newPath = relativePath
+                    ? join(paths.ffNewTestPath, 'qunit', relativePath)
+                    : join(paths.ffNewTestPath, 'qunit');
 
-            const readPath = filePath.startsWith('/') ? filePath : '/' + filePath;
-            const fileContent = fs.read(readPath);
+                filesToMove.push({ oldPath: filePath, newPath });
+            }
+        });
+
+        for (const { oldPath, newPath } of filesToMove) {
+            const fileContent = fs.read(oldPath);
             fs.write(newPath, fileContent);
-            fs.delete(readPath);
+            fs.delete(oldPath);
         }
     }
 
     // Move test/uiveri5 to webapp/test
     if (exists(paths.ffLegacyTestuiveri5Path)) {
-        const allFiles = (fs as any).dump('/');
-        const normalizedLegacyPath = paths.ffLegacyTestuiveri5Path.startsWith('/')
-            ? paths.ffLegacyTestuiveri5Path.substring(1)
-            : paths.ffLegacyTestuiveri5Path;
+        const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
-        const legacyFiles = Object.entries(allFiles).filter(
-            ([path]) =>
-                path.startsWith(normalizedLegacyPath + '/') || path.startsWith(paths.ffLegacyTestuiveri5Path + '/')
-        );
+        (fs as any).store.each((file: any) => {
+            const filePath = file.path;
 
-        for (const [filePath, _content] of legacyFiles) {
-            const basePath = filePath.startsWith(normalizedLegacyPath + '/')
-                ? normalizedLegacyPath
-                : paths.ffLegacyTestuiveri5Path;
-            const relativePath = filePath.substring(basePath.length + 1);
-            const newPath = join(paths.ffNewTestPath, 'uiveri5', relativePath);
+            if (filePath === paths.ffLegacyTestuiveri5Path || filePath.startsWith(paths.ffLegacyTestuiveri5Path + '/')) {
+                const relativePath = filePath === paths.ffLegacyTestuiveri5Path
+                    ? ''
+                    : filePath.substring(paths.ffLegacyTestuiveri5Path.length + 1);
+                const newPath = relativePath
+                    ? join(paths.ffNewTestPath, 'uiveri5', relativePath)
+                    : join(paths.ffNewTestPath, 'uiveri5');
 
-            const readPath = filePath.startsWith('/') ? filePath : '/' + filePath;
-            const fileContent = fs.read(readPath);
+                filesToMove.push({ oldPath: filePath, newPath });
+            }
+        });
+
+        for (const { oldPath, newPath } of filesToMove) {
+            const fileContent = fs.read(oldPath);
             fs.write(newPath, fileContent);
-            fs.delete(readPath);
+            fs.delete(oldPath);
         }
     }
 }

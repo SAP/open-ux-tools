@@ -384,8 +384,18 @@ export class ProjectMigrator {
      */
     private static async detectTypeScriptApp(rootPath: string, webappPath: string): Promise<boolean> {
         const webappFullPath = join(rootPath, webappPath);
+
+        // Try getAppProgrammingLanguage first (needs tsconfig.json and package.json)
+        let isTypeScript = false;
+        try {
+            isTypeScript = (await getAppProgrammingLanguage(rootPath)) === 'TypeScript';
+        } catch {
+            // Expected: getAppProgrammingLanguage may fail for legacy projects without package.json
+            // Will fall back to scanning for .ts files below
+        }
+
         return (
-            (await getAppProgrammingLanguage(rootPath)) === 'TypeScript' ||
+            isTypeScript ||
             (existsSync(webappFullPath) &&
                 readdirSync(webappFullPath, { recursive: true }).some(
                     (f) => typeof f === 'string' && f.endsWith('.ts') && !f.endsWith('.d.ts')
