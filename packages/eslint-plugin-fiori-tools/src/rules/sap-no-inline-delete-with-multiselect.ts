@@ -3,7 +3,13 @@ import { NO_INLINE_DELETE_WITH_MULTISELECT, type NoInlineDeleteWithMultiselect }
 import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
 import type { ParsedApp } from '../project-context/parser/index.js';
-import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App, Table } from '../project-context/linker/fe-v2.js';
+import type {
+    FeV2ListReport,
+    FeV2ObjectPage,
+    LinkedFeV2App,
+    Table,
+    TableSection
+} from '../project-context/linker/fe-v2.js';
 import { FioriJSONSourceCode } from '../language/json/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
@@ -18,7 +24,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [NO_INLINE_DELETE_WITH_MULTISELECT]:
-                '"inlineDelete" and "multiSelect" cannot both be enabled in the same table settings.'
+                '"inlineDelete" and "multiSelect" cannot both be enabled in the same {{sectionText}}table settings.'
         }
     },
 
@@ -42,7 +48,8 @@ const rule: FioriRuleDefinition = createFioriRule({
         function report(node: MemberNode): void {
             _context.report({
                 node,
-                messageId: NO_INLINE_DELETE_WITH_MULTISELECT
+                messageId: NO_INLINE_DELETE_WITH_MULTISELECT,
+                data: { sectionText: _diagnostic.pageSectionName ? `${_diagnostic.pageSectionName} ` : '' }
             });
         }
 });
@@ -119,7 +126,13 @@ function checkV2ObjectPage(
         });
     }
 
-    diagnostics.push(...checkTableSettings(page.lookup['table'] ?? [], page.targetName, parsedApp, sourceCode));
+    diagnostics.push(
+        ...page.sections
+            .filter((section): section is TableSection => section.type === 'table-section')
+            .flatMap((section) =>
+                checkTableSettings(section.children, page.targetName, parsedApp, sourceCode, section.annotation?.label)
+            )
+    );
 
     return diagnostics;
 }
@@ -131,13 +144,15 @@ function checkV2ObjectPage(
  * @param pageName - Name of the owning page (used in the diagnostic)
  * @param parsedApp - The parsed app metadata
  * @param sourceCode - The Fiori JSON source code instance
+ * @param pageSectionName - Optional name of the section containing the table
  * @returns Array of diagnostics for conflicting settings
  */
 function checkTableSettings(
     tables: Table[],
     pageName: string,
     parsedApp: ParsedApp,
-    sourceCode: FioriJSONSourceCode
+    sourceCode: FioriJSONSourceCode,
+    pageSectionName?: string
 ): NoInlineDeleteWithMultiselect[] {
     return tables.flatMap((table) => {
         if (
@@ -152,6 +167,7 @@ function checkTableSettings(
             {
                 type: NO_INLINE_DELETE_WITH_MULTISELECT,
                 pageName,
+                pageSectionName,
                 manifest: {
                     uri: parsedApp.manifest.manifestUri,
                     object: parsedApp.manifestObject,

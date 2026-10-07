@@ -41,6 +41,8 @@ const OP_SECTION_TABLE_SETTINGS_PATH = [
 ];
 // A section key that has no matching annotation — creates an orphan section
 const OP_ORPHAN_SECTION_TABLE_SETTINGS_PATH = [...OP_BASE_PATH, 'sections', 'SalesOrderItems', 'tableSettings'];
+// Section key using the facet ID ("Products") instead of the annotation-path key
+const OP_SECTION_FACET_ID_TABLE_SETTINGS_PATH = [...OP_BASE_PATH, 'sections', 'Products', 'tableSettings'];
 
 ruleTester.run(TEST_NAME, noInlineDeleteWithMultiselectRule, {
     valid: [
@@ -113,6 +115,16 @@ ruleTester.run(TEST_NAME, noInlineDeleteWithMultiselectRule, {
                 ])
             },
             []
+        ),
+        createValidTest(
+            {
+                name: 'V2 object page - only inlineDelete enabled at section-level tableSettings via facet ID key - no issue',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    { path: [...OP_SECTION_FACET_ID_TABLE_SETTINGS_PATH, 'inlineDelete'], value: true }
+                ])
+            },
+            []
         )
     ],
 
@@ -159,7 +171,25 @@ ruleTester.run(TEST_NAME, noInlineDeleteWithMultiselectRule, {
                 ]),
                 errors: [
                     {
-                        message: '"inlineDelete" and "multiSelect" cannot both be enabled in the same table settings.'
+                        message:
+                            '"inlineDelete" and "multiSelect" cannot both be enabled in the same Products table settings.'
+                    }
+                ]
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 object page - both inlineDelete and multiSelect enabled via facet ID section key',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    { path: [...OP_SECTION_FACET_ID_TABLE_SETTINGS_PATH, 'inlineDelete'], value: true },
+                    { path: [...OP_SECTION_FACET_ID_TABLE_SETTINGS_PATH, 'multiSelect'], value: true }
+                ]),
+                errors: [
+                    {
+                        message:
+                            '"inlineDelete" and "multiSelect" cannot both be enabled in the same Products table settings.'
                     }
                 ]
             },
