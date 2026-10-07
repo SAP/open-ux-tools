@@ -21,7 +21,7 @@
 		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
 	},
 	"devDependencies": {
-		"@sap-ux/create": "latest",
+		"@sap-ux/create": "1",
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
 		"@sapui5/ts-types": "^1.141.2",
 		"@sap/ux-ui5-tooling": "1",
