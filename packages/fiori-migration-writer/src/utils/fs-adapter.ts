@@ -70,7 +70,7 @@ export function isMemFsEnabled(): boolean {
  *
  * @param editor - Mem-fs editor to inspect
  * @param path - Absolute file or directory path
- * @returns True when the path or one of its children is staged, OR when path exists on real filesystem
+ * @returns True when the path or one of its children is staged in mem-fs
  */
 export function editorHasPath(editor: Editor, path: string): boolean {
     // Check if any files exist at or under this path in mem-fs
@@ -85,30 +85,23 @@ export function editorHasPath(editor: Editor, path: string): boolean {
         }
     });
 
-    // Also check real filesystem as a fallback
-    // This handles cases where tests create files/directories on disk
-    // ONLY do this for paths that look like test output paths to avoid false positives
-    if (!found && (path.includes('/test-output/') || path.includes('/test/test-output/'))) {
-        found = existsSync(path);
-    }
-
     return found;
 }
 
 /**
  * Check if file/directory exists
- * Uses editor from context if available, but also falls back to checking real filesystem
+ * Uses editor from context if available, otherwise checks real filesystem
  *
  * @param path - Path to check
- * @returns True if exists in mem-fs OR on real filesystem
+ * @returns True if exists in mem-fs (when editor available) OR on real filesystem
  */
 export function exists(path: string): boolean {
     const editor = getCurrentEditor();
     if (editor) {
-        // In mem-fs mode, check BOTH mem-fs and real filesystem
-        // This handles cases where directories exist on disk but files are staged in mem-fs
-        return editorHasPath(editor, path) || existsSync(path);
+        // In mem-fs mode, check mem-fs only
+        return editorHasPath(editor, path);
     }
+    // No editor context - check real filesystem
     return existsSync(path);
 }
 

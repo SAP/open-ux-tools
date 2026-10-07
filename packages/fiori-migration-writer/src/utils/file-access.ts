@@ -8,7 +8,7 @@
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
-import { createMemFsEditor, editorHasPath, getCurrentEditor } from './fs-adapter.js';
+import { createMemFsEditor, editorHasPath, getCurrentEditor, exists as fsAdapterExists } from './fs-adapter.js';
 
 /**
  * Get editor from context, parameter, or create a new one
@@ -83,6 +83,11 @@ export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
  * @returns true if file exists, false otherwise
  */
 export function fileExists(pathOrFs: string | Editor, path?: string): boolean {
+    // When called with just a path string and no editor context, check filesystem directly
+    if (typeof pathOrFs === 'string' && !getCurrentEditor()) {
+        return fsAdapterExists(pathOrFs);
+    }
+    // Otherwise use mem-fs editor
     const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     return editorHasPath(fs, filePath);
