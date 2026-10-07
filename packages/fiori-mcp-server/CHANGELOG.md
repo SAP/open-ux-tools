@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Features
+
+- Enable GitHub Copilot marketplace distribution and extract plugin assets to plugins-coding-agents/fiori [[0833831](https://github.com/SAP/open-ux-tools/commit/08338312549d3f67936cd5cc290ce56ca983fa51)]
+
 ## 1.15.5
 
 ### Patch Changes
