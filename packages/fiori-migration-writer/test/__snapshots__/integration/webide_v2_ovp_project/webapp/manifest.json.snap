@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests OVP Migration should migrate webide_v2_ovp_project 1`] = `
+"{
+	\\"_version\\": \\"1.7.0\\",
+	\\"start_url\\": \\"start.html\\",
+	\\"sap.app\\": {
+		\\"id\\": \\"namespace1.ovpmigration1\\",
+		\\"type\\": \\"application\\",
+		\\"i18n\\": \\"i18n/i18n.properties\\",
+		\\"applicationVersion\\": {
+			\\"version\\": \\"\${project.version}\\"
+		},
+		\\"title\\": \\"{{app_title}}\\",
+		\\"description\\": \\"{{app_description}}\\",
+		\\"ach\\": \\"sap\\",
+		\\"resources\\": \\"resources.json\\",
+		\\"dataSources\\": {
+			\\"SEPMRA_PROD_MAN\\": {
+				\\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+				\\"type\\": \\"OData\\",
+				\\"settings\\": {
+					\\"odataVersion\\": \\"2.0\\",
+					\\"annotations\\": [
+						\\"SEPMRA_PROD_MAN_ANNO_MDL\\"
+					],
+					\\"localUri\\": \\"localService/SEPMRA_PROD_MAN/metadata.xml\\"
+				}
+			},
+			\\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+				\\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+				\\"type\\": \\"ODataAnnotation\\",
+				\\"settings\\": {
+					\\"localUri\\": \\"localService/SEPMRA_PROD_MAN/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+				}
+			}
+		},
+		\\"sourceTemplate\\": {
+			\\"id\\": \\"OVP.cardtemplate\\",
+			\\"version\\": \\"0.0.0\\",
+			\\"toolsId\\": \\"209321ad-ae50-4bd6-b429-4a7497b7af2d\\"
+		}
+	},
+	\\"sap.ui\\": {
+		\\"technology\\": \\"UI5\\",
+		\\"icons\\": {
+			\\"icon\\": \\"\\"
+		},
+		\\"deviceTypes\\": {
+			\\"desktop\\": true,
+			\\"tablet\\": true,
+			\\"phone\\": true
+		},
+		\\"supportedThemes\\": [
+			\\"sap_fiori_3\\"
+		]
+	},
+	\\"sap.ui5\\": {
+		\\"dependencies\\": {
+			\\"minUI5Version\\": \\"1.65.6\\",
+			\\"libs\\": {
+				\\"sap.ovp\\": {}
+			}
+		},
+		\\"models\\": {
+			\\"i18n\\": {
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			},
+			\\"@i18n\\": {
+				\\"preload\\": true,
+				\\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+				\\"uri\\": \\"i18n/i18n.properties\\"
+			},
+			\\"SEPMRA_PROD_MAN\\": {
+				\\"dataSource\\": \\"SEPMRA_PROD_MAN\\",
+				\\"settings\\": {
+					\\"defaultCountMode\\": \\"Inline\\",
+					\\"metadataUrlParams\\": {
+						\\"sap-value-list\\": \\"none\\"
+					}
+				}
+			}
+		},
+		\\"extends\\": {
+			\\"extensions\\": {}
+		},
+		\\"contentDensities\\": {
+			\\"compact\\": true,
+			\\"cozy\\": true
+		}
+	},
+	\\"sap.fiori\\": {
+		\\"registrationIds\\": [],
+		\\"archeType\\": \\"analytical\\"
+	},
+	\\"sap.ovp\\": {
+		\\"globalFilterModel\\": \\"SEPMRA_PROD_MAN\\",
+		\\"globalFilterEntitySet\\": \\"\\",
+		\\"containerLayout\\": \\"fixed\\",
+		\\"enableLiveFilter\\": true,
+		\\"considerAnalyticalParameters\\": true,
+		\\"cards\\": {
+			\\"card00\\": {
+				\\"model\\": \\"SEPMRA_PROD_MAN\\",
+				\\"template\\": \\"sap.ovp.cards.table\\",
+				\\"settings\\": {
+					\\"title\\": \\"{{card00_title}}\\",
+					\\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+					\\"addODataSelect\\": false,
+					\\"identificationAnnotationPath\\": \\"com.sap.vocabularies.UI.v1.Identification\\",
+					\\"presentationAnnotationPath\\": \\"com.sap.vocabularies.UI.v1.PresentationVariant\\",
+					\\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+				}
+			}
+		}
+	}
+}
+"
+`;
