@@ -1,5 +1,49 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Features
+
+- Enable GitHub Copilot marketplace distribution and extract plugin assets to plugins-coding-agents/fiori [[0833831](https://github.com/SAP/open-ux-tools/commit/08338312549d3f67936cd5cc290ce56ca983fa51)]
+
+## 1.15.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Features
+
+- Let generate_adaptation_project select the adaptation project type instead of always producing CloudReady. When the system and application support both CloudReady and Classic (on-premise) projects, the tool now returns status 'InputRequired' so the user can be asked which type to generate; single-type systems resolve automatically and an unsupportable requested projectType is rejected with an Error. [[27d4b12](https://github.com/SAP/open-ux-tools/commit/27d4b12ea136f8a2e07a8c50567d94f3399274ba)]
+
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace opa5_docu.md and fiori-tools-opa-guide.md with OPA5 skill reference files as embeddings source [[3c76112](https://github.com/SAP/open-ux-tools/commit/3c7611299ff6b7b8f610285e2846430fffd859dd)]
+
 ## 1.15.2
 
 ### Patch Changes
