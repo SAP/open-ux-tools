@@ -59,10 +59,10 @@ jobs:
             - name: Cache UI5 framework packages
               uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
-                  path: ~/.ui5/framework/packages
-                  key: ui5-framework-packages-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('packages/jest-environment-ui5/test/fixtures/ui5.yaml') }}
+                  path: ~/.ui5
+                  key: ui5-framework-${{ matrix.os }}-${{ hashFiles('packages/jest-environment-ui5/test/fixtures/ui5*.yaml') }}
                   restore-keys: |
-                      ui5-framework-packages-${{ matrix.os }}-${{ matrix.node-version }}-
+                      ui5-framework-${{ matrix.os }}-
             - name: Run build
               run: pnpm run build
               env:
@@ -184,6 +184,9 @@ jobs:
             - name: Sync MCP manifest versions
               if: steps.changesetVersion.outputs.changes == 'true'
               run: node packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs
+            - name: Sync plugin manifest versions
+              if: steps.changesetVersion.outputs.changes == 'true'
+              run: node plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs
             - name: Commit and push changes
               if: steps.changesetVersion.outputs.changes == 'true'
               run: |
