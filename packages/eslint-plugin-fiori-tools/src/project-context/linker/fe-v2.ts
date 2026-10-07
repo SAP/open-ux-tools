@@ -701,6 +701,26 @@ function linkListReportTable(
 }
 
 /**
+ * Resolves the manifest section key by preferring the annotation-path-derived key and falling back to
+ * the section's facet ID when only the facet ID appears as a key in the manifest sections.
+ *
+ * @param configurationKey - Annotation-path-derived key (e.g. `to_Product::com.sap.vocabularies.UI.v1.LineItem`)
+ * @param sectionId - Facet ID from the section annotation (e.g. `Products`), if any
+ * @param sectionConfigurations - Manifest sections map to check against
+ * @returns The key to use for manifest section lookups and configuration paths
+ */
+function resolveManifestSectionKey(
+    configurationKey: string,
+    sectionId: string | undefined,
+    sectionConfigurations: Record<string, unknown>
+): string {
+    if (sectionId !== undefined && !(configurationKey in sectionConfigurations) && sectionId in sectionConfigurations) {
+        return sectionId;
+    }
+    return configurationKey;
+}
+
+/**
  * Links object page sections with their tables and configurations for Fiori Elements V2.
  *
  * @param page - The object page being linked
@@ -721,6 +741,7 @@ function linkObjectPageSections(
     app: ParsedApp
 ): void {
     const controls: Record<string, Section | Table> = {};
+    const knownSectionKeys = new Set<string>();
     for (const section of sections) {
         if (section.type !== 'table-section') {
             continue;
@@ -739,10 +760,16 @@ function linkObjectPageSections(
             children: []
         };
         controls[`${section.type}|${configurationKey}`] = linkedSection;
+        knownSectionKeys.add(configurationKey);
+        if (section.id) {
+            knownSectionKeys.add(section.id);
+        }
 
-        const sectionConfig = configuration.component?.settings?.sections?.[configurationKey];
+        const sectionConfigurations = configuration.component?.settings?.sections ?? {};
+        const manifestSectionKey = resolveManifestSectionKey(configurationKey, section.id, sectionConfigurations);
+        const sectionConfig = sectionConfigurations[manifestSectionKey];
         const sectionSettings = {
-            sectionKey: configurationKey,
+            sectionKey: manifestSectionKey,
             createMode: sectionConfig?.createMode,
             tableType: sectionConfig?.tableSettings?.type,
             copy: sectionConfig?.tableSettings?.copy,
@@ -764,7 +791,7 @@ function linkObjectPageSections(
     const configurations = configuration.component?.settings?.sections ?? {};
     for (const [sectionKey, sectionConfig] of Object.entries(configurations)) {
         const sectionControl = controls[`table-section|${sectionKey}`];
-        if (!sectionControl) {
+        if (!sectionControl && !knownSectionKeys.has(sectionKey)) {
             const createMode = sectionConfig.createMode;
             const tableType = sectionConfig.tableSettings?.type;
             const copy = sectionConfig.tableSettings?.copy;
