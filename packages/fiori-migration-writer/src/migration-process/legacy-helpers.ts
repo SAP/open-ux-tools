@@ -104,9 +104,10 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
             // Check if this file is under the legacy webapp path
             if (filePath === paths.ffLegacyWebappPath || filePath.startsWith(paths.ffLegacyWebappPath + '/')) {
                 // Calculate relative path from legacy webapp
-                const relativePath = filePath === paths.ffLegacyWebappPath
-                    ? ''
-                    : filePath.substring(paths.ffLegacyWebappPath.length + 1);
+                const relativePath =
+                    filePath === paths.ffLegacyWebappPath
+                        ? ''
+                        : filePath.substring(paths.ffLegacyWebappPath.length + 1);
                 const newPath = relativePath
                     ? join(rootPath, DirName.Webapp, relativePath)
                     : join(rootPath, DirName.Webapp);
@@ -131,9 +132,10 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
             const filePath = file.path;
 
             if (filePath === paths.ffLegacyTestQunitPath || filePath.startsWith(paths.ffLegacyTestQunitPath + '/')) {
-                const relativePath = filePath === paths.ffLegacyTestQunitPath
-                    ? ''
-                    : filePath.substring(paths.ffLegacyTestQunitPath.length + 1);
+                const relativePath =
+                    filePath === paths.ffLegacyTestQunitPath
+                        ? ''
+                        : filePath.substring(paths.ffLegacyTestQunitPath.length + 1);
                 const newPath = relativePath
                     ? join(paths.ffNewTestPath, 'qunit', relativePath)
                     : join(paths.ffNewTestPath, 'qunit');
@@ -156,10 +158,14 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
         (fs as any).store.each((file: any) => {
             const filePath = file.path;
 
-            if (filePath === paths.ffLegacyTestuiveri5Path || filePath.startsWith(paths.ffLegacyTestuiveri5Path + '/')) {
-                const relativePath = filePath === paths.ffLegacyTestuiveri5Path
-                    ? ''
-                    : filePath.substring(paths.ffLegacyTestuiveri5Path.length + 1);
+            if (
+                filePath === paths.ffLegacyTestuiveri5Path ||
+                filePath.startsWith(paths.ffLegacyTestuiveri5Path + '/')
+            ) {
+                const relativePath =
+                    filePath === paths.ffLegacyTestuiveri5Path
+                        ? ''
+                        : filePath.substring(paths.ffLegacyTestuiveri5Path.length + 1);
                 const newPath = relativePath
                     ? join(paths.ffNewTestPath, 'uiveri5', relativePath)
                     : join(paths.ffNewTestPath, 'uiveri5');
