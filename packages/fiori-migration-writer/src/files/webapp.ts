@@ -111,8 +111,8 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
 export async function createExtensionProjectManifest(rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
     // Only create if manifest doesn't exist and it's an extension project
     if (
-        !(await fileExists(join(rootPath, projectInfo.webappPath, FileName.Manifest))) &&
-        !(await fileExists(join(rootPath, FileName.Manifest))) &&
+        !fileExists(join(rootPath, projectInfo.webappPath, FileName.Manifest)) &&
+        !fileExists(join(rootPath, FileName.Manifest)) &&
         projectInfo.type === MigrationTypes.projectExtension
     ) {
         // Add a basic manifest.json (not linked in component.json) needed for preview

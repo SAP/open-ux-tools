@@ -95,9 +95,8 @@ export function editorHasPath(editor: Editor, path: string): boolean {
 export function exists(path: string): boolean {
     const editor = getCurrentEditor();
     if (editor) {
-        // In mem-fs mode, check both mem-fs and real fs to support mixed scenarios
-        // Use OR logic to avoid race condition between checks
-        return editorHasPath(editor, path) || existsSync(path);
+        // In mem-fs mode, only check mem-fs
+        return editorHasPath(editor, path);
     }
     return existsSync(path);
 }
