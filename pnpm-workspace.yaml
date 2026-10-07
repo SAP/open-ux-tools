@@ -66,7 +66,7 @@ overrides:
     # debug>supports-color override is insufficient (mta-lib still resolves multiple debug peer
     # combos); only a global pin collapses it. 8.1.1 is API-compatible with the 7.x it replaces.
     supports-color: '8.1.1'
-    '@modelcontextprotocol/sdk': '>=1.29.0'
+    '@modelcontextprotocol/sdk': '>=1.31.0'
     hono: '>=4.13.8'
     '@hono/node-server': '>=1.19.15'
     handlebars: '>=4.7.9'
