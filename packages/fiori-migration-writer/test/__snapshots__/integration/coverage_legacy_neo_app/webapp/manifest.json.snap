@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Edge Cases and Error Handling should handle project with legacy neo-app routes 1`] = `
+"{
+  \\"_version\\": \\"1.59.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"com.example.legacy.neo\\",
+    \\"type\\": \\"application\\",
+    \\"title\\": \\"Legacy NEO Application\\",
+    \\"description\\": \\"Application deployed on NEO with neo-app.json routing\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/LEGACY_SRV/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"odataVersion\\": \\"2.0\\",
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      }
+    },
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
+      \\"version\\": \\"1.0.1\\",
+      \\"toolsId\\": \\"49f960e9-ab8b-41f0-a989-e7c4150c3713\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.96.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.m\\": {},
+        \\"sap.ui.layout\\": {}
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"com.example.legacy.neo.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"useBatch\\": true
+        }
+      }
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.m.routing.Router\\",
+        \\"viewType\\": \\"XML\\",
+        \\"viewPath\\": \\"com.example.legacy.neo.view\\",
+        \\"controlId\\": \\"app\\",
+        \\"controlAggregation\\": \\"pages\\"
+      },
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\"\\",
+          \\"name\\": \\"main\\",
+          \\"target\\": \\"main\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"main\\": {
+          \\"viewName\\": \\"Main\\",
+          \\"viewLevel\\": 1
+        }
+      }
+    }
+  }
+}
+"
+`;

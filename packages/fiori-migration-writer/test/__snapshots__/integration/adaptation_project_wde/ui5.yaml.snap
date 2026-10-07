@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Migration Integration Tests Adaptation Projects Coverage should migrate adaptation project with legacy structure 1`] = `
+exports[`Migration Integration Tests Adaptation Project Migration should migrate adaptation_project_wde 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"4.0\\"
 metadata:
-  name: com-example-base-app
+  name: sap-ui-demoapps-rta-fiorielements
 type: application
 resources:
   configuration:
@@ -13,9 +13,9 @@ resources:
 customConfiguration:
   adp:
     support:
-      id: com.example.base.app
+      id: sap.ui.demoapps.rta.fiorielements
       version: 1.0.0
-      toolsId: 9e90fd2f-e885-41a2-a81e-04aee989dbdf
+      toolsId: 4edbd01e-2879-4518-ab8d-f17820c726c3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -29,7 +29,6 @@ server:
       configuration:
         adp:
           target:
-            destination: BACKEND_SYSTEM
             client: ''
             url: ''
           ignoreCertErrors: false
@@ -38,8 +37,7 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - destination: BACKEND_SYSTEM
-            client: ''
+          - client: ''
             url: ''
             path: /sap
         ui5:
