@@ -293,6 +293,8 @@ describe('ADP writer', () => {
     });
 
     describe('useNewSandbox flag', () => {
+        const sandboxFs = create(createStorage());
+
         test('emits flp.useNewSandbox: true when minVersion >= 1.151', async () => {
             const projectDir = join(outputDir, 'sandbox2-enabled');
             await generate(
@@ -302,10 +304,10 @@ describe('ADP writer', () => {
                     options: { fioriTools: true },
                     ui5: { systemVersion: '1.151.0' }
                 },
-                fs
+                sandboxFs
             );
             expect(
-                fs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
+                sandboxFs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
             ).toMatchSnapshot();
         });
 
@@ -318,10 +320,10 @@ describe('ADP writer', () => {
                     options: { fioriTools: true },
                     ui5: { systemVersion: '1.120.0' }
                 },
-                fs
+                sandboxFs
             );
             expect(
-                fs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
+                sandboxFs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
             ).toMatchSnapshot();
         });
 
@@ -333,10 +335,10 @@ describe('ADP writer', () => {
                     ...config,
                     options: { fioriTools: true }
                 },
-                fs
+                sandboxFs
             );
             expect(
-                fs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
+                sandboxFs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
             ).toMatchSnapshot();
         });
     });
