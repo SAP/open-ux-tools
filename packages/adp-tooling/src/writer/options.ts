@@ -40,10 +40,11 @@ const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
  * @param config full project configuration
  */
 export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
+    const useNewSandbox = isFeatureSupportedVersion('1.151.0', config.ui5?.systemVersion);
     if (config.options?.fioriTools) {
-        addFioriToolsMiddlewares(ui5Config, config);
+        addFioriToolsMiddlewares(ui5Config, config, useNewSandbox);
     } else {
-        addOpenSourceMiddlewares(ui5Config, config);
+        addOpenSourceMiddlewares(ui5Config, config, useNewSandbox);
     }
 }
 
@@ -146,7 +147,7 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
  */
-function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig) {
+function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig, useNewSandbox: boolean) {
     const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
     backendConfig.url ??= VSCODE_URL;
     backendConfig.path = '/sap';
@@ -159,8 +160,6 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
     if (version) {
         ui5ConfigOptions.version = version;
     }
-
-    const useNewSandbox = isFeatureSupportedVersion('1.151.0', config.ui5?.systemVersion);
 
     ui5Config.addFioriToolsAppReloadMiddleware();
     ui5Config.addCustomMiddleware([
@@ -191,7 +190,7 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
  */
-function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig) {
+function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig, useNewSandbox: boolean) {
     ui5Config.addCustomMiddleware([
         {
             name: 'reload-middleware',
@@ -210,6 +209,7 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                     target: config.target,
                     ignoreCertErrors: false
                 },
+                ...(useNewSandbox && { flp: { useNewSandbox: true } }),
                 rta: {
                     editors: [
                         {
