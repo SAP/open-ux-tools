@@ -2933,6 +2933,9 @@ importers:
         specifier: 2.9.0
         version: 2.9.0
     devDependencies:
+      '@jest/globals':
+        specifier: 30.4.1
+        version: 30.4.1(supports-color@8.1.1)
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools

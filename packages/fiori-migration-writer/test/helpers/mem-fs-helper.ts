@@ -68,6 +68,7 @@ export function extractFromMemFs(fs: Editor, basePath: string): Record<string, s
  * Get file content from mem-fs dump
  *
  * @param fs - Mem-fs editor
+ * @param basePath - Base path for the project
  * @param filePath - Relative file path
  * @returns File content or undefined if not found
  */

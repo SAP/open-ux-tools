@@ -105,7 +105,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
             ([path]) => path.startsWith(normalizedLegacyPath + '/') || path.startsWith(paths.ffLegacyWebappPath + '/')
         );
 
-        for (const [filePath, content] of legacyFiles) {
+        for (const [filePath, _content] of legacyFiles) {
             // Calculate relative path - handle both with and without leading slash
             const basePath = filePath.startsWith(normalizedLegacyPath + '/')
                 ? normalizedLegacyPath
@@ -133,7 +133,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
                 path.startsWith(normalizedLegacyPath + '/') || path.startsWith(paths.ffLegacyTestQunitPath + '/')
         );
 
-        for (const [filePath, content] of legacyFiles) {
+        for (const [filePath, _content] of legacyFiles) {
             const basePath = filePath.startsWith(normalizedLegacyPath + '/')
                 ? normalizedLegacyPath
                 : paths.ffLegacyTestQunitPath;
@@ -159,7 +159,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
                 path.startsWith(normalizedLegacyPath + '/') || path.startsWith(paths.ffLegacyTestuiveri5Path + '/')
         );
 
-        for (const [filePath, content] of legacyFiles) {
+        for (const [filePath, _content] of legacyFiles) {
             const basePath = filePath.startsWith(normalizedLegacyPath + '/')
                 ? normalizedLegacyPath
                 : paths.ffLegacyTestuiveri5Path;

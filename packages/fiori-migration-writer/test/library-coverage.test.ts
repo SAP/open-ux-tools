@@ -22,7 +22,11 @@ describe('Library Project - Coverage Tests', () => {
 
         const fs = loadProjectIntoMemFs(testInputBase);
 
-        const { result, messages, fs: updatedFs } = await ProjectMigrator.migrate(
+        const {
+            result,
+            messages,
+            fs: updatedFs
+        } = await ProjectMigrator.migrate(
             testInputBase,
             DUMMY_BACKEND_URL,
             UI5_SNAPSHOT_URL,
