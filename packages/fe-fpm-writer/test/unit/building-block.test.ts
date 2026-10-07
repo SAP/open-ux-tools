@@ -25,6 +25,11 @@ import {
 } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG, resolveAggregationPath } from '../../src/building-block/processor.js';
 import { AGGREGATION_ID_KEYS, buildAggregationIds } from '../../src/building-block/processAggregation.js';
+import {
+    getPageAggregationNames,
+    sortPageAggregationChildren,
+    ensureMissingAggregation
+} from '../../src/building-block/processAggregation.js';
 import testManifestContent from './sample/building-block/webapp/manifest.json';
 import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
 import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
@@ -4310,5 +4315,260 @@ describe('resolveAggregationPath', () => {
 
     test('handles steps with hyphens and dots (valid XPath names)', () => {
         expect(resolveAggregationPath('/mvc:View/my-element.1')).toBe("/mvc:View/*[local-name()='my-element.1']");
+    });
+});
+
+describe('getPageAggregationNames', () => {
+    test('returns undefined for non-Page building block types', () => {
+        expect(
+            getPageAggregationNames({ buildingBlockType: BuildingBlockType.FilterBar } as never)
+        ).toBeUndefined();
+        expect(
+            getPageAggregationNames({ buildingBlockType: BuildingBlockType.Chart } as never)
+        ).toBeUndefined();
+        expect(
+            getPageAggregationNames({ buildingBlockType: BuildingBlockType.Table } as never)
+        ).toBeUndefined();
+    });
+
+    test('returns undefined for Page building block without full template type', () => {
+        expect(
+            getPageAggregationNames({ buildingBlockType: BuildingBlockType.Page } as never)
+        ).toBeUndefined();
+    });
+
+    test('returns aggregation names array for Page building block with full template type', () => {
+        const result = getPageAggregationNames({
+            buildingBlockType: BuildingBlockType.Page,
+            templateType: 'full'
+        } as never);
+        expect(Array.isArray(result)).toBe(true);
+        expect(result!.length).toBeGreaterThan(0);
+    });
+});
+
+describe('sortPageAggregationChildren', () => {
+    async function makePageElement(innerXml: string): Promise<{ pageElement: import('@xmldom/xmldom').Element }> {
+        const { DOMParser } = await import('@xmldom/xmldom');
+        const doc = new DOMParser().parseFromString(
+            `<macros:Page xmlns:macros="sap.fe.macros" xmlns="sap.m">${innerXml}</macros:Page>`,
+            'text/xml'
+        );
+        return { pageElement: doc.documentElement! };
+    }
+
+    test('preserves trailing comments (comments after last element)', async () => {
+        const { pageElement } = await makePageElement(
+            `<macros:items xmlns:macros="sap.fe.macros" /><macros:actions xmlns:macros="sap.fe.macros" /><!--trailing comment-->`
+        );
+        sortPageAggregationChildren(pageElement as never);
+        const serialized = pageElement.toString();
+        expect(serialized).toContain('trailing comment');
+    });
+
+    test('keeps inline comments attached to their following element after reordering', async () => {
+        const { pageElement } = await makePageElement(
+            `<macros:items xmlns:macros="sap.fe.macros" /><!--before actions--><macros:actions xmlns:macros="sap.fe.macros" />`
+        );
+        sortPageAggregationChildren(pageElement as never);
+        const serialized = pageElement.toString();
+        // Comment should still be present; actions appears before items after sort (actions index=3, items index=5)
+        expect(serialized).toContain('before actions');
+        const itemsPos = serialized.indexOf('macros:items');
+        const actionsPos = serialized.indexOf('macros:actions');
+        expect(actionsPos).toBeLessThan(itemsPos);
+    });
+
+    test('preserves non-whitespace text nodes in the ordering', async () => {
+        const { pageElement } = await makePageElement(
+            `<macros:items xmlns:macros="sap.fe.macros" />someText<macros:actions xmlns:macros="sap.fe.macros" />`
+        );
+        sortPageAggregationChildren(pageElement as never);
+        const serialized = pageElement.toString();
+        expect(serialized).toContain('someText');
+    });
+});
+
+describe('ensureMissingAggregation', () => {
+    async function makeDocument(xml: string): Promise<import('@xmldom/xmldom').Document> {
+        const { DOMParser } = await import('@xmldom/xmldom');
+        return new DOMParser().parseFromString(xml, 'text/xml');
+    }
+
+    test('returns early when parent path does not resolve to any node', async () => {
+        const doc = await makeDocument(
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros"><macros:Page /></mvc:View>`
+        );
+        // Parent path /mvc:View/macros:Page/macros:NonExistent does not exist, so parent path
+        // /mvc:View/macros:Page/macros:NonExistent/macros:missing has no resolvable parent.
+        // ensureMissingAggregation should return without throwing.
+        expect(() =>
+            ensureMissingAggregation(doc as never, '/mvc:View/macros:Page/macros:nonExistent/macros:missing')
+        ).not.toThrow();
+        // macros:missing should NOT have been created since parent doesn't exist
+        const result = doc.getElementsByTagNameNS('sap.fe.macros', 'missing');
+        expect(result.length).toBe(0);
+    });
+
+    test('does not create element when aggregation path already exists', async () => {
+        const doc = await makeDocument(
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros"><macros:Page><macros:items /></macros:Page></mvc:View>`
+        );
+        // The element already exists — ensureMissingAggregation should be a no-op
+        const countBefore = doc.getElementsByTagNameNS('sap.fe.macros', 'items').length;
+        ensureMissingAggregation(doc as never, '/mvc:View/macros:Page/macros:items');
+        expect(doc.getElementsByTagNameNS('sap.fe.macros', 'items').length).toBe(countBefore);
+    });
+});
+
+describe('getSerializedFileContent with Page building block', () => {
+    let fsLocal: Editor;
+    let testAppPathLocal: string;
+    let generateIdLocal: IdGeneratorFunction;
+    const manifestFilePath = 'webapp/manifest.json';
+    const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const __dirnameLocal = dirname(fileURLToPath(import.meta.url));
+
+    const pageViewContent = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+    </macros:Page>
+</mvc:View>`;
+
+    const testManifestV145Local = {
+        ...testManifestContent,
+        'sap.ui5': {
+            ...testManifestContent['sap.ui5'],
+            dependencies: {
+                ...(testManifestContent['sap.ui5'] as Record<string, unknown>)?.['dependencies'],
+                minUI5Version: '1.145.0'
+            }
+        }
+    };
+
+    beforeEach(() => {
+        fsLocal = create(createStorage());
+        generateIdLocal = jest.fn((baseId: string, validatedIds: string[] = []) => {
+            if (!validatedIds.includes(baseId)) {
+                return baseId;
+            }
+            let counter = 1;
+            while (validatedIds.includes(`${baseId}${counter}`)) {
+                counter++;
+            }
+            return `${baseId}${counter}`;
+        });
+        testAppPathLocal = join(__dirnameLocal, `../test-output/unit/building-block/page-serial-${Date.now()}`);
+    });
+
+    test('generates serialized content for Page building block with full template type', async () => {
+        const basePath = join(testAppPathLocal, 'page-full-serial');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145Local));
+        fsLocal.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+        const result = await getSerializedFileContent(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath: `/mvc:View/*[local-name()='Page']`,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId: generateIdLocal
+                }
+            },
+            fsLocal
+        );
+
+        expect(result.viewOrFragmentPath).toBeDefined();
+        expect(result.viewOrFragmentPath.content).toContain('macros:Page');
+        expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+    });
+
+    test('generates serialized content for Page building block with full template type without viewOrFragmentPath', async () => {
+        const basePath = join(testAppPathLocal, 'page-full-serial-no-view');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145Local));
+
+        const result = await getSerializedFileContent(
+            basePath,
+            {
+                viewOrFragmentPath: '',
+                aggregationPath: `/mvc:View/*[local-name()='Page']`,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId: generateIdLocal
+                }
+            },
+            fsLocal
+        );
+
+        expect(result.viewOrFragmentPath).toBeDefined();
+        expect(result.viewOrFragmentPath.content).toContain('macros:Page');
+        expect(result.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+    });
+});
+
+describe('generateBuildingBlockAggregation error cases', () => {
+    let fsLocal: Editor;
+    let testAppPathLocal: string;
+    const manifestFilePath = 'webapp/manifest.json';
+    const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const __dirnameLocal = dirname(fileURLToPath(import.meta.url));
+
+    const testManifestV145Local = {
+        ...testManifestContent,
+        'sap.ui5': {
+            ...testManifestContent['sap.ui5'],
+            dependencies: {
+                ...(testManifestContent['sap.ui5'] as Record<string, unknown>)?.['dependencies'],
+                minUI5Version: '1.145.0'
+            }
+        }
+    };
+
+    beforeEach(() => {
+        fsLocal = create(createStorage());
+        testAppPathLocal = join(__dirnameLocal, `../test-output/unit/building-block/agg-errors-${Date.now()}`);
+    });
+
+    test('throws when buildingBlockType is not Page', async () => {
+        const basePath = join(testAppPathLocal, 'non-page-type');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fsLocal.write(join(basePath, xmlViewFilePath), `<mvc:View xmlns:mvc="sap.ui.core.mvc" />`);
+
+        await expect(
+            generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.FilterBar as never,
+                    aggregationName: 'items'
+                },
+                fsLocal
+            )
+        ).rejects.toThrow(/unsupported building block type/);
+    });
+
+    test('throws when view does not contain a Page element', async () => {
+        const basePath = join(testAppPathLocal, 'no-page-element');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145Local));
+        // View without macros:Page
+        fsLocal.write(
+            join(basePath, xmlViewFilePath),
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros"><Content /></mvc:View>`
+        );
+
+        await expect(
+            generateBuildingBlockAggregation(
+                basePath,
+                { viewPath: xmlViewFilePath, buildingBlockType: BuildingBlockType.Page, aggregationName: 'items' },
+                fsLocal
+            )
+        ).rejects.toThrow(/Page element.*not found/);
     });
 });
