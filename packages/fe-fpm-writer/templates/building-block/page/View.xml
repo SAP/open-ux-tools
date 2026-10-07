@@ -3,4 +3,5 @@
     title="<%- data.title %>"<% } %><% if (data.description) { %>
     description="<%- data.description %>"<% } %><% if (data.templateType === 'full') { %>
     showFooter="true"<% } %>
+    stickySubheaderProvider="stickySubheaderBar"
 />
