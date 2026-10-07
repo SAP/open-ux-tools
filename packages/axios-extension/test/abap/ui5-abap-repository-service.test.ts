@@ -28,6 +28,8 @@ describe('Ui5AbapRepositoryService', () => {
     const validAppNs = '/NS/VALID_APP';
     const notExistingApp = 'NOT_EXISTING_APP';
     const restrictedApp = 'RESTRICTED_APP';
+    const serverErrorApp = 'SERVER_ERROR_APP';
+    const serverErrorBody = JSON.stringify({ error: { code: '500', message: { value: 'Internal Server Error' } } });
     const validAppInfo: AppInfo = {
         Name: validApp,
         Package: 'my_package',
@@ -87,6 +89,14 @@ describe('Ui5AbapRepositoryService', () => {
             )
             .reply(401, { d: validAppInfo })
             .persist();
+        nock(server)
+            .get(
+                (url) =>
+                    url.includes(`/Repositories(%27${serverErrorApp}%27)`) ||
+                    url.includes(`/Repositories('${serverErrorApp}')`)
+            )
+            .reply(500, serverErrorBody)
+            .persist();
     });
 
     afterAll(() => {
@@ -117,6 +127,11 @@ describe('Ui5AbapRepositoryService', () => {
 
         test('Not authorized to access app', async () => {
             await expect(service.getInfo(restrictedApp)).rejects.toThrow();
+        });
+
+        test('Server error (500) logs the response body at debug level and re-throws', async () => {
+            await expect(service.getInfo(serverErrorApp)).rejects.toThrow();
+            expect(loggerMock.debug).toHaveBeenCalledWith(JSON.stringify(JSON.parse(serverErrorBody).error));
         });
     });
 
