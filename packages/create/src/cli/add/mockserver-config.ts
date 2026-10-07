@@ -80,7 +80,7 @@ async function addMockserverConfig(
                 logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
             } else {
                 logger.debug('Running npm install command');
-                runNpmInstallCommand(basePath, ['--save-dev', '@sap-ux/ui5-middleware-fe-mockserver']);
+                await runNpmInstallCommand(basePath, ['--save-dev', '@sap-ux/ui5-middleware-fe-mockserver']);
             }
         }
     } catch (error) {

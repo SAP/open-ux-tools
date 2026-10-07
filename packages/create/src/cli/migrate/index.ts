@@ -2,13 +2,14 @@ import type { Command } from 'commander';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
-import { ProjectAccess, ProjectMigrator, initI18n } from '@sap-ux/fiori-migration-writer';
+import { ProjectAccess, ProjectMigrator, initI18n as initMigrationI18n } from '@sap-ux/fiori-migration-writer';
 import { DestinationProxyType, isAppStudio, listDestinations, type Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
 import { runNpmInstallCommand } from '../../common/index.js';
 import { getLogger } from '../../tracing/index.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
+import { t } from '../../i18n.js';
 
 interface MigrateCommandOptions {
     destination?: string;
@@ -33,11 +34,11 @@ function validatePath(path: string): string {
     const resolved = resolve(path);
     // Reject control characters and shell metacharacters
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
-        throw new Error('Path contains unsafe characters');
+        throw new Error(t('migrate.validation.pathUnsafe'));
     }
     // Ensure it's an existing directory
     if (!existsSync(resolved)) {
-        throw new Error(`Path does not exist: ${path}`);
+        throw new Error(t('migrate.validation.pathNotExists', { path }));
     }
     return resolved;
 }
@@ -52,7 +53,7 @@ function validatePath(path: string): string {
 function validateDestination(destination: string): string {
     // Allow alphanumeric, underscores, hyphens (typical SAP destination/system names)
     if (!/^[a-zA-Z0-9_-]+$/.test(destination)) {
-        throw new Error('Destination name must contain only letters, numbers, hyphens, and underscores');
+        throw new Error(t('migrate.validation.destinationInvalid'));
     }
     return destination;
 }
@@ -72,14 +73,14 @@ function validateHostname(hostname: string): string {
             strippedHostname
         )
     ) {
-        throw new Error('Invalid hostname format');
+        throw new Error(t('migrate.validation.hostnameInvalid'));
     }
     return strippedHostname;
 }
 
 function getHostnameFromUrl(url: string): string | undefined {
     try {
-        return new URL(url).hostname;
+        return new URL(url).host;
     } catch {
         return undefined;
     }
@@ -95,7 +96,7 @@ function getHostnameFromUrl(url: string): string | undefined {
 function validateClient(client: string): string {
     // SAP clients are 3-digit numbers (000-999)
     if (!/^\d{3}$/.test(client)) {
-        throw new Error('SAP client must be a 3-digit number (e.g., 100)');
+        throw new Error(t('migrate.validation.clientInvalid'));
     }
     return client;
 }
@@ -110,7 +111,7 @@ function validateClient(client: string): string {
 function validateUI5Version(version: string): string {
     // Allow semantic version format: digits, dots, optional snapshot suffix
     if (!/^[0-9]+\.[0-9]+\.[0-9]+(-snapshot)?$/.test(version)) {
-        throw new Error('UI5 version must follow semantic versioning format (e.g., 1.120.0)');
+        throw new Error(t('migrate.validation.ui5VersionInvalid'));
     }
     return version;
 }
@@ -122,7 +123,7 @@ function validateUI5Version(version: string): string {
  * @returns validation function
  */
 function createRequiredValidator(fieldName: string): (value: string) => boolean | string {
-    return (value: string) => (value ? true : `${fieldName} is required`);
+    return (value: string) => (value ? true : t('migrate.validation.fieldRequired', { fieldName }));
 }
 
 /**
@@ -141,7 +142,7 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
         validate: createRequiredValidator(fieldName)
     });
     if (response[name] === undefined) {
-        throw new Error('Operation cancelled by user');
+        throw new Error(t('migrate.validation.operationCancelled'));
     }
     return response[name] as string;
 }
@@ -157,7 +158,7 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
 async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
     const response = await prompts({ type: 'confirm', name, message, initial });
     if (response[name] === undefined) {
-        throw new Error('Operation cancelled by user');
+        throw new Error(t('migrate.validation.operationCancelled'));
     }
     return response[name] as boolean;
 }
@@ -170,19 +171,14 @@ async function promptConfirm(name: string, message: string, initial: boolean): P
 export function addMigrateCommand(program: Command): void {
     program
         .command('migrate [project-path]')
-        .description(
-            'Migrate legacy WebIDE Fiori project to modern Fiori tools format. In BAS, a destination is required. Outside BAS, hostname and client are required; destination is optional.'
-        )
-        .option('-d, --destination <name>', 'SAP System destination name (required in BAS)')
-        .option('-s, --sap-system-name <name>', 'SAP System name (alias for destination)')
-        .option('-H, --hostname <host>', 'Backend hostname (required outside BAS unless resolved from a saved system)')
-        .option(
-            '-c, --client <client>',
-            'SAP Client (required outside BAS unless resolved from destination or saved system)'
-        )
-        .option('-u, --ui5-version <version>', 'UI5 version (defaults to source project version)')
-        .option('-f, --force', 'Force migration even if project is already a Fiori tools project')
-        .option('-n, --skip-install', 'Skip the `npm install` step after migration')
+        .description(t('migrate.command.description'))
+        .option('-d, --destination <name>', t('migrate.command.options.destination'))
+        .option('-s, --sap-system-name <name>', t('migrate.command.options.sapSystemName'))
+        .option('-H, --hostname <host>', t('migrate.command.options.hostname'))
+        .option('-c, --client <client>', t('migrate.command.options.client'))
+        .option('-u, --ui5-version <version>', t('migrate.command.options.ui5Version'))
+        .option('-f, --force', t('migrate.command.options.force'))
+        .option('-n, --skip-install', t('migrate.command.options.skipInstall'))
         .action(async (projectPath: string | undefined, options: MigrateCommandOptions) => {
             await migrate(projectPath, options);
         });
@@ -200,12 +196,16 @@ async function getProjectPath(projectPath: string | undefined): Promise<string> 
     if (!projectPath) {
         const confirmPath = await promptConfirm(
             'confirmPath',
-            `Migrate project at current directory: ${resolvedPath}?`,
+            t('migrate.prompts.confirmCurrentDir', { path: resolvedPath }),
             true
         );
 
         if (!confirmPath) {
-            const customPath = await promptRequiredText('customPath', 'Enter project path:', 'Project path');
+            const customPath = await promptRequiredText(
+                'customPath',
+                t('migrate.prompts.enterPath'),
+                t('migrate.prompts.enterPathField')
+            );
             resolvedPath = validatePath(customPath);
         }
     }
@@ -240,11 +240,11 @@ async function checkForceRequired(resolvedPath: string, force: boolean): Promise
     }
 
     if (isToolsProject && !force) {
-        logger.warn('Project appears to be already migrated to Fiori tools.');
-        const confirmForce = await promptConfirm('confirmForce', 'Force migration anyway?', false);
+        logger.warn(t('migrate.prompts.alreadyMigrated'));
+        const confirmForce = await promptConfirm('confirmForce', t('migrate.prompts.forceConfirm'), false);
 
         if (!confirmForce) {
-            logger.info('Migration cancelled.');
+            logger.info(t('migrate.prompts.cancelled'));
             return false;
         }
     }
@@ -273,23 +273,31 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
 
     if (appStudio && !destination) {
         destination = validateDestination(
-            await promptRequiredText('dest', 'Enter SAP Business Application Studio destination:', 'Destination')
+            await promptRequiredText(
+                'dest',
+                t('migrate.prompts.enterBASDestination'),
+                t('migrate.prompts.destinationField')
+            )
         );
     } else if (!appStudio && !hostname) {
         if (!destination) {
-            const useDestination = await promptConfirm('useDestination', 'Use SAP System destination?', true);
+            const useDestination = await promptConfirm('useDestination', t('migrate.prompts.useDestination'), true);
 
             if (useDestination) {
                 const dest = await promptRequiredText(
                     'dest',
-                    'Enter BTP destination or SAP system name (letters, numbers, hyphens, underscores only):',
-                    'Destination'
+                    t('migrate.prompts.enterBTPDestination'),
+                    t('migrate.prompts.destinationField')
                 );
                 destination = validateDestination(dest);
             }
         }
 
-        const host = await promptRequiredText('host', 'Enter hostname:', 'Hostname');
+        const host = await promptRequiredText(
+            'host',
+            t('migrate.prompts.enterHostname'),
+            t('migrate.prompts.hostnameField')
+        );
         hostname = validateHostname(host);
     }
 
@@ -308,13 +316,15 @@ async function getClient(optionClient?: string): Promise<string | undefined> {
     }
 
     if (!isAppStudio()) {
-        return validateClient(await promptRequiredText('clientValue', 'SAP Client:', 'SAP Client'));
+        return validateClient(
+            await promptRequiredText('clientValue', t('migrate.prompts.enterClient'), t('migrate.prompts.clientField'))
+        );
     }
 
     const response = await prompts({
         type: 'text',
         name: 'clientValue',
-        message: 'SAP Client (optional, press Enter to skip):',
+        message: t('migrate.prompts.enterClientOptional'),
         initial: ''
     });
 
@@ -336,7 +346,7 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
     const response = await prompts({
         type: 'text',
         name: 'version',
-        message: 'UI5 Version (optional, press Enter to use project default):',
+        message: t('migrate.prompts.enterUI5Version'),
         initial: ''
     });
 
@@ -403,9 +413,12 @@ async function findBASDestination(
             const answer = await prompts({
                 type: 'select',
                 name: 'system',
-                message: 'Select the SAP Business Application Studio destination:',
+                message: t('migrate.prompts.selectBASDestination'),
                 choices: matches.map((system) => ({
-                    title: `${system.name} (${system.client || 'default client'})`,
+                    title: t('migrate.prompts.destinationChoice', {
+                        name: system.name,
+                        client: system.client || t('migrate.prompts.defaultClient')
+                    }),
                     value: system
                 }))
             });
@@ -438,7 +451,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 
     // 1. Get or prompt for project path
     const resolvedPath = await getProjectPath(projectPath);
-    logger.info(`Migrating project at: ${resolvedPath}`);
+    logger.info(t('migrate.status.migratingAt', { path: resolvedPath }));
 
     // 2. Check if force flag is required
     const shouldProceed = await checkForceRequired(resolvedPath, options.force ?? false);
@@ -472,20 +485,20 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         client ?? (destination ? ProjectAccess.getClientFromDestinationName(destination) || undefined : undefined);
 
     // 6. Execute migration
-    logger.info('Starting migration...');
+    logger.info(t('migrate.status.starting'));
 
-    // Set baseUri: use destination route or construct from hostname
+    // Set baseUri: preserve a matched system URL unless the user explicitly overrides its hostname.
     let baseUri = destination ? `/${destination}` : '';
-    if (hostname) {
-        baseUri = `https://${hostname}`;
-    } else if (!options.destination && !options.sapSystemName && matchedSystem?.url) {
+    if (matchedSystem?.url && !options.hostname) {
         baseUri = matchedSystem.url;
+    } else if (hostname) {
+        baseUri = `https://${hostname}`;
     }
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
     const migrationHostname = hostname ?? matchedSystem?.url;
 
     // Initialize i18n for proper error messages
-    await initI18n();
+    await initMigrationI18n();
     const internalToggle = isInternalFeaturesSettingEnabled();
 
     // Load project info first, then merge CLI overrides
@@ -503,23 +516,10 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         ? await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, migrationProjectInfo, undefined, true)
         : await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, migrationProjectInfo);
 
-    // Commit mem-fs-editor changes to disk
-    logger.info('Writing files to disk...');
-    await new Promise<void>((resolve, reject) => {
-        result.fs.commit((err) => {
-            if (err) {
-                logger.error(`Failed to write files: ${err.message}`);
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
-
     if (result.result) {
-        logger.info('✓ Migration completed successfully!');
+        logger.info(t('migrate.status.success'));
         if (result.messages?.length) {
-            logger.info('\nMessages:');
+            logger.info(t('migrate.status.messages'));
             result.messages.forEach((msg) => {
                 const logMessage = `  ${msg.type}: ${msg.description}`;
                 if (msg.type === 'ERROR') {
@@ -533,21 +533,19 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         }
 
         if (options.skipInstall) {
-            logger.warn('`npm install` was skipped. Install project dependencies before running the application.');
+            logger.warn(t('migrate.status.skipInstallWarning'));
         } else {
-            logger.info('Installing project dependencies...');
+            logger.info(t('migrate.status.installing'));
             const installError = await runNpmInstallCommand(resolvedPath, [], { logger });
             if (installError) {
-                logger.error(
-                    `Migration completed, but dependency installation failed. Resolve the npm error above before running the project.`
-                );
+                logger.error(t('migrate.status.installFailed'));
             }
         }
     } else {
-        logger.error('✗ Migration failed');
+        logger.error(t('migrate.status.failed'));
         if (result.messages?.length) {
             result.messages.forEach((msg) => logger.error(`  ${msg.description}`));
         }
-        throw new Error('Migration failed');
+        throw new Error(t('migrate.status.failedError'));
     }
 }

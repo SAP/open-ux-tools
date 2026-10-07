@@ -12,6 +12,28 @@ jest.unstable_mockModule('../../../src/tracing/logger', () => ({
     setLogLevelVerbose: jest.fn()
 }));
 
+// Mock i18n to return keys as-is for testing
+jest.unstable_mockModule('../../../src/i18n.js', () => ({
+    initI18n: jest.fn(),
+    t: (key: string, params?: Record<string, string>) => {
+        // Return a simplified version for testing
+        const translations: Record<string, string> = {
+            'migrate.status.success': '✓ Migration completed successfully!',
+            'migrate.status.messages': '\nMessages:',
+            'migrate.status.skipInstallWarning':
+                '`npm install` was skipped. Install project dependencies before running the application.',
+            'migrate.status.installing': 'Installing project dependencies...',
+            'migrate.status.installFailed':
+                'Migration completed, but dependency installation failed. Resolve the npm error above before running the project.',
+            'migrate.status.failed': '✗ Migration failed',
+            'migrate.status.failedError': 'Migration failed',
+            'migrate.prompts.alreadyMigrated': 'Project appears to be already migrated to Fiori tools.',
+            'migrate.prompts.cancelled': 'Migration cancelled.'
+        };
+        return translations[key] || key;
+    }
+}));
+
 const mockIsAppStudio = jest.fn() as jest.Mock;
 const mockListDestinations = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/btp-utils', () => ({

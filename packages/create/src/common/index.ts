@@ -1,5 +1,6 @@
 import { execNpmCommand } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
+import { t } from '../i18n.js';
 export { promptYUIQuestions } from './prompts.js';
 
 /**
@@ -18,12 +19,12 @@ export function runNpmInstallCommand(
     const logger = options?.logger;
     return execNpmCommand(['install', ...installArgs], { cwd: basePath, logger: logger })
         .then(() => {
-            logger?.info('npm install completed successfully.');
+            logger?.info(t('npm.installSuccess'));
             return undefined;
         })
         .catch((error) => {
             const installError = error as Error;
-            logger?.error(`npm install failed. '${installError.message}'`);
+            logger?.error(t('npm.installFailed', { error: installError.message }));
             return installError;
         });
 }
