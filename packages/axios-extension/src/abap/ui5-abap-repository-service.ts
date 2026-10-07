@@ -149,7 +149,8 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @returns undefined if the application was not found (404), otherwise the original error is re-thrown
      */
     private handleAppLookupError(app: string, error: unknown): undefined {
-        this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
+        const message = error instanceof Error ? error.message : String(error);
+        this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${message}`);
         if (isAxiosError(error)) {
             if (error.response?.data) {
                 const { data } = error.response;
