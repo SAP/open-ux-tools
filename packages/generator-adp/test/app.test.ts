@@ -52,6 +52,7 @@ const mockLoadCfConfig = jest.fn<typeof realAdpTooling.loadCfConfig>();
 const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
 const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
 const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
+const mockGetCfApps = jest.fn<typeof realAdpTooling.getCfApps>();
 const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
 const mockGetApprouterType = jest.fn<typeof realAdpTooling.getApprouterType>();
 const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
@@ -160,6 +161,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isLoggedInCf: mockIsLoggedInCf,
     getMtaServices: mockGetMtaServices,
     getAdpServiceInstances: mockGetAdpServiceInstances,
+    getCfApps: mockGetCfApps,
     getModuleNames: mockGetModuleNames,
     getApprouterType: mockGetApprouterType,
     hasApprouter: mockHasApprouter,
@@ -1026,7 +1028,11 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             mockLoadCfConfig.mockReturnValue(cfConfig);
             mockGetModuleNames.mockReturnValue(['module1', 'module2']);
-            mockGetMtaServices.mockResolvedValue(['service1', 'service2']);
+            mockGetMtaServices.mockResolvedValue(['test-service']);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'test-service', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+            mockGetCfApps.mockResolvedValue([baseApp]);
             mockGetApprouterType.mockReturnValue(AppRouterType.MANAGED);
             mockHasApprouter.mockReturnValue(false);
 
@@ -1093,6 +1099,11 @@ describe('Adaptation Project Generator Integration Test', () => {
                 { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
             ]);
 
+            // New-MTA mode scaffolds the project inside a parent folder; use a clean subfolder (the
+            // beforeEach seeds cfTestOutputDir itself with an mta.yaml, which would hide the MTA name prompt).
+            const newMtaParent = join(cfTestOutputDir, 'new-mta-parent');
+            fs.mkdirSync(newMtaParent, { recursive: true });
+
             const runContext = yeomanTest
                 .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
                 .withOptions({
@@ -1101,7 +1112,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                 } as AdpGeneratorOptions)
                 .withPrompts({
                     ...answersCf,
-                    projectLocation: cfTestOutputDir,
+                    projectLocation: newMtaParent,
                     mtaMode: MtaMode.New,
                     mtaId: 'my-mta',
                     businessService: undefined,
@@ -1116,7 +1127,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect.any(Object)
             );
             expect(mockGenerateCf).toHaveBeenCalledWith(
-                join(cfTestOutputDir, 'my-mta'),
+                join(newMtaParent, 'my-mta'),
                 expect.any(Object),
                 expect.any(Object),
                 expect.any(Object)

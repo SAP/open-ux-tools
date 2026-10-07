@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import type { CfConfig, CFApp, ServiceInfo, CfServicesAnswers, CfServiceInstanceChoice } from '@sap-ux/adp-tooling';
 
 const mockValidateBusinessSolutionName = jest.fn<typeof realValidators.validateBusinessSolutionName>();
@@ -130,6 +130,7 @@ describe('CFServicesPrompter', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockGetAdpServiceInstances.mockResolvedValue([]);
     });
 
     describe('getPrompts', () => {
@@ -160,13 +161,42 @@ describe('CFServicesPrompter', () => {
             expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(mockCfConfig.space.GUID, mockLogger);
         });
 
-        test('should not load service instances when the MTA already declares business services', async () => {
+        test('should load live service instances to check reachability even when the MTA declares services', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockGetMtaServices.mockResolvedValue(['service1']);
+            mockGetAdpServiceInstances.mockResolvedValue([]);
 
             await prompter.getPrompts('/test/path', mockCfConfig);
 
-            expect(mockGetAdpServiceInstances).not.toHaveBeenCalled();
+            expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(mockCfConfig.space.GUID, mockLogger);
+        });
+
+        test('should label the MTA business service when it is reachable among live instances', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue(['svc']);
+            mockGetAdpServiceInstances.mockResolvedValue([{ name: 'svc', service: 'hana', servicePlan: 'hdi-shared' }]);
+            mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
+            mockGetCfApps.mockResolvedValue([mockCFApp]);
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(prompter['reachableBusinessService']).toBe('svc');
+            expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('svc', mockCfConfig, mockLogger);
+            expect(prompter['apps']).toEqual([mockCFApp]);
+            expect(prompter['singleServiceResult']).toBe(true);
+        });
+
+        test('should not label the MTA business service when it is not reachable among live instances', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue(['svc']);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'other', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(prompter['reachableBusinessService']).toBeUndefined();
+            expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
         });
 
         test('should filter hidden prompts', async () => {
@@ -430,85 +460,78 @@ describe('CFServicesPrompter', () => {
     describe('getBusinessServicesPrompt', () => {
         const prompter = new CFServicesPrompter(false, true, mockLogger);
 
-        test('should create business services prompt', () => {
-            prompter['businessServices'] = ['service1', 'service2'];
+        test('should render a read-only label of the reachable business service', () => {
+            prompter['reachableBusinessService'] = 'svc';
+            prompter['singleServiceResult'] = true;
 
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            const prompt = prompter['getBusinessServicesPrompt']() as InputQuestion<CfServicesAnswers>;
 
-            expect(prompt.type).toBe('list');
+            expect(prompt.type).toBe('input');
             expect(prompt.name).toBe(cfServicesPromptNames.businessService);
             expect(prompt.message).toBe(t('prompts.businessServiceLabel'));
-            expect(prompt.choices).toEqual(['service1', 'service2']);
+            expect(prompt.guiOptions?.type).toBe('label');
+            expect(prompt.default({})).toBe('svc');
         });
 
-        test('should set default value when only one service', () => {
-            prompter['businessServices'] = ['single-service'];
+        test('should be shown only when a reachable business service exists', () => {
+            prompter['reachableBusinessService'] = 'svc';
+            const shown = prompter['getBusinessServicesPrompt']();
+            expect((shown.when as () => boolean)()).toBe(true);
 
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
-            const defaultValue = prompt.default({});
-
-            expect(defaultValue).toBe('single-service');
+            prompter['reachableBusinessService'] = undefined;
+            const hidden = prompter['getBusinessServicesPrompt']();
+            expect((hidden.when as () => boolean)()).toBe(false);
         });
 
-        test('should validate business service selection', async () => {
+        test('should return the eager discovery result from validate', () => {
+            prompter['reachableBusinessService'] = 'svc';
+            prompter['singleServiceResult'] = true;
+            expect(prompter['getBusinessServicesPrompt']().validate!('svc')).toBe(true);
+
+            prompter['singleServiceResult'] = t('error.noAppsFoundForBusinessService');
+            expect(prompter['getBusinessServicesPrompt']().validate!('svc')).toBe(
+                t('error.noAppsFoundForBusinessService')
+            );
+        });
+    });
+
+    describe('discoverBusinessServiceApps', () => {
+        const prompter = new CFServicesPrompter(false, true, mockLogger);
+
+        test('should resolve the service and its apps', async () => {
             mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockResolvedValue([mockCFApp]);
 
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
-            const result = await prompt.validate!('test-service');
+            const result = await prompter['discoverBusinessServiceApps']('test-service', mockCfConfig);
 
             expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('test-service', mockCfConfig, mockLogger);
             expect(mockGetCfApps).toHaveBeenCalledWith(mockServiceKeys.serviceKeys, mockCfConfig, mockLogger);
             expect(result).toBe(true);
         });
 
-        test('should handle empty string for business service', async () => {
-            mockGetBusinessServiceInfo.mockResolvedValue(null);
-
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig);
-            const result = await prompt.validate!('');
-
+        test('should return an error for an empty service name', async () => {
+            const result = await prompter['discoverBusinessServiceApps']('', mockCfConfig);
             expect(result).toBe(t('error.businessServiceHasToBeSelected'));
         });
 
-        test('should handle business service not found', async () => {
+        test('should return an error when the service does not resolve', async () => {
             mockGetBusinessServiceInfo.mockResolvedValue(null);
-
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig);
-            const result = await prompt.validate!('test-service');
-
+            const result = await prompter['discoverBusinessServiceApps']('test-service', mockCfConfig);
             expect(result).toBe(t('error.businessServiceDoesNotExist'));
         });
 
-        test('should handle errors during validation', async () => {
-            const error = new Error('Service error');
-            mockGetBusinessServiceInfo.mockRejectedValue(error);
-
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig);
-            const result = await prompt.validate!('test-service');
-
-            expect(result).toBe('Service error');
-            expect(mockLogger.error).toHaveBeenCalledWith('Failed to get available applications: Service error');
-        });
-
-        test('should return error when no apps found for business service', async () => {
+        test('should return an error when the service exposes no apps', async () => {
             mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockResolvedValue([]);
-
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
-            const result = await prompt.validate!('test-service');
-
+            const result = await prompter['discoverBusinessServiceApps']('test-service', mockCfConfig);
             expect(result).toBe(t('error.noAppsFoundForBusinessService'));
         });
 
-        test('should show prompt when logged in and MTA declares business services', () => {
-            prompter['businessServices'] = ['service1'];
-
-            const prompt = prompter['getBusinessServicesPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
-            const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;
-            const shouldShow = whenFn({});
-
-            expect(shouldShow).toBe(true);
+        test('should surface a caught error message', async () => {
+            mockGetBusinessServiceInfo.mockRejectedValue(new Error('Service error'));
+            const result = await prompter['discoverBusinessServiceApps']('test-service', mockCfConfig);
+            expect(result).toBe('Service error');
+            expect(mockLogger.error).toHaveBeenCalledWith('Failed to get available applications: Service error');
         });
     });
 
@@ -548,9 +571,9 @@ describe('CFServicesPrompter', () => {
             expect(result).toBe(choices);
         });
 
-        test('should be shown when logged in and no business services', () => {
+        test('should be shown when there is no reachable MTA business service', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
-            prompter['businessServices'] = [];
+            prompter['reachableBusinessService'] = undefined;
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
             const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;
@@ -558,9 +581,9 @@ describe('CFServicesPrompter', () => {
             expect(whenFn({})).toBe(true);
         });
 
-        test('should be hidden when the MTA already declares business services', () => {
+        test('should be hidden when the MTA business service is reachable (shown as a label)', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
-            prompter['businessServices'] = ['service1'];
+            prompter['reachableBusinessService'] = 'svc';
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
             const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;

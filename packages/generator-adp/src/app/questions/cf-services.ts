@@ -69,6 +69,16 @@ export class CFServicesPrompter {
      */
     private apps: CFApp[] = [];
     /**
+     * The MTA-declared business service that is reachable (present among the live CF service
+     * instances). When set, it is shown as a read-only label and no other service can be chosen.
+     */
+    private reachableBusinessService: string | undefined;
+    /**
+     * Result of the eager discovery performed for the reachable business service: `true` when it
+     * resolved and exposes apps, otherwise an error message surfaced by the read-only label.
+     */
+    private singleServiceResult: string | true = true;
+    /**
      * The service instance GUID.
      */
     private html5RepoServiceInstanceGuid: string;
@@ -168,13 +178,29 @@ export class CFServicesPrompter {
                 this.logger.log(`No business services found in MTA project: ${e.message}`);
             }
 
-            if (this.businessServices.length === 0) {
+            // Load the live CF service instances up front: they are both the reachability check for
+            // an MTA-declared business service and the fallback picker when none is reachable.
+            try {
                 this.serviceInstances = await getAdpServiceInstances(cfConfig.space.GUID, this.logger);
+            } catch (e) {
+                this.serviceInstances = [];
+                this.logger.log(`Could not load CF service instances: ${e.message}`);
+            }
+
+            // Show only the MTA-declared business service that is actually reachable (exists among the
+            // live service instances) as a read-only label. Its discovery side-effects can't be driven
+            // by a label's validate, so resolve them eagerly here.
+            const reachable = this.businessServices.filter((service) =>
+                this.serviceInstances.some((instance) => instance.name === service)
+            );
+            if (reachable.length >= 1) {
+                this.reachableBusinessService = reachable[0];
+                this.singleServiceResult = await this.discoverBusinessServiceApps(reachable[0] ?? '', cfConfig);
             }
         }
 
         const keyedPrompts: Record<cfServicesPromptNames, CFServicesQuestion> = {
-            [cfServicesPromptNames.businessService]: this.getBusinessServicesPrompt(cfConfig),
+            [cfServicesPromptNames.businessService]: this.getBusinessServicesPrompt(),
             [cfServicesPromptNames.serviceInstance]: this.getServiceInstancePrompt(cfConfig),
             [cfServicesPromptNames.approuter]: this.getAppRouterPrompt(mtaProjectPath, cfConfig),
             [cfServicesPromptNames.businessSolutionName]: this.getBusinessSolutionNamePrompt(),
@@ -315,61 +341,72 @@ export class CFServicesPrompter {
     }
 
     /**
-     * Prompt for business services.
+     * Prompt for the business service declared in the MTA.
      *
-     * @param {CfConfig} cfConfig - CF config service instance.
-     * @returns {CFServicesQuestion} Prompt for business services.
+     * Rendered as a read-only label of the MTA's reachable business service (one that exists among the
+     * live CF service instances); the developer cannot change it. Its discovery runs eagerly in
+     * `getPrompts`, so this prompt only has to surface a discovery failure via `validate`.
+     *
+     * @returns {CFServicesQuestion} Prompt for the business service.
      */
-    private getBusinessServicesPrompt(cfConfig: CfConfig): CFServicesQuestion {
+    private getBusinessServicesPrompt(): CFServicesQuestion {
         return {
-            type: 'list',
+            type: 'input',
             name: cfServicesPromptNames.businessService,
             message: t('prompts.businessServiceLabel'),
-            choices: this.businessServices,
-            default: (_: CfServicesAnswers) =>
-                this.businessServices.length === 1 ? (this.businessServices[0] ?? '') : '',
-            when: () => this.isCfLoggedIn && this.businessServices.length > 0,
+            default: (_: CfServicesAnswers) => this.reachableBusinessService ?? '',
+            when: () => this.isCfLoggedIn && !!this.reachableBusinessService,
             additionalMessages: () =>
-                this.businessServices.length > 0
+                this.reachableBusinessService
                     ? {
                           message: t('prompts.mtaAlreadyHasServiceInfo', {
-                              serviceParameters: this.businessServices.join(', ')
+                              serviceParameters: this.reachableBusinessService
                           }),
                           severity: Severity.information
                       }
                     : undefined,
-            validate: async (value: string) => {
-                const validationResult = validateEmptyString(value);
-                if (typeof validationResult === 'string') {
-                    return t('error.businessServiceHasToBeSelected');
-                }
-
-                try {
-                    this.businessServiceInfo = await getBusinessServiceInfo(value, cfConfig, this.logger);
-                    if (this.businessServiceInfo === null) {
-                        return t('error.businessServiceDoesNotExist');
-                    }
-
-                    this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
-                    this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
-
-                    if (this.apps.length === 0) {
-                        return t('error.noAppsFoundForBusinessService');
-                    }
-                } catch (e) {
-                    this.apps = [];
-                    this.logger?.error(`Failed to get available applications: ${e.message}`);
-                    return e.message;
-                }
-
-                return true;
-            },
+            validate: () => this.singleServiceResult,
             guiOptions: {
-                mandatory: true,
+                type: 'label',
                 hint: t('prompts.businessServiceTooltip'),
                 breadcrumb: true
             }
-        } as ListQuestion<CfServicesAnswers>;
+        } as InputQuestion<CfServicesAnswers>;
+    }
+
+    /**
+     * Resolves a business service and discovers its base apps, populating `this.businessServiceInfo`
+     * and `this.apps` — the side-effects the base-app prompt and the writer depend on.
+     *
+     * @param {string} value - The business service name.
+     * @param {CfConfig} cfConfig - CF config service instance.
+     * @returns {Promise<string | true>} `true` when the service resolved and exposes apps, otherwise an error message.
+     */
+    private async discoverBusinessServiceApps(value: string, cfConfig: CfConfig): Promise<string | true> {
+        const validationResult = validateEmptyString(value);
+        if (typeof validationResult === 'string') {
+            return t('error.businessServiceHasToBeSelected');
+        }
+
+        try {
+            this.businessServiceInfo = await getBusinessServiceInfo(value, cfConfig, this.logger);
+            if (this.businessServiceInfo === null) {
+                return t('error.businessServiceDoesNotExist');
+            }
+
+            this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
+            this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
+
+            if (this.apps.length === 0) {
+                return t('error.noAppsFoundForBusinessService');
+            }
+        } catch (e) {
+            this.apps = [];
+            this.logger?.error(`Failed to get available applications: ${e.message}`);
+            return e.message;
+        }
+
+        return true;
     }
 
     /**
@@ -388,7 +425,7 @@ export class CFServicesPrompter {
             name: cfServicesPromptNames.serviceInstance,
             message: t('prompts.businessServiceLabel'),
             choices: (_: CfServicesAnswers) => getServiceInstanceChoices(this.serviceInstances),
-            when: () => this.isCfLoggedIn && this.businessServices.length === 0,
+            when: () => this.isCfLoggedIn && !this.reachableBusinessService,
             additionalMessages: () =>
                 this.serviceInstances.length === 0
                     ? { message: t('error.noServiceInstancesFound'), severity: Severity.error }
