@@ -10,7 +10,9 @@
         "writingPhase": "An error occurred in the writing phase: {{- error}}. For more information, view the logs.",
         "errorProcessingJsonFile": "An error occurred when processing the JSON file: {{- error}}. Ensure that the file is valid.",
         "noAppsDeployed": "No applications deployed to this system can be downloaded.",
-        "appDownloadFailed": "The application was found but no ZIP archive was returned by the system. The ABAP system may not support this download method.",
+        "appDownloadFailed": "The application could not be downloaded. The ABAP system does not support any available download method.",
+        "adtFallbackDownload": "ZIP download not supported on this system. Falling back to ADT file store download.",
+        "adtFallbackDownloadFailed": "ADT file store download failed: {{- error}}",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in the metadata. Check the metadata.",
             "invalidServiceName": "Invalid or missing `serviceName` in `serviceBindingDetails`. Check the `serviceName`.",

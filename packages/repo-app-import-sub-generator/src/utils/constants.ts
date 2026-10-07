@@ -89,7 +89,8 @@ export const appListResultFields = [
     'url'
 ];
 
-// Fallback for older systems that reject sap.app/sourceTemplate/id with HTTP 400.
+// Fallback for older systems (e.g. ABAP 731) that reject unknown columns with HTTP 400.
+// Drops sourceTemplateIdField and fileType, which older app index versions do not support.
 export const appListFieldsWithoutSourceTemplate = appListResultFields.filter(
-    (field) => field !== sourceTemplateIdField
+    (field) => field !== sourceTemplateIdField && field !== 'fileType'
 );
