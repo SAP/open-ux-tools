@@ -2,6 +2,6 @@
     id="<%- data.id %>"<% if (data.title) { %>
     title="<%- data.title %>"<% } %><% if (data.description) { %>
     description="<%- data.description %>"<% } %><% if (data.templateType === 'full') { %>
-    showFooter="true"<% } %>
-    stickySubheaderProvider="stickySubheaderBar"
+    showFooter="true"
+    stickySubheaderProvider="<%- data.stickySubheaderId %>"<% } %>
 />

@@ -1874,7 +1874,7 @@ exports[`Building Blocks RichTextEditorButtonGroups building block multiple Rich
 
 exports[`Building Blocks generate Page building block with basic template generates a minimal Page element and no controller: generate-page-block-basic 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
-    <macros:Page id=\\"testPage\\" stickySubheaderProvider=\\"stickySubheaderBar\\"/>
+    <macros:Page id=\\"testPage\\"/>
 </mvc:View>"
 `;
 
@@ -1984,7 +1984,7 @@ exports[`Building Blocks generate Page building block with full template uses de
 
 exports[`Building Blocks generate Page building block with replace target locator set: generate-page-block 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
-    <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\" stickySubheaderProvider=\\"stickySubheaderBar\\"/>
+    <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\"/>
 </mvc:View>"
 `;
 

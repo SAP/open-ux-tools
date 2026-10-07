@@ -1147,13 +1147,13 @@ exports[`CustomPage generateCustomPage: only page, no others should generate a c
 
 exports[`CustomPage generateCustomPage: only page, no others should generate a custom page with pageBuildingBlockTitle enabled 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
-    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\" stickySubheaderProvider=\\"stickySubheaderBar\\"/>
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
 </mvc:View>"
 `;
 
 exports[`CustomPage generateCustomPage: only page, no others should log a warning when min ui5 version is not met for full layout page building block 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.view.CustomPage\\">
-    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\" stickySubheaderProvider=\\"stickySubheaderBar\\"/>
+    <macros:Page id=\\"Page\\" title=\\"Test Page Title\\"/>
 </mvc:View>"
 `;
 
