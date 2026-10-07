@@ -20,7 +20,7 @@ function hasValidNameConvention(name: string): boolean {
     if (suffix.length === 0) {
         return false;
     }
-    return suffix[0] === suffix[0].toUpperCase();
+    return suffix.startsWith(suffix[0].toUpperCase());
 }
 
 const rule: Rule.RuleModule = {

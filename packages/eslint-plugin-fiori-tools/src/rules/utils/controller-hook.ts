@@ -11,7 +11,7 @@ export interface CommentNode {
 }
 
 export class ControllerHook {
-    private doc: Block;
+    private readonly doc: Block;
 
     /**
      * Parses a JSDoc block comment into a ControllerHook document.

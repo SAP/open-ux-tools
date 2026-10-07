@@ -14,6 +14,70 @@ import type {
 } from 'estree';
 
 // ------------------------------------------------------------------------------
+// Helper Functions
+// ------------------------------------------------------------------------------
+
+/**
+ * Get the rightmost method name from a call expression node.
+ *
+ * @param node The call expression node
+ * @returns The rightmost method name or empty string
+ */
+function getRightestMethodName(node: CallExpression): string {
+    const { callee } = node;
+    if (callee.type === 'MemberExpression') {
+        const prop = callee.property;
+        return prop.type === 'Identifier' ? prop.name : '';
+    }
+    if (callee.type === 'Identifier') {
+        return callee.name;
+    }
+    return '';
+}
+
+/**
+ * Build a string like "orm.write" from a call expression node.
+ *
+ * @param node The call expression node
+ * @returns The full function expression string or empty string
+ */
+function getFunctionExpressionStatement(node: CallExpression): string {
+    const fnName = getRightestMethodName(node);
+    const { callee } = node;
+    if (callee.type === 'MemberExpression' && callee.object.type === 'Identifier') {
+        return `${(callee.object as Identifier).name}.${fnName}`;
+    }
+    return '';
+}
+
+/**
+ * Check if a write() call is safe (argument must be a Literal).
+ *
+ * @param node The call expression node
+ * @returns True if safe
+ */
+function validateWrite(node: CallExpression): boolean {
+    if (node.arguments.length === 0) {
+        return true;
+    }
+    return node.arguments[0].type === 'Literal';
+}
+
+/**
+ * Check if a writeAttribute() call is safe (second arg must be Literal or Identifier).
+ *
+ * @param node The call expression node
+ * @returns True if safe
+ */
+function validateWriteAttribute(node: CallExpression): boolean {
+    if (node.arguments.length < 2) {
+        return true;
+    }
+    const secondArg = node.arguments[1];
+    return secondArg.type === 'Literal' || secondArg.type === 'Identifier';
+}
+
+// ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 const rule: Rule.RuleModule = {
@@ -31,66 +95,6 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         const RENDERER = 'renderer';
         const RENDER = 'render';
-
-        /**
-         * Get the rightmost method name from a call expression node.
-         *
-         * @param node The call expression node
-         * @returns The rightmost method name or empty string
-         */
-        function getRightestMethodName(node: CallExpression): string {
-            const { callee } = node;
-            if (callee.type === 'MemberExpression') {
-                const prop = callee.property;
-                return prop.type === 'Identifier' ? prop.name : '';
-            }
-            if (callee.type === 'Identifier') {
-                return callee.name;
-            }
-            return '';
-        }
-
-        /**
-         * Build a string like "orm.write" from a call expression node.
-         *
-         * @param node The call expression node
-         * @returns The full function expression string or empty string
-         */
-        function getFunctionExpressionStatement(node: CallExpression): string {
-            const fnName = getRightestMethodName(node);
-            const { callee } = node;
-            if (callee.type === 'MemberExpression' && callee.object.type === 'Identifier') {
-                return `${callee.object.name}.${fnName}`;
-            }
-            return '';
-        }
-
-        /**
-         * Check if a write() call is safe (argument must be a Literal).
-         *
-         * @param node The call expression node
-         * @returns True if safe
-         */
-        function validateWrite(node: CallExpression): boolean {
-            if (node.arguments.length === 0) {
-                return true;
-            }
-            return node.arguments[0].type === 'Literal';
-        }
-
-        /**
-         * Check if a writeAttribute() call is safe (second arg must be Literal or Identifier).
-         *
-         * @param node The call expression node
-         * @returns True if safe
-         */
-        function validateWriteAttribute(node: CallExpression): boolean {
-            if (node.arguments.length < 2) {
-                return true;
-            }
-            const secondArg = node.arguments[1];
-            return secondArg.type === 'Literal' || secondArg.type === 'Identifier';
-        }
 
         /**
          * Dispatch validation to the correct validator based on the call expression.
@@ -122,7 +126,7 @@ const rule: Rule.RuleModule = {
         ): ExpressionStatement[] {
             return stmts.filter((e) => {
                 const { expression } = e;
-                if (!expression || expression.type !== 'CallExpression') {
+                if (expression?.type !== 'CallExpression') {
                     return false;
                 }
                 const call = getFunctionExpressionStatement(expression as CallExpression);

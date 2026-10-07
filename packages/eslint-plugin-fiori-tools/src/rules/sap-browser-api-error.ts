@@ -56,7 +56,7 @@ const FORBIDDEN_GLOB_EVENT = [
     'onsubmit'
 ] as const;
 
-const FULL_BLACKLIST: string[] = [
+const FULL_BLACKLIST = new Set<string>([
     ...FORBIDDEN_DOM_INSERTION,
     ...FORBIDDEN_DOM_MANIPULATION,
     ...FORBIDDEN_DYNAMIC_STYLE_INSERTION,
@@ -66,7 +66,7 @@ const FULL_BLACKLIST: string[] = [
     ...FORBIDDEN_DEF_GLOB,
     ...FORBIDDEN_GLOB_EVENT,
     'back'
-];
+]);
 
 // ------------------------------------------------------------------------------
 // Helper Functions
@@ -88,6 +88,18 @@ function getRightestMethodName(node: SimpleCallExpression): string | undefined {
         return callee.name;
     }
     return undefined;
+}
+
+/**
+ * Extract the two-part dotted path from a MemberExpression init (e.g. "window.document").
+ *
+ * @param init The MemberExpression init node
+ * @returns Dotted path string or undefined
+ */
+function getMemberExpressionPath(init: MemberExpression): string | undefined {
+    const first = init.object.type === 'Identifier' ? (init.object as Identifier).name : undefined;
+    const second = init.property.type === 'Identifier' ? (init.property as Identifier).name : undefined;
+    return first && second ? `${first}.${second}` : undefined;
 }
 
 // ------------------------------------------------------------------------------
@@ -182,14 +194,10 @@ const rule: Rule.RuleModule = {
             }
 
             if (init.type === 'MemberExpression') {
-                const obj = init.object;
-                const prop = init.property;
-                const first = obj.type === 'Identifier' ? obj.name : undefined;
-                const second = prop.type === 'Identifier' ? prop.name : undefined;
-                if (!first || !second) {
+                const path = getMemberExpressionPath(init as MemberExpression);
+                if (!path) {
                     return;
                 }
-                const path = `${first}.${second}`;
                 if (path === 'window.document') {
                     FORBIDDEN_DOCUMENT_OBJECT.push(varName);
                 } else if (path === 'window.location') {
@@ -327,7 +335,7 @@ const rule: Rule.RuleModule = {
          */
         function handleCallMemberExpression(node: MemberExpression & Rule.NodeParentExtension): void {
             const methodName = getRightestMethodName(node.parent as SimpleCallExpression);
-            if (typeof methodName !== 'string' || !FULL_BLACKLIST.includes(methodName)) {
+            if (typeof methodName !== 'string' || !FULL_BLACKLIST.has(methodName)) {
                 return;
             }
             const calleePath = buildCalleePath(node as unknown as ASTNode);
