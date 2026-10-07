@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Legacy Folder Structure Migration should migrate project with src/main/webapp structure (CostCenter) 1`] = `
+"{
+	\\"name\\": \\"com.example.legacy.costcenter\\",
+	\\"version\\": \\"0.0.1\\",
+	\\"private\\": true,
+	\\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
+	\\"description\\": \\"\\",
+	\\"keywords\\": [
+		\\"ui5\\",
+		\\"openui5\\",
+		\\"sapui5\\"
+	],
+	\\"main\\": \\"webapp/index.html\\",
+	\\"scripts\\": {
+		\\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#CostCenter-manageCostCenters\\\\\\"\\",
+		\\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#CostCenter-manageCostCenters\\\\\\"\\",
+		\\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+		\\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+		\\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
+		\\"deploy\\": \\"fiori verify\\",
+		\\"deploy-config\\": \\"fiori add deploy-config\\",
+		\\"start-mock\\": \\"fiori run --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#CostCenter-manageCostCenters\\\\\\"\\"
+	},
+	\\"devDependencies\\": {
+        \\"@ui5/cli\\": \\"^4.0.0\\",
+        \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+        \\"rimraf\\": \\"6.0.1\\"
+}
+}
+"
+`;
