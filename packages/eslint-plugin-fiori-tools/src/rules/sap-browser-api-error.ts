@@ -56,7 +56,7 @@ const FORBIDDEN_GLOB_EVENT = [
     'onsubmit'
 ] as const;
 
-const FULL_BLACKLIST = new Set<string>([
+const FULL_BLOCKLIST = new Set<string>([
     ...FORBIDDEN_DOM_INSERTION,
     ...FORBIDDEN_DOM_MANIPULATION,
     ...FORBIDDEN_DYNAMIC_STYLE_INSERTION,
@@ -335,7 +335,7 @@ const rule: Rule.RuleModule = {
          */
         function handleCallMemberExpression(node: MemberExpression & Rule.NodeParentExtension): void {
             const methodName = getRightestMethodName(node.parent as SimpleCallExpression);
-            if (typeof methodName !== 'string' || !FULL_BLACKLIST.has(methodName)) {
+            if (typeof methodName !== 'string' || !FULL_BLOCKLIST.has(methodName)) {
                 return;
             }
             const calleePath = buildCalleePath(node as unknown as ASTNode);
