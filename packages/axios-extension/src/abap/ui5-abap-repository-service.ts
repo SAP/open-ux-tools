@@ -1,5 +1,11 @@
 import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
-import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message.js';
+import {
+    logError,
+    getErrorMessageFromString,
+    prettyPrintError,
+    prettyPrintMessage,
+    type ErrorMessage
+} from './message.js';
 import { ODataService } from '../base/odata-service.js';
 import { isAxiosError } from '../base/odata-request-error.js';
 /**
@@ -140,23 +146,37 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Log a failed application lookup and either resolve a 404 as "not found" or re-throw.
      *
-     * The response body (populated on 400/500 Gateway errors) is only logged at debug level,
+     * The full response body (populated on 400/500 Gateway errors) is only logged at debug level,
      * so the real failure reason is available when debug logging is enabled without leaking at
-     * normal log levels.
+     * normal log levels. The extracted Gateway error (message and code) is additionally appended to
+     * the re-thrown error's message, so callers logging error.message at warn/error can diagnose the
+     * failure without enabling debug logging.
      *
      * @param app application id (BSP application name) used in the log message
      * @param error error thrown by the failed request
      * @returns undefined if the application was not found (404), otherwise the original error is re-thrown
      */
     private handleAppLookupError(app: string, error: unknown): undefined {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = error instanceof Error ? error.message : JSON.stringify(error);
         this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${message}`);
         if (isAxiosError(error)) {
             if (error.response?.data) {
                 const { data } = error.response;
                 const errorMessage = getErrorMessageFromString(data);
                 const body = typeof data === 'string' ? data : JSON.stringify(data);
+                // Full response body is only logged at debug level to avoid leaking it at normal log levels
                 this.log.debug(errorMessage ? JSON.stringify(errorMessage) : body);
+                // Surface the Gateway error reason (message + code) on the re-thrown error so callers that
+                // log error.message at warn/error can diagnose the failure without enabling debug logging
+                const reason =
+                    errorMessage ??
+                    (typeof data === 'object' && data !== null ? (data as { error?: ErrorMessage }).error : undefined);
+                const reasonText = typeof reason?.message === 'string' ? reason.message : reason?.message?.value;
+                if (reasonText) {
+                    error.message = reason?.code
+                        ? `${error.message}: ${reasonText} (${reason.code})`
+                        : `${error.message}: ${reasonText}`;
+                }
             }
             if (error.response?.status === 404) {
                 return undefined;

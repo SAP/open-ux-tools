@@ -130,7 +130,7 @@ describe('Ui5AbapRepositoryService', () => {
         });
 
         test('Server error (500) logs the response body at debug level and re-throws', async () => {
-            await expect(service.getInfo(serverErrorApp)).rejects.toThrow();
+            await expect(service.getInfo(serverErrorApp)).rejects.toThrow('Internal Server Error (500)');
             expect(loggerMock.debug).toHaveBeenCalledWith(JSON.stringify(JSON.parse(serverErrorBody).error));
         });
     });
