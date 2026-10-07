@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Migration Integration Tests UI5 Library Migration should migrate standalone UI5 library 1`] = `
-"specVersion: \\"4.0\\"
-metadata:
-  name: com.example.ui5.library
-type: library
-"
-`;

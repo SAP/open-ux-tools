@@ -39,9 +39,13 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
     filesToCheck.forEach((file) => {
         const content = getFileFromMemFs(fs, projectPath, file);
         if (content) {
+            // Normalize UUIDs in content before snapshot comparison
+            // toMatchSpecificSnapshot doesn't use snapshot serializers, so we normalize manually
+            const normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
+
             // Use specific snapshot path per app and file
             const snapshotPath = join(__dirname, '__snapshots__', 'integration', appName, file + '.snap');
-            expect(content).toMatchSpecificSnapshot(snapshotPath);
+            expect(normalizedContent).toMatchSpecificSnapshot(snapshotPath);
         }
     });
 }
