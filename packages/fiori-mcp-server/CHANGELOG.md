@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace opa5_docu.md and fiori-tools-opa-guide.md with OPA5 skill reference files as embeddings source [[3c76112](https://github.com/SAP/open-ux-tools/commit/3c7611299ff6b7b8f610285e2846430fffd859dd)]
+
+## 1.15.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- generate_adaptation_project now imports key user changes again. The @sap-ux/generator-adp generator reads key user changes from a temp file keyed by the correlation `id` (`{os.tmpdir()}/{id}.txt`) rather than from the CLI JSON payload (since generator-adp #5079), but the MCP tool still passed them inline, so they were silently dropped. The tool now stages the fetched changes into that temp file, hands over the matching `id`, and cleans the file up afterwards. [[7309efa](https://github.com/SAP/open-ux-tools/commit/7309efa1a3895119cf5f8a7e3faa37aeab59d915)]
+
 ## 1.15.1
 
 ### Patch Changes

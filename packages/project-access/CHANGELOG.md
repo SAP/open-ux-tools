@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 2.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+
 ## 2.2.1
 
 ### Patch Changes
