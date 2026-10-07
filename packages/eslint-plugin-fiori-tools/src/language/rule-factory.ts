@@ -15,6 +15,8 @@ import { findDeepestExistingPath } from '../utils/helpers.js';
 import { pathToFileURL } from 'node:url';
 import { normalizePath } from '@sap-ux/project-access';
 import { FioriChangeSourceCode } from './change/source-code.js';
+import { FioriI18nSourceCode } from './i18n/source-code.js';
+import type { I18nNode } from './i18n/source-code.js';
 
 /**
  * Rule context type for JSON-based rules.
@@ -59,6 +61,20 @@ export type AnnotationRuleContext<MessageIds extends string, RuleOptions extends
 }>;
 
 /**
+ * Rule context type for i18n .properties-based rules.
+ *
+ * @template MessageIds - Union type of message IDs used in the rule
+ * @template RuleOptions - Array type of rule option values
+ */
+export type I18nRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
+    LangOptions: FioriLanguageOptions;
+    Code: FioriI18nSourceCode;
+    RuleOptions: RuleOptions;
+    Node: I18nNode;
+    MessageIds: MessageIds;
+}>;
+
+/**
  * Creates a Fiori rule that can operate on multiple files in a Fiori application.
  *
  * @param param0 - Rule definition.
@@ -69,6 +85,7 @@ export type AnnotationRuleContext<MessageIds extends string, RuleOptions extends
  * @param param0.createJson
  * @param param0.createXml
  * @param param0.createAnnotations
+ * @param param0.createI18n
  * @param param0.check
  * @returns A Fiori rule definition.
  */
@@ -85,7 +102,8 @@ export function createFioriRule<
     createChangeVisitorHandler,
     createJson,
     createXml,
-    createAnnotations
+    createAnnotations,
+    createI18n
 }: {
     ruleId: T;
     meta?: RulesMeta<MessageIds, RuleOptions, ExtRuleDocs>;
@@ -108,6 +126,10 @@ export function createFioriRule<
     ) => RuleVisitor;
     createAnnotations?: (
         context: AnnotationRuleContext<MessageIds, RuleOptions>,
+        validationResult: Extract<Diagnostic, { type: T }>[]
+    ) => RuleVisitor;
+    createI18n?: (
+        context: I18nRuleContext<MessageIds, RuleOptions>,
         validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
     check: (
@@ -162,6 +184,9 @@ export function createFioriRule<
             }
             if (context.sourceCode instanceof FioriAnnotationSourceCode && createAnnotations) {
                 return createAnnotations(context as AnnotationRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
+            }
+            if (context.sourceCode instanceof FioriI18nSourceCode && createI18n) {
+                return createI18n(context as I18nRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
             }
             return {};
         }
