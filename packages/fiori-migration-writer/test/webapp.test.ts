@@ -64,7 +64,7 @@ describe('webapp', () => {
                         type: 'application'
                     }
                 };
-                await writeFile(join(rootPath, 'webapp', 'manifest.json'), JSON.stringify(existingManifest));
+                writeFileUtil(join(rootPath, 'webapp', 'manifest.json'), JSON.stringify(existingManifest));
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.extension',
@@ -181,12 +181,12 @@ describe('webapp', () => {
                 const rootPath = join(testOutputDir, 'migrate-to-webapp');
                 await mkdir(rootPath, { recursive: true });
 
-                // Create manifest at root
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                // Create manifest at root using mem-fs
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
-                // Create some files to migrate
-                await writeFile(join(rootPath, 'Component.js'), 'component code');
-                await writeFile(join(rootPath, 'view.xml'), 'view xml');
+                // Create some files to migrate using mem-fs
+                writeFileUtil(join(rootPath, 'Component.js'), 'component code');
+                writeFileUtil(join(rootPath, 'view.xml'), 'view xml');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.migrate',
@@ -206,10 +206,7 @@ describe('webapp', () => {
                 const rootPath = join(testOutputDir, 'already-has-webapp');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
 
-                await writeFile(
-                    join(rootPath, 'webapp', 'manifest.json'),
-                    JSON.stringify({ 'sap.app': { id: 'test' } })
-                );
+                writeFileUtil(join(rootPath, 'webapp', 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.existing.webapp',
@@ -247,17 +244,17 @@ describe('webapp', () => {
                 const rootPath = join(testOutputDir, 'exclude-files');
                 await mkdir(rootPath, { recursive: true });
 
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Create files that should be excluded
-                await writeFile(join(rootPath, 'neo-app.json'), '{}');
-                await writeFile(join(rootPath, 'package.json'), '{}');
-                await writeFile(join(rootPath, '.gitignore'), '');
-                await writeFile(join(rootPath, 'pom.xml'), '<xml/>');
-                await writeFile(join(rootPath, '.DS_Store'), '');
+                writeFileUtil(join(rootPath, 'neo-app.json'), '{}');
+                writeFileUtil(join(rootPath, 'package.json'), '{}');
+                writeFileUtil(join(rootPath, '.gitignore'), '');
+                writeFileUtil(join(rootPath, 'pom.xml'), '<xml/>');
+                writeFileUtil(join(rootPath, '.DS_Store'), '');
 
                 // Create file that should be migrated
-                await writeFile(join(rootPath, 'Component.js'), 'code');
+                writeFileUtil(join(rootPath, 'Component.js'), 'code');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.exclude',
@@ -277,8 +274,8 @@ describe('webapp', () => {
                 const rootPath = join(testOutputDir, 'no-git');
                 await mkdir(rootPath, { recursive: true });
 
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
-                await writeFile(join(rootPath, 'file.js'), 'code');
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(join(rootPath, 'file.js'), 'code');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.nogit',
@@ -299,10 +296,10 @@ describe('webapp', () => {
             await runWithEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'control-char-test');
                 await mkdir(rootPath, { recursive: true });
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Create test file
-                await writeFile(join(rootPath, 'Component.js'), 'code');
+                writeFileUtil(join(rootPath, 'Component.js'), 'code');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test',
@@ -321,7 +318,7 @@ describe('webapp', () => {
             await runWithEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'metachar-test');
                 await mkdir(rootPath, { recursive: true });
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test',
@@ -355,7 +352,7 @@ describe('webapp', () => {
             await runWithEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'git-empty-path');
                 await mkdir(rootPath, { recursive: true });
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // This will be tested internally during git mv operation (line 46: empty path check)
                 const projectInfo: ImportProjectInfo = {
@@ -373,7 +370,7 @@ describe('webapp', () => {
             await runWithEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'git-escape');
                 await mkdir(rootPath, { recursive: true });
-                await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Paths like '../../../etc/passwd' should be rejected (line 48-50: escape check)
                 const projectInfo: ImportProjectInfo = {

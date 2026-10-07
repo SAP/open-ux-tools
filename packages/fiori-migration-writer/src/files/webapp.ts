@@ -2,12 +2,12 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join, resolve } from 'node:path';
+import { join, resolve, basename, sep } from 'node:path';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { mkdir, exists, isMemFsEnabled } from '../utils/fs-adapter.js';
+import { mkdir, exists, isMemFsEnabled, getCurrentEditor } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 
@@ -177,11 +177,14 @@ export async function createWebappFolderAndMigrateFiles(
     projectInfo: ImportProjectInfo
 ): Promise<void> {
     // Only proceed if webapp path is empty and manifest exists in root
-    if (projectInfo.webappPath === '' && (await fileExists(join(rootPath, FileName.Manifest)))) {
+    const manifestPath = join(rootPath, FileName.Manifest);
+    const manifestExists = await fileExists(manifestPath);
+
+    if (projectInfo.webappPath === '' && manifestExists) {
         // manifest.json is outside of webapp folder and should not be a legacy project
         // as previous block will have updated this folder structure
         // create webapp, move files into it and update current webapp path
-        const dirContent = readdirSync(rootPath, { withFileTypes: true });
+
         await mkdir(join(rootPath, DirName.Webapp));
 
         // List of files/directories to exclude from migration
@@ -203,34 +206,68 @@ export async function createWebappFolderAndMigrateFiles(
             '.eslintrc.ext'
         ];
 
-        const runner = new CommandRunner();
+        const editor = getCurrentEditor();
 
-        // Validate root directory once
-        const safeRootPath = validateRootDirectory(rootPath);
+        if (editor) {
+            // Use mem-fs to get directory listing
+            const rootPathWithSep = rootPath.endsWith(sep) ? rootPath : rootPath + sep;
+            const filesInRoot: string[] = [];
 
-        // Move files to webapp folder
-        for (const path of dirContent) {
-            if (direntToFilter.indexOf(path.name) === -1) {
-                try {
-                    // Validate paths before passing to git - path.name is from fs.readdirSync
-                    const relSource = validateGitRelativePath(path.name);
-                    const relDest = validateGitRelativePath(join(DirName.Webapp, path.name));
-
-                    // use git to move files if available (validated relative paths prevent injection)
-                    await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
-                } catch {
-                    // Expected: git command may fail if git is not installed or repo is not initialized.
-                    // Fallback to file system move (handled below) is intentional.
+            // Collect all files directly in root (not in subdirectories)
+            (editor as any).store.each((file: any) => {
+                const filePath = file.path;
+                if (filePath.startsWith(rootPathWithSep)) {
+                    const relativePath = filePath.substring(rootPathWithSep.length);
+                    // Only files directly in root (no path separator in relative path)
+                    if (relativePath && !relativePath.includes(sep)) {
+                        const fileName = basename(filePath);
+                        if (direntToFilter.indexOf(fileName) === -1) {
+                            filesInRoot.push(filePath);
+                        }
+                    }
                 }
+            });
 
-                // Fallback to file system move if git didn't work
-                if (existsSync(join(rootPath, path.name))) {
-                    const sourcePath = join(rootPath, path.name);
-                    const destPath = join(rootPath, DirName.Webapp, path.name);
+            // Move files to webapp folder in mem-fs
+            for (const filePath of filesInRoot) {
+                const fileName = basename(filePath);
+                const destPath = join(rootPath, DirName.Webapp, fileName);
+                const content = readFile(filePath);
+                writeFile(destPath, content);
+                deleteFile(filePath);
+            }
+        } else {
+            // Use real filesystem
+            const dirContent = readdirSync(rootPath, { withFileTypes: true });
+            const runner = new CommandRunner();
 
-                    // Recursively move files and directories
-                    // Source files are automatically deleted after copy completes
-                    await recursiveMove(sourcePath, destPath);
+            // Validate root directory once
+            const safeRootPath = validateRootDirectory(rootPath);
+
+            // Move files to webapp folder
+            for (const path of dirContent) {
+                if (direntToFilter.indexOf(path.name) === -1) {
+                    try {
+                        // Validate paths before passing to git - path.name is from fs.readdirSync
+                        const relSource = validateGitRelativePath(path.name);
+                        const relDest = validateGitRelativePath(join(DirName.Webapp, path.name));
+
+                        // use git to move files if available (validated relative paths prevent injection)
+                        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
+                    } catch {
+                        // Expected: git command may fail if git is not installed or repo is not initialized.
+                        // Fallback to file system move (handled below) is intentional.
+                    }
+
+                    // Fallback to file system move if git didn't work
+                    if (existsSync(join(rootPath, path.name))) {
+                        const sourcePath = join(rootPath, path.name);
+                        const destPath = join(rootPath, DirName.Webapp, path.name);
+
+                        // Recursively move files and directories
+                        // Source files are automatically deleted after copy completes
+                        await recursiveMove(sourcePath, destPath);
+                    }
                 }
             }
         }
