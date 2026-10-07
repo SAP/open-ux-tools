@@ -1,5 +1,173 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace opa5_docu.md and fiori-tools-opa-guide.md with OPA5 skill reference files as embeddings source [[3c76112](https://github.com/SAP/open-ux-tools/commit/3c7611299ff6b7b8f610285e2846430fffd859dd)]
+
+## 1.15.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- generate_adaptation_project now imports key user changes again. The @sap-ux/generator-adp generator reads key user changes from a temp file keyed by the correlation `id` (`{os.tmpdir()}/{id}.txt`) rather than from the CLI JSON payload (since generator-adp #5079), but the MCP tool still passed them inline, so they were silently dropped. The tool now stages the fetched changes into that temp file, hands over the matching `id`, and cleans the file up afterwards. [[7309efa](https://github.com/SAP/open-ux-tools/commit/7309efa1a3895119cf5f8a7e3faa37aeab59d915)]
+
+## 1.15.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- update skills to reuse testing fiori app instruction from sap-fiori-app-development skill [[2407541](https://github.com/SAP/open-ux-tools/commit/240754101316160892d1701a578221d197fe3a5d)]
+
+## 1.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Features
+
+- add MCP tools for adaptation project development, covering project generation, controller extension authoring, RTA workflow automation, and UI5 control documentation lookup [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+## 1.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Features
+
+- Add enableTypeScript (default false), namespace, and viewName to generate_fiori_app_odata project input — generation-only properties that cannot be corrected after scaffolding [[2bdadd6](https://github.com/SAP/open-ux-tools/commit/2bdadd61025d3b0c53888c652f07974d2b5dcfae)]
+
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Expose navigationEntity in entityConfig so AI agents can generate sub-object page navigation [[5adaccb](https://github.com/SAP/open-ux-tools/commit/5adaccb465eb5de57ca8c00bdc6bdbc6137f7de0)]
+
+## 1.12.13
+
+### Patch Changes
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 1.12.12
+
+### Patch Changes
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+## 1.12.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[77ac0e2](https://github.com/SAP/open-ux-tools/commit/77ac0e2629ef9e95e72723c5a7a31c28aa2a1405)]
+
+## 1.12.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 1.12.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Bug Fixes
+
+- Guard against pre-existing app subfolder in generate tools — return a clear error instead of silently deleting the folder via --force [[ea11bba](https://github.com/SAP/open-ux-tools/commit/ea11bbaf2f89cab14bb39a22e8dd37f7e395e85e)]
+
+## 1.12.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-19
+
+#### Bug Fixes
+
+- Correct frontmatter formatting in tree table skill [[863465a](https://github.com/SAP/open-ux-tools/commit/863465a4420c6435c2b8f206f631f2b5fd089d41)]
+
+## 1.12.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Improve ABAP RAP implementation guidance for analytical chart setup [[1c7ab55](https://github.com/SAP/open-ux-tools/commit/1c7ab55f7754a3f9aab1936760c45a64d1e51e49)]
+
+## 1.12.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
 ## 1.12.5
 
 ### Patch Changes

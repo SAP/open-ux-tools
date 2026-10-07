@@ -30,7 +30,8 @@ export const HELP_NODES = {
     UI_SERVICE_GENERATOR: 63068, // UI Service generator
     DESTINATION_GATEWAY_TIMEOUT: 57914, // Gateway timeout 504
     ADT_APP_NOT_FOUND_ERROR: 63911, // Error when the ADT app is not found in the UI5 ABAP repository
-    DESTINATION_FULL_URL: 68172 // Full URL destination migration guide - covers preview and deployment flows
+    DESTINATION_FULL_URL: 68172, // Full URL destination migration guide - covers preview and deployment flows
+    ABAP_REPO_APP_DOWNLOAD_FAILED: 68669 // Error when the app files could not be downloaded from the ABAP repository
 };
 
 export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';

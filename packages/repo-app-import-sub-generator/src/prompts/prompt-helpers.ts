@@ -2,7 +2,11 @@ import {
     appListResultFields,
     downloadTypeConfig,
     generatorTitleConfig,
-    adtSourceTemplateId
+    adtSourceTemplateIds,
+    adtSourceTemplateId,
+    adtSourceTemplateIdCorrected,
+    appListFieldsWithoutSourceTemplate,
+    sourceTemplateIdField
 } from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppInfo, AppItem } from '../app/types.js';
@@ -77,30 +81,100 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
- * @param {AppDownloadType} downloadType - The download type determining which search params to use.
- * @returns {Promise<AppIndex>} A list of applications filtered by source template.
+ * @param {AppDownloadType} downloadType - The download type determining which search parameters to use.
+ * @returns {Promise<AppIndex>} A list of deployed applications. For the ADTQuickDeploy flow, only ADT-deployed apps are returned. For the AbapRepository flow on systems that support it, ADT-deployed apps are excluded.
  */
+/**
+ * Fallback for older ABAP systems that reject sourceTemplate/type search params with HTTP 400.
+ * Returns all apps unfiltered — old systems won't have ADT-deployed apps anyway.
+ *
+ * @param appIndex - The app index instance to search against.
+ * @returns All apps without filtering, or an empty array if the retry also fails.
+ */
+async function retryAbapAppListFetch(appIndex: ReturnType<AbapServiceProvider['getAppIndex']>): Promise<AppIndex> {
+    try {
+        // sap.app/type=application is also dropped — older systems may reject it too.
+        // Non-application entries in the list are acceptable; they will fail at the download step.
+        const results = await appIndex.search({}, appListFieldsWithoutSourceTemplate);
+        RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${results.length} results`);
+        return results;
+    } catch (retryError) {
+        const message = retryError instanceof Error ? retryError.message : String(retryError);
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
+        return [];
+    }
+}
+
+/**
+ * Searches the app index for AbapRepository apps, filtering out ADT-deployed entries.
+ *
+ * @param appIndex - The app index instance to search against.
+ * @param appId - Optional app ID to narrow the search.
+ * @returns Filtered app list excluding any ADT source template IDs.
+ */
+async function searchAbapRepositoryApps(
+    appIndex: ReturnType<AbapServiceProvider['getAppIndex']>,
+    appId?: string
+): Promise<AppIndex> {
+    const base = downloadTypeConfig[AppDownloadType.AbapRepository].searchParams;
+    const searchParams = appId ? { ...base, 'sap.app/id': appId } : base;
+    const results = await appIndex.search(searchParams, appListResultFields);
+    const filtered = results.filter((app) => !adtSourceTemplateIds.includes(app[sourceTemplateIdField] as string));
+    RepoAppDownloadLogger.logger?.debug(
+        `App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
+    );
+    return filtered;
+}
+
+/**
+ * Searches the app index for ADTQuickDeploy apps using both legacy and corrected template IDs concurrently.
+ * The app index API does not support OR filters, so two parallel searches are required.
+ *
+ * @param appIndex - The app index instance to search against.
+ * @param appId - Optional app ID to narrow the search.
+ * @returns Deduplicated app list from both template ID searches.
+ */
+async function searchAdtQuickDeployApps(
+    appIndex: ReturnType<AbapServiceProvider['getAppIndex']>,
+    appId?: string
+): Promise<AppIndex> {
+    const buildSearchParams = (templateId: string): Record<string, string> => ({
+        [sourceTemplateIdField]: templateId,
+        ...(appId ? { 'sap.app/id': appId } : {})
+    });
+    const [legacyResults, correctedResults] = await Promise.all([
+        appIndex.search(buildSearchParams(adtSourceTemplateId), appListResultFields),
+        appIndex.search(buildSearchParams(adtSourceTemplateIdCorrected), appListResultFields)
+    ]);
+    // An app can only carry one template ID at a time, so duplicates should not occur in practice.
+    // Dedup by sap.app/id as a safeguard against unexpected backend behaviour.
+    const legacyAppIds = new Set(legacyResults.map((app) => app['sap.app/id']));
+    return [...legacyResults, ...correctedResults.filter((app) => !legacyAppIds.has(app['sap.app/id']))];
+}
+
 async function getAppList(
     provider: AbapServiceProvider,
     appId?: string,
     downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
+    const appIndex = provider.getAppIndex();
+
     try {
-        const baseSearchParams = downloadTypeConfig[downloadType].searchParams;
-        const searchParams = appId
-            ? {
-                  ...baseSearchParams,
-                  'sap.app/id': appId
-              }
-            : baseSearchParams;
-        const results = await provider.getAppIndex().search(searchParams, appListResultFields);
         if (downloadType === AppDownloadType.AbapRepository) {
-            // For ABAP Repository downloads, filter out apps with the ADT source template as they follow the quick deploy app download flow.
-            return results.filter((app) => app['sap.app/sourceTemplate/id'] !== adtSourceTemplateId);
+            return await searchAbapRepositoryApps(appIndex, appId);
         }
-        return results;
+        return await searchAdtQuickDeployApps(appIndex, appId);
     } catch (error) {
-        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
+        if (
+            downloadType === AppDownloadType.AbapRepository &&
+            (error as { response?: { status?: number } })?.response?.status === 400
+        ) {
+            // Older systems may not support sourceTemplateIdField or the sap.app/type search param.
+            RepoAppDownloadLogger.logger?.debug(`Retrying without ${sourceTemplateIdField} and search params`);
+            return retryAbapAppListFetch(appIndex);
+        }
+        const message = error instanceof Error ? error.message : String(error);
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }
 }

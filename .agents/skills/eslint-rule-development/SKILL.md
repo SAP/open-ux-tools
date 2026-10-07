@@ -26,7 +26,7 @@ Add a new ESLint rule to `@sap-ux/eslint-plugin-fiori-tools` following the estab
 
 | Type | Use when | Reference file |
 |---|---|---|
-| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files | `references/annotation.md` |
+| **Annotation rule** | Validates `UI.*` OData annotations in `.xml` / `.cds` files. Also, covers rules where text, that is, a label, title, or description, can be an i18n binding | `references/annotation.md` |
 | **Manifest JSON rule** | Validates `manifest.json` properties | `references/manifest-json.md` |
 | **Flex change file rule** | Validates `webapp/changes/*.change` (Applicable only to OData V2 flex change properties) | `references/flex-change.md` |
 | **JavaScript / TypeScript rule** | Validates JS/TS application source code (UI5 patterns, global variables, deprecated APIs) | `references/js-ts-rule.md` |
@@ -74,6 +74,11 @@ Use the template from the reference file for your rule type.
 
 - **JSDoc** — add a JSDoc block (`@param`, `@returns`) to every new function. When modifying an existing function, update its JSDoc to reflect any signature or behaviour changes.
 - **Cognitive complexity ≤ 15** — enforced by `sonarjs/cognitive-complexity`. If a function exceeds 15, extract branches or loops into well-named helper functions until the complexity falls within the limit. Do not inline complex logic in a single function to avoid this.
+- **Backtick code indicators in messages** — in rule warning messages, wrap all code-like values in backticks: property names, annotation names, property values, entity names, and any other identifier that appears verbatim in source. Plain prose words stay unquoted.
+  ```typescript
+  // ✅ Correct — code values in backticks
+  message: "The `UI.LineItem` annotation is missing the required `Criticality` property."
+  ```
 
 ### Step 4 — Register the rule
 
@@ -196,6 +201,7 @@ Summarize what was done:
 | Plugin config & exports | `packages/eslint-plugin-fiori-tools/src/index.ts` |
 | Diagnostic constants | `packages/eslint-plugin-fiori-tools/src/language/diagnostics.ts` |
 | Annotation helper utilities | `packages/eslint-plugin-fiori-tools/src/project-context/linker/annotations.ts` |
+| i18n helper utilities (`extractI18nKey`, `getAttrOrChildText`, `collectSectionLabelKeys`, for example) | `packages/eslint-plugin-fiori-tools/src/project-context/linker/i18n.ts` |
 | Annotation index key format | `packages/eslint-plugin-fiori-tools/src/project-context/parser/service.ts` (lines 50-57) |
 | Linker types | `packages/eslint-plugin-fiori-tools/src/project-context/linker/types.ts` |
 | V2 linker | `packages/eslint-plugin-fiori-tools/src/project-context/linker/fe-v2.ts` |
@@ -210,7 +216,7 @@ Summarize what was done:
 
 | Rule type | Use in `check()` | Why |
 |---|---|---|
-| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | Only check annotations **referenced from pages** — never scan all entity annotations. `pageNames` must list only pages that reference the specific annotation. See `annotation.md` for access patterns and the page-annotation-map template. |
+| **Annotation** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `getIndexedServiceForMainService` | Only check annotations **referenced from pages** — never scan all entity annotations. `pageNames` must list only pages that reference the specific annotation. See `annotation.md` for access patterns and the page-annotation-map template. When text can be an i18n binding, use the two-pass design in `annotation.md#when-the-text-field-can-be-an-i18n-binding`. |
 | **Manifest JSON** | `linkedModel.apps` for page iteration; `index.apps[appKey]` for `parsedApp` (manifest URI, manifestObject) | Requires linked pages to find manifest config paths |
 | **Flex change** | `context.sourceCode.projectContext.linkedModel.apps` | Guard on `FioriChangeSourceCode` first; linked model provides change file config via `page.lookup['table']` |
 | **JavaScript / TypeScript** | Standard ESLint `context` — no `projectContext` | JS/TS rules don't use the Fiori project model; use `Rule.RuleModule`, not `createFioriRule` |

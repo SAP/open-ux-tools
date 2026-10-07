@@ -32,7 +32,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 
     return new ObjectPage(
         {
-            appId: 'testNameSpace.worklistv4',
+            appId: 'testnamespace.worklistv4',
             componentId: 'BookingObjectPage',
             contextPath: '/Travel/_Booking'
         },

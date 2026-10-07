@@ -1,6 +1,7 @@
 const esbuild = require('esbuild');
 const fs = require('node:fs');
 const path = require('node:path');
+const { makeLicensePlugin } = require('../../esbuildLicensePlugin.cjs');
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -197,7 +198,10 @@ async function main() {
         outfile: 'dist/extension.js',
         external: ['vscode'],
         logLevel: 'silent',
+        legalComments: 'linked',
+        metafile: true,
         plugins: [
+            makeLicensePlugin(),
             fixImportMetaPlugin,
             bundleZowePlugin,
             copyWebappPlugin,

@@ -25,6 +25,8 @@ sap.ui.define([
         QUnit.module("TravelObjectPageObjectPage journey");
 
         opaTest("Navigate to TravelObjectPageObjectPage", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
@@ -36,7 +38,7 @@ sap.ui.define([
         opaTest("Check header actions of the Object Page", function (Given, When, Then) {
             // Ensure the opened entity is not in Draft state before uncommenting
             // Then.onTheTravelObjectPageGenerated.onHeader().iCheckEdit({ visible: true });
-            // When.onTheTravelObjectPageGenerated.onHeader().iExecuteEdit();
+            // When.onTheTravelObjectPageGenerated.onHeader().iPressEdit();
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false } /* , { enabled: true } */);
             // When.onTheTravelObjectPageGenerated.onHeader().iPressAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setCancellationDateToTomorrow", unbound: false });
             Then.onTheTravelObjectPageGenerated.onHeader().iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001", action: "setToBooked", unbound: false } /* , { enabled: true } */);
@@ -55,7 +57,7 @@ sap.ui.define([
         });
 
         opaTest("Check the Travel section of the Object Page", function (_Given, When, Then) {
-            When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Travel" });
+            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Travel");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Travel" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "TravelID" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "AgencyID" });
@@ -70,7 +72,7 @@ sap.ui.define([
         });
 
         opaTest("Check the Booking section of the Object Page", function (_Given, When, Then) {
-            When.onTheTravelObjectPageGenerated.iGoToSection({ section: "Booking" });
+            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns(undefined, {"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
         });

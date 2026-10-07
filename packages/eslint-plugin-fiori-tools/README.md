@@ -120,7 +120,12 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
-|  new      | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
+|  new      | [sap-no-comma-in-section-title](docs/rules/sap-no-comma-in-section-title.md) | Ensures that section and subsection titles in object pages for SAP Fiori elements applications do not contain commas. | | ✅ |
+|  10.14.0  | [sap-no-path-hidden-on-interactive-columns](docs/rules/sap-no-path-hidden-on-interactive-columns.md) | A `UI.Hidden` annotation with a dynamic path must not be used on sortable or filterable columns. | | ✅ |
+|  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
+|  10.11.0  | [sap-no-deep-collection-facets](docs/rules/sap-no-deep-collection-facets.md) | Ensures `UI.CollectionFacet` elements are not nested at third level or deeper. | | ✅ |
+|  10.10.0  | [sap-no-single-facet-in-collection](docs/rules/sap-no-single-facet-in-collection.md) | Ensures `UI.CollectionFacet` is not used when it contains only a single `UI.ReferenceFacet`. | | ✅ |
+|  10.8.0   | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
 |  10.7.6   | [sap-no-live-mode](docs/rules/sap-no-live-mode.md) | Ensures that live mode is not enabled. | | ✅ |
 |  10.2.0   | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description text property referenced using the `Common.Text` annotation has a meaningful `Common.Label` annotation. It must not be a generic value such as "Name" or "Description", and not the same label as the `ID` property. | | ✅ |
 |  9.12.0   | [sap-text-arrangement-hidden](docs/rules/sap-text-arrangement-hidden.md) | Ensures that the text property referenced by a `UI.TextArrangement` annotation using the `Common.Text` annotation is not hidden by the `UI.Hidden` annotation | | ✅ |
@@ -138,7 +143,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.1.0   | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 |   9.1.0   | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
 |   9.0.0   | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
-|   9.0.0   | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect forbidden usages of `(window.)document` APIs. | | |
 |   9.0.0   | [sap-browser-api-warning](docs/rules/sap-browser-api-warning.md) | Detect warnings for usages of `(window.)document` APIs. | ✅ | ✅ |
 |   9.0.0   | [sap-cross-application-navigation](docs/rules/sap-cross-application-navigation.md) | Do not use a static list of cross-application navigation targets. | ✅ | ✅ |
 |   9.0.0   | [sap-forbidden-window-property](docs/rules/sap-forbidden-window-property.md) | Detect the definition of global properties in the `window` object. | ✅ | ✅ |
@@ -151,7 +155,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-dynamic-style-insertion](docs/rules/sap-no-dynamic-style-insertion.md) | Detect the usage of `document.styleSheets` (dynamic style insertion). | ✅ | ✅ |
 |   9.0.0   | [sap-no-element-creation](docs/rules/sap-no-element-creation.md) | Detect direct element creation. | ✅ | ✅ |
 |   9.0.0   | [sap-no-encode-file-service](docs/rules/sap-no-encode-file-service.md) | Detect the usage of `/sap/bc/ui2/encode_file`. | ✅ | ✅ |
-|   9.0.0   | [sap-no-event-prop](docs/rules/sap-no-event-prop.md) | Flag use of private members from `sap.ui.base.Event`. Use `sap-no-ui5base-prop` instead. | | |
 |   9.0.0   | [sap-no-exec-command](docs/rules/sap-no-exec-command.md) | Detect the usage of `execCommand`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-global-define](docs/rules/sap-no-global-define.md) | Detect the definition of global properties in the `window` object. | ✅ | ✅ |
 |   9.0.0   | [sap-no-global-event](docs/rules/sap-no-global-event.md) | Detect the global event handling override. | ✅ | ✅ |
@@ -174,15 +177,12 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-sessionstorage](docs/rules/sap-no-sessionstorage.md) | Detect the usage of `sessionStorage`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5-prop-warning](docs/rules/sap-no-ui5-prop-warning.md) | Flag use of private members of the `sap.ui.model.odata.v2.ODataModel`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5base-prop](docs/rules/sap-no-ui5base-prop.md) | Flag use of private members from `sap.ui.base` classes. | ✅ | ✅ |
-|   9.0.0   | [sap-no-ui5eventprovider-prop](docs/rules/sap-no-ui5eventprovider-prop.md) | Detect private property usage of `sap.ui.base.EventProvider`. Use `sap-no-ui5base-prop` instead. | | |
-|   9.0.0   | [sap-no-ui5odatamodel-prop](docs/rules/sap-no-ui5odatamodel-prop.md) | Detect private property usage of the UI5 OData model. Use `sap-no-ui5base-prop` instead. | | |
-|   9.0.0   | [sap-no-window-alert](docs/rules/sap-no-window-alert.md) | Flag use of `window.alert`. | | |
 |   9.0.0   | [sap-opa5-autowait-true](docs/rules/sap-opa5-autowait-true.md) | Check if `autowait` is `true` in `Opa5.extendConfig`. | ✅ | ✅ |
 |   9.0.0   | [sap-timeout-usage](docs/rules/sap-timeout-usage.md) | Detect `setTimeout` usage with a value greater than zero. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-forms](docs/rules/sap-ui5-forms.md) | Detect invalid content for `SimpleForm`, `Form`, and `SmartForm`. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-global-eval](docs/rules/sap-ui5-global-eval.md) | Detect the usage of `globalEval()` and `eval()`. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-legacy-factories](docs/rules/sap-ui5-legacy-factories.md) | Detect legacy UI5 factories that lead to synchronous loading. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-legacy-jquerysap-usage](docs/rules/sap-ui5-legacy-jquerysap-usage.md) | Detect legacy `jQuery.sap` usage. | ✅ | ✅ |
-|   9.0.0   | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | | |
+|   9.0.0   | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | ✅ | ✅ |
 |   9.0.0   | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
 </div>

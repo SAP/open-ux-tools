@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.alpv2
+  name: testnamespace.alpv2
 type: application
 framework:
   name: SAPUI5
