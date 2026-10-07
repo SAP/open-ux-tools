@@ -24,7 +24,7 @@
 		"@sap-ux/create": "latest",
 		"@sap/ui5-builder-webide-extension": "^1.1.9",
 		"@sapui5/ts-types": "^1.141.2",
-		"@sap/ux-ui5-tooling": "latest",
+		"@sap/ux-ui5-tooling": "1",
 		"@ui5/cli": "^4.0.33",
 		"@ui5/task-adaptation": "^1.6.3",
 		"bestzip": "^2.2.1",
