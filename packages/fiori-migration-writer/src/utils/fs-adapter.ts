@@ -123,7 +123,7 @@ export function copyFile(src: string, dest: string): void {
     if (editor) {
         editor.copy(src, dest);
     } else {
-        throw new Error('Editor not available. Call runWithEditor() to set up migration context.');
+        throw new Error('Editor not available. Call runWithEditor() to set up the migration context.');
     }
 }
 
@@ -137,7 +137,7 @@ export function deleteFile(path: string): void {
     if (editor) {
         editor.delete(path);
     } else {
-        throw new Error('Editor not available. Call runWithEditor() to set up migration context.');
+        throw new Error('Editor not available. Call runWithEditor() to set up the migration context.');
     }
 }
 
