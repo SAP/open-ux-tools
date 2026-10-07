@@ -160,6 +160,8 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
         ui5ConfigOptions.version = version;
     }
 
+    const useNewSandbox = isFeatureSupportedVersion('1.151.0', config.ui5?.systemVersion);
+
     ui5Config.addFioriToolsAppReloadMiddleware();
     ui5Config.addCustomMiddleware([
         {
@@ -169,7 +171,8 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                 adp: {
                     target: config.target,
                     ignoreCertErrors: false
-                }
+                },
+                ...(useNewSandbox && { flp: { useNewSandbox: true } })
             }
         }
     ]);
