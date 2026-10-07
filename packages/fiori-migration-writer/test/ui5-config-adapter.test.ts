@@ -114,14 +114,13 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
         expect(proxyMiddleware.configuration.ui5.version).toBe('1.120.0');
     });
 
-    test('should include UI5 version in proxy when setUI5Version is true', async () => {
+    test('should include UI5 version in proxy when setUI5Version is true with backend', async () => {
         const templateData = createTemplateData({
             project: { name: 'test-app', ui5Version: '1.120.0' },
             ui5Yaml: {
                 name: 'test-app',
                 ui5Url: 'https://ui5.sap.com',
                 ui5Version: '1.120.0',
-                sapUiLibs: ['sap.m'],
                 proxyPath: '/sap',
                 proxyHost: 'https://backend.example.com'
             }
@@ -141,8 +140,6 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
 
         // When setUI5Version=true, proxy middleware should have UI5 version for CDN access
         expect(proxyMiddleware.configuration.ui5.version).toBe('1.120.0');
-        // Note: Framework section may or may not be added by @sap-ux/ui5-config depending on
-        // environment and settings. We primarily care that the proxy version is set.
     });
 
     test('should not include UI5 version in proxy when setUI5Version is false', async () => {
