@@ -10,7 +10,7 @@
 |**Service URL**<br>N/A|
 |**Module Name**<br>lrop_v2_no_url|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
-|**Namespace**<br>testNameSpace|
+|**Namespace**<br>testnamespace|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.71.0|
 |**Enable TypeScript**<br>False|

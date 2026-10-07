@@ -1,5 +1,25 @@
 # @sap-ux/i18n
 
+## 1.0.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Features
+
+- export capPropertiesPath and getCapI18nFiles functions. [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 1.0.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.2 → 1.0.3
+
 ## 1.0.3
 
 ### Patch Changes

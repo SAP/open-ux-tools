@@ -1,5 +1,137 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Features
+
+- add sap-no-comma-in-section-title rule to prevent commas in object page section titles [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 10.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Features
+
+- Create sap-no-path-hidden-on-interactive-columns rule to check `UI.Hidden` with a dynamic path is not be used on sortable or filterable columns [[88b131d](https://github.com/SAP/open-ux-tools/commit/88b131dd66cb31c471c603154d9becd547d431d5)]
+
+## 10.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-29
+
+#### Bug Fixes
+
+- Remove orphan eslint rules and enable sap-ui5-no-private-prop rule [[d989d4a](https://github.com/SAP/open-ux-tools/commit/d989d4ace191afc1048e6c922f3fe4a0c7c67e12)]
+
+## 10.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-23
+
+#### Features
+
+- add sap-field-group-in-table-type-restriction rule to flag UI.FieldGroup usage in GridTable, AnalyticalTable, and TreeTable [[b2a5cca](https://github.com/SAP/open-ux-tools/commit/b2a5cca918480042a6f70b27040790cf624d1b30)]
+
+## 10.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 10.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+## 10.11.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Update diagnostic messages by formatting rule-related properties, values, and annotation names as inline code for better readability in warnings/errors. [[079ed68](https://github.com/SAP/open-ux-tools/commit/079ed68394d934231110f108f5ab175c679d44e1)]
+
+## 10.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Bug Fixes
+
+- Add defensive checks to esbuild.mjs to fail fast if @babel/eslint-parser is not installed and assert no @babel/* imports leak into the bundle after build [[6f73f76](https://github.com/SAP/open-ux-tools/commit/6f73f76dcf69c4791ffcec715689f55fa7ad9614)]
+
+## 10.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Features
+
+- Add the sap-no-deep-collection-facets rule [[852ec34](https://github.com/SAP/open-ux-tools/commit/852ec34f7a7730f00a65df19ea2fad5c9fe9ff96)]
+
+## 10.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Rebuild bundle — 10.10.0 was published with a broken esbuild output that left @babel/eslint-parser unbundled, causing ERR_MODULE_NOT_FOUND in consumer projects [[20a02d6](https://github.com/SAP/open-ux-tools/commit/20a02d6bd2e764d8032d99ae99e1aa3922d5c32e)]
+
+## 10.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Features
+
+- add sap-no-single-facet-in-collection rule to flag UI.CollectionFacet containing only a single UI.ReferenceFacet. [[57ada1b](https://github.com/SAP/open-ux-tools/commit/57ada1b22189cad79d0912fe10438984433fb26a)]
+
 ## 10.9.4
 
 ### Patch Changes

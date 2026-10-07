@@ -1,6 +1,10 @@
 import { build } from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+
+const _require = createRequire(import.meta.url);
+const { makeLicensePlugin } = _require('../../esbuildLicensePlugin.cjs');
 const __dirname = import.meta.dirname;
 
 const production = process.argv.includes('--production');
@@ -89,5 +93,7 @@ build({
   mainFields: ["module", "main"],
   banner: { js: "const __importMetaUrl=require('url').pathToFileURL(__filename).href;" },
   define: { 'import.meta.url': '__importMetaUrl' },
-  plugins: [stubNpmModulesPlugin, copyPrebuildsPlugin]
+  legalComments: 'linked',
+  metafile: true,
+  plugins: [stubNpmModulesPlugin, copyPrebuildsPlugin, makeLicensePlugin()]
 }).catch(() => process.exit(1));

@@ -2,6 +2,7 @@ import * as appInsights from 'applicationinsights';
 import { configAzureTelemetryClient } from './azure-client-config.js';
 import { TelemetrySettings } from '../config-state.js';
 import { EventName } from '../types/index.js';
+import { ClientFactory } from '../client/index.js';
 
 const parseErrorStack = (errorStack: string): string[] => {
     const regexps = [/sap-ux.+/gi, /[-a-zA-Z]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
@@ -48,7 +49,9 @@ let reportingTelemetryClient: appInsights.TelemetryClient | undefined;
 
 const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
     if (!reportingTelemetryClient) {
-        reportingTelemetryClient = new appInsights.TelemetryClient(TelemetrySettings.azureInstrumentationKey);
+        reportingTelemetryClient = new appInsights.TelemetryClient(
+            ClientFactory.buildConnectionString(TelemetrySettings.azureInstrumentationKey)
+        );
         configAzureTelemetryClient(reportingTelemetryClient);
     }
     return reportingTelemetryClient;
