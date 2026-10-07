@@ -1,21 +1,21 @@
-# `inlineDelete` and `multiSelect` cannot both be enabled in table settings (`sap-no-inline-delete-with-multiselect`)
+# `inlineDelete` and `multiSelect` and `Multiselect` Cannot Both Be Enabled in Table Settings (`sap-no-inline-delete-with-multiselect`)
 
-The `inlineDelete` and `multiSelect` properties in `component.settings.tableSettings` are mutually exclusive in SAP Fiori elements OData V2 applications. Enabling both simultaneously causes the application to fail to load. This rule detects the conflict at design time so developers can fix it before deployment.
+The `inlineDelete` and `multiSelect` properties in `component.settings.tableSettings` are mutually exclusive in SAP Fiori elements for OData V2 applications. Enabling both simultaneously causes the application to not load. This rule detects the conflict at design time so developers can fix it before deployment.
 
-The rule applies to all V2 page types:
+The rule applies to all OData V2 page types:
 
-- **List report / Analytical list page** — checks `component.settings.tableSettings`
-- **Object page** — checks both `component.settings.tableSettings` (applied to all section tables) and per-section `component.settings.sections.<sectionKey>.tableSettings`
+- **List report and Analytical list page**: checks `component.settings.tableSettings`
+- **Object page**: checks both `component.settings.tableSettings` (applied to all section tables) and per-section `component.settings.sections.<sectionKey>.tableSettings`
 
 ## Rule Details
 
 When both `inlineDelete: true` and `multiSelect: true` are found in the same `tableSettings` block, the rule emits a warning.
 
-##### Warning Message: "inlineDelete" and "multiSelect" cannot both be enabled in the same table settings. The application will fail to load.
+### Warning Message: `inlineDelete` and `multiSelect` cannot both be enabled in the same table settings. The application will fail to load
 
 The following patterns are considered warnings:
 
-**List report — `tableSettings` level:**
+**List report page: `tableSettings` level:**
 
 ```json
 {
@@ -38,7 +38,7 @@ The following patterns are considered warnings:
 }
 ```
 
-**Object page — page-level `tableSettings` (applies to all section tables):**
+**Object page: page-level `tableSettings` (applies to all section tables):**
 
 ```json
 {
@@ -65,7 +65,7 @@ The following patterns are considered warnings:
 }
 ```
 
-**Object page — section-level `tableSettings`:**
+**Object page: section-level `tableSettings`:**
 
 ```json
 {
@@ -113,8 +113,8 @@ The following patterns are not considered warnings:
 
 ### How to Fix
 
-Disable one of the two conflicting properties. If row-level delete actions are needed, keep `inlineDelete: true` and remove or set `multiSelect: false`. If multi-row selection is needed, keep `multiSelect: true` and remove or set `inlineDelete: false`.
+Disable one of the conflicting properties. If row-level delete actions are required, keep `inlineDelete: true` and remove or set `multiSelect: false`. If multi-row selection is required, keep `multiSelect: true` and remove or set `inlineDelete: false`.
 
 ## Bug Report
 
-In case you detect an issue with the check please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
