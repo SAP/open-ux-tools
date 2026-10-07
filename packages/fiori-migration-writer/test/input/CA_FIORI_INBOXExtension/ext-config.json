@@ -38,28 +38,28 @@
     "versionJsonPath": "CA_FIORI_INBOX%2fversion.json",
     "minUI5Version": "1.28.5",
     "system": {
-        "name": "GM4CLNT001",
-        "description": "GM4CLNT001",
-        "proxyUrlPrefix": "/destinations/GM4CLNT001",
+        "name": "EXAMPLE_SYS",
+        "description": "EXAMPLE_SYS",
+        "proxyUrlPrefix": "/destinations/EXAMPLE_SYS",
         "path": "/sap/bc/adt",
-        "url": "/destinations/GM4CLNT001/sap/bc/adt",
+        "url": "/destinations/EXAMPLE_SYS/sap/bc/adt",
         "wattUsage": "dev_abap",
         "proxyType": "OnPremise",
-        "systemId": "GM4CLNT001",
+        "systemId": "EXAMPLE_SYS",
         "entryPath": "/sap/bc/adt",
         "sapClient": "001",
         "additionalData": []
     },
     "discoveryStatus": {
         "csrfToken": "N2aAH-CgT1l5J9fTPIFVUA==",
-        "filestore_ui5_bsp": "/destinations/GM4CLNT001/sap/bc/adt/filestore/ui5-bsp/objects",
-        "search": "/destinations/GM4CLNT001/sap/bc/adt/repository/informationsystem/search",
-        "ui5_rt_version": "/destinations/GM4CLNT001/sap/bc/adt/filestore/ui5-bsp/ui5-rt-version",
-        "description": "GM4CLNT001",
-        "proxyUrlPrefix": "/destinations/GM4CLNT001"
+        "filestore_ui5_bsp": "/destinations/EXAMPLE_SYS/sap/bc/adt/filestore/ui5-bsp/objects",
+        "search": "/destinations/EXAMPLE_SYS/sap/bc/adt/repository/informationsystem/search",
+        "ui5_rt_version": "/destinations/EXAMPLE_SYS/sap/bc/adt/filestore/ui5-bsp/ui5-rt-version",
+        "description": "EXAMPLE_SYS",
+        "proxyUrlPrefix": "/destinations/EXAMPLE_SYS"
     },
     "BSPName": "CA_FIORI_INBOX",
     "namespace": "demo.fiori.inbox",
     "resourceBundle": "i18n/i18n.properties",
-    "parentResourceRootUrl": "/destinations/GM4CLNT001/sap/bc/ui5_ui5/sap/CA_FIORI_INBOX"
+    "parentResourceRootUrl": "/destinations/EXAMPLE_SYS/sap/bc/ui5_ui5/sap/CA_FIORI_INBOX"
 }

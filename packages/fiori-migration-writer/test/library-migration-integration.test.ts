@@ -2,7 +2,7 @@
  * Integration test for library project migration
  *
  * Tests the complete flow: workspace scanning → getReuseLibs → copyLibraryFiles → actual file placement
- * Addresses review feedback: https://github.wdf.sap.corp/ux-engineering/tools-suite/pull/39527
+ * Test for library project migration
  */
 
 import { dirname, join } from 'node:path';

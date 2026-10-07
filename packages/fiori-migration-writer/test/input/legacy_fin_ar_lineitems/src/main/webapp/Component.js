@@ -39,7 +39,7 @@ sap.ui.define(["sap/ui/core/UIComponent","sap/ui/Device","sap/fin/arp/lib/lineit
            */
 			getContentDensityClass : function() {
 				/*SAPi
-				 * see rollout in wiki: https://wiki.wdf.sap.corp/wiki/display/ERPFINDEV/sFIN+UX+Fiori+Guidelines#sFINUXFioriGuidelines-DesktopFormFactor
+				 * see rollout in wiki: https://example.com/fiori-guidelines
 				SAPi*/
 				if (this._sContentDensityClass === undefined) {
 					// check whether FLP has already set the content density class; do nothing in this case

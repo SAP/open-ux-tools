@@ -310,7 +310,7 @@ sap.ui.define(
             // ---------------------------------------------
             // SMART LINK EVENTS
             // ---------------------------------------------
-            // see https://wiki.wdf.sap.corp/wiki/display/ERPFINDEV/sFIN+UX+Fiori+Guidelines#sFINUXFioriGuidelines-SAPUI5SmartLinkControl
+            // see https://example.com/fiori-guidelines/smart-link
 
             onBeforePopoverOpens: function (oEvent) {
                 var oParams = oEvent.getParameters();

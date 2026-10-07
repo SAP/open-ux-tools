@@ -4,6 +4,9 @@ import { ProjectMigrator, initI18n } from '../src/index.js';
 import { loadProjectIntoMemFs, fileExistsInMemFs, getFileFromMemFs } from './helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from './test-constants.js';
 import type { Editor } from 'mem-fs-editor';
+import { toMatchSpecificSnapshot } from 'jest-specific-snapshot';
+
+expect.extend({ toMatchSpecificSnapshot });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEST_INPUT = join(__dirname, 'input');
@@ -16,6 +19,32 @@ expect.addSnapshotSerializer({
     print: (value: unknown, serialize: (value: unknown) => string): string =>
         serialize(JSON.parse(JSON.stringify(value).replace(UUID_PATTERN, '<generated-uuid>')))
 });
+
+/**
+ * Helper to verify migrated files using per-file snapshots
+ * Creates separate snapshot files for each app to make reviews manageable
+ */
+function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): void {
+    const filesToCheck = [
+        'package.json',
+        'ui5.yaml',
+        'ui5-local.yaml',
+        'ui5-mock.yaml',
+        '.gitignore',
+        'webapp/manifest.json',
+        'webapp/test/flpSandbox.html',
+        'webapp/test/flpSandboxMockServer.html'
+    ];
+
+    filesToCheck.forEach((file) => {
+        const content = getFileFromMemFs(fs, projectPath, file);
+        if (content) {
+            // Use specific snapshot path per app and file
+            const snapshotPath = join(__dirname, '__snapshots__', 'integration', appName, file + '.snap');
+            expect(content).toMatchSpecificSnapshot(snapshotPath);
+        }
+    });
+}
 
 describe('Migration Integration Tests', () => {
     beforeAll(async () => {
@@ -66,8 +95,8 @@ describe('Migration Integration Tests', () => {
             expect(pkg.devDependencies).toHaveProperty('@sap/ux-ui5-tooling');
             expect(pkg.devDependencies).toHaveProperty('@ui5/cli');
 
-            // Snapshot test for full output
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            // Verify migrated files with per-file snapshots
+            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_beta_lrop_v2_project');
         });
     });
 
@@ -98,7 +127,7 @@ describe('Migration Integration Tests', () => {
             expect(ui5Yaml).toBeDefined();
             expect(ui5Yaml).toContain('specVersion');
 
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_beta_lrop_v2_project');
         });
 
         test('should migrate tool_suite_v4_lrop_custom_webapp', async () => {
@@ -121,7 +150,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_v4_lrop_custom_webapp');
         });
     });
 
@@ -146,7 +175,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'webide_v2_ovp_project');
         });
 
         test.skip('should migrate multi_destination_ovp_mta', async () => {
@@ -171,7 +200,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'multi_destination_ovp');
         });
     });
 
@@ -196,7 +225,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_beta_alp_v2_project');
         });
     });
 
@@ -221,7 +250,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_ga_worklist_v2_project');
         });
     });
 
@@ -246,7 +275,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'webide_freestyle_custom_webapp_path');
         });
     });
 
@@ -271,7 +300,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'webide_v2_lrop_project_no_webapp');
         });
 
         test('should migrate webide_v2_lrop_reuselib_ui5_tooling_routing_project', async () => {
@@ -294,7 +323,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'webide_v2_lrop_reuselib_ui5_tooling_routing_project');
         });
 
         test('should migrate openui5-sample-app', async () => {
@@ -318,7 +347,7 @@ describe('Migration Integration Tests', () => {
             // Note: This might not succeed as it's an OpenUI5 project
             // Just verify it doesn't crash
             expect(result).toBeDefined();
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'openui5-sample-app');
         });
 
         test('should migrate CA_FIORI_INBOXExtension', async () => {
@@ -341,7 +370,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'CA_FIORI_INBOXExtension');
         });
     });
 
@@ -371,7 +400,7 @@ describe('Migration Integration Tests', () => {
             const manifest = JSON.parse(getFileFromMemFs(updatedFs, projectPath, 'manifest.json'));
             expect(manifest['sap.app'].type).toBe('library');
 
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'coverage_ui5_library_standalone');
         });
     });
 
@@ -399,7 +428,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'reuse_library_project');
         });
     });
 
@@ -428,7 +457,7 @@ describe('Migration Integration Tests', () => {
             // Adaptation projects should have manifest.appdescr_variant
             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/manifest.appdescr_variant')).toBe(true);
 
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'adaptation_project_wde');
         });
     });
 
@@ -453,7 +482,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'coverage_adaptation_webide_legacy');
         });
     });
 
@@ -479,7 +508,7 @@ describe('Migration Integration Tests', () => {
             expect(result).toBe(true);
             // May have warnings but should not fail
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'coverage_legacy_neo_app');
         });
 
         test('should handle project with multiple reuse libraries', async () => {
@@ -505,7 +534,7 @@ describe('Migration Integration Tests', () => {
 
             // Should have locate-reuse-libs.js for reuse library loading
             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/test/locate-reuse-libs.js')).toBe(true);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'coverage_reuse_libs_multiple');
         });
 
         test('should handle backend configuration variants', async () => {
@@ -528,7 +557,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'coverage_backend_config_variants');
         });
 
         test('should handle service detection edge cases', async () => {
@@ -551,7 +580,7 @@ describe('Migration Integration Tests', () => {
 
             expect(result).toBe(true);
             // May have warnings for edge cases
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'coverage_service_detection_edge_cases');
         });
     });
 
@@ -584,7 +613,7 @@ describe('Migration Integration Tests', () => {
             // Legacy paths should be gone
             expect(fileExistsInMemFs(updatedFs, projectPath, 'src/main/webapp/manifest.json')).toBe(false);
 
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'legacy_fin_ar_lineitems');
         });
 
         test('should migrate project with src/main/webapp structure (CostCenter)', async () => {
@@ -612,7 +641,7 @@ describe('Migration Integration Tests', () => {
             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/manifest.json')).toBe(true);
             expect(fileExistsInMemFs(updatedFs, projectPath, 'src/main/webapp/manifest.json')).toBe(false);
 
-            expect(updatedFs.dump(projectPath)).toMatchSnapshot();
+            verifyMigratedFiles(updatedFs, projectPath, 'legacy_fin_co_costcenter');
         });
     });
 

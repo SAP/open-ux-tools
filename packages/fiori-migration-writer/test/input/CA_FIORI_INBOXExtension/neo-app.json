@@ -5,19 +5,19 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "GM4CLNT001",
+        "name": "EXAMPLE_SYS",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "GM4CLNT001"
+      "description": "EXAMPLE_SYS"
     },
     {
       "path": "/sap/bc/ui5_ui5",
       "target": {
         "type": "destination",
-        "name": "GM4CLNT001-bla",
+        "name": "EXAMPLE_SYS-bla",
         "entryPath": "/sap/bc/ui5_ui5"
       },
-      "description": "GM4CLNT001"
+      "description": "EXAMPLE_SYS"
     },
     {
       "path": "/webapp/resources",
