@@ -79,18 +79,18 @@
 		"path": "/sap/opu/odata",
 		"target": {
 			"type": "destination",
-			"name": "UYTCLNT928",
+			"name": "BACKEND_SYSTEM",
 			"entryPath": "/sap/opu/odata"
 		},
-		"description": "UYTCLNT928"
+		"description": "BACKEND_SYSTEM"
 	}, {
 		"path": "/sap/bc/lrep",
 		"target": {
 			"type": "destination",
-			"name": "UYTCLNT928",
+			"name": "BACKEND_SYSTEM",
 			"entryPath": "/sap/bc/lrep"
 		},
-		"description": "UYTCLNT928"
+		"description": "BACKEND_SYSTEM"
 	}, {
 		"path": "/resources",
 		"target": {

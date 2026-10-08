@@ -1,0 +1,315 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`] = `
+"{
+    \\"_version\\": \\"1.8.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"namespace1.tool_suite_beta_lrop_v2_project\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"tags\\": {
+            \\"keywords\\": []
+        },
+        \\"ach\\": \\"\\",
+        \\"resources\\": \\"resources.json\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [
+                        \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+                        \\"annotation\\"
+                    ],
+                    \\"localUri\\": \\"localService/metadata.xml\\"
+                }
+            },
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+                \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+                }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.smartTemplate\\",
+            \\"version\\": \\"1.40.12\\",
+            \\"toolsId\\": \\"<generated-uuid>\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        },
+        \\"supportedThemes\\": [
+            \\"sap_hcb\\",
+            \\"sap_belize\\"
+        ]
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.65.0\\",
+            \\"libs\\": {},
+            \\"components\\": {}
+        },
+        \\"models\\": {
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+            },
+            \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"defaultBindingMode\\": \\"TwoWay\\",
+                    \\"defaultCountMode\\": \\"Inline\\",
+                    \\"refreshAfterChange\\": false,
+                    \\"metadataUrlParams\\": {
+                        \\"sap-value-list\\": \\"none\\"
+                    }
+                }
+            }
+        },
+        \\"extends\\": {
+            \\"extensions\\": {}
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.ui.generic.app\\": {
+        \\"_version\\": \\"1.3.0\\",
+        \\"settings\\": {
+            \\"forceGlobalRefresh\\": false,
+            \\"objectPageHeaderType\\": \\"Dynamic\\",
+            \\"showDraftToggle\\": false
+        },
+        \\"pages\\": {
+            \\"ListReport|SEPMRA_C_PD_Product\\": {
+                \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+                \\"component\\": {
+                    \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+                    \\"list\\": true,
+                    \\"settings\\": {
+                        \\"condensedTableLayout\\": true,
+                        \\"smartVariantManagement\\": true,
+                        \\"enableTableFilterInPageVariant\\": true
+                    }
+                },
+                \\"pages\\": {
+                    \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+                        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+                        \\"component\\": {
+                            \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"uri\\": \\"\\"
+    }
+}
+"
+`;
+
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop 1`] = `
+"{
+  \\"_version\\": \\"1.15.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"namespace1.v4catalog\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"ach\\": \\"CA-UI5-FE\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/catalog-admin-noauth/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\",
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+      \\"version\\": \\"1.0.0\\",
+      \\"toolsId\\": \\"<generated-uuid>\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"routing\\": {
+      \\"targets\\": {
+        \\"ProductsList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"ProductsList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Products\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Products\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"ProductsObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"ProductsObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"ProductsObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Products\\",
+              \\"navigation\\": {}
+            }
+          }
+        }
+      },
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"ProductsList\\",
+          \\"target\\": \\"ProductsList\\"
+        },
+        {
+          \\"pattern\\": \\"Products({key}):?query:\\",
+          \\"name\\": \\"ProductsObjectPage\\",
+          \\"target\\": \\"ProductsObjectPage\\"
+        }
+      ]
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+"
+`;

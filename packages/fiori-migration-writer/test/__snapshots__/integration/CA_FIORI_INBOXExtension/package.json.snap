@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate CA_FIORI_INBOXExtension 1`] = `
+"{
+  \\"name\\": \\"demo.fiori.inbox.sample_fiori_inboxextension\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@sap/ui5-builder-webide-extension\\": \\"1.0.9\\",
+    \\"@ui5/cli\\": \\"^4.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"rimraf\\": \\"6.0.1\\"
+  },
+  \\"scripts\\": {
+    \\"build_old\\": \\"ui5 build --include-task=generateManifestBundle generateCachebusterInfo\\",
+    \\"start-ui5-flp\\": \\"fiori run --open \\\\\\"/test-resources/sap/ushell/shells/sandbox/fioriSandbox.html?sap-theme=sap_bluecrystal&sap-ushell-test-url-url=..%2F..%2F..%2F..%2F..%2F..&sap-ushell-test-url-additionalInformation=SAPUI5.Component%3Ddemo.fiori.inbox.SAMPLE_FIORI_INBOXExtension#Test-url\\\\\\"\\",
+    \\"start_old\\": \\"fiori run --open \\\\\\"index.html?sap-client=001&sap-ui-xx-viewCache=false#title-display\\\\\\"\\",
+    \\"deploy_old\\": \\"fiori verify\\",
+    \\"deploy-config_old\\": \\"fiori add deploy-config\\",
+    \\"start\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#\\\\\\"\\",
+    \\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ui5-builder-webide-extension\\"
+    ]
+  },
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\"
+}"
+`;

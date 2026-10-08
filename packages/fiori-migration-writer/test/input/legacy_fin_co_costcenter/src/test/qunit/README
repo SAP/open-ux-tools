@@ -9,4 +9,4 @@ This is README file to help you do:
     >mvn sonar:sonar
 
 you could find the report result here.
-    http://ldisonarci.wdf.sap.corp:8080/sonar/
+    https://sonarqube.example.com/
