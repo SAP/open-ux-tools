@@ -7,6 +7,7 @@
 // Exits with code 1 if any grader fails.
 
 import { readdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -22,7 +23,8 @@ const { ValidRefsGrader } = await import(pathToFileURL(`${vallyBase}/skill/grade
 const entries = await readdir(SKILLS_DIR, { withFileTypes: true });
 const skillPaths = entries
     .filter((e) => e.isDirectory())
-    .map((e) => resolve(SKILLS_DIR, e.name, 'SKILL.md'));
+    .map((e) => resolve(SKILLS_DIR, e.name, 'SKILL.md'))
+    .filter((p) => existsSync(p));
 
 if (skillPaths.length === 0) {
     console.log('No SKILL.md files found — nothing to lint.');
