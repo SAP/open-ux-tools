@@ -40,7 +40,7 @@ function enhanceDependencies(
         packageJson.ui5 ||= {};
         packageJson.ui5.dependencies ||= [];
         const ui5Dependencies = packageJson.ui5.dependencies.filter(
-            (dep) => dep !== '@sap/ux-ui5-fe-mockserver-middleware'
+            (dep: string) => dep !== '@sap/ux-ui5-fe-mockserver-middleware'
         );
         if (!ui5Dependencies.includes(mockserverModule)) {
             ui5Dependencies.push(mockserverModule);
@@ -138,7 +138,7 @@ function replaceConfig(startScript: string, configStartIndex: number): string {
 function removeMockserverUi5Dependencies(packageJson: Package): void {
     const removeModules = new Set(['@sap/ux-ui5-fe-mockserver-middleware', '@sap-ux/ui5-middleware-fe-mockserver']);
     if (packageJson.ui5?.dependencies && Array.isArray(packageJson.ui5.dependencies)) {
-        packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter((d) => !removeModules.has(d));
+        packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter((d: string) => !removeModules.has(d));
         if (packageJson.ui5.dependencies.length === 0) {
             delete packageJson.ui5.dependencies;
         }
