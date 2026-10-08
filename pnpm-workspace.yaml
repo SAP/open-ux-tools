@@ -16,6 +16,7 @@ allowBuilds:
     better-sqlite3: true
     esbuild: true
     keytar: true
+    koffi: true
     mta: true
     nx: true
     onnxruntime-node: true
