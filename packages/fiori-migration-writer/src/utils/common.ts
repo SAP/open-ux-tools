@@ -11,7 +11,7 @@ export const devDependencies: {
     [key: string]: string;
 } = {
     '@ui5/cli': '^4.0.0',
-    '@sap/ux-ui5-tooling': '^1.33.0',
+    '@sap/ux-ui5-tooling': '1',
     rimraf: '6.0.1'
 };
 export const ui5Dependencies = ['@sap/ux-ui5-tooling'];

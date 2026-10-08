@@ -8,7 +8,7 @@ exports[`Migration Integration Tests OVP Migration should migrate webide_v2_ovp_
   \\"devDependencies\\": {
     \\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"rimraf\\": \\"6.0.1\\"
   },
   \\"scripts\\": {

@@ -44,7 +44,7 @@ exports[`Migration Integration Tests Special Cases should migrate openui5-sample
     \\"karma-ui5\\": \\"^2.2.0\\",
     \\"local-web-server\\": \\"^4.2.1\\",
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"rimraf\\": \\"6.0.1\\"
   },
   \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",

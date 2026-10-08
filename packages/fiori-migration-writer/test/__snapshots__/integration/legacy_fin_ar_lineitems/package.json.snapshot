@@ -26,7 +26,7 @@ exports[`Migration Integration Tests Legacy Folder Structure Migration should mi
 	},
 	\\"devDependencies\\": {
         \\"@ui5/cli\\": \\"^4.0.0\\",
-        \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+        \\"@sap/ux-ui5-tooling\\": \\"1\\",
         \\"rimraf\\": \\"6.0.1\\"
 }
 }

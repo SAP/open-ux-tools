@@ -14,7 +14,7 @@ exports[`Migration Integration Tests UI5 Library Migration should migrate standa
   },
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"keywords\\": [
     \\"ui5\\",

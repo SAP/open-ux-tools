@@ -38,7 +38,7 @@ exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite
   },
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"rimraf\\": \\"6.0.1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },

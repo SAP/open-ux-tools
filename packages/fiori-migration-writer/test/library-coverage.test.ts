@@ -42,7 +42,7 @@ describe('Library Project - Coverage Tests', () => {
         // Verify generated files for library
         expect(fileExistsInMemFs(updatedFs, testInputBase, 'package.json')).toBe(true);
         const packageJson = JSON.parse(updatedFs.read(join(testInputBase, 'package.json')).toString());
-        expect(packageJson.devDependencies).toHaveProperty('@sap/ux-ui5-tooling', '^1.33.0');
+        expect(packageJson.devDependencies).toHaveProperty('@sap/ux-ui5-tooling', '1');
         expect(packageJson.devDependencies).not.toHaveProperty('@sap-ux/ui5-tooling');
     });
 

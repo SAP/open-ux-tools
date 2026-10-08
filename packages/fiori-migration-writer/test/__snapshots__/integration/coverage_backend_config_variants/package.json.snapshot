@@ -8,7 +8,7 @@ exports[`Migration Integration Tests Edge Cases and Error Handling should handle
   \\"private\\": true,
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"rimraf\\": \\"6.0.1\\"
   },
   \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",

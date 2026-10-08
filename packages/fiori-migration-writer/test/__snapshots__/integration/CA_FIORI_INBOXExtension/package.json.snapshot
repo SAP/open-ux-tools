@@ -9,7 +9,7 @@ exports[`Migration Integration Tests Special Cases should migrate CA_FIORI_INBOX
   \\"devDependencies\\": {
     \\"@sap/ui5-builder-webide-extension\\": \\"1.0.9\\",
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"rimraf\\": \\"6.0.1\\"
   },
   \\"scripts\\": {

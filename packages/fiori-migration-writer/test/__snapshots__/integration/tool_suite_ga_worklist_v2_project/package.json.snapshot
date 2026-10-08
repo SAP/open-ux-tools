@@ -38,7 +38,7 @@ exports[`Migration Integration Tests Worklist Migration should migrate tool_suit
   },
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^4.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"^1.33.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"rimraf\\": \\"6.0.1\\"
   },
   \\"optionalDependencies\\": {
