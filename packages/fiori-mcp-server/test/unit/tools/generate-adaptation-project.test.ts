@@ -1,10 +1,22 @@
 import { jest } from '@jest/globals';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const mockRunCmdArgs = jest.fn<any>();
 const mockFetchKeyUserChanges = jest.fn<any>();
+const mockGetConfiguredProvider = jest.fn<any>();
+const mockGetSupportedProject = jest.fn<any>();
+const mockLoadApps = jest.fn<any>();
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockLoggerError = jest.fn<any>();
+const mockIsInternalFeaturesSettingEnabled = jest.fn<any>();
+
+const SupportedProject = {
+    ON_PREM: 'onPremise',
+    CLOUD_READY: 'cloudReady',
+    CLOUD_READY_AND_ON_PREM: 'cloudReadyAndOnPrem'
+} as const;
 
 const actualUtils = await import('../../../src/utils/index.js');
 jest.unstable_mockModule('../../../src/utils', () => ({
@@ -20,7 +32,15 @@ jest.unstable_mockModule('../../../src/utils', () => ({
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     fetchKeyUserChanges: mockFetchKeyUserChanges,
-    getDefaultProjectName: jest.fn().mockReturnValue('app.variant')
+    getDefaultProjectName: jest.fn().mockReturnValue('app.variant'),
+    getConfiguredProvider: mockGetConfiguredProvider,
+    getSupportedProject: mockGetSupportedProject,
+    loadApps: mockLoadApps,
+    SupportedProject
+}));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
 }));
 
 // Force isYoAvailable() to return false so tests always exercise the npx fallback path.
@@ -35,14 +55,20 @@ jest.unstable_mockModule('node:child_process', () => ({
 const actualFs = await import('node:fs');
 const mockMkdir = jest.fn<any>().mockResolvedValue(undefined);
 const mockExistsSync = jest.fn<any>().mockReturnValue(false);
+const mockWriteFileSync = jest.fn<any>();
+const mockRmSync = jest.fn<any>();
 jest.unstable_mockModule('node:fs', () => ({
     ...actualFs,
     default: {
         ...actualFs,
         existsSync: mockExistsSync,
+        writeFileSync: mockWriteFileSync,
+        rmSync: mockRmSync,
         promises: { ...actualFs.promises, mkdir: mockMkdir }
     },
     existsSync: mockExistsSync,
+    writeFileSync: mockWriteFileSync,
+    rmSync: mockRmSync,
     promises: { ...actualFs.promises, mkdir: mockMkdir }
 }));
 
@@ -53,6 +79,13 @@ describe('generateAdaptationProject', () => {
         jest.clearAllMocks();
         mockExistsSync.mockReturnValue(false);
         mockRunCmdArgs.mockResolvedValue({ stdout: 'done', stderr: '' });
+        // Default to an on-premise-only system so existing tests resolve to a concrete type
+        // and proceed to generation without requiring an explicit projectType.
+        mockGetConfiguredProvider.mockResolvedValue({});
+        mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
+        mockLoadApps.mockResolvedValue([]);
+        // Default to external usage (released-status logic).
+        mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
     });
 
     test('returns Error when required parameters are missing', async () => {
@@ -106,7 +139,7 @@ describe('generateAdaptationProject', () => {
         });
     });
 
-    test('attaches key user changes when import requested and changes exist', async () => {
+    test('stages key user changes to a temp file and forwards the correlation id when changes exist', async () => {
         mockFetchKeyUserChanges.mockResolvedValue([{ content: { foo: 'bar' } }]);
 
         await generateAdaptationProject({
@@ -118,10 +151,21 @@ describe('generateAdaptationProject', () => {
 
         const args = (mockRunCmdArgs.mock.calls[0] as [string, string[], any])[1];
         const payload = JSON.parse(args[3]);
-        expect(payload.keyUserChanges).toEqual([{ content: { foo: 'bar' } }]);
+        // The generator reads changes from {tmpdir}/{id}.txt (generator-adp #5079), not from argv.
+        expect(payload.keyUserChanges).toBeUndefined();
+        expect(typeof payload.id).toBe('string');
+
+        const stagedPath = join(tmpdir(), `${payload.id}.txt`);
+        expect(mockWriteFileSync).toHaveBeenCalledWith(
+            stagedPath,
+            JSON.stringify({ keyUserChanges: [{ content: { foo: 'bar' } }] }),
+            'utf8'
+        );
+        // The staged file is cleaned up after generation.
+        expect(mockRmSync).toHaveBeenCalledWith(stagedPath, { force: true });
     });
 
-    test('proceeds with generation and logs a warning when import requested but no changes returned', async () => {
+    test('proceeds with generation and stages nothing when import requested but no changes returned', async () => {
         mockFetchKeyUserChanges.mockResolvedValue([]);
 
         const result = await generateAdaptationProject({
@@ -133,9 +177,47 @@ describe('generateAdaptationProject', () => {
 
         expect(result.status).toBe('Success');
         expect(mockRunCmdArgs).toHaveBeenCalledTimes(1);
-        // keyUserChanges should not be in the payload when the list is empty
-        const payload = JSON.parse(mockRunCmdArgs.mock.calls[0][1][3] as string);
+        // No changes → nothing staged, no correlation id, nothing to clean up.
+        const payload = JSON.parse((mockRunCmdArgs.mock.calls[0] as [string, string[], any])[1][3]);
         expect(payload.keyUserChanges).toBeUndefined();
+        expect(payload.id).toBeUndefined();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+        expect(mockRmSync).not.toHaveBeenCalled();
+    });
+
+    test('cleans up the staged temp file even when generation fails', async () => {
+        mockFetchKeyUserChanges.mockResolvedValue([{ content: { foo: 'bar' } }]);
+        mockRunCmdArgs.mockRejectedValue(new Error('boom'));
+
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app',
+            importKeyUserChanges: true
+        } as any);
+
+        expect(result.status).toEqual('Error');
+        const stagedPath = (mockWriteFileSync.mock.calls[0] as [string])[0];
+        expect(mockRmSync).toHaveBeenCalledWith(stagedPath, { force: true });
+    });
+
+    test('does not mask a successful result when temp file cleanup throws', async () => {
+        mockFetchKeyUserChanges.mockResolvedValue([{ content: { foo: 'bar' } }]);
+        mockRmSync.mockImplementation(() => {
+            throw new Error('EPERM');
+        });
+
+        const result = await generateAdaptationProject({
+            system: 'UYZ/200',
+            application: 'app.id',
+            appPath: '/tmp/app',
+            importKeyUserChanges: true
+        } as any);
+
+        expect(result.status).toBe('Success');
+        expect(mockLoggerWarn).toHaveBeenCalledWith(
+            expect.stringContaining('Failed to clean up key user changes temp file')
+        );
     });
 
     test('returns Error and does not generate when key user changes fetch hangs (timeout)', async () => {
@@ -214,5 +296,213 @@ describe('generateAdaptationProject', () => {
 
         expect(result.status).toEqual('Success');
         expect(mockLoggerWarn).toHaveBeenCalledWith('some warning from yo');
+    });
+
+    describe('project type resolution', () => {
+        /**
+         * Reads the JSON payload passed to the generator from the first runCmdArgs call.
+         *
+         * @returns The parsed generator payload.
+         */
+        function generatorPayload(): Record<string, unknown> {
+            const args = (mockRunCmdArgs.mock.calls[0] as [string, string[], any])[1];
+            return JSON.parse(args[3]);
+        }
+
+        test('forces cloudReady on a CloudReady-only system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('cloudReady');
+            expect(mockLoadApps).not.toHaveBeenCalled();
+        });
+
+        test('rejects onPremise request on a CloudReady-only system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'onPremise'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('only Cloud Ready');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('rejects a CloudReady-only system under internal usage', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('internal features are enabled');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('forces onPremise on an on-premise-only system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('onPremise');
+        });
+
+        test('rejects cloudReady request on an on-premise-only system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'cloudReady'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('only Classic');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('returns InputRequired when a mixed system has a released cloud app and no type chosen', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('InputRequired');
+            expect(result.message).toContain('BOTH Cloud Ready and Classic');
+            expect(result.message).toContain('"Cloud Ready" or "Classic"');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('forwards an explicit choice on a mixed system with a released cloud app', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'cloudReady'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('cloudReady');
+        });
+
+        test('forces onPremise for a classic app on a mixed system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: '' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('onPremise');
+        });
+
+        test('rejects cloudReady request for a classic app on a mixed system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: '' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'cloudReady'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('classic application');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('defaults to onPremise when the app is not found on a mixed system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'other.app', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('onPremise');
+        });
+
+        test('honors an explicit request when the app is not found on a mixed system', async () => {
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'cloudReady'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('cloudReady');
+        });
+
+        test('forces onPremise on a mixed system under internal usage, ignoring released status', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(generatorPayload().projectType).toEqual('onPremise');
+            // Internal usage forces on-premise without an app lookup.
+            expect(mockLoadApps).not.toHaveBeenCalled();
+        });
+
+        test('rejects a cloudReady request on a mixed system under internal usage', async () => {
+            mockIsInternalFeaturesSettingEnabled.mockReturnValue(true);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+            mockLoadApps.mockResolvedValue([{ id: 'app.id', cloudDevAdaptationStatus: 'released' }]);
+
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                application: 'app.id',
+                appPath: '/tmp/app',
+                projectType: 'cloudReady'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('internal features enabled');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
     });
 });
