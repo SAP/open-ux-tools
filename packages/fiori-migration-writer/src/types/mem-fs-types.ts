@@ -30,6 +30,7 @@ export interface MemFsFile {
 export interface MemFsStore {
     /**
      * Iterate over each file in the store.
+     *
      * @param callback - Function called for each file entry
      */
     each: (callback: (file: MemFsFile) => void) => void;
