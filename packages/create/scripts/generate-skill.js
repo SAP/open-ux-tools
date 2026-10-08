@@ -107,9 +107,14 @@ metadata:
 
 `;
         const newSkill = frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsSection;
+        const lineCount = newSkill.split('\n').length;
+        if (lineCount > 500) {
+            console.error(`❌ SKILL.md exceeds 500 lines (${lineCount} lines). Reduce README.md content to stay within the vally skill-size limit.`);
+            process.exit(1);
+        }
         fs.mkdirSync(path.dirname(SKILL_OUTPUT_PATH), { recursive: true });
         fs.writeFileSync(SKILL_OUTPUT_PATH, newSkill, 'utf8');
-        console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH}`);
+        console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH} (${lineCount} lines)`);
     }
 } catch (error) {
     console.error('❌ Failed to generate SKILL.md:', error.message);
