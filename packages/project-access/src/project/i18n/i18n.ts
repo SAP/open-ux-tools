@@ -176,6 +176,13 @@ function extractBundlePath(appId: string, settings: { bundleName?: string; bundl
  * @param manifest - parsed content of manifest.json
  * @returns - paths to i18n.properties file from models
  */
+function getValidFallbackLocale(settings: { fallbackLocale?: unknown } | undefined): string | undefined {
+    const fallbackLocale = settings?.fallbackLocale;
+    return typeof fallbackLocale === 'string' && fallbackLocale && /^[A-Za-z0-9_-]+$/.test(fallbackLocale)
+        ? fallbackLocale
+        : undefined;
+}
+
 function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: string; fallbackLocalePath?: string } } {
     const result: { [modelKey: string]: { path: string; fallbackLocalePath?: string } } = {};
     const models = manifest?.['sap.ui5']?.models ?? {};
@@ -188,21 +195,23 @@ function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: st
             const appId = manifest['sap.app']?.id ?? '';
             const path = extractBundlePath(appId, i18nModel.settings);
             if (path) {
-                result[modelKey] = { path };
-                const fallbackLocale = (i18nModel.settings as { fallbackLocale?: unknown }).fallbackLocale;
-                if (typeof fallbackLocale === 'string' && fallbackLocale && /^[A-Za-z0-9_-]+$/.test(fallbackLocale)) {
-                    result[modelKey].fallbackLocalePath = computeFallbackLocalePath(path, fallbackLocale);
-                }
+                const fallbackLocale = getValidFallbackLocale(i18nModel.settings as { fallbackLocale?: unknown });
+                result[modelKey] = {
+                    path,
+                    ...(fallbackLocale && { fallbackLocalePath: computeFallbackLocalePath(path, fallbackLocale) })
+                };
                 continue;
             }
         }
         if (i18nModel.uri) {
             const path = join(i18nModel.uri);
-            result[modelKey] = { path };
-            const fallbackLocale = (i18nModel.settings as { fallbackLocale?: unknown } | undefined)?.fallbackLocale;
-            if (typeof fallbackLocale === 'string' && fallbackLocale && /^[A-Za-z0-9_-]+$/.test(fallbackLocale)) {
-                result[modelKey].fallbackLocalePath = computeFallbackLocalePath(path, fallbackLocale);
-            }
+            const fallbackLocale = getValidFallbackLocale(
+                i18nModel.settings as { fallbackLocale?: unknown } | undefined
+            );
+            result[modelKey] = {
+                path,
+                ...(fallbackLocale && { fallbackLocalePath: computeFallbackLocalePath(path, fallbackLocale) })
+            };
         }
     }
     return result;
