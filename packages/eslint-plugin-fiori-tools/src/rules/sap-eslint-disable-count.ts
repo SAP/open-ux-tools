@@ -21,7 +21,7 @@ const rule: Rule.RuleModule = {
             Program() {
                 const comments = context.sourceCode.getAllComments();
                 for (const comment of comments) {
-                    if (comment.value.trim().includes('eslint-disable')) {
+                    if (/^eslint-disable(?:-line|-next-line)?(?:\s|$)/u.test(comment.value.trim())) {
                         context.report({ node: comment as unknown as Rule.Node, messageId: 'eslintDisableDetected' });
                     }
                 }
