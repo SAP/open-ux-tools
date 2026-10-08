@@ -275,6 +275,11 @@ export function getListReportFeatures(
         contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
         textAnnotationColumns,
+        columnPersonalizationSupported: isColumnPersonalizationEnabled(
+            manifest,
+            listReportPage.name,
+            listReportPage.contextPath
+        ),
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
         tabs: getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log),
@@ -542,6 +547,86 @@ export function getCustomFilterFieldProperties(
         }
     }
     return custom;
+}
+
+/**
+ * Finds the LineItem control-configuration entry for the default table.
+ *
+ * @param controlConfiguration - the target's `options.settings.controlConfiguration`
+ * @param contextPath - the page's context path (e.g. `/Travel`), used to match CAP-style prefixed keys
+ * @returns the matched LineItem control-configuration value, or undefined if it cannot be identified
+ */
+function findDefaultTableLineItemConfig(
+    controlConfiguration: Record<string, unknown>,
+    contextPath?: string
+): { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined {
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const isLineItemKey = (key: string): boolean => {
+        const segment = key.substring(key.lastIndexOf('/') + 1);
+        return segment === lineItemTerm || segment.startsWith(`${lineItemTerm}#`);
+    };
+    const lineItemKeys = Object.keys(controlConfiguration).filter(isLineItemKey);
+
+    let key: string | undefined;
+    if (lineItemKeys.length === 1) {
+        key = lineItemKeys[0];
+    } else if (contextPath) {
+        // Multiple LineItem keys: only resolve when exactly one is scoped to this page's context path.
+        const bareUnderContext = `${contextPath}/${lineItemTerm}`;
+        if (controlConfiguration[bareUnderContext]) {
+            key = bareUnderContext;
+        } else {
+            const underContext = lineItemKeys.filter((candidate) => candidate.startsWith(`${contextPath}/`));
+            key = underContext.length === 1 ? underContext[0] : undefined;
+        }
+    }
+
+    return key
+        ? (controlConfiguration[key] as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        : undefined;
+}
+
+/**
+ * Determines whether the List Report table exposes column personalization (the "Columns" adaptation dialog).
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param contextPath - the page's context path, used to resolve CAP-style prefixed LineItem keys
+ * @returns true if the column-adaptation dialog is available for the table
+ */
+export function isColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    contextPath?: string
+): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        | {
+              options?: {
+                  settings?: {
+                      controlConfiguration?: Record<string, unknown>;
+                  };
+              };
+          }
+        | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemConfig = findDefaultTableLineItemConfig(controlConfiguration, contextPath);
+    const personalization = lineItemConfig?.tableSettings?.personalization;
+    if (personalization === undefined) {
+        return true;
+    }
+    if (typeof personalization === 'boolean') {
+        return personalization;
+    }
+    if (typeof personalization === 'object' && personalization !== null) {
+        return personalization.column === true;
+    }
+    return true;
 }
 
 /**
