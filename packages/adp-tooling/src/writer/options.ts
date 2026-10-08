@@ -146,6 +146,7 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
  *
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
+ * @param useNewSandbox
  */
 function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig, useNewSandbox: boolean) {
     const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
@@ -189,6 +190,7 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig,
  *
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
+ * @param useNewSandbox
  */
 function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig, useNewSandbox: boolean) {
     ui5Config.addCustomMiddleware([
