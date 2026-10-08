@@ -45,9 +45,11 @@ This skill is invoked when users ask questions like:
 
 - **OData version:** <V2 | V4 | V2 and V4>
 - **Backend:** <CAP | ABAP RAP | both>
-- **MCP servers:** Fiori MCP (required), CDS MCP (recommended for CAP), ABAP Development Tools MCP (required for RAP)
-- **Hosts:** VS Code, BAS *(RAP flows are VS Code only)*
+- **MCP servers:** <List required MCP servers — e.g., Fiori MCP (required), CDS MCP (recommended for CAP), ABAP Development Tools MCP (required for RAP)>
+- **Hosts:** <Defaults to all environments (Github Copilot in VS Code/BAS, Claude). Only document if there are environment-specific requirements. If a feature requires host-specific capabilities (e.g., RAP flows need ABAP Development Tools extension for VS Code), state that here with the fallback strategy for other environments.>
 - **Scope:** <read-only | draft>
+
+**Host-specific requirements:** <If the feature depends on a VS Code extension, SAP BAS tooling, or other host-specific capability, explain the requirement here and document the canonical fallback for hosts that don't support it. Example: "RAP flows require the ABAP Development Tools extension for VS Code. On other hosts, users must perform ABAP changes manually in their SAP system and return to continue the UI configuration steps.">
 
 If any prerequisite is missing, tell the user how to install or enable it before proceeding. Do not silently degrade.
 
@@ -192,4 +194,13 @@ pnpm --filter @sap-ux/<package> <script>
 - [ ] Lint clean: `pnpm --filter @sap-ux/<package> lint`
 - [ ] TypeScript compiles: `pnpm --filter @sap-ux/<package> build`
 - [ ] Changeset added if user-visible: `pnpm changeset`
+
+---
+
+## References
+
+*(Optional for contributor skills — only include if there are specific monorepo docs, ADRs, or external references that contributors need. Most contributor skills can omit this section.)*
+
+- [AGENTS.md](../../AGENTS.md) — Monorepo AI agent guidelines
+- [Package README](../../packages/<package>/README.md)
 ```

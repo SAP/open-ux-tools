@@ -17,9 +17,9 @@ metadata:
 
 # Create Skill — SAP Fiori Tools
 
-Author skills for the `open-ux-tools` ecosystem, regardless of where they live on disk. This skill enforces the conventions that make Fiori Tools skills portable across VS Code, SAP Business Application Studio (BAS), Claude Code, Cursor, and Cowork — and safe to ship publicly.
+Author skills for the `open-ux-tools` ecosystem, regardless of where they live on disk. This skill enforces the conventions that make SAP Fiori Tools skills portable across SAP-approved AI coding assistants (Github Copilot, Claude) and development environments (VS Code, SAP Business Application Studio) — and safe to ship publicly.
 
-> **Skill location is an input, not a convention.** Different hosts and repos use different directories (`.agents/skills/`, `~/.agents/skills/`, `assets/prompts/skills/`, a monorepo path, etc.). Ask the user *where* the skill should be created (or refactored) and treat that path as the target directory throughout. This SKILL.md never assumes a specific location.
+> **Skill location is an input, not a convention.** Different hosts and repos use different directories (`.agents/skills/` for contributor skills, `~/.agents/skills/` for user skills, `packages/fiori-mcp-server/skills/` for public skills in this monorepo, etc.). Ask the user *where* the skill should be created (or refactored) and treat that path as the target directory throughout. This SKILL.md never assumes a specific location.
 
 > **Why a dedicated creator?** Generic skill-creator advice is not enough here. Our skills must run in multiple hosts, target two backends (CAP + ABAP RAP), two OData versions (V2 + V4), and two audiences (internal developers vs. public end users). This skill captures those constraints so authors do not have to rediscover them.
 
@@ -70,8 +70,8 @@ Before drafting, confirm the following in one short exchange. Do not guess.
 6. **Scope boundary** — `read-only` or `draft`. Optional; only declare this for complex features like tree tables that have distinct read-only vs editable variants. Most skills default to `draft` (the skill modifies files/configurations). Omit this field unless the distinction matters.
 7. **Backend coverage** — CAP only, RAP only, or both. Default to both; if both, samples for each are mandatory. Derive from documentation if the feature is backend-specific.
 8. **OData version** — V2, V4, or both. Default to V4 (SAP Fiori elements templates like `FE_FEOP`, `FE_FPM` are V4-only). Check documentation for version requirements or V2 support.
-9. **Host requirements** — VS Code, BAS, Claude Code, Github Copilot. Host-specific dependencies need a canonical fallback documented in the skill body.
-10. **Prerequisite MCP servers / extensions** — Fiori MCP, CDS MCP, ABAP Development Tools, etc. Derive from the implementation requirements.
+9. **Host requirements** — List which environments the skill targets. SAP-approved hosts: **Github Copilot** (in VS Code/BAS), **Claude** (Claude Code, API, etc.). The skill may also work in other environments (Cursor, Windsurf, etc.) but those are not officially supported. If the feature requires host-specific capabilities (e.g., VS Code extensions for RAP, BAS-specific tooling), document those requirements AND the canonical fallback for other environments. Default: works in all environments unless stated otherwise.
+10. **Prerequisite MCP servers / extensions** — Fiori MCP, CDS MCP, ABAP Development Tools, etc. Derive from the implementation requirements. If an MCP server is host-specific, note that.
 
 If anything is missing, ask before drafting.
 
@@ -107,8 +107,9 @@ Keep the SKILL.md **under 500 lines**. If you cross that threshold, chunk into `
 - Prefer imperative voice: *"Read the manifest.json"*, not *"You should read..."*.
 - Explain the **why** for non-obvious rules. LLMs follow reasoning better than they follow shouted `MUST`s. Save all-caps `MUST` / `NEVER` for the two or three genuinely dangerous cases (data loss, credential exposure, wrong OData version).
 - Use tables for decision matrices (backend × OData version, host × MCP availability, etc.). They compress well and scan quickly.
+- **Host portability.** Skills should work across SAP-approved environments (Github Copilot in VS Code/BAS, Claude) and be usable in other environments (Cursor, Windsurf, etc.) unless a feature genuinely requires host-specific tooling. When a capability is environment-specific (e.g., ABAP Development Tools extension for VS Code), document the requirement AND provide a fallback (e.g., "perform backend changes in your SAP system, then return for UI configuration").
 - Show **short** code examples inline. Long snippets belong in `references/`.
-- **Product-name capitalization (mandatory).** Write **SAP** in all caps, **Fiori** with a capital F, and **elements** in lowercase. Never write "Fiori" on its own — always **SAP Fiori** (or **SAP Fiori elements**, **SAP Fiori tools**). Examples: ✅ `SAP Fiori elements`, `SAP Fiori tools`, `SAP Fiori app` — ❌ `SAPUI5 Fiori`, `Fiori Elements`, `fiori app`, `SAP fiori`.
+- **Product-name capitalization (mandatory).** Write **SAP** in all caps, **Fiori** with a capital F, and **elements** in lowercase. Never write "Fiori" on its own — always **SAP Fiori** (or **SAP Fiori elements**, **SAP Fiori Tools**). Examples: ✅ `SAP Fiori elements`, `SAP Fiori Tools`, `SAP Fiori app` — ❌ `SAPUI5 Fiori`, `Fiori Elements`, `fiori app`, `SAP fiori`.
 
 ### Content quality checklist
 
@@ -171,7 +172,10 @@ Use the `## Common Errors and Solutions` block already present in **[references/
 
 ## Step 7 — Reference documentation links
 
-Every skill ends with a `## References` section that links out to the authoritative source. This is what users click when the skill's summary is not enough.
+Every **public skill** ends with a `## References` section that links out to the authoritative source. This is what users click when the skill's summary is not enough.
+
+**Contributor skills** (internal to the monorepo) may omit this section if there are no specific references — most monorepo tasks reference AGENTS.md or package READMEs which contributors already know.
+
 Do not paste raw URLs into the middle of the skill — link them from the References section and reference by name in prose. Broken links here are user-visible; check them before packaging.
 
 ---
@@ -273,4 +277,4 @@ find <skill-name> -type f
 head -20 <skill-name>/SKILL.md | grep -E '^(name|description):'
 ```
 
-Review the checklists in Steps 0, 2, and 8 to confirm all validation criteria are met.
+Review the checklists in Steps 0, 2, and 8 to confirm all validation criteria are met. Remember: **SAP Fiori Tools** (capital 'T' in Tools).
