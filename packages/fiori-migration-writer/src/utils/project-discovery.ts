@@ -22,8 +22,8 @@ export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFol
     for (const root of wsRoots) {
         try {
             await findWebIDEProject(root, projects);
-        } catch (error) {
-            console.error(error);
+        } catch {
+            // Continue scanning other roots even if one fails
         }
     }
     return projects;

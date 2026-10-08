@@ -30,8 +30,8 @@ export async function findAllManifest(roots: string[]): Promise<string[]> {
                 .filter((dirPath) => !dirPath.endsWith(`${sep}webapp`));
 
             results.push(...manifestPaths);
-        } catch (error) {
-            console.error(`Error finding manifests in ${root}:`, error);
+        } catch {
+            // Continue scanning other roots even if one fails
         }
     }
 

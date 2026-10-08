@@ -44,8 +44,8 @@ export async function applyTemplates(
             const updatedHtml = updateThemeAttribute(html, ui5Version ?? '', templateData.project.ui5Theme ?? '');
             await updateFile(htmlPath, updatedHtml);
             return;
-        } catch (e) {
-            console.log(`Error writing file ${templateName} - ${e}`);
+        } catch {
+            // File write failed - index.html theme update is non-critical, continue migration
         }
     }
 }

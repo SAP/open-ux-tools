@@ -40,10 +40,26 @@ import { i18nText, initI18n } from './i18n.js';
 
 export class ProjectMigrator {
     /**
-     * Deprecated: Static fs property no longer used.
-     * Each migration now uses its own isolated editor instance via AsyncLocalStorage context.
+     * @deprecated This static property is no longer used and will be removed in the next major version.
      *
-     * @deprecated Set editor context using runWithEditor() instead
+     * **Migration Guide:**
+     * Each migration now uses its own isolated editor instance via AsyncLocalStorage context.
+     * Instead of setting `ProjectMigrator.fs`, use one of these approaches:
+     *
+     * 1. Pass the editor to `migrate()`:
+     * ```typescript
+     * const editor = createMemFsEditor();
+     * await ProjectMigrator.migrate(root, baseUri, url, {}, undefined, false, editor);
+     * ```
+     *
+     * 2. Use `runWithEditor()` for custom editor operations:
+     * ```typescript
+     * import { runWithEditor, createMemFsEditor } from '@sap-ux/fiori-migration-writer';
+     * const editor = createMemFsEditor();
+     * await runWithEditor(editor, async () => {
+     *     // Your migration code here - getCurrentEditor() returns the active editor
+     * });
+     * ```
      */
     static fs: Editor | undefined;
 

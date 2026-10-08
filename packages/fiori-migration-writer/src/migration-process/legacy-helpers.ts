@@ -6,6 +6,7 @@ import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { isMemFsEnabled, getCurrentEditor, exists } from '../utils/fs-adapter.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
+import { hasStore } from '../types/mem-fs-types.js';
 
 // Re-export for backward compatibility with tests
 export { validateRootDirectory } from '../utils/path-validation.js';
@@ -45,9 +46,9 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
  * @param rootPath - Project root path
  * @param paths - Legacy paths object
  */
-async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
+function memFsMove(rootPath: string, paths: LegacyPaths): void {
     const fs = getCurrentEditor();
-    if (!fs) {
+    if (!fs || !hasStore(fs)) {
         return;
     }
 
@@ -57,7 +58,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
         // mem-fs stores files with absolute paths as keys
         const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
-        (fs as any).store.each((file: any) => {
+        fs.store.each((file) => {
             const filePath = file.path;
 
             // Check if this file is under the legacy webapp path.
@@ -89,7 +90,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
     if (exists(paths.ffLegacyTestQunitPath)) {
         const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
-        (fs as any).store.each((file: any) => {
+        fs.store.each((file) => {
             const filePath = file.path;
 
             if (filePath === paths.ffLegacyTestQunitPath || filePath.startsWith(paths.ffLegacyTestQunitPath + sep)) {
@@ -116,7 +117,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
     if (exists(paths.ffLegacyTestuiveri5Path)) {
         const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
-        (fs as any).store.each((file: any) => {
+        fs.store.each((file) => {
             const filePath = file.path;
 
             if (

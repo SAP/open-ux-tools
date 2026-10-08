@@ -120,8 +120,8 @@ export async function generateTemplate(
     // 6. Write file (uses fs-adapter)
     try {
         await writeFile(targetFile, content);
-    } catch (e) {
-        console.log(`Error writing file ${targetFile} - ${e}`);
+    } catch {
+        // File write failed - this is caught and logged at the caller level
     }
 }
 

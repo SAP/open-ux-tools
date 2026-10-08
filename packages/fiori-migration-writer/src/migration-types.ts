@@ -290,8 +290,22 @@ export interface Project {
     enableNPMWorkspaces?: boolean;
 }
 
+/**
+ * User credentials for authentication.
+ *
+ * SECURITY: This interface contains sensitive authentication data.
+ * The `password` field must NEVER be logged, included in error messages,
+ * or transmitted to telemetry systems.
+ */
 export interface Credentials {
+    /** Username for authentication */
     username: string;
+    /**
+     * Password for authentication.
+     *
+     * SECURITY: NEVER log this value, include in error messages, or store in plain text.
+     * Handle with care and clear from memory when no longer needed.
+     */
     password?: string;
 }
 export const CapType = {

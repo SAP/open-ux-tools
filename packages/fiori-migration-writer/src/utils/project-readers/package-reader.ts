@@ -19,6 +19,6 @@ export function getPackageJsonPath(projectRoot: string): string {
  *
  * @param filePath
  */
-export async function getPackageJson(filePath: string): Promise<any> {
+export function getPackageJson(filePath: string): any {
     return readJSON(getPackageJsonPath(filePath));
 }

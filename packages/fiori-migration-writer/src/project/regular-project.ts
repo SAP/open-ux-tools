@@ -70,8 +70,9 @@ export async function processRegularProject(
         // Expected: package.json may not exist in legacy WebIDE projects.
         // Safe to extract metadata from manifest.json as fallback - package.json will be generated during migration.
         packageJson.name = manifest?.['sap.app']?.id;
-        if (typeof manifest?.['sap.app']?.title === 'string' && !(manifest?.['sap.app']?.title).includes('{{')) {
-            packageJson.description = manifest?.['sap.app']?.title;
+        const manifestTitle = manifest?.['sap.app']?.title;
+        if (typeof manifestTitle === 'string' && !manifestTitle.includes('{{')) {
+            packageJson.description = manifestTitle;
         }
     }
 

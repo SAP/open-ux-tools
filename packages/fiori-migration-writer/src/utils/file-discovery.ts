@@ -116,8 +116,8 @@ export interface ReuseLibResult {
 async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: string): Promise<string> {
     let current = dirname(manifestPath);
     // Normalize paths for comparison
-    const normalizedBoundary = workspaceBoundary.replace(/\\/g, '/');
-    const normalizedCurrent = (path: string) => path.replace(/\\/g, '/');
+    const normalizedBoundary = workspaceBoundary.replaceAll('\\', '/');
+    const normalizedCurrent = (path: string) => path.replaceAll('\\', '/');
 
     // Helper to check if a file/directory exists using Node.js fs API
     // (not mem-fs, since project markers are real filesystem entries)

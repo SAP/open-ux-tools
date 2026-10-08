@@ -76,7 +76,7 @@ export async function processNeoAppAndODataVersion(
             ? (mainServiceDatasource.settings as Record<string, unknown>).odataVersion
             : undefined;
     const odataVersionTmp =
-        parseInt(String(odataVersionFromSettings || ''), 10) === 4 ? ODataVersion.v4 : ODataVersion.v2;
+        Number.parseInt(String(odataVersionFromSettings || ''), 10) === 4 ? ODataVersion.v4 : ODataVersion.v2;
 
     const odataVersion = feVersion === FioriElementsVersion.v4 ? ODataVersion.v4 : odataVersionTmp;
 

@@ -11,6 +11,7 @@ import { mkdir, exists, isMemFsEnabled, getCurrentEditor } from '../utils/fs-ada
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
+import { hasStore } from '../types/mem-fs-types.js';
 
 /**
  * Recursively move files and directories from source to destination
@@ -164,13 +165,13 @@ export async function createWebappFolderAndMigrateFiles(
 
         const editor = getCurrentEditor();
 
-        if (editor) {
+        if (editor && hasStore(editor)) {
             // Use mem-fs to get directory listing
             const rootPathWithSep = rootPath.endsWith(sep) ? rootPath : rootPath + sep;
             const filesInRoot: string[] = [];
 
             // Collect all files directly in root (not in subdirectories)
-            (editor as any).store.each((file: any) => {
+            editor.store.each((file) => {
                 const filePath = file.path;
                 if (filePath.startsWith(rootPathWithSep)) {
                     const relativePath = filePath.substring(rootPathWithSep.length);

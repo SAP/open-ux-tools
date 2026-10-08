@@ -230,7 +230,7 @@ export async function generateUI5LocalYamlContent(
             configuration: {
                 service: {
                     urlBasePath: templateData.ui5Yaml.servicePath,
-                    name: (templateData.ui5Yaml as any).serviceName || '',
+                    name: templateData.ui5Yaml.serviceName ?? '',
                     metadataXmlPath: templateData.ui5Yaml.metadataXmlPath || '',
                     mockdataRootPath: templateData.ui5Yaml.mockdataRootPath || '',
                     generateMockData: templateData.ui5Yaml.generateMockData
@@ -239,7 +239,9 @@ export async function generateUI5LocalYamlContent(
         };
 
         // Find index of fiori-tools-proxy and insert before it
-        const proxyIndex = orderedYaml.server.customMiddleware.findIndex((mw: any) => mw.name === 'fiori-tools-proxy');
+        const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
+            (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
+        );
         if (proxyIndex >= 0) {
             orderedYaml.server.customMiddleware.splice(proxyIndex, 0, mockserverMiddleware);
         } else {

@@ -19,7 +19,7 @@ export function getClientFromDestinationName(destination: string): string {
     if (destination && destination.length > 3) {
         const client = destination.slice(-3);
         // Check client is a number
-        if (!isNaN(Number(client))) {
+        if (!Number.isNaN(Number(client))) {
             sapClient = client;
         }
     }

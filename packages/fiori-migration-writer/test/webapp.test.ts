@@ -133,6 +133,8 @@ describe('webapp', () => {
             await runWithEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-ui5version');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
+                // Create a file in webapp directory in mem-fs so exists() sees it
+                writeFileUtil(join(rootPath, 'webapp', '.keep'), '');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.extension.ui5ver',
@@ -148,7 +150,9 @@ describe('webapp', () => {
 
                 await createExtensionProjectManifest(rootPath, projectInfo);
 
-                // Manifest should use ui5Version as fallback
+                // Manifest should be created and use ui5Version as fallback
+                const manifestPath = join(rootPath, 'webapp', 'manifest.json');
+                expect(fileExists(manifestPath)).toBe(true);
             });
         });
 
@@ -156,6 +160,8 @@ describe('webapp', () => {
             await runWithEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-shell-title');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
+                // Create a file in webapp directory in mem-fs so exists() sees it
+                writeFileUtil(join(rootPath, 'webapp', '.keep'), '');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.shell.title',
@@ -170,7 +176,9 @@ describe('webapp', () => {
 
                 await createExtensionProjectManifest(rootPath, projectInfo);
 
-                // Title should be {{SHELL_TITLE}} (line 82)
+                // Manifest should be created with SHELL_TITLE
+                const manifestPath = join(rootPath, 'webapp', 'manifest.json');
+                expect(fileExists(manifestPath)).toBe(true);
             });
         });
     });
@@ -361,8 +369,9 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                // Should not throw at top level
+                // Should not throw at top level - migration should complete
                 await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                expect(projectInfo.webappPath).toBe('webapp');
             });
         });
 
@@ -380,7 +389,8 @@ describe('webapp', () => {
                 } as ImportProjectInfo;
 
                 await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
-                // Internal validation prevents escape attempts
+                // Internal validation prevents escape attempts - migration should complete
+                expect(projectInfo.webappPath).toBe('webapp');
             });
         });
     });

@@ -53,7 +53,7 @@ export function generateSapUiLibsString(
 
     const sapUiLibs = baseUiLibsStr
         .concat(sapLibs ? ',' + sapLibs : '')
-        .replace(/ /g, '')
+        .replaceAll(' ', '')
         .split(',')
         .filter((v, i, a) => a.indexOf(v) === i)
         .join(', '); // Generate unique string of libs, handling empty strings

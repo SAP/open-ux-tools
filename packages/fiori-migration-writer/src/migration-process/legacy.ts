@@ -100,7 +100,7 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
     }
 
     // Remove all '/test-resources' references
-    legacyRunnerContent = legacyRunnerContent.replace(/\/test-resources/g, '');
+    legacyRunnerContent = legacyRunnerContent.replaceAll('/test-resources', '');
 
     // Add qunit redirect script
     const bodyTag = '<body>';
@@ -136,7 +136,7 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
 
         // Update references to testsuite.qunit.html
         if (legacyRunnerContent.includes('testsuite.qunit.html')) {
-            legacyRunnerContent = legacyRunnerContent.replace(/testsuite.qunit.html/g, 'testsuite_old.qunit.html');
+            legacyRunnerContent = legacyRunnerContent.replaceAll('testsuite.qunit.html', 'testsuite_old.qunit.html');
         }
         await updateFile(testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
@@ -202,8 +202,8 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
             throw new MigrationError(e, file);
         }
 
-        content = content.replace(/..\/..\/main\/webapp/g, '../../webapp');
-        content = content.replace(/\/src\/test\/qunit/g, '/webapp/test');
+        content = content.replaceAll('../../main/webapp', '../../webapp');
+        content = content.replaceAll('/src/test/qunit', '/webapp/test');
         content = content.replace(
             '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
             ''
@@ -225,7 +225,7 @@ async function updateGitignore(rootPath: string): Promise<void> {
 
     try {
         let gitignoreContent = await readFile(gitignore);
-        gitignoreContent = gitignoreContent.replace(/\/src\/main/g, '');
+        gitignoreContent = gitignoreContent.replaceAll('/src/main', '');
         await updateFile(gitignore, gitignoreContent);
     } catch (e) {
         throw new MigrationError(e, '.gitignore');
@@ -246,8 +246,8 @@ async function updateNeoApp(rootPath: string): Promise<void> {
     try {
         let neoappContent: any = await readJSON(neoapp);
         neoappContent = JSON.stringify(neoappContent);
-        neoappContent = neoappContent.replace(/\/src\/main/g, '');
-        neoappContent = neoappContent.replace(/\/src\/test/g, '/webapp/test');
+        neoappContent = neoappContent.replaceAll('/src/main', '');
+        neoappContent = neoappContent.replaceAll('/src/test', '/webapp/test');
         await updateJSON(neoapp, JSON.parse(neoappContent));
     } catch (e) {
         throw new MigrationError(e, FileName.NeoApp);
@@ -267,7 +267,7 @@ async function updateProjectJson(rootPath: string): Promise<void> {
 
     try {
         let projectJsonContent: any = await readJSON(projectJson);
-        projectJsonContent = JSON.stringify(projectJsonContent).replace(/src\/main/g, '');
+        projectJsonContent = JSON.stringify(projectJsonContent).replaceAll('src/main', '');
         await updateJSON(projectJson, JSON.parse(projectJsonContent));
     } catch (e) {
         throw new MigrationError(e, 'project.json');

@@ -45,7 +45,7 @@ export function createUi5YamlConfig(context: Ui5YamlContext): Ui5Yaml {
         // add themes to libs and get unique array
         sapUiLibs: sapLibsTemp
             .concat(libraryConfig.baseUiLibsStr ? ',' + libraryConfig.baseUiLibsStr : '')
-            .replace(/ /g, '')
+            .replaceAll(' ', '')
             .split(',')
             .filter((v, i, a) => a.indexOf(v) === i)
             .concat(libraryConfig.supportedThemes ?? [])
@@ -125,12 +125,12 @@ export function createTemplateData(config: CreateTemplateDataConfig): TemplateDa
         SemanticObject: semanticObject,
         escapeDoubleQuotes,
         fullyQualifiedProjectName,
-        fullyQualifiedProjectNameAMD: fullyQualifiedProjectNameAMD.split('.').join('/'),
+        fullyQualifiedProjectNameAMD: fullyQualifiedProjectNameAMD.replaceAll('.', '/'),
         appId: fullyQualifiedProjectName,
         sapUiLibs,
         ui5Theme: ui5Theme,
-        appIntent: appIntent?.replace('#', ''),
-        appMockIntent: appMockIntent?.replace('#', ''),
+        appIntent: appIntent?.replaceAll('#', ''),
+        appMockIntent: appMockIntent?.replaceAll('#', ''),
         mainServiceFsPath: projectInfo.mainServiceFsPath,
         hasRootIntent
     };

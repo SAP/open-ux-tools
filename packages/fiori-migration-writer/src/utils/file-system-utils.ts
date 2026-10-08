@@ -25,21 +25,21 @@ function getEditor(editorOrPath: string | Editor): Editor {
  *
  * @param val
  */
-export const stripSpaces = (val: string): string => val.replace(/\s/g, '');
+export const stripSpaces = (val: string): string => val.replaceAll(/\s/g, '');
 
 /**
  * escapeSingleQuotes
  *
  * @param s
  */
-export const escapeSingleQuotes = (s: string): string => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+export const escapeSingleQuotes = (s: string): string => s.replaceAll('\\', '\\\\').replaceAll("'", "\\'");
 
 /**
  * escapeDoubleQuotes
  *
  * @param s
  */
-export const escapeDoubleQuotes = (s: string): string => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+export const escapeDoubleQuotes = (s: string): string => s.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 
 /**
  * Check if directory exists

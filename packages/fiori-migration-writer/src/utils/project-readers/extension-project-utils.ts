@@ -109,7 +109,7 @@ export function getExtensionProjectModuleName(projectRoot: string, projectSettin
         moduleName = `${projectSettings.namespace}.${
             // remove / from ABAP namespace in BSPName
             projectSettings?.BSPName
-                ? `${projectSettings?.BSPName.replace(/\//g, '')}Extension`
+                ? `${projectSettings?.BSPName.replaceAll('/', '')}Extension`
                 : basename(projectRoot).replaceAll(' ', '')
         }`;
     }
