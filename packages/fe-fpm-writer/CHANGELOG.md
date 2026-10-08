@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- add stickySubheaderProvider to Page BB template to remove empty space between header and tab bar [[ce5ec7e](https://github.com/SAP/open-ux-tools/commit/ce5ec7e5b77e04ff2479007730c6e90a035b598a)]
+
 ## 1.3.20
 
 ### Patch Changes
