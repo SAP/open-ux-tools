@@ -44,7 +44,7 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
             const normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
 
             // Use specific snapshot path per app and file
-            const snapshotPath = join(__dirname, '__snapshots__', 'integration', appName, file + '.snap');
+            const snapshotPath = join(__dirname, '__snapshots__', 'integration', appName, file + '.snapshot');
             expect(normalizedContent).toMatchSpecificSnapshot(snapshotPath);
         }
     });
