@@ -1,5 +1,27 @@
 # @sap-ux/create
 
+## 1.4.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/abap-deploy-config-writer 1.0.29 → 1.0.30
+- @sap-ux/adp-tooling 1.0.62 → 1.0.63
+- @sap-ux/app-config-writer 1.1.25 → 1.1.26
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/cap-config-writer 1.0.41 → 1.0.42
+- @sap-ux/flp-config-inquirer 1.0.62 → 1.0.63
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/mockserver-config-writer 1.0.21 → 1.0.22
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/preview-middleware 1.2.24 → 1.2.25
+- @sap-ux/project-input-validator 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/ui5-test-writer 1.16.1 → 1.16.2
+- @sap-ux/abap-deploy-config-inquirer 2.0.50 → 2.0.51
+
 ## 1.4.13
 
 ### Patch Changes
