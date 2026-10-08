@@ -247,6 +247,11 @@ export type ListReportFeatures = {
      * annotation; used to generate sort-order tests against the text/description property.
      */
     textAnnotationColumns?: TextAnnotationColumn[];
+    /**
+     * Whether the table exposes column personalization (the "Columns" adaptation dialog).
+     * Absent/true means enabled (the Fiori elements default).
+     */
+    columnPersonalizationSupported?: boolean;
     isALP?: boolean;
     /**
      * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
