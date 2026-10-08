@@ -106,6 +106,35 @@ function encodeXmlValue(xmlValue: string): string {
 }
 
 /**
+ * Extract the Gateway error object from a failed response body, which may be a JSON string or an
+ * already-parsed object.
+ *
+ * @param data response body data
+ * @returns the Gateway error, or undefined if none is present
+ */
+function getGatewayError(data: unknown): ErrorMessage | undefined {
+    const fromString = getErrorMessageFromString(data);
+    if (fromString) {
+        return fromString;
+    }
+    return typeof data === 'object' && data !== null ? (data as { error?: ErrorMessage }).error : undefined;
+}
+
+/**
+ * Format a Gateway error as "<message> (<code>)" for inclusion in a thrown error message.
+ *
+ * @param error the Gateway error to format
+ * @returns the formatted reason, or undefined if no message is available
+ */
+function formatGatewayReason(error: ErrorMessage | undefined): string | undefined {
+    const value = typeof error?.message === 'string' ? error.message : error?.message?.value;
+    if (!value) {
+        return undefined;
+    }
+    return error.code ? `${value} (${error.code})` : value;
+}
+
+/**
  * Extension of the generic OData client simplifying the consumption of the UI5 repository service
  */
 export class Ui5AbapRepositoryService extends ODataService {
@@ -159,28 +188,21 @@ export class Ui5AbapRepositoryService extends ODataService {
     private handleAppLookupError(app: string, error: unknown): undefined {
         const message = error instanceof Error ? error.message : JSON.stringify(error);
         this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${message}`);
-        if (isAxiosError(error)) {
-            if (error.response?.data) {
-                const { data } = error.response;
-                const errorMessage = getErrorMessageFromString(data);
-                const body = typeof data === 'string' ? data : JSON.stringify(data);
-                // Full response body is only logged at debug level to avoid leaking it at normal log levels
-                this.log.debug(errorMessage ? JSON.stringify(errorMessage) : body);
-                // Surface the Gateway error reason (message + code) on the re-thrown error so callers that
-                // log error.message at warn/error can diagnose the failure without enabling debug logging
-                const reason =
-                    errorMessage ??
-                    (typeof data === 'object' && data !== null ? (data as { error?: ErrorMessage }).error : undefined);
-                const reasonText = typeof reason?.message === 'string' ? reason.message : reason?.message?.value;
-                if (reasonText) {
-                    error.message = reason?.code
-                        ? `${error.message}: ${reasonText} (${reason.code})`
-                        : `${error.message}: ${reasonText}`;
-                }
+        if (isAxiosError(error) && error.response?.data) {
+            const { data } = error.response;
+            const body = typeof data === 'string' ? data : JSON.stringify(data);
+            const gatewayError = getGatewayError(data);
+            // Full response body is only logged at debug level to avoid leaking it at normal log levels
+            this.log.debug(gatewayError ? JSON.stringify(gatewayError) : body);
+            // Surface the Gateway error reason on the re-thrown error so callers that log error.message
+            // at warn/error can diagnose the failure without enabling debug logging
+            const reason = formatGatewayReason(gatewayError);
+            if (reason) {
+                error.message = `${error.message}: ${reason}`;
             }
-            if (error.response?.status === 404) {
-                return undefined;
-            }
+        }
+        if (isAxiosError(error) && error.response?.status === 404) {
+            return undefined;
         }
         throw error;
     }
