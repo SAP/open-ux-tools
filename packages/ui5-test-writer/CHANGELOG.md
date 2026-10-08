@@ -1,5 +1,40 @@
 # @sap-ux/ui5-test-writer
 
+## 1.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Features
+
+- Generate OPA column-adaptation-dialog tests validating that text-annotated List Report columns are available in the column personalization dialog (UI5 1.152.0+) [[4144d72](https://github.com/SAP/open-ux-tools/commit/4144d72af16a67860e00f859183da4d6038ef59e)]
+
+## 1.15.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- Chain filter adaptation steps (open/add/confirm) in the semantic-key List Report test so the sap.fe self-managing adapt-filter dialog is not closed twice [[3f8e83c](https://github.com/SAP/open-ux-tools/commit/3f8e83c9bdaf2073176351bc9957234e32571271)]
+
+## 1.15.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/preview-middleware 1.2.22 → 1.2.23
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+
 ## 1.15.5
 
 ### Patch Changes

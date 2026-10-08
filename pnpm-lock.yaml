@@ -2077,6 +2077,9 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/odata-annotation-core':
         specifier: workspace:*
         version: link:../odata-annotation-core
@@ -5618,6 +5621,8 @@ importers:
       '@types/lodash':
         specifier: 4.17.24
         version: 4.17.24
+
+  plugins-coding-agents/fiori: {}
 
   tests/fixtures/projects/mock:
     devDependencies:
