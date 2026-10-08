@@ -242,7 +242,7 @@ export function buildServiceIndex(
             entityContainer = element;
         } else if (element.kind === 'EntitySet' || element.kind === 'entitySet') {
             entitySets[element.name] = element;
-        } else if (element.kind === 'EntityType' || element.kind === 'entityType') {
+        } else if (element.kind === 'EntityType' || element.kind === 'entityType' || element.kind === 'entity') {
             entityTypes[element.name] = element;
         }
     });

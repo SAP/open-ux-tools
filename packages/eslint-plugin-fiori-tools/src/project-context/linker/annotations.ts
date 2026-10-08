@@ -699,7 +699,9 @@ export function getEntityTypeForContextPath(contextPath: string, service: Parsed
     if (!entityTypeName) {
         return;
     }
-    const entityType = service.index.entityTypes[entityTypeName];
+    const entityType =
+        service.index.entityTypes[entityTypeName] ??
+        service.index.entityTypes[entityTypeName.split('.').pop() ?? entityTypeName];
     if (!entityType) {
         return undefined;
     }
