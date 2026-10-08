@@ -31,6 +31,6 @@ server:
       afterMiddleware: fiori-tools-appreload
       configuration:
         component: demo.fiori.inbox.SAMPLE_FIORI_INBOXExtension
-        ui5Theme: sap_bluecrystal
+        ui5Theme: sap_fiori_3
 "
 `;
