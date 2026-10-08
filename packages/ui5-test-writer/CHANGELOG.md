@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.15.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- Chain filter adaptation steps (open/add/confirm) in the semantic-key List Report test so the sap.fe self-managing adapt-filter dialog is not closed twice [[3f8e83c](https://github.com/SAP/open-ux-tools/commit/3f8e83c9bdaf2073176351bc9957234e32571271)]
+
 ## 1.15.6
 
 ### Patch Changes
