@@ -56,6 +56,21 @@ annotate service.Incidents with @(
     }
 );`;
 
+// Line chart defined on IncidentFlow and referenced via the 1:n incidentFlow navigation.
+// The chart entity is already a collection row, so direct scalar properties are valid.
+const CDS_MICRO_CHART_CROSS_ENTITY_1N_LINE_VALID = `
+annotate service.Incidents with @(
+    UI.LineItem: [{$Type: 'UI.DataFieldForAnnotation', Target: 'incidentFlow/@UI.Chart#CdsFlowLine'}]
+);
+
+annotate service.IncidentFlow with @(
+    UI.Chart #CdsFlowLine: {
+        ChartType: #Line,
+        Measures: [criticality],
+        Dimensions: [id]
+    }
+);`;
+
 ruleTester.run(TEST_NAME, microChartRule, {
     valid: [
         createValidTest(
@@ -88,6 +103,17 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'CDS: Bar chart (non-micro-chart type) - not reported',
                 filename: CAP_ANNOTATIONS_PATH,
                 code: CAP_ANNOTATIONS + CDS_NON_MICRO_CHART
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Line is in the 1:n-required set, but the chart entity (IncidentFlow) is reached via
+                // 1:n navigation (incidentFlow) so it is already a collection row — direct scalar
+                // properties are valid measures/dimensions without further navigation.
+                name: 'CDS: Line chart on 1:n cross-entity (IncidentFlow) with direct properties - not reported',
+                filename: CAP_ANNOTATIONS_PATH,
+                code: CAP_ANNOTATIONS + CDS_MICRO_CHART_CROSS_ENTITY_1N_LINE_VALID
             },
             []
         )

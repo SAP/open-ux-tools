@@ -327,6 +327,37 @@ const V4_MICRO_CHART_CROSS_ENTITY_1N_VALID = `
         </Annotation>
     </Annotations>`;
 
+// Same cross-entity 1:n scenario but with Line (a 1:n-required type).
+// The rule must still NOT fire because the chart entity (IncidentFlow) is already a collection row —
+// reaching it via 1:n nav means its direct scalar properties are valid without further navigation.
+const V4_MICRO_CHART_CROSS_ENTITY_1N_LINE_VALID = `
+    <Annotations Target="IncidentService.Incidents">
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataFieldForAnnotation">
+                    <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.Chart#FlowLineChart"/>
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="IncidentService.IncidentFlow">
+        <Annotation Term="UI.Chart" Qualifier="FlowLineChart">
+            <Record>
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>processStep</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>stepStatus</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>`;
+
 // Chart referenced via the to-one processingThreshold navigation from Incidents.
 // Because processingThreshold is NOT collection-valued, the chart entity is still in a single-row
 // context — but Bar is not in the 1:n-required set, so the rule does not fire.
@@ -504,6 +535,16 @@ ruleTester.run(TEST_NAME, microChartRule, {
                 name: 'V4: chart on 1:n cross-entity with direct properties - not reported',
                 filename: V4_ANNOTATIONS_PATH,
                 code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_1N_VALID)
+            },
+            []
+        ),
+        createValidTest(
+            {
+                // Line is in the 1:n-required set, but the chart entity (IncidentFlow) is reached
+                // via 1:n navigation so it is already a collection row — direct properties are valid.
+                name: 'V4: Line chart on 1:n cross-entity (IncidentFlow) with direct properties - not reported',
+                filename: V4_ANNOTATIONS_PATH,
+                code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_MICRO_CHART_CROSS_ENTITY_1N_LINE_VALID)
             },
             []
         ),
