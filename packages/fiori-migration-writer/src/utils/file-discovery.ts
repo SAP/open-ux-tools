@@ -6,7 +6,7 @@
  */
 
 import fastGlob from 'fast-glob';
-import { dirname, basename, join } from 'node:path';
+import { dirname, basename, join, normalize } from 'node:path';
 import { access } from 'node:fs/promises';
 import { readJSON } from './file-access.js';
 import type { ProjectFolder } from '../types.js';
@@ -46,7 +46,9 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
             // Read all package.json files in parallel for better performance
             const checkResults = await Promise.all(
                 packageJsonFiles.map(async (pkgPath) => {
-                    const dir = dirname(pkgPath);
+                    // fast-glob always returns POSIX separators; normalize to the OS-native
+                    // form so results match paths callers build with path.join (fails on Windows otherwise).
+                    const dir = normalize(dirname(pkgPath));
 
                     if (sapuxRequired) {
                         try {
@@ -185,7 +187,10 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                 onlyFiles: true
             });
 
-            for (const manifestPath of manifestFiles) {
+            for (const rawManifestPath of manifestFiles) {
+                // fast-glob always returns POSIX separators; normalize to the OS-native form
+                // so paths match what callers build with path.join (fails on Windows otherwise).
+                const manifestPath = normalize(rawManifestPath);
                 try {
                     const manifest = await readJSON<any>(manifestPath);
                     const sapApp = manifest?.['sap.app'];
@@ -265,7 +270,9 @@ export async function findAll(
 
         // Add the directory containing each file to results
         for (const file of files) {
-            const dir = dirname(file);
+            // fast-glob always returns POSIX separators; normalize to the OS-native form
+            // so results match paths callers build with path.join (fails on Windows otherwise).
+            const dir = normalize(dirname(file));
             if (!results.includes(dir)) {
                 results.push(dir);
             }
