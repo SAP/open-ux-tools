@@ -8,7 +8,7 @@ import { getRecordType, getTargetAnnotationTerm } from '../project-context/linke
 import type { Table as FeV4Table } from '../project-context/linker/fe-v4.js';
 import type { Table as FeV2Table } from '../project-context/linker/fe-v2.js';
 import type { ParsedService } from '../project-context/parser/index.js';
-import { DATA_FIELD_FOR_ANNOTATION, UI_FIELD_GROUP } from '../constants.js';
+import { UI_DATA_FIELD_FOR_ANNOTATION, UI_FIELD_GROUP } from '../constants.js';
 import { FioriAnnotationSourceCode } from '../language/annotations/source-code.js';
 
 const UNSUPPORTED_TABLE_TYPES = new Set(['GridTable', 'AnalyticalTable', 'TreeTable']);
@@ -49,7 +49,7 @@ function checkTableForFieldGroupViolations(
     }
 
     const dataFieldForAnnotationRecords = elementsWithName(Edm.Record, collection).filter(
-        (el) => getRecordType(aliasInfo, el) === DATA_FIELD_FOR_ANNOTATION
+        (el) => getRecordType(aliasInfo, el) === UI_DATA_FIELD_FOR_ANNOTATION
     );
 
     for (const record of dataFieldForAnnotationRecords) {
