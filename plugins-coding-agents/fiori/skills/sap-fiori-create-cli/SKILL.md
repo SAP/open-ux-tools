@@ -4,7 +4,7 @@ description: Run, invoke, and test the @sap-ux/create CLI — generate, add, con
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
-  version: "1.4.11"
+  version: "1.4.12"
 ---
 
 
@@ -23,13 +23,14 @@ metadata:
 
 ## [`generate`](#generate)
 
-Subcommands: `adaptation-project`, `opa5-tests`
+The available subcommands are: `adaptation-project` and `opa5-tests`
 
 ## [`generate adaptation-project`](#generate-adaptation-project)
 
 Generate a new SAPUI5 adaptation project with optional prompts and configuration.
 
 Example:
+
 `npx --yes @sap-ux/create@latest generate adaptation-project`
 
 Options:
@@ -50,6 +51,7 @@ Options:
 Generate OPA5 integration tests for an existing SAP Fiori elements (OData V4) application.
 
 Example:
+
 `npx --yes @sap-ux/create@latest generate opa5-tests`
 
 Options:
@@ -59,13 +61,14 @@ Options:
 
 ## [`add`](#add)
 
-Subcommands: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`, `adp-cf-config`, `system`, `flp-embedded-config`
+The available subcommands are: `mockserver-config`, `smartlinks-config`, `eslint-config`, `cds-plugin-ui5`, `inbound-navigation`, `cards-editor`, `model`, `annotations`, `html`, `component-usages`, `deploy-config`, `variants-config`, `adp-cf-config`, `system` and `flp-embedded-config`
 
 ## [`add mockserver-config`](#add-mockserver-config)
 
 Add the necessary configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module to enable local OData mocking.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add mockserver-config`
 
 Options:
@@ -79,6 +82,7 @@ Options:
 Add a `smartLinks` configuration to a project for cross-app navigation.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add smartlinks-config`
 
 Options:
@@ -90,6 +94,7 @@ Options:
 Add an ESLint configuration to a project including the SAP Fiori tools lint plugin (`@sap-ux/eslint-plugin-fiori-tools`).
 
 Example:
+
 `npx --yes @sap-ux/create@latest add eslint-config`
 
 Options:
@@ -103,6 +108,7 @@ Options:
 Add the `cds-plugin-ui5` module and all prerequisites to a CAP project for UI5 server integration.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add cds-plugin-ui5`
 
 Options:
@@ -115,6 +121,7 @@ Options:
 Add SAP Fiori launchpad inbound navigation configuration to a project.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add inbound-navigation`
 
 Options:
@@ -127,6 +134,7 @@ Options:
 Add the necessary configuration to an existing YAML file and the script to the `package.json` file for cards generation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add cards-editor`
 
 Options:
@@ -139,6 +147,7 @@ Options:
 Add a new OData service and SAPUI5 model to an existing adaptation project.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add model`
 
 Options:
@@ -151,6 +160,7 @@ Adds an annotation to the OData Source of the base application in an adaptation 
 This command is not supported for Cloud Foundry projects.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add annotations`
 
 Options:
@@ -162,6 +172,7 @@ Options:
 Add HTML files for local preview and testing to the project. It uses the configuration from the `ui5.yaml` file as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add html`
 
 Options:
@@ -174,6 +185,7 @@ Options:
 Add the component usages to an adaptation project.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add component-usages`
 
 Options:
@@ -184,6 +196,7 @@ Options:
 Prompt for ABAP deployment configuration details and adds and updates the project files accordingly.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add deploy-config`
 
 Options:
@@ -198,6 +211,7 @@ Options:
 Add the necessary configuration to an existing YAML file and the script to the `package.json` file for variants creation. It uses the configuration from the YAML file passed by the CLI or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add variants-config`
 
 Options:
@@ -209,9 +223,10 @@ Options:
 
 Configure an existing Cloud Foundry adaptation project for local preview by fetching reusable libraries, building the project, and configuring ui5.yaml file middlewares.
 
-**⚠️ Experimental**: This command is experimental and may be subject to breaking changes or removal in future versions.
+**⚠️ Experimental**: This command is experimental and may be subject to breaking changes or even removal in future versions. Use with caution and be prepared to update your configuration or migrate to alternative solutions, if needed.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add adp-cf-config`
 
 Options:
@@ -222,9 +237,14 @@ Options:
 
 Add a new back-end system to the saved systems store (`~/.fioritools`). Credentials are stored securely in the OS keychain.
 
-System types: `AbapCloud`, `OnPrem`, `Generic` — Auth types: `basic`, `reentranceTicket`, `oauth2`, `oauth2ClientCredential` — Connection types: `abap_catalog`, `generic_host`, `odata_service`
+System types: `AbapCloud`, `OnPrem`, `Generic`
+
+Auth types: `basic`, `reentranceTicket`, `oauth2`, `oauth2ClientCredential`
+
+Connection types: `abap_catalog`, `generic_host`, `odata_service`
 
 Example:
+
 `npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com`
 
 `npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser`
@@ -250,6 +270,7 @@ Adds a `start-embedded` script to `package.json` and creates an `flp.yaml` file
 based on the existing `ui5.yaml`. Pre-existing files will be overridden.
 
 Example:
+
 `npx --yes @sap-ux/create@latest add flp-embedded-config --bspApplication my-bsp-app`
 
 Options:
@@ -261,7 +282,7 @@ Options:
 
 ## [`convert`](#convert)
 
-Subcommands: `preview-config`, `eslint-config`
+The available subcommands are: `preview-config` and `eslint-config`
 
 ## [`convert preview-config`](#convert-preview-config)
 
@@ -270,6 +291,7 @@ Subcommands: `preview-config`, `eslint-config`
 Executed in the root folder of an app, it converts the respective app to the preview with virtual endpoints. It uses the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources are deleted and the HTML files previously used for the preview are renamed to `*_old.html`.
 
 Examples:
+
 `npx --yes @sap-ux/create@latest convert preview-config --simulate=false --tests=false`
 
 `npx --yes @sap-ux/create@latest convert preview-config`
@@ -284,6 +306,7 @@ Options:
 Executed in the root folder of an app, it converts the ESLint configuration of the respective app to flat config format (used since ESLint version 9). It also introduces specific ESLint checks for SAP Fiori applications (using the `@sap-ux/eslint-plugin-fiori-tools` plugin), and deletes the deprecated `eslint-plugin-fiori-custom` plugin. To avoid dependency resolution conflicts, it deletes the `package-lock.json` file as well as the `@sap-ux/eslint-plugin-fiori-tools` module from the `node_modules` folder before running `npm install`.
 
 Examples:
+
 `npx --yes @sap-ux/create@latest convert eslint-config`
 
 Options:
@@ -294,13 +317,14 @@ Options:
 
 ## [`remove`](#remove)
 
-Subcommands: `mockserver-config`, `system`
+The available subcommands are: `mockserver-config` and `system`
 
 ## [`remove mockserver-config`](#remove-mockserver-config)
 
 Removes the configuration for the `@sap-ux/ui5-middleware-fe-mockserver` mockserver module.
 
 Example:
+
 `npx --yes @sap-ux/create@latest remove mockserver-config`
 
 Options:
@@ -312,6 +336,7 @@ Options:
 Remove a saved back-end system from the saved system store (`~/.fioritools`). Also deletes any stored credentials in the OS keychain.
 
 Example:
+
 `npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com`
 
 `npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100`
@@ -325,13 +350,14 @@ Options:
 
 ## [`update`](#update)
 
-Subcommands: `system`, `service-metadata`
+The available subcommands are: `system` and `service-metadata`
 
 ## [`update system`](#update-system)
 
 Update an existing backend system in the saved systems store (`~/.fioritools`). The system is identified by its URL and optional SAP client.
 
 Example:
+
 `npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"`
 
 `npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser`
@@ -345,7 +371,8 @@ Options:
 - `--username <string>` - New username
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
-- `--skip-connection-validation` - Skip connection verification before saving (deprecated alias: `--skip-check`)
+- `--skip-connection-validation` - Skip connection verification before saving
+- `--skip-check` - (Deprecated: use --skip-connection-validation) Skip connection verification before saving
 
 ## [`update service-metadata`](#update-service-metadata)
 
@@ -358,6 +385,7 @@ Only supported for Fiori applications connected to an EDMX backend. CAP applicat
 as their service metadata is generated locally from the CDS model rather than fetched from a backend.
 
 Example:
+
 `npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app`
 
 `npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app --simulate`
@@ -370,7 +398,7 @@ Options:
 
 ## [`change`](#change)
 
-Subcommands: `data-source`, `inbound`
+The available subcommands are: `data-source` and `inbound`
 
 ## [`change data-source`](#change-data-source)
 
@@ -379,6 +407,7 @@ Replace the OData Source of the base application in an adaptation project.
 This command is not supported for Cloud Foundry projects.
 
 Example:
+
 `npx --yes @sap-ux/create@latest change data-source`
 
 Options:
@@ -392,6 +421,7 @@ Replace the inbound FLP configurations of the base application in an adaptation 
 This command is not supported for Cloud Foundry projects.
 
 Example:
+
 `npx --yes @sap-ux/create@latest change inbound`
 
 Options:
@@ -399,13 +429,14 @@ Options:
 
 ## [`list`](#list)
 
-Subcommands: `system`
+The available subcommands are: `system`
 
 ## [`list system`](#list-system)
 
 List all back-end systems in the saved system store (`~/.fioritools`). Sensitive data, such as passwords and tokens, is never included in the output.
 
 Example:
+
 `npx --yes @sap-ux/create@latest list system`
 
 `npx --yes @sap-ux/create@latest list system --json`
@@ -415,13 +446,14 @@ Options:
 
 ## [`get`](#get)
 
-Subcommands: `system`
+The available subcommands are: `system`
 
 ## [`get system`](#get-system)
 
 Retrieve details of a saved back-end system by URL. Sensitive data (passwords, tokens) is never included in the output.
 
 Example:
+
 `npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com`
 
 `npx --yes @sap-ux/create@latest get system --url https://my-sap.example.com --client 100`
@@ -432,3 +464,4 @@ Options:
 - `--url <string>` _(required)_ - URL of the backend system.
 - `--client <string>` - SAP client number (optional).
 - `--json` - Output as JSON, which is useful for automation and MCP integrations.
+
