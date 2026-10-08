@@ -43,7 +43,7 @@
 				<artifactId>translation-plugin</artifactId>
 				<configuration>
 					<translationDomain>CA</translationDomain>
-					<translationDeveloper>D053850</translationDeveloper>
+					<translationDeveloper>D000000</translationDeveloper>
 					<translationCollection>SSUITE_FMREUSE</translationCollection>
 					<translationResources>
 						<translationResource>src/i18n</translationResource>

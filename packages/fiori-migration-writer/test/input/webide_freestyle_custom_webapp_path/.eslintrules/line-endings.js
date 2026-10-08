@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview Check for correct line endings
- * @author Christoph Kraemer <chr.kraemer@sap.com>
+ * @author Developer C <developer@example.com>
  */
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /*eslint no-undef: 0*/
-jQuery.sap.declare('sap.s4h.cfnd.featuretoggle.lib.cacheValidator');
-sap.s4h.cfnd.featuretoggle.lib.cacheValidator = {
+jQuery.sap.declare('sap.example.lib.featuretoggle.lib.cacheValidator');
+sap.example.lib.featuretoggle.lib.cacheValidator = {
     setInitialize: function () {
         this.bBind = false;
         this.socket = null;
@@ -99,13 +99,13 @@ sap.s4h.cfnd.featuretoggle.lib.cacheValidator = {
                         var oResult = {
                             getFeatureStatus: function (sFid) {
                                 //Service availabiilty
-                                if (sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getValueState()) {
-                                    return sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getValueState();
+                                if (sap.example.lib.featuretoggle.lib.cacheValidator.getValueState()) {
+                                    return sap.example.lib.featuretoggle.lib.cacheValidator.getValueState();
                                 }
-                                if (!sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getModel()) {
+                                if (!sap.example.lib.featuretoggle.lib.cacheValidator.getModel()) {
                                     return false;
                                 }
-                                var oModel = sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getModel();
+                                var oModel = sap.example.lib.featuretoggle.lib.cacheValidator.getModel();
                                 var iLen = oModel.length;
                                 for (var iFeatureList = 0; iFeatureList < iLen; iFeatureList++) {
                                     if (oModel[iFeatureList].Featureid.toUpperCase() === sFid.toUpperCase()) {

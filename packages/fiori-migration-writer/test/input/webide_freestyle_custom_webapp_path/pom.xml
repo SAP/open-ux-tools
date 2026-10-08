@@ -35,7 +35,7 @@
 				<artifactId>translation-plugin</artifactId>
 				<configuration>  <!-- plugin ensures that the checkin to B0Y happens -->
 					<translationDomain>FI</translationDomain>
-					<translationDeveloper>D027132</translationDeveloper>
+					<translationDeveloper>D000000</translationDeveloper>
 					<translationCollection>FIORI_SampleLineItems</translationCollection>
 				</configuration>
 			</plugin>

@@ -1,7 +1,7 @@
 /**
  * @fileoverview Check "sap-no-ui5odatamodel-prop" should detect direct usage of
  *               property names of UI5 data model
- * @author Roman Horch (D030497) with advice from Armin Gienger (D028623)
+ * @author Developer A (D000001) with advice from Developer B (D000002)
  * @ESLint Version 0.14.0 / February 2015
  */
 

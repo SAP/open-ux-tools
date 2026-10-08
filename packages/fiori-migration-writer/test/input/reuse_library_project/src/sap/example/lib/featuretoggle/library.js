@@ -11,23 +11,23 @@ sap.ui.define(
         'use strict';
 
         sap.ui.getCore().initLibrary({
-            name: 'sap.s4h.cfnd.featuretoggle',
+            name: 'sap.example.lib.featuretoggle',
             version: '${version}',
             dependencies: ['sap.ui.core'],
             types: [],
             interfaces: [],
             controls: [
-                'sap.s4h.cfnd.featuretoggle.lib.featuresAsync',
-                /*sap.s4h.cfnd.featuretoggle.lib.features - Synchronous API which is deprecated ,
-				sap.s4h.cfnd.featuretoggle.lib.cacheValidator - Should not be used externally */
-                'sap.s4h.cfnd.featuretoggle.lib.features',
-                'sap.s4h.cfnd.featuretoggle.lib.cacheValidator'
+                'sap.example.lib.featuretoggle.lib.featuresAsync',
+                /*sap.example.lib.featuretoggle.lib.features - Synchronous API which is deprecated ,
+				sap.example.lib.featuretoggle.lib.cacheValidator - Should not be used externally */
+                'sap.example.lib.featuretoggle.lib.features',
+                'sap.example.lib.featuretoggle.lib.cacheValidator'
             ],
             elements: [],
             noLibraryCSS: true
         });
 
-        return sap.s4h.cfnd.featuretoggle.lib;
+        return sap.example.lib.featuretoggle.lib;
     },
     false
 );

@@ -9,7 +9,7 @@ sap.ui.controller('i2d.qm.defect.records1.ext.controller.OutputManagement', {
         var bHideSendOutputAction = true;
         var bHideRetryAction = false;
 
-        if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_OUTPUT_MNG') !== true) {
+        if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_OUTPUT_MNG') !== true) {
             // Leave without further processing if feature toggle is off
             return;
         }

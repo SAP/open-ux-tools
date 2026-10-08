@@ -492,7 +492,7 @@ sap.ui.define(
             /************************************************************************************************************************************/
             /* Affected Object Smarttable */
             initAffcdObjTab: function () {
-                if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
+                if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
                     // Feature 'Affected Objects' not available => leave function
                     return;
                 }
@@ -561,7 +561,7 @@ sap.ui.define(
             },
 
             onBeforeRebindAffectedObjectsSmartTable: function (oEvent) {
-                if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
+                if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
                     // Feature 'Affected Objects' not available => leave function
                     return;
                 }
@@ -572,7 +572,7 @@ sap.ui.define(
             },
 
             initAffectedObjectActionMenuBtn: function () {
-                if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
+                if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
                     // Feature 'Affected Objects' not available => leave function
                     return;
                 }
@@ -636,7 +636,7 @@ sap.ui.define(
             },
 
             refreshAffectedObjectActions: function () {
-                if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
+                if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_AFFECTED_OBJ') !== true) {
                     // Feature 'Affected Objects' not available => leave function
                     return;
                 }
@@ -748,7 +748,7 @@ sap.ui.define(
             },
 
             initChangeDocumentVisibility: function () {
-                if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_CHANGE_DOC') === true) {
+                if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_CHANGE_DOC') === true) {
                     var oChangedocReuseComponent = this.getView().byId(
                         'i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--ChangedocReuseComponent::changedoccomponent::ComponentSubSection'
                     );
@@ -758,7 +758,7 @@ sap.ui.define(
                 }
             },
             initOutputManagementVisibility: function () {
-                if (sap.s4h.cfnd.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_OUTPUT_MNG') === true) {
+                if (sap.example.lib.featuretoggle.lib.features().getFeatureStatus('QM_CE_DEFECT_OUTPUT_MNG') === true) {
                     var oOutputManagementSection = this.getView().byId(
                         'i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--DefectOutputManagement::Section'
                     );

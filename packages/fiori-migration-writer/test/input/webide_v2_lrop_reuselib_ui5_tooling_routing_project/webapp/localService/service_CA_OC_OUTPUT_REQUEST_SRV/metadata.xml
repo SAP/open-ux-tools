@@ -2,10 +2,10 @@
 <edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
 	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
 	<edmx:Reference
-		Uri="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+		Uri="https://odata-test.example.com/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
 		xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference>
 	<edmx:Reference
-		Uri="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value"
+		Uri="https://odata-test.example.com/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value"
 		xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/></edmx:Reference>
 	<edmx:DataServices m:DataServiceVersion="2.0">
 		<Schema Namespace="CA_OC_OUTPUT_REQUEST" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
@@ -551,9 +551,9 @@
 			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_FORM_TEMPLATE_CUST/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations>
 			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_CHANNEL/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations>
 			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_EMAIL_TEMPLATE_CUST/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations><atom:link rel="self"
-				href="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/sap/CA_OC_OUTPUT_REQUEST_SRV/$metadata"
+				href="https://odata-test.example.com/sap/opu/odata/sap/CA_OC_OUTPUT_REQUEST_SRV/$metadata"
 				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
-				href="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/sap/CA_OC_OUTPUT_REQUEST_SRV/$metadata"
+				href="https://odata-test.example.com/sap/opu/odata/sap/CA_OC_OUTPUT_REQUEST_SRV/$metadata"
 				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

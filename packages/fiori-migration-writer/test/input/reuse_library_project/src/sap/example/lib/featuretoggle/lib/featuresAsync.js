@@ -1,5 +1,5 @@
 /*eslint no-undef: 0*/
-jQuery.sap.require('sap.s4h.cfnd.featuretoggle.lib.cacheValidator');
+jQuery.sap.require('sap.example.lib.featuretoggle.lib.cacheValidator');
 sap.ui.define([], function () {
     'use strict';
     /**
@@ -13,20 +13,20 @@ sap.ui.define([], function () {
      *
      * <h3>Procedure</h3>
      *
-     * Upon calling the method sap.s4h.cfnd.featuretoggle.lib.featuresAsync(), a promise is returned.
+     * Upon calling the method sap.example.lib.featuretoggle.lib.featuresAsync(), a promise is returned.
      * Once the promise is resolved,  specify the Feature Toggle ID for which you require the status in the method getFeatureStatus().
      */
-    sap.s4h.cfnd.featuretoggle.lib.featuresAsync = function (sEnvironment) {
-        if (!sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getModel()) {
+    sap.example.lib.featuretoggle.lib.featuresAsync = function (sEnvironment) {
+        if (!sap.example.lib.featuretoggle.lib.cacheValidator.getModel()) {
             //If the Feature toggle model is unset
 
-            if (!sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getValidateCache()) {
+            if (!sap.example.lib.featuretoggle.lib.cacheValidator.getValidateCache()) {
                 //If the features are not cached
 
                 if (!sEnvironment) {
                     //If sEnvironment is undefined, initialize it and call the OData service to fetch all toggle status
-                    sap.s4h.cfnd.featuretoggle.lib.cacheValidator.setInitialize();
-                    return sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getDataAsync();
+                    sap.example.lib.featuretoggle.lib.cacheValidator.setInitialize();
+                    return sap.example.lib.featuretoggle.lib.cacheValidator.getDataAsync();
                 }
             }
         }
@@ -41,12 +41,12 @@ sap.ui.define([], function () {
                  * @returns {boolean} Feature Toggle status.
                  */
                 getFeatureStatus: function (sFid) {
-                    if (sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getValueState()) {
+                    if (sap.example.lib.featuretoggle.lib.cacheValidator.getValueState()) {
                         //Checking Service Availability
-                        return sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getValueState();
+                        return sap.example.lib.featuretoggle.lib.cacheValidator.getValueState();
                     }
                     //Checking for the presence of sFid in the model
-                    var oModel = sap.s4h.cfnd.featuretoggle.lib.cacheValidator.getModel();
+                    var oModel = sap.example.lib.featuretoggle.lib.cacheValidator.getModel();
                     var iLen = oModel.length;
                     for (var iFeatureList = 0; iFeatureList < iLen; iFeatureList++) {
                         if (oModel[iFeatureList].Featureid.toUpperCase() === sFid.toUpperCase()) {

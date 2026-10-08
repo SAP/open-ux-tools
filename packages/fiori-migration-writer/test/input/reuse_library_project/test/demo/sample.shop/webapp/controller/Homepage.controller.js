@@ -30,7 +30,7 @@ sap.ui.define(
             //This method makes the call to fetch the Feature Toggle Status
             _getFeatureStatus: function () {
                 var bCart, bWishlist;
-                var p = sap.s4h.cfnd.featuretoggle.lib.featuresAsync();
+                var p = sap.example.lib.featuretoggle.lib.featuresAsync();
                 p.then(
                     function (features) {
                         /*Promise is resolved, promise returns a method to fetch the feature toggle status

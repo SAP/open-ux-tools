@@ -55,7 +55,7 @@
 				<artifactId>translation-plugin</artifactId>
 				<configuration>
 					<translationDomain>QM</translationDomain>
-					<translationDeveloper>D028304</translationDeveloper>
+					<translationDeveloper>D000000</translationDeveloper>
 					<translationCollection>SSUITE_QDefectRecord</translationCollection>
 				</configuration>
 			</plugin>
