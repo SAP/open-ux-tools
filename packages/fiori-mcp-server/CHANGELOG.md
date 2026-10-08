@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
 ## 1.15.6
 
 ### Patch Changes

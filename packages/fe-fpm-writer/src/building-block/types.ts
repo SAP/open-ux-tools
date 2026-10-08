@@ -435,6 +435,13 @@ export interface Page extends BuildingBlock {
      * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
      */
     aggregations?: Partial<Record<PageAggregationName, string>>;
+
+    /**
+     * Collision-safe id of the IconTabBar that acts as the page's sticky subheader.
+     * Set internally for the full template so the Page's stickySubheaderProvider and the
+     * generated IconTabBar share the same id. Not part of the public input.
+     */
+    stickySubheaderId?: string;
 }
 
 export const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';

@@ -116,23 +116,37 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         hasAggregation,
         aggregationNamespace
     };
+
+    const fullPageTemplate = isFullPageTemplate(buildingBlockData);
+    const pageAggregationNames = getPageAggregationNames(buildingBlockData);
+
+    // The full page template renders a default IconTabBar that acts as the page's sticky subheader
+    // (removing the empty gap between header and tab bar). Generate its id once so the Page's
+    // stickySubheaderProvider and the IconTabBar share the same collision-safe id.
+    const stickySubheaderId = fullPageTemplate ? fnGenerateId('stickySubheaderBar') : undefined;
+
     const templateDocument = getTemplateDocument(
-        { ...processedBuildingBlockData, generateId: fnGenerateId },
+        { ...processedBuildingBlockData, stickySubheaderId, generateId: fnGenerateId },
         xmlDocument,
         fs,
         manifest,
         templateConfig
     );
 
-    const fullPageTemplate = isFullPageTemplate(buildingBlockData);
-    const pageAggregationNames = getPageAggregationNames(buildingBlockData);
-
     if (fullPageTemplate) {
         validateFullPageTemplateVersion(manifest);
     }
 
     if (pageAggregationNames) {
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageAggregationNames, fullPageTemplate);
+        appendPageAggregations(
+            fs,
+            xmlDocument,
+            templateDocument,
+            fnGenerateId,
+            pageAggregationNames,
+            fullPageTemplate,
+            stickySubheaderId
+        );
     }
 
     if (
@@ -457,8 +471,9 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
     const fnGenerateId = buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
+    const stickySubheaderId = isFullPageTemplate(buildingBlockData) ? fnGenerateId('stickySubheaderBar') : undefined;
     const content = getTemplateContent(
-        { ...buildingBlockData, generateId: fnGenerateId },
+        { ...buildingBlockData, stickySubheaderId, generateId: fnGenerateId },
         xmlDocument,
         manifest,
         fs,
@@ -499,7 +514,8 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             snippetDoc,
             fnGenerateId,
             pageAggNames,
-            isFullPageTemplate(buildingBlockData)
+            isFullPageTemplate(buildingBlockData),
+            stickySubheaderId
         );
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;

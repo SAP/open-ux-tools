@@ -1303,6 +1303,69 @@ describe('Building Blocks', () => {
         ).resolves.not.toThrow();
     });
 
+    // Covers the snippet/preview path (getSerializedFileContent), which is separate from
+    // generateBuildingBlock and was the only full-Page code path left uncovered.
+    test('getSerializedFileContent for full Page building block includes sticky subheader IconTabBar', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'serialize-page-block-full');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        const codeSnippet = await getSerializedFileContent(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId
+                }
+            },
+            fs
+        );
+
+        const content = codeSnippet.viewOrFragmentPath.content;
+        expect(content).toContain('stickySubheaderProvider="stickySubheaderBar"');
+        expect(content).toContain('<IconTabBar id="stickySubheaderBar"');
+        expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+    });
+
+    test('full Page building block shares one collision-safe id between provider and IconTabBar', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-collision');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        // Simulate a view that already contains a 'stickySubheaderBar' id so the generator suffixes it
+        const collisionGenerateId: IdGeneratorFunction = jest.fn((baseId: string) =>
+            baseId === 'stickySubheaderBar' ? 'stickySubheaderBar1' : baseId
+        );
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId: collisionGenerateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const view = fs.read(join(basePath, xmlViewFilePath));
+        expect(view).toContain('stickySubheaderProvider="stickySubheaderBar1"');
+        expect(view).toContain('<IconTabBar id="stickySubheaderBar1"');
+        expect(view).not.toContain('"stickySubheaderBar"');
+    });
+
     test('generateBuildingBlock creates missing macros:items aggregation before inserting content', async () => {
         // View has <macros:Page> but no <macros:items> — ensureMissingAggregation must create it
         const viewWithPageNoItems = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"

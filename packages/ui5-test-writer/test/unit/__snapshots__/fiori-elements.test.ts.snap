@@ -20504,9 +20504,9 @@ sap.ui.define([
         });
 
         opaTest(\\"Add semantic key properties to filter bar\\", function (Given, When, Then) {
-            When.onTheTravelListGenerated.onFilterBar().iOpenFilterAdaptation();
-            When.onTheTravelListGenerated.onFilterBar().iAddAdaptationFilterField({ property: \\"TravelID\\" });
-            When.onTheTravelListGenerated.onFilterBar().iConfirmFilterAdaptation();
+            When.onTheTravelListGenerated.onFilterBar().iOpenFilterAdaptation()
+                .and.iAddAdaptationFilterField({ property: \\"TravelID\\" })
+                .and.iConfirmFilterAdaptation();
             Then.onTheTravelListGenerated.onFilterBar().iCheckFilterField({ property: \\"TravelID\\" });
             // When.onTheTravelListGenerated.onFilterBar().iChangeFilterField({ property: \\"TravelID\\" }, \\"<value to filter>\\", false);
             // When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
