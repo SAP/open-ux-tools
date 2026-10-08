@@ -1,5 +1,6 @@
 ---
 "@sap-ux/fiori-mcp-server": patch
+"@sap-ux/fiori-tools-plugin": patch
 "sap-ux-sap-systems-ext": patch
 "@sap-ux/eslint-plugin-fiori-tools": patch
 ---
