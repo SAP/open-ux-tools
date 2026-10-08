@@ -64,7 +64,7 @@ export async function processAdaptationProject(config: ProcessAdaptationProjectC
             try {
                 packageJSON = await getPackageJson(projectRoot);
                 isFioriToolsProject = hasUI5Tooling(packageJSON);
-            } catch {
+            } catch (error: unknown) {
                 // Expected: package.json may not exist in legacy WebIDE adaptation projects.
                 // Safe to continue - packageJSON will be generated during migration.
             }
@@ -100,7 +100,7 @@ export async function processAdaptationProject(config: ProcessAdaptationProjectC
 
             return result;
         }
-    } catch {
+    } catch (error: unknown) {
         // Expected: Not an adaptation project or missing required files (.che/project.json, .adp/config.json).
         // Safe to return original projectInfo and continue as regular project migration.
     }

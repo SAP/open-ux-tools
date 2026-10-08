@@ -2,7 +2,7 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join, resolve, basename, sep } from 'node:path';
+import { join, basename, sep } from 'node:path';
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
@@ -10,51 +10,7 @@ import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { mkdir, exists, isMemFsEnabled, getCurrentEditor } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
-
-/**
- * Validates the root directory path before using as working directory
- * Rejects paths with control characters that could enable command injection
- *
- * @param path - Root directory path to validate
- * @returns Validated absolute path
- * @throws Error if path contains unsafe characters or is not a directory
- */
-function validateRootDirectory(path: string): string {
-    const resolved = resolve(path);
-    // Reject control characters and shell metacharacters
-    if (/[\0\r\n`$|&;<>]/.test(resolved)) {
-        throw new Error('Path contains unsafe characters');
-    }
-    // Ensure it's an existing directory (check real fs, not mem-fs)
-    if (!existsSync(resolved)) {
-        throw new Error('Root directory does not exist');
-    }
-    return resolved;
-}
-
-/**
- * Validates a relative path to ensure it's safe for git commands
- * Rejects paths that escape the root or contain unsafe characters
- *
- * @param relPath - Relative path to validate
- * @returns The same path if safe
- * @throws Error if path is unsafe
- */
-function validateGitRelativePath(relPath: string): string {
-    // Reject empty or root-level paths
-    if (!relPath || relPath === '.') {
-        throw new Error('Git path cannot be empty or root');
-    }
-    // Reject paths that escape the root
-    if (relPath.startsWith('..') || relPath.includes('/..') || relPath.includes('\\..')) {
-        throw new Error('Git path escapes root directory');
-    }
-    // Reject control characters
-    if (/[\0\r\n]/.test(relPath)) {
-        throw new Error('Git path contains control characters');
-    }
-    return relPath;
-}
+import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
 
 /**
  * Recursively move files and directories from source to destination
@@ -254,7 +210,7 @@ export async function createWebappFolderAndMigrateFiles(
 
                         // use git to move files if available (validated relative paths prevent injection)
                         await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
-                    } catch {
+                    } catch (error: unknown) {
                         // Expected: git command may fail if git is not installed or repo is not initialized.
                         // Fallback to file system move (handled below) is intentional.
                     }

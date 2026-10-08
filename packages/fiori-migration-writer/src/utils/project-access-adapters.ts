@@ -52,7 +52,7 @@ export async function isFioriToolsProject(projectPath: string, dependencyName: s
         const packageJsonPath = join(projectPath, 'package.json');
         const packageJson = await readJSON(packageJsonPath);
         return hasDependency(packageJson, dependencyName);
-    } catch {
+    } catch (error: unknown) {
         return false;
     }
 }

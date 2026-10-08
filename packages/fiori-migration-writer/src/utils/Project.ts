@@ -94,7 +94,7 @@ export class ProjectAccess {
         // Step1. Get manifest.json
         try {
             manifest = await this.getManifestJson(projectRoot, projectInfo.webappPath);
-        } catch {
+        } catch (error: unknown) {
             // Expected: manifest.json may not exist in standard location for legacy projects.
             // Will try legacy path next.
         }
@@ -103,7 +103,7 @@ export class ProjectAccess {
             try {
                 manifest = await this.getManifestJson(join(projectRoot, legacyPath), projectInfo.webappPath);
                 projectInfo.webappPath = join(legacyPath, projectInfo.webappPath);
-            } catch {
+            } catch (error: unknown) {
                 // Expected: manifest.json not found in either standard or legacy path.
                 // Valid for reuse libraries and project extensions - they may not have manifest.json.
                 isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType);

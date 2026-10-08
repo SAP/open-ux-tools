@@ -25,7 +25,7 @@ async function resolveFromProjectJson(projectRoot: string): Promise<string | und
             const projectWebappPath = join(projectRoot, projectJson.hcpdeploy.entryPath);
             return (await fileExists(projectWebappPath)) ? projectJson.hcpdeploy.entryPath : undefined;
         }
-    } catch {
+    } catch (error: unknown) {
         // Invalid JSON, skip
     }
     return undefined;
@@ -51,7 +51,7 @@ async function resolveFromCheProjectJson(projectRoot: string): Promise<string | 
                 return (await fileExists(projectWebappPath)) ? settings.hcpdeploy.entryPath : undefined;
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // Invalid JSON or parsing error, skip
     }
     return undefined;
@@ -66,7 +66,7 @@ async function resolveFromUi5Yaml(projectRoot: string): Promise<string | undefin
     try {
         const yamlContent = await readFile(join(projectRoot, FileName.UI5Yaml));
         return parse(yamlContent)?.resources?.configuration?.paths?.webapp;
-    } catch {
+    } catch (error: unknown) {
         // File not found or invalid YAML, skip
     }
     return undefined;

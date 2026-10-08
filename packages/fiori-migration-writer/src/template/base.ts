@@ -43,7 +43,7 @@ export async function applyBaseTemplates(config: ApplyBaseTemplatesConfig): Prom
     try {
         const mockServerJsRealPath = await trueCasePath(mockServerJsPath);
         templateData.mockServerJSFileName = basename(mockServerJsRealPath, '.js');
-    } catch {
+    } catch (error: unknown) {
         // do nothing - use default
     }
 
@@ -91,7 +91,7 @@ async function fixLocalServiceCase(projectInfo: ImportProjectInfo): Promise<void
             const fs = await import('node:fs');
             fs.renameSync(localServiceRealPath, localServicePath);
         }
-    } catch {
+    } catch (error: unknown) {
         // do nothing - path doesn't exist or other error
     }
 }

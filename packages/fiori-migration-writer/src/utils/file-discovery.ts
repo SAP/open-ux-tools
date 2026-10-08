@@ -66,7 +66,7 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
                                 );
 
                             return hasSapux ? dir : null;
-                        } catch {
+                        } catch (error: unknown) {
                             // Invalid package.json, skip
                             return null;
                         }
@@ -78,7 +78,7 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
 
             // Add non-null results to roots
             roots.push(...checkResults.filter((r): r is string => r !== null));
-        } catch {
+        } catch (error: unknown) {
             // Expected: path may not exist, may not be readable, or fast-glob may fail on invalid patterns.
             // Safe to skip this path and continue with remaining paths.
             continue;
@@ -125,7 +125,7 @@ async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: s
         try {
             await access(path);
             return true;
-        } catch {
+        } catch (error: unknown) {
             return false;
         }
     };
@@ -223,12 +223,12 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                             }
                         });
                     }
-                } catch {
+                } catch (error: unknown) {
                     // Invalid manifest.json, skip
                     continue;
                 }
             }
-        } catch {
+        } catch (error: unknown) {
             // If folder doesn't exist or can't be read, skip it
             continue;
         }
@@ -277,7 +277,7 @@ export async function findAll(
                 results.push(dir);
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // If search path doesn't exist or can't be read, just return empty results
     }
 }

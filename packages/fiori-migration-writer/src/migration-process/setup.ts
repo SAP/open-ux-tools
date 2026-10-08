@@ -41,7 +41,7 @@ export async function removePackageLock(rootPath: string): Promise<void> {
         if (await fileExists(packageLockPath)) {
             await deleteFile(packageLockPath);
         }
-    } catch {
+    } catch (error: unknown) {
         // Expected: package-lock.json deletion may fail due to file permissions or if file is locked.
         // Non-critical - package-lock.json will be regenerated on npm install. Safe to continue.
     }

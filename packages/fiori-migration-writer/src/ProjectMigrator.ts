@@ -389,7 +389,7 @@ export class ProjectMigrator {
         let isTypeScript = false;
         try {
             isTypeScript = (await getAppProgrammingLanguage(rootPath)) === 'TypeScript';
-        } catch {
+        } catch (error: unknown) {
             // Expected: getAppProgrammingLanguage may fail for legacy projects without package.json
             // Will fall back to scanning for .ts files below
         }

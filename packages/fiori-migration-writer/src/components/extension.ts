@@ -20,7 +20,7 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
         deleteProjectJson = extensionProjectSettingsStr.indexOf(webDepStr) > -1;
         extensionProjectSettingsStr = extensionProjectSettingsStr.replaceAll(webDepStr, '/destinations/');
         extensionProjectSettingsJSON = JSON.parse(extensionProjectSettingsStr);
-    } catch {
+    } catch (error: unknown) {
         // fallback to original content
         extensionProjectSettingsJSON = projectInfo.extensionProjectSettings;
     }
@@ -51,7 +51,7 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
                 `/destinations/${projectInfo.destination}`
             );
             extensionProjectSettingsJSON = JSON.parse(extensionProjectSettingsStr);
-        } catch {
+        } catch (error: unknown) {
             // fallback to original content
             extensionProjectSettingsJSON = projectInfo.extensionProjectSettings;
         }

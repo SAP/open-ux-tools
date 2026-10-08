@@ -36,7 +36,7 @@ export async function processReuseLibrary(
     try {
         packageJSON = await getPackageJson(projectRoot);
         hasUI5ToolingDep = hasUI5Tooling(packageJSON);
-    } catch {
+    } catch (error: unknown) {
         // Expected: package.json may not exist in reuse library projects.
         // Safe to continue - packageJSON will be generated during migration.
     }

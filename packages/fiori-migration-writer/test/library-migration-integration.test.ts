@@ -9,8 +9,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { ProjectMigrator, MigrationTypes, initI18n, getReuseLibs, ReuseLibType } from '@sap-ux/fiori-migration-writer';
-import type { ProjectFolder } from '@sap-ux/fiori-migration-writer';
+import { ProjectMigrator, MigrationTypes, initI18n, getReuseLibs, ReuseLibType } from '../src/index.js';
+import type { ProjectFolder } from '../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

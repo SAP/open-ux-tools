@@ -66,7 +66,7 @@ export async function processRegularProject(
     try {
         packageJson = await getPackageJson(projectRoot);
         appVersion = packageJson?.version;
-    } catch {
+    } catch (error: unknown) {
         // Expected: package.json may not exist in legacy WebIDE projects.
         // Safe to extract metadata from manifest.json as fallback - package.json will be generated during migration.
         packageJson.name = manifest?.['sap.app']?.id;

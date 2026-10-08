@@ -24,7 +24,7 @@ export async function resolveUI5VersionsForMigration(
             ui5VersionMinForProject = semver.gt(ui5VersionMinForProject, minUI5VersionForLocalDev.toString())
                 ? ui5VersionMinForProject
                 : minUI5VersionForLocalDev.toString();
-        } catch {
+        } catch (error: unknown) {
             // If semver comparison fails, continue with current version
         }
     }

@@ -35,7 +35,7 @@ export async function checkIfReuseLib(
     try {
         const reuseManifest: Manifest = await readJSON(join(projectRoot, FileName.Manifest));
         return reuseManifest['sap.app']?.type === 'library';
-    } catch {
+    } catch (error: unknown) {
         // manifest not found
         return false;
     }

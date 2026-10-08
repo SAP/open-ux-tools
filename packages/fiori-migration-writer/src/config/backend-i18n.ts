@@ -63,7 +63,7 @@ export async function extractBackendAndI18nConfig(
             // @ts-ignore
             const entry = i18nProperties['appTitle'] ?? i18nProperties['app_title'];
             appTitle = entry?.[0]?.value.value ?? '';
-        } catch {
+        } catch (error: unknown) {
             // Expected: i18n bundle parsing may fail for malformed properties files in legacy projects.
             // Safe to continue with empty app title - it's optional metadata.
             appTitle = '';

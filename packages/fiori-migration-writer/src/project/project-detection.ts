@@ -22,7 +22,7 @@ export async function validateProjectForMigration(projectRoot: string): Promise<
 
     try {
         sapUXProjectRoot = await findProjectRoot(projectRoot, true);
-    } catch {
+    } catch (error: unknown) {
         // In case of error, use project root as-is
         sapUXProjectRoot = projectRoot;
     }

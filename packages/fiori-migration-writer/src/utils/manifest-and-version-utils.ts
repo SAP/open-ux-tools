@@ -21,7 +21,7 @@ export function getUI5Version(currentVersion: string | undefined): string {
         if (ui5Version && ui5Version.length > 0 && ui5Version !== 'snapshot' && semver.lte(ui5Version, '1.38.58')) {
             ui5Version = '1.38.59';
         }
-    } catch {
+    } catch (error: unknown) {
         // Do nothing
     }
     return ui5Version;

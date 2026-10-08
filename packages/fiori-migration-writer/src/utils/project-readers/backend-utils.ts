@@ -104,7 +104,7 @@ export async function getDestinationFromNeoApp(
                 return { destination, neoAppUI5Version, neoappDestinations };
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // do nothing. Probably no neo-app.json
     }
     return undefined;

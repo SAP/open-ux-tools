@@ -55,7 +55,7 @@ export async function extractSapLibraries(
                 manifestLibs['sap.collaboration'] = {};
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // Expected: Component.js may not exist (newer projects use Component.ts or have no Component file).
         // Safe to skip - this is legacy SAP library detection for very old projects only.
     }

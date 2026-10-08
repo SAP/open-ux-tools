@@ -122,7 +122,7 @@ function extractFlpIntentFromConfig(htmlContent: string): string | undefined {
         if (applications && Object.keys(applications).length > 0) {
             return Object.keys(applications)[0];
         }
-    } catch {
+    } catch (error: unknown) {
         // Invalid JSON, return undefined
     }
 
@@ -143,7 +143,7 @@ export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string
 
         const htmlContent = await readFile(htmlFilePath);
         return extractFlpIntentFromConfig(htmlContent);
-    } catch {
+    } catch (error: unknown) {
         return undefined;
     }
 }
@@ -256,7 +256,7 @@ export async function getFirstBackend(
                 }
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // Do nothing
     }
     return result;

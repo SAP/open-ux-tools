@@ -3,8 +3,8 @@ import {
     generateUI5LocalYamlContent,
     generateUI5MockYamlContent,
     initI18n
-} from '@sap-ux/fiori-migration-writer';
-import type { TemplateData } from '@sap-ux/fiori-migration-writer';
+} from '../src/index.js';
+import type { TemplateData } from '../src/index.js';
 import { parse } from 'yaml';
 
 jest.setTimeout(30000);

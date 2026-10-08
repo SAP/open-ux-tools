@@ -67,7 +67,7 @@ export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
         if (resultWithIndent[indent]) {
             result[indent] = resultWithIndent[indent];
         }
-    } catch {
+    } catch (error: unknown) {
         // If parseJson fails, we still have the result from JSON.parse
         // updateJSON will use default 4-space indentation
     }
@@ -140,7 +140,7 @@ export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | ob
         // Prepare new JSON file content with previous indentation
         const result = JSON.stringify(fileContent, null, oldContentJson[indent]) + '\n';
         fs.write(filePath, result);
-    } catch {
+    } catch (error: unknown) {
         // File does not exist yet — write with 4-space indentation and trailing newline
         const newContent = JSON.stringify(fileContent, null, 4) + '\n';
         fs.write(filePath, newContent);

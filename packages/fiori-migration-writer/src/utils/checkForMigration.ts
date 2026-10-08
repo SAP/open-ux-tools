@@ -12,7 +12,7 @@ export const readMigrationSettingsFile = async (): Promise<any> => {
         migrationSettingsFile = await readJSON(
             join(getFioriToolsDirectory(), FioriToolsSettings.migrationSettingsFile)
         );
-    } catch {
+    } catch (error: unknown) {
         migrationSettingsFile = {};
     }
     return migrationSettingsFile;
@@ -42,7 +42,7 @@ export const checkForMigration = async (
         packageJson = await readJSON(join(projectRoot, FileName.Package));
         hasUi5Tooling =
             hasDependency(packageJson, '@sap-ux/ui5-tooling') || hasDependency(packageJson, '@sap/ux-ui5-tooling');
-    } catch {
+    } catch (error: unknown) {
         // Ignore error and continue below
     }
     // Check if the SAP UX root can be found and if so check if it matches the current root.
@@ -50,7 +50,7 @@ export const checkForMigration = async (
     let sapUXProjectRoot = projectRoot;
     try {
         sapUXProjectRoot = await findProjectRoot(projectRoot, true);
-    } catch {
+    } catch (error: unknown) {
         // In case of error set as project root
         sapUXProjectRoot = projectRoot;
     }

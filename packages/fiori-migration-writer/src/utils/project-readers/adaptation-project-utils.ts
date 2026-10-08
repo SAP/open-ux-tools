@@ -62,12 +62,12 @@ async function checkCheProjectSettings(projectRoot: string): Promise<any> {
                     if (settings?.uiadaptation) {
                         return settings.uiadaptation;
                     }
-                } catch {
+                } catch (error: unknown) {
                     // Invalid JSON in settings
                 }
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // No .che/project.json
     }
     return undefined;
@@ -88,7 +88,7 @@ async function checkFioriToolsAdaptation(projectRoot: string): Promise<any> {
                 return config;
             }
         }
-    } catch {
+    } catch (error: unknown) {
         // No .adp/config.json
     }
     return undefined;
@@ -107,7 +107,7 @@ async function readManifestReference(projectRoot: string): Promise<string | unde
             const manifestAppdescr = await readJSON(manifestAppdescrPath);
             return manifestAppdescr?.reference ?? '';
         }
-    } catch {
+    } catch (error: unknown) {
         // No manifest.appdescr_variant
     }
     return undefined;

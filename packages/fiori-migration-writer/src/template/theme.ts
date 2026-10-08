@@ -30,7 +30,7 @@ export async function getSupportedThemes(
                     // SAP only themes
                     theme.toLowerCase().startsWith('sap_')
             ) || [];
-    } catch {
+    } catch (error: unknown) {
         // Expected: manifest.json may not have supportedThemes property or file may be malformed.
         // Safe to continue with empty array - default theme will still be set.
     }

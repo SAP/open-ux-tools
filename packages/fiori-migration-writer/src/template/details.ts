@@ -65,7 +65,7 @@ export async function extractTemplateDetails(
 function extractMainServiceDatasource(manifest: Manifest, mainService: string): Partial<ManifestNamespace.DataSource> {
     try {
         return manifest['sap.app']?.dataSources?.[mainService] || {};
-    } catch {
+    } catch (error: unknown) {
         return {};
     }
 }
@@ -107,7 +107,7 @@ async function extractPomDetails(
         if (manifest['sap.app']?.id?.includes('${')) {
             sapAppId = resolveAppIdFromPom(manifest['sap.app'].id, pomJSON);
         }
-    } catch {
+    } catch (error: unknown) {
         // Do nothing - return defaults
     }
 
@@ -127,7 +127,7 @@ function resolveAppIdFromPom(manifestAppId: string, pomJSON: any): string {
         // Use safe property access instead of eval
         const result = sapAppIdKey.split('.').reduce((obj: any, key) => obj?.[key], pomJSON);
         return typeof result === 'string' ? result : manifestAppId;
-    } catch {
+    } catch (error: unknown) {
         // Can't get AppId from pom.xml - return original
         return manifestAppId;
     }

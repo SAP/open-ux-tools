@@ -1,4 +1,4 @@
-import { initI18n, i18nText } from '@sap-ux/fiori-migration-writer';
+import { initI18n, i18nText } from '../src/index.js';
 
 describe('i18n', () => {
     beforeAll(async () => {

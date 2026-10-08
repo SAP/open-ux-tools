@@ -77,7 +77,7 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
     try {
         packageJSON = await getPackageJson(projectRoot);
         hasUI5ToolingDep = hasUI5Tooling(packageJSON);
-    } catch {
+    } catch (error: unknown) {
         // Expected: package.json may not exist in legacy WebIDE extension projects.
         // Safe to continue - packageJSON will be generated during migration.
     }
@@ -116,10 +116,10 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
     let appVersion = '2.0.0';
     try {
         appVersion = (await getPackageJson(projectRoot))?.version ?? '2.0.0';
-    } catch {
+    } catch (error: unknown) {
         try {
             appVersion = (await getManifestJson(projectRoot, DirName.Webapp))?.['sap.app']?._version as string;
-        } catch {
+        } catch (innerError: unknown) {
             // do nothing, may not have a package.json
         }
     }

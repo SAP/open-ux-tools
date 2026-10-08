@@ -83,7 +83,7 @@ async function processSandboxFile(
             intent: intent && intent.length > 0 ? intent : existingFlpIntent,
             hasRootIntent
         };
-    } catch {
+    } catch (error: unknown) {
         // Expected: flpSandbox.html may not exist in all projects (optional FLP configuration)
         return { libs: '', hasRootIntent: false };
     }
@@ -115,7 +115,7 @@ async function processMockSandboxFile(
             hasRootIntent,
             targetFile: 'test/flpSandboxMockServer.html'
         };
-    } catch {
+    } catch (error: unknown) {
         return { hasRootIntent: false };
     }
 }

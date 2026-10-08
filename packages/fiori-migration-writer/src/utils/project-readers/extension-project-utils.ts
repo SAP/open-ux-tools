@@ -28,7 +28,7 @@ export async function readProjectExtensionSettings(projectRoot: string): Promise
         if (legacySettings) {
             return legacySettings;
         }
-    } catch {
+    } catch (error: unknown) {
         // Ignore errors
     }
 
@@ -53,7 +53,7 @@ async function readCheProjectExtensionSettings(projectRoot: string): Promise<unk
             const settings = JSON.parse(projectJson.attributes[sapWattCommonSetting][0]);
             return settings?.extensibility;
         }
-    } catch {
+    } catch (error: unknown) {
         // Invalid JSON or missing extensibility
     }
 
@@ -75,7 +75,7 @@ async function readLegacyProjectExtensionSettings(projectRoot: string): Promise<
     try {
         const projectJson: any = await readJSON(projectJsonPath);
         return projectJson?.extensibility;
-    } catch {
+    } catch (error: unknown) {
         // Invalid JSON
     }
 
