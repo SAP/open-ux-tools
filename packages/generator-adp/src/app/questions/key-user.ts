@@ -254,8 +254,8 @@ export class KeyUserImportPrompter {
                     return false;
                 }
                 const result = await this.validateSystem(answers.keyUserSystem, answers);
-                if (typeof result === 'string') {
-                    throw new Error(result);
+                if (result !== true) {
+                    throw new Error(typeof result === 'string' ? result : 'Validation failed');
                 }
                 return false;
             }
@@ -277,8 +277,8 @@ export class KeyUserImportPrompter {
                     return false;
                 }
                 const result = await this.validateKeyUserChanges(answers.keyUserAdaptation?.id);
-                if (typeof result === 'string') {
-                    throw new Error(result);
+                if (result !== true) {
+                    throw new Error(typeof result === 'string' ? result : 'Validation failed');
                 }
                 return false;
             }
