@@ -26,6 +26,7 @@ import {
     runRtaWorkflowStep,
     readODataMetadataAdp,
     lookupUi5Documentation,
+    migrateFioriProject,
     tools,
     adpToolNames
 } from './tools/index.js';
@@ -44,7 +45,8 @@ import type {
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
     ReadODataMetadataInput,
-    LookupUi5DocumentationInput
+    LookupUi5DocumentationInput,
+    MigrateFioriProjectInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -318,6 +320,9 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     case 'lookup_ui5_documentation':
                         result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
                         break;
+                    case 'migrate_fiori_project':
+                        result = await migrateFioriProject(args as MigrateFioriProjectInput);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -326,6 +331,9 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         break;
                     case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
+                        break;
+                    case 'migrate_fiori_project':
+                        result = await migrateFioriProject(args as MigrateFioriProjectInput);
                         break;
                     default:
                         // Do not pass telemetryProperties to unknownTool

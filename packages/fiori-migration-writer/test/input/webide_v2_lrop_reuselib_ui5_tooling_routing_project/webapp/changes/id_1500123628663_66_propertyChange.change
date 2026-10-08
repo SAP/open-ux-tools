@@ -1,0 +1,30 @@
+{
+	"__info": "set facet tab header titles to normal case instead of all upper case",
+	"fileName": "id_1500123628663_66_propertyChange",
+	"fileType": "change",
+	"changeType": "propertyChange",
+	"reference": "i2d.qm.defect.records1.Component",
+	"packageName": "$TMP",
+	"content": {
+		"property": "titleUppercase",
+		"oldValue": true,
+		"newValue": false
+	},
+	"selector": {
+		"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--DefectDataFacet1::Section",
+		"type": "sap.uxap.ObjectPageSection",
+		"idIsLocal": false
+	},
+	"layer": "VENDOR",
+	"texts": {},
+	"namespace": "apps/i2d.qm.defect.records1/changes/",
+	"creation": "2017-07-15T13:00:31.541Z",
+	"originalLanguage": "EN",
+	"conditions": {},
+	"context": "",
+	"support": {
+		"generator": "Change.createInitialFileContent",
+		"service": "",
+		"user": ""
+	}
+}

@@ -14,7 +14,8 @@ import type {
     PageType,
     ExportParametersV2Type,
     ReadAppResult,
-    Parser
+    Parser,
+    ExportAppV4
 } from '@sap/ux-specification';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
@@ -230,7 +231,9 @@ export class SapuxFtfsFileIO {
         const exportParams: ExportParametersV4Type = {
             [SchemaType.Application]: {
                 application: config as v4.ApplicationV4,
-                manifest,
+                // Type assertion required due to @ui5/manifest version mismatch between dependencies
+                // @sap-ux/project-access and @sap-ux/ux-specification use different @ui5/manifest versions
+                manifest: manifest as unknown as ExportAppV4[typeof SchemaType.Application]['manifest'],
                 jsonSchema: JSON.parse(schema) as JSONSchema7,
                 logger: specificationLogger
             }

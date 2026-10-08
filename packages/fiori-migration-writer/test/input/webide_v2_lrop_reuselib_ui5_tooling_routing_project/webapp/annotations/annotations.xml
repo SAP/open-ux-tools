@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+	<edmx:Reference Uri="/sap/bc/ui5_ui5/ui2/ushell/resources/sap/ushell/components/factsheet/vocabularies/UI.xml">
+		<edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/$metadata">
+		<edmx:Include Alias="QM_DEFECT_RECORD_SRV" Namespace="QM_DEFECT_RECORD_SRV"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2">
+		<edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="i2d.qm.defect.records1.QM_DEFECT_RECORD_SRV">
+			<!--===============================================================================
+                Entity Type from chosen collection 
+                ================================================================================-->
+			<!-- side-effect for status actions -->
+			<!-- side-effect for Scrap -->
+			<!-- side-effect for Use as is -->
+			<!--===============================================================================
+                Entity Type from chosen navigation property
+                ================================================================================-->
+			<!--
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType">
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTask"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTaskText"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTaskResponsible"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="to_DefectQltyTskProcsrNotes/QualityTaskProcessorNotes"/>
+						</Record>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Label" String="{@i18n&gt;ACT_EDTI_TASK}"/>
+							<PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/A50C3043801EBEdit_active_i_qualitytasktp"/>
+							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
+							<PropertyValue Property="Inline" Bool="true"/>
+							<PropertyValue Property="IconUrl" String="sap-icon://edit"/>
+							<Annotation Term="Common.FieldControl" Path="Edit_active_i_qualitytasktp_ac"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			-->
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordNot_relevant">
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects">
+					<Record>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>_it/to_DefectStatus/DefectLifecycleStatus_Text</PropertyPath>
+								<PropertyPath>Not_relevant_ac</PropertyPath>
+								<PropertyPath>Set_in_process_ac</PropertyPath>
+								<PropertyPath>Complete_ac</PropertyPath>
+								<PropertyPath>to_DefectLongTextTP/DefectLongText_fc</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectTaskRecord</NavigationPropertyPath>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordSet_in_process">
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects">
+					<Record>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>_it/to_DefectStatus/DefectLifecycleStatus_Text</PropertyPath>
+								<PropertyPath>Not_relevant_ac</PropertyPath>
+								<PropertyPath>Set_in_process_ac</PropertyPath>
+								<PropertyPath>Complete_ac</PropertyPath>
+								<PropertyPath>to_DefectLongTextTP/DefectLongText_fc</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectTaskRecord</NavigationPropertyPath>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordComplete">
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects">
+					<Record>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>_it/to_DefectStatus/DefectLifecycleStatus_Text</PropertyPath>
+								<PropertyPath>Not_relevant_ac</PropertyPath>
+								<PropertyPath>Set_in_process_ac</PropertyPath>
+								<PropertyPath>Complete_ac</PropertyPath>
+								<PropertyPath>to_DefectLongTextTP/DefectLongText_fc</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectTaskRecord</NavigationPropertyPath>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordMpe_scrap">
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects">
+					<Record>
+						<PropertyValue Property="EffectTypes" EnumMember="ValueChange"/>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath/>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordMpe_use_as_is">
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects">
+					<Record>
+						<PropertyValue Property="EffectTypes" EnumMember="ValueChange"/>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath/>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType">
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="SourceEntities">
+							<Collection>
+								<NavigationPropertyPath>/A29975663DC1E15EC41F30DEDelete_affcd_obj</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<!-- <Annotation Term="Common.SideEffects"> -->
+				<!-- <Annotation Term="com.sap.vocabularies.Common.v1.SideEffects">	
+					<Record>
+        				<PropertyValue Property="EffectTypes" EnumMember="ValueChange"/>
+        				<PropertyValue Property="DefectLifecycleStatus">
+            				<Collection>
+                				<PropertyPath>_it/to_DefectStatus/DefectLifecycleStatus_Text</PropertyPath>
+                				<PropertyPath>Not_relevant_ac</PropertyPath>
+                				<PropertyPath>Set_in_process_ac</PropertyPath>
+                				<PropertyPath>Complete_ac</PropertyPath>
+            				</Collection>
+        				</PropertyValue>
+        			</Record>	
+				</Annotation>  -->
+				<Annotation Term="Common.SideEffects" Qualifier="StorageLocation">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>Plant</PropertyPath>
+								<PropertyPath>StorageLocation</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>Warehouse</PropertyPath>
+								<PropertyPath>to_EWM_WarehouseNumber/Warehouse_Text</PropertyPath>
+								<PropertyPath>Warehouse_fc</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="Common.SideEffects" Qualifier="DefectiveQuantity">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>DefectiveQuantity</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>DefectiveQuantityUnit</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="Common.SideEffects" Qualifier="Material">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>Material</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>DefectiveQuantity</PropertyPath>
+								<PropertyPath>DefectiveQuantityUnit</PropertyPath>
+								<PropertyPath>DefectiveQuantityUnit_fc</PropertyPath>
+								<PropertyPath>to_Product/Product_Text</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="Common.SideEffects" Qualifier="ProductionOrderDataChanged">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>ProductionOrder</PropertyPath>
+								<PropertyPath>ProductionOrderOperation</PropertyPath>
+								<PropertyPath>ProductionOrderSequence</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>Material</PropertyPath>
+								<PropertyPath>Plant</PropertyPath>
+								<PropertyPath>MainWorkCenter</PropertyPath>
+								<PropertyPath>MainWorkCenterPlant</PropertyPath>
+								<PropertyPath>DefectiveQuantity</PropertyPath>
+								<PropertyPath>DefectiveQuantityUnit</PropertyPath>
+								<PropertyPath>DefectiveQuantityUnit_fc</PropertyPath>
+								<PropertyPath>to_ProductionOrderStdVH/OrderDescription</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects" Qualifier="DefectCodeChanged">
+					<Record>
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>DefectCode</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>to_DefectCode/DefectCode_Text</PropertyPath>
+								<PropertyPath>to_DefectCodeGroup/DefectCodeGroup_Text</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects" Qualifier="DefectCodeGroupChanged">
+					<Record>
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>DefectCodeGroup</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>to_DefectCode/DefectCode_Text</PropertyPath>
+								<PropertyPath>to_DefectCodeGroup/DefectCodeGroup_Text</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="UI.FieldGroup" Qualifier="DefectData">
+					<Record Type="UI.FieldGroupType">
+						<PropertyValue Property="Data">
+							<Collection>
+								<!--<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="to_DefectCode/DefectCode_Text"/>
+								</Record>-->
+								<!--<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="to_DefectCodeGroup/DefectCodeGroup_Text"/>
+								</Record>-->
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="DefectCategory"/>
+								</Record>
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="DefectText"/>
+								</Record>
+								<Record Type="UI.DataField">
+									<PropertyValue Property="Value" Path="to_DefectLongTextTP/DefectLongText"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="com.sap.vocabularies.Common.v1.SideEffects" Qualifier="DefectPlantChanged">
+					<Record>
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>Plant</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>MainWorkCenterPlant</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType">
+				<Annotation Term="UI.LineItem">
+					<Collection>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTask"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTaskText"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTaskLifecycleStatus"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QualityTaskProcessor"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QltyTaskFollowUpAction"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="QltyTaskFllwUpActionSts"/>
+						</Record>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/A50C3043801EBEdit_active_i_qualitytasktp"/>
+							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
+							<Annotation Term="Common.FieldControl" Path="Edit_active_i_qualitytasktp_ac"/>
+						</Record>
+						<Record Type="UI.DataFieldForAction">
+							<PropertyValue Property="Action" String="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectTaskRecordMark_as_deleted"/>
+							<PropertyValue Property="InvocationGrouping" EnumMember="UI.OperationGroupingType/Isolated"/>
+							<Annotation Term="Common.FieldControl" Path="Mark_as_deleted_ac"/>
+							<PropertyValue Property="Label" String="{@i18n&gt;BtnQTaskMarkAsDeleted}"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectTaskRecordMark_as_deleted">
+				<Annotation Term="Common.IsActionCritical" Bool="true"/>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordStart_prob_solv_proc">
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectProbSolvingProcInfo</NavigationPropertyPath>
+								<NavigationPropertyPath>_it/to_DefectProbSolvingProcInfo/to_ProbSolvingProcLfcycSts</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>Start_prob_solv_proc_ac</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectProbSolvingProcInfoType">
+				<Annotation Term="Common.SemanticObject" String="ProblemSolvingProcess"/>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/Material">
+				<Annotation Term="Common.SemanticObjectMapping">
+					<Collection>
+						<Record Type="Common.SemanticObjectMappingType">
+							<PropertyValue Property="LocalProperty" PropertyPath="Material"/>
+							<PropertyValue Property="SemanticObjectProperty" String="Material"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordAdd_affected_object">
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordDetermine_affected_objects">
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/C_DefectRecordCreate_quality_task">
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP</NavigationPropertyPath>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP/to_QltyTaskFollowUpAction</NavigationPropertyPath>
+								<NavigationPropertyPath>_it/to_DefectAffectedObjectTP/to_QltyTaskFllwUpActionSts</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities/A29975663DC1E15EC41F30DE8Set_isdefective">
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="TargetEntities">
+							<Collection>
+								<NavigationPropertyPath>_it/to_Defect/to_DefectAffectedObjectTP</NavigationPropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>_it/to_Defect/Material</PropertyPath>
+								<PropertyPath>_it/to_Defect/to_Product/Product_Text</PropertyPath>
+								<PropertyPath>_it/to_Defect/DefectiveQuantity</PropertyPath>
+								<PropertyPath>_it/to_Defect/DefectiveQuantityUnit</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordAffectedObjectType">
+				<Annotation Term="UI.PresentationVariant">
+					<Record Type="UI.PresentationVariantType">
+						<PropertyValue Property="RequestAtLeast">
+							<Collection>
+								<PropertyPath>Delete_affcd_obj_ac</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="Common.SideEffects">
+					<Record Type="Common.SideEffectsType">
+						<PropertyValue Property="SourceProperties">
+							<Collection>
+								<PropertyPath>Material</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="TargetProperties">
+							<Collection>
+								<PropertyPath>DefectAffcdObjQuantityUnit</PropertyPath>
+								<PropertyPath>DefectAffcdObjIsDefective</PropertyPath>
+								<PropertyPath>to_Defect/Material</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="QM_DEFECT_RECORD_SRV.C_DefectRecordType/QualityNotification">
+				<Annotation Term="Common.SemanticObjectUnavailableActions">
+					<Collection>
+						<String>changeWorklist</String>
+						<String>create</String>
+						<String>displayMultiLevel</String>
+						<String>displayWorklist</String>
+					</Collection>
+				</Annotation>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

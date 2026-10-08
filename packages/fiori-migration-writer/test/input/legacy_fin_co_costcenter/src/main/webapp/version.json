@@ -1,0 +1,5 @@
+{ "application" : "${project.artifactId}",
+  "version" : "${project.version}",
+  "buildNumber" : "${env.BUILD_NUMBER}",
+  "buildId" : "${env.BUILD_ID}"
+}

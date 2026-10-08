@@ -1,0 +1,7 @@
+{
+    "name": "migrated-project",
+    "devDependencies": {
+        "@ui5/cli": "^3.0.0",
+        "@sap/ux-ui5-tooling": "^1.0.0"
+    }
+}

@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:Reference
+		Uri="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+		xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference>
+	<edmx:Reference
+		Uri="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value"
+		xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/></edmx:Reference>
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="CA_OC_OUTPUT_REQUEST" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="ItemEMail" sap:content-version="1">
+				<Key><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/><PropertyRef Name="Counter"/></Key><Property Name="ApplObjectType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Business Object"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="ApplObjectId" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Output Type"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ItemId" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item ID" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Counter" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Counter" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="EmailRole" Type="Edm.String" MaxLength="5" sap:unicode="false" sap:label="Email Type Code" sap:sortable="false"
+					sap:filterable="false" sap:value-list="fixed-values"/><Property Name="EmailUri" Type="Edm.String" MaxLength="241" sap:unicode="false" sap:label="E-Mail Address" sap:sortable="false"
+					sap:filterable="false"/></EntityType>
+			<EntityType Name="GetDocument" m:HasStream="true" sap:content-version="1">
+				<Key><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/></Key><Property Name="ApplObjectType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Appl. Object Type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ApplObjectId" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Appl. Object ID"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ItemId" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item ID" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><NavigationProperty Name="Item" Relationship="CA_OC_OUTPUT_REQUEST.Item_GetDocument" FromRole="ToRole_Item_GetDocument"
+					ToRole="FromRole_Item_GetDocument"/></EntityType>
+			<EntityType Name="Root" sap:content-version="1">
+				<Key><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/></Key><Property Name="ApplObjectType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Appl. Object Type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="ApplObjectId" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Appl. Object ID"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><NavigationProperty Name="Preview" Relationship="CA_OC_OUTPUT_REQUEST.Root_Preview" FromRole="FromRole_Root_Preview"
+					ToRole="ToRole_Root_Preview"/><NavigationProperty Name="Items" Relationship="CA_OC_OUTPUT_REQUEST.Root_Items" FromRole="FromRole_Root_Items" ToRole="ToRole_Root_Items"/></EntityType>
+			<EntityType Name="Item" sap:content-version="1">
+				<Key><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/></Key><Property Name="OutputRequestItemUUID" Type="Edm.Guid" Nullable="false" sap:unicode="false" sap:label="Item UUID" sap:creatable="false"
+					sap:updatable="false" sap:filterable="false"/><Property Name="ApplObjectType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Appl. Object Type"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="LchgDateTime" Type="Edm.DateTime" Nullable="false" Precision="7" ConcurrencyMode="Fixed" sap:unicode="false"
+					sap:label="Changed On" sap:updatable="false"/><Property Name="DispatchTime" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="VL_FV_APOC_OR_DISPATCH_TIME/Text"
+					sap:unicode="false" sap:label="Dispatch Time" sap:value-list="fixed-values"/><Property Name="LogHandle" Type="Edm.String" Nullable="false" MaxLength="22" sap:unicode="false" sap:label="Application Log"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="EmailTemplateId" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Email Template" sap:value-list="standard"/><Property Name="ApplObjectId" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Appl. Object ID"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="EmailSubject" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Email Subject" sap:sortable="false"
+					sap:filterable="false"/><Property Name="PrintNumberOfCopies" Type="Edm.Int16" sap:unicode="false" sap:label="Number of Copies" sap:value-list="standard"/><Property Name="OutputType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Output Type"
+					sap:value-list="standard"/><Property Name="PrintQueueName" Type="Edm.String" MaxLength="32" sap:unicode="false" sap:label="Print Queue" sap:value-list="standard"/><Property Name="PrintQueueType" Type="Edm.String" Nullable="false" MaxLength="51" sap:unicode="false" sap:label="Print Queue Type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="PrintQueueTypeDescription" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false"
+					sap:label="Print Queue Type Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="FormTemplateCountryCode" Type="Edm.String" Nullable="false" MaxLength="3" sap:text="FormTemplateCountry" sap:unicode="false"
+					sap:label="Form Country" sap:creatable="false" sap:value-list="fixed-values"/><Property Name="FormTemplateCountry" Type="Edm.String" MaxLength="15" sap:unicode="false" sap:label="Form Country"/><Property Name="SenderCountryCode" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Sender Country"
+					sap:creatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="ItemId" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item ID" sap:updatable="false"
+					sap:filterable="false"/><Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="VL_FV_APOC_OR_OUTPUT_STATUS/Text" sap:unicode="false"
+					sap:label="Status" sap:updatable="false" sap:value-list="fixed-values"/><Property Name="ChangeIndicator" Type="Edm.Boolean" sap:unicode="false" sap:label="Change Indicator" sap:updatable="false"/><Property Name="ReceiverId" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="ReceiverName" sap:unicode="false"
+					sap:label="Recipient" sap:value-list="standard"/><Property Name="ReceiverRole" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Role" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ReceiverName" Type="Edm.String" Nullable="false" MaxLength="80" sap:unicode="false" sap:label="Recipient"/><Property Name="Channel" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Channel" sap:value-list="standard"/><Property Name="FormTemplateName" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Form Template" sap:value-list="standard"/><Property Name="FormTemplateLanguageCode" Type="Edm.String" Nullable="false" MaxLength="2" sap:text="VL_SH_H_T002/SPTXT" sap:unicode="false"
+					sap:label="Form Language" sap:value-list="standard"/><Property Name="TotalNumberOfAttachments" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Total Number"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="NumberOfSelectedAttachments" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Selected Number"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ReferenceItemUUID" Type="Edm.Guid" sap:unicode="false" sap:label="Referenced Item UUID" sap:creatable="false"
+					sap:updatable="false" sap:filterable="false"/><Property Name="ReferenceItem" Type="Edm.String" MaxLength="6" sap:unicode="false" sap:label="Referenced Item ID" sap:creatable="false"
+					sap:updatable="false" sap:filterable="false"/><Property Name="SenderEmailUri" Type="Edm.String" MaxLength="241" sap:unicode="false" sap:label="Sender Email Uri"/><Property Name="KproClass" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Document Class"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="KproObjectId" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="Object ID"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcDispatchTime" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcOutputType" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcReceiverId" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcChannel" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcFormTemplateCountryCode" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcFormTemplateLanguageCode" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcFormTemplateName" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcSenderCountryCode" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="UI Field Control"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="UxFcItemAttachment" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Object ID" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><NavigationProperty Name="ItemEMailTO" Relationship="CA_OC_OUTPUT_REQUEST.Item_ItemEMailTO" FromRole="FromRole_Item_ItemEMailTO"
+					ToRole="ToRole_Item_ItemEMailTO"/><NavigationProperty Name="ItemEMailCC" Relationship="CA_OC_OUTPUT_REQUEST.Item_ItemEMailCC" FromRole="FromRole_Item_ItemEMailCC"
+					ToRole="ToRole_Item_ItemEMailCC"/><NavigationProperty Name="ItemEMailBCC" Relationship="CA_OC_OUTPUT_REQUEST.Item_ItemEMailBCC" FromRole="FromRole_Item_ItemEMailBCC"
+					ToRole="ToRole_Item_ItemEMailBCC"/><NavigationProperty Name="GetDocument" Relationship="CA_OC_OUTPUT_REQUEST.Item_GetDocument" FromRole="FromRole_Item_GetDocument"
+					ToRole="ToRole_Item_GetDocument"/><NavigationProperty Name="Preview" Relationship="CA_OC_OUTPUT_REQUEST.Item_Preview" FromRole="FromRole_Item_Preview"
+					ToRole="ToRole_Item_Preview"/><NavigationProperty Name="ItemLog" Relationship="CA_OC_OUTPUT_REQUEST.Item_ItemLog" FromRole="FromRole_Item_ItemLog"
+					ToRole="ToRole_Item_ItemLog"/><NavigationProperty Name="ItemAttachment" Relationship="CA_OC_OUTPUT_REQUEST.Item_ItemAttachment" FromRole="FromRole_Item_ItemAttachment"
+					ToRole="ToRole_Item_ItemAttachment"/><NavigationProperty Name="VL_FV_APOC_OR_OUTPUT_STATUS" Relationship="CA_OC_OUTPUT_REQUEST.ItemToStatus" FromRole="FromRole_ItemToStatus"
+					ToRole="ToRole_ItemToStatus"/><NavigationProperty Name="VL_FV_APOC_OR_DISPATCH_TIME" Relationship="CA_OC_OUTPUT_REQUEST.ItemToDispatchTime"
+					FromRole="FromRole_ItemToDispatchTime" ToRole="ToRole_ItemToDispatchTime"/><NavigationProperty Name="VL_SH_H_T002" Relationship="CA_OC_OUTPUT_REQUEST.ItemToFormTemplateLanguageCode"
+					FromRole="FromRole_ItemToFormTemplateLanguageCode" ToRole="ToRole_ItemToFormTemplateLanguageCode"/></EntityType>
+			<EntityType Name="Preview" m:HasStream="true" sap:content-version="1">
+				<Key><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/></Key><Property Name="ApplObjectType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Appl. Object Type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ApplObjectId" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Appl. Object ID"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ItemId" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item ID" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="VH_Receiver" sap:content-version="1">
+				<Key><PropertyRef Name="Id"/></Key><Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:label="NAME" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Id" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="ID" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="ItemLog" sap:content-version="1">
+				<Key><PropertyRef Name="KEY"/></Key><Property Name="KEY" Type="Edm.Guid" Nullable="false" sap:unicode="false" sap:label="NodeID" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="APPL_OBJECT_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Appl. Object Type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="APPL_OBJECT_ID" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Appl. Object ID"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ITEM_ID" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item ID" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="SEVERITY" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Message Type"
+					sap:creatable="false" sap:updatable="false"/><Property Name="MESSAGE_TEXT" Type="Edm.String" sap:unicode="false" sap:label="Message text" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="LONG_TEXT" Type="Edm.String" sap:unicode="false" sap:label="Message long text" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="CREATED_AT" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Created On" sap:creatable="false"
+					sap:updatable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SystemInfo" sap:content-version="1">
+				<Key><PropertyRef Name="isOnPremiseSystem"/></Key><Property Name="isOnPremiseSystem" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="ItemAttachment" sap:content-version="1">
+				<Key><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/><PropertyRef Name="FileId"/></Key><Property Name="ApplObjectType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Appl. Object Type"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="ApplObjectId" Type="Edm.String" Nullable="false" MaxLength="255" sap:unicode="false" sap:label="Appl. Object ID"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ItemId" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item ID" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="FileId" Type="Edm.String" Nullable="false" MaxLength="32" sap:unicode="false" sap:label="File ID" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="appId" Type="Edm.String" MaxLength="32" sap:unicode="false" sap:label="Logical document" sap:sortable="false"
+					sap:filterable="false"/><Property Name="FileName" Type="Edm.String" MaxLength="255" sap:unicode="false" sap:label="Filename" sap:sortable="false"
+					sap:filterable="false"/><Property Name="MimeType" Type="Edm.String" MaxLength="128" sap:unicode="false" sap:label="Mime Type" sap:sortable="false"
+					sap:filterable="false"/><Property Name="RelevanceIndicator" Type="Edm.Boolean" sap:unicode="false" sap:label="Relevant" sap:sortable="false" sap:filterable="false"/><Property Name="MergeIndicator" Type="Edm.Boolean" sap:unicode="false" sap:label="Merge Indicator" sap:sortable="false"/><Property Name="Rank" Type="Edm.Int16" sap:unicode="false" sap:label="Order rank" sap:value-list="fixed-values"/><Property Name="UxFcMergeEnabled" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Object ID" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="VL_CT_APOC_I_OBJ_TYPE" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="APPL_OBJ_TYPE"/></Key><Property Name="APPL_OBJ_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Appl. Object Type" sap:sortable="false"/><Property Name="DESCRIPTION" Type="Edm.String" MaxLength="60" sap:label="Text" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_APOC_SH_EMAIL_TEMPLATE_CUST" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="EMAIL_TEMPLATE_NAME"/><PropertyRef Name="APPL_OBJ_TYPE"/><PropertyRef Name="OUTPUT_TYPE"/></Key><Property Name="EMAIL_TEMPLATE_NAME" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Email Template" sap:sortable="false" sap:filterable="false"/><Property Name="APPL_OBJ_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Appl. Object Type" sap:sortable="false"/><Property Name="OUTPUT_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:label="Output Type"
+					sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_APOC_SH_OUTP_TYPE" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="APPL_OBJ_TYPE"/><PropertyRef Name="OUTPUT_TYPE"/></Key><Property Name="APPL_OBJ_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Appl. Object Type" sap:sortable="false"/><Property Name="OUTPUT_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:label="Output Type"
+					sap:sortable="false"/><Property Name="DESCRIPTION" Type="Edm.String" MaxLength="60" sap:label="Text" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_APOC_PRIN" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="LNAME"/></Key><Property Name="PADEST" Type="Edm.String" MaxLength="30" sap:label="Output Device" sap:sortable="false" sap:filterable="false"/><Property Name="PAMSG" Type="Edm.String" MaxLength="64" sap:label="Location/State" sap:sortable="false" sap:filterable="false"/><Property Name="LNAME" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="Output Device" sap:sortable="false"/><Property Name="KNAME" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Short name" sap:sortable="false"/><Property Name="PASTANDORT" Type="Edm.String" MaxLength="64" sap:label="Location" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_H_T005_LAND" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="LAND1"/></Key><Property Name="LAND1" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="UpperCase" sap:text="LANDX" sap:label="Country"
+					sap:sortable="false"/><Property Name="LANDX" Type="Edm.String" MaxLength="15" sap:label="Name" sap:sortable="false"/><Property Name="NATIO" Type="Edm.String" MaxLength="15" sap:label="Nationality" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_BUPAP" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="PARTNER"/></Key><Property Name="MC_NAME1" Type="Edm.String" MaxLength="35" sap:display-format="UpperCase" sap:label="Name 1/Last Nm" sap:sortable="false"/><Property Name="MC_NAME2" Type="Edm.String" MaxLength="35" sap:display-format="UpperCase" sap:label="Name2/First Nme" sap:sortable="false"/><Property Name="BU_SORT1" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Search Term 1" sap:sortable="false"/><Property Name="BU_SORT2" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Search term 2" sap:sortable="false"/><Property Name="PARTNER" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="BusinessPartner"
+					sap:sortable="false"/><Property Name="TYPE" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Partn.Cat." sap:sortable="false"/><Property Name="VALDT" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Valid On" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_APOC_SH_CHANNEL" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="CHANNEL"/><PropertyRef Name="DESCRIPTION"/><PropertyRef Name="APPL_OBJ_TYPE"/><PropertyRef Name="OUTPUT_TYPE"/></Key><Property Name="CHANNEL" Type="Edm.String" Nullable="false" MaxLength="5" sap:display-format="UpperCase" sap:label="Channel"
+					sap:sortable="false" sap:filterable="false"/><Property Name="DESCRIPTION" Type="Edm.String" Nullable="false" MaxLength="60" sap:label="Text" sap:sortable="false" sap:filterable="false"/><Property Name="APPL_OBJ_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Appl. Object Type" sap:sortable="false"/><Property Name="OUTPUT_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:label="Output Type"
+					sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_APOC_SH_FORM_TEMPLATE_CUST" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="FORM_TEMPLATE_NAME"/><PropertyRef Name="APPL_OBJ_TYPE"/><PropertyRef Name="OUTPUT_TYPE"/><PropertyRef Name="FORM_TYPE"/></Key><Property Name="FORM_TEMPLATE_NAME" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Form Template" sap:sortable="false" sap:filterable="false"/><Property Name="APPL_OBJ_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:label="Appl. Object Type" sap:sortable="false"/><Property Name="OUTPUT_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:label="Output Type"
+					sap:sortable="false"/><Property Name="FORM_TYPE" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:label="Form Type"
+					sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_SH_H_T002" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="SPRAS"/></Key><Property Name="SPRAS" Type="Edm.String" Nullable="false" MaxLength="2" sap:text="SPTXT" sap:label="Language" sap:sortable="false"/><Property Name="SPTXT" Type="Edm.String" MaxLength="16" sap:label="Name" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_CT_SDOKIOCL" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="IO_CLASS"/></Key><Property Name="IO_CLASS" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Document Class"
+					sap:sortable="false"/><Property Name="DESCRIPT" Type="Edm.String" MaxLength="64" sap:label="Description" sap:sortable="false"/></EntityType>
+			<EntityType Name="VL_FV_APOC_EMAIL_ROLE_CODE" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="5" sap:text="Text" sap:label="Value"/><Property Name="Text" Type="Edm.String" MaxLength="60" sap:label="Short Descript."/></EntityType>
+			<EntityType Name="VL_FV_APOC_OR_DISPATCH_TIME" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="Text" sap:label="Value"/><Property Name="Text" Type="Edm.String" MaxLength="60" sap:label="Short Descript."/></EntityType>
+			<EntityType Name="VL_FV_APOC_NUMBER_OF_COPIES" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.Int16" Nullable="false" sap:text="Text" sap:label="Value"/><Property Name="Text" Type="Edm.String" MaxLength="60" sap:label="Short Descript."/></EntityType>
+			<EntityType Name="VL_FV_APOC_OR_OUTPUT_STATUS" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="1" sap:text="Text" sap:label="Value"/><Property Name="Text" Type="Edm.String" MaxLength="60" sap:label="Short Descript."/></EntityType>
+			<EntityType Name="VL_FV_APOC_ORDER_RANK" sap:value-list="true" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.Int16" Nullable="false" sap:text="Text" sap:label="Value"/><Property Name="Text" Type="Edm.String" MaxLength="60" sap:label="Short Descript."/></EntityType>
+			<ComplexType Name="Message"><Property Name="APPL_OBJECT_TYPE" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="Appl. Object Type" sap:creatable="false"
+				sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard"/><Property Name="APPL_OBJECT_ID" Type="Edm.String" Nullable="false" MaxLength="255" sap:label="Appl. Object ID" sap:creatable="false"
+				sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="ITEM_ID" Type="Edm.String" Nullable="false" MaxLength="6" sap:label="Item ID" sap:creatable="false" sap:updatable="false"
+				sap:sortable="false" sap:filterable="false"/><Property Name="SEVERITY" Type="Edm.String" Nullable="false" MaxLength="1" sap:label="Message Type" sap:creatable="false"
+				sap:updatable="false"/><Property Name="MESSAGE_TEXT" Type="Edm.String" sap:label="Message text" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+				sap:filterable="false"/><Property Name="LONG_TEXT" Type="Edm.String" sap:label="Message long text" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+				sap:filterable="false"/><Property Name="CREATED_AT" Type="Edm.DateTime" Precision="7" sap:label="Created On" sap:creatable="false" sap:updatable="false"
+				sap:filterable="false"/></ComplexType>
+			<Association Name="Root_Preview" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Root" Multiplicity="1" Role="FromRole_Root_Preview"/><End Type="CA_OC_OUTPUT_REQUEST.Preview" Multiplicity="1" Role="ToRole_Root_Preview"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Root_Preview"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/></Principal>
+					<Dependent Role="ToRole_Root_Preview"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Root_Items" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Root" Multiplicity="1" Role="FromRole_Root_Items"/><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="*" Role="ToRole_Root_Items"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Root_Items"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/></Principal>
+					<Dependent Role="ToRole_Root_Items"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Item_ItemEMailCC" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_ItemEMailCC"/><End Type="CA_OC_OUTPUT_REQUEST.ItemEMail" Multiplicity="*" Role="ToRole_Item_ItemEMailCC"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Item_ItemEMailCC"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Principal>
+					<Dependent Role="ToRole_Item_ItemEMailCC"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Item_ItemEMailBCC" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_ItemEMailBCC"/><End Type="CA_OC_OUTPUT_REQUEST.ItemEMail" Multiplicity="*" Role="ToRole_Item_ItemEMailBCC"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Item_ItemEMailBCC"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Principal>
+					<Dependent Role="ToRole_Item_ItemEMailBCC"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Item_GetDocument" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_GetDocument"/><End Type="CA_OC_OUTPUT_REQUEST.GetDocument" Multiplicity="1" Role="ToRole_Item_GetDocument"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Item_GetDocument"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/><PropertyRef Name="ApplObjectType"/></Principal>
+					<Dependent Role="ToRole_Item_GetDocument"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/><PropertyRef Name="ApplObjectType"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Item_Preview" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_Preview"/><End Type="CA_OC_OUTPUT_REQUEST.Preview" Multiplicity="1" Role="ToRole_Item_Preview"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Item_Preview"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Principal>
+					<Dependent Role="ToRole_Item_Preview"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Item_ItemLog" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_ItemLog"/><End Type="CA_OC_OUTPUT_REQUEST.ItemLog" Multiplicity="*" Role="ToRole_Item_ItemLog"/></Association>
+			<Association Name="Item_ItemAttachment" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_ItemAttachment"/><End Type="CA_OC_OUTPUT_REQUEST.ItemAttachment" Multiplicity="*" Role="ToRole_Item_ItemAttachment"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Item_ItemAttachment"><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/></Principal>
+					<Dependent Role="ToRole_Item_ItemAttachment"><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ItemId"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="ItemToStatus" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_ItemToStatus"/><End Type="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_OR_OUTPUT_STATUS" Multiplicity="0..1" Role="ToRole_ItemToStatus"/></Association>
+			<Association Name="ItemToDispatchTime" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_ItemToDispatchTime"/><End Type="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_OR_DISPATCH_TIME" Multiplicity="0..1" Role="ToRole_ItemToDispatchTime"/></Association>
+			<Association Name="ItemToFormTemplateLanguageCode" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_ItemToFormTemplateLanguageCode"/><End Type="CA_OC_OUTPUT_REQUEST.VL_SH_H_T002" Multiplicity="0..1" Role="ToRole_ItemToFormTemplateLanguageCode"/></Association>
+			<Association Name="Item_ItemEMailTO" sap:content-version="1"><End Type="CA_OC_OUTPUT_REQUEST.Item" Multiplicity="1" Role="FromRole_Item_ItemEMailTO"/><End Type="CA_OC_OUTPUT_REQUEST.ItemEMail" Multiplicity="*" Role="ToRole_Item_ItemEMailTO"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Item_ItemEMailTO"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Principal>
+					<Dependent Role="ToRole_Item_ItemEMailTO"><PropertyRef Name="ApplObjectId"/><PropertyRef Name="ApplObjectType"/><PropertyRef Name="ItemId"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<EntityContainer Name="CA_OC_OUTPUT_REQUEST_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"
+				sap:use-batch="true"><EntitySet Name="VL_CT_APOC_I_OBJ_TYPE" EntityType="CA_OC_OUTPUT_REQUEST.VL_CT_APOC_I_OBJ_TYPE" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true" sap:semantics="aggregate"/><EntitySet Name="VL_SH_APOC_SH_EMAIL_TEMPLATE_CUST" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_EMAIL_TEMPLATE_CUST"
+				sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_APOC_SH_OUTP_TYPE" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_OUTP_TYPE" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_APOC_PRIN" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_PRIN" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_H_T005_LAND" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_H_T005_LAND" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_BUPAP" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_BUPAP" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_APOC_SH_CHANNEL" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_CHANNEL" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_APOC_SH_FORM_TEMPLATE_CUST" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_FORM_TEMPLATE_CUST" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_SH_H_T002" EntityType="CA_OC_OUTPUT_REQUEST.VL_SH_H_T002" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true"/><EntitySet Name="VL_CT_SDOKIOCL" EntityType="CA_OC_OUTPUT_REQUEST.VL_CT_SDOKIOCL" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1" sap:countable="true" sap:semantics="aggregate"/><EntitySet Name="VL_FV_APOC_EMAIL_ROLE_CODE" EntityType="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_EMAIL_ROLE_CODE" sap:content-version="1"
+				sap:semantics="fixed-values"/><EntitySet Name="VL_FV_APOC_OR_DISPATCH_TIME" EntityType="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_OR_DISPATCH_TIME" sap:content-version="1"
+				sap:semantics="fixed-values"/><EntitySet Name="VL_FV_APOC_NUMBER_OF_COPIES" EntityType="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_NUMBER_OF_COPIES" sap:content-version="1"
+				sap:semantics="fixed-values"/><EntitySet Name="VL_FV_APOC_OR_OUTPUT_STATUS" EntityType="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_OR_OUTPUT_STATUS" sap:content-version="1"
+				sap:semantics="fixed-values"/><EntitySet Name="VL_FV_APOC_ORDER_RANK" EntityType="CA_OC_OUTPUT_REQUEST.VL_FV_APOC_ORDER_RANK" sap:content-version="1"
+				sap:semantics="fixed-values"/><EntitySet Name="ItemEMails" EntityType="CA_OC_OUTPUT_REQUEST.ItemEMail" sap:creatable="false" sap:updatable="false" sap:pageable="false"
+				sap:addressable="false" sap:content-version="1"/><EntitySet Name="GetDocuments" EntityType="CA_OC_OUTPUT_REQUEST.GetDocument" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="Roots" EntityType="CA_OC_OUTPUT_REQUEST.Root" sap:creatable="false" sap:updatable="false" sap:deletable="false"
+				sap:pageable="false" sap:content-version="1"/><EntitySet Name="Items" EntityType="CA_OC_OUTPUT_REQUEST.Item" sap:creatable="false" sap:deletable="false" sap:pageable="false"
+				sap:content-version="1"/><EntitySet Name="Previews" EntityType="CA_OC_OUTPUT_REQUEST.Preview" sap:creatable="false" sap:updatable="false" sap:deletable="false"
+				sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="VH_Receivers" EntityType="CA_OC_OUTPUT_REQUEST.VH_Receiver" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="ItemLogs" EntityType="CA_OC_OUTPUT_REQUEST.ItemLog" sap:creatable="false" sap:updatable="false" sap:deletable="false"
+				sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SystemInfoSet" EntityType="CA_OC_OUTPUT_REQUEST.SystemInfo" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="ItemAttachments" EntityType="CA_OC_OUTPUT_REQUEST.ItemAttachment" sap:creatable="false" sap:updatable="false"
+				sap:searchable="true" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+				<AssociationSet Name="Item_ItemEMailTOs" Association="CA_OC_OUTPUT_REQUEST.Item_ItemEMailTO" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_ItemEMailTO"/><End EntitySet="ItemEMails" Role="ToRole_Item_ItemEMailTO"/></AssociationSet>
+				<AssociationSet Name="ItemToDispatchTime_AssocSet" Association="CA_OC_OUTPUT_REQUEST.ItemToDispatchTime" sap:creatable="false"
+					sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_ItemToDispatchTime"/><End EntitySet="VL_FV_APOC_OR_DISPATCH_TIME" Role="ToRole_ItemToDispatchTime"/></AssociationSet>
+				<AssociationSet Name="Root_Items" Association="CA_OC_OUTPUT_REQUEST.Root_Items" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Roots" Role="FromRole_Root_Items"/><End EntitySet="Items" Role="ToRole_Root_Items"/></AssociationSet>
+				<AssociationSet Name="Root_Previews" Association="CA_OC_OUTPUT_REQUEST.Root_Preview" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Roots" Role="FromRole_Root_Preview"/><End EntitySet="Previews" Role="ToRole_Root_Preview"/></AssociationSet>
+				<AssociationSet Name="Item_ItemEMailBCCs" Association="CA_OC_OUTPUT_REQUEST.Item_ItemEMailBCC" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_ItemEMailBCC"/><End EntitySet="ItemEMails" Role="ToRole_Item_ItemEMailBCC"/></AssociationSet>
+				<AssociationSet Name="Item_Previews" Association="CA_OC_OUTPUT_REQUEST.Item_Preview" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_Preview"/><End EntitySet="Previews" Role="ToRole_Item_Preview"/></AssociationSet>
+				<AssociationSet Name="ItemToFormTemplateLanguageCode_AssocSet" Association="CA_OC_OUTPUT_REQUEST.ItemToFormTemplateLanguageCode"
+					sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_ItemToFormTemplateLanguageCode"/><End EntitySet="VL_SH_H_T002" Role="ToRole_ItemToFormTemplateLanguageCode"/></AssociationSet>
+				<AssociationSet Name="Item_ItemEMailCCs" Association="CA_OC_OUTPUT_REQUEST.Item_ItemEMailCC" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_ItemEMailCC"/><End EntitySet="ItemEMails" Role="ToRole_Item_ItemEMailCC"/></AssociationSet>
+				<AssociationSet Name="Item_ItemAttachments" Association="CA_OC_OUTPUT_REQUEST.Item_ItemAttachment" sap:creatable="false"
+					sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_ItemAttachment"/><End EntitySet="ItemAttachments" Role="ToRole_Item_ItemAttachment"/></AssociationSet>
+				<AssociationSet Name="Item_GetDocument_AssocSet" Association="CA_OC_OUTPUT_REQUEST.Item_GetDocument" sap:creatable="false"
+					sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_GetDocument"/><End EntitySet="GetDocuments" Role="ToRole_Item_GetDocument"/></AssociationSet>
+				<AssociationSet Name="ItemToStatus_AssocSet" Association="CA_OC_OUTPUT_REQUEST.ItemToStatus" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_ItemToStatus"/><End EntitySet="VL_FV_APOC_OR_OUTPUT_STATUS" Role="ToRole_ItemToStatus"/></AssociationSet>
+				<AssociationSet Name="Item_ItemLogs" Association="CA_OC_OUTPUT_REQUEST.Item_ItemLog" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="Items" Role="FromRole_Item_ItemLog"/><End EntitySet="ItemLogs" Role="ToRole_Item_ItemLog"/></AssociationSet>
+				<FunctionImport Name="Resend" ReturnType="Collection(CA_OC_OUTPUT_REQUEST.Message)" m:HttpMethod="POST" sap:label="Resend"><Parameter Name="ApplObjectType" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="ApplObjectId" Type="Edm.String" Mode="In" MaxLength="255"/><Parameter Name="ItemId" Type="Edm.String" Mode="In" MaxLength="6"/></FunctionImport>
+				<FunctionImport Name="SetToCompleted" ReturnType="Collection(CA_OC_OUTPUT_REQUEST.Message)" m:HttpMethod="POST" sap:label="Cancel"><Parameter Name="ApplObjectId" Type="Edm.String" Mode="In" MaxLength="255"/><Parameter Name="ApplObjectType" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="ItemId" Type="Edm.String" Mode="In" MaxLength="6"/></FunctionImport>
+				<FunctionImport Name="IssueOutput" ReturnType="Collection(CA_OC_OUTPUT_REQUEST.Message)" m:HttpMethod="POST" sap:label="Issue Output"><Parameter Name="ApplObjectId" Type="Edm.String" Mode="In" MaxLength="255"/><Parameter Name="ApplObjectType" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="ItemId" Type="Edm.String" Mode="In" MaxLength="6"/></FunctionImport>
+				<FunctionImport Name="Determine" ReturnType="Collection(CA_OC_OUTPUT_REQUEST.Message)" m:HttpMethod="POST"
+					sap:label="Determine Output Items"><Parameter Name="DetermineMergeOption" Type="Edm.String" Mode="In" MaxLength="1"/><Parameter Name="ApplObjectType" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="ApplObjectId" Type="Edm.String" Mode="In" MaxLength="255"/></FunctionImport>
+				<FunctionImport Name="Check" ReturnType="Collection(CA_OC_OUTPUT_REQUEST.Message)" m:HttpMethod="POST" sap:label="Check"><Parameter Name="ApplObjectId" Type="Edm.String" Mode="In" MaxLength="255"/><Parameter Name="ApplObjectType" Type="Edm.String" Mode="In" MaxLength="30"/><Parameter Name="ItemId" Type="Edm.String" Mode="In" MaxLength="6"/></FunctionImport>
+			</EntityContainer>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.ItemEMail/ApplObjectType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_APOC_I_OBJ_TYPE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.ItemEMail/EmailRole" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Email Recipient Type"/><PropertyValue Property="CollectionPath" String="VL_FV_APOC_EMAIL_ROLE_CODE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="EmailRole"/><PropertyValue Property="ValueListProperty" String="Code"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="Text"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Root/ApplObjectType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_APOC_I_OBJ_TYPE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/ApplObjectType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_APOC_I_OBJ_TYPE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/DispatchTime" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Dispatch Time"/><PropertyValue Property="CollectionPath" String="VL_FV_APOC_OR_DISPATCH_TIME"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="DispatchTime"/><PropertyValue Property="ValueListProperty" String="Code"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="Text"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/EmailTemplateId" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Assigned Email Templates"/><PropertyValue Property="CollectionPath" String="VL_SH_APOC_SH_EMAIL_TEMPLATE_CUST"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn"><PropertyValue Property="LocalDataProperty" PropertyPath="OutputType"/><PropertyValue Property="ValueListProperty" String="OUTPUT_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterOut"><PropertyValue Property="LocalDataProperty" PropertyPath="EmailTemplateId"/><PropertyValue Property="ValueListProperty" String="EMAIL_TEMPLATE_NAME"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/PrintNumberOfCopies" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Number of Copies"/><PropertyValue Property="CollectionPath" String="VL_FV_APOC_NUMBER_OF_COPIES"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="PrintNumberOfCopies"/><PropertyValue Property="ValueListProperty" String="Code"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="Text"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/OutputType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Output Type"/><PropertyValue Property="CollectionPath" String="VL_SH_APOC_SH_OUTP_TYPE"/><PropertyValue Property="SearchSupported" Bool="true"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="OutputType"/><PropertyValue Property="ValueListProperty" String="OUTPUT_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/PrintQueueName" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Search help for spool output devices which support PDF"/><PropertyValue Property="CollectionPath" String="VL_SH_APOC_PRIN"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="LNAME"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="PrintQueueName"/><PropertyValue Property="ValueListProperty" String="KNAME"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="PAMSG"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/FormTemplateCountryCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Help View for Countries"/><PropertyValue Property="CollectionPath" String="VL_SH_H_T005_LAND"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="FormTemplateCountryCode"/><PropertyValue Property="ValueListProperty" String="LAND1"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="LANDX"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="NATIO"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/SenderCountryCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Help View for Countries"/><PropertyValue Property="CollectionPath" String="VL_SH_H_T005_LAND"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="SenderCountryCode"/><PropertyValue Property="ValueListProperty" String="LAND1"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="LANDX"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="NATIO"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/Status" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Output Request Output Status"/><PropertyValue Property="CollectionPath" String="VL_FV_APOC_OR_OUTPUT_STATUS"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="Status"/><PropertyValue Property="ValueListProperty" String="Code"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="Text"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/ReceiverId" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Partners, General"/><PropertyValue Property="CollectionPath" String="VL_SH_BUPAP"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="MC_NAME1"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="MC_NAME2"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="BU_SORT1"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="BU_SORT2"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="ReceiverId"/><PropertyValue Property="ValueListProperty" String="PARTNER"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/Channel" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Assigned Output Channel"/><PropertyValue Property="CollectionPath" String="VL_SH_APOC_SH_CHANNEL"/><PropertyValue Property="SearchSupported" Bool="true"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn"><PropertyValue Property="LocalDataProperty" PropertyPath="OutputType"/><PropertyValue Property="ValueListProperty" String="OUTPUT_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterOut"><PropertyValue Property="LocalDataProperty" PropertyPath="Channel"/><PropertyValue Property="ValueListProperty" String="CHANNEL"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/FormTemplateName" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Assigned Form Templates"/><PropertyValue Property="CollectionPath" String="VL_SH_APOC_SH_FORM_TEMPLATE_CUST"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterIn"><PropertyValue Property="LocalDataProperty" PropertyPath="OutputType"/><PropertyValue Property="ValueListProperty" String="OUTPUT_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterOut"><PropertyValue Property="LocalDataProperty" PropertyPath="FormTemplateName"/><PropertyValue Property="ValueListProperty" String="FORM_TEMPLATE_NAME"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/FormTemplateLanguageCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Language flag"/><PropertyValue Property="CollectionPath" String="VL_SH_H_T002"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="FormTemplateLanguageCode"/><PropertyValue Property="ValueListProperty" String="SPRAS"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="SPTXT"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item/KproClass" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_SDOKIOCL"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="KproClass"/><PropertyValue Property="ValueListProperty" String="IO_CLASS"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPT"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.ItemLog/APPL_OBJECT_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_APOC_I_OBJ_TYPE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="APPL_OBJECT_TYPE"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.ItemAttachment/ApplObjectType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_APOC_I_OBJ_TYPE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="ApplObjectType"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.ItemAttachment/Rank" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="Label" String="Order rank"/><PropertyValue Property="CollectionPath" String="VL_FV_APOC_ORDER_RANK"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="Rank"/><PropertyValue Property="ValueListProperty" String="Code"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="Text"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Message/APPL_OBJECT_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.Common.v1.ValueList">
+					<Record><PropertyValue Property="CollectionPath" String="VL_CT_APOC_I_OBJ_TYPE"/>
+						<PropertyValue Property="Parameters">
+							<Collection>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterInOut"><PropertyValue Property="LocalDataProperty" PropertyPath="APPL_OBJECT_TYPE"/><PropertyValue Property="ValueListProperty" String="APPL_OBJ_TYPE"/></Record>
+								<Record Type="com.sap.vocabularies.Common.v1.ValueListParameterDisplayOnly"><PropertyValue Property="ValueListProperty" String="DESCRIPTION"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.Item" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="com.sap.vocabularies.UI.v1.LineItem">
+					<Collection>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="Status"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/High"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="DispatchTime"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/High"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="OutputType"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/High"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="ReceiverId"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/High"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="Channel"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/High"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="FormTemplateLanguageCode"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/Low"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="FormTemplateName"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/Low"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="ChangeIndicator"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/Low"/></Record>
+						<Record Type="com.sap.vocabularies.UI.v1.DataField"><PropertyValue Property="Value" Path="LchgDateTime"/><Annotation Term="com.sap.vocabularies.UI.v1.Importance" EnumMember="com.sap.vocabularies.UI.v1.ImportanceType/Low"/></Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_OUTP_TYPE/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_OUTP_TYPE/DESCRIPTION" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_FORM_TEMPLATE_CUST/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_CHANNEL/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations>
+			<Annotations Target="CA_OC_OUTPUT_REQUEST.VL_SH_APOC_SH_EMAIL_TEMPLATE_CUST/APPL_OBJ_TYPE" xmlns="http://docs.oasis-open.org/odata/ns/edm"><Annotation Term="com.sap.vocabularies.UI.v1.HiddenFilter" Bool="true"/></Annotations><atom:link rel="self"
+				href="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/sap/CA_OC_OUTPUT_REQUEST_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
+				href="https://webidetesting2459441-fiori.dispatcher.int.sap.eu2.hana.ondemand.com/sap/opu/odata/sap/CA_OC_OUTPUT_REQUEST_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
