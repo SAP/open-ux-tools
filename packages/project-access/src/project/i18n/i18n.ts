@@ -164,17 +164,11 @@ function extractBundlePath(appId: string, settings: { bundleName?: string; bundl
 }
 
 /**
- * Get the i18n path from UI5 resource models declared in sap.ui5.models part of the manifest.
- * By default the model used for internationalization in the UI is 'i18n'. For
- * internationalization of annotations the model is '@18n'.
+ * Extracts and validates the `fallbackLocale` from a UI5 resource model settings object.
+ * Only alphanumeric, dash, and underscore characters are accepted (e.g. "en", "en-US").
  *
- * for For `sap.ui5` namespace
- * 1. from `sap.ui5.models.{resource model key}.bundleName` as `bundleName` wins over `bundleUrl`
- * 2. from `sap.ui5.models.{resource model key}.bundleUrl`
- * 3. from `sap.ui5.models.{resource model key}.uri`
- *
- * @param manifest - parsed content of manifest.json
- * @returns - paths to i18n.properties file from models
+ * @param settings - sap.ui5 resource model settings object
+ * @returns validated fallback locale string or undefined if invalid/absent
  */
 function getValidFallbackLocale(settings: { fallbackLocale?: unknown } | undefined): string | undefined {
     const fallbackLocale = settings?.fallbackLocale;
