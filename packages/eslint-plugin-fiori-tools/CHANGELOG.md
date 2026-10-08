@@ -1,5 +1,29 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Features
+
+- add sap-no-comma-in-section-title rule to prevent commas in object page section titles [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 10.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Features
+
+- Create sap-no-path-hidden-on-interactive-columns rule to check `UI.Hidden` with a dynamic path is not be used on sortable or filterable columns [[88b131d](https://github.com/SAP/open-ux-tools/commit/88b131dd66cb31c471c603154d9becd547d431d5)]
+
 ## 10.13.0
 
 ### Minor Changes

@@ -48,11 +48,11 @@ sap.ui.define([
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
         opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
-            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
+            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation()
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField({ property: "<%- property %>" });
+                .and.iAddAdaptationFilterField({ property: "<%- property %>" })
             <%_ }); -%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
+                .and.iConfirmFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- property %>" });
             <%_ }); -%>
