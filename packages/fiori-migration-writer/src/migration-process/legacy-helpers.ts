@@ -1,5 +1,5 @@
 // CLASSIFICATION: [OPEN]
-import { join, resolve, relative } from 'node:path';
+import { join, resolve, relative, sep } from 'node:path';
 import { existsSync } from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
@@ -101,8 +101,10 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
         (fs as any).store.each((file: any) => {
             const filePath = file.path;
 
-            // Check if this file is under the legacy webapp path
-            if (filePath === paths.ffLegacyWebappPath || filePath.startsWith(paths.ffLegacyWebappPath + '/')) {
+            // Check if this file is under the legacy webapp path.
+            // mem-fs keys use the OS-native separator, so compare with `sep` (not a hardcoded '/')
+            // or the match fails on Windows and no files are moved.
+            if (filePath === paths.ffLegacyWebappPath || filePath.startsWith(paths.ffLegacyWebappPath + sep)) {
                 // Calculate relative path from legacy webapp
                 const relativePath =
                     filePath === paths.ffLegacyWebappPath
@@ -131,7 +133,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
         (fs as any).store.each((file: any) => {
             const filePath = file.path;
 
-            if (filePath === paths.ffLegacyTestQunitPath || filePath.startsWith(paths.ffLegacyTestQunitPath + '/')) {
+            if (filePath === paths.ffLegacyTestQunitPath || filePath.startsWith(paths.ffLegacyTestQunitPath + sep)) {
                 const relativePath =
                     filePath === paths.ffLegacyTestQunitPath
                         ? ''
@@ -160,7 +162,7 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
 
             if (
                 filePath === paths.ffLegacyTestuiveri5Path ||
-                filePath.startsWith(paths.ffLegacyTestuiveri5Path + '/')
+                filePath.startsWith(paths.ffLegacyTestuiveri5Path + sep)
             ) {
                 const relativePath =
                     filePath === paths.ffLegacyTestuiveri5Path

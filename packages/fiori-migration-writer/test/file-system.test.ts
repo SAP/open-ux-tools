@@ -1,3 +1,4 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, rm } from 'node:fs/promises';
@@ -70,11 +71,15 @@ describe('file-system', () => {
         });
 
         test('should reject on commit error', async () => {
-            // Try to write to an invalid path that will cause commit to fail
-            fs.write('/root/invalid/path/file.txt', 'content');
+            // Force the underlying commit to fail. A platform-specific "invalid path" is unreliable
+            // (e.g. /root/... is writable on Windows), so stub commit to invoke its callback with an error.
+            const commitError = new Error('commit failed');
+            jest.spyOn(fs, 'commit').mockImplementation((callback: (err?: Error) => void) => {
+                callback(commitError);
+            });
 
-            // Should reject with error
-            await expect(commitFileSystemChanges(fs)).rejects.toThrow();
+            // Should reject with the error
+            await expect(commitFileSystemChanges(fs)).rejects.toThrow('commit failed');
         });
     });
 });
