@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 1.0.62
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
 ## 1.0.61
 
 ### Patch Changes
