@@ -2,7 +2,7 @@
 "@sap-ux/create": minor
 ---
 
-Add `migrate` CLI command for converting WebIDE projects to Fiori tools format
+FEAT: Add `migrate` CLI command for converting WebIDE projects to Fiori tools format
 
 **New Command: `sap-ux migrate`**
 
