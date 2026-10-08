@@ -1,4 +1,4 @@
-# `inlineDelete` and `multiSelect` and `Multiselect` Cannot Both Be Enabled in Table Settings (`sap-no-inline-delete-with-multiselect`)
+# `inlineDelete` and `multiSelect` Cannot Both Be Enabled in Table Settings (`sap-no-inline-delete-with-multiselect`)
 
 The `inlineDelete` and `multiSelect` properties in `component.settings.tableSettings` are mutually exclusive in SAP Fiori elements for OData V2 applications. Enabling both simultaneously causes the application to not load. This rule detects the conflict at design time so developers can fix it before deployment.
 
