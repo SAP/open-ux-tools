@@ -6,7 +6,9 @@ import {
     adtSourceTemplateId,
     appListResultFields,
     appListFieldsWithoutSourceTemplate,
-    generatorTitleConfig
+    generatorTitleConfig,
+    adtSourceTemplateIdCorrected,
+    sourceTemplateIdField
 } from '../../src/utils/constants.js';
 import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
@@ -161,6 +163,61 @@ describe('fetchAppListForSelectedSystem', () => {
             t('error.applicationListFetchError', { error: error.message })
         );
         expect(result).toEqual([]);
+    });
+
+    it('should include apps with corrected ADT source template ID in ADTQuickDeploy flow', async () => {
+        const legacyApp = { 'sap.app/id': 'legacy-app', [sourceTemplateIdField]: adtSourceTemplateId };
+        const correctedApp = { 'sap.app/id': 'corrected-app', [sourceTemplateIdField]: adtSourceTemplateIdCorrected };
+        const mockSearch = jest.fn().mockResolvedValueOnce([legacyApp]).mockResolvedValueOnce([correctedApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(result).toEqual([legacyApp, correctedApp]);
+    });
+
+    it('should deduplicate apps returned by both ADTQuickDeploy searches', async () => {
+        const app = { 'sap.app/id': 'shared-app', [sourceTemplateIdField]: adtSourceTemplateId };
+        const mockSearch = jest.fn().mockResolvedValue([app]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(result).toEqual([app]);
+    });
+
+    it('should filter out apps with corrected ADT source template ID from AbapRepository flow', async () => {
+        const correctedAdtApp = {
+            'sap.app/id': 'corrected-adt-app',
+            [sourceTemplateIdField]: adtSourceTemplateIdCorrected
+        };
+        const regularApp = { 'sap.app/id': 'regular-app', [sourceTemplateIdField]: 'some/other/template' };
+        const mockSearch = jest.fn().mockResolvedValue([correctedAdtApp, regularApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(result).toEqual([regularApp]);
     });
 });
 

@@ -359,7 +359,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: destination
-      service-name: standalonewithabapserviceprovider-destination-service
+      service-name: standalonewithabapserviceprovi-destination-service
       service-plan: lite
       config:
         HTML5Runtime_enabled: false
@@ -514,7 +514,7 @@ resources:
     type: org.cloudfoundry.managed-service
     parameters:
       service: destination
-      service-name: standalone-with-connectivity-service-destination-service
+      service-name: standalone-with-connectivity-s-destination-service
       service-plan: lite
       config:
         HTML5Runtime_enabled: false
