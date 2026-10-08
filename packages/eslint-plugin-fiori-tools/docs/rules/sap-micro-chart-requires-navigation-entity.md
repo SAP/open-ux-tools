@@ -26,7 +26,7 @@ Charts without a `ChartType` property are skipped entirely.
 
 The rule only checks charts that are actually displayed on a page. A chart is considered visible when it is referenced using a `UI.DataFieldForAnnotation` record in one of the following:
 
-- A table in a list report page (`UI.LineItem` → `DataFieldForAnnotation.Target` → `@UI.Chart`)
+- A table in a list report page: `UI.LineItem` → `DataFieldForAnnotation.Target` → `@UI.Chart`
 - A table section in an object page: `UI.LineItem` → `DataFieldForAnnotation.Target` → `@UI.Chart`
 - A field in the header of an object page: `UI.HeaderFacets` → `ReferenceFacet` → `UI.FieldGroup.Data` → `DataFieldForAnnotation.Target` → `@UI.Chart`
 
