@@ -99,27 +99,28 @@ export async function getI18nBundles(
         );
     }
 
-    for (const key of Object.keys(i18nPropertiesPaths.models)) {
-        try {
-            result.models[key] = await getPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
-        } catch (error) {
-            // add models key with empty model
-            result.models[key] = {};
+    await Promise.all(
+        Object.keys(i18nPropertiesPaths.models).map(async (key) => {
+            try {
+                result.models[key] = await getPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
+            } catch (error) {
+                // add models key with empty model
+                result.models[key] = {};
+                addToErrors(result, `models.${key}`, error);
+            }
 
-            addToErrors(result, `models.${key}`, error);
-        }
-
-        const fallbackLocalePath = i18nPropertiesPaths.models[key].fallbackLocalePath;
-        if (fallbackLocalePath) {
-            result.models[key] = await mergeWithFallback(
-                result,
-                `models.${key}`,
-                result.models[key],
-                fallbackLocalePath,
-                fs
-            );
-        }
-    }
+            const fallbackLocalePath = i18nPropertiesPaths.models[key].fallbackLocalePath;
+            if (fallbackLocalePath) {
+                result.models[key] = await mergeWithFallback(
+                    result,
+                    `models.${key}`,
+                    result.models[key],
+                    fallbackLocalePath,
+                    fs
+                );
+            }
+        })
+    );
 
     if (projectType === 'CAPJava' || projectType === 'CAPNodejs') {
         try {
