@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 1.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Features
+
+- Generate OPA column-adaptation-dialog tests validating that text-annotated List Report columns are available in the column personalization dialog (UI5 1.152.0+) [[4144d72](https://github.com/SAP/open-ux-tools/commit/4144d72af16a67860e00f859183da4d6038ef59e)]
+
 ## 1.15.7
 
 ### Patch Changes
