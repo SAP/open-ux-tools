@@ -8,6 +8,9 @@ import type { ImportProjectInfo, NeoappDestination } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { getMinUI5VersionAsArray } from '@sap-ux/project-access';
 
+// Debug flag - set to true to enable logging
+const DEBUG_EXTENSION = process.env.DEBUG_EXTENSION_DETECTION === 'true';
+
 /**
  * Configuration for processing project extension
  */
@@ -127,6 +130,14 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
     const manifestSupportedThemes = (manifest?.['sap.ui'] as { supportedThemes?: string[] } | undefined)
         ?.supportedThemes;
     const ui5Theme = manifestSupportedThemes?.includes('sap_fiori_3') ? 'sap_fiori_3' : 'sap_bluecrystal';
+
+    if (DEBUG_EXTENSION) {
+        console.log(`[EXT-PROJECT] processProjectExtension called`);
+        console.log(`[EXT-PROJECT] manifest defined: ${!!manifest}`);
+        console.log(`[EXT-PROJECT] manifest['sap.ui']: ${JSON.stringify(manifest?.['sap.ui'])}`);
+        console.log(`[EXT-PROJECT] manifestSupportedThemes: ${JSON.stringify(manifestSupportedThemes)}`);
+        console.log(`[EXT-PROJECT] ui5Theme result: ${ui5Theme}`);
+    }
 
     const result: ImportProjectInfo = {
         ...defaultProjectInfo,

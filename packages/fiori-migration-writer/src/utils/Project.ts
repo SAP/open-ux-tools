@@ -8,6 +8,9 @@ import { ODataVersion } from '../types.js';
 import { MigrationTypes } from './constants.js';
 import { URI } from 'vscode-uri';
 import { processProjectExtension } from '../project/project-extension.js';
+
+// Debug flag
+const DEBUG_PROJECT = process.env.DEBUG_EXTENSION_DETECTION === 'true';
 import { processAdaptationProject } from '../project/adaptation-project.js';
 import { processRegularProject } from '../project/regular-project.js';
 import { processReuseLibrary } from '../project/reuse-library.js';
@@ -99,6 +102,10 @@ export class ProjectAccess {
             // Will try legacy path next.
         }
         const isProjectExtension: boolean | undefined = await this.checkIfProjectExtension(projectRoot);
+        if (DEBUG_PROJECT) {
+            console.log(`[PROJECT] isProjectExtension: ${isProjectExtension}`);
+            console.log(`[PROJECT] manifest exists: ${!!manifest}`);
+        }
         if (!manifest) {
             try {
                 manifest = await this.getManifestJson(join(projectRoot, legacyPath), projectInfo.webappPath);
@@ -129,6 +136,9 @@ export class ProjectAccess {
         const isAdaptationProject = adaptationCheck !== undefined;
 
         if (manifest && !isReuseLib && !isProjectExtension && !isAdaptationProject) {
+            if (DEBUG_PROJECT) {
+                console.log(`[PROJECT] Taking REGULAR project path`);
+            }
             const result = await processRegularProject({
                 projectRoot,
                 manifest,
@@ -166,6 +176,9 @@ export class ProjectAccess {
                 this.getReuseLibModuleName.bind(this)
             );
         } else if (isProjectExtension) {
+            if (DEBUG_PROJECT) {
+                console.log(`[PROJECT] Taking EXTENSION project path`);
+            }
             projectInfo = await processProjectExtension({
                 projectRoot,
                 defaultProjectInfo,
