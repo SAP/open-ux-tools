@@ -16,8 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // UI5 snapshot URL: use env var to support CI outside SAP network
 // In CI without network access, mock the HTTP call instead (see projectMigrator.test.ts pattern)
-const ui5SnapshotUrl =
-    process.env.UI5_SNAPSHOT_URL || 'https://ui5-preview.example.com';
+const ui5SnapshotUrl = process.env.UI5_SNAPSHOT_URL || 'https://ui5-preview.example.com';
 
 describe('Library Migration Integration Tests', () => {
     const testOutputDir = join(__dirname, 'test-output', 'library-integration');
