@@ -8,6 +8,7 @@
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
+import { readFileSync } from 'node:fs';
 import { createMemFsEditor, editorHasPath, getCurrentEditor, exists as fsAdapterExists } from './fs-adapter.js';
 
 /**
@@ -51,9 +52,17 @@ export function readFile(pathOrFs: string | Editor, path?: string): string {
  * @returns Parsed JSON object with indentation metadata for round-trip preservation
  */
 export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
-    const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
-    const content = fs.read(filePath);
+
+    // When called with just a path string and no editor context, read from filesystem directly
+    // This keeps behavior consistent with fileExists which also falls back to real filesystem
+    let content: string;
+    if (typeof pathOrFs === 'string' && !getCurrentEditor()) {
+        content = readFileSync(filePath, 'utf-8');
+    } else {
+        const fs = getEditor(pathOrFs);
+        content = fs.read(filePath);
+    }
 
     // Parse with JSON.parse for consistent SyntaxError behavior
     const result = JSON.parse(content);
