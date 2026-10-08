@@ -131,9 +131,12 @@ export class ProjectAccess {
         }
 
         // Check if it's an adaptation project BEFORE deciding it's a regular project
-        // Adaptation projects have manifests but should use processAdaptationProject
+        // Adaptation projects have manifests but should use processAdaptationProject.
+        // A genuine adaptation project resolves a base-app `reference` (from manifest.appdescr_variant
+        // or .adp/config.json). A stray `uiadaptation` block in a smart-template app's .che/project.json
+        // yields only `{ layer }` with no reference and must not divert it from the regular path.
         const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
-        const isAdaptationProject = adaptationCheck !== undefined;
+        const isAdaptationProject = adaptationCheck?.reference !== undefined;
 
         if (manifest && !isReuseLib && !isProjectExtension && !isAdaptationProject) {
             if (DEBUG_PROJECT) {
