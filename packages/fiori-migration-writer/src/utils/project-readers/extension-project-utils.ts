@@ -62,12 +62,16 @@ async function readCheProjectExtensionSettings(projectRoot: string): Promise<unk
     const projectJsonPath = join(projectRoot, '.che', 'project.json');
     if (DEBUG_EXTENSION_DETECTION) {
         console.log(`[EXT-DETECT] Checking .che/project.json at: ${projectJsonPath}`);
-        console.log(`[EXT-DETECT] getCurrentEditor() before fileExists: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`);
+        console.log(
+            `[EXT-DETECT] getCurrentEditor() before fileExists: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`
+        );
     }
     const exists = await fileExists(projectJsonPath);
     if (DEBUG_EXTENSION_DETECTION) {
         console.log(`[EXT-DETECT] fileExists result: ${exists}`);
-        console.log(`[EXT-DETECT] getCurrentEditor() after fileExists: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`);
+        console.log(
+            `[EXT-DETECT] getCurrentEditor() after fileExists: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`
+        );
     }
     if (!exists) {
         return undefined;
@@ -75,7 +79,9 @@ async function readCheProjectExtensionSettings(projectRoot: string): Promise<unk
 
     try {
         if (DEBUG_EXTENSION_DETECTION) {
-            console.log(`[EXT-DETECT] getCurrentEditor() before readJSON: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`);
+            console.log(
+                `[EXT-DETECT] getCurrentEditor() before readJSON: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`
+            );
         }
         const projectJson: any = await readJSON(projectJsonPath);
         if (DEBUG_EXTENSION_DETECTION) {
