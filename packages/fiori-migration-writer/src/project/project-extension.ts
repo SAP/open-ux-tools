@@ -123,12 +123,17 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
             // do nothing, may not have a package.json
         }
     }
+    // Determine theme from manifest's supportedThemes (more reliable than projectInfo)
+    const manifestSupportedThemes = (manifest?.['sap.ui'] as { supportedThemes?: string[] } | undefined)
+        ?.supportedThemes;
+    const ui5Theme = manifestSupportedThemes?.includes('sap_fiori_3') ? 'sap_fiori_3' : 'sap_bluecrystal';
+
     const result: ImportProjectInfo = {
         ...defaultProjectInfo,
         ...{
             moduleName,
             isSAPApp: true,
-            ui5Theme: projectInfo?.supportedThemes?.includes('sap_fiori_3') ? 'sap_fiori_3' : 'sap_bluecrystal',
+            ui5Theme,
             isFioriToolsProject: hasUI5ToolingDep,
             ...{ rootPath: projectRoot, type: MigrationTypes.projectExtension },
             destination: destination as string,
