@@ -45,6 +45,17 @@ Before writing anything, decide **who the skill is for**. This drives every late
 
 Ask the user which category applies **if it is not obvious from the request**. Then continue.
 
+### Frontmatter and folder structure validation
+
+When creating the skill, ensure:
+
+- [ ] `name` uses only lowercase letters, numbers, and hyphens (`/^[a-z0-9-]+$/`), between 3–64 characters
+- [ ] Folder name matches the `name` field exactly (e.g., `sap-fiori-tree-table/` for `name: sap-fiori-tree-table`)
+- [ ] `description` is between 50–1024 characters and includes trigger keywords
+- [ ] File is named exactly `SKILL.md` (case-sensitive)
+- [ ] Public skills go in `packages/fiori-mcp-server/skills/` (or equivalent public location)
+- [ ] Contributor skills go in `.agents/skills/` (or equivalent internal location)
+
 ---
 
 ## Step 1 — Capture intent and inputs
@@ -98,6 +109,23 @@ Keep the SKILL.md **under 500 lines**. If you cross that threshold, chunk into `
 - Use tables for decision matrices (backend × OData version, host × MCP availability, etc.). They compress well and scan quickly.
 - Show **short** code examples inline. Long snippets belong in `references/`.
 - **Product-name capitalization (mandatory).** Write **SAP** in all caps, **Fiori** with a capital F, and **elements** in lowercase. Never write "Fiori" on its own — always **SAP Fiori** (or **SAP Fiori elements**, **SAP Fiori tools**). Examples: ✅ `SAP Fiori elements`, `SAP Fiori tools`, `SAP Fiori app` — ❌ `SAPUI5 Fiori`, `Fiori Elements`, `fiori app`, `SAP fiori`.
+
+### Content quality checklist
+
+Before finalizing SKILL.md, verify:
+
+- [ ] All product names use proper capitalization throughout
+- [ ] Implementation steps are numbered and sequential with clear objectives
+- [ ] Each step includes preconditions and verification cues
+- [ ] Verification Checklist section maps to implementation steps
+- [ ] Testing section explains how to start the project (CAP vs standalone vs mock)
+- [ ] Common Errors and Solutions section includes concrete error messages and fixes
+- [ ] References section lists all authoritative documentation links
+- [ ] ALL-CAPS warnings used sparingly (≤3 per skill)
+- [ ] No duplication of content from other skills (use cross-references)
+- [ ] All links checked and working
+- [ ] For public skills: Prerequisites declare backends (CAP/RAP) and OData version (V2/V4)
+- [ ] For public skills: If both backends supported, examples included for each
 
 ---
 
@@ -183,6 +211,18 @@ Count lines with `wc -l SKILL.md`. If the file is:
 - **300–500 lines** — consider splitting the largest section (usually the RAP implementation) into a file under `references/` (e.g. `references/rap-implementation.md`).
 - **> 500 lines** — split now. Model performance drops sharply.
 
+### Bundled assets validation
+
+If the skill includes `references/`, `scripts/`, or `assets/` folders:
+
+- [ ] Every reference file is directly linked from SKILL.md (no nested references)
+- [ ] Reference files use descriptive names (`cap-implementation.md`, not `1.md`)
+- [ ] No reference file exceeds 500 lines
+- [ ] Each bundled file serves a clear purpose (helper scripts, code templates, reference data)
+- [ ] No single asset exceeds 5MB
+- [ ] No build output directories (`node_modules/`, `dist/`, `bin/`, `obj/`)
+- [ ] Scripts include help documentation and error handling
+
 Layout patterns that work well (paths shown relative to `<target-directory>/<skill-name>/`):
 
 ```
@@ -217,3 +257,20 @@ Signals you are repeating yourself:
 The one exception: **the Prerequisites section**. Repeat it in every skill even if it is nearly identical elsewhere. It is the first thing users read, and a link there is a bad user experience.
 
 ---
+
+## Final validation
+
+Before committing, run these commands to verify the skill structure:
+
+```bash
+# Count lines (must be ≤500)
+wc -l <skill-name>/SKILL.md
+
+# List all files (check for unexpected content)
+find <skill-name> -type f
+
+# Verify frontmatter parsing (should output name and description)
+head -20 <skill-name>/SKILL.md | grep -E '^(name|description):'
+```
+
+Review the checklists in Steps 0, 2, and 8 to confirm all validation criteria are met.
