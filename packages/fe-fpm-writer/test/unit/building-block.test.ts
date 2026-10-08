@@ -1298,6 +1298,8 @@ describe('Building Blocks', () => {
         ).resolves.not.toThrow();
     });
 
+    // Covers the snippet/preview path (getSerializedFileContent), which is separate from
+    // generateBuildingBlock and was the only full-Page code path left uncovered.
     test('getSerializedFileContent for full Page building block includes sticky subheader IconTabBar', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'serialize-page-block-full');
