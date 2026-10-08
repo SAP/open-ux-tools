@@ -4,6 +4,7 @@ import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { Document as XmldomDocument, Element as XmldomElement } from '@xmldom/xmldom';
 import type {
     BuildingBlockConfig,
     Chart,
@@ -24,8 +25,9 @@ import {
     generateBuildingBlockAggregation
 } from '../../src/index.js';
 import { BUILDING_BLOCK_CONFIG, resolveAggregationPath } from '../../src/building-block/processor.js';
-import { AGGREGATION_ID_KEYS, buildAggregationIds } from '../../src/building-block/processAggregation.js';
 import {
+    AGGREGATION_ID_KEYS,
+    buildAggregationIds,
     getPageAggregationNames,
     sortPageAggregationChildren,
     ensureMissingAggregation
@@ -4383,21 +4385,13 @@ describe('resolveAggregationPath', () => {
 
 describe('getPageAggregationNames', () => {
     test('returns undefined for non-Page building block types', () => {
-        expect(
-            getPageAggregationNames({ buildingBlockType: BuildingBlockType.FilterBar } as never)
-        ).toBeUndefined();
-        expect(
-            getPageAggregationNames({ buildingBlockType: BuildingBlockType.Chart } as never)
-        ).toBeUndefined();
-        expect(
-            getPageAggregationNames({ buildingBlockType: BuildingBlockType.Table } as never)
-        ).toBeUndefined();
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.FilterBar } as never)).toBeUndefined();
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.Chart } as never)).toBeUndefined();
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.Table } as never)).toBeUndefined();
     });
 
     test('returns undefined for Page building block without full template type', () => {
-        expect(
-            getPageAggregationNames({ buildingBlockType: BuildingBlockType.Page } as never)
-        ).toBeUndefined();
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.Page } as never)).toBeUndefined();
     });
 
     test('returns aggregation names array for Page building block with full template type', () => {
@@ -4411,7 +4405,7 @@ describe('getPageAggregationNames', () => {
 });
 
 describe('sortPageAggregationChildren', () => {
-    async function makePageElement(innerXml: string): Promise<{ pageElement: import('@xmldom/xmldom').Element }> {
+    async function makePageElement(innerXml: string): Promise<{ pageElement: XmldomElement }> {
         const { DOMParser } = await import('@xmldom/xmldom');
         const doc = new DOMParser().parseFromString(
             `<macros:Page xmlns:macros="sap.fe.macros" xmlns="sap.m">${innerXml}</macros:Page>`,
@@ -4453,7 +4447,7 @@ describe('sortPageAggregationChildren', () => {
 });
 
 describe('ensureMissingAggregation', () => {
-    async function makeDocument(xml: string): Promise<import('@xmldom/xmldom').Document> {
+    async function makeDocument(xml: string): Promise<XmldomDocument> {
         const { DOMParser } = await import('@xmldom/xmldom');
         return new DOMParser().parseFromString(xml, 'text/xml');
     }
