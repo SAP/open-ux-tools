@@ -9,8 +9,8 @@ import { getCurrentEditor } from '../fs-adapter.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { sapWattCommonSetting } from '../../types.js';
 
-// Debug flag - set to true to enable logging
-const DEBUG_EXTENSION_DETECTION = process.env.DEBUG_EXTENSION_DETECTION === 'true';
+// Debug flag - enabled in CI or via env var
+const DEBUG_EXTENSION_DETECTION = process.env.DEBUG_EXTENSION_DETECTION === 'true' || process.env.CI === 'true';
 
 /**
  * Read project extension settings from configuration files

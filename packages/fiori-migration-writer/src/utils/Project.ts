@@ -10,7 +10,7 @@ import { URI } from 'vscode-uri';
 import { processProjectExtension } from '../project/project-extension.js';
 
 // Debug flag
-const DEBUG_PROJECT = process.env.DEBUG_EXTENSION_DETECTION === 'true';
+const DEBUG_PROJECT = process.env.DEBUG_EXTENSION_DETECTION === 'true' || process.env.CI === 'true';
 import { processAdaptationProject } from '../project/adaptation-project.js';
 import { processRegularProject } from '../project/regular-project.js';
 import { processReuseLibrary } from '../project/reuse-library.js';

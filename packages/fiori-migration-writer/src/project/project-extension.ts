@@ -8,8 +8,8 @@ import type { ImportProjectInfo, NeoappDestination } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { getMinUI5VersionAsArray } from '@sap-ux/project-access';
 
-// Debug flag - set to true to enable logging
-const DEBUG_EXTENSION = process.env.DEBUG_EXTENSION_DETECTION === 'true';
+// Debug flag - enabled in CI or via env var
+const DEBUG_EXTENSION = process.env.DEBUG_EXTENSION_DETECTION === 'true' || process.env.CI === 'true';
 
 /**
  * Configuration for processing project extension
