@@ -1,5 +1,44 @@
 # @sap-ux/preview-middleware
 
+## 1.2.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+- @sap-ux/adp-tooling 1.0.60 → 1.0.61
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.2.22
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolved an issue where the "Add Subpage" quick action generated a page ID in an incorrect format for ODATA v4 applications. [[f9088c0](https://github.com/SAP/open-ux-tools/commit/f9088c07570be4fb6c2b5d72c97213cabeffde16)]
+
+## 1.2.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.59 → 1.0.60
+
+## 1.2.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-29
+
+#### Bug Fixes
+
+- Pipeline blocker causing all integration tests related to the preview middleware to fail.- #5235 [[76b34f5](https://github.com/SAP/open-ux-tools/commit/76b34f593bb27fb28b8e061544b13f4378251216)]
+
 ## 1.2.19
 
 ### Patch Changes

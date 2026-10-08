@@ -1,5 +1,64 @@
 # @sap-ux/ui5-test-writer
 
+## 1.15.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- Chain filter adaptation steps (open/add/confirm) in the semantic-key List Report test so the sap.fe self-managing adapt-filter dialog is not closed twice [[3f8e83c](https://github.com/SAP/open-ux-tools/commit/3f8e83c9bdaf2073176351bc9957234e32571271)]
+
+## 1.15.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/preview-middleware 1.2.22 → 1.2.23
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+
+## 1.15.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.21 → 1.2.22
+
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Bug Fixes
+
+- Use stable ActionIdentifier object instead of translatable label for OData-bound LR table actions [[a104e13](https://github.com/SAP/open-ux-tools/commit/a104e13a356e86fb928aaf932303de2bde21d80e)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.20 → 1.2.21
+
+## 1.15.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.19 → 1.2.20
+
 ## 1.15.1
 
 ### Patch Changes

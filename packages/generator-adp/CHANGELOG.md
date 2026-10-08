@@ -1,5 +1,33 @@
 # @sap-ux/generator-adp
 
+## 1.0.67
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.60 → 1.0.61
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+- @sap-ux/inquirer-common 1.0.44 → 1.0.45
+- @sap-ux/odata-service-writer 1.0.23 → 1.0.24
+- @sap-ux/project-input-validator 1.0.21 → 1.0.22
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/telemetry 2.0.8 → 2.0.9
+
+## 1.0.66
+
+### Patch Changes
+
+#### Features
+
+- consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.59 → 1.0.60
+
 ## 1.0.65
 
 ### Patch Changes

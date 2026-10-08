@@ -114,7 +114,7 @@ describe('FE V4 Linker - XML', () => {
             const modifiedAnnotations = applyXmlAnnotationsChange(annotations, options?.annotationsChange);
             testCache.set(uri, modifiedAnnotations);
         }
-        const model = parser.parse('EDMXBackend', artifacts, testCache);
+        const model = parser.parse('EDMXBackend', artifacts, {}, root, testCache);
 
         const app = model.index.apps[Object.keys(model.index.apps)[0]];
         return {
@@ -707,7 +707,7 @@ describe('FE V4 Linker - CAP', () => {
             const modifiedAnnotations = `${annotations}${options?.annotationsChange}`;
             testCache.set(uri, modifiedAnnotations);
         }
-        const model = parser.parse('CAPNodejs', artifacts, testCache);
+        const model = parser.parse('CAPNodejs', artifacts, {}, CAP_APP_PATH, testCache);
         const app = model.index.apps[Object.keys(model.index.apps)[0]];
         return {
             app,
