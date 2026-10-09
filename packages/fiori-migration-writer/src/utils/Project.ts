@@ -33,6 +33,7 @@ import {
     checkIfReuseLib,
     findNestedReuseLibManifest,
     getReuseLibModuleName,
+    isSamePath,
     getClientFromDestinationName,
     getNeoAppData,
     getDestinationFromNeoApp
@@ -344,7 +345,7 @@ export class ProjectAccess {
                 }
                 // in case reuse libs were detected in a project, remove them
                 reuseLibsRoots = reuseLibsRoots.filter(
-                    (lib) => !temp.some((tempRoot) => lib.value.libRoot === tempRoot)
+                    (lib) => !temp.some((tempRoot) => isSamePath(lib.value.libRoot, tempRoot))
                 );
             }
         }

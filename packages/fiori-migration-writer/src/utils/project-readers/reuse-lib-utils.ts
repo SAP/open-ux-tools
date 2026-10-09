@@ -2,7 +2,7 @@
  * Utilities for detecting and processing reuse library projects
  */
 
-import { basename, join } from 'node:path';
+import { basename, join, relative } from 'node:path';
 import { getReuseLibs, ReuseLibType } from '../file-discovery.js';
 import { readJSON } from '../../index.js';
 import type { Manifest } from '../../project-spec-types.js';
@@ -10,6 +10,23 @@ import { FileName } from '../../project-spec-types.js';
 import { MigrationTypes } from '../constants.js';
 import type { ProjectFolder } from '../../types.js';
 import { URI } from 'vscode-uri';
+
+/**
+ * Compare two absolute paths for equality, tolerating OS-level differences.
+ *
+ * `getReuseLibs` derives its paths from `URI.file(projectRoot).fsPath`, which
+ * lowercases the Windows drive letter (e.g. `C:\p` becomes `c:\p`). A plain
+ * `===` against the caller's `projectRoot` therefore fails on Windows even when
+ * both reference the same directory. Using `path.relative` collapses separator
+ * and casing differences: identical locations resolve to an empty relative path.
+ *
+ * @param pathA - First absolute path
+ * @param pathB - Second absolute path
+ * @returns True if both paths point to the same location
+ */
+export function isSamePath(pathA: string, pathB: string): boolean {
+    return relative(pathA, pathB) === '';
+}
 
 /**
  * Find a reuse library manifest nested within a project's source tree.
@@ -27,7 +44,9 @@ export async function findNestedReuseLibManifest(
     projectRoot: string
 ): Promise<{ manifest: Manifest; manifestPath: string } | undefined> {
     const libs = await getReuseLibs([{ uri: URI.file(projectRoot), name: projectRoot, index: 0 }]);
-    const matchedLib = libs.find((lib) => lib.value.type === ReuseLibType.LIBRARY && lib.value.libRoot === projectRoot);
+    const matchedLib = libs.find(
+        (lib) => lib.value.type === ReuseLibType.LIBRARY && isSamePath(lib.value.libRoot, projectRoot)
+    );
     if (!matchedLib) {
         return undefined;
     }
@@ -95,7 +114,7 @@ export async function getReuseLibModuleName(
         }));
         const libs = await getReuseLibs(workspaceFoldersWithUri);
         const matchedLib = libs.find((lib) => {
-            return lib.value.libRoot === projectRoot;
+            return isSamePath(lib.value.libRoot, projectRoot);
         });
         if (matchedLib?.value?.name) {
             moduleName = matchedLib.value.name;
