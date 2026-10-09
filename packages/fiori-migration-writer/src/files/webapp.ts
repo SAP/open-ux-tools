@@ -15,6 +15,8 @@ import { hasStore } from '../types/mem-fs-types.js';
 
 /**
  * Helper function to check if a path exists on real filesystem (async)
+ *
+ * @param path
  */
 async function pathExistsOnDisk(path: string): Promise<boolean> {
     try {

@@ -145,6 +145,8 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
 
 /**
  * Helper function to check if a path exists on real filesystem (async)
+ *
+ * @param path
  */
 async function pathExistsOnDisk(path: string): Promise<boolean> {
     try {

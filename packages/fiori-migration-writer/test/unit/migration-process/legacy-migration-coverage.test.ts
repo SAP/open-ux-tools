@@ -28,23 +28,33 @@ describe('Legacy Migration Helpers - Coverage Tests', () => {
         });
 
         it('should reject path with null byte', async () => {
-            await expect(validateRootDirectory('/tmp/test\0malicious')).rejects.toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory('/tmp/test\0malicious')).rejects.toThrow(
+                'Path contains unsafe characters'
+            );
         });
 
         it('should reject path with carriage return', async () => {
-            await expect(validateRootDirectory('/tmp/test\rmalicious')).rejects.toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory('/tmp/test\rmalicious')).rejects.toThrow(
+                'Path contains unsafe characters'
+            );
         });
 
         it('should reject path with newline', async () => {
-            await expect(validateRootDirectory('/tmp/test\nmalicious')).rejects.toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory('/tmp/test\nmalicious')).rejects.toThrow(
+                'Path contains unsafe characters'
+            );
         });
 
         it('should reject path with backtick', async () => {
-            await expect(validateRootDirectory('/tmp/test`command`')).rejects.toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory('/tmp/test`command`')).rejects.toThrow(
+                'Path contains unsafe characters'
+            );
         });
 
         it('should reject path with dollar sign (command substitution)', async () => {
-            await expect(validateRootDirectory('/tmp/test$(whoami)')).rejects.toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory('/tmp/test$(whoami)')).rejects.toThrow(
+                'Path contains unsafe characters'
+            );
         });
 
         it('should reject path with pipe', async () => {
