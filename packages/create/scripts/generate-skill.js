@@ -26,7 +26,6 @@ const BEHAVIOR_GUIDANCE = `
 /**
  * Converts a command heading like `add mockserver-config` to the reference filename
  * `add-mockserver-config.md` by replacing spaces with hyphens.
- *
  * @param {string} commandPath - The command path extracted from the heading, e.g. "convert preview-config".
  * @returns {string} The reference filename, e.g. "convert-preview-config.md".
  */
@@ -40,29 +39,60 @@ function referenceFilename(commandPath) {
  *
  * Heading format in README: ## [`convert preview-config`](#convert-preview-config)
  * Matching reference file:  references/convert-preview-config.md
- *
  * @param {string} commandsSection - The commands section of the README.
  * @returns {string} The commands section with reference pointers injected.
  */
 function injectReferencePointers(commandsSection) {
     // Match subcommand headings: ## [`<parent> <sub>`](#anchor) — two-word command paths only
-    return commandsSection.replace(
-        /^(## \[`([^`]+)`\]\(#[^)]+\))/gm,
-        (match, heading, commandPath) => {
-            // Only inject for subcommands (command path contains a space, e.g. "add mockserver-config")
-            if (!commandPath.includes(' ')) return match;
+    return commandsSection.replace(/^(## \[`([^`]+)`\]\(#[^)]+\))/gm, (match, heading, commandPath) => {
+        // Only inject for subcommands (command path contains a space, e.g. "add mockserver-config")
+        if (!commandPath.includes(' ')) return match;
 
-            const filename = referenceFilename(commandPath);
-            const filepath = path.join(REFERENCES_DIR, filename);
+        const filename = referenceFilename(commandPath);
+        const filepath = path.join(REFERENCES_DIR, filename);
 
-            if (!fs.existsSync(filepath)) return match;
+        if (!fs.existsSync(filepath)) return match;
 
-            return (
-                match +
-                `\n\n> For the full workflow guide including prerequisites and manual steps, read \`references/${filename}\`.`
-            );
-        }
-    );
+        return (
+            match +
+            `\n\n> For the full workflow guide including prerequisites and manual steps, read \`references/${filename}\`.`
+        );
+    });
+}
+
+/**
+ * Strips README formatting that bloats SKILL.md beyond the 500-line vally limit:
+ * 1. Removes `--------------------------------` separator lines.
+ * 2. Collapses group-command blocks (single-word commands like `add`, `generate`) to
+ *    just the heading and the "The available subcommands are:" line — the verbose
+ *    description and Usage line add no value for an agent tool.
+ * 3. Merges 3+ consecutive blank lines into one.
+ * @param {string} section - The commands section of README.md (from "# [Commands]" onwards).
+ * @returns {string} Compacted section suitable for SKILL.md.
+ */
+function compactCommandsSection(section) {
+    let text = section.replace(/^-{32}\n\n?/gm, '');
+
+    const blocks = text.split(/(?=^## \[`)/m);
+    text = blocks
+        .map((block) => {
+            const headingMatch = block.match(/^## \[`([^`]+)`\]/);
+            if (!headingMatch) return block;
+
+            const commandName = headingMatch[1];
+            if (!commandName.includes(' ')) {
+                const subMatch = block.match(/^(The available subcommands are:[^\n]+)/m);
+                if (subMatch) {
+                    const anchorMatch = block.match(/^## \[`[^`]+`\]\(#([^)]+)\)/);
+                    const anchor = anchorMatch ? anchorMatch[1] : commandName.toLowerCase();
+                    return `## [\`${commandName}\`](#${anchor})\n\n${subMatch[1]}\n\n`;
+                }
+            }
+            return block;
+        })
+        .join('');
+
+    return text.replace(/\n{3,}/g, '\n\n');
 }
 
 try {
@@ -74,29 +104,22 @@ try {
     if (commandsIndex === -1) {
         throw new Error('Could not find "# [Commands]" section in README.md');
     }
-    const commandsSection = injectReferencePointers(readme.slice(commandsIndex));
+    const commandsSection = compactCommandsSection(injectReferencePointers(readme.slice(commandsIndex)));
 
     // Only write if the dynamic commands content changed.
     // Frontmatter and BEHAVIOR_GUIDANCE are static (defined in this script), so comparing
     // just commandsSection is sufficient and avoids fragile version-stripping logic.
     // This prevents a SKILL.md diff — and the MCP review it triggers — on every
     // @sap-ux/create release where only the package version bumped but no commands changed.
-    const existingSkill = fs.existsSync(SKILL_OUTPUT_PATH)
-        ? fs.readFileSync(SKILL_OUTPUT_PATH, 'utf8')
-        : '';
+    const existingSkill = fs.existsSync(SKILL_OUTPUT_PATH) ? fs.readFileSync(SKILL_OUTPUT_PATH, 'utf8') : '';
 
     // Extract the commands section from the existing file for comparison.
     // Everything from "# [Commands]" onwards is the dynamic part — frontmatter
     // and BEHAVIOR_GUIDANCE are static so we don't need to compare them.
     const existingCommandsIndex = existingSkill.indexOf('# [Commands]');
-    const existingCommandsSection = existingCommandsIndex !== -1
-        ? existingSkill.slice(existingCommandsIndex)
-        : '';
+    const existingCommandsSection = existingCommandsIndex !== -1 ? existingSkill.slice(existingCommandsIndex) : '';
 
-    if (commandsSection === existingCommandsSection) {
-        console.log('ℹ️  SKILL.md content unchanged — skipping write.');
-    } else {
-        const frontmatter = `---
+    const frontmatter = `---
 name: sap-fiori-create-cli
 description: Run, invoke, and test the @sap-ux/create CLI — generate, add, convert, remove, update, change, list, get commands for SAP Fiori projects. Use when asked to run sap-ux, invoke create CLI, add config to a project, generate adaptation-project, or test any sap-ux/create subcommand.
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
@@ -106,10 +129,21 @@ metadata:
 ---
 
 `;
-        const newSkill = frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsSection;
+    const newSkill = frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsSection;
+    const lineCount = newSkill.split('\n').length;
+    if (lineCount > 500) {
+        console.error(
+            `❌ SKILL.md exceeds 500 lines (${lineCount} lines). Reduce README.md content to stay within the vally skill-size limit.`
+        );
+        process.exit(1);
+    }
+
+    if (commandsSection === existingCommandsSection) {
+        console.log('ℹ️  SKILL.md content unchanged — skipping write.');
+    } else {
         fs.mkdirSync(path.dirname(SKILL_OUTPUT_PATH), { recursive: true });
         fs.writeFileSync(SKILL_OUTPUT_PATH, newSkill, 'utf8');
-        console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH}`);
+        console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH} (${lineCount} lines)`);
     }
 } catch (error) {
     console.error('❌ Failed to generate SKILL.md:', error.message);
