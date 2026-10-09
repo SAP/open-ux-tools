@@ -292,6 +292,57 @@ describe('ADP writer', () => {
         });
     });
 
+    describe('useNewSandbox flag', () => {
+        const sandboxFs = create(createStorage());
+
+        test('emits flp.useNewSandbox: true when minVersion >= 1.151', async () => {
+            const projectDir = join(outputDir, 'sandbox2-enabled');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    options: { fioriTools: true },
+                    ui5: { systemVersion: '1.151.0' }
+                },
+                sandboxFs
+            );
+            expect(
+                sandboxFs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
+            ).toMatchSnapshot();
+        });
+
+        test('does not emit flp section when minVersion < 1.151', async () => {
+            const projectDir = join(outputDir, 'sandbox2-disabled');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    options: { fioriTools: true },
+                    ui5: { systemVersion: '1.120.0' }
+                },
+                sandboxFs
+            );
+            expect(
+                sandboxFs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
+            ).toMatchSnapshot();
+        });
+
+        test('does not emit flp section when minVersion is absent', async () => {
+            const projectDir = join(outputDir, 'sandbox2-no-version');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    options: { fioriTools: true }
+                },
+                sandboxFs
+            );
+            expect(
+                sandboxFs.dump(projectDir, (file) => file.dirname === projectDir && file.basename === 'ui5.yaml')
+            ).toMatchSnapshot();
+        });
+    });
+
     describe('migrate', () => {
         const migrateConfig: AdpWriterConfig = {
             app: {

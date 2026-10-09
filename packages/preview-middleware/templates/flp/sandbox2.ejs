@@ -33,9 +33,12 @@
 <% if (locals.flexSettings && flexSettings?.developerMode) { %>
     <!-- Hides Rta native toolbar  -->
     <style>
-        #shell-header, .sapUiRtaToolbar {
+        #shell-header, #rtaHeader-shellArea, .sapUiRtaToolbar, #sapUIRta_toolbar {
             visibility: hidden;
             height: 1px;
+        }
+        #systemInfo-shellArea {
+            display: none;
         }
         .sapUshellShellCanvas {
             top: 0 !important;

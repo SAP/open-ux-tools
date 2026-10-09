@@ -137,6 +137,7 @@ export interface AdpWriterConfig {
         version?: string;
         frameworkUrl?: string;
         shouldSetMinVersion?: boolean;
+        systemVersion?: string;
     };
     package?: {
         name?: string;
