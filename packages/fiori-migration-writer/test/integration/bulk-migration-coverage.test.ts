@@ -1,62 +1,62 @@
 import { BulkProjectMigrator, initI18n } from '../../src/index.js';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
+import { copy, remove, pathExists } from 'fs-extra';
+import { tmpdir } from 'node:os';
 import type { MigrationUIProjectInfo } from '../../src/types.js';
 import { UI5_SNAPSHOT_URL } from '../test-constants.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const TEST_INPUT = join(__dirname, '../fixtures/input');
 
-describe.skip('BulkProjectMigrator - Coverage Tests', () => {
-    // TODO: These tests modify test/input/ directories directly via BulkProjectMigrator
-    // which doesn't support mem-fs. Need to copy projects to temp directories first.
-    // Skipping until proper temp directory setup is implemented.
-    const testInputBase = join(__dirname, '../fixtures/input', 'coverage_bulk_multi_project');
+describe('BulkProjectMigrator - Coverage Tests', () => {
+    let tempDir: string;
 
     beforeAll(async () => {
         await initI18n();
     });
 
-    it('should migrate multiple projects with different outcomes (SUCCESS, WARNING, ERROR)', async () => {
-        if (!existsSync(testInputBase)) {
-            console.warn(`Skipping test - test projects not found: ${testInputBase}`);
-            return;
-        }
+    beforeEach(async () => {
+        // Create unique temp directory for each test
+        tempDir = join(tmpdir(), `bulk-migration-coverage-${Date.now()}`);
+    });
 
-        const projects: MigrationUIProjectInfo[] = [
-            {
-                rootPath: join(testInputBase, 'project1_simple'),
-                hostname: 'https://dummy.example.com',
-                moduleName: 'com.example.bulk.project1'
-            },
-            {
-                rootPath: join(testInputBase, 'project2_with_warning'),
-                hostname: 'https://dummy.example.com',
-                moduleName: 'com.example.bulk.project2'
-            },
-            {
-                rootPath: join(testInputBase, 'project3_error'),
-                hostname: 'https://dummy.example.com',
-                moduleName: 'com.example.bulk.project3'
-            }
+    afterEach(async () => {
+        // Clean up temp directory after each test
+        if (tempDir && (await pathExists(tempDir))) {
+            await remove(tempDir);
+        }
+    });
+
+    it('should migrate multiple projects with different outcomes', async () => {
+        // Copy test projects to temp directory to avoid modifying fixtures
+        const projectConfigs = [
+            { name: 'tool_suite_beta_lrop_v2_project', expectSuccess: true },
+            { name: 'openui5-sample-app', expectSuccess: true }
         ];
+
+        const projects: MigrationUIProjectInfo[] = [];
+
+        for (const config of projectConfigs) {
+            const srcPath = join(TEST_INPUT, config.name);
+            const destPath = join(tempDir, config.name);
+            await copy(srcPath, destPath);
+            projects.push({
+                rootPath: destPath,
+                hostname: 'https://dummy.example.com',
+                moduleName: `com.example.bulk.${config.name.replace(/-/g, '_')}`
+            } as MigrationUIProjectInfo);
+        }
 
         const migrator = new BulkProjectMigrator();
         const results = await migrator.migrate(projects, UI5_SNAPSHOT_URL);
 
-        expect(results).toHaveLength(3);
+        // Should return results for all projects
+        expect(results).toHaveLength(projectConfigs.length);
 
-        // Project 1: Should succeed or have warnings
-        const project1 = results.find((r) => r.rootPath.includes('project1_simple'));
-        expect(['SUCCESS', 'WARNING']).toContain(project1?.status);
-
-        // Project 2: Should have warnings or success (missing deps might just be a warning)
-        const project2 = results.find((r) => r.rootPath.includes('project2_with_warning'));
-        expect(['SUCCESS', 'WARNING']).toContain(project2?.status);
-
-        // Project 3: Should error (no manifest.json)
-        const project3 = results.find((r) => r.rootPath.includes('project3_error'));
-        expect(project3?.status).toBe('ERROR');
+        // At least one should succeed
+        const successCount = results.filter((r) => r.status === 'SUCCESS').length;
+        expect(successCount).toBeGreaterThan(0);
     });
 
     it('should handle empty project list', async () => {
@@ -67,35 +67,44 @@ describe.skip('BulkProjectMigrator - Coverage Tests', () => {
     });
 
     it('should continue processing after encountering an error in one project', async () => {
-        if (!existsSync(testInputBase)) {
-            console.warn(`Skipping test - test projects not found: ${testInputBase}`);
-            return;
-        }
-
-        const projects: MigrationUIProjectInfo[] = [
-            {
-                rootPath: join(testInputBase, 'project3_error'),
-                hostname: 'https://dummy.example.com',
-                moduleName: 'com.example.bulk.project3'
-            },
-            {
-                rootPath: join(testInputBase, 'project1_simple'),
-                hostname: 'https://dummy.example.com',
-                moduleName: 'com.example.bulk.project1'
-            }
+        // Copy projects - one will be modified to be invalid
+        const projectConfigs = [
+            { name: 'openui5-sample-app', makeInvalid: true },
+            { name: 'tool_suite_beta_lrop_v2_project', makeInvalid: false }
         ];
+
+        const projects: MigrationUIProjectInfo[] = [];
+
+        for (const config of projectConfigs) {
+            const srcPath = join(TEST_INPUT, config.name);
+            const destPath = join(tempDir, config.name);
+            await copy(srcPath, destPath);
+
+            if (config.makeInvalid) {
+                // Remove manifest.json to make it an invalid project
+                const manifestPath = join(destPath, 'webapp', 'manifest.json');
+                if (await pathExists(manifestPath)) {
+                    await remove(manifestPath);
+                }
+            }
+
+            projects.push({
+                rootPath: destPath,
+                hostname: 'https://dummy.example.com',
+                moduleName: `com.example.bulk.${config.name.replace(/-/g, '_')}`
+            } as MigrationUIProjectInfo);
+        }
 
         const migrator = new BulkProjectMigrator();
         const results = await migrator.migrate(projects, UI5_SNAPSHOT_URL);
 
+        // Should return results for all projects
         expect(results).toHaveLength(2);
 
-        // First should be ERROR
-        const firstResult = results[0];
-        expect(firstResult.status).toBe('ERROR');
+        // First project should fail (no manifest)
+        expect(results[0].status).toBe('ERROR');
 
-        // Second should NOT be ERROR (migration continues despite first error)
-        const secondResult = results[1];
-        expect(['SUCCESS', 'WARNING']).toContain(secondResult.status);
+        // Second project should NOT be ERROR (migration continues despite first error)
+        expect(['SUCCESS', 'WARNING']).toContain(results[1].status);
     });
 });
