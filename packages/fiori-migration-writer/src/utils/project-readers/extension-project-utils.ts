@@ -5,12 +5,8 @@
 
 import { basename, join } from 'node:path';
 import { fileExists, readJSON } from '../../index.js';
-import { getCurrentEditor } from '../fs-adapter.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { sapWattCommonSetting } from '../../types.js';
-
-// Debug flag - enabled in CI or via env var
-const DEBUG_EXTENSION_DETECTION = process.env.DEBUG_EXTENSION_DETECTION === 'true' || process.env.CI === 'true';
 
 /**
  * Read project extension settings from configuration files
@@ -20,32 +16,19 @@ const DEBUG_EXTENSION_DETECTION = process.env.DEBUG_EXTENSION_DETECTION === 'tru
  * @returns Extension settings or undefined
  */
 export async function readProjectExtensionSettings(projectRoot: string): Promise<unknown> {
-    if (DEBUG_EXTENSION_DETECTION) {
-        console.log(`[EXT-DETECT] readProjectExtensionSettings called for: ${projectRoot}`);
-        console.log(`[EXT-DETECT] getCurrentEditor(): ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`);
-    }
     try {
         // Try .che/project.json first
         const cheSettings = await readCheProjectExtensionSettings(projectRoot);
-        if (DEBUG_EXTENSION_DETECTION) {
-            console.log(`[EXT-DETECT] cheSettings result: ${cheSettings ? 'FOUND' : 'NOT FOUND'}`);
-        }
         if (cheSettings) {
             return cheSettings;
         }
 
         // Fallback to .project.json
         const legacySettings = await readLegacyProjectExtensionSettings(projectRoot);
-        if (DEBUG_EXTENSION_DETECTION) {
-            console.log(`[EXT-DETECT] legacySettings result: ${legacySettings ? 'FOUND' : 'NOT FOUND'}`);
-        }
         if (legacySettings) {
             return legacySettings;
         }
     } catch (error: unknown) {
-        if (DEBUG_EXTENSION_DETECTION) {
-            console.log(`[EXT-DETECT] Error in readProjectExtensionSettings: ${error}`);
-        }
         // Ignore errors
     }
 
@@ -60,45 +43,18 @@ export async function readProjectExtensionSettings(projectRoot: string): Promise
  */
 async function readCheProjectExtensionSettings(projectRoot: string): Promise<unknown> {
     const projectJsonPath = join(projectRoot, '.che', 'project.json');
-    if (DEBUG_EXTENSION_DETECTION) {
-        console.log(`[EXT-DETECT] Checking .che/project.json at: ${projectJsonPath}`);
-        console.log(
-            `[EXT-DETECT] getCurrentEditor() before fileExists: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`
-        );
-    }
     const exists = await fileExists(projectJsonPath);
-    if (DEBUG_EXTENSION_DETECTION) {
-        console.log(`[EXT-DETECT] fileExists result: ${exists}`);
-        console.log(
-            `[EXT-DETECT] getCurrentEditor() after fileExists: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`
-        );
-    }
     if (!exists) {
         return undefined;
     }
 
     try {
-        if (DEBUG_EXTENSION_DETECTION) {
-            console.log(
-                `[EXT-DETECT] getCurrentEditor() before readJSON: ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`
-            );
-        }
         const projectJson: any = await readJSON(projectJsonPath);
-        if (DEBUG_EXTENSION_DETECTION) {
-            console.log(`[EXT-DETECT] readJSON succeeded, has attributes: ${!!projectJson?.attributes}`);
-            console.log(`[EXT-DETECT] has sapWattCommonSetting: ${!!projectJson?.attributes?.[sapWattCommonSetting]}`);
-        }
         if (projectJson?.attributes?.[sapWattCommonSetting]?.[0]) {
             const settings = JSON.parse(projectJson.attributes[sapWattCommonSetting][0]);
-            if (DEBUG_EXTENSION_DETECTION) {
-                console.log(`[EXT-DETECT] Parsed settings, has extensibility: ${!!settings?.extensibility}`);
-            }
             return settings?.extensibility;
         }
     } catch (error: unknown) {
-        if (DEBUG_EXTENSION_DETECTION) {
-            console.log(`[EXT-DETECT] Error reading .che/project.json: ${error}`);
-        }
         // Invalid JSON or missing extensibility
     }
 
