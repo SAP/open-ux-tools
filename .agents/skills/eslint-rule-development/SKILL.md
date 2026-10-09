@@ -131,7 +131,12 @@ Read `packages/eslint-plugin-fiori-tools/docs/rules/TEMPLATE.md` for structure. 
 - **## Rule Details** — how the rule works; warning message; "The following patterns are considered warnings:" + "The following patterns are not considered warnings" code examples
 - **### How to Fix** — steps to remediate (omit if obvious from the examples)
 - **## False Positives** — optional; include only if the rule can produce false positives
-- **## Bug Report** — link to GitHub issues
+- **## Bug Report** — use this exact text:
+  ```markdown
+  ## Bug Report
+
+  If you detect an issue with the check, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
+  ```
 - **## Further Reading** — optional; only include if you have a real, verifiable URL
 
 ### Step 7 — Update README
