@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
 ## 1.15.7
 
 ### Patch Changes
