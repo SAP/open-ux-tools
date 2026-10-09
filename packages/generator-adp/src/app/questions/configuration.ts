@@ -18,7 +18,8 @@ import {
     isSyncLoadedView,
     isV4Application,
     loadApps,
-    SourceManifest
+    SourceManifest,
+    isAuthRequired
 } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -804,7 +805,7 @@ export class ConfigPrompter {
                 client: undefined
             };
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = (await this.getIsAuthRequired(system)) ?? false;
+            this.isAuthRequired = await isAuthRequired(system, this.logger);
 
             if (this.isAuthRequired) {
                 return true;
@@ -1064,39 +1065,5 @@ export class ConfigPrompter {
      */
     private shouldDisplayProjectTypeClassicLabel(application: SourceApplication | undefined): boolean {
         return !isInternalFeaturesSettingEnabled() && this.isClassicAppOnMixedSystem(application);
-    }
-
-    /**
-     * Determines whether the given system requires authentication.
-     *
-     * Returns `undefined` when no ABAP provider is configured. Otherwise, checks the system
-     * endpoint's authentication requirement. In SAP Business Application Studio, when the system
-     * reports that authentication is required, it verifies this by attempting to fetch a CSRF
-     * token from the layered repository: a `401` response confirms authentication is required,
-     * while a successful call indicates it is not.
-     *
-     * @param {string} system - The system to check.
-     * @returns {Promise<boolean | undefined>} `true` if authentication is required, `false` if not,
-     * or `undefined` if no provider is configured.
-     */
-    private async getIsAuthRequired(system: string): Promise<boolean | undefined> {
-        if (!this.abapProvider) {
-            return undefined;
-        }
-
-        const doesSystemRequireAuth = await this.systemLookup.getSystemRequiresAuth(system);
-        if (!isAppStudio() || !doesSystemRequireAuth) {
-            return doesSystemRequireAuth;
-        }
-
-        try {
-            await this.abapProvider.getLayeredRepository().getCsrfToken();
-            return false;
-        } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 401) {
-                return true;
-            }
-            throw error;
-        }
     }
 }

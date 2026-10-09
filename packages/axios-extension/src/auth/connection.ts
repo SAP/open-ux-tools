@@ -1,13 +1,33 @@
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AxiosHeaders } from 'axios';
-import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
-import type { ServiceProvider } from '../base/service-provider.js';
 import detectContentType from 'detect-content-type';
+import type { ServiceProvider } from '../base/service-provider.js';
 
 export enum CSRF {
     RequestHeaderName = 'X-Csrf-Token',
     RequestHeaderValue = 'Fetch',
     ResponseHeaderName = 'x-csrf-token'
 }
+
+const MOCK_ADP_ABAP_AUTHORIZATION_HEADER = 'm-adp-abap-authorization';
+
+/**
+ * Whether injection of the {@link MOCK_ADP_ABAP_AUTHORIZATION_HEADER} header is enabled.
+ *
+ * Controlled exclusively by the `ENABLE_MOCK_ADP_ABAP_AUTH_HEADER_INJECTION` environment variable and
+ * defaults to `false`. When enabled (and running in SAP Business Application Studio), the connection
+ * handler adds a second header carrying the base64-encoded basic-auth credentials so that the ADP mock
+ * server can record generator communication for automated testing.
+ *
+ * ⚠️ SECURITY: This MUST NOT be set to `true` in production. Enabling it causes credentials to be
+ * duplicated onto every outgoing request containing authorization header as an extra header, expanding
+ * credential exposure to backends that should never receive the mock-only header.
+ * It is intended solely for controlled test/recording environments and must remain
+ * unset (or `false`) in any real user-facing setup.
+ */
+const isMockAdpAbapAuthHeaderInjectionEnabled = process.env.ENABLE_MOCK_ADP_ABAP_AUTH_HEADER_INJECTION === 'true';
+
 /** Default connection timeout (milliseconds) */
 export const defaultTimeout = 60 * 1000; // 1 minute
 
@@ -141,7 +161,7 @@ function getContentType(contentTypeHeader: string | undefined, responseData: any
 export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-        request.headers = request.headers ?? new AxiosHeaders();
+        request.headers ??= new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
         return request;
     });
@@ -182,7 +202,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
 
     // always add cookies to outgoing requests
     provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-        request.headers = request.headers ?? new AxiosHeaders();
+        request.headers ??= new AxiosHeaders();
         request.headers.cookie = provider.cookies.toString();
         return request;
     });
@@ -192,4 +212,25 @@ export function attachConnectionHandler(provider: ServiceProvider) {
         provider.cookies.setCookies(response);
         return response;
     });
+
+    // inject mock ADP ABAP authorization header when running in BAS with basic-auth credentials
+    if (isAppStudio() && isMockAdpAbapAuthHeaderInjectionEnabled) {
+        provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+            const auth = request.auth ?? provider.defaults.auth;
+            if (!auth) {
+                return request;
+            }
+
+            const { username, password } = auth;
+            if (!username || !password) {
+                return request;
+            }
+
+            request.headers ??= new AxiosHeaders();
+            const encodedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
+            request.headers.set(MOCK_ADP_ABAP_AUTHORIZATION_HEADER, `Basic ${encodedCredentials}`);
+
+            return request;
+        });
+    }
 }
