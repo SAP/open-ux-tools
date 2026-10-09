@@ -121,6 +121,7 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
 |  new      | [sap-micro-chart-requires-navigation-entity](docs/rules/sap-micro-chart-requires-navigation-entity.md) | Ensures that micro chart measures and dimensions reference properties using a 1:n navigation entity path. | | ✅ |
+|  10.16.0  | [sap-no-inline-delete-with-multiselect](docs/rules/sap-no-inline-delete-with-multiselect.md) | Ensures that `inlineDelete` and `multiselect` are not both enabled in the same table settings, as they are mutually exclusive and will cause the application to fail. | | ✅ |
 |  10.15.0  | [sap-no-comma-in-section-title](docs/rules/sap-no-comma-in-section-title.md) | Ensures that section and subsection titles in object pages for SAP Fiori elements applications do not contain commas. | | ✅ |
 |  10.14.0  | [sap-no-path-hidden-on-interactive-columns](docs/rules/sap-no-path-hidden-on-interactive-columns.md) | A `UI.Hidden` annotation with a dynamic path must not be used on sortable or filterable columns. | | ✅ |
 |  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |

@@ -1,0 +1,16 @@
+{
+    "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+    "mcpServers": {
+        "fiori-mcp": {
+            "type": "stdio",
+            "timeout": 600,
+            "command": "npx",
+            "args": [
+                "--yes",
+                "--ignore-scripts",
+                "@sap-ux/fiori-mcp-server@1.15.8",
+                "fiori-mcp"
+            ]
+        }
+    }
+}
