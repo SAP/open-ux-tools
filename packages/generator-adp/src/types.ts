@@ -60,6 +60,10 @@ export interface AdpTelemetryProperties {
      * Whether TypeScript was chosen.
      */
     wasTypeScriptChosen: boolean;
+    /**
+     * Whether the user chose to import key-user changes into the generated project.
+     */
+    wasKeyUserChangesImported: boolean;
 }
 
 /**

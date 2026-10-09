@@ -32,7 +32,8 @@ describe('TelemetryCollector', () => {
                 wasExtProjectGenerated: false,
                 wasFlpConfigDone: false,
                 wasDeployConfigDone: false,
-                wasTypeScriptChosen: false
+                wasTypeScriptChosen: false,
+                wasKeyUserChangesImported: false
             });
         });
     });

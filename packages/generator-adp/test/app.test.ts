@@ -748,6 +748,10 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             const changeContent = JSON.parse(fs.readFileSync(changeFilePath, 'utf8'));
             expect(changeContent).toMatchSnapshot();
+
+            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                expect.objectContaining({ wasKeyUserChangesImported: true })
+            );
         });
 
         it('should not call writeResult when json input has no id', async () => {
@@ -877,6 +881,10 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(fs.existsSync(changesDir)).toBe(true);
                 const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.annotation_change'));
                 expect(changeFiles.length).toBeGreaterThan(0);
+
+                expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                    expect.objectContaining({ wasKeyUserChangesImported: true })
+                );
             });
 
             it('should generate a project without key user changes when the JSON input file is missing', async () => {
@@ -897,6 +905,9 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(fs.existsSync(join(projectFolder, 'webapp', 'manifest.appdescr_variant'))).toBe(true);
                 expect(fs.existsSync(join(projectFolder, 'webapp', 'changes'))).toBe(false);
                 expect(mockWriteResult).toHaveBeenCalledWith(id, projectFolder);
+                expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                    expect.objectContaining({ wasKeyUserChangesImported: false })
+                );
             });
 
             it('should write a failure result when the JSON input file is corrupt', async () => {

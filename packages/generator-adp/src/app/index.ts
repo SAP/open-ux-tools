@@ -540,7 +540,10 @@ export default class extends Generator {
             wasFlpConfigDone: this.attributeAnswers?.addFlpConfig ?? false,
             wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
             wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
-            wasExtProjectGenerated: this.shouldCreateExtProject ?? false
+            wasExtProjectGenerated: this.shouldCreateExtProject ?? false,
+            wasKeyUserChangesImported: this.jsonInput
+                ? !!this.jsonInputFile?.keyUserChanges
+                : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {
             telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
