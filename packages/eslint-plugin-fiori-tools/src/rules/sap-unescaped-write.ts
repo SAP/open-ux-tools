@@ -77,6 +77,44 @@ function validateWriteAttribute(node: CallExpression): boolean {
     return secondArg.type === 'Literal' || secondArg.type === 'Identifier';
 }
 
+/**
+ * Dispatch validation to the correct validator based on the call expression.
+ *
+ * @param node The call expression node
+ * @param writeExpr The expected write expression string
+ * @returns True if the call is safe
+ */
+function validate(node: CallExpression, writeExpr: string): boolean {
+    const expr = getFunctionExpressionStatement(node);
+    if (expr === writeExpr) {
+        return validateWrite(node);
+    }
+    return validateWriteAttribute(node);
+}
+
+/**
+ * Filter body statements to only those that are write/writeAttribute calls.
+ *
+ * @param stmts The function body statements
+ * @param writeExpr The expected write call string
+ * @param writeAttrExpr The expected writeAttribute call string
+ * @returns Filtered expression statements that are write calls
+ */
+function filterWriteExpressions(
+    stmts: ExpressionStatement[],
+    writeExpr: string,
+    writeAttrExpr: string
+): ExpressionStatement[] {
+    return stmts.filter((e) => {
+        const { expression } = e;
+        if (expression?.type !== 'CallExpression') {
+            return false;
+        }
+        const call = getFunctionExpressionStatement(expression as CallExpression);
+        return writeExpr === call || writeAttrExpr === call;
+    });
+}
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
@@ -95,44 +133,6 @@ const rule: Rule.RuleModule = {
     create(context: Rule.RuleContext) {
         const RENDERER = 'renderer';
         const RENDER = 'render';
-
-        /**
-         * Dispatch validation to the correct validator based on the call expression.
-         *
-         * @param node The call expression node
-         * @param writeExpr The expected write expression string
-         * @returns True if the call is safe
-         */
-        function validate(node: CallExpression, writeExpr: string): boolean {
-            const expr = getFunctionExpressionStatement(node);
-            if (expr === writeExpr) {
-                return validateWrite(node);
-            }
-            return validateWriteAttribute(node);
-        }
-
-        /**
-         * Filter body statements to only those that are write/writeAttribute calls.
-         *
-         * @param stmts The function body statements
-         * @param writeExpr The expected write call string
-         * @param writeAttrExpr The expected writeAttribute call string
-         * @returns Filtered expression statements that are write calls
-         */
-        function filterWriteExpressions(
-            stmts: ExpressionStatement[],
-            writeExpr: string,
-            writeAttrExpr: string
-        ): ExpressionStatement[] {
-            return stmts.filter((e) => {
-                const { expression } = e;
-                if (expression?.type !== 'CallExpression') {
-                    return false;
-                }
-                const call = getFunctionExpressionStatement(expression as CallExpression);
-                return writeExpr === call || writeAttrExpr === call;
-            });
-        }
 
         /**
          * Validate all write/writeAttribute calls in the given function body.

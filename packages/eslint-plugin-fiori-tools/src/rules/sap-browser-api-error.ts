@@ -179,6 +179,58 @@ const rule: Rule.RuleModule = {
         }
 
         /**
+         * Process a MemberExpression init (e.g. `window.document`) in a variable declarator.
+         *
+         * @param node The variable declarator node (for reporting)
+         * @param init The MemberExpression init
+         * @param varName The declared variable name
+         */
+        function processMemberExpressionInit(
+            node: VariableDeclarator & Rule.NodeParentExtension,
+            init: MemberExpression,
+            varName: string
+        ): void {
+            const path = getMemberExpressionPath(init);
+            if (!path) {
+                return;
+            }
+            if (path === 'window.document') {
+                FORBIDDEN_DOCUMENT_OBJECT.push(varName);
+            } else if (path === 'window.location') {
+                FORBIDDEN_LOCATION_OBJECT.push(varName);
+            } else if (path === 'window.navigator') {
+                context.report({ node, messageId: 'proprietaryBrowserApi' });
+            } else if (path === 'window.event') {
+                FORBIDDEN_WINDOW_EVENT_OBJECT.push(varName);
+            }
+        }
+
+        /**
+         * Process an Identifier init (e.g. `document`, `window`) in a variable declarator.
+         *
+         * @param node The variable declarator node (for reporting)
+         * @param init The Identifier init
+         * @param varName The declared variable name
+         */
+        function processIdentifierInit(
+            node: VariableDeclarator & Rule.NodeParentExtension,
+            init: Identifier,
+            varName: string
+        ): void {
+            const initName = init.name;
+            if (initName === 'document') {
+                FORBIDDEN_DOCUMENT_OBJECT.push(varName);
+            } else if (initName === 'location') {
+                FORBIDDEN_LOCATION_OBJECT.push(varName);
+            } else if (initName === 'navigator') {
+                context.report({ node, messageId: 'proprietaryBrowserApi' });
+            } else if (initName === 'window') {
+                context.report({ node, messageId: 'proprietaryBrowserApi' });
+                FORBIDDEN_WINDOW_OBJECT.push(varName);
+            }
+        }
+
+        /**
          * Process variable declarator to track aliased globals.
          *
          * @param node The variable declarator node
@@ -194,31 +246,9 @@ const rule: Rule.RuleModule = {
             }
 
             if (init.type === 'MemberExpression') {
-                const path = getMemberExpressionPath(init as MemberExpression);
-                if (!path) {
-                    return;
-                }
-                if (path === 'window.document') {
-                    FORBIDDEN_DOCUMENT_OBJECT.push(varName);
-                } else if (path === 'window.location') {
-                    FORBIDDEN_LOCATION_OBJECT.push(varName);
-                } else if (path === 'window.navigator') {
-                    context.report({ node, messageId: 'proprietaryBrowserApi' });
-                } else if (path === 'window.event') {
-                    FORBIDDEN_WINDOW_EVENT_OBJECT.push(varName);
-                }
+                processMemberExpressionInit(node, init as MemberExpression, varName);
             } else if (init.type === 'Identifier') {
-                const initName = (init as Identifier).name;
-                if (initName === 'document') {
-                    FORBIDDEN_DOCUMENT_OBJECT.push(varName);
-                } else if (initName === 'location') {
-                    FORBIDDEN_LOCATION_OBJECT.push(varName);
-                } else if (initName === 'navigator') {
-                    context.report({ node, messageId: 'proprietaryBrowserApi' });
-                } else if (initName === 'window') {
-                    context.report({ node, messageId: 'proprietaryBrowserApi' });
-                    FORBIDDEN_WINDOW_OBJECT.push(varName);
-                }
+                processIdentifierInit(node, init as Identifier, varName);
             }
         }
 
