@@ -34,7 +34,7 @@ export const enum FileName {
     UI5MockYaml = 'ui5-mock.yaml',
     NeoApp = 'neo-app.json',
     XsApp = 'xs-app.json',
-    ExtConfigJson = 'ext-config.json',
+    ExtConfigJson = '.extconfig.json',
     Pom = 'pom.xml',
     Component = 'Component.js',
     IndexHtml = 'index.html'
@@ -49,7 +49,7 @@ export const enum DirName {
     Test = 'test',
     I18n = 'i18n',
     Changes = 'changes',
-    Sapux = 'sapux'
+    Sapux = 'src'
 }
 
 /**
