@@ -1,4 +1,10 @@
-import { doesPropertyExist, stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, initI18n } from '../../../src/index.js';
+import {
+    doesPropertyExist,
+    stripSpaces,
+    escapeSingleQuotes,
+    escapeDoubleQuotes,
+    initI18n
+} from '../../../src/index.js';
 
 describe('File System Utils', () => {
     beforeAll(async () => {

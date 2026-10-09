@@ -26,8 +26,8 @@ server:
       configuration:
         adp:
           target:
-            destination: U1YCLNT120
-            client: '120'
+            destination: BACKEND_SYSTEM
+            client: '100'
             url: ''
           ignoreCertErrors: false
     - name: fiori-tools-proxy
@@ -35,8 +35,8 @@ server:
       configuration:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - destination: U1YCLNT120
-            client: '120'
+          - destination: BACKEND_SYSTEM
+            client: '100'
             url: ''
             path: /sap
         ui5:

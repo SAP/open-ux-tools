@@ -667,7 +667,7 @@ describe('Migration Integration Tests', () => {
                 }
             ];
 
-            const { BulkProjectMigrator } = await import('../src/index.js');
+            const { BulkProjectMigrator } = await import('../../src/index.js');
             const bulkMigrator = new BulkProjectMigrator();
 
             const results = await bulkMigrator.migrate(projects, UI5_SNAPSHOT_URL);

@@ -520,9 +520,9 @@
 				</FunctionImport>
 			</EntityContainer>
 			<atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self"
-				href="https://webidetesting0137314-fiori.dispatcher.cert.hana.ondemand.com/sap/opu/odata/sap/CV_ATTACHMENT_SRV/$metadata"/>
+				href="https://example-odata-service.ondemand.com/sap/opu/odata/sap/CV_ATTACHMENT_SRV/$metadata"/>
 			<atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version"
-				href="https://webidetesting0137314-fiori.dispatcher.cert.hana.ondemand.com/sap/opu/odata/sap/CV_ATTACHMENT_SRV/$metadata"/>
+				href="https://example-odata-service.ondemand.com/sap/opu/odata/sap/CV_ATTACHMENT_SRV/$metadata"/>
 		</Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

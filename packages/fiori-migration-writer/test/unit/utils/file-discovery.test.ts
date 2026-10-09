@@ -6,7 +6,8 @@ import type { ProjectFolder } from '../../../src/types.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Import modules under test
-const { findAllProjectRoots, getReuseLibs, findAll, ReuseLibType } = await import('../../../src/utils/file-discovery.js');
+const { findAllProjectRoots, getReuseLibs, findAll, ReuseLibType } =
+    await import('../../../src/utils/file-discovery.js');
 
 describe('file-discovery', () => {
     const testOutputDir = join(__dirname, '../../../test-output', 'file-discovery');
