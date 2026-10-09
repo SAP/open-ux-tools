@@ -3,8 +3,7 @@ import { RuleTester } from 'eslint';
 
 const ruleTester = new RuleTester({ languageOptions: { ecmaVersion: 2018, sourceType: 'script' } });
 
-const MSG =
-    "The callback function name should follow the naming convention and starts with either 'ext' (follow casing)" as const;
+const MSG = "The callback function name must start with 'ext' followed by an uppercase letter" as const;
 
 ruleTester.run('sap-controller-hook-name-convention', rule, {
     valid: [

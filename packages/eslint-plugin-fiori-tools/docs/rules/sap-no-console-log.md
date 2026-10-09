@@ -4,7 +4,7 @@ The use of console.log is not allowed.
 
 ## Rule Details
 
-Console.log is not supported in all browsers and as such use jQuery.sap.log.info, jQuery.sap.log.debug or jQuery.sap.log.error instead
+Use `Log` from `sap/base/Log` (`Log.info`, `Log.debug`, `Log.error`) instead of `console.log`
 
 ## Bug report
 

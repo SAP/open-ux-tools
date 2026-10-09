@@ -3,16 +3,10 @@ import { RuleTester } from 'eslint';
 
 const ruleTester = new RuleTester({ languageOptions: { ecmaVersion: 2018, sourceType: 'script' } });
 
-const errorMessage =
-    'Console.log is not supported in all browsers and as such use jQuery.sap.log.info, jQuery.sap.log.debug or jQuery.sap.log.error instead' as const;
+const errorMessage = 'Use Log from sap/base/Log (Log.info, Log.debug, Log.error) instead of console.log' as const;
 
 ruleTester.run('sap-no-console-log', rule, {
-    valid: [
-        'jQuery.sap.log.info("test");',
-        'jQuery.sap.log.debug("test");',
-        'jQuery.sap.log.error("test");',
-        'myObj.log("test");'
-    ],
+    valid: ['Log.info("test");', 'Log.debug("test");', 'Log.error("test");', 'myObj.log("test");'],
     invalid: [
         {
             code: 'console.log("test");',

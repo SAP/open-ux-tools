@@ -31,8 +31,7 @@ const rule: Rule.RuleModule = {
             recommended: true
         },
         messages: {
-            badNameConvention:
-                "The callback function name should follow the naming convention and starts with either 'ext' (follow casing)"
+            badNameConvention: "The callback function name must start with 'ext' followed by an uppercase letter"
         },
         schema: []
     },

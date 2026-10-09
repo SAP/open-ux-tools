@@ -60,8 +60,7 @@ const rule: Rule.RuleModule = {
             recommended: true
         },
         messages: {
-            consoleNotAllowed:
-                'Console.log is not supported in all browsers and as such use jQuery.sap.log.info, jQuery.sap.log.debug or jQuery.sap.log.error instead'
+            consoleNotAllowed: 'Use Log from sap/base/Log (Log.info, Log.debug, Log.error) instead of console.log'
         },
         schema: []
     },
