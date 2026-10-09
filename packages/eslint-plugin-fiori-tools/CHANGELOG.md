@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-09
+
+#### Features
+
+- add sap-no-inline-delete-with-multiselect rule to warn when both inlineDelete and multiselect are enabled in the same tableSettings [[74dba15](https://github.com/SAP/open-ux-tools/commit/74dba15b8d406ab05586deb5433e8324e40f49fe)]
+
 ## 10.15.1
 
 ### Patch Changes
