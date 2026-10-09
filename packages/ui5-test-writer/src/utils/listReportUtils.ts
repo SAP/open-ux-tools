@@ -414,6 +414,7 @@ export function getListReportTabs(
     }
     const viewNodes = resolveViewTableNodes(listReportPage.model.root);
     const nodeByKey = new Map(viewNodes.map((entry) => [entry.key, entry.node]));
+    const criticalActions = collectCriticalActionNames(convertedMetadata);
     const tabs: ListReportTab[] = [];
     views.forEach((view, index) => {
         // Match the spec-model view node by key; fall back to model order (both lists exclude custom tabs).
@@ -427,7 +428,13 @@ export function getListReportTabs(
         let deleteButton = buildButtonState();
         if (convertedMetadata && entitySet) {
             const actionNames = getToolBarActionItems(getToolBarActionsFromTableNode(tableNode));
-            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySet, actionNames, log);
+            toolBarActions = safeCheckActionButtonStates(
+                convertedMetadata,
+                entitySet,
+                actionNames,
+                log,
+                criticalActions
+            );
             const buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySet, log);
             createButton = buildButtonState(buttonVisibility?.create);
             deleteButton = buildButtonState(buttonVisibility?.delete);

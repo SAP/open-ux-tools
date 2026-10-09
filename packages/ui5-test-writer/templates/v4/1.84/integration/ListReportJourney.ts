@@ -83,28 +83,34 @@ function journey() {
     //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
     // });
 
-<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (_Given: Given, _When: When, Then: Then) {
-        <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-        <%_ if (createButton.visible && !isALP) { _%>
+<%_ if (createButton.visible && !isALP) { -%>
+    opaTest("Check the create button", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
-        <%_ } _%>
-        <%_ if (deleteButton.visible) { _%>
+    });
+
+<%_ } -%>
+<%_ if (deleteButton.visible) { -%>
+    opaTest("Check the delete button", function (_Given: Given, _When: When, Then: Then) {
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
-        <%_ } _%>
-        <%_ toolBarActions.forEach(function(item) { _%>
-        <%_ if (item.visible) { _%>
+    });
+
+<%_ } -%>
+<%_ (toolBarActions || []).forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+    opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (_Given: Given, _When: When, Then: Then) {
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
-        <%_ } _%>
-        <%_ }); -%>
-        <%_ } -%>
-        <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-        <%_ } -%>
     });
+
+<%_ } -%>
+<%_ }); -%>
+<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
+    opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
+        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+    });
+
 <%_ } -%>
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
     opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {
@@ -113,8 +119,8 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
         <%_ }); -%>
     });
-<%_ } -%>
 
+<%_ } -%>
 <%_ if (startLR) { -%>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data

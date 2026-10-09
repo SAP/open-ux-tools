@@ -20,7 +20,6 @@ import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 <%_
 const usesFilterFieldIdentifier =
     !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
-const toolBarHasMenu = (toolBarActions || []).some(function(item) { return item.visible && item.menuActions && !item.splitButton; });
 -%>
 <% if (usesFilterFieldIdentifier) { -%>
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
@@ -85,43 +84,87 @@ function journey() {
     // });
 
 <%_ if (tabs && tabs.length > 0) { -%>
-    opaTest("Check table columns and actions per tab", function (_Given: Given, When: When, Then: Then) {
-        <%_ tabs.forEach(function(tab) { _%>
+<%_ tabs.forEach(function(tab) { -%>
+    /// View "<%- tab.key %>" ///
+<%_ if (tab.createButton.visible && !isALP) { -%>
+    opaTest(<%- JSON.stringify("Check the create button in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
-        <%_ if (tab.createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckCreate({ visible: true });
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressCreate();
-        <%_ } _%>
-        <%_ if (tab.deleteButton.visible) { _%>
+    });
+
+<%_ } -%>
+<%_ if (tab.deleteButton.visible) { -%>
+    opaTest(<%- JSON.stringify("Check the delete button in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressDelete();
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true });
+    });
+
+<%_ } -%>
+<%_ tab.toolBarActions.forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+    opaTest(<%- JSON.stringify("Check the " + item.label + " action in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ if (item.menuActions) { _%>
+        <%_ if (item.splitButton) { _%>
+        // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>");
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
+        <%_ } else { _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>");
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
+        <%_ item.menuActions.forEach(function(menuAction) { _%>
+        <%_ if (menuAction.visible) { _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckMenuAction("<%- menuAction.label %>");
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteMenuAction("<%- menuAction.label %>");
         <%_ } _%>
-        <%_ tab.toolBarActions.forEach(function(item) { _%>
-        <%_ if (item.visible) { _%>
+        <%_ }); _%>
+        <%_ } _%>
+        <%_ } else { _%>
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
         <%_ } _%>
-        <%_ }); _%>
-        <%_ if (Object.keys(tab.tableColumns).length > 0) { _%>
-        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
-        <%_ } _%>
-        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
-        <%_ }); -%>
     });
+
+<%_ } -%>
+<%_ }); -%>
+<%_ if (Object.keys(tab.tableColumns).length > 0) { -%>
+    opaTest(<%- JSON.stringify("Check table columns in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
+    });
+
+<%_ } -%>
+    opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ if (!hideFilterBar) { -%>
+        // Populate the table so the row check has data.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } -%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
+    });
+
+<%_ }); -%>
 <%_ } else { -%>
-<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-    opaTest("Check table columns and actions", function (_Given: Given, <% if (toolBarHasMenu) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
-        <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-        <%_ if (createButton.visible && !isALP) { _%>
+<%_ if (createButton.visible && !isALP) { -%>
+    opaTest("Check the create button", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
-        <%_ } _%>
-        <%_ if (deleteButton.visible) { _%>
+    });
+
+<%_ } -%>
+<%_ if (deleteButton.visible) { -%>
+    opaTest("Check the delete button", function (_Given: Given, _When: When, Then: Then) {
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
-        <%_ } _%>
-        <%_ toolBarActions.forEach(function(item) { _%>
-        <%_ if (item.visible) { _%>
+    });
+
+<%_ } -%>
+<%_ (toolBarActions || []).forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+<%_ const usesWhen = item.menuActions && !item.splitButton; _%>
+    opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (_Given: Given, <% if (usesWhen) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
         <%_ if (item.menuActions) { _%>
         <%_ if (item.splitButton) { _%>
         // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
@@ -141,13 +184,15 @@ function journey() {
         // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
         <%_ } _%>
-        <%_ } _%>
-        <%_ }); -%>
-        <%_ } -%>
-        <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-        <%_ } -%>
     });
+
+<%_ } -%>
+<%_ }); -%>
+<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
+    opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
+        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+    });
+
 <%_ } -%>
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
     opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {
@@ -156,9 +201,9 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
         <%_ }); -%>
     });
-<%_ } -%>
-<%_ } -%>
 
+<%_ } -%>
+<%_ } -%>
 <%_ if (startLR) { -%>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data

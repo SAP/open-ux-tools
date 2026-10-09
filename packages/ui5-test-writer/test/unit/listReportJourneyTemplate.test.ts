@@ -67,6 +67,24 @@ describe.each(['latest', '1.148'])('ListReportJourney template (%s) - multi-tab'
         expect(content).toContain('onTable("6").iCheckRows()');
     });
 
+    test('emits a self-contained opaTest per tab check and populates the table before row checks', () => {
+        // Each tab's blocks are introduced by a view splitter comment for readability.
+        expect(content).toContain('/// View "1" ///');
+        expect(content).toContain('/// View "6" ///');
+        // Each tab check is its own opaTest (consistent with the single-table split).
+        expect(content).toContain('opaTest("Check the create button in view 1"');
+        expect(content).toContain('opaTest("Check the Navigate action in view 1"');
+        expect(content).toContain('opaTest("Check table columns in view 1"');
+        expect(content).toContain('opaTest("Check table rows in view 1"');
+        // The row check must be preceded by a search so the table has data (fixes the multi-tab iCheckRows timeout).
+        const rowsBlock = content.slice(
+            content.indexOf('opaTest("Check table rows in view 1"'),
+            content.indexOf('opaTest("Check table rows in view 6"')
+        );
+        expect(rowsBlock).toContain('onFilterBar().iExecuteSearch()');
+        expect(rowsBlock.indexOf('iExecuteSearch')).toBeLessThan(rowsBlock.indexOf('onTable("1").iCheckRows()'));
+    });
+
     test('navigates to the object page from the default tab when no originating tab is resolved', () => {
         // No navigatedOPTabKey → fall back to the first tab (tableIdentifiers[0] = "1").
         expect(content).toContain('onTable("1").iPressRow(0)');
