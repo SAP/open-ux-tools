@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`] = `
+"sap.ui.define(['sap/suite/ui/generic/template/lib/AppComponent'], function (AppComponent) {
+    return AppComponent.extend('namespace1.tool_suite_beta_lrop_v2_project.Component', {
+        metadata: {
+            manifest: 'json'
+        }
+    });
+});
+"
+`;
+
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop 1`] = `
+"/* global hasher */
+sap.ui.define(['sap/fe/core/AppComponent'], function (AppComponent) {
+    'use strict';
+
+    return AppComponent.extend('namespace1.v4catalog.Component', {
+        metadata: {
+            manifest: 'json'
+        }
+    });
+});
+"
+`;

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate openui5-sample-app 1`] = `
+"window.suite = function () {
+    'use strict';
+
+    // eslint-disable-next-line
+	var oSuite = new parent.jsUnitTestSuite(),
+        sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+
+    oSuite.addTestPage(sContextPath + 'unit/unitTests.qunit.html');
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};
+"
+`;

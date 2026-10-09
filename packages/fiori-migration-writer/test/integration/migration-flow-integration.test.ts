@@ -25,18 +25,43 @@ expect.addSnapshotSerializer({
  * Creates separate snapshot files for each app to make reviews manageable
  */
 function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): void {
-    const filesToCheck = [
+    // Core configuration files
+    const coreFiles = [
         'package.json',
         'ui5.yaml',
         'ui5-local.yaml',
         'ui5-mock.yaml',
-        '.gitignore',
-        'webapp/manifest.json',
-        'webapp/test/flpSandbox.html',
-        'webapp/test/flpSandboxMockServer.html'
+        '.gitignore'
     ];
 
-    filesToCheck.forEach((file) => {
+    // Webapp files that may be created/modified during migration
+    const webappFiles = [
+        'webapp/manifest.json',
+        'webapp/Component.js',
+        'webapp/index.html'
+    ];
+
+    // Test infrastructure files
+    const testFiles = [
+        'webapp/test/flpSandbox.html',
+        'webapp/test/flpSandboxMockServer.html',
+        'webapp/test/changes_loader.js',
+        'webapp/test/changes_preview.js',
+        'webapp/test/locate-reuse-libs.js',
+        'webapp/test/initFlpSandbox.js',
+        'webapp/test/testsuite.qunit.html',
+        'webapp/test/testsuite.qunit.js'
+    ];
+
+    // VS Code configuration files
+    const vscodeFiles = ['.vscode/launch.json'];
+
+    // Local service files
+    const localServiceFiles = ['webapp/localService/mockserver.js'];
+
+    const allFiles = [...coreFiles, ...webappFiles, ...testFiles, ...vscodeFiles, ...localServiceFiles];
+
+    allFiles.forEach((file) => {
         const content = getFileFromMemFs(fs, projectPath, file);
         if (content) {
             // Normalize UUIDs in content before snapshot comparison
