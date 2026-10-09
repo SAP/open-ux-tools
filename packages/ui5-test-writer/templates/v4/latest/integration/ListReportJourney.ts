@@ -84,34 +84,134 @@ function journey() {
     // });
 
 <%_ if (tabs && tabs.length > 0) { -%>
-    opaTest("Check table columns and actions per tab", function (_Given: Given, When: When, Then: Then) {
-        <%_ tabs.forEach(function(tab) { _%>
+<%_ tabs.forEach(function(tab) { -%>
+    /// View "<%- tab.key %>" ///
+<%_ if (tab.createButton.visible && !isALP) { -%>
+    opaTest(<%- JSON.stringify("Check the create button in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
-        <%_ if (tab.createButton.visible && !isALP) { _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckCreate({ visible: true });
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteCreate();
+    });
+
+<%_ } -%>
+<%_ if (tab.deleteButton.visible) { -%>
+    opaTest(<%- JSON.stringify("Check the delete button in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ const deleteIsSelectionGated = tab.deleteButton.enabled === true; _%>
+        <%_ if (deleteIsSelectionGated) { _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true, enabled: false });
+        <%_ if (!hideFilterBar) { _%>
+        // Populate the table and select a row so Delete becomes enabled.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } _%>
-        <%_ if (tab.deleteButton.visible) { _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true, enabled: true });
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteDelete();
+        // Deselect the row so the following actions start with an empty selection.
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        <%_ } else { _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true });
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteDelete();
         <%_ } _%>
-        <%_ tab.toolBarActions.forEach(function(item) { _%>
-        <%_ if (item.visible) { _%>
-        <%_ if (item.custom) { _%>
+    });
+
+<%_ } -%>
+<%_ tab.toolBarActions.forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+    opaTest(<%- JSON.stringify("Check the " + item.label + " action in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ if (item.menuActions) { _%>
+        <%_ if (item.splitButton) { _%>
+        // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>");
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
+        <%_ } else { _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>");
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
+        <%_ item.menuActions.forEach(function(menuAction) { _%>
+        <%_ if (menuAction.visible) { _%>
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckMenuAction("<%- menuAction.label %>");
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteMenuAction("<%- menuAction.label %>");
+        <%_ } _%>
+        <%_ }); _%>
+        <%_ } _%>
+        <%_ } else if (item.custom) { _%>
         <%_ if (item.labelUnresolved) { _%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text
         <%_ } _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { visible: true });
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
         <%_ } else { _%>
+        <%_ const hasParamDialog = item.parameterDialogFields && item.parameterDialogFields.length > 0; _%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: <%- item.enabled === true %> });
         // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+        <%_ if (item.selectionEnables && !item.isCritical && !hasParamDialog) { _%>
+        <%_ if (!hideFilterBar) { _%>
+        // Populate the table and select a row so the action becomes enabled.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> }, { enabled: true });
+        // Deselect the row so the following actions start with an empty selection.
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        <%_ } else if ((item.isCritical || hasParamDialog) && item.enabled === 'dynamic') { _%>
+        // "<%- item.label %>" is conditionally enabled (Core.OperationAvailable path); it may be disabled for the selected row. Uncomment and select a row that enables it to test the <%- hasParamDialog ? 'action parameter dialog' : 'confirmation dialog' %>.
+        <%_ if (!hideFilterBar) { _%>
+        // When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%_ } _%>
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+        <%_ if (hasParamDialog) { _%>
+        <%_ item.parameterDialogFields.forEach(function(parameter) { _%>
+        // Then.onThe<%- startLR%>Generated.onActionDialog().iCheckActionParameterDialogField({ property: "<%- parameter %>" }, undefined, { visible: true });
         <%_ }); _%>
-        <%_ if (Object.keys(tab.tableColumns).length > 0) { _%>
-        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
+        // When.onThe<%- startLR%>Generated.onActionDialog().iCancel();
+        <%_ } else { _%>
+        // Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+        // When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
         <%_ } _%>
+        // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        <%_ } else if (item.isCritical || hasParamDialog) { _%>
+        <%_ if (!hideFilterBar) { _%>
+        // Populate the table so the action below has a row to select.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } _%>
+        <%_ if (item.enabled !== true) { _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        <%_ } _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction({ service: "<%- item.service %>", action: "<%- item.action %>", unbound: <%- item.unbound === true %> });
+        <%_ if (hasParamDialog) { _%>
+        <%_ item.parameterDialogFields.forEach(function(parameter) { _%>
+        Then.onThe<%- startLR%>Generated.onActionDialog().iCheckActionParameterDialogField({ property: "<%- parameter %>" }, undefined, { visible: true });
+        <%_ }); _%>
+        When.onThe<%- startLR%>Generated.onActionDialog().iCancel();
+        <%_ } else { _%>
+        Then.onThe<%- startLR%>Generated.onMessageDialog().iCheckState();
+        When.onThe<%- startLR%>Generated.onMessageDialog().iCancel();
+        <%_ } _%>
+        <%_ if (item.enabled !== true) { _%>
+        // Deselect the row so the following actions start with an empty selection.
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iSelectRows(0);
+        <%_ } _%>
+        <%_ } _%>
+        <%_ } _%>
+    });
+
+<%_ } -%>
+<%_ }); -%>
+<%_ if (Object.keys(tab.tableColumns).length > 0) { -%>
+    opaTest(<%- JSON.stringify("Check table columns in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
+    });
+
+<%_ } -%>
+    opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ if (!hideFilterBar) { -%>
+        // Populate the table so the row check has data.
+        When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+        <%_ } -%>
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
         <%_ if (tab.contactCardColumns.length > 0) { _%>
         // Reveal popin details so low-priority (e.g. contact-card) columns become clickable; no-op on grid/analytical tables.
@@ -122,8 +222,9 @@ function journey() {
         When.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iClickLink(0, "<%- column.property %>");
         Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
         <%_ }); _%>
-        <%_ }); -%>
     });
+
+<%_ }); -%>
 <%_ } else { -%>
 <%_ if (createButton.visible && !isALP) { -%>
     opaTest("Check the create button", function (_Given: Given, _When: When, Then: Then) {
