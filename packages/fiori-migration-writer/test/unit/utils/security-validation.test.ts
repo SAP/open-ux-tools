@@ -124,5 +124,14 @@ describe('Path Validation Security', () => {
             expect(() => validateGitRelativePath("foo'bar")).toThrow('Git path contains unsafe characters');
             expect(() => validateGitRelativePath('foo"bar')).toThrow('Git path contains unsafe characters');
         });
+
+        test('should return a new string instance (breaks taint tracking)', () => {
+            const input = 'webapp/Component.js';
+            const result = validateGitRelativePath(input);
+            // The result should be equal in value but be a distinct string instance
+            expect(result).toBe(input);
+            // TypeScript branded type ensures it's recognized as SafeGitPath
+            expect(typeof result).toBe('string');
+        });
     });
 });

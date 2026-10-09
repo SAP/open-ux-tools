@@ -48,8 +48,8 @@ describe('template/template-helpers', () => {
                 const templates: TemplateMap = {};
                 const templateData = createTemplateData();
 
-                // Should not throw
-                await applyTemplates(templates, templateData, testOutputDir);
+                // Should not throw - verify by checking promise resolves
+                await expect(applyTemplates(templates, templateData, testOutputDir)).resolves.toBeUndefined();
             });
         });
 
@@ -92,8 +92,8 @@ describe('template/template-helpers', () => {
                     ui5Theme: 'sap_fiori_3'
                 });
 
-                // Should not throw when index.html doesn't exist
-                await applyTemplates({}, templateData, rootPath, undefined, '1.136.0');
+                // Should not throw when index.html doesn't exist - verify promise resolves
+                await expect(applyTemplates({}, templateData, rootPath, undefined, '1.136.0')).resolves.toBeUndefined();
             });
         });
 
@@ -110,10 +110,9 @@ describe('template/template-helpers', () => {
                     ui5Theme: 'sap_fiori_3'
                 });
 
-                await applyTemplates({}, templateData, rootPath, undefined, '1.120.0');
-
                 // For non-extension projects, theme update code path is not executed
-                // The test just verifies no errors occur
+                // Verify the function completes without errors
+                await expect(applyTemplates({}, templateData, rootPath, undefined, '1.120.0')).resolves.toBeUndefined();
             });
         });
 
@@ -132,7 +131,7 @@ describe('template/template-helpers', () => {
                 });
 
                 // Should not throw - errors are caught and migration continues
-                await applyTemplates({}, templateData, rootPath, undefined, '1.120.0');
+                await expect(applyTemplates({}, templateData, rootPath, undefined, '1.120.0')).resolves.toBeUndefined();
             });
         });
 
@@ -141,8 +140,8 @@ describe('template/template-helpers', () => {
                 const templates: TemplateMap = {};
                 const templateData = createTemplateData();
 
-                // Should use AppSettings as default template root
-                await applyTemplates(templates, templateData, testOutputDir);
+                // Should use AppSettings as default template root - verify completes without error
+                await expect(applyTemplates(templates, templateData, testOutputDir)).resolves.toBeUndefined();
             });
         });
 
@@ -151,8 +150,10 @@ describe('template/template-helpers', () => {
                 const templates: TemplateMap = {};
                 const templateData = createTemplateData();
 
-                // Should use custom template root
-                await applyTemplates(templates, templateData, testOutputDir, 'customRoot');
+                // Should use custom template root - verify completes without error
+                await expect(
+                    applyTemplates(templates, templateData, testOutputDir, 'customRoot')
+                ).resolves.toBeUndefined();
             });
         });
     });
