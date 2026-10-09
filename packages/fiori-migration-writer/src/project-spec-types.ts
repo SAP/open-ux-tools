@@ -9,10 +9,11 @@ export type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 /**
  * Fiori Elements versions
  */
-export enum FioriElementsVersion {
-    v2 = 'v2',
-    v4 = 'v4'
-}
+export const FioriElementsVersion = {
+    v2: 'v2',
+    v4: 'v4'
+} as const;
+export type FioriElementsVersion = (typeof FioriElementsVersion)[keyof typeof FioriElementsVersion];
 
 /**
  * Source template information from manifest.json
@@ -26,31 +27,33 @@ export interface SapAppSourceTemplate {
 /**
  * File names used across the migration
  */
-export const enum FileName {
-    Manifest = 'manifest.json',
-    Package = 'package.json',
-    UI5Yaml = 'ui5.yaml',
-    UI5LocalYaml = 'ui5-local.yaml',
-    UI5MockYaml = 'ui5-mock.yaml',
-    NeoApp = 'neo-app.json',
-    XsApp = 'xs-app.json',
-    ExtConfigJson = '.extconfig.json',
-    Pom = 'pom.xml',
-    Component = 'Component.js',
-    IndexHtml = 'index.html'
-}
+export const FileName = {
+    Manifest: 'manifest.json',
+    Package: 'package.json',
+    UI5Yaml: 'ui5.yaml',
+    UI5LocalYaml: 'ui5-local.yaml',
+    UI5MockYaml: 'ui5-mock.yaml',
+    NeoApp: 'neo-app.json',
+    XsApp: 'xs-app.json',
+    ExtConfigJson: '.extconfig.json',
+    Pom: 'pom.xml',
+    Component: 'Component.js',
+    IndexHtml: 'index.html'
+} as const;
+export type FileName = (typeof FileName)[keyof typeof FileName];
 
 /**
  * Directory names used across the migration
  */
-export const enum DirName {
-    Webapp = 'webapp',
-    LocalService = 'localService',
-    Test = 'test',
-    I18n = 'i18n',
-    Changes = 'changes',
-    Sapux = 'src'
-}
+export const DirName = {
+    Webapp: 'webapp',
+    LocalService: 'localService',
+    Test: 'test',
+    I18n: 'i18n',
+    Changes: 'changes',
+    Sapux: 'src'
+} as const;
+export type DirName = (typeof DirName)[keyof typeof DirName];
 
 /**
  * Package.json structure

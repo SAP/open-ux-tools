@@ -36,6 +36,7 @@ import { resolveUI5VersionsForMigration } from './data/index.js';
 import type { ImportProjectInfo, Message } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
+import { hasStore } from './types/mem-fs-types.js';
 import { i18nText, initI18n } from './i18n.js';
 
 export class ProjectMigrator {
@@ -410,12 +411,47 @@ export class ProjectMigrator {
             // Will fall back to scanning for .ts files below
         }
 
-        return (
-            isTypeScript ||
-            ((await exists(webappFullPath)) &&
-                (await readdir(webappFullPath, { recursive: true })).some(
-                    (f) => typeof f === 'string' && f.endsWith('.ts') && !f.endsWith('.d.ts')
-                ))
+        if (isTypeScript) {
+            return true;
+        }
+
+        return ProjectMigrator.webappHasTypeScriptFile(webappFullPath);
+    }
+
+    /**
+     * Scans the webapp folder for a TypeScript source file (.ts, excluding .d.ts).
+     * During migration the downloaded files live in the uncommitted mem-fs editor, so when an
+     * editor with a store is in context the mem-fs store is scanned; otherwise the real disk is read.
+     *
+     * @param webappFullPath - Absolute path to the webapp folder.
+     * @returns True if a non-declaration .ts file is present under the webapp folder.
+     */
+    private static async webappHasTypeScriptFile(webappFullPath: string): Promise<boolean> {
+        const isTypeScriptFile = (filePath: string): boolean => filePath.endsWith('.ts') && !filePath.endsWith('.d.ts');
+
+        const editor = getCurrentEditor();
+        if (editor && hasStore(editor)) {
+            // mem-fs mode: scan staged files under the webapp folder (paths use forward slashes)
+            const normalizedPrefix = webappFullPath.replace(/\\/g, '/').replace(/\/?$/, '/');
+            let found = false;
+            editor.store.each((file) => {
+                if (file.state === 'deleted') {
+                    return;
+                }
+                const normalizedFilePath = file.path.replace(/\\/g, '/');
+                if (normalizedFilePath.startsWith(normalizedPrefix) && isTypeScriptFile(normalizedFilePath)) {
+                    found = true;
+                }
+            });
+            return found;
+        }
+
+        // No editor context: scan the real filesystem
+        if (!(await exists(webappFullPath))) {
+            return false;
+        }
+        return (await readdir(webappFullPath, { recursive: true })).some(
+            (f) => typeof f === 'string' && isTypeScriptFile(f)
         );
     }
 }

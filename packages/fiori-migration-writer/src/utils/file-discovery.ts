@@ -15,10 +15,11 @@ import type { ProjectFolder } from '../types.js';
  * Reuse library type enum
  * Matches @sap/ux-project-access ReuseLibType
  */
-export enum ReuseLibType {
-    LIBRARY = 'library',
-    COMPONENT = 'component'
-}
+export const ReuseLibType = {
+    LIBRARY: 'library',
+    COMPONENT: 'component'
+} as const;
+export type ReuseLibType = (typeof ReuseLibType)[keyof typeof ReuseLibType];
 
 /**
  * Find all project roots with package.json

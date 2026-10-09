@@ -2,7 +2,7 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join, basename, sep } from 'node:path';
+import { join, sep } from 'node:path';
 import { stat, readdir, access } from 'node:fs/promises';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
@@ -186,27 +186,26 @@ export async function createWebappFolderAndMigrateFiles(
         if (editor && hasStore(editor)) {
             // Use mem-fs to get directory listing
             const rootPathWithSep = rootPath.endsWith(sep) ? rootPath : rootPath + sep;
-            const filesInRoot: string[] = [];
+            const filesToMove: string[] = [];
 
-            // Collect all files directly in root (not in subdirectories)
+            // Collect all files under root, excluding those whose top-level segment is filtered
             editor.store.each((file) => {
                 const filePath = file.path;
                 if (filePath.startsWith(rootPathWithSep)) {
                     const relativePath = filePath.substring(rootPathWithSep.length);
-                    // Only files directly in root (no path separator in relative path)
-                    if (relativePath && !relativePath.includes(sep)) {
-                        const fileName = basename(filePath);
-                        if (direntToFilter.indexOf(fileName) === -1) {
-                            filesInRoot.push(filePath);
+                    if (relativePath) {
+                        const topLevelSegment = relativePath.split(sep)[0];
+                        if (direntToFilter.indexOf(topLevelSegment) === -1) {
+                            filesToMove.push(filePath);
                         }
                     }
                 }
             });
 
-            // Move files to webapp folder in mem-fs
-            for (const filePath of filesInRoot) {
-                const fileName = basename(filePath);
-                const destPath = join(rootPath, DirName.Webapp, fileName);
+            // Move files to webapp folder in mem-fs, preserving their relative subpath
+            for (const filePath of filesToMove) {
+                const relativePath = filePath.substring(rootPathWithSep.length);
+                const destPath = join(rootPath, DirName.Webapp, relativePath);
                 const content = readFile(filePath);
                 writeFile(destPath, content);
                 deleteFile(filePath);
