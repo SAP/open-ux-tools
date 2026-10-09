@@ -190,7 +190,13 @@ export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise
         const relLegacyTestuiveri5 = validateGitRelativePath(relative(safeRootPath, legacyTestuiveri5Path));
         const relNewTest = validateGitRelativePath(relative(safeRootPath, newTestPath));
 
-        // Move main webapp folder (using validated relative paths prevents command injection)
+        // Security: Safe from command injection because:
+        // 1. validateGitRelativePath allowlists only safe characters (no shell metacharacters)
+        // 2. CommandRunner.run uses spawn with array args (no shell interpolation)
+        // 3. '--' separator prevents option injection
+        // codeql[js/shell-command-constructed-from-input] - paths validated via allowlist
+
+        // Move main webapp folder
         await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyWebapp, relNewWebapp]);
 
         // Move qunit folder if exists

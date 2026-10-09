@@ -226,7 +226,11 @@ export async function createWebappFolderAndMigrateFiles(
                         const relSource = validateGitRelativePath(path.name);
                         const relDest = validateGitRelativePath(join(DirName.Webapp, path.name));
 
-                        // use git to move files if available (validated relative paths prevent injection)
+                        // Security: Safe from command injection because:
+                        // 1. validateGitRelativePath allowlists only safe characters (no shell metacharacters)
+                        // 2. CommandRunner.run uses spawn with array args (no shell interpolation)
+                        // 3. '--' separator prevents option injection
+                        // codeql[js/shell-command-constructed-from-input] - paths validated via allowlist
                         await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
                     } catch (error: unknown) {
                         // Expected: git command may fail if git is not installed or repo is not initialized.
