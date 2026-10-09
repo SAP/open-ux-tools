@@ -41,7 +41,11 @@ export function createMemFsEditor(): Editor {
  * @returns Result of the callback
  */
 export function runWithEditor<T>(editor: Editor, callback: () => T | Promise<T>): T | Promise<T> {
-    return editorContext.run(editor, callback);
+    console.log(`[RUN-WITH-EDITOR] Setting up editor context`);
+    return editorContext.run(editor, () => {
+        console.log(`[RUN-WITH-EDITOR] Inside context, getCurrentEditor(): ${getCurrentEditor() ? 'AVAILABLE' : 'UNDEFINED'}`);
+        return callback();
+    });
 }
 
 /**
