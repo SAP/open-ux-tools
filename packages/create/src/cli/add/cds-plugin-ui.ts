@@ -54,7 +54,7 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
                 logger.info('npm install');
             } else {
                 logger.debug('Running npm install command');
-                runNpmInstallCommand(basePath);
+                await runNpmInstallCommand(basePath);
             }
         }
     } catch (error) {
