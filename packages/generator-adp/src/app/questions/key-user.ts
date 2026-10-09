@@ -299,8 +299,7 @@ export class KeyUserImportPrompter {
                 type: 'label',
                 link: {
                     text: t('prompts.keyUserRestrictedViewsLinkText'),
-                    // Placeholder URL - replace with the real ADP restricted-views documentation link
-                    url: 'https://help.sap.com/docs/'
+                    url: 'https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/importing-key-user-changes'
                 }
             },
             when: () => this.detectRestrictedViews()
