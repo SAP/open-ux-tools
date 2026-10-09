@@ -1,5 +1,29 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 1.0.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/telemetry 2.0.9 → 2.0.10
+- @sap-ux/ui5-library-reference-inquirer 1.0.46 → 1.0.47
+- @sap-ux/ui5-library-reference-writer 1.0.21 → 1.0.22
+
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+- @sap-ux/telemetry 2.0.8 → 2.0.9
+- @sap-ux/ui5-library-reference-inquirer 1.0.45 → 1.0.46
+- @sap-ux/ui5-library-reference-writer 1.0.20 → 1.0.21
+
 ## 1.0.45
 
 ### Patch Changes

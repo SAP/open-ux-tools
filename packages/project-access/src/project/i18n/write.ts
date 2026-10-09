@@ -154,10 +154,33 @@ export async function createAnnotationI18nEntries(
 }
 
 /**
+ * Maintains new translation entries at a specific i18n properties file path.
+ * Use this when the target file is already known (e.g. chosen by the user from a picker).
+ *
+ * @param root project root
+ * @param filePath absolute path to the target `.properties` file
+ * @param newEntries translation entries to write
+ * @param fs optional `mem-fs-editor` instance
+ * @returns boolean or exception
+ */
+export async function createI18nEntriesAtPath(
+    root: string,
+    filePath: string,
+    newEntries: NewI18nEntry[],
+    fs?: Editor
+): Promise<boolean> {
+    const dirPath = dirname(filePath);
+    if (!fs) {
+        await mkdir(dirPath, { recursive: true });
+    }
+    return createPropertiesI18nEntries(filePath, newEntries, root, fs);
+}
+
+/**
  * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
  *
  * @param root project root
- * @param i18nPropertiesPaths paths to `.properties` file`
+ * @param i18nPropertiesPaths paths to `.properties` file
  * @param newEntries translation entries to write in the `.properties` file
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean or exception

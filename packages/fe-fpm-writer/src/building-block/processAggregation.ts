@@ -169,6 +169,7 @@ export function buildAggregationIds(
  * @param aggContext.showDefaultContent - when true, the items template renders the default IconTabBar
  * @param aggContext.ids - map of unique IDs for named controls in the template (e.g. ids.Button, ids.Link)
  * @param aggContext.aggIndex - 1-based counter for this aggregation add (used to number text/press handler names)
+ * @param aggContext.stickySubheaderId - collision-safe id for the default IconTabBar, shared with the Page's stickySubheaderProvider
  * @param fragMacrosNS - the namespace prefix resolved for sap.fe.macros
  * @param xmlDocument - the view XML document (used to inherit namespace declarations)
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
@@ -182,6 +183,7 @@ function buildPageAggregationFragment(
         showDefaultContent: boolean;
         ids: Record<string, string>;
         aggIndex: number;
+        stickySubheaderId?: string;
     },
     fragMacrosNS: string,
     xmlDocument: Document
@@ -208,6 +210,7 @@ function buildPageAggregationFragment(
  * @param generateId - function to generate unique IDs
  * @param [aggNames] - aggregation names to append; defaults to all PAGE_AGGREGATIONS
  * @param useDefaults - when true, the items aggregation renders its default IconTabBar content
+ * @param stickySubheaderId - collision-safe id for the default IconTabBar, shared with the Page's stickySubheaderProvider
  */
 export function appendPageAggregations(
     fs: Editor,
@@ -215,7 +218,8 @@ export function appendPageAggregations(
     templateDocument: Document,
     generateId: IdGeneratorFunction,
     aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS,
-    useDefaults = true
+    useDefaults = true,
+    stickySubheaderId?: string
 ): void {
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
@@ -225,7 +229,7 @@ export function appendPageAggregations(
         const aggId = generateId(aggName);
         const showDefaultContent = aggName === 'items' && useDefaults;
         const ids = buildAggregationIds(aggName, generateId);
-        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids, aggIndex: 1 };
+        const aggContext = { macrosPrefix, aggId, showDefaultContent, ids, aggIndex: 1, stickySubheaderId };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
         for (const node of Array.from(aggDoc.documentElement.childNodes)) {
             if (node.nodeType === 1 /* Element */) {
