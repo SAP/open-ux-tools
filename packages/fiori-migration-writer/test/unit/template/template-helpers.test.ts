@@ -26,20 +26,21 @@ describe('template/template-helpers', () => {
         await rm(testOutputDir, { recursive: true, force: true });
     });
 
-    const createTemplateData = (overrides: Partial<TemplateData['project']> = {}): TemplateData => ({
-        project: {
-            moduleName: 'test.app',
-            moduleDescription: 'Test Application',
-            type: MigrationTypes.lrop,
-            ui5Theme: 'sap_fiori_3',
-            ...overrides
-        },
-        service: {},
-        npm: { name: 'test-app', version: '1.0.0' },
-        ui5: { projectUI5Version: '1.120.0' },
-        config: {},
-        templatePaths: {}
-    } as TemplateData);
+    const createTemplateData = (overrides: Partial<TemplateData['project']> = {}): TemplateData =>
+        ({
+            project: {
+                moduleName: 'test.app',
+                moduleDescription: 'Test Application',
+                type: MigrationTypes.lrop,
+                ui5Theme: 'sap_fiori_3',
+                ...overrides
+            },
+            service: {},
+            npm: { name: 'test-app', version: '1.0.0' },
+            ui5: { projectUI5Version: '1.120.0' },
+            config: {},
+            templatePaths: {}
+        }) as TemplateData;
 
     describe('applyTemplates', () => {
         it('should apply templates without errors for empty template map', async () => {

@@ -27,7 +27,9 @@ describe('project-extension', () => {
             type: MigrationTypes.lrop
         }) as ImportProjectInfo;
 
-    const createMockConfig = (overrides: Partial<ProcessProjectExtensionConfig> = {}): ProcessProjectExtensionConfig => ({
+    const createMockConfig = (
+        overrides: Partial<ProcessProjectExtensionConfig> = {}
+    ): ProcessProjectExtensionConfig => ({
         projectRoot: '/test/project',
         defaultProjectInfo: createDefaultProjectInfo(),
         projectInfo: { ...createDefaultProjectInfo(), webappPath: 'webapp', destination: 'TEST_DEST' },
@@ -40,20 +42,26 @@ describe('project-extension', () => {
         hasUI5Tooling: jest.fn<() => boolean>().mockReturnValue(true),
         readProjectExtensionSettings: jest.fn<() => Promise<unknown>>().mockResolvedValue({ namespace: 'base.app' }),
         getExtensionProjectModuleName: jest.fn<() => string>().mockReturnValue('test.extension'),
-        getDestinationFromNeoApp: jest.fn<() => Promise<{ destination?: string; neoAppUI5Version?: string } | undefined>>().mockResolvedValue({
-            destination: 'NEO_DEST',
-            neoAppUI5Version: '1.120.0',
-            neoappDestinations: []
-        }),
-        getFirstBackend: jest.fn<() => Promise<{ destination?: string; scp?: boolean; url?: string; sapClient?: string } | undefined>>().mockResolvedValue({
-            destination: 'BACKEND_DEST',
-            scp: true,
-            url: 'https://backend.example.com',
-            sapClient: '100'
-        }),
+        getDestinationFromNeoApp: jest
+            .fn<() => Promise<{ destination?: string; neoAppUI5Version?: string } | undefined>>()
+            .mockResolvedValue({
+                destination: 'NEO_DEST',
+                neoAppUI5Version: '1.120.0',
+                neoappDestinations: []
+            }),
+        getFirstBackend: jest
+            .fn<() => Promise<{ destination?: string; scp?: boolean; url?: string; sapClient?: string } | undefined>>()
+            .mockResolvedValue({
+                destination: 'BACKEND_DEST',
+                scp: true,
+                url: 'https://backend.example.com',
+                sapClient: '100'
+            }),
         getClientFromDestinationName: jest.fn<() => string>().mockReturnValue('200'),
         getFlpIntentFromHtml: jest.fn<() => Promise<string | undefined>>().mockResolvedValue('Semantic-action'),
-        getManifestJson: jest.fn<() => Promise<{ 'sap.app'?: { _version?: string } }>>().mockResolvedValue({ 'sap.app': { _version: '1.5.0' } }),
+        getManifestJson: jest
+            .fn<() => Promise<{ 'sap.app'?: { _version?: string } }>>()
+            .mockResolvedValue({ 'sap.app': { _version: '1.5.0' } }),
         ...overrides
     });
 
@@ -189,11 +197,19 @@ describe('project-extension', () => {
                 { name: 'dest2', path: '/api2' }
             ];
             const config = createMockConfig({
-                getDestinationFromNeoApp: jest.fn<() => Promise<{ destination?: string; neoAppUI5Version?: string; neoappDestinations?: typeof destinations }>>().mockResolvedValue({
-                    destination: 'MAIN_DEST',
-                    neoAppUI5Version: '1.120.0',
-                    neoappDestinations: destinations
-                })
+                getDestinationFromNeoApp: jest
+                    .fn<
+                        () => Promise<{
+                            destination?: string;
+                            neoAppUI5Version?: string;
+                            neoappDestinations?: typeof destinations;
+                        }>
+                    >()
+                    .mockResolvedValue({
+                        destination: 'MAIN_DEST',
+                        neoAppUI5Version: '1.120.0',
+                        neoappDestinations: destinations
+                    })
             });
 
             const result = await processProjectExtension(config);

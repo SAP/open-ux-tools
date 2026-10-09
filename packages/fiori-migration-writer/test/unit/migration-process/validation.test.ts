@@ -1,8 +1,5 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
-import {
-    checkForErrors,
-    createMigrationErrorMessage
-} from '../../../src/migration-process/validation.js';
+import { checkForErrors, createMigrationErrorMessage } from '../../../src/migration-process/validation.js';
 import type { Message } from '../../../src/types.js';
 import { initI18n } from '../../../src/index.js';
 
