@@ -1,5 +1,5 @@
 import { AppRouterType, getEndpointNames } from '@sap-ux/adp-tooling';
-import type { CFApp, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
+import type { CFApp, CfServiceInstanceChoice, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { t } from '../../../utils/i18n.js';
 import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
@@ -40,6 +40,21 @@ export const getCFAppChoices = (apps: CFApp[]): { name: string; value: CFApp }[]
     return apps.map((app: CFApp) => ({
         name: `${app.title} (${app.appId} ${app.appVersion})`,
         value: app
+    }));
+};
+
+/**
+ * Get the choices for the service instance prompt.
+ *
+ * @param {CfServiceInstanceChoice[]} instances - The live CF service instances to offer.
+ * @returns {Array<{ name: string; value: CfServiceInstanceChoice }>} The formatted service instance choices.
+ */
+export const getServiceInstanceChoices = (
+    instances: CfServiceInstanceChoice[]
+): { name: string; value: CfServiceInstanceChoice }[] => {
+    return instances.map((instance) => ({
+        name: instance.name,
+        value: instance
     }));
 };
 

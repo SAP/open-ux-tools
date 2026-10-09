@@ -1182,6 +1182,11 @@ export interface CfAdpWriterConfig {
          * GUID of the BTP space.
          */
         spaceGuid: string;
+        /**
+         * Live CF service instance to bind via an `org.cloudfoundry.existing-service` resource.
+         * Unset when reusing a service already declared in an existing MTA.
+         */
+        existingService?: CfServiceInstanceChoice;
     };
     project: {
         name: string;
@@ -1296,7 +1301,26 @@ export enum cfServicesPromptNames {
     approuter = 'approuter',
     businessService = 'businessService',
     businessSolutionName = 'businessSolutionName',
-    baseApp = 'baseApp'
+    baseApp = 'baseApp',
+    serviceInstance = 'serviceInstance'
+}
+
+/**
+ * A live CF service instance offered as a choice in the service-instance prompt.
+ */
+export interface CfServiceInstanceChoice {
+    /**
+     * The service instance name.
+     */
+    name: string;
+    /**
+     * The service offering (e.g. 'destination', 'connectivity').
+     */
+    service: string;
+    /**
+     * The service plan name.
+     */
+    servicePlan: string;
 }
 
 export type CfServicesAnswers = {
@@ -1305,6 +1329,8 @@ export type CfServicesAnswers = {
     [cfServicesPromptNames.businessSolutionName]?: string;
     // Base app object returned by discovery (shape provided by FDC service)
     [cfServicesPromptNames.baseApp]?: CFApp;
+    // Selected live CF service instance to bind via an existing-service resource
+    [cfServicesPromptNames.serviceInstance]?: CfServiceInstanceChoice;
 };
 
 export type CFServicesQuestion = YUIQuestion<CfServicesAnswers>;
@@ -1325,11 +1351,16 @@ export interface BaseAppPromptOptions {
     hide?: boolean;
 }
 
+export interface ServiceInstancePromptOptions {
+    hide?: boolean;
+}
+
 export type CfServicesPromptOptions = Partial<{
     [cfServicesPromptNames.approuter]: ApprouterPromptOptions;
     [cfServicesPromptNames.businessService]: BusinessServicePromptOptions;
     [cfServicesPromptNames.businessSolutionName]: BusinessSolutionNamePromptOptions;
     [cfServicesPromptNames.baseApp]: BaseAppPromptOptions;
+    [cfServicesPromptNames.serviceInstance]: ServiceInstancePromptOptions;
 }>;
 
 export interface RequestArguments {
