@@ -1,8 +1,0 @@
-{
-    "type": "approuter.nodejs",
-    "builders": { "default": "sap.nodejs", "configs": {} },
-    "runners": { "configs": {} },
-    "attributes": {},
-    "description": "mta-multi_destination_ovp-approuter",
-    "mixinTypes": ["mtamodule"]
-}
