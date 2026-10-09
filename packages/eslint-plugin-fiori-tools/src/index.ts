@@ -533,18 +533,29 @@ export const configs: Record<string, Linter.Config[]> = {
     ],
     'recommended-for-s4hana': [
         {
-            plugins: {
-                '@sap-ux/fiori-tools': {
-                    meta,
-                    languages,
-                    rules: fioriRules
-                }
-            }
+            plugins: { '@sap-ux/fiori-tools': { meta, languages, rules: fioriRules } }
         },
         ...prodConfig,
         ...testConfig,
         ...typescriptConfig,
-        ...fioriLanguageConfig
+        ...fioriLanguageConfig,
+        // S/4HANA-only rules
+        {
+            files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
+            rules: {
+                '@sap-ux/fiori-tools/sap-browser-api-error': 'warn',
+                '@sap-ux/fiori-tools/sap-concatenated-strings': 'warn',
+                '@sap-ux/fiori-tools/sap-controller-hook-bad-callback-signature': 'warn',
+                '@sap-ux/fiori-tools/sap-controller-hook-missing-callback-signature': 'error',
+                '@sap-ux/fiori-tools/sap-controller-hook-name-convention': 'error',
+                '@sap-ux/fiori-tools/sap-eslint-disable-count': 'warn',
+                '@sap-ux/fiori-tools/sap-no-console-log': 'error',
+                '@sap-ux/fiori-tools/sap-no-core-model-usage': 'warn',
+                '@sap-ux/fiori-tools/sap-no-upload': 'error',
+                '@sap-ux/fiori-tools/sap-not-localized': 'warn',
+                '@sap-ux/fiori-tools/sap-unescaped-write': 'warn'
+            } as Linter.RulesRecord
+        }
     ]
 };
 

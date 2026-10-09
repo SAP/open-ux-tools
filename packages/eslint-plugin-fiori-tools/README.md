@@ -120,7 +120,18 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
+|  new  | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect errors for forbidden usages of `(window.)document` APIs. | | ✅ |
+|  new  | [sap-concatenated-strings](docs/rules/sap-concatenated-strings.md) | Detect string concatenation in localization setter methods. | | ✅ |
+|  new  | [sap-controller-hook-bad-callback-signature](docs/rules/sap-controller-hook-bad-callback-signature.md) | Detect malformed callback signatures in controller hook JSDoc. | | ✅ |
+|  new  | [sap-controller-hook-missing-callback-signature](docs/rules/sap-controller-hook-missing-callback-signature.md) | Ensure controller hooks have a `@callback` signature in their JSDoc. | | ✅ |
+|  new  | [sap-controller-hook-name-convention](docs/rules/sap-controller-hook-name-convention.md) | Ensure controller hook callback names follow the `ext` naming convention. | | ✅ |
+|  new  | [sap-eslint-disable-count](docs/rules/sap-eslint-disable-count.md) | Report detected uses of `eslint-disable` comments. | | ✅ |
 |  new      | [sap-no-inline-delete-with-multiselect](docs/rules/sap-no-inline-delete-with-multiselect.md) | Ensures that `inlineDelete` and `multiselect` are not both enabled in the same table settings, as they are mutually exclusive and will cause the application to fail. | | ✅ |
+|  new  | [sap-no-console-log](docs/rules/sap-no-console-log.md) | Detect usage of `console.log` and related console methods. | | ✅ |
+|  new  | [sap-no-core-model-usage](docs/rules/sap-no-core-model-usage.md) | Detect usage of `getModel()` and `setModel()` on `sap.ui.getCore()`. | | ✅ |
+|  new  | [sap-no-upload](docs/rules/sap-no-upload.md) | Detect usage of `sap.ca.ui.FileUpload` and `sap.ca.ui.AddPicture` controls. | | ✅ |
+|  new  | [sap-not-localized](docs/rules/sap-not-localized.md) | Ensure strings passed to localization setter methods are not hardcoded. | | ✅ |
+|  new  | [sap-unescaped-write](docs/rules/sap-unescaped-write.md) | Detect unescaped `write()` calls in UI5 renderers (potential XSS). | | ✅ |
 |  10.15.0  | [sap-no-comma-in-section-title](docs/rules/sap-no-comma-in-section-title.md) | Ensures that section and subsection titles in object pages for SAP Fiori elements applications do not contain commas. | | ✅ |
 |  10.14.0  | [sap-no-path-hidden-on-interactive-columns](docs/rules/sap-no-path-hidden-on-interactive-columns.md) | A `UI.Hidden` annotation with a dynamic path must not be used on sortable or filterable columns. | | ✅ |
 |  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
