@@ -542,7 +542,7 @@ export default class extends Generator {
             wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
             wasExtProjectGenerated: this.shouldCreateExtProject ?? false,
             wereKeyUserChangesImported: this.jsonInput
-                ? !!this.jsonInputFile?.keyUserChanges
+                ? !!this.jsonInputFile?.keyUserChanges?.length
                 : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {

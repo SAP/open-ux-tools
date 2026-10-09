@@ -910,6 +910,28 @@ describe('Adaptation Project Generator Integration Test', () => {
                 );
             });
 
+            it('should report no key user changes imported when the JSON input has an empty array', async () => {
+                const id = `adp-app-test-empty-${process.pid}`;
+                tempFileIds.push(id);
+                fs.writeFileSync(join(tmpdir(), `${id}.txt`), JSON.stringify({ keyUserChanges: [] }));
+
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.empty.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                    expect.objectContaining({ wereKeyUserChangesImported: false })
+                );
+            });
+
             it('should write a failure result when the JSON input file is corrupt', async () => {
                 const id = `adp-app-test-corrupt-${process.pid}`;
                 tempFileIds.push(id);
