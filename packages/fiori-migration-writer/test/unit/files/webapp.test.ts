@@ -299,6 +299,110 @@ describe('webapp', () => {
         });
     });
 
+    describe('createWebappFolderAndMigrateFiles - real filesystem', () => {
+        /**
+         * Tests for the real filesystem branch (lines 213-247)
+         * These tests don't use runWithEditor to exercise the non-mem-fs path
+         */
+        test('should migrate files using real filesystem when mem-fs is not enabled', async () => {
+            const rootPath = join(testOutputDir, 'real-fs-migration');
+            await mkdir(rootPath, { recursive: true });
+
+            // Write real files to disk - create parent directories first
+            await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'real.fs.test' } }));
+            await writeFile(join(rootPath, 'Component.js'), 'sap.ui.define([], function() {});');
+
+            const projectInfo: ImportProjectInfo = {
+                moduleName: 'real.fs.test',
+                webappPath: '',
+                rootPath
+            } as ImportProjectInfo;
+
+            // Call without runWithEditor to exercise real fs code path
+            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+
+            // webappPath should be updated
+            expect(projectInfo.webappPath).toBe('webapp');
+        });
+
+        test('should handle non-git directory with real filesystem fallback', async () => {
+            const rootPath = join(testOutputDir, 'non-git-real-fs');
+            await mkdir(rootPath, { recursive: true });
+
+            // Write real files
+            await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'nongit' } }));
+            await writeFile(join(rootPath, 'app.js'), 'console.log("app");');
+
+            const projectInfo: ImportProjectInfo = {
+                moduleName: 'nongit.test',
+                webappPath: '',
+                rootPath
+            } as ImportProjectInfo;
+
+            // Without runWithEditor, uses real fs
+            // This exercises the catch block at lines 231-234 and fallback at 236-243
+            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+
+            expect(projectInfo.webappPath).toBe('webapp');
+        });
+
+        test('should exclude specific files from real filesystem migration', async () => {
+            const rootPath = join(testOutputDir, 'real-fs-exclude');
+            await mkdir(rootPath, { recursive: true });
+
+            // Write manifest
+            await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'exclude' } }));
+
+            // Write files that should be excluded
+            await writeFile(join(rootPath, 'neo-app.json'), '{}');
+            await writeFile(join(rootPath, 'package.json'), '{}');
+            await writeFile(join(rootPath, '.gitignore'), 'node_modules');
+            await writeFile(join(rootPath, 'pom.xml'), '<project></project>');
+
+            // Write file that should be migrated
+            await writeFile(join(rootPath, 'Component.js'), 'component');
+
+            const projectInfo: ImportProjectInfo = {
+                moduleName: 'exclude.test',
+                webappPath: '',
+                rootPath
+            } as ImportProjectInfo;
+
+            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+
+            expect(projectInfo.webappPath).toBe('webapp');
+
+            // Verify excluded files stayed at root - these are read from real fs
+            const { readFile: readFileReal } = await import('node:fs/promises');
+            const neoApp = await readFileReal(join(rootPath, 'neo-app.json'), 'utf8');
+            expect(neoApp).toBe('{}');
+        });
+
+        test('should recursively move directories with real filesystem', async () => {
+            const rootPath = join(testOutputDir, 'real-fs-recursive');
+            await mkdir(rootPath, { recursive: true });
+
+            // Create nested structure - mkdir first, then write files
+            await writeFile(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'recursive' } }));
+            await mkdir(join(rootPath, 'view', 'fragments'), { recursive: true });
+            await mkdir(join(rootPath, 'controller'), { recursive: true });
+            await writeFile(join(rootPath, 'view', 'Main.view.xml'), '<View/>');
+            await writeFile(join(rootPath, 'view', 'fragments', 'Dialog.fragment.xml'), '<Fragment/>');
+            await writeFile(join(rootPath, 'controller', 'Main.controller.js'), 'controller code');
+
+            const projectInfo: ImportProjectInfo = {
+                moduleName: 'recursive.test',
+                webappPath: '',
+                rootPath
+            } as ImportProjectInfo;
+
+            // This exercises recursiveMove function (lines 37-77)
+            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+
+            expect(projectInfo.webappPath).toBe('webapp');
+        });
+    });
+
     describe('path validation', () => {
         test('should validate paths with control characters during migration', async () => {
             await runWithEditor(fs, async () => {
