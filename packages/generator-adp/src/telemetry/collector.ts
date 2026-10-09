@@ -7,7 +7,7 @@ const DEFAULT_DATA: AdpTelemetryData = {
     wasFlpConfigDone: false,
     wasDeployConfigDone: false,
     wasTypeScriptChosen: false,
-    wasKeyUserChangesImported: false
+    wereKeyUserChangesImported: false
 };
 
 /**

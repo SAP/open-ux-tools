@@ -63,7 +63,7 @@ export interface AdpTelemetryProperties {
     /**
      * Whether the user chose to import key-user changes into the generated project.
      */
-    wasKeyUserChangesImported: boolean;
+    wereKeyUserChangesImported: boolean;
 }
 
 /**

@@ -750,7 +750,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(changeContent).toMatchSnapshot();
 
             expect(mockCreateTelemetryData).toHaveBeenCalledWith(
-                expect.objectContaining({ wasKeyUserChangesImported: true })
+                expect.objectContaining({ wereKeyUserChangesImported: true })
             );
         });
 
@@ -883,7 +883,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(changeFiles.length).toBeGreaterThan(0);
 
                 expect(mockCreateTelemetryData).toHaveBeenCalledWith(
-                    expect.objectContaining({ wasKeyUserChangesImported: true })
+                    expect.objectContaining({ wereKeyUserChangesImported: true })
                 );
             });
 
@@ -906,7 +906,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(fs.existsSync(join(projectFolder, 'webapp', 'changes'))).toBe(false);
                 expect(mockWriteResult).toHaveBeenCalledWith(id, projectFolder);
                 expect(mockCreateTelemetryData).toHaveBeenCalledWith(
-                    expect.objectContaining({ wasKeyUserChangesImported: false })
+                    expect.objectContaining({ wereKeyUserChangesImported: false })
                 );
             });
 

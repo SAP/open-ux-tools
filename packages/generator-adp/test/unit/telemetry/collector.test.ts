@@ -33,7 +33,7 @@ describe('TelemetryCollector', () => {
                 wasFlpConfigDone: false,
                 wasDeployConfigDone: false,
                 wasTypeScriptChosen: false,
-                wasKeyUserChangesImported: false
+                wereKeyUserChangesImported: false
             });
         });
     });

@@ -541,7 +541,7 @@ export default class extends Generator {
             wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
             wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
             wasExtProjectGenerated: this.shouldCreateExtProject ?? false,
-            wasKeyUserChangesImported: this.jsonInput
+            wereKeyUserChangesImported: this.jsonInput
                 ? !!this.jsonInputFile?.keyUserChanges
                 : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
