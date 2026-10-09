@@ -2,6 +2,12 @@ import { resolve } from 'node:path';
 import { access } from 'node:fs/promises';
 
 /**
+ * Branded type for validated git-safe paths.
+ * This helps CodeQL understand the path has been sanitized.
+ */
+export type SafeGitPath = string & { readonly __brand: 'SafeGitPath' };
+
+/**
  * Validates the root directory path before using as working directory
  * Rejects paths with control characters that could enable command injection
  *
@@ -25,14 +31,21 @@ export async function validateRootDirectory(path: string): Promise<string> {
 }
 
 /**
- * Validates a relative path to ensure it's safe for git commands
- * Rejects paths that escape the root or contain unsafe characters
+ * Character allowlist for safe git pathspec arguments.
+ * Only alphanumerics, dots, underscores, forward/back slashes, hyphens, spaces, and parentheses.
+ */
+const SAFE_GIT_PATH_PATTERN = /^[A-Za-z0-9._/\\ ()-]+$/;
+
+/**
+ * Validates a relative path to ensure it's safe for git commands.
+ * Returns a branded SafeGitPath type to indicate sanitization.
+ * Rejects paths that escape the root or contain unsafe characters.
  *
  * @param relPath - Relative path to validate
- * @returns The same path if safe
+ * @returns Validated path as SafeGitPath branded type
  * @throws Error if path is unsafe
  */
-export function validateGitRelativePath(relPath: string): string {
+export function validateGitRelativePath(relPath: string): SafeGitPath {
     // Reject empty or root-level paths
     if (!relPath || relPath === '.') {
         throw new Error('Git path cannot be empty or root');
@@ -50,9 +63,31 @@ export function validateGitRelativePath(relPath: string): string {
         throw new Error('Git path cannot start with "-"');
     }
     // Restrict to a conservative safe character set for git pathspec arguments
-    // Only allow: alphanumerics, dots, underscores, forward/back slashes, hyphens, spaces, and parentheses
-    if (!/^[A-Za-z0-9._/\\ ()-]+$/.test(relPath)) {
+    if (!SAFE_GIT_PATH_PATTERN.test(relPath)) {
         throw new Error('Git path contains unsafe characters');
     }
-    return relPath;
+    // Return as branded type - the string is now validated safe for git commands
+    return relPath as SafeGitPath;
+}
+
+/**
+ * Creates a safe git path from validated components.
+ * Use this when you need to join path segments for git commands.
+ *
+ * @param segments - Path segments to join (each will be validated)
+ * @returns Joined path as SafeGitPath
+ * @throws Error if any segment is unsafe
+ */
+export function safeGitPathJoin(...segments: string[]): SafeGitPath {
+    // Validate each segment individually
+    for (const segment of segments) {
+        if (segment && segment !== '.') {
+            // Check each non-empty segment for unsafe characters
+            if (/[\0\r\n`$|&;<>'"\\]/.test(segment) && !segment.includes('/')) {
+                throw new Error('Path segment contains unsafe characters');
+            }
+        }
+    }
+    const joined = segments.filter(Boolean).join('/');
+    return validateGitRelativePath(joined);
 }
