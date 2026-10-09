@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { mkdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { validateRootDirectory } from '../../../src/migration-process/legacy-helpers.js';
+import { validateGitRelativePath } from '../../../src/utils/path-validation.js';
 
 describe('Path Validation Security', () => {
     const testRoot = join(tmpdir(), 'fiori-migration-test-' + Date.now());
@@ -73,6 +74,55 @@ describe('Path Validation Security', () => {
         test('should reject non-existent root directory', async () => {
             const nonExistentPath = join(testRoot, 'does-not-exist-' + Date.now());
             await expect(validateRootDirectory(nonExistentPath)).rejects.toThrow('Root directory does not exist');
+        });
+    });
+
+    describe('validateGitRelativePath', () => {
+        test('should accept valid relative paths', () => {
+            expect(validateGitRelativePath('webapp')).toBe('webapp');
+            expect(validateGitRelativePath('src/main/webapp')).toBe('src/main/webapp');
+            expect(validateGitRelativePath('my-app_v2')).toBe('my-app_v2');
+            expect(validateGitRelativePath('my project (copy)')).toBe('my project (copy)');
+        });
+
+        test('should reject empty paths', () => {
+            expect(() => validateGitRelativePath('')).toThrow('Git path cannot be empty or root');
+        });
+
+        test('should reject root path', () => {
+            expect(() => validateGitRelativePath('.')).toThrow('Git path cannot be empty or root');
+        });
+
+        test('should reject paths escaping root with ..', () => {
+            expect(() => validateGitRelativePath('../etc/passwd')).toThrow('Git path escapes root directory');
+            expect(() => validateGitRelativePath('foo/../../../etc')).toThrow('Git path escapes root directory');
+            expect(() => validateGitRelativePath('foo\\..\\bar')).toThrow('Git path escapes root directory');
+        });
+
+        test('should reject paths with control characters', () => {
+            expect(() => validateGitRelativePath('foo\0bar')).toThrow('Git path contains control characters');
+            expect(() => validateGitRelativePath('foo\nbar')).toThrow('Git path contains control characters');
+            expect(() => validateGitRelativePath('foo\rbar')).toThrow('Git path contains control characters');
+        });
+
+        test('should reject paths starting with dash (option injection)', () => {
+            expect(() => validateGitRelativePath('-rf')).toThrow('Git path cannot start with "-"');
+            expect(() => validateGitRelativePath('--force')).toThrow('Git path cannot start with "-"');
+        });
+
+        test('should reject paths with shell metacharacters', () => {
+            expect(() => validateGitRelativePath('foo`whoami`')).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo$(id)')).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo|bar')).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo;bar')).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo&bar')).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo>bar')).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo<bar')).toThrow('Git path contains unsafe characters');
+        });
+
+        test('should reject paths with quotes', () => {
+            expect(() => validateGitRelativePath("foo'bar")).toThrow('Git path contains unsafe characters');
+            expect(() => validateGitRelativePath('foo"bar')).toThrow('Git path contains unsafe characters');
         });
     });
 });

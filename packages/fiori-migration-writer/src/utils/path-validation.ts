@@ -45,5 +45,14 @@ export function validateGitRelativePath(relPath: string): string {
     if (/[\0\r\n]/.test(relPath)) {
         throw new Error('Git path contains control characters');
     }
+    // Reject option-like args that could be interpreted by git
+    if (relPath.startsWith('-')) {
+        throw new Error('Git path cannot start with "-"');
+    }
+    // Restrict to a conservative safe character set for git pathspec arguments
+    // Only allow: alphanumerics, dots, underscores, forward/back slashes, hyphens, spaces, and parentheses
+    if (!/^[A-Za-z0-9._/\\ ()-]+$/.test(relPath)) {
+        throw new Error('Git path contains unsafe characters');
+    }
     return relPath;
 }
