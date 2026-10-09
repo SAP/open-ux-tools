@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import type { Data } from 'ejs';
 import { TemplateFileName } from '../../index.js';
 import { FileName } from '../../project-spec-types.js';

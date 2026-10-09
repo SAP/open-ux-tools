@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import { join } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import type { Data, Options } from 'ejs';

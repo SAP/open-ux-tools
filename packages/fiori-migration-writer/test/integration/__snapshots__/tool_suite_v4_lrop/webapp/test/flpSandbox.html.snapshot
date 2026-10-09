@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`] = `
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
     <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -47,10 +47,10 @@ exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite
                     }
                 },
                 applications: {
-				\\"masterDetail-display\\": {
+				\\"fe-lrop\\": {
 					title: \\"App title\\",
 					description: \\"This is my new Fiori elements application\\",
-					additionalInformation: \\"SAPUI5.Component=namespace1.tool_suite_beta_lrop_v2_project\\",
+					additionalInformation: \\"SAPUI5.Component=namespace1.v4catalog\\",
 					applicationType: \\"URL\\",
 					url: \\"../\\"
                     }
@@ -64,23 +64,21 @@ exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite
         <script
             id=\\"sap-ui-bootstrap\\"
             src=\\"../resources/sap-ui-core.js\\"
-            data-sap-ui-libs=\\"sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app\\"
+            data-sap-ui-libs=\\"sap.m, sap.ushell, sap.fe.templates, sap.ui.core\\"
             data-sap-ui-async=\\"true\\"
 			data-sap-ui-preload=\\"async\\"
             data-sap-ui-theme=\\"sap_fiori_3\\"
             data-sap-ui-compatVersion=\\"edge\\"
-            data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"namespace1/tool_suite_beta_lrop_v2_project/test/changes_loader\\", \\"custom\\":true}]'
             data-sap-ui-language=\\"en\\"
-            data-sap-ui-resourceroots='{\\"namespace1.tool_suite_beta_lrop_v2_project\\": \\"../\\"}'
+            data-sap-ui-resourceroots='{\\"namespace1.v4catalog\\": \\"../\\"}'
             data-sap-ui-frameOptions=\\"allow\\"
+            data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'
         >
             // NON-SECURE setting for testing environment
         </script>
 		<script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\"
 				data-sap-ui-manifest-uri=\\"../manifest.json\\">
 		</script>
-        <!-- relevant for version < 1.78.0 only -->
-        <script src=\\"changes_preview.js\\"></script>
     </head>
 
     <!-- UI Content -->

@@ -39,7 +39,7 @@ export interface BackendConfig {
 
 /**
  * Entity configuration for OData
- * NOTE: Consolidation with app-gen-core tracked in #38120
+ * NOTE: TODO - Consolidate with app-gen-core types when published to @sap-ux scope
  */
 export interface EntityConfig {
     mainEntity?: { entityName: string; type?: any };

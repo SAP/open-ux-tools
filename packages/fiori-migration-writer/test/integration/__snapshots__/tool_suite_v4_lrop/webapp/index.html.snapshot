@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`] = `
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop 1`] = `
 "<!DOCTYPE html>
 <html lang=\\"en\\">
 <head>
@@ -18,17 +18,16 @@ exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite
 			src=\\"resources/sap-ui-core.js\\"
 			data-sap-ui-theme=\\"sap_fiori_3\\"
 			data-sap-ui-resourceroots='{
-            \\"namespace1.tool_suite_beta_lrop_v2_project\\": \\".\\"
+            \\"namespace1.v4catalog\\": \\".\\"
         }'
 			data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
 			data-sap-ui-compatVersion=\\"edge\\"
 			data-sap-ui-async=\\"true\\"
-			data-sap-ui-preload=\\"async\\"
-			data-sap-ui-libs=\\"sap.m\\">
+			data-sap-ui-preload=\\"async\\">
 	</script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
-<div data-sap-ui-component data-name=\\"namespace1.tool_suite_beta_lrop_v2_project\\" data-id=\\"container\\" data-settings='{\\"id\\" : \\"namespace1.tool_suite_beta_lrop_v2_project\\"}' data-handle-validation=\\"true\\"></div>
+<div data-sap-ui-component data-name=\\"namespace1.v4catalog\\" data-id=\\"container\\" data-settings='{\\"id\\" : \\"namespace1.v4catalog\\"}' data-handle-validation=\\"true\\"></div>
 </body>
 </html>
 "

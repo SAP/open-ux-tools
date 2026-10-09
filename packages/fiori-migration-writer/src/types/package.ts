@@ -46,6 +46,6 @@ export interface PackageJsonMigrate extends Omit<PackageJson, 'devDependencies'>
         | {
               [key: string]: string;
           }
-        | string; // NOTE: string type needed for Freestyle projects with non-standard devDependencies format. Tracked in #38121
+        | string; // NOTE: string type needed for Freestyle projects with non-standard devDependencies format
     hasDataSource: boolean;
 }

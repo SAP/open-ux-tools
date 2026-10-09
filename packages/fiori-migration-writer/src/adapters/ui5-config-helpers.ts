@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { TemplateData } from '../types.js';
 

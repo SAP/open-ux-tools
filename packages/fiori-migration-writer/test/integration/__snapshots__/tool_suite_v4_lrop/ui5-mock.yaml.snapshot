@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`] = `
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop 1`] = `
 "specVersion: \\"4.0\\"
 metadata:
-  name: namespace1.tool_suite_beta_lrop_v2_project
+  name: namespace1.v4catalog
 type: application
 server:
   customMiddleware:
@@ -11,9 +11,6 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertErrors: false
-        backend:
-          - path: /sap
-            url: https://backend.example.com:44300
         ui5:
           path:
             - /resources
@@ -25,10 +22,5 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-appreload
-      configuration:
-        component: namespace1.tool_suite_beta_lrop_v2_project
-        ui5Theme: sap_fiori_3
 "
 `;

@@ -25,21 +25,14 @@ expect.addSnapshotSerializer({
  * Creates separate snapshot files for each app to make reviews manageable
  */
 function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): void {
-    // Core configuration files
-    const coreFiles = [
-        'package.json',
-        'ui5.yaml',
-        'ui5-local.yaml',
-        'ui5-mock.yaml',
-        '.gitignore'
-    ];
+    // Core configuration files - these MUST exist after migration
+    const requiredFiles = ['package.json', 'ui5.yaml', '.gitignore'];
+
+    // Optional core config files
+    const optionalCoreFiles = ['ui5-local.yaml', 'ui5-mock.yaml'];
 
     // Webapp files that may be created/modified during migration
-    const webappFiles = [
-        'webapp/manifest.json',
-        'webapp/Component.js',
-        'webapp/index.html'
-    ];
+    const webappFiles = ['webapp/manifest.json', 'webapp/Component.js', 'webapp/index.html'];
 
     // Test infrastructure files
     const testFiles = [
@@ -59,9 +52,21 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
     // Local service files
     const localServiceFiles = ['webapp/localService/mockserver.js'];
 
-    const allFiles = [...coreFiles, ...webappFiles, ...testFiles, ...vscodeFiles, ...localServiceFiles];
+    // First verify required files exist
+    requiredFiles.forEach((file) => {
+        const content = getFileFromMemFs(fs, projectPath, file);
+        expect(content).toBeDefined();
+        if (content) {
+            const normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
+            const snapshotPath = join(__dirname, '__snapshots__', appName, file + '.snapshot');
+            expect(normalizedContent).toMatchSpecificSnapshot(snapshotPath);
+        }
+    });
 
-    allFiles.forEach((file) => {
+    // Then check optional files - snapshot if present
+    const optionalFiles = [...optionalCoreFiles, ...webappFiles, ...testFiles, ...vscodeFiles, ...localServiceFiles];
+
+    optionalFiles.forEach((file) => {
         const content = getFileFromMemFs(fs, projectPath, file);
         if (content) {
             // Normalize UUIDs in content before snapshot comparison
@@ -156,7 +161,7 @@ describe('Migration Integration Tests', () => {
             expect(ui5Yaml).toBeDefined();
             expect(ui5Yaml).toContain('specVersion');
 
-            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_beta_lrop_v2_project');
+            verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_v4_lrop');
         });
 
         test('should migrate tool_suite_v4_lrop_custom_webapp', async () => {

@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import pkg from 'lodash';
 const { get } = pkg;
 import type { Data } from 'ejs';

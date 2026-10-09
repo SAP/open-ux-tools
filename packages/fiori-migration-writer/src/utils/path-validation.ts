@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 

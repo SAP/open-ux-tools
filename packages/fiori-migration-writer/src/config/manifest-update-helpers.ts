@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import { DirName } from '../project-spec-types.js';
 import type { TemplateData } from '../types.js';
 

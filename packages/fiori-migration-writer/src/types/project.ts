@@ -54,7 +54,6 @@ export interface ProjectMigrate extends Project {
     neoAppUI5Version?: string;
     semanticObject: string;
     type?: MigrationTypes;
-    extenstionSettings?: any;
 }
 
 /**

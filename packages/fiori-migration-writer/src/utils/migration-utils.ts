@@ -40,12 +40,14 @@ export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): str
  */
 export class MigrationError extends Error {
     private readonly useMessage: boolean;
-    constructor(error: Error, filename?: string, useMessage?: boolean) {
-        super(error.message);
+    constructor(error: unknown, filename?: string, useMessage?: boolean) {
+        const msg = error instanceof Error ? error.message : String(error);
+        super(msg);
         this.useMessage = useMessage ?? false;
         this.name = 'MigrationError';
 
-        this.setMessage(error, filename);
+        const errorObj = error instanceof Error ? error : new Error(msg);
+        this.setMessage(errorObj, filename);
     }
 
     private setMessage(error: Error, filename?: string) {
@@ -118,11 +120,8 @@ export async function generateTemplate(
     content = await applyFileSpecificHandlers(templateName, content, projectRoot, targetFile, templateData);
 
     // 6. Write file (uses fs-adapter)
-    try {
-        await writeFile(targetFile, content);
-    } catch {
-        // File write failed - this is caught and logged at the caller level
-    }
+    // Do not catch - let errors propagate to caller for proper handling
+    await writeFile(targetFile, content);
 }
 
 /**

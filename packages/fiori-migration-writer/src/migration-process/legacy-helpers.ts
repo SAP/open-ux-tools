@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import { join, relative, sep } from 'node:path';
 import { existsSync } from 'node:fs';
 import { CommandRunner } from '@sap-ux/nodejs-utils';

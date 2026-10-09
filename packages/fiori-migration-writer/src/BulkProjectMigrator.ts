@@ -2,6 +2,7 @@ import type { Message, MigrationUIProjectInfo } from './types.js';
 import { ProjectMigrator } from './ProjectMigrator.js';
 import { URI } from 'vscode-uri';
 import { i18nText } from './i18n.js';
+import { createMemFsEditor } from './utils/fs-adapter.js';
 
 // Telemetry stub - @sap-ux/telemetry is an optional dependency for performance measurement
 // This provides a no-op implementation for open-source usage
@@ -54,13 +55,17 @@ export class BulkProjectMigrator {
     ): Promise<MigrationUIProjectInfo> {
         const markName = uxTelemetryPerf.startMark('project' + index);
 
+        // Create editor here and pass explicitly so ownsEditor is false inside ProjectMigrator.migrate
+        // This prevents double-commit (migrate() won't auto-commit when editor is passed)
+        const editor = createMemFsEditor();
         const { fs, result, messages } = await ProjectMigrator.migrate(
             project.rootPath,
             project.hostname,
             ui5SnapshotUrl,
             project,
             vscode,
-            internalToggle
+            internalToggle,
+            editor
         );
 
         // Commit changes to disk for this project
@@ -142,11 +147,19 @@ export class BulkProjectMigrator {
     }
 
     /**
-     * Determine migration status based on result and messages
+     * Determine migration status based on result and messages.
      *
-     * @param result
-     * @param result.result
-     * @param result.messages
+     * Note: A successful migration (result.result === true) may still return 'ERROR' status
+     * if the messages array contains ERROR-severity entries for non-fatal issues that were
+     * logged during migration but didn't prevent file generation. Callers should check both
+     * the result.result field (did migration complete?) and status (were there issues?).
+     *
+     * @param result - Migration result object
+     * @param result.result - Whether migration completed successfully
+     * @param result.messages - Array of messages generated during migration
+     * @returns 'ERROR' if result is false OR messages contain errors,
+     *          'WARNING' if result is true and messages contain warnings but no errors,
+     *          'SUCCESS' if result is true and no errors or warnings
      */
     private determineStatus(result: { result: boolean; messages: Message[] }): 'ERROR' | 'WARNING' | 'SUCCESS' {
         // If migration result is false, it's definitely an error

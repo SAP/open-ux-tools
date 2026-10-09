@@ -1,4 +1,3 @@
-// CLASSIFICATION: [OPEN]
 import { join } from 'node:path';
 import type { TemplateProperties } from '../../types.js';
 

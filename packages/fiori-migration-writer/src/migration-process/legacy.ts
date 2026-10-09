@@ -5,7 +5,7 @@
 
 import { join } from 'node:path';
 import { readFile, updateFile, readJSON, updateJSON, fileExists } from '../utils/index.js';
-import { exists, isMemFsEnabled, copyFile, deleteFile } from '../utils/fs-adapter.js';
+import { exists, copyFile, deleteFile } from '../utils/fs-adapter.js';
 import { TemplateFileName } from '../index.js';
 import { FileName } from '../project-spec-types.js';
 import { legacyPath, getFFTestSuiteMap, MigrationError } from '../utils/common.js';
@@ -185,11 +185,49 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
  * @param ffNewTestPath
  */
 async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
-    // Skip directory listing in mem-fs mode - not supported
-    if (isMemFsEnabled()) {
+    const { getCurrentEditor } = await import('../utils/fs-adapter.js');
+    const { hasStore } = await import('../types/mem-fs-types.js');
+    const { sep } = await import('node:path');
+
+    const editor = getCurrentEditor();
+
+    // Use mem-fs store.each() to iterate over files (works in mem-fs mode)
+    // hasStore is a type guard that narrows editor to EditorWithStore
+    if (editor && hasStore(editor)) {
+        const htmlFiles: string[] = [];
+
+        editor.store.each((file: { path: string }) => {
+            const filePath = file.path;
+            // Check if file is directly under ffNewTestPath (not nested) and ends with .html
+            if (filePath.startsWith(ffNewTestPath + sep) && filePath.endsWith('.html')) {
+                // Only include files directly in the test path (no further path separators after the base)
+                const relativePath = filePath.substring(ffNewTestPath.length + 1);
+                if (!relativePath.includes(sep)) {
+                    htmlFiles.push(filePath);
+                }
+            }
+        });
+
+        for (const filePath of htmlFiles) {
+            let content;
+            try {
+                content = readFile(filePath);
+            } catch (e) {
+                throw new MigrationError(e, filePath);
+            }
+
+            content = content.replaceAll('../../main/webapp', '../../webapp');
+            content = content.replaceAll('/src/test/qunit', '/webapp/test');
+            content = content.replace(
+                '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
+                ''
+            );
+            updateFile(filePath, content);
+        }
         return;
     }
 
+    // Fallback to fs.readdirSync when not in mem-fs mode (e.g., direct disk operations)
     const fs = await import('node:fs');
     const htmlFiles = fs.readdirSync(ffNewTestPath).filter((file) => file.endsWith('.html'));
 
@@ -197,7 +235,7 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
         const filePath = join(ffNewTestPath, file);
         let content;
         try {
-            content = await readFile(filePath);
+            content = readFile(filePath);
         } catch (e) {
             throw new MigrationError(e, file);
         }
@@ -208,7 +246,7 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
             '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
             ''
         );
-        await updateFile(filePath, content);
+        updateFile(filePath, content);
     }
 }
 
@@ -233,7 +271,9 @@ async function updateGitignore(rootPath: string): Promise<void> {
 }
 
 /**
- * Update neo-app.json to remove legacy path references
+ * Update neo-app.json to remove legacy path references.
+ * Updates path properties structurally rather than via string replacement
+ * to avoid corrupting other string-valued properties.
  *
  * @param rootPath
  */
@@ -244,18 +284,31 @@ async function updateNeoApp(rootPath: string): Promise<void> {
     }
 
     try {
-        let neoappContent: any = await readJSON(neoapp);
-        neoappContent = JSON.stringify(neoappContent);
-        neoappContent = neoappContent.replaceAll('/src/main', '');
-        neoappContent = neoappContent.replaceAll('/src/test', '/webapp/test');
-        await updateJSON(neoapp, JSON.parse(neoappContent));
+        const neoappContent: { routes?: Array<{ path?: string; target?: { entryPath?: string } }> } =
+            await readJSON(neoapp);
+        if (Array.isArray(neoappContent.routes)) {
+            neoappContent.routes = neoappContent.routes.map((route) => ({
+                ...route,
+                path: route.path?.replace('/src/main', '').replace('/src/test', '/webapp/test'),
+                target: route.target
+                    ? {
+                          ...route.target,
+                          entryPath: route.target.entryPath
+                              ?.replace('/src/main', '')
+                              .replace('/src/test', '/webapp/test')
+                      }
+                    : route.target
+            }));
+        }
+        await updateJSON(neoapp, neoappContent);
     } catch (e) {
         throw new MigrationError(e, FileName.NeoApp);
     }
 }
 
 /**
- * Update .project.json (WEB IDE) to remove legacy path references
+ * Update .project.json (WEB IDE) to remove legacy path references.
+ * Updates path properties structurally rather than via string replacement.
  *
  * @param rootPath
  */
@@ -266,9 +319,14 @@ async function updateProjectJson(rootPath: string): Promise<void> {
     }
 
     try {
-        let projectJsonContent: any = await readJSON(projectJson);
-        projectJsonContent = JSON.stringify(projectJsonContent).replaceAll('src/main', '');
-        await updateJSON(projectJson, JSON.parse(projectJsonContent));
+        const projectJsonContent: { contentRoot?: string; path?: string } = await readJSON(projectJson);
+        if (projectJsonContent.contentRoot) {
+            projectJsonContent.contentRoot = projectJsonContent.contentRoot.replace('src/main', '');
+        }
+        if (projectJsonContent.path) {
+            projectJsonContent.path = projectJsonContent.path.replace('src/main', '');
+        }
+        await updateJSON(projectJson, projectJsonContent);
     } catch (e) {
         throw new MigrationError(e, 'project.json');
     }
