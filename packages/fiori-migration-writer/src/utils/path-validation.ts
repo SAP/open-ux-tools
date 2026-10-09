@@ -1,5 +1,5 @@
 import { resolve } from 'node:path';
-import { existsSync } from 'node:fs';
+import { access } from 'node:fs/promises';
 
 /**
  * Validates the root directory path before using as working directory
@@ -9,14 +9,16 @@ import { existsSync } from 'node:fs';
  * @returns Validated absolute path
  * @throws Error if path contains unsafe characters or is not a directory
  */
-export function validateRootDirectory(path: string): string {
+export async function validateRootDirectory(path: string): Promise<string> {
     const resolved = resolve(path);
     // Reject control characters and shell metacharacters
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
         throw new Error('Path contains unsafe characters');
     }
     // Ensure it's an existing directory (check real fs, not mem-fs)
-    if (!existsSync(resolved)) {
+    try {
+        await access(resolved);
+    } catch {
         throw new Error('Root directory does not exist');
     }
     return resolved;

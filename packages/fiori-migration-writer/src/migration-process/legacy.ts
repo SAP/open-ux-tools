@@ -32,7 +32,7 @@ export async function migrateLegacyFolderStructure(
     }
 
     const paths = buildLegacyPaths(rootPath, legacyPath);
-    if (!exists(paths.ffLegacyWebappPath)) {
+    if (!(await exists(paths.ffLegacyWebappPath))) {
         return { keepIndex, webappPath: projectInfo.webappPath };
     }
 
@@ -56,7 +56,7 @@ export async function migrateLegacyFolderStructure(
     await updateModulePathForTests(paths.ffNewTestPath);
 
     // Update paths in test files
-    if (exists(paths.ffNewTestPath)) {
+    if (await exists(paths.ffNewTestPath)) {
         await updateTestFilePaths(paths.ffNewTestPath);
     }
 
@@ -227,9 +227,9 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
         return;
     }
 
-    // Fallback to fs.readdirSync when not in mem-fs mode (e.g., direct disk operations)
-    const fs = await import('node:fs');
-    const htmlFiles = fs.readdirSync(ffNewTestPath).filter((file) => file.endsWith('.html'));
+    // Fallback to fs.promises.readdir when not in mem-fs mode (e.g., direct disk operations)
+    const { readdir } = await import('node:fs/promises');
+    const htmlFiles = (await readdir(ffNewTestPath)).filter((file) => file.endsWith('.html'));
 
     for (const file of htmlFiles) {
         const filePath = join(ffNewTestPath, file);

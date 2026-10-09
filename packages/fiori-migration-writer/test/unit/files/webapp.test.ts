@@ -48,7 +48,7 @@ describe('webapp', () => {
 
                 // Manifest should be created at webapp/manifest.json
                 const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-                const manifestExists = fileExists(manifestPath);
+                const manifestExists = await fileExists(manifestPath);
                 expect(manifestExists).toBe(true);
             });
         });
@@ -100,7 +100,7 @@ describe('webapp', () => {
                 await createExtensionProjectManifest(rootPath, projectInfo);
 
                 // No manifest should be created for LROP
-                const manifestExists = fileExists(join(rootPath, 'manifest.json'));
+                const manifestExists = await fileExists(join(rootPath, 'manifest.json'));
                 expect(manifestExists).toBe(false);
             });
         });
@@ -152,7 +152,7 @@ describe('webapp', () => {
 
                 // Manifest should be created and use ui5Version as fallback
                 const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-                expect(fileExists(manifestPath)).toBe(true);
+                expect(await fileExists(manifestPath)).toBe(true);
             });
         });
 
@@ -178,7 +178,7 @@ describe('webapp', () => {
 
                 // Manifest should be created with SHELL_TITLE
                 const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-                expect(fileExists(manifestPath)).toBe(true);
+                expect(await fileExists(manifestPath)).toBe(true);
             });
         });
     });

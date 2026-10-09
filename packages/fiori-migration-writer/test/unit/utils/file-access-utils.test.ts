@@ -26,16 +26,16 @@ describe('File Access Utilities', () => {
     });
 
     describe('fileExists', () => {
-        test('should return true for existing file', () => {
+        test('should return true for existing file', async () => {
             const testFile = join(testRoot, 'exists.txt');
             writeFileSync(testFile, 'content');
 
-            const exists = fileExists(testFile);
+            const exists = await fileExists(testFile);
             expect(exists).toBe(true);
         });
 
-        test('should return false for non-existing file', () => {
-            const exists = fileExists(join(testRoot, 'does-not-exist.txt'));
+        test('should return false for non-existing file', async () => {
+            const exists = await fileExists(join(testRoot, 'does-not-exist.txt'));
             expect(exists).toBe(false);
         });
     });
@@ -77,12 +77,12 @@ describe('File Access Utilities', () => {
     });
 
     describe('readJSON', () => {
-        test('should read and parse JSON file', () => {
+        test('should read and parse JSON file', async () => {
             const testFile = join(testRoot, 'test.json');
             const data = { foo: 'bar', number: 42 };
             writeFileSync(testFile, JSON.stringify(data));
 
-            const result = readJSON(testFile);
+            const result = await readJSON(testFile);
             expect(result).toEqual(data);
         });
     });
@@ -109,7 +109,7 @@ describe('File Access Utilities', () => {
                 });
             });
 
-            const result = readJSON(testFile);
+            const result = await readJSON(testFile);
             expect(result.foo).toBe('updated');
             expect(result.nested.value).toBe(2);
             expect(result.newField).toBe('added');
@@ -166,7 +166,7 @@ describe('File Access Utilities', () => {
             });
 
             const testFile = join(nestedDir, 'test.txt');
-            const exists = fileExists(testFile);
+            const exists = await fileExists(testFile);
             expect(exists).toBe(true);
         });
     });

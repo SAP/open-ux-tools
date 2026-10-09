@@ -119,7 +119,7 @@ async function readManifestReference(projectRoot: string): Promise<string | unde
  * @param projectRoot - Root path of the project
  * @returns True if .adp/config.json exists
  */
-export function isFioriToolsAdaptationProject(projectRoot: string): boolean {
+export async function isFioriToolsAdaptationProject(projectRoot: string): Promise<boolean> {
     const adpConfigJsonPath = join(projectRoot, '.adp', 'config.json');
     return fileExists(adpConfigJsonPath);
 }

@@ -1,5 +1,5 @@
 import { join, relative, sep } from 'node:path';
-import { existsSync } from 'node:fs';
+import { access, readdir } from 'node:fs/promises';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
@@ -45,14 +45,14 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
  * @param rootPath - Project root path
  * @param paths - Legacy paths object
  */
-function memFsMove(rootPath: string, paths: LegacyPaths): void {
+async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
     const fs = getCurrentEditor();
     if (!fs || !hasStore(fs)) {
         return;
     }
 
     // Move webapp files from src/main/webapp to webapp
-    if (exists(paths.ffLegacyWebappPath)) {
+    if (await exists(paths.ffLegacyWebappPath)) {
         // Iterate through all files in mem-fs store
         // mem-fs stores files with absolute paths as keys
         const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
@@ -86,7 +86,7 @@ function memFsMove(rootPath: string, paths: LegacyPaths): void {
     }
 
     // Move test/qunit to webapp/test
-    if (exists(paths.ffLegacyTestQunitPath)) {
+    if (await exists(paths.ffLegacyTestQunitPath)) {
         const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
         fs.store.each((file) => {
@@ -113,7 +113,7 @@ function memFsMove(rootPath: string, paths: LegacyPaths): void {
     }
 
     // Move test/uiveri5 to webapp/test
-    if (exists(paths.ffLegacyTestuiveri5Path)) {
+    if (await exists(paths.ffLegacyTestuiveri5Path)) {
         const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
 
         fs.store.each((file) => {
@@ -144,6 +144,18 @@ function memFsMove(rootPath: string, paths: LegacyPaths): void {
 }
 
 /**
+ * Helper function to check if a path exists on real filesystem (async)
+ */
+async function pathExistsOnDisk(path: string): Promise<boolean> {
+    try {
+        await access(path);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Try to move folders using git to preserve history
  * Uses relative paths from validated root directory to prevent command injection
  *
@@ -161,7 +173,7 @@ export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise
 
     try {
         // Validate root directory - this is the only absolute path passed to git (-C option)
-        const safeRootPath = validateRootDirectory(rootPath);
+        const safeRootPath = await validateRootDirectory(rootPath);
 
         // Rebuild paths from validated root + constants to avoid propagating external path input
         const legacyWebappPath = join(safeRootPath, 'src', 'main', DirName.Webapp);
@@ -180,12 +192,12 @@ export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise
         await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyWebapp, relNewWebapp]);
 
         // Move qunit folder if exists
-        if (existsSync(legacyTestQunitPath)) {
+        if (await pathExistsOnDisk(legacyTestQunitPath)) {
             await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyTestQunit, relNewTest]);
         }
 
         // Move uiveri5 folder if exists
-        if (existsSync(legacyTestuiveri5Path)) {
+        if (await pathExistsOnDisk(legacyTestuiveri5Path)) {
             await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relLegacyTestuiveri5, relNewTest]);
         }
     } catch (error: unknown) {
@@ -211,13 +223,13 @@ export async function fallbackFsMove(rootPath: string, paths: LegacyPaths): Prom
     // Real file system fallback
     // Use filesystem operations for cleanup
     const { default: fse } = await import('fs-extra');
-    if (existsSync(paths.ffLegacyWebappPath)) {
+    if (await pathExistsOnDisk(paths.ffLegacyWebappPath)) {
         fse.moveSync(paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
     }
-    if (existsSync(paths.ffLegacyTestQunitPath)) {
+    if (await pathExistsOnDisk(paths.ffLegacyTestQunitPath)) {
         fse.moveSync(paths.ffLegacyTestQunitPath, paths.ffNewTestPath);
     }
-    if (existsSync(paths.ffLegacyTestuiveri5Path)) {
+    if (await pathExistsOnDisk(paths.ffLegacyTestuiveri5Path)) {
         fse.moveSync(paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath);
     }
 }
@@ -236,14 +248,16 @@ export async function cleanupEmptyDirs(rootPath: string, legacyPath: string, pat
         return;
     }
 
-    const fs = await import('node:fs');
     const fsextra = await import('fs-extra');
 
     const dirsToRemove = [join(rootPath, legacyPath), paths.ffLegacyTestPath, join(rootPath, 'src')];
 
     for (const dir of dirsToRemove) {
-        if (existsSync(dir) && fs.default.readdirSync(dir).filter((file) => file !== '.DS_Store').length === 0) {
-            fsextra.default.removeSync(dir);
+        if (await pathExistsOnDisk(dir)) {
+            const dirContents = await readdir(dir);
+            if (dirContents.filter((file) => file !== '.DS_Store').length === 0) {
+                fsextra.default.removeSync(dir);
+            }
         }
     }
 }

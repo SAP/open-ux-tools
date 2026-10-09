@@ -457,6 +457,12 @@ describe('Migration Integration Tests', () => {
                 fs
             );
 
+            // Debug output - CI is failing here with result=false
+            if (!result) {
+                console.log('DEBUG: Migration failed');
+                console.log('DEBUG: Messages:', JSON.stringify(messages, null, 2));
+            }
+
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
             verifyMigratedFiles(updatedFs, projectPath, 'reuse_library_project');

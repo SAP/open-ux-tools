@@ -3,7 +3,7 @@
  */
 
 import { join, basename, sep } from 'node:path';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { stat, readdir, access } from 'node:fs/promises';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -14,6 +14,18 @@ import { validateRootDirectory, validateGitRelativePath } from '../utils/path-va
 import { hasStore } from '../types/mem-fs-types.js';
 
 /**
+ * Helper function to check if a path exists on real filesystem (async)
+ */
+async function pathExistsOnDisk(path: string): Promise<boolean> {
+    try {
+        await access(path);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Recursively move files and directories from source to destination
  * Handles both mem-fs and real filesystem operations
  *
@@ -22,19 +34,23 @@ import { hasStore } from '../types/mem-fs-types.js';
  */
 async function recursiveMove(sourcePath: string, destPath: string): Promise<void> {
     // Check if source exists (handles both mem-fs and real fs)
-    if (!exists(sourcePath) && !existsSync(sourcePath)) {
+    if (!(await exists(sourcePath)) && !(await pathExistsOnDisk(sourcePath))) {
         return; // Nothing to move
     }
 
     // Check if it's a directory (real fs check - mem-fs doesn't have directories)
-    const isDirectory = existsSync(sourcePath) && statSync(sourcePath).isDirectory();
+    let isDirectory = false;
+    if (await pathExistsOnDisk(sourcePath)) {
+        const stats = await stat(sourcePath);
+        isDirectory = stats.isDirectory();
+    }
 
     if (isDirectory) {
         // Ensure destination directory exists
         await mkdir(destPath);
 
         // Read directory contents (real fs)
-        const entries = readdirSync(sourcePath, { withFileTypes: true });
+        const entries = await readdir(sourcePath, { withFileTypes: true });
 
         // Recursively move each entry
         for (const entry of entries) {
@@ -44,7 +60,7 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
         }
 
         // Delete the now-empty source directory (real fs only)
-        if (!isMemFsEnabled() && existsSync(sourcePath)) {
+        if (!isMemFsEnabled() && (await pathExistsOnDisk(sourcePath))) {
             const { rm } = await import('node:fs/promises');
             await rm(sourcePath, { recursive: true, force: true });
         }
@@ -68,8 +84,8 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
 export async function createExtensionProjectManifest(rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
     // Only create if manifest doesn't exist and it's an extension project
     if (
-        !fileExists(join(rootPath, projectInfo.webappPath, FileName.Manifest)) &&
-        !fileExists(join(rootPath, FileName.Manifest)) &&
+        !(await fileExists(join(rootPath, projectInfo.webappPath, FileName.Manifest))) &&
+        !(await fileExists(join(rootPath, FileName.Manifest))) &&
         projectInfo.type === MigrationTypes.projectExtension
     ) {
         // Add a basic manifest.json (not linked in component.json) needed for preview
@@ -111,7 +127,7 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
 
         // Write manifest to appropriate location
         // Check if webapp directory exists (works for both mem-fs and real fs)
-        const shouldWriteToWebapp = projectInfo.webappPath && exists(join(rootPath, projectInfo.webappPath));
+        const shouldWriteToWebapp = projectInfo.webappPath && (await exists(join(rootPath, projectInfo.webappPath)));
 
         if (shouldWriteToWebapp) {
             await updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
@@ -195,17 +211,17 @@ export async function createWebappFolderAndMigrateFiles(
             }
         } else {
             // Use real filesystem
-            const dirContent = readdirSync(rootPath, { withFileTypes: true });
+            const dirContent = await readdir(rootPath, { withFileTypes: true });
             const runner = new CommandRunner();
 
             // Validate root directory once
-            const safeRootPath = validateRootDirectory(rootPath);
+            const safeRootPath = await validateRootDirectory(rootPath);
 
             // Move files to webapp folder
             for (const path of dirContent) {
                 if (direntToFilter.indexOf(path.name) === -1) {
                     try {
-                        // Validate paths before passing to git - path.name is from fs.readdirSync
+                        // Validate paths before passing to git - path.name is from fs.readdir
                         const relSource = validateGitRelativePath(path.name);
                         const relDest = validateGitRelativePath(join(DirName.Webapp, path.name));
 
@@ -217,7 +233,7 @@ export async function createWebappFolderAndMigrateFiles(
                     }
 
                     // Fallback to file system move if git didn't work
-                    if (existsSync(join(rootPath, path.name))) {
+                    if (await pathExistsOnDisk(join(rootPath, path.name))) {
                         const sourcePath = join(rootPath, path.name);
                         const destPath = join(rootPath, DirName.Webapp, path.name);
 

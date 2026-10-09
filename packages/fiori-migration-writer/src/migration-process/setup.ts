@@ -24,7 +24,7 @@ export async function setupMigrationDirectories(
 
     // Create test directory if webapp exists
     const webAppPath = join(rootPath, projectInfo.webappPath);
-    if (fileExists(webAppPath)) {
+    if (await fileExists(webAppPath)) {
         await createDirectory(join(rootPath, projectInfo.webappPath, TemplateFileName.Test));
     }
 }

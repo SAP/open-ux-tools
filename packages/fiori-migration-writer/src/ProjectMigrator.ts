@@ -1,12 +1,12 @@
 import { FioriElementsVersion, FileName } from './project-spec-types.js';
 import { determineMessage, readFile, updateFile } from './utils/index.js';
-import { createMemFsEditor, getCurrentEditor, runWithEditor } from './utils/fs-adapter.js';
+import { createMemFsEditor, getCurrentEditor, runWithEditor, exists } from './utils/fs-adapter.js';
 import { commitFileSystemChanges } from './files/file-system.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { existsSync, readdirSync } from 'node:fs';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 // Migration-specific functions
@@ -372,7 +372,7 @@ export class ProjectMigrator {
         }
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
-            if (existsSync(yamlPath)) {
+            if (await exists(yamlPath)) {
                 // Optimize: read file first, then parse (avoids nested await)
                 const yamlContent = await readFile(yamlPath);
                 const yamlConfig = await UI5Config.newInstance(yamlContent);
@@ -412,8 +412,8 @@ export class ProjectMigrator {
 
         return (
             isTypeScript ||
-            (existsSync(webappFullPath) &&
-                readdirSync(webappFullPath, { recursive: true }).some(
+            ((await exists(webappFullPath)) &&
+                (await readdir(webappFullPath, { recursive: true })).some(
                     (f) => typeof f === 'string' && f.endsWith('.ts') && !f.endsWith('.d.ts')
                 ))
         );

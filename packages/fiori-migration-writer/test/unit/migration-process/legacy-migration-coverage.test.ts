@@ -20,53 +20,53 @@ describe('Legacy Migration Helpers - Coverage Tests', () => {
     });
 
     describe('validateRootDirectory', () => {
-        it('should accept a valid directory path', () => {
+        it('should accept a valid directory path', async () => {
             const validPath = __dirname;
-            const result = validateRootDirectory(validPath);
+            const result = await validateRootDirectory(validPath);
             expect(result).toBeDefined();
             expect(result.length).toBeGreaterThan(0);
         });
 
-        it('should reject path with null byte', () => {
-            expect(() => validateRootDirectory('/tmp/test\0malicious')).toThrow('Path contains unsafe characters');
+        it('should reject path with null byte', async () => {
+            await expect(validateRootDirectory('/tmp/test\0malicious')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with carriage return', () => {
-            expect(() => validateRootDirectory('/tmp/test\rmalicious')).toThrow('Path contains unsafe characters');
+        it('should reject path with carriage return', async () => {
+            await expect(validateRootDirectory('/tmp/test\rmalicious')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with newline', () => {
-            expect(() => validateRootDirectory('/tmp/test\nmalicious')).toThrow('Path contains unsafe characters');
+        it('should reject path with newline', async () => {
+            await expect(validateRootDirectory('/tmp/test\nmalicious')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with backtick', () => {
-            expect(() => validateRootDirectory('/tmp/test`command`')).toThrow('Path contains unsafe characters');
+        it('should reject path with backtick', async () => {
+            await expect(validateRootDirectory('/tmp/test`command`')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with dollar sign (command substitution)', () => {
-            expect(() => validateRootDirectory('/tmp/test$(whoami)')).toThrow('Path contains unsafe characters');
+        it('should reject path with dollar sign (command substitution)', async () => {
+            await expect(validateRootDirectory('/tmp/test$(whoami)')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with pipe', () => {
-            expect(() => validateRootDirectory('/tmp/test|command')).toThrow('Path contains unsafe characters');
+        it('should reject path with pipe', async () => {
+            await expect(validateRootDirectory('/tmp/test|command')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with ampersand', () => {
-            expect(() => validateRootDirectory('/tmp/test&command')).toThrow('Path contains unsafe characters');
+        it('should reject path with ampersand', async () => {
+            await expect(validateRootDirectory('/tmp/test&command')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with semicolon', () => {
-            expect(() => validateRootDirectory('/tmp/test;command')).toThrow('Path contains unsafe characters');
+        it('should reject path with semicolon', async () => {
+            await expect(validateRootDirectory('/tmp/test;command')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject path with angle brackets', () => {
-            expect(() => validateRootDirectory('/tmp/test<file')).toThrow('Path contains unsafe characters');
-            expect(() => validateRootDirectory('/tmp/test>file')).toThrow('Path contains unsafe characters');
+        it('should reject path with angle brackets', async () => {
+            await expect(validateRootDirectory('/tmp/test<file')).rejects.toThrow('Path contains unsafe characters');
+            await expect(validateRootDirectory('/tmp/test>file')).rejects.toThrow('Path contains unsafe characters');
         });
 
-        it('should reject non-existent directory', () => {
+        it('should reject non-existent directory', async () => {
             const nonExistent = join(__dirname, 'this-should-not-exist-' + Date.now());
-            expect(() => validateRootDirectory(nonExistent)).toThrow('Root directory does not exist');
+            await expect(validateRootDirectory(nonExistent)).rejects.toThrow('Root directory does not exist');
         });
     });
 

@@ -8,7 +8,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { existsSync } from 'node:fs';
+import { access } from 'node:fs/promises';
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 /**
@@ -91,20 +91,25 @@ export function editorHasPath(editor: Editor, path: string): boolean {
 }
 
 /**
- * Check if file/directory exists
+ * Check if file/directory exists (async)
  * Uses editor from context if available, otherwise checks real filesystem
  *
  * @param path - Path to check
  * @returns True if exists in mem-fs (when editor available) OR on real filesystem
  */
-export function exists(path: string): boolean {
+export async function exists(path: string): Promise<boolean> {
     const editor = getCurrentEditor();
     if (editor) {
         // In mem-fs mode, check mem-fs only
         return editorHasPath(editor, path);
     }
     // No editor context - check real filesystem
-    return existsSync(path);
+    try {
+        await access(path);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 /**

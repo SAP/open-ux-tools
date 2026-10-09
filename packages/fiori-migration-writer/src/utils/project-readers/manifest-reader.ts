@@ -22,7 +22,7 @@ export function getManifestPath(projectRoot: string, webappPath: string): string
  * @param projectRoot
  * @param webappPath
  */
-export function getManifestJson(projectRoot: string, webappPath: string): Manifest {
+export async function getManifestJson(projectRoot: string, webappPath: string): Promise<Manifest> {
     const manifestPath = getManifestPath(projectRoot, webappPath);
     return readJSON(manifestPath);
 }

@@ -8,7 +8,7 @@
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
-import { readFileSync } from 'node:fs';
+import { readFile as fsReadFile } from 'node:fs/promises';
 import { createMemFsEditor, editorHasPath, getCurrentEditor, exists as fsAdapterExists } from './fs-adapter.js';
 
 /**
@@ -51,14 +51,14 @@ export function readFile(pathOrFs: string | Editor, path?: string): string {
  * @param path - Path to file (if first param is Editor)
  * @returns Parsed JSON object with indentation metadata for round-trip preservation
  */
-export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
+export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string): Promise<T> {
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
 
     // When called with just a path string and no editor context, read from filesystem directly
     // This keeps behavior consistent with fileExists which also falls back to real filesystem
     let content: string;
     if (typeof pathOrFs === 'string' && !getCurrentEditor()) {
-        content = readFileSync(filePath, 'utf-8');
+        content = await fsReadFile(filePath, 'utf-8');
     } else {
         const fs = getEditor(pathOrFs);
         content = fs.read(filePath);
@@ -91,7 +91,7 @@ export function readJSON<T = any>(pathOrFs: string | Editor, path?: string): T {
  * @param path - Path to file (if first param is Editor)
  * @returns true if file exists, false otherwise
  */
-export function fileExists(pathOrFs: string | Editor, path?: string): boolean {
+export async function fileExists(pathOrFs: string | Editor, path?: string): Promise<boolean> {
     const editor = getCurrentEditor();
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
 
