@@ -9,7 +9,7 @@ import { writeFile as writeFileUtil, initI18n } from '../../src/index.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Access private static methods for testing via reflection
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const getProjectMigratorPrivate = async (): Promise<any> => {
     const module = await import('../../src/ProjectMigrator.js');
     return module.ProjectMigrator;
