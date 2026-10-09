@@ -1,4 +1,4 @@
-import { dirname, join, sep } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { getReuseLibs, findAllProjectRoots, ReuseLibType } from './file-discovery.js';
 import type { Manifest, Package } from '../project-spec-types.js';
 import { DirName } from '../project-spec-types.js';
@@ -31,6 +31,7 @@ import {
     checkIfProjectExtension,
     getExtensionProjectModuleName,
     checkIfReuseLib,
+    findNestedReuseLibManifest,
     getReuseLibModuleName,
     getClientFromDestinationName,
     getNeoAppData,
@@ -107,6 +108,18 @@ export class ProjectAccess {
                 // Expected: manifest.json not found in either standard or legacy path.
                 // Valid for reuse libraries and project extensions - they may not have manifest.json.
                 isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType);
+
+                if (!isReuseLib && !isProjectExtension) {
+                    // UI5 reuse libraries keep manifest.json nested in the namespace source tree
+                    // (e.g. src/sap/company/lib/name/manifest.json) rather than at the project root.
+                    // Pick it up here so the direct-migration path matches the workspace discovery path.
+                    const nestedLib = await findNestedReuseLibManifest(projectRoot);
+                    if (nestedLib) {
+                        manifest = nestedLib.manifest;
+                        projectInfo.webappPath = relative(projectRoot, dirname(nestedLib.manifestPath));
+                        isReuseLib = true;
+                    }
+                }
 
                 if (isReuseLib || isProjectExtension) {
                     // dont throw error if reuse lib or project extension

@@ -3,13 +3,42 @@
  */
 
 import { basename, join } from 'node:path';
-import { getReuseLibs } from '../file-discovery.js';
+import { getReuseLibs, ReuseLibType } from '../file-discovery.js';
 import { readJSON } from '../../index.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { FileName } from '../../project-spec-types.js';
 import { MigrationTypes } from '../constants.js';
 import type { ProjectFolder } from '../../types.js';
 import { URI } from 'vscode-uri';
+
+/**
+ * Find a reuse library manifest nested within a project's source tree.
+ *
+ * UI5 reuse libraries place manifest.json inside the namespace path (e.g.
+ * src/sap/company/lib/name/manifest.json) with no manifest at the project root,
+ * so the standard root/legacy webapp lookups miss it. This scans the project the
+ * same way the workspace discovery path does and returns the library whose root
+ * resolves back to projectRoot.
+ *
+ * @param projectRoot - Root path of the project
+ * @returns The nested manifest and its path, or undefined if none is found
+ */
+export async function findNestedReuseLibManifest(
+    projectRoot: string
+): Promise<{ manifest: Manifest; manifestPath: string } | undefined> {
+    const libs = await getReuseLibs([{ uri: URI.file(projectRoot), name: projectRoot, index: 0 }]);
+    const matchedLib = libs.find((lib) => lib.value.type === ReuseLibType.LIBRARY && lib.value.libRoot === projectRoot);
+    if (!matchedLib) {
+        return undefined;
+    }
+    try {
+        const manifest: Manifest = await readJSON(matchedLib.value.path);
+        return { manifest, manifestPath: matchedLib.value.path };
+    } catch (error: unknown) {
+        // Manifest became unreadable between discovery and read - treat as not found
+        return undefined;
+    }
+}
 
 /**
  * Check if project is a reuse library
