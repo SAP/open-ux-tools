@@ -95,27 +95,13 @@ export function fileExists(pathOrFs: string | Editor, path?: string): boolean {
     const editor = getCurrentEditor();
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
 
-    // Debug logging for extension detection
-    if (filePath.includes('.che/project.json') || filePath.includes('.che\\project.json')) {
-        console.log(`[FILE-EXISTS] Checking: ${filePath}`);
-        console.log(`[FILE-EXISTS] getCurrentEditor(): ${editor ? 'AVAILABLE' : 'UNDEFINED'}`);
-    }
-
     // When called with just a path string and no editor context, check filesystem directly
     if (typeof pathOrFs === 'string' && !editor) {
-        const result = fsAdapterExists(pathOrFs);
-        if (filePath.includes('.che/project.json') || filePath.includes('.che\\project.json')) {
-            console.log(`[FILE-EXISTS] Using real filesystem, result: ${result}`);
-        }
-        return result;
+        return fsAdapterExists(pathOrFs);
     }
     // Otherwise use mem-fs editor
     const fs = getEditor(pathOrFs);
-    const result = editorHasPath(fs, filePath);
-    if (filePath.includes('.che/project.json') || filePath.includes('.che\\project.json')) {
-        console.log(`[FILE-EXISTS] Using mem-fs, result: ${result}`);
-    }
-    return result;
+    return editorHasPath(fs, filePath);
 }
 
 /**

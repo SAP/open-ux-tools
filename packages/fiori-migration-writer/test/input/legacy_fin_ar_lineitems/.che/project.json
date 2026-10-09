@@ -1,0 +1,15 @@
+{
+  "type": "sap.web",
+  "builders": {
+    "configs": {}
+  },
+  "runners": {
+    "configs": {}
+  },
+  "attributes": {
+    "sap.watt.common.setting": [
+      "{\"appparams\":[{\"paramName\":\"sap-ui-xx-lesssupport\",\"paramValue\":\"true\",\"paramActive\":true}],\"hcpdeploy\":{\"account\":\"fiori\",\"name\":\"finarlineitemsdisplay\",\"lastVersionWeTriedToDeploy\":\"1\",\"entryPath\":\"/webapp\"},\"basevalidator\":{\"validators\":[{\"validatorID\":\"fioriXmlAnalysis\"},{\"validatorID\":\"fioriJsValidator\",\"configuration\":{\"rules\":{},\"additionalRuleMetadata\":{}}}],\"services\":{\"xml\":\"fioriXmlAnalysis\",\"js\":\"fioriJsValidator\"}},\"projectType\":[\"sap.watt.uitools.ide.web\",\"sap.watt.uitools.ide.fiori\",\"sap.web\"]}"
+    ]
+  },
+  "mixinTypes": []
+}

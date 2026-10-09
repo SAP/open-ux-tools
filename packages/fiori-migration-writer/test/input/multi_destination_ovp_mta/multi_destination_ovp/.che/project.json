@@ -1,0 +1,11 @@
+{
+    "type": "com.sap.hcp.html5",
+    "builders": { "default": "grunt-builder-cf", "configs": {} },
+    "runners": { "configs": {} },
+    "attributes": {
+        "sap.watt.common.setting": [
+            "{\"projectType\":[\"sap.watt.uitools.ide.fiori\",\"sap.watt.saptoolsets.fiori.project.uiadaptation\",\"sap.watt.saptoolsets.fiori.project.ui5template.smartProject\"],\"generation\":[{\"templateId\":\"OVP.smartovptemplatemodule\",\"templateVersion\":\"1.43.1\",\"dateTimeStamp\":\"Thu, 05 May 2022 13:06:04 GMT\"},{\"templateId\":\"OVP.cardtemplate\",\"templateVersion\":\"0.0.0\",\"dateTimeStamp\":\"Thu, 05 May 2022 13:16:20 GMT\"},{\"templateId\":\"servicecatalog.connectivityComponentForManifest\",\"templateVersion\":\"0.0.0\",\"dateTimeStamp\":\"Thu, 05 May 2022 13:14:32 GMT\"}],\"codeCheckingTriggers\":{\"notifyBeforePush\":false,\"notifyBeforePushLevel\":\"Error\",\"blockPush\":false,\"blockPushLevel\":\"Error\"},\"mockpreview\":{\"mockUri\":\"/northwind_v2/V2/Northwind/Northwind.svc\",\"metadataFilePath\":\"\",\"loadJSONFiles\":false,\"loadCustomRequests\":false,\"mockRequestsFilePath\":\"\"},\"basevalidator\":{\"services\":{\"xml\":\"fioriXmlAnalysis\",\"js\":\"fioriJsValidator\"}}}"
+        ]
+    },
+    "mixinTypes": ["mtamodule"]
+}
