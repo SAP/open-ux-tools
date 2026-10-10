@@ -14,39 +14,52 @@ const DIST_SERVER = join(dirname(fileURLToPath(import.meta.url)), '../../../dist
 let tools: DynamicStructuredTool[] = [];
 let client: MultiServerMCPClient;
 
-beforeAll(async () => {
-    // Retry up to 2 times: the MCP initialize handshake has a 60 s SDK timeout,
-    // which Windows CI runners can exceed on a cold start of the bundled ESM server.
-    for (let attempt = 1; attempt <= 2; attempt++) {
-        client = new MultiServerMCPClient({
-            throwOnLoadError: true,
-            prefixToolNameWithServerName: false,
-            additionalToolNamePrefix: '',
-            useStandardContentBlocks: true,
-            mcpServers: {
-                'fiori-mcp-server': {
-                    command: 'node',
-                    args: [DIST_SERVER],
-                    env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
-                }
+function createClient(): MultiServerMCPClient {
+    return new MultiServerMCPClient({
+        throwOnLoadError: true,
+        prefixToolNameWithServerName: false,
+        additionalToolNamePrefix: '',
+        useStandardContentBlocks: true,
+        mcpServers: {
+            'fiori-mcp-server': {
+                command: 'node',
+                args: [DIST_SERVER],
+                env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
             }
-        });
+        }
+    });
+}
+
+beforeAll(async () => {
+    // The MCP initialize handshake has a 60 s SDK-level timeout. On loaded CI runners the
+    // server process can take longer to start, causing a spurious MCPClientError -32001.
+    // Retry up to 3 times with a fresh client each attempt (the adapter closes the underlying
+    // MCP client on timeout, so the same instance cannot be reused).
+    const MAX_ATTEMPTS = 3;
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        const c = createClient();
         try {
-            tools = await client.getTools();
-            break;
+            const loaded = await c.getTools();
+            if (loaded.length === 0) {
+                await c.close();
+                throw new Error(
+                    `No tools loaded from MCP server at ${DIST_SERVER}. Ensure the package is built before running these tests.`
+                );
+            }
+            client = c;
+            tools = loaded;
+            return;
         } catch (err) {
-            await client.close().catch(() => {});
-            if (attempt === 2) {
-                throw err;
+            await c.close().catch(() => {});
+            lastError = err;
+            if (attempt < MAX_ATTEMPTS) {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
             }
         }
     }
-    if (tools.length === 0) {
-        throw new Error(
-            `No tools loaded from MCP server at ${DIST_SERVER}. Ensure the package is built before running these tests.`
-        );
-    }
-}, 150000);
+    throw lastError;
+}, 240000);
 
 afterAll(async () => {
     await client?.close();
