@@ -39,7 +39,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.10",
-        "fast-xml-parser": "5.10.1",
+        "fast-xml-parser": "5.11.0",
         "i18next": "26.3.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
