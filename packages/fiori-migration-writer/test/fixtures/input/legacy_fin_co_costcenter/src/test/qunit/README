@@ -1,0 +1,12 @@
+This is README file to help you do:
+1. run QUnit Test.
+    >mvn clean install
+2. run JSCoverage and generate report.
+    >mvn clean integration-test -P test.build
+3. run JSLint and generate report.
+    >mvn -Djslint.run jslint:jslint
+4. upload the report to Sonar server.
+    >mvn sonar:sonar
+
+you could find the report result here.
+    https://sonarqube.example.com/

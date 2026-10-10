@@ -1,0 +1,43 @@
+specVersion: "4.0"
+metadata:
+  name: com.example.bulk.project1
+type: application
+framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.ui.core
+    - name: sap.m
+    - name: sap.fe.templates
+    - name: sap.ushell
+    - name: themelib_sap_bluecrystal
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /sap/opu/odata/sap/EXAMPLE_SRV
+          name: ""
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/mockdata
+          generateMockData: true
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        backend:
+          - path: /sap
+            url: https://dummy.example.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: com.example.bulk.project1
+        ui5Theme: sap_fiori_3

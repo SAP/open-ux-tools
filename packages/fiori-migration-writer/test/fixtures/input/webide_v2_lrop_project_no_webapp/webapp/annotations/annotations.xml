@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+	<edmx:Reference Uri="/sap/bc/ui5_ui5/ui2/ushell/resources/sap/ushell/components/factsheet/vocabularies/UI.xml">
+		<edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
+		<edmx:Include Alias="SEPMRA_PROD_MAN" Namespace="SEPMRA_PROD_MAN"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="migration_test01.SEPMRA_PROD_MAN">
+			<!--===============================================================================
+                Entity Type from chosen collection 
+                ================================================================================-->
+			<Annotations Target="SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType">
+				<Annotation Term="UI.Facets">
+					<Collection>
+						<Record Type="UI.CollectionFacet">
+							<PropertyValue Property="ID" String="GeneralInformation"/>
+							<PropertyValue Property="Label" String="{@i18n>@GeneralInfoFacetLabel}"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet">
+										<PropertyValue Property="Label" String="{@i18n>@GeneralInfoFacetLabel}"/>
+										<PropertyValue Property="Target" AnnotationPath="@UI.Identification"/>
+									</Record>
+								</Collection>
+							</PropertyValue>
+						</Record>
+						<Record Type="UI.ReferenceFacet">
+							<PropertyValue Property="Label" String="{@i18n>@SecondFacetLabel}"/>
+							<PropertyValue Property="Target" AnnotationPath="to_CollaborativeReview/@UI.LineItem"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<!--===============================================================================
+                Entity Type from chosen navigation property
+                ================================================================================-->
+			<Annotations Target="SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewType">
+				<Annotation Term="UI.Facets">
+					<Collection>
+						<Record Type="UI.CollectionFacet">
+							<PropertyValue Property="ID" String="GeneralInformation"/>
+							<PropertyValue Property="Label" String="{@i18n>@GeneralInfoFacetLabel}"/>
+							<PropertyValue Property="Facets">
+								<Collection>
+									<Record Type="UI.ReferenceFacet">
+										<PropertyValue Property="Label" String="{@i18n>@GeneralInfoFacetLabel}"/>
+										<PropertyValue Property="Target" AnnotationPath="@UI.Identification"/>
+									</Record>
+								</Collection>
+							</PropertyValue>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,13 @@
+{
+  "id": "com.example.adapted",
+  "reference": "com.example.base.app",
+  "layer": "CUSTOMER",
+  "content": [
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": ""
+      }
+    }
+  ]
+}

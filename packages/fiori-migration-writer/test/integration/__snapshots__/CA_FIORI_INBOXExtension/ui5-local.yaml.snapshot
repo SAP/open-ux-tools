@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate CA_FIORI_INBOXExtension 1`] = `
+"specVersion: \\"4.0\\"
+metadata:
+  name: demo.fiori.inbox.sample_fiori_inboxextension
+type: application
+framework:
+  name: SAPUI5
+  version: 1.38.59
+  libraries:
+    - name: sap.f
+    - name: sap.m
+    - name: sap.ui.comp
+    - name: sap.ui.core
+    - name: sap.ui.generic.app
+    - name: sap.ui.table
+    - name: sap.ushell
+    - name: themelib_sap_bluecrystal
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        backend:
+          - path: /sap
+            url: https://backend.example.com:44300
+            destination: EXAMPLE_SYS
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: demo.fiori.inbox.SAMPLE_FIORI_INBOXExtension
+        ui5Theme: sap_fiori_3
+"
+`;

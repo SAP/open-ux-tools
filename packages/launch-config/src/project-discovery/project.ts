@@ -21,7 +21,7 @@ async function getStartFileFromPackageFile(projectRoot: string): Promise<string 
     let startHtmlFile = 'test/flpSandbox.html';
     if (scripts) {
         // parse package.json and try to find start file for fiori run command
-        Object.entries(scripts).forEach(([key, value]) => {
+        Object.entries(scripts).forEach(([key, value]: [string, string | undefined]) => {
             const match = value?.match(/fiori run/);
             if (match && key === 'start') {
                 const scriptParts = value?.split(' ');

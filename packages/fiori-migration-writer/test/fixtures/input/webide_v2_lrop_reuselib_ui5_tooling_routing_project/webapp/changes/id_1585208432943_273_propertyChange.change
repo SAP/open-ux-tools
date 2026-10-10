@@ -1,0 +1,41 @@
+{
+	"fileName": "id_1585208432943_273_propertyChange",
+	"fileType": "change",
+	"changeType": "propertyChange",
+	"moduleName": "",
+	"reference": "i2d.qm.defect.records1.Component",
+	"packageName": "$TMP",
+	"content": {
+		"property": "visible",
+		"newValue": false
+	},
+	"selector": {
+		"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--ChangedocReuseComponent::changedoccomponent::ComponentSubSection",
+		"type": "sap.uxap.ObjectPageSubSection",
+		"idIsLocal": false
+	},
+	"layer": "VENDOR",
+	"texts": {},
+	"namespace": "apps/i2d.qm.defect.records1/changes/",
+	"projectId": "i2d.qm.defect.records1",
+	"creation": "2020-03-26T07:41:18.858Z",
+	"originalLanguage": "EN",
+	"support": {
+		"generator": "Change.createInitialFileContent",
+		"service": "",
+		"user": "",
+		"sapui5Version": "1.77.0-SNAPSHOT",
+		"sourceChangeFileName": "",
+		"compositeCommand": ""
+	},
+	"oDataInformation": {},
+	"dependentSelector": {},
+	"validAppVersions": {
+		"creation": "${project.version}",
+		"from": "${project.version}",
+		"to": "${project.version}"
+	},
+	"jsOnly": false,
+	"variantReference": "",
+	"appDescriptorChange": false
+}

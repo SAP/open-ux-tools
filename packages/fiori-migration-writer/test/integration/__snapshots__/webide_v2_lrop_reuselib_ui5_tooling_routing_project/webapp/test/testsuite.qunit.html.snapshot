@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate webide_v2_lrop_reuselib_ui5_tooling_routing_project 1`] = `
+"<!DOCTYPE html>
+<html>
+	<head>
+		<title>QUnit TestSuite for Record Defect/Display Defects (F2929)</title>
+		<script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+		<script>
+
+		/**
+		 * Add test pages to this test suite function.
+		 */
+		function suite() {
+			var oSuite = new parent.jsUnitTestSuite(),
+				sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
+
+			oSuite.addTestPage(sContextPath + \\"unit/unitTests.qunit.html\\");
+			oSuite.addTestPage(sContextPath + \\"integration/opaTests.qunit.html\\");
+
+			return oSuite;
+		}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>"
+`;

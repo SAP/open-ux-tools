@@ -1,0 +1,20 @@
+{
+	"run": [{
+		"filePath": "/SAMPLE_FIORI_INBOXExtension/webapp/index.html",
+		"previewMode": 1,
+		"dataMode": 1,
+		"workspace": "withoutWorkspace",
+		"ui5ActiveVersion": null,
+		"ui5VerSource": null,
+		"isDefaultVersion": 0,
+		"urlParameters": [{
+			"paramName": "allItems",
+			"paramValue": "true",
+			"paramActive": true
+		}],
+		"_metadata": {
+			"runnerId": "webapprunner",
+			"displayName": "My Inbox Extension"
+		}
+	}]
+}

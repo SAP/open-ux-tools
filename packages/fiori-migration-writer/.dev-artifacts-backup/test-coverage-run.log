@@ -1,0 +1,750 @@
+$ cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests --coverage
+(node:1298) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[0m[7m[1m[31m FAIL [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mmigration-flow-integration.test.ts[22m ([0m[1m[41m45.421 s[49m[22m[0m)
+  Migration Integration Tests
+    LROP v2 Migration
+      [31m✕[39m [2mshould migrate tool_suite_beta_lrop_v2_project (1982 ms)[22m
+    LROP v4 Migration
+      [32m✓[39m [2mshould migrate tool_suite_v4_lrop (749 ms)[22m
+      [32m✓[39m [2mshould migrate tool_suite_v4_lrop_custom_webapp (849 ms)[22m
+    OVP Migration
+      [32m✓[39m [2mshould migrate webide_v2_ovp_project (864 ms)[22m
+      [33m○[39m [2mskipped should migrate multi_destination_ovp_mta[22m
+    ALP v2 Migration
+      [32m✓[39m [2mshould migrate tool_suite_beta_alp_v2_project (832 ms)[22m
+    Worklist Migration
+      [32m✓[39m [2mshould migrate tool_suite_ga_worklist_v2_project (1247 ms)[22m
+    Freestyle Migration
+      [32m✓[39m [2mshould migrate webide_freestyle_custom_webapp_path (1371 ms)[22m
+    Special Cases
+      [32m✓[39m [2mshould migrate webide_v2_lrop_project_no_webapp (1008 ms)[22m
+      [32m✓[39m [2mshould migrate webide_v2_lrop_reuselib_ui5_tooling_routing_project (2245 ms)[22m
+      [31m✕[39m [2mshould migrate openui5-sample-app (991 ms)[22m
+      [32m✓[39m [2mshould migrate CA_FIORI_INBOXExtension (1033 ms)[22m
+    UI5 Library Migration
+      [32m✓[39m [2mshould migrate standalone UI5 library (829 ms)[22m
+    Reuse Library Migration
+      [33m○[39m [2mskipped should migrate reuse_library_project[22m
+    Adaptation Project Migration
+      [31m✕[39m [2mshould migrate adaptation_project_wde (818 ms)[22m
+    Adaptation Projects Coverage
+      [31m✕[39m [2mshould migrate adaptation project with legacy structure (1204 ms)[22m
+    Edge Cases and Error Handling
+      [31m✕[39m [2mshould handle project with legacy neo-app routes (895 ms)[22m
+      [31m✕[39m [2mshould handle project with multiple reuse libraries (697 ms)[22m
+      [31m✕[39m [2mshould handle backend configuration variants (909 ms)[22m
+      [31m✕[39m [2mshould handle service detection edge cases (818 ms)[22m
+    Legacy Folder Structure Migration
+      [31m✕[39m [2mshould migrate project with src/main/webapp structure (AR) (947 ms)[22m
+      [31m✕[39m [2mshould migrate project with src/main/webapp structure (CostCenter) (876 ms)[22m
+    Bulk Migration
+      [31m✕[39m [2mshould migrate multiple projects in bulk (5001 ms)[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › LROP v2 Migration › should migrate tool_suite_beta_lrop_v2_project[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`
+
+    [35m[103m- Snapshot  - 20[49m[39m
+    [36m[107m+ Received  +  0[49m[39m
+
+    [33m@@ -81,30 +81,10 @@[39m
+    [2m  Makefile*.mta[22m
+    [2m  mta_archives[22m
+    [2m  mta-*[22m
+    [2m  resources[22m
+    [2m  archive.zip[22m
+    [35m[103m- .*_mta_build_tmp[49m[39m
+    [35m[103m- node_modules/[49m[39m
+    [35m[103m- dist/[49m[39m
+    [35m[103m- .scp/[49m[39m
+    [35m[103m- .env[49m[39m
+    [35m[103m- Makefile*.mta[49m[39m
+    [35m[103m- mta_archives[49m[39m
+    [35m[103m- mta-*[49m[39m
+    [35m[103m- resources[49m[39m
+    [35m[103m- archive.zip[49m[39m
+    [35m[103m- .*_mta_build_tmp[49m[39m
+    [35m[103m- node_modules/[49m[39m
+    [35m[103m- dist/[49m[39m
+    [35m[103m- .scp/[49m[39m
+    [35m[103m- .env[49m[39m
+    [35m[103m- Makefile*.mta[49m[39m
+    [35m[103m- mta_archives[49m[39m
+    [35m[103m- mta-*[49m[39m
+    [35m[103m- resources[49m[39m
+    [35m[103m- archive.zip[49m[39m
+    [2m  .*_mta_build_tmp",[22m
+    [2m      "state": "modified",[22m
+    [2m    },[22m
+    [2m    ".npmrc": Object {[22m
+    [2m      "contents": "@ui5:registry=https://registry.npmjs.org[22m
+[2m[22m
+[2m      59 |[22m
+[2m      60 |             // Snapshot test for full output[22m
+[2m    > 61 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m         |                                                 ^[22m
+[2m      62 |         });[22m
+[2m      63 |     });[22m
+[2m      64 |[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:61:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Special Cases › should migrate openui5-sample-app[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests Special Cases should migrate openui5-sample-app 1`
+
+    [35m[103m- Snapshot  - 20[49m[39m
+    [36m[107m+ Received  +  0[49m[39m
+
+    [33m@@ -162,30 +162,10 @@[39m
+    [2m  Makefile*.mta[22m
+    [2m  mta_archives[22m
+    [2m  mta-*[22m
+    [2m  resources[22m
+    [2m  archive.zip[22m
+    [35m[103m- .*_mta_build_tmp[49m[39m
+    [35m[103m- node_modules/[49m[39m
+    [35m[103m- dist/[49m[39m
+    [35m[103m- .scp/[49m[39m
+    [35m[103m- .env[49m[39m
+    [35m[103m- Makefile*.mta[49m[39m
+    [35m[103m- mta_archives[49m[39m
+    [35m[103m- mta-*[49m[39m
+    [35m[103m- resources[49m[39m
+    [35m[103m- archive.zip[49m[39m
+    [35m[103m- .*_mta_build_tmp[49m[39m
+    [35m[103m- node_modules/[49m[39m
+    [35m[103m- dist/[49m[39m
+    [35m[103m- .scp/[49m[39m
+    [35m[103m- .env[49m[39m
+    [35m[103m- Makefile*.mta[49m[39m
+    [35m[103m- mta_archives[49m[39m
+    [35m[103m- mta-*[49m[39m
+    [35m[103m- resources[49m[39m
+    [35m[103m- archive.zip[49m[39m
+    [2m  .*_mta_build_tmp",[22m
+    [2m      "state": "modified",[22m
+    [2m    },[22m
+    [2m    ".travis.yml": Object {[22m
+    [2m      "contents": "language: node_js[22m
+[2m[22m
+[2m      310 |             // Just verify it doesn't crash[22m
+[2m      311 |             expect(result).toBeDefined();[22m
+[2m    > 312 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m          |                                                 ^[22m
+[2m      313 |         });[22m
+[2m      314 |[22m
+[2m      315 |         test('should migrate CA_FIORI_INBOXExtension', async () => {[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:312:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Adaptation Project Migration › should migrate adaptation_project_wde[39m[22m
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32mtrue[39m
+    Received: [31mfalse[39m
+[2m[22m
+[2m      410 |             );[22m
+[2m      411 |[22m
+[2m    > 412 |             expect(result).toBe(true);[22m
+[2m          |                            ^[22m
+[2m      413 |             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);[22m
+[2m      414 |[22m
+[2m      415 |             // Adaptation projects should have manifest.appdescr_variant[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:412:28)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Adaptation Projects Coverage › should migrate adaptation project with legacy structure[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests Adaptation Projects Coverage should migrate adaptation project with legacy structure 1`
+
+    [35m[103m- Snapshot  - 1[49m[39m
+    [36m[107m+ Received  + 1[49m[39m
+
+    [33m@@ -291,11 +291,11 @@[39m
+    [2m        \"version\": \"1.0.0\"[22m
+    [2m      },[22m
+    [2m      \"sourceTemplate\": {[22m
+    [2m        \"id\": \"@sap/ux-app-migrator:freestyle\",[22m
+    [2m        \"version\": \"1.0.1\",[22m
+    [35m[103m-       \"toolsId\": \"fee84e0d-eb86-43f3-bdc6-2482aa4f9b2f\"[49m[39m
+    [36m[107m+       \"toolsId\": \"401c6016-1172-477e-ae16-5541cdb3aacb\"[49m[39m
+    [2m      }[22m
+    [2m    },[22m
+    [2m    \"sap.ui\": {[22m
+    [2m      \"technology\": \"UI5\"[22m
+    [2m    },[22m
+[2m[22m
+[2m      437 |             expect(result).toBe(true);[22m
+[2m      438 |             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);[22m
+[2m    > 439 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m          |                                                 ^[22m
+[2m      440 |         });[22m
+[2m      441 |     });[22m
+[2m      442 |[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:439:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Edge Cases and Error Handling › should handle project with legacy neo-app routes[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests Edge Cases and Error Handling should handle project with legacy neo-app routes 1`
+
+    [35m[103m- Snapshot  - 1[49m[39m
+    [36m[107m+ Received  + 1[49m[39m
+
+    [33m@@ -428,11 +428,11 @@[39m
+    [2m        }[22m
+    [2m      },[22m
+    [2m      \"sourceTemplate\": {[22m
+    [2m        \"id\": \"@sap/ux-app-migrator:freestyle\",[22m
+    [2m        \"version\": \"1.0.1\",[22m
+    [35m[103m-       \"toolsId\": \"3d089ea5-e064-4a68-8eae-404e57fd22b5\"[49m[39m
+    [36m[107m+       \"toolsId\": \"522f4844-f540-44e2-9f00-2dd71f41b75f\"[49m[39m
+    [2m      }[22m
+    [2m    },[22m
+    [2m    \"sap.ui\": {[22m
+    [2m      \"technology\": \"UI5\",[22m
+    [2m      \"deviceTypes\": {[22m
+[2m[22m
+[2m      459 |             // May have warnings but should not fail[22m
+[2m      460 |             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);[22m
+[2m    > 461 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m          |                                                 ^[22m
+[2m      462 |         });[22m
+[2m      463 |[22m
+[2m      464 |         test('should handle project with multiple reuse libraries', async () => {[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:461:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Edge Cases and Error Handling › should handle project with multiple reuse libraries[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests Edge Cases and Error Handling should handle project with multiple reuse libraries 1`
+
+    [35m[103m- Snapshot  - 1[49m[39m
+    [36m[107m+ Received  + 1[49m[39m
+
+    [33m@@ -352,11 +352,11 @@[39m
+    [2m        }[22m
+    [2m      },[22m
+    [2m      \"sourceTemplate\": {[22m
+    [2m        \"id\": \"@sap/ux-app-migrator:freestyle\",[22m
+    [2m        \"version\": \"1.0.1\",[22m
+    [35m[103m-       \"toolsId\": \"644dd454-0782-40f2-9b3d-d30a747b8a3f\"[49m[39m
+    [36m[107m+       \"toolsId\": \"0f68ed89-c378-4560-a14a-7eb65472acc4\"[49m[39m
+    [2m      }[22m
+    [2m    },[22m
+    [2m    \"sap.ui\": {[22m
+    [2m      \"technology\": \"UI5\",[22m
+    [2m      \"deviceTypes\": {[22m
+[2m[22m
+[2m      481 |             // Should have locate-reuse-libs.js for reuse library loading[22m
+[2m      482 |             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/test/locate-reuse-libs.js')).toBe(true);[22m
+[2m    > 483 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m          |                                                 ^[22m
+[2m      484 |         });[22m
+[2m      485 |[22m
+[2m      486 |         test('should handle backend configuration variants', async () => {[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:483:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Edge Cases and Error Handling › should handle backend configuration variants[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests Edge Cases and Error Handling should handle backend configuration variants 1`
+
+    [35m[103m- Snapshot  - 1[49m[39m
+    [36m[107m+ Received  + 1[49m[39m
+
+    [33m@@ -393,11 +393,11 @@[39m
+    [2m        }[22m
+    [2m      },[22m
+    [2m      \"sourceTemplate\": {[22m
+    [2m        \"id\": \"@sap/ux-app-migrator:freestyle\",[22m
+    [2m        \"version\": \"1.0.1\",[22m
+    [35m[103m-       \"toolsId\": \"3cc2ca6d-9c13-480b-919f-d5f131eba422\"[49m[39m
+    [36m[107m+       \"toolsId\": \"3dad07bc-ba42-4390-8d28-b6ad6960ece0\"[49m[39m
+    [2m      }[22m
+    [2m    },[22m
+    [2m    \"sap.ui\": {[22m
+    [2m      \"technology\": \"UI5\"[22m
+    [2m    },[22m
+[2m[22m
+[2m      500 |             expect(result).toBe(true);[22m
+[2m      501 |             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);[22m
+[2m    > 502 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m          |                                                 ^[22m
+[2m      503 |         });[22m
+[2m      504 |[22m
+[2m      505 |         test('should handle service detection edge cases', async () => {[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:502:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Edge Cases and Error Handling › should handle service detection edge cases[39m[22m
+
+    [2mexpect([22m[36m[107mreceived[49m[39m[2m).[22mtoMatchSnapshot[2m()[22m
+
+    Snapshot name: `Migration Integration Tests Edge Cases and Error Handling should handle service detection edge cases 1`
+
+    [35m[103m- Snapshot  - 1[49m[39m
+    [36m[107m+ Received  + 1[49m[39m
+
+    [33m@@ -391,11 +391,11 @@[39m
+    [2m        }[22m
+    [2m      },[22m
+    [2m      \"sourceTemplate\": {[22m
+    [2m        \"id\": \"@sap/ux-app-migrator:freestyle\",[22m
+    [2m        \"version\": \"1.0.1\",[22m
+    [35m[103m-       \"toolsId\": \"40330427-74f1-4c20-85f7-2b3ab6532f13\"[49m[39m
+    [36m[107m+       \"toolsId\": \"3e94ca2d-2f2c-464f-8e84-6fd4feb7b83e\"[49m[39m
+    [2m      }[22m
+    [2m    },[22m
+    [2m    \"sap.ui\": {[22m
+    [2m      \"technology\": \"UI5\",[22m
+    [2m      \"deviceTypes\": {[22m
+[2m[22m
+[2m      519 |             expect(result).toBe(true);[22m
+[2m      520 |             // May have warnings for edge cases[22m
+[2m    > 521 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m          |                                                 ^[22m
+[2m      522 |         });[22m
+[2m      523 |     });[22m
+[2m      524 |[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:521:49)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Legacy Folder Structure Migration › should migrate project with src/main/webapp structure (AR)[39m[22m
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32mtrue[39m
+    Received: [31mfalse[39m
+[2m[22m
+[2m      542 |[22m
+[2m      543 |             // Verify webapp was moved from src/main/webapp to webapp[22m
+[2m    > 544 |             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/manifest.json')).toBe(true);[22m
+[2m          |                                                                                       ^[22m
+[2m      545 |             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/Component.js')).toBe(true);[22m
+[2m      546 |[22m
+[2m      547 |             // Legacy paths should be gone[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:544:87)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Legacy Folder Structure Migration › should migrate project with src/main/webapp structure (CostCenter)[39m[22m
+
+    [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32mtrue[39m
+    Received: [31mfalse[39m
+[2m[22m
+[2m      569 |[22m
+[2m      570 |             // Verify folder structure migration[22m
+[2m    > 571 |             expect(fileExistsInMemFs(updatedFs, projectPath, 'webapp/manifest.json')).toBe(true);[22m
+[2m          |                                                                                       ^[22m
+[2m      572 |             expect(fileExistsInMemFs(updatedFs, projectPath, 'src/main/webapp/manifest.json')).toBe(false);[22m
+[2m      573 |[22m
+[2m      574 |             expect(updatedFs.dump(projectPath)).toMatchSnapshot();[22m
+[2m[22m
+[2m      [2mat Object.<anonymous> ([22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:571:87)[22m[2m[22m
+
+[1m[31m  [1m● [22m[1mMigration Integration Tests › Bulk Migration › should migrate multiple projects in bulk[39m[22m
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+[2m[22m
+[2m      577 |[22m
+[2m      578 |     describe('Bulk Migration', () => {[22m
+[2m    > 579 |         test('should migrate multiple projects in bulk', async () => {[22m
+[2m          |         ^[22m
+[2m      580 |             const projects = [[22m
+[2m      581 |                 {[22m
+[2m      582 |                     path: join(TEST_INPUT, 'tool_suite_beta_lrop_v2_project'),[22m
+[2m[22m
+[2m      [2mat [22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:579:9[22m[2m[22m
+[2m      [2mat [22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:578:5[22m[2m[22m
+[2m      [2mat [22m[2m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:11:1[22m[2m[22m
+
+[1m[31m › 7 snapshots failed.[39m[22m
+
+ReferenceError: You are trying to `import` a file after the Jest environment has been torn down. From test/migration-flow-integration.test.ts.
+
+       95 |     // Import template utilities
+       96 |     const { resolveTemplatePaths, resolveTemplateData, renderTemplate, applyFileSpecificHandlers } =
+    >  97 |         await import('./template/index.js');
+          |         ^
+       98 |
+       99 |     // 1. Resolve paths
+      100 |     const { fullTemplateName, targetFile } = resolveTemplatePaths(
+
+      [2mat generateTemplate ([22msrc/utils/migration-utils.ts[2m:97:9)[22m
+      [2mat generateTemplate ([22msrc/template/template-helpers.ts[2m:28:19)[22m
+          at Array.map (<anonymous>)
+      [2mat map ([22msrc/template/template-helpers.ts[2m:26:32)[22m
+      [2mat applyTemplates ([22msrc/template/base.ts[2m:67:11)[22m
+      [2mat applyAllTemplates ([22msrc/migration-process/migration-phases.ts[2m:186:5)[22m
+      [2mat Function.copyCommonFiles ([22msrc/ProjectMigrator.ts[2m:253:13)[22m
+      [2mat [22msrc/ProjectMigrator.ts[2m:107:75[22m
+      [2mat BulkProjectMigrator.migrateProject ([22msrc/BulkProjectMigrator.ts[2m:57:42)[22m
+      [2mat BulkProjectMigrator.migrate ([22msrc/BulkProjectMigrator.ts[2m:34:26)[22m
+      [2mat Object.<anonymous> ([22m[0m[36mtest/migration-flow-integration.test.ts[39m[0m[2m:596:29)[22m
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mbulk-migration-coverage.test.ts[22m ([0m[1m[41m5.877 s[49m[22m[0m)
+  BulkProjectMigrator - Coverage Tests
+    [32m✓[39m [2mshould migrate multiple projects with different outcomes (SUCCESS, WARNING, ERROR) (3074 ms)[22m
+    [32m✓[39m [2mshould handle empty project list[22m
+    [32m✓[39m [2mshould continue processing after encountering an error in one project (1498 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1madaptation-legacy-coverage.test.ts[22m
+  Adaptation Project - Coverage Tests
+    [32m✓[39m [2mshould detect and process WebIDE adaptation project with .che/project.json (1378 ms)[22m
+    [32m✓[39m [2mshould identify manifest.appdescr_variant file (1 ms)[22m
+  Legacy NEO App - Coverage Tests
+    [32m✓[39m [2mshould parse neo-app.json with destinations and routes (651 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mreuse-service-backend-coverage.test.ts[22m
+  Reuse Libraries - Coverage Tests
+    [32m✓[39m [2mshould migrate project with multiple reuse libraries (894 ms)[22m
+  Service Detection Edge Cases - Coverage Tests
+    [32m✓[39m [2mshould handle project with complex service configuration (679 ms)[22m
+  Backend Configuration Variants - Coverage Tests
+    [32m✓[39m [2mshould parse backend configuration with custom port and sap-client (650 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mlibrary-migration-integration.test.ts[22m
+  Library Migration Integration Tests
+    [32m✓[39m [2mshould create config files at project root for library with nested namespace structure (1217 ms)[22m
+    [32m✓[39m [2mshould handle monorepo with nested package.json using getReuseLibs discovery (1359 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mwebapp.test.ts[22m
+  webapp
+    createExtensionProjectManifest
+      [32m✓[39m [2mshould create manifest.json for extension project when missing (27 ms)[22m
+      [32m✓[39m [2mshould not create manifest.json if it already exists (19 ms)[22m
+      [32m✓[39m [2mshould not create manifest.json for non-extension projects (4 ms)[22m
+      [32m✓[39m [2mshould create manifest at root if webapp does not exist (4 ms)[22m
+      [32m✓[39m [2mshould use ui5Version when manifestUI5Version is undefined (7 ms)[22m
+      [32m✓[39m [2mshould include SHELL_TITLE in manifest (6 ms)[22m
+    createWebappFolderAndMigrateFiles
+      [32m✓[39m [2mshould create webapp folder and move files when manifest.json is at root (122 ms)[22m
+      [32m✓[39m [2mshould not migrate when webapp path is already set (12 ms)[22m
+      [32m✓[39m [2mshould not migrate when manifest.json does not exist at root (6 ms)[22m
+      [32m✓[39m [2mshould exclude specific files from migration (89 ms)[22m
+      [32m✓[39m [2mshould handle git not available gracefully (75 ms)[22m
+    path validation
+      [32m✓[39m [2mshould validate paths with control characters during migration (81 ms)[22m
+      [32m✓[39m [2mshould validate shell metacharacters during migration (45 ms)[22m
+      [32m✓[39m [2mshould handle non-existent directories gracefully (3 ms)[22m
+      [32m✓[39m [2mshould reject empty git relative path (47 ms)[22m
+      [32m✓[39m [2mshould reject git paths that escape root (48 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mfile-discovery.test.ts[22m
+  file-discovery
+    findAllProjectRoots
+      [32m✓[39m [2mshould find all package.json files (16 ms)[22m
+      [32m✓[39m [2mshould filter by sapux when sapuxRequired is true (22 ms)[22m
+      [32m✓[39m [2mshould include projects with @sap-ux/ dependencies when sapuxRequired is true (15 ms)[22m
+      [32m✓[39m [2mshould include projects with @sap/ux- dependencies when sapuxRequired is true (13 ms)[22m
+      [32m✓[39m [2mshould include projects with @sap-ux/ devDependencies when sapuxRequired is true (12 ms)[22m
+      [32m✓[39m [2mshould skip invalid package.json files when sapuxRequired is true (19 ms)[22m
+      [32m✓[39m [2mshould handle non-existent paths gracefully (4 ms)[22m
+      [32m✓[39m [2mshould remove duplicates and sort results (15 ms)[22m
+    getReuseLibs
+      [32m✓[39m [2mshould find libraries with type: library (29 ms)[22m
+      [32m✓[39m [2mshould find components with type: component (34 ms)[22m
+      [32m✓[39m [2mshould find project root with package.json marker (68 ms)[22m
+      [32m✓[39m [2mshould find project root with .git marker (33 ms)[22m
+      [32m✓[39m [2mshould find project root with .project.json marker (36 ms)[22m
+      [32m✓[39m [2mshould find project root with pom.xml marker (46 ms)[22m
+      [32m✓[39m [2mshould use innermost package.json in monorepo scenario (54 ms)[22m
+      [32m✓[39m [2mshould skip applications (type: application) (27 ms)[22m
+      [32m✓[39m [2mshould use basename as name when sap.app.id is missing (34 ms)[22m
+      [32m✓[39m [2mshould skip invalid manifest.json files (32 ms)[22m
+      [32m✓[39m [2mshould handle non-existent workspace folders gracefully (5 ms)[22m
+      [32m✓[39m [2mshould process multiple workspace folders (53 ms)[22m
+    findAll
+      [32m✓[39m [2mshould find files by name (17 ms)[22m
+      [32m✓[39m [2mshould respect ignore paths (16 ms)[22m
+      [32m✓[39m [2mshould not add duplicate directories (17 ms)[22m
+      [32m✓[39m [2mshould handle non-existent search paths gracefully (4 ms)[22m
+      [32m✓[39m [2mshould ignore node_modules, dist, and .git by default (33 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mlibrary-coverage.test.ts[22m
+  Library Project - Coverage Tests
+    [32m✓[39m [2mshould migrate standalone UI5 library project (1701 ms)[22m
+    [32m✓[39m [2mshould detect UI5 tooling dependencies in library (3 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mproject-files.test.ts[22m
+  project-files
+    copyAdaptationFiles
+      [32m✓[39m [2mshould copy adaptation files successfully (54 ms)[22m
+      [32m✓[39m [2mshould handle empty reference in uiAdaptation (28 ms)[22m
+      [32m✓[39m [2mshould handle snapshot version URL correctly (27 ms)[22m
+      [32m✓[39m [2mshould use hostname without trailing slash (27 ms)[22m
+      [32m✓[39m [2mshould default to version 1.0.0 when appVersion is empty (20 ms)[22m
+    copyLibraryFiles
+      [32m✓[39m [2mshould copy library files successfully (7 ms)[22m
+      [32m✓[39m [2mshould handle uppercase library name correctly (2 ms)[22m
+      [32m✓[39m [2mshould not include rimraf in dependencies (2 ms)[22m
+      [32m✓[39m [2mshould handle errors gracefully (3 ms)[22m
+      [32m✓[39m [2mshould create ui5.yaml with correct structure (2 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mfile-access-utils.test.ts[22m
+  File Access Utilities
+    fileExists
+      [32m✓[39m [2mshould return true for existing file (6 ms)[22m
+      [32m✓[39m [2mshould return false for non-existing file[22m
+    readFile
+      [32m✓[39m [2mshould read file content (6 ms)[22m
+    writeFile
+      [32m✓[39m [2mshould write file content (23 ms)[22m
+    readJSON
+      [32m✓[39m [2mshould read and parse JSON file (10 ms)[22m
+    updateJSON
+      [32m✓[39m [2mshould update JSON file preserving formatting (24 ms)[22m
+    updateFile
+      [32m✓[39m [2mshould update text file content (15 ms)[22m
+    createDirectory
+      [32m✓[39m [2mshould create directory recursively (9 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mi18n.test.ts[22m
+  i18n
+    [32m✓[39m [2mResolve existing i18n text (2 ms)[22m
+    [32m✓[39m [2mResolve nonexistent i18n text[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mfile-system-utils.test.ts[22m
+  File System Utils
+    doesPropertyExist
+      [32m✓[39m [2mshould return true for existing property (1 ms)[22m
+      [32m✓[39m [2mshould return false for non-existing property (1 ms)[22m
+      [32m✓[39m [2mshould handle objects with nested properties[22m
+    stripSpaces
+      [32m✓[39m [2mshould remove spaces from string (1 ms)[22m
+      [32m✓[39m [2mshould handle empty string[22m
+    escapeSingleQuotes
+      [32m✓[39m [2mshould escape single quotes[22m
+      [32m✓[39m [2mshould handle string without quotes[22m
+    escapeDoubleQuotes
+      [32m✓[39m [2mshould escape double quotes (1 ms)[22m
+      [32m✓[39m [2mshould handle string without quotes[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mui5-config-adapter.test.ts[22m
+  UI5 Config Adapter - generateUI5YamlContent
+    [32m✓[39m [2mshould generate basic ui5.yaml with minimal config (9 ms)[22m
+    [32m✓[39m [2mshould include fiori-tools-proxy middleware (3 ms)[22m
+    [32m✓[39m [2mshould include fiori-tools-appreload middleware (4 ms)[22m
+    [32m✓[39m [2mshould include fiori-tools-preview middleware when appId is configured (3 ms)[22m
+    [32m✓[39m [2mshould not include preview middleware when appId is missing (3 ms)[22m
+    [32m✓[39m [2mshould include UI5 version in proxy when setUI5Version is true (2 ms)[22m
+    [32m✓[39m [2mshould not include UI5 version in proxy when setUI5Version is false (2 ms)[22m
+    [32m✓[39m [2mshould apply webappPath when provided (1 ms)[22m
+    [32m✓[39m [2mshould handle backend with destination (3 ms)[22m
+    [32m✓[39m [2mshould use lowercase app name (1 ms)[22m
+    [32m✓[39m [2mshould fallback to "app" when name is missing (2 ms)[22m
+  UI5 Config Adapter - generateUI5LocalYamlContent
+    [32m✓[39m [2mshould generate ui5-local.yaml content (4 ms)[22m
+    [32m✓[39m [2mshould not include UI5 version in ui5-local.yaml (2 ms)[22m
+  UI5 Config Adapter - generateUI5MockYamlContent
+    [32m✓[39m [2mshould generate basic ui5-mock.yaml (1 ms)[22m
+    [32m✓[39m [2mshould not have backend configurations in mock yaml (1 ms)[22m
+    [32m✓[39m [2mshould include UI5 version when setUI5Version is true (1 ms)[22m
+    [32m✓[39m [2mshould not include UI5 version when setUI5Version is false (1 ms)[22m
+    [32m✓[39m [2mshould apply webappPath when provided (1 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mui5-config-helpers.test.ts[22m
+  UI5 Config Helpers - buildMainBackend
+    [32m✓[39m [2mshould return undefined when proxyPath is missing (1 ms)[22m
+    [32m✓[39m [2mshould return undefined when proxyHost is missing (1 ms)[22m
+    [32m✓[39m [2mshould build basic backend configuration[22m
+    [32m✓[39m [2mshould include client when configured[22m
+    [32m✓[39m [2mshould include apiHub when apiHubApiKey is present (1 ms)[22m
+    [32m✓[39m [2mshould include scp when configured (2 ms)[22m
+    [32m✓[39m [2mshould include destination when configured[22m
+    [32m✓[39m [2mshould include destinationInstance when configured[22m
+    [32m✓[39m [2mshould include all optional properties when configured (1 ms)[22m
+  UI5 Config Helpers - buildProxyConfig
+    [32m✓[39m [2mshould build basic proxy config without backends[22m
+    [32m✓[39m [2mshould include backends in config (1 ms)[22m
+    [32m✓[39m [2mshould include UI5 version when setUI5Version is true[22m
+    [32m✓[39m [2mshould not include UI5 version when setUI5Version is false[22m
+    [32m✓[39m [2mshould not include UI5 version when ui5Version is missing[22m
+    [32m✓[39m [2mshould use empty string for ui5Url when missing[22m
+  UI5 Config Helpers - buildPreviewMiddleware
+    [32m✓[39m [2mshould return undefined when appId is missing (1 ms)[22m
+    [32m✓[39m [2mshould build preview middleware with appId[22m
+    [32m✓[39m [2mshould use custom UI5 theme when provided (1 ms)[22m
+    [32m✓[39m [2mshould default to sap_horizon when theme is not provided[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1msecurity-validation.test.ts[22m
+  Path Validation Security
+    Shell metacharacter rejection
+      [32m✓[39m [2mshould reject paths with backticks (19 ms)[22m
+      [32m✓[39m [2mshould reject paths with dollar signs (1 ms)[22m
+      [32m✓[39m [2mshould reject paths with pipes (1 ms)[22m
+      [32m✓[39m [2mshould reject paths with semicolons[22m
+      [32m✓[39m [2mshould reject paths with ampersands[22m
+      [32m✓[39m [2mshould reject paths with redirects (1 ms)[22m
+      [32m✓[39m [2mshould reject paths with null bytes[22m
+      [32m✓[39m [2mshould reject paths with newlines (1 ms)[22m
+      [32m✓[39m [2mshould accept normal project paths[22m
+      [32m✓[39m [2mshould accept paths with spaces, dashes, underscores (1 ms)[22m
+    Non-existent directory handling
+      [32m✓[39m [2mshould reject non-existent root directory[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mmanifest-utils.test.ts[22m
+  Manifest and Version Utils
+    readManifest
+      [32m✓[39m [2mshould read and parse manifest.json (16 ms)[22m
+    getUI5Version
+      [32m✓[39m [2mshould normalize UI5 version[22m
+      [32m✓[39m [2mshould upgrade very old UI5 versions[22m
+      [32m✓[39m [2mshould handle latest and empty values (1 ms)[22m
+      [32m✓[39m [2mshould handle snapshot versions[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mtemplate-generators.test.ts[22m
+  Template Generators - File Handlers
+    handlePackageJsonFile
+      [32m✓[39m [2mshould remove legacy dependencies (12 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mfile-system.test.ts[22m
+  file-system
+    commitFileSystemChanges
+      [32m✓[39m [2mshould commit changes from mem-fs-editor (30 ms)[22m
+      [32m✓[39m [2mshould handle undefined fs gracefully (2 ms)[22m
+      [32m✓[39m [2mshould return a Promise (5 ms)[22m
+      [32m✓[39m [2mshould commit multiple file changes (9 ms)[22m
+      [32m✓[39m [2mshould reject on commit error (6 ms)[22m
+
+[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m fiori-migration-writer [39m[27m[0m [2mtest/[22m[1mtype-guards.test.ts[22m
+  Type Guards
+    isProjectFolderArray
+      [32m✓[39m [2mshould return true for valid ProjectFolder array (1 ms)[22m
+      [32m✓[39m [2mshould return true for multiple valid ProjectFolders (1 ms)[22m
+      [32m✓[39m [2mshould return false for empty array[22m
+      [32m✓[39m [2mshould return false for non-array (1 ms)[22m
+      [32m✓[39m [2mshould return false for array with non-object elements (1 ms)[22m
+      [32m✓[39m [2mshould return false for array missing uri property[22m
+      [32m✓[39m [2mshould return false for array with non-object uri (2 ms)[22m
+      [32m✓[39m [2mshould return false for array missing uri.fsPath (1 ms)[22m
+      [32m✓[39m [2mshould reject uri without scheme property[22m
+
+--------------------------------|---------|----------|---------|---------|------------------------------------------------------
+File                            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                    
+--------------------------------|---------|----------|---------|---------|------------------------------------------------------
+[33;1mAll files                      [0m | [33;1m  72.26[0m | [33;1m    63.9[0m | [33;1m  78.11[0m | [33;1m   72.7[0m | [31;1m                                                    [0m 
+[33;1m src                           [0m | [33;1m  79.54[0m | [33;1m   68.04[0m | [32;1m  89.18[0m | [33;1m  79.42[0m | [31;1m                                                    [0m 
+[32;1m  BulkProjectMigrator.ts       [0m | [32;1m  86.84[0m | [33;1m   69.23[0m | [32;1m    100[0m | [32;1m  86.48[0m | [31;1m70,96-99                                            [0m 
+[33;1m  ProjectMigrator.ts           [0m | [33;1m  56.94[0m | [33;1m   52.17[0m | [33;1m     60[0m | [33;1m  56.94[0m | [31;1m131-135,140-143,281-282,287-304,327-363             [0m 
+[32;1m  i18n.ts                      [0m | [32;1m    100[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m35                                                  [0m 
+[32;1m  index.ts                     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  migration-types.ts           [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  project-spec-types.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  template-types.ts            [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m src/adapters                  [0m | [32;1m  96.63[0m | [33;1m   73.87[0m | [32;1m    100[0m | [32;1m  96.61[0m | [31;1m                                                    [0m 
+[32;1m  ui5-config-adapter.ts        [0m | [32;1m  95.83[0m | [33;1m   66.26[0m | [32;1m    100[0m | [32;1m  95.78[0m | [31;1m228,231,254,300                                     [0m 
+[32;1m  ui5-config-helpers.ts        [0m | [32;1m    100[0m | [32;1m   96.42[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m71                                                  [0m 
+[33;1m src/components                [0m | [33;1m  58.97[0m | [33;1m      60[0m | [32;1m    100[0m | [33;1m  58.97[0m | [31;1m                                                    [0m 
+[32;1m  component-mapping.ts         [0m | [32;1m   92.3[0m | [32;1m      90[0m | [32;1m    100[0m | [32;1m   92.3[0m | [31;1m56                                                  [0m 
+[31;1m  extension.ts                 [0m | [31;1m   42.3[0m | [31;1m      40[0m | [32;1m    100[0m | [31;1m   42.3[0m | [31;1m25,33-56,63                                         [0m 
+[32;1m src/config                    [0m | [32;1m   89.8[0m | [33;1m   75.56[0m | [32;1m  96.29[0m | [32;1m  90.19[0m | [31;1m                                                    [0m 
+[32;1m  backend-i18n.ts              [0m | [32;1m  92.85[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m  92.85[0m | [31;1m69                                                  [0m 
+[33;1m  backend.ts                   [0m | [33;1m  79.41[0m | [33;1m   65.51[0m | [32;1m  83.33[0m | [32;1m  81.81[0m | [31;1m21-23,87,91,99                                      [0m 
+[32;1m  launch-config.ts             [0m | [32;1m   92.3[0m | [33;1m   78.57[0m | [32;1m    100[0m | [32;1m   92.3[0m | [31;1m69                                                  [0m 
+[32;1m  manifest-update-helpers.ts   [0m | [32;1m   87.5[0m | [32;1m   83.33[0m | [32;1m    100[0m | [32;1m   87.5[0m | [31;1m87,92-93                                            [0m 
+[32;1m  manifest-update.ts           [0m | [32;1m  85.71[0m | [33;1m   62.96[0m | [32;1m    100[0m | [32;1m  85.71[0m | [31;1m45,66,96-97,126                                     [0m 
+[33;1m  manifest.ts                  [0m | [33;1m  76.92[0m | [33;1m      60[0m | [32;1m    100[0m | [33;1m     75[0m | [31;1m21,25,31                                            [0m 
+[32;1m  neoapp.ts                    [0m | [32;1m    100[0m | [32;1m   93.75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m69                                                  [0m 
+[32;1m  package-json.ts              [0m | [32;1m   97.5[0m | [33;1m   75.75[0m | [32;1m    100[0m | [32;1m   97.5[0m | [31;1m65                                                  [0m 
+[32;1m  ui5-yaml.ts                  [0m | [32;1m    100[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m94-125,183                                          [0m 
+[32;1m src/config/flp                [0m | [32;1m  91.52[0m | [33;1m   75.86[0m | [32;1m    100[0m | [32;1m  91.52[0m | [31;1m                                                    [0m 
+[32;1m  intent-defaults.ts           [0m | [32;1m   87.5[0m | [33;1m      70[0m | [32;1m    100[0m | [32;1m   87.5[0m | [31;1m45-46                                               [0m 
+[32;1m  intent.ts                    [0m | [32;1m    100[0m | [33;1m   76.92[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m64-111                                              [0m 
+[32;1m  sandbox.ts                   [0m | [32;1m  89.28[0m | [32;1m   83.33[0m | [32;1m    100[0m | [32;1m  89.28[0m | [31;1m88,119,133                                          [0m 
+[33;1m src/data                      [0m | [33;1m  77.77[0m | [33;1m   78.57[0m | [33;1m  58.33[0m | [33;1m  77.77[0m | [31;1m                                                    [0m 
+[32;1m  sap-libraries.ts             [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  ui5-version.ts               [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[31;1m  yaml.ts                      [0m | [31;1m  38.46[0m | [33;1m      50[0m | [31;1m   37.5[0m | [31;1m  38.46[0m | [31;1m11-16,64-66                                         [0m 
+[33;1m src/files                     [0m | [33;1m  73.68[0m | [33;1m   69.01[0m | [32;1m    100[0m | [33;1m   73.4[0m | [31;1m                                                    [0m 
+[32;1m  file-system.ts               [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[33;1m  project-files.ts             [0m | [33;1m  72.22[0m | [33;1m   57.14[0m | [32;1m    100[0m | [33;1m  72.22[0m | [31;1m96-102,161-175                                      [0m 
+[33;1m  webapp.ts                    [0m | [33;1m  71.69[0m | [33;1m   71.73[0m | [32;1m    100[0m | [33;1m  71.69[0m | [31;1m26,30,46,50,54,69,77-92                             [0m 
+[31;1m src/migration-process         [0m | [31;1m  47.24[0m | [31;1m   38.33[0m | [32;1m  82.75[0m | [31;1m  47.44[0m | [31;1m                                                    [0m 
+[32;1m  configuration.ts             [0m | [32;1m    100[0m | [33;1m      60[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m39,43                                               [0m 
+[31;1m  legacy-helpers.ts            [0m | [31;1m  25.49[0m | [31;1m      20[0m | [33;1m  71.42[0m | [31;1m     26[0m | [31;1m40-51,95-124,148-156,174-181                        [0m 
+[31;1m  legacy.ts                    [0m | [31;1m  39.16[0m | [31;1m    22.5[0m | [33;1m  77.77[0m | [31;1m  39.49[0m | [31;1m36,60,86-142,158-211,223,231,243,253,265,273,291-302[0m 
+[32;1m  migration-phases.ts          [0m | [32;1m    100[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m123-129,231                                         [0m 
+[32;1m  setup.ts                     [0m | [32;1m  83.33[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m  83.33[0m | [31;1m28,42                                               [0m 
+[33;1m  validation.ts                [0m | [33;1m  77.77[0m | [33;1m   56.25[0m | [32;1m     80[0m | [33;1m     75[0m | [31;1m73-74                                               [0m 
+[32;1m src/project                   [0m | [32;1m  83.95[0m | [33;1m   64.34[0m | [32;1m    100[0m | [32;1m  83.78[0m | [31;1m                                                    [0m 
+[31;1m  adaptation-project.ts        [0m | [31;1m   23.8[0m | [31;1m    8.33[0m | [32;1m    100[0m | [31;1m   23.8[0m | [31;1m59-101                                              [0m 
+[32;1m  project-data.ts              [0m | [32;1m    100[0m | [33;1m   75.86[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m52,99-102,184-200,202                               [0m 
+[31;1m  project-detection.ts         [0m | [31;1m     20[0m | [31;1m    12.5[0m | [32;1m    100[0m | [31;1m     20[0m | [31;1m21-36                                               [0m 
+[32;1m  project-extension.ts         [0m | [32;1m  94.73[0m | [33;1m   63.63[0m | [32;1m    100[0m | [32;1m  94.73[0m | [31;1m120-121                                             [0m 
+[32;1m  project-info.ts              [0m | [32;1m  91.66[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m  91.66[0m | [31;1m23                                                  [0m 
+[32;1m  regular-project.ts           [0m | [32;1m  96.05[0m | [32;1m   84.21[0m | [32;1m    100[0m | [32;1m  96.05[0m | [31;1m220-222                                             [0m 
+[32;1m  reuse-library.ts             [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m src/template                  [0m | [32;1m  85.81[0m | [33;1m   73.11[0m | [32;1m   91.3[0m | [32;1m  86.33[0m | [31;1m                                                    [0m 
+[32;1m  application.ts               [0m | [32;1m  96.77[0m | [32;1m   84.61[0m | [32;1m    100[0m | [32;1m  96.77[0m | [31;1m99                                                  [0m 
+[32;1m  assembly.ts                  [0m | [32;1m  95.65[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m  95.65[0m | [31;1m86                                                  [0m 
+[33;1m  base.ts                      [0m | [33;1m  63.15[0m | [31;1m      25[0m | [32;1m    100[0m | [33;1m  63.15[0m | [31;1m60,85-92                                            [0m 
+[32;1m  data.ts                      [0m | [32;1m    100[0m | [33;1m   77.77[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m47-51,175-176                                       [0m 
+[33;1m  details.ts                   [0m | [33;1m  66.66[0m | [33;1m      65[0m | [33;1m     60[0m | [33;1m  68.96[0m | [31;1m69,98,103,108,124-132                               [0m 
+[32;1m  template-helpers.ts          [0m | [32;1m   92.3[0m | [32;1m      80[0m | [32;1m    100[0m | [32;1m   92.3[0m | [31;1m48                                                  [0m 
+[32;1m  theme.ts                     [0m | [32;1m    100[0m | [33;1m   77.77[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m28-39                                               [0m 
+[31;1m src/types                     [0m | [31;1m   5.71[0m | [33;1m      50[0m | [31;1m     20[0m | [31;1m   5.71[0m | [31;1m                                                    [0m 
+[31;1m  constants.ts                 [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m8-80                                                [0m 
+[32;1m  project-folder.ts            [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[33;1m src/utils                     [0m | [33;1m  54.83[0m | [31;1m   49.09[0m | [33;1m  60.48[0m | [33;1m  55.67[0m | [31;1m                                                    [0m 
+[33;1m  Project.ts                   [0m | [33;1m  56.96[0m | [33;1m   69.69[0m | [33;1m  55.88[0m | [33;1m  60.81[0m | [31;1m198-202,254,270,289-343                             [0m 
+[32;1m  UI5Theme.ts                  [0m | [32;1m  83.87[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m  83.87[0m | [31;1m34,50,95,101,113                                    [0m 
+[31;1m  checkForMigration.ts         [0m | [31;1m   12.5[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m   12.5[0m | [31;1m11-18,22-24,33-69                                   [0m 
+[32;1m  common.ts                    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  constants.ts                 [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  file-access.ts               [0m | [32;1m  97.56[0m | [33;1m   59.09[0m | [32;1m    100[0m | [32;1m  97.56[0m | [31;1m21                                                  [0m 
+[31;1m  file-discovery.ts            [0m | [31;1m  10.29[0m | [31;1m    5.26[0m | [31;1m  16.66[0m | [31;1m  10.76[0m | [31;1m33-232,268-270                                      [0m 
+[32;1m  file-system-utils.ts         [0m | [32;1m  94.44[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m  93.33[0m | [31;1m12                                                  [0m 
+[33;1m  fs-adapter.ts                [0m | [33;1m     50[0m | [31;1m    37.5[0m | [33;1m     75[0m | [33;1m     50[0m | [31;1m72-100                                              [0m 
+[32;1m  manifest-and-version-utils.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[33;1m  migration-utils.ts           [0m | [33;1m  62.22[0m | [31;1m    38.7[0m | [33;1m     75[0m | [33;1m  59.52[0m | [31;1m44-76,124,198                                       [0m 
+[31;1m  project-access-adapters.ts   [0m | [31;1m      0[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m18-56                                               [0m 
+[31;1m  project-discovery.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m15-102                                              [0m 
+[32;1m  read-package-up-compat.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[33;1m  service-detection.ts         [0m | [33;1m  53.84[0m | [31;1m      40[0m | [32;1m    100[0m | [33;1m  53.84[0m | [31;1m22-30,35                                            [0m 
+[32;1m  service.ts                   [0m | [32;1m  95.65[0m | [32;1m   88.88[0m | [32;1m    100[0m | [32;1m  95.65[0m | [31;1m38                                                  [0m 
+[32;1m  template-maps.ts             [0m | [32;1m  96.29[0m | [31;1m   42.85[0m | [32;1m  88.88[0m | [32;1m  96.29[0m | [31;1m121                                                 [0m 
+[31;1m  validation-severity.ts       [0m | [31;1m     30[0m | [31;1m   27.27[0m | [33;1m     50[0m | [31;1m     30[0m | [31;1m20,25,41-51                                         [0m 
+[33;1m src/utils/project-readers     [0m | [33;1m  77.94[0m | [33;1m   67.51[0m | [32;1m   87.5[0m | [33;1m  78.54[0m | [31;1m                                                    [0m 
+[31;1m  adaptation-project-utils.ts  [0m | [31;1m  41.17[0m | [31;1m      20[0m | [32;1m     80[0m | [31;1m  41.17[0m | [31;1m26,31-33,50-55,77-80,96-105                         [0m 
+[32;1m  backend-utils.ts             [0m | [32;1m    100[0m | [32;1m   93.93[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m70,102                                              [0m 
+[32;1m  extension-project-utils.ts   [0m | [32;1m  84.84[0m | [33;1m   61.11[0m | [32;1m    100[0m | [32;1m  84.84[0m | [31;1m29,82,108-109,118                                   [0m 
+[32;1m  manifest-reader.ts           [0m | [32;1m    100[0m | [33;1m      50[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m16                                                  [0m 
+[32;1m  manifest-utils.ts            [0m | [32;1m  88.77[0m | [33;1m    77.5[0m | [32;1m   92.3[0m | [32;1m  89.69[0m | [31;1m44,106,129,147,192,219,248,253-255                  [0m 
+[32;1m  package-reader.ts            [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[31;1m  reuse-lib-utils.ts           [0m | [31;1m  47.61[0m | [31;1m   41.66[0m | [33;1m     50[0m | [33;1m     50[0m | [31;1m28,37,60-72,77                                      [0m 
+[33;1m  webapp-path-resolver.ts      [0m | [33;1m  76.59[0m | [33;1m   59.37[0m | [32;1m     80[0m | [33;1m  76.59[0m | [31;1m31,82-86,102,112-114,121,127                        [0m 
+[32;1m src/utils/template            [0m | [32;1m    100[0m | [32;1m   88.23[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  template-data.ts             [0m | [32;1m    100[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m23                                                  [0m 
+[32;1m  template-paths.ts            [0m | [32;1m    100[0m | [32;1m      80[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m35                                                  [0m 
+[32;1m  template-post-processors.ts  [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m  template-renderer.ts         [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                                                    [0m 
+[32;1m src/utils/template-generators [0m | [32;1m  88.88[0m | [33;1m   78.26[0m | [32;1m    100[0m | [32;1m  88.88[0m | [31;1m                                                    [0m 
+[32;1m  file-handlers.ts             [0m | [32;1m  88.88[0m | [33;1m   78.26[0m | [32;1m    100[0m | [32;1m  88.88[0m | [31;1m74,111-112,129,150-151,158,181                      [0m 
+--------------------------------|---------|----------|---------|---------|------------------------------------------------------
+[1mSnapshot Summary[22m
+[1m[31m › 7 snapshots failed[39m[22m from 1 test suite. [2mInspect your code changes or run `npm test -- -u` to update them.[22m
+
+[1mTest Suites: [22m[1m[31m1 failed[39m[22m, [1m[32m18 passed[39m[22m, 19 total
+[1mTests:       [22m[1m[31m11 failed[39m[22m, [1m[33m2 skipped[39m[22m, [1m[32m161 passed[39m[22m, 174 total
+[1mSnapshots:   [22m[1m[31m7 failed[39m[22m, [1m[32m10 passed[39m[22m, 17 total
+[1mTime:[22m        [1m[33m82.972 s[39m[22m
+[2mRan all test suites[22m[2m.[22m
+[ELIFECYCLE] Test failed. See above for more details.
