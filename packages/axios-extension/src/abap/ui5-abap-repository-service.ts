@@ -1,5 +1,11 @@
 import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
-import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message.js';
+import {
+    logError,
+    getErrorMessageFromString,
+    prettyPrintError,
+    prettyPrintMessage,
+    type ErrorMessage
+} from './message.js';
 import { ODataService } from '../base/odata-service.js';
 import { isAxiosError } from '../base/odata-request-error.js';
 /**
@@ -100,6 +106,35 @@ function encodeXmlValue(xmlValue: string): string {
 }
 
 /**
+ * Extract the Gateway error object from a failed response body, which may be a JSON string or an
+ * already-parsed object.
+ *
+ * @param data response body data
+ * @returns the Gateway error, or undefined if none is present
+ */
+function getGatewayError(data: unknown): ErrorMessage | undefined {
+    const fromString = getErrorMessageFromString(data);
+    if (fromString) {
+        return fromString;
+    }
+    return typeof data === 'object' && data !== null ? (data as { error?: ErrorMessage }).error : undefined;
+}
+
+/**
+ * Format a Gateway error as "<message> (<code>)" for inclusion in a thrown error message.
+ *
+ * @param error the Gateway error to format
+ * @returns the formatted reason, or undefined if no message is available
+ */
+function formatGatewayReason(error: ErrorMessage | undefined): string | undefined {
+    const value = typeof error?.message === 'string' ? error.message : error?.message?.value;
+    if (!value) {
+        return undefined;
+    }
+    return error.code ? `${value} (${error.code})` : value;
+}
+
+/**
  * Extension of the generic OData client simplifying the consumption of the UI5 repository service
  */
 export class Ui5AbapRepositoryService extends ODataService {
@@ -133,12 +168,43 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
-            this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return undefined;
-            }
-            throw error;
+            return this.handleAppLookupError(app, error);
         }
+    }
+
+    /**
+     * Log a failed application lookup and either resolve a 404 as "not found" or re-throw.
+     *
+     * The full response body (populated on 400/500 Gateway errors) is only logged at debug level,
+     * so the real failure reason is available when debug logging is enabled without leaking at
+     * normal log levels. The extracted Gateway error (message and code) is additionally appended to
+     * the re-thrown error's message, so callers logging error.message at warn/error can diagnose the
+     * failure without enabling debug logging.
+     *
+     * @param app application id (BSP application name) used in the log message
+     * @param error error thrown by the failed request
+     * @returns undefined if the application was not found (404), otherwise the original error is re-thrown
+     */
+    private handleAppLookupError(app: string, error: unknown): undefined {
+        const message = error instanceof Error ? error.message : JSON.stringify(error);
+        this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${message}`);
+        if (isAxiosError(error) && error.response?.data) {
+            const { data } = error.response;
+            const body = typeof data === 'string' ? data : JSON.stringify(data);
+            const gatewayError = getGatewayError(data);
+            // Full response body is only logged at debug level to avoid leaking it at normal log levels
+            this.log.debug(gatewayError ? JSON.stringify(gatewayError) : body);
+            // Surface the Gateway error reason on the re-thrown error so callers that log error.message
+            // at warn/error can diagnose the failure without enabling debug logging
+            const reason = formatGatewayReason(gatewayError);
+            if (reason) {
+                error.message = `${error.message}: ${reason}`;
+            }
+        }
+        if (isAxiosError(error) && error.response?.status === 404) {
+            return undefined;
+        }
+        throw error;
     }
 
     /**
@@ -178,11 +244,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             const isBase64 = this.isBase64Encoded(data.ZipArchive);
             return Buffer.from(data.ZipArchive, isBase64 ? 'base64' : undefined);
         } catch (error) {
-            this.log.debug(`Retrieving application ${app}, ${error}`);
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return undefined;
-            }
-            throw error;
+            return this.handleAppLookupError(app, error);
         }
     }
 
