@@ -489,6 +489,18 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
     });
 
+    test('excludes a column whose text value is the "None" sentinel (any casing)', () => {
+        // Regression (fin.test.v4.lr1): the spec model marks a column without a maintained text
+        // annotation with the sentinel value "None" (capital N). It must not produce a sort test.
+        const node = makeNode({
+            'DataField::AccountingDocument': {
+                schema: { keys: [{ name: 'Value', value: 'AccountingDocument' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'None' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
     test('excludes a column whose text artifactType is not "Annotation"', () => {
         const node = makeNode({
             'DataField::CustomerID': {
@@ -533,7 +545,7 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
     });
 
-    test('de-duplicates columns that share the same text property', () => {
+    test('keeps distinct code columns that share the same text property', () => {
         const node = makeNode({
             'DataField::CustomerID': {
                 schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
@@ -542,6 +554,23 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
             'DataField::CustomerNo': {
                 schema: { keys: [{ name: 'Value', value: 'CustomerNo' }] },
                 properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName' },
+            { columnProperty: 'CustomerNo', textProperty: 'CustomerName' }
+        ]);
+    });
+
+    test('de-duplicates columns that resolve to the same code column', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            },
+            'DataField::CustomerID::dup': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerFullName' } }
             }
         });
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
