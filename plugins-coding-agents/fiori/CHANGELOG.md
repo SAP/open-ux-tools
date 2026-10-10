@@ -1,5 +1,13 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.15.9
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Update default UI5 version for application generation [[66fc1e1](https://github.com/SAP/open-ux-tools/commit/66fc1e159b926fb2c4b1b331fa4fa9b1c2592e12)]
+
 ## 1.15.8
 
 ### Patch Changes
