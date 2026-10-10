@@ -301,7 +301,7 @@ export const tools = [
             "title": "My Travel App",
             "description": "Travel management application",
             "targetFolder": "/home/user/projects",
-            "ui5Version": "1.136.7",
+            "ui5Version": "1.148.12",
             "enableTypeScript": false,
             "namespace": "com.mycompany"
           },
