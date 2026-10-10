@@ -83,7 +83,7 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         target as unknown as AbapTarget,
         config.app,
         true,
-        ['/test/'],
+        undefined, // no explicit exclude — configuration.exclude omitted from yaml
         config.index,
         config.lrep,
         comments
