@@ -125,11 +125,11 @@ When the dimension field is the auto-generated foreign key column of a managed a
 Element "Category_code" has not been found
 ```
 
-**✅ CORRECT:** Use a **separate `annotate` statement** targeting the association's key, which the compiler rewrites to the FK column:
+**✅ CORRECT:** Use a **separate `annotate` statement** targeting the association itself — the compiler rewrites it to the FK column:
 
 ```cds
-// Rewritten by the compiler to target Category_code
-annotate MyService.Entity:Category.code with @(
+// Compiles to target Travels/Category_code in $metadata
+annotate MyService.Entity:Category with @(
   Common.ValueList #visualFilter: {
     $Type                       : 'Common.ValueListType',
     CollectionPath              : 'Entity',
@@ -143,7 +143,7 @@ annotate MyService.Entity:Category.code with @(
 ```
 
 Key points:
-- Target syntax: `annotate <Service>.<Entity>:<assoc>.<key>` — the compiler rewrites paths that address a key in the target of a managed association to the local FK element.
+- Target syntax: `annotate <Service>.<Entity>:<assoc>` — for a managed to-one association, the compiler copies/rewrites annotations on the association to its generated local FK element. This matches documented CAP compiler behavior (see CAP docs on "Managed Associations"). If other annotations (e.g. `Common.Label`, `Common.Text`) already target the same association elsewhere, they're merged into a single `Annotations Target="...Entity/<assoc>_code"` block in `$metadata`. Verify with `cds compile --to edmx` if unsure.
 - `LocalDataProperty` and `ValueListProperty` both use the **FK column name** (e.g. `Category_code`), not the association name.
 - `CollectionPath` is the **same entity set** that holds the chart data (self-reference), not the code-list entity set.
 
@@ -307,7 +307,7 @@ The **projection view (DDLS file)** and **metadata extension (DDLX file)** are *
    - If these annotations are missing from $metadata, the DDLX is not active OR the service binding needs republishing
 
 ### 5. Manifest configuration (MANDATORY)
-Use the shared Manifest Configuration section above.
+Use the shared Manifest Configuration section below.
 
 ---
 
@@ -394,7 +394,7 @@ Refer to the **Application Preview Guidelines** section in the `sap-fiori-app-de
 - Missing compact visual layout configuration in manifest 
 
 **CAP:**
-- Trying to annotate a managed-association FK column (e.g. `Status_code`) inline inside `annotate ... with { ... }` — fails with `Element "..._code" has not been found`. Use a separate `annotate Service.Entity:assoc.key with (...)` statement instead (see "Dimension is a Managed Association FK" above).
+- Trying to annotate a managed-association FK column (e.g. `Status_code`) inline inside `annotate ... with { ... }` — fails with `Element "..._code" has not been found`. Use a separate `annotate Service.Entity:assoc with (...)` statement instead (see "Dimension is a Managed Association FK" above).
 
 **RAP:**
 - Missing backend aggregation support
