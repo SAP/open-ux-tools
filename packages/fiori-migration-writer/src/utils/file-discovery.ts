@@ -69,7 +69,7 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
                                     );
 
                                 return hasSapux ? dir : null;
-                            } catch (_error: unknown) {
+                            } catch {
                                 // Expected: package.json may be malformed or unreadable in some projects.
                                 // Safe to skip - project will not be included in results.
                                 return null;
@@ -82,7 +82,7 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
 
                 // Return non-null results
                 return checkResults.filter((r): r is string => r !== null);
-            } catch (_error: unknown) {
+            } catch {
                 // Expected: search path may not exist, may not be accessible, or fast-glob may fail on invalid patterns.
                 // Safe to skip this path and continue scanning remaining paths - partial results are still useful.
                 return [];
@@ -236,7 +236,7 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                                 };
                             }
                             return null;
-                        } catch (_error: unknown) {
+                        } catch {
                             // Expected: manifest.json may be malformed JSON or unreadable in some library projects.
                             // Safe to skip - library will not be included in reuse library results.
                             return null;
@@ -246,7 +246,7 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
 
                 // Filter out nulls
                 return manifestResults.filter((result): result is ReuseLibResult => result !== null);
-            } catch (_error: unknown) {
+            } catch {
                 // Expected: workspace folder may not exist, may not be accessible, or fast-glob may fail.
                 // Safe to skip - continue scanning remaining workspace folders for reuse libraries.
                 return [];

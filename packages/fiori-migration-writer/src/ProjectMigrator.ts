@@ -93,6 +93,7 @@ export class ProjectMigrator {
      * @returns Promise with fs editor, migration result, and messages
      */
     // Backward-compatible overload with positional parameters
+    // eslint-disable-next-line @typescript-eslint/max-params -- Backward compatibility; use options object signature instead
     public static async migrate(
         projectRoot: string,
         baseUri?: string,
@@ -108,6 +109,7 @@ export class ProjectMigrator {
     public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
 
     // Implementation
+    // eslint-disable-next-line @typescript-eslint/max-params -- Implementation must support both signatures
     public static async migrate(
         projectRootOrOptions: string | MigrateOptions,
         baseUri?: string,

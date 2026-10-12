@@ -55,7 +55,7 @@ export async function isFioriToolsProject(projectPath: string, dependencyName: s
         const packageJsonPath = join(projectPath, 'package.json');
         const packageJson = await readJSON(packageJsonPath);
         return hasDependency(packageJson, dependencyName);
-    } catch (_error: unknown) {
+    } catch {
         // Expected: package.json may not exist or may be malformed in non-Fiori projects.
         // Safe to return false - project will not be identified as a Fiori Tools project.
         return false;
