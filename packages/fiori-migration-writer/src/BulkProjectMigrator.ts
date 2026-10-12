@@ -34,7 +34,7 @@ export class BulkProjectMigrator {
         for (const [index, project] of (projects ?? []).entries()) {
             try {
                 // eslint-disable-next-line no-await-in-loop -- Sequential await required to prevent mem-fs adapter race conditions
-                results.push(await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle));
+                results.push(await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle)); // NOSONAR: Sequential migration required to prevent mem-fs adapter race conditions
             } catch (error) {
                 // Catch per-project errors to allow remaining projects to be processed
                 results.push({
