@@ -262,7 +262,9 @@ export async function cleanupEmptyDirs(rootPath: string, legacyPath: string, pat
 
     // Check and remove directories sequentially to avoid filesystem race conditions
     for (const dir of dirsToRemove) {
+        // eslint-disable-next-line no-await-in-loop -- Sequential directory existence checks to prevent race conditions
         if (await pathExistsOnDisk(dir)) {
+            // eslint-disable-next-line no-await-in-loop -- Sequential readdir to ensure directory state consistency
             const dirContents = await readdir(dir);
             if (dirContents.filter((file) => file !== '.DS_Store').length === 0) {
                 fsextra.default.removeSync(dir);

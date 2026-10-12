@@ -433,10 +433,12 @@ export class ProjectMigrator {
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
 
+            // eslint-disable-next-line no-await-in-loop -- Only 2 YAML files checked sequentially
             if (await exists(yamlPath)) {
                 // readFile and updateFile are sync mem-fs operations
                 const yamlContent = readFile(yamlPath);
 
+                // eslint-disable-next-line no-await-in-loop -- Sequential processing required for UI5Config parsing
                 const yamlConfig = await UI5Config.newInstance(yamlContent);
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);

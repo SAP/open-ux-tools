@@ -33,6 +33,7 @@ export class BulkProjectMigrator {
         const results: MigrationUIProjectInfo[] = [];
         for (const [index, project] of (projects ?? []).entries()) {
             try {
+                // eslint-disable-next-line no-await-in-loop -- Sequential await required to prevent mem-fs adapter race conditions
                 results.push(await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle));
             } catch (error) {
                 // Catch per-project errors to allow remaining projects to be processed

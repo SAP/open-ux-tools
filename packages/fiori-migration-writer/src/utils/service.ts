@@ -61,6 +61,7 @@ async function validateDataSources(
 
         // Check OData datasources or datasources without explicit type
         if (datasource.type === 'OData' || datasource.type === undefined) {
+            // eslint-disable-next-line no-await-in-loop -- First-match pattern: stop at first valid metadata
             const result = await checkLocalMetadata(datasource, rootPath, webappPath);
             if (result.config) {
                 metadataValidation = result;
