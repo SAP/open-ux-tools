@@ -199,7 +199,7 @@ export async function createWebappFolderAndMigrateFiles(
         // as previous block will have updated this folder structure
         // create webapp, move files into it and update current webapp path
 
-        await mkdir(join(rootPath, DirName.Webapp));
+        mkdir(join(rootPath, DirName.Webapp));
 
         // List of files/directories to exclude from migration
         const direntToFilter = [
