@@ -1,18 +1,4 @@
----
-name: sap-fiori-create-cli-convert
-description: Use when running @sap-ux/create convert — preview-config, eslint-config.
-metadata:
-  author: sap-fiori-tools
-  version: "1.4.14"
----
-
-# [`convert`](#convert)
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the `sap-fiori-create-cli` skill.
-
-The available subcommands are: preview-config, eslint-config
-
---------------------------------
+# `convert` — Full Options
 
 ## [`convert preview-config`](#convert-preview-config)
 

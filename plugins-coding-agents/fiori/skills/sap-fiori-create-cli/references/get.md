@@ -1,18 +1,4 @@
----
-name: sap-fiori-create-cli-get
-description: Use when running @sap-ux/create get — system.
-metadata:
-  author: sap-fiori-tools
-  version: "1.4.14"
----
-
-# [`get`](#get)
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the `sap-fiori-create-cli` skill.
-
-The available subcommands are: system
-
---------------------------------
+# `get` — Full Options
 
 ## [`get system`](#get-system)
 

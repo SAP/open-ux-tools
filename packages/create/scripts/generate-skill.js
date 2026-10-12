@@ -59,26 +59,24 @@ function renderOptions(options) {
 }
 
 /**
- * Returns a reference pointer line if a matching file exists in the skill's
+ * Returns a reference pointer line if a matching file exists in the root skill's
  * references/ directory, otherwise returns null.
  *
  * @param subcommandFullName - e.g. "convert preview-config"
- * @param skillDir - absolute path to the sub-skill directory
  */
-function referencePointer(subcommandFullName, skillDir) {
+function referencePointer(subcommandFullName) {
     const filename = subcommandFullName.replace(/\s+/g, '-') + '.md';
-    const filepath = path.join(skillDir, 'references', filename);
+    const filepath = path.join(ROOT_SKILL_DIR, 'references', filename);
     if (!fs.existsSync(filepath)) return null;
     return `> For the full workflow guide including prerequisites and manual steps, read \`references/${filename}\`.`;
 }
 
 /**
- * Renders all subcommands of a top-level command into markdown sections.
+ * Renders all subcommands of a top-level command into markdown sections (for reference files).
  *
  * @param topLevelCmd - The top-level command object from the JSON spec.
- * @param skillDir - Absolute path to the sub-skill directory (for reference lookup).
  */
-function renderSubcommands(topLevelCmd, skillDir) {
+function renderSubcommands(topLevelCmd) {
     const sections = [];
     for (const sub of topLevelCmd.subcommands || []) {
         const fullName = `${topLevelCmd.name} ${sub.name}`;
@@ -86,7 +84,7 @@ function renderSubcommands(topLevelCmd, skillDir) {
         let md = `## [\`${fullName}\`](#${anchor})\n\n`;
         md += `${sub.description.replace(/ {2,}/g, '\n').trim()}\n\n`;
 
-        const pointer = referencePointer(fullName, skillDir);
+        const pointer = referencePointer(fullName);
         if (pointer) md += `${pointer}\n\n`;
 
         if (sub.options && sub.options.length > 0) {
@@ -98,19 +96,13 @@ function renderSubcommands(topLevelCmd, skillDir) {
 }
 
 /**
- * Generates the thin root skill that routes to per-command sub-skills.
+ * Generates the root skill with per-command sections, full subcommand names and
+ * descriptions, and pointers to per-command reference files for full option details.
  *
  * @param spec - The full CLI JSON spec.
  * @param version - The package version string.
  */
 function generateRootSkill(spec, version) {
-    const rows = spec.commands
-        .map((cmd) => {
-            const subs = (cmd.subcommands || []).map((s) => `\`${s.name}\``).join(', ');
-            return `| \`${cmd.name}\` | ${subs} | \`sap-fiori-create-cli-${cmd.name}\` |`;
-        })
-        .join('\n');
-
     const frontmatter = `---
 name: sap-fiori-create-cli
 description: Use when asked to run any @sap-ux/create CLI command for SAP Fiori projects. Routes to the specific command skill. Use when the exact subcommand is unknown or when providing general guidance.
@@ -121,47 +113,41 @@ metadata:
 ---
 `;
 
-    const commandsTable = `# Commands
+    const commandSections = spec.commands
+        .map((cmd) => {
+            const cmdDesc = cmd.description.split('\n')[0].trim();
+            const tableRows = (cmd.subcommands || [])
+                .map((sub) => {
+                    const desc = sub.description.replace(/ {2,}/g, '\n').trim().split('\n')[0];
+                    return `| \`${sub.name}\` | ${desc} |`;
+                })
+                .join('\n');
 
-| Command | Subcommands | Skill |
-|---|---|---|
-${rows}
+            return [
+                `## \`${cmd.name}\``,
+                '',
+                cmdDesc,
+                '',
+                '| Subcommand | Description |',
+                '|---|---|',
+                tableRows,
+                '',
+                `> Full options and flags: \`references/${cmd.name}.md\``,
+            ].join('\n');
+        })
+        .join('\n\n--------------------------------\n\n');
 
-Invoke the skill for the specific command group to get full options and examples.
-`;
-
-    return frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsTable;
+    return frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n# Commands\n\n' + commandSections + '\n';
 }
 
 /**
- * Generates a sub-skill for one top-level command group.
+ * Generates the reference file for one top-level command group containing
+ * full option details for all its subcommands.
  *
  * @param cmd - The top-level command object from the JSON spec.
- * @param version - The package version string.
- * @param skillDir - Absolute path to the sub-skill directory.
  */
-function generateSubSkill(cmd, version, skillDir) {
-    const subNames = (cmd.subcommands || []).map((s) => s.name).join(', ');
-    const frontmatter = `---
-name: sap-fiori-create-cli-${cmd.name}
-description: Use when running @sap-ux/create ${cmd.name} — ${subNames}.
-metadata:
-  author: sap-fiori-tools
-  version: "${version}"
----
-`;
-
-    const groupHeading = `# [\`${cmd.name}\`](#${cmd.name})
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the \`sap-fiori-create-cli\` skill.
-
-The available subcommands are: ${subNames}
-
---------------------------------
-
-`;
-
-    return frontmatter + '\n' + groupHeading + renderSubcommands(cmd, skillDir);
+function generateReferenceFile(cmd) {
+    return `# \`${cmd.name}\` — Full Options\n\n` + renderSubcommands(cmd);
 }
 
 /**
@@ -194,24 +180,42 @@ function writeSkill(filePath, content, label) {
     console.log(`✅ ${label} written (${lineCount} lines)`);
 }
 
+/**
+ * Writes a reference file only if its content has changed (idempotency).
+ * Reference files have no line limit — they are not subject to the vally skill-size check.
+ *
+ * @param filePath - Absolute path to the reference markdown file.
+ * @param content - The new content to write.
+ * @param label - Short label used in log messages.
+ */
+function writeReference(filePath, content, label) {
+    const existing = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+    if (content === existing) {
+        console.log(`ℹ️  ${label} unchanged — skipping write.`);
+        return;
+    }
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, content, 'utf8');
+    console.log(`✅ ${label} written`);
+}
+
 try {
     const spec = getJsonSpec();
     const { version } = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf8'));
 
-    // Root skill — thin routing table
+    // Root skill — per-command sections with subcommand descriptions
     writeSkill(
         path.join(ROOT_SKILL_DIR, 'SKILL.md'),
         generateRootSkill(spec, version),
         'sap-fiori-create-cli/SKILL.md'
     );
 
-    // Sub-skills — one per top-level command group
+    // Reference files — full options per command group (auto-generated, no line limit)
     for (const cmd of spec.commands) {
-        const skillDir = path.resolve(SKILLS_ROOT, `sap-fiori-create-cli-${cmd.name}`);
-        writeSkill(
-            path.join(skillDir, 'SKILL.md'),
-            generateSubSkill(cmd, version, skillDir),
-            `sap-fiori-create-cli-${cmd.name}/SKILL.md`
+        writeReference(
+            path.join(ROOT_SKILL_DIR, 'references', `${cmd.name}.md`),
+            generateReferenceFile(cmd),
+            `references/${cmd.name}.md`
         );
     }
 } catch (error) {

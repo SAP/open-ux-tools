@@ -1,18 +1,4 @@
----
-name: sap-fiori-create-cli-remove
-description: Use when running @sap-ux/create remove — mockserver-config, system.
-metadata:
-  author: sap-fiori-tools
-  version: "1.4.14"
----
-
-# [`remove`](#remove)
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the `sap-fiori-create-cli` skill.
-
-The available subcommands are: mockserver-config, system
-
---------------------------------
+# `remove` — Full Options
 
 ## [`remove mockserver-config`](#remove-mockserver-config)
 

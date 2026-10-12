@@ -1,18 +1,4 @@
----
-name: sap-fiori-create-cli-update
-description: Use when running @sap-ux/create update — system, service-metadata.
-metadata:
-  author: sap-fiori-tools
-  version: "1.4.14"
----
-
-# [`update`](#update)
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the `sap-fiori-create-cli` skill.
-
-The available subcommands are: system, service-metadata
-
---------------------------------
+# `update` — Full Options
 
 ## [`update system`](#update-system)
 

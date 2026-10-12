@@ -1,18 +1,4 @@
----
-name: sap-fiori-create-cli-add
-description: Use when running @sap-ux/create add — mockserver-config, smartlinks-config, eslint-config, cds-plugin-ui5, inbound-navigation, cards-editor, model, annotations, html, component-usages, deploy-config, variants-config, adp-cf-config, system, flp-embedded-config.
-metadata:
-  author: sap-fiori-tools
-  version: "1.4.14"
----
-
-# [`add`](#add)
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the `sap-fiori-create-cli` skill.
-
-The available subcommands are: mockserver-config, smartlinks-config, eslint-config, cds-plugin-ui5, inbound-navigation, cards-editor, model, annotations, html, component-usages, deploy-config, variants-config, adp-cf-config, system, flp-embedded-config
-
---------------------------------
+# `add` — Full Options
 
 ## [`add mockserver-config`](#add-mockserver-config)
 

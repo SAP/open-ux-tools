@@ -1,18 +1,4 @@
----
-name: sap-fiori-create-cli-generate
-description: Use when running @sap-ux/create generate — adaptation-project, opa5-tests.
-metadata:
-  author: sap-fiori-tools
-  version: "1.4.14"
----
-
-# [`generate`](#generate)
-
-> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the `sap-fiori-create-cli` skill.
-
-The available subcommands are: adaptation-project, opa5-tests
-
---------------------------------
+# `generate` — Full Options
 
 ## [`generate adaptation-project`](#generate-adaptation-project)
 
