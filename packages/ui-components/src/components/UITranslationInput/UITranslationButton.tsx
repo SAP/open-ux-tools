@@ -116,7 +116,11 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
             return;
         }
         // Default FluentUI behavior: return focus to the element focused before the callout opened.
-        params.originalElement?.focus();
+        // Guard with containsFocus to match FluentUI's own default: don't steal focus from an
+        // element outside the callout (e.g. after a click-away dismissal).
+        if (params.containsFocus) {
+            params.originalElement?.focus();
+        }
     }, []);
 
     return (
