@@ -233,13 +233,15 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
     }
     const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
     const candidates: TextAnnotationColumnCandidate[] = [];
-    const seenTextProperties = new Set<string>();
+    const seenColumnProperties = new Set<string>();
     Object.entries(columnItems).forEach(([columnKey, column]) => {
         if (!isDefaultAvailableColumn(column)) {
             return;
         }
         const text = column.properties?.text;
-        if (text?.artifactType !== 'Annotation' || !text.value || text.value === 'none') {
+        // The spec model uses the sentinel value "None" (any casing) to mean "no text annotation is
+        // maintained" — such columns must not produce a sort test.
+        if (text?.artifactType !== 'Annotation' || !text.value || text.value.toLowerCase() === 'none') {
             return;
         }
         // A text target reached through a navigation property (e.g. "_DunningProcedure/DunningProcedure_Text")
@@ -248,10 +250,11 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
             return;
         }
         const columnProperty = getColumnIdentifier(column, columnKey);
-        if (!columnProperty || seenTextProperties.has(text.value)) {
+        // Deduplicate by code column: distinct columns may share one text target.
+        if (!columnProperty || seenColumnProperties.has(columnProperty)) {
             return;
         }
-        seenTextProperties.add(text.value);
+        seenColumnProperties.add(columnProperty);
         candidates.push({ columnProperty, textProperty: text.value });
     });
     return candidates;
