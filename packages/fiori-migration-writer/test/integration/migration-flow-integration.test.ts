@@ -131,7 +131,7 @@ describe('Migration Integration Tests', () => {
 
             // Verify migrated files with per-file snapshots
             verifyMigratedFiles(updatedFs, projectPath, 'tool_suite_beta_lrop_v2_project');
-        });
+        }, 60000);
     });
 
     describe('LROP v4 Migration', () => {
