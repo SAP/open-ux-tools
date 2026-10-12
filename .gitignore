@@ -188,6 +188,7 @@ nx-cloud.env
 # AI Coding Agents
 .claude/settings.local.json
 **/.claude/settings.json
+.claude/worktrees/
 CLAUDE.local.md
 .cursorignore
 .codeiumignore
@@ -197,6 +198,11 @@ CLAUDE.local.md
 .anthropic/
 .claude/cache/
 dist-cjs/
+
+# Development scratch files
+.dev-artifacts-backup/
+fix-catch-blocks.sh
+test/*-backup.tar.gz
 
 # esbuild license/legal output (build artefacts, not committed)
 *.LICENSES.txt

@@ -124,9 +124,9 @@ export class ProjectMigrator {
                         projectInfo.FEVersion === FioriElementsVersion.v2 ||
                         projectInfo.FEVersion === FioriElementsVersion.v4 ||
                         projectInfo.type === MigrationTypes.projectExtension) &&
-                    messages.length === 0
+                    checkForErrors(messages)
                 ) {
-                    // V2 is supported
+                    // V2 is supported (checkForErrors returns true if no ERROR-level messages)
                     const { messages: copyMessages, result: isSuccess } = await this.copyCommonFiles(
                         projectInfo,
                         vscode,

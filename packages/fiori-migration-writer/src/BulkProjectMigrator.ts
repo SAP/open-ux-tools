@@ -32,7 +32,16 @@ export class BulkProjectMigrator {
         // The shared module-global mem-fs adapter is enabled/disabled per migration
         const results: MigrationUIProjectInfo[] = [];
         for (const [index, project] of (projects ?? []).entries()) {
-            results.push(await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle));
+            try {
+                results.push(await this.migrateProject(project, index, ui5SnapshotUrl, vscode, internalToggle));
+            } catch (error) {
+                // Catch per-project errors to allow remaining projects to be processed
+                results.push({
+                    ...project,
+                    status: 'ERROR',
+                    messages: [{ type: 'ERROR', description: error instanceof Error ? error.message : String(error) }]
+                });
+            }
         }
         return results;
     }

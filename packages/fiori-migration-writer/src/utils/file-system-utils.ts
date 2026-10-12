@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { getCurrentEditor, createMemFsEditor } from './fs-adapter.js';
+import { getCurrentEditor, createMemFsEditor, editorHasPath } from './fs-adapter.js';
 
 /**
  * Get editor from context, parameter, or create a new one
@@ -43,6 +43,7 @@ export const escapeDoubleQuotes = (s: string): string => s.replaceAll('\\', '\\\
 
 /**
  * Check if directory exists
+ * Uses editorHasPath to avoid fs.exists() side effect of staging paths
  *
  * @param directoryOrFs - Directory path, or Editor instance
  * @param directory - Directory path (if first param is Editor)
@@ -50,7 +51,8 @@ export const escapeDoubleQuotes = (s: string): string => s.replaceAll('\\', '\\\
 export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: string): boolean {
     const fs = getEditor(directoryOrFs);
     const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
-    return fs.exists(dir);
+    // Use editorHasPath instead of fs.exists() to avoid side effect of staging paths
+    return editorHasPath(fs, dir);
 }
 
 /**

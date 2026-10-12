@@ -113,15 +113,14 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
 
     // Add leading slash to context paths if missing
     const pathRegEx = 'contextpath + ';
-    let idx = 0;
-    do {
-        // Search from current position (start at 0 on first iteration, then idx + 1)
-        idx = legacyRunnerContent.toLowerCase().indexOf(pathRegEx, idx === 0 ? 0 : idx + 1);
+    let idx = legacyRunnerContent.toLowerCase().indexOf(pathRegEx);
+    while (idx !== -1) {
         // +1 skips the opening quote to check the first char inside the string value
-        if (idx !== -1 && legacyRunnerContent.charAt(idx + pathRegEx.length + 1) !== '/') {
+        if (legacyRunnerContent.charAt(idx + pathRegEx.length + 1) !== '/') {
             legacyRunnerContent = `${legacyRunnerContent.slice(0, idx + pathRegEx.length + 1)}/${legacyRunnerContent.slice(idx + pathRegEx.length + 1)}`;
         }
-    } while (idx !== -1);
+        idx = legacyRunnerContent.toLowerCase().indexOf(pathRegEx, idx + 1);
+    }
 
     // Handle testsuite.qunit.html file
     const testSuiteRunner = join(ffNewTestPath, TemplateFileName.TestsuiteQunitHtml);
