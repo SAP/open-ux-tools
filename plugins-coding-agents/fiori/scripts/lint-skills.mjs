@@ -31,9 +31,12 @@ if (skillPaths.length === 0) {
     process.exit(0);
 }
 
+// Tokeniser model for skill-size grader — update if the target deployment model changes.
+const SKILL_MODEL = 'claude-sonnet-4-6';
+
 const graderInput = {
     stimulus: { environment: { skills: skillPaths } },
-    config: { model: 'claude-sonnet-4-6' }
+    config: { model: SKILL_MODEL }
 };
 
 const sizeGrader = new SkillSizeGrader();

@@ -1,16 +1,13 @@
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const README_PATH = path.resolve(__dirname, '../README.md');
 const PACKAGE_JSON_PATH = path.resolve(__dirname, '../package.json');
-const SKILL_OUTPUT_PATH = path.resolve(
-    __dirname,
-    '../../../plugins-coding-agents/fiori/skills/sap-fiori-create-cli/SKILL.md'
-);
-const REFERENCES_DIR = path.resolve(path.dirname(SKILL_OUTPUT_PATH), 'references');
+const SKILLS_ROOT = path.resolve(__dirname, '../../../plugins-coding-agents/fiori/skills');
+const ROOT_SKILL_DIR = path.resolve(SKILLS_ROOT, 'sap-fiori-create-cli');
 
 const BEHAVIOR_GUIDANCE = `
 ## How to use this CLI
@@ -24,128 +21,200 @@ const BEHAVIOR_GUIDANCE = `
 `;
 
 /**
- * Converts a command heading like `add mockserver-config` to the reference filename
- * `add-mockserver-config.md` by replacing spaces with hyphens.
- * @param {string} commandPath - The command path extracted from the heading, e.g. "convert preview-config".
- * @returns {string} The reference filename, e.g. "convert-preview-config.md".
- */
-function referenceFilename(commandPath) {
-    return commandPath.replace(/\s+/g, '-') + '.md';
-}
-
-/**
- * Injects a reference pointer after each command section heading that has a
- * matching file in the references/ directory.
+ * Executes the CLI command to get its JSON specification.
  *
- * Heading format in README: ## [`convert preview-config`](#convert-preview-config)
- * Matching reference file:  references/convert-preview-config.md
- * @param {string} commandsSection - The commands section of the README.
- * @returns {string} The commands section with reference pointers injected.
+ * @returns The parsed JSON specification object.
  */
-function injectReferencePointers(commandsSection) {
-    // Match subcommand headings: ## [`<parent> <sub>`](#anchor) — two-word command paths only
-    return commandsSection.replace(/^(## \[`([^`]+)`\]\(#[^)]+\))/gm, (match, heading, commandPath) => {
-        // Only inject for subcommands (command path contains a space, e.g. "add mockserver-config")
-        if (!commandPath.includes(' ')) return match;
-
-        const filename = referenceFilename(commandPath);
-        const filepath = path.join(REFERENCES_DIR, filename);
-
-        if (!fs.existsSync(filepath)) return match;
-
-        return (
-            match +
-            `\n\n> For the full workflow guide including prerequisites and manual steps, read \`references/${filename}\`.`
-        );
+function getJsonSpec() {
+    // cwd is explicit so the script works when called from outside packages/create/
+    const output = execSync('node dist/index.js --generateJsonSpec', {
+        cwd: path.resolve(__dirname, '..'),
+        encoding: 'utf8'
     });
+    const firstBrace = output.indexOf('{');
+    const lastBrace = output.lastIndexOf('}');
+    if (firstBrace === -1) {
+        throw new Error('No JSON object found in CLI output');
+    }
+    return JSON.parse(output.substring(firstBrace, lastBrace + 1));
 }
 
 /**
- * Strips README formatting that bloats SKILL.md beyond the 500-line vally limit:
- * 1. Removes `--------------------------------` separator lines.
- * 2. Collapses group-command blocks (single-word commands like `add`, `generate`) to
- *    just the heading and the "The available subcommands are:" line — the verbose
- *    description and Usage line add no value for an agent tool.
- * 3. Merges 3+ consecutive blank lines into one.
- * @param {string} section - The commands section of README.md (from "# [Commands]" onwards).
- * @returns {string} Compacted section suitable for SKILL.md.
+ * Renders the options list for a command into a Markdown bulleted list.
+ *
+ * @param options - The array of option objects.
+ * @returns A Markdown string representing the options.
  */
-function compactCommandsSection(section) {
-    let text = section.replace(/^-{32}\n\n?/gm, '');
-
-    const blocks = text.split(/(?=^## \[`)/m);
-    text = blocks
-        .map((block) => {
-            const headingMatch = block.match(/^## \[`([^`]+)`\]/);
-            if (!headingMatch) return block;
-
-            const commandName = headingMatch[1];
-            if (!commandName.includes(' ')) {
-                const subMatch = block.match(/^(The available subcommands are:[^\n]+)/m);
-                if (subMatch) {
-                    const anchorMatch = block.match(/^## \[`[^`]+`\]\(#([^)]+)\)/);
-                    const anchor = anchorMatch ? anchorMatch[1] : commandName.toLowerCase();
-                    return `## [\`${commandName}\`](#${anchor})\n\n${subMatch[1]}\n\n`;
-                }
-            }
-            return block;
+function renderOptions(options) {
+    if (!options || options.length === 0) return '';
+    return options
+        .map((opt) => {
+            let md = `- \`${opt.name}\``;
+            if (opt.required) md += ' _(required)_';
+            md += ` - ${opt.description}`;
+            if (opt.defaultValue !== undefined) md += ` _(default: \`${opt.defaultValue}\`)_`;
+            return md;
         })
-        .join('');
-
-    return text.replace(/\n{3,}/g, '\n\n');
+        .join('\n');
 }
 
-try {
-    const readme = fs.readFileSync(README_PATH, 'utf8');
-    const { version } = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf8'));
+/**
+ * Returns a reference pointer line if a matching file exists in the skill's
+ * references/ directory, otherwise returns null.
+ *
+ * @param subcommandFullName - e.g. "convert preview-config"
+ * @param skillDir - absolute path to the sub-skill directory
+ */
+function referencePointer(subcommandFullName, skillDir) {
+    const filename = subcommandFullName.replace(/\s+/g, '-') + '.md';
+    const filepath = path.join(skillDir, 'references', filename);
+    if (!fs.existsSync(filepath)) return null;
+    return `> For the full workflow guide including prerequisites and manual steps, read \`references/${filename}\`.`;
+}
 
-    // Drop badges, header, and usage section — keep from "# [Commands]" onwards
-    const commandsIndex = readme.indexOf('# [Commands]');
-    if (commandsIndex === -1) {
-        throw new Error('Could not find "# [Commands]" section in README.md');
+/**
+ * Renders all subcommands of a top-level command into markdown sections.
+ *
+ * @param topLevelCmd - The top-level command object from the JSON spec.
+ * @param skillDir - Absolute path to the sub-skill directory (for reference lookup).
+ */
+function renderSubcommands(topLevelCmd, skillDir) {
+    const sections = [];
+    for (const sub of topLevelCmd.subcommands || []) {
+        const fullName = `${topLevelCmd.name} ${sub.name}`;
+        const anchor = `${topLevelCmd.name}-${sub.name}`;
+        let md = `## [\`${fullName}\`](#${anchor})\n\n`;
+        md += `${sub.description.replace(/ {2,}/g, '\n').trim()}\n\n`;
+
+        const pointer = referencePointer(fullName, skillDir);
+        if (pointer) md += `${pointer}\n\n`;
+
+        if (sub.options && sub.options.length > 0) {
+            md += `Options:\n${renderOptions(sub.options)}\n\n`;
+        }
+        sections.push(md);
     }
-    const commandsSection = compactCommandsSection(injectReferencePointers(readme.slice(commandsIndex)));
+    return sections.join('--------------------------------\n\n');
+}
 
-    // Only write if the dynamic commands content changed.
-    // Frontmatter and BEHAVIOR_GUIDANCE are static (defined in this script), so comparing
-    // just commandsSection is sufficient and avoids fragile version-stripping logic.
-    // This prevents a SKILL.md diff — and the MCP review it triggers — on every
-    // @sap-ux/create release where only the package version bumped but no commands changed.
-    const existingSkill = fs.existsSync(SKILL_OUTPUT_PATH) ? fs.readFileSync(SKILL_OUTPUT_PATH, 'utf8') : '';
-
-    // Extract the commands section from the existing file for comparison.
-    // Everything from "# [Commands]" onwards is the dynamic part — frontmatter
-    // and BEHAVIOR_GUIDANCE are static so we don't need to compare them.
-    const existingCommandsIndex = existingSkill.indexOf('# [Commands]');
-    const existingCommandsSection = existingCommandsIndex !== -1 ? existingSkill.slice(existingCommandsIndex) : '';
+/**
+ * Generates the thin root skill that routes to per-command sub-skills.
+ *
+ * @param spec - The full CLI JSON spec.
+ * @param version - The package version string.
+ */
+function generateRootSkill(spec, version) {
+    const rows = spec.commands
+        .map((cmd) => {
+            const subs = (cmd.subcommands || []).map((s) => `\`${s.name}\``).join(', ');
+            return `| \`${cmd.name}\` | ${subs} | \`sap-fiori-create-cli-${cmd.name}\` |`;
+        })
+        .join('\n');
 
     const frontmatter = `---
 name: sap-fiori-create-cli
-description: Run, invoke, and test the @sap-ux/create CLI — generate, add, convert, remove, update, change, list, get commands for SAP Fiori projects. Use when asked to run sap-ux, invoke create CLI, add config to a project, generate adaptation-project, or test any sap-ux/create subcommand.
+description: Use when asked to run any @sap-ux/create CLI command for SAP Fiori projects. Routes to the specific command skill. Use when the exact subcommand is unknown or when providing general guidance.
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
   version: "${version}"
 ---
+`;
+
+    const commandsTable = `# Commands
+
+| Command | Subcommands | Skill |
+|---|---|---|
+${rows}
+
+Invoke the skill for the specific command group to get full options and examples.
+`;
+
+    return frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsTable;
+}
+
+/**
+ * Generates a sub-skill for one top-level command group.
+ *
+ * @param cmd - The top-level command object from the JSON spec.
+ * @param version - The package version string.
+ * @param skillDir - Absolute path to the sub-skill directory.
+ */
+function generateSubSkill(cmd, version, skillDir) {
+    const subNames = (cmd.subcommands || []).map((s) => s.name).join(', ');
+    const frontmatter = `---
+name: sap-fiori-create-cli-${cmd.name}
+description: Use when running @sap-ux/create ${cmd.name} — ${subNames}.
+metadata:
+  author: sap-fiori-tools
+  version: "${version}"
+---
+`;
+
+    const groupHeading = `# [\`${cmd.name}\`](#${cmd.name})
+
+> For usage rules (--simulate, --password env:MY_VAR, CF restrictions) see the \`sap-fiori-create-cli\` skill.
+
+The available subcommands are: ${subNames}
+
+--------------------------------
 
 `;
-    const newSkill = frontmatter + BEHAVIOR_GUIDANCE + '\n---\n\n' + commandsSection;
-    const lineCount = newSkill.split('\n').length;
+
+    return frontmatter + '\n' + groupHeading + renderSubcommands(cmd, skillDir);
+}
+
+/**
+ * Writes a skill file only if its content has changed (idempotency).
+ * Exits the process with code 1 if the content exceeds 500 lines.
+ *
+ * @param filePath - Absolute path to the SKILL.md file.
+ * @param content - The new content to write.
+ * @param label - Short label used in log messages.
+ */
+function writeSkill(filePath, content, label) {
+    const lineCount = content.split('\n').length;
     if (lineCount > 500) {
         console.error(
-            `❌ SKILL.md exceeds 500 lines (${lineCount} lines). Reduce README.md content to stay within the vally skill-size limit.`
+            `❌ ${label} exceeds 500 lines (${lineCount} lines). Reduce content to stay within the vally skill-size limit.`
         );
         process.exit(1);
     }
 
-    if (commandsSection === existingCommandsSection) {
-        console.log('ℹ️  SKILL.md content unchanged — skipping write.');
-    } else {
-        fs.mkdirSync(path.dirname(SKILL_OUTPUT_PATH), { recursive: true });
-        fs.writeFileSync(SKILL_OUTPUT_PATH, newSkill, 'utf8');
-        console.log(`✅ SKILL.md generated successfully at ${SKILL_OUTPUT_PATH} (${lineCount} lines)`);
+    const existing = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+    // Exclude version line from comparison — a version-only bump should not regenerate all skills
+    const normalize = (text) => text.replace(/^  version: ".*"$/gm, '  version: ""');
+    if (normalize(content) === normalize(existing)) {
+        console.log(`ℹ️  ${label} unchanged — skipping write.`);
+        return;
+    }
+
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, content, 'utf8');
+    console.log(`✅ ${label} written (${lineCount} lines)`);
+}
+
+try {
+    const spec = getJsonSpec();
+    const { version } = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf8'));
+
+    // Root skill — thin routing table
+    writeSkill(
+        path.join(ROOT_SKILL_DIR, 'SKILL.md'),
+        generateRootSkill(spec, version),
+        'sap-fiori-create-cli/SKILL.md'
+    );
+
+    // Sub-skills — one per top-level command group
+    for (const cmd of spec.commands) {
+        const skillDir = path.resolve(SKILLS_ROOT, `sap-fiori-create-cli-${cmd.name}`);
+        writeSkill(
+            path.join(skillDir, 'SKILL.md'),
+            generateSubSkill(cmd, version, skillDir),
+            `sap-fiori-create-cli-${cmd.name}/SKILL.md`
+        );
     }
 } catch (error) {
-    console.error('❌ Failed to generate SKILL.md:', error.message);
+    console.error('❌ Failed to generate skills:', error.message);
     process.exit(1);
 }

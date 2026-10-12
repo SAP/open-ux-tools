@@ -3,4 +3,4 @@
 "@sap-ux/fiori-tools-plugin": patch
 ---
 
-FIX: Reduce sap-fiori-create-cli skill to 435 lines to pass vally skill-size limit; add 500-line guard to generate-skill.js build step; add @microsoft/vally lint script to validate all skills on skill-size and valid-refs graders
+FIX: Split sap-fiori-create-cli into a thin root routing skill + 8 per-command-group sub-skills; rewrite generate-skill.js to use --generateJsonSpec; add @microsoft/vally lint script to validate all skills on skill-size and valid-refs graders

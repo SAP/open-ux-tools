@@ -16,7 +16,7 @@ allowBuilds:
     better-sqlite3: true
     esbuild: true
     keytar: true
-    koffi: true
+    koffi: true # native addon required transitively by @microsoft/vally (plugins-coding-agents/fiori)
     mta: true
     nx: true
     onnxruntime-node: true
