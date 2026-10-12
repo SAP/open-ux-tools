@@ -21,6 +21,7 @@ import {
     getCustomFilterFieldProperties,
     getTableIdentifiers,
     isColumnPersonalizationEnabled,
+    isViewColumnPersonalizationEnabled,
     getListReportViews,
     getListReportTabs,
     getPropertyLabelFromMetadata,
@@ -2690,6 +2691,76 @@ describe('Test isColumnPersonalizationEnabled()', () => {
     });
 });
 
+describe('Test isViewColumnPersonalizationEnabled()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+
+    test('returns true when manifest or target key is missing', () => {
+        expect(isViewColumnPersonalizationEnabled(undefined, 'MyLR', 'x#VAR1')).toBe(true);
+        expect(isViewColumnPersonalizationEnabled(makeManifest({}), undefined, 'x#VAR1')).toBe(true);
+    });
+
+    test('matches the qualified LineItem key for the view annotationPath qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: true } },
+            [`${lineItem}#VAR2`]: { tableSettings: { personalization: { column: false } } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(
+                manifest,
+                'MyLR',
+                'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2'
+            )
+        ).toBe(false);
+    });
+
+    test('falls back to the unqualified LineItem key when no qualified key exists', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: { column: false } } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1')
+        ).toBe(false);
+    });
+
+    test('treats a null personalization as enabled (Fiori elements default)', () => {
+        const manifest = makeManifest({
+            [`${lineItem}#VAR3`]: { tableSettings: { personalization: null } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(
+                manifest,
+                'MyLR',
+                'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR3'
+            )
+        ).toBe(true);
+    });
+
+    test('returns true when controlConfiguration is absent', () => {
+        const manifest = {
+            'sap.ui5': { routing: { targets: { MyLR: { options: { settings: {} } } } } }
+        } as unknown as Manifest;
+        expect(isViewColumnPersonalizationEnabled(manifest, 'MyLR', 'x#VAR1')).toBe(true);
+    });
+
+    test('uses the unqualified key when the view annotationPath has no qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: false } }
+        });
+        expect(isViewColumnPersonalizationEnabled(manifest, 'MyLR', undefined)).toBe(false);
+    });
+});
+
 describe('Test getTableIdentifiers()', () => {
     const makeManifest = (paths: unknown): Manifest =>
         ({
@@ -3454,5 +3525,55 @@ describe('getListReportTabs()', () => {
             { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
         ]);
         expect(tabs[1].textAnnotationColumns).toEqual([]);
+    });
+
+    test('resolves columnPersonalizationSupported per view from each view annotationPath', () => {
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [
+                                            {
+                                                key: '1',
+                                                annotationPath: 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1'
+                                            },
+                                            {
+                                                key: '2',
+                                                annotationPath:
+                                                    'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2'
+                                            }
+                                        ]
+                                    },
+                                    controlConfiguration: {
+                                        [lineItem]: { tableSettings: { personalization: true } },
+                                        [`${lineItem}#VAR2`]: { tableSettings: { personalization: { column: false } } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        // View 1 (#VAR1) has no matching LineItem#VAR1 key, so it falls back to the enabled default.
+        expect(tabs[0].columnPersonalizationSupported).toBe(true);
+        // View 2 (#VAR2) maps to LineItem#VAR2, which disables column personalization.
+        expect(tabs[1].columnPersonalizationSupported).toBe(false);
     });
 });

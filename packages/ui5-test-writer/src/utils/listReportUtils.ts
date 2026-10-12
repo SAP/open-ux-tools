@@ -444,11 +444,6 @@ export function getListReportTabs(
     const viewNodes = resolveViewTableNodes(listReportPage.model.root);
     const nodeByKey = new Map(viewNodes.map((entry) => [entry.key, entry.node]));
     const criticalActions = collectCriticalActionNames(convertedMetadata);
-    const columnPersonalizationSupported = isColumnPersonalizationEnabled(
-        manifest,
-        listReportPage.name,
-        listReportPage.contextPath
-    );
     const tabs: ListReportTab[] = [];
     views.forEach((view, index) => {
         // Match the spec-model view node by key; fall back to model order (both lists exclude custom tabs).
@@ -492,7 +487,11 @@ export function getListReportTabs(
             createButton,
             deleteButton,
             textAnnotationColumns,
-            columnPersonalizationSupported
+            columnPersonalizationSupported: isViewColumnPersonalizationEnabled(
+                manifest,
+                listReportPage.name,
+                view.annotationPath
+            )
         });
     });
     return tabs;
@@ -661,10 +660,18 @@ export function isColumnPersonalizationEnabled(
         return true;
     }
     const lineItemConfig = findDefaultTableLineItemConfig(controlConfiguration, contextPath);
-    const personalization = lineItemConfig?.tableSettings?.personalization;
-    if (personalization === undefined) {
-        return true;
-    }
+    return interpretColumnPersonalization(lineItemConfig?.tableSettings?.personalization);
+}
+
+/**
+ * Interprets a `tableSettings.personalization` manifest value into a column-personalization flag.
+ * A boolean is used directly; an object enables personalization only when `column === true`;
+ * `null`/`undefined` means the Fiori elements default (enabled).
+ *
+ * @param personalization - the raw `tableSettings.personalization` value
+ * @returns true if column personalization is enabled
+ */
+function interpretColumnPersonalization(personalization: boolean | Record<string, unknown> | undefined): boolean {
     if (typeof personalization === 'boolean') {
         return personalization;
     }
@@ -672,6 +679,41 @@ export function isColumnPersonalizationEnabled(
         return personalization.column === true;
     }
     return true;
+}
+
+/**
+ * Resolves column personalization for a single view (tab) of a Multiple Table Mode List Report.
+ * A view's `annotationPath` is a SelectionVariant/SelectionPresentationVariant qualifier; the matching
+ * table config lives under `controlConfiguration["@…UI.v1.LineItem#<qualifier>"]`, falling back to the
+ * unqualified `@…UI.v1.LineItem` entry when no qualified key exists.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param annotationPath - the view's `annotationPath` (its SV/SPV qualifier source)
+ * @returns true if the column-adaptation dialog is available for that view's table
+ */
+export function isViewColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    annotationPath?: string
+): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        { options?: { settings?: { controlConfiguration?: Record<string, unknown> } } } | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const hashIndex = annotationPath?.indexOf('#') ?? -1;
+    const qualifier = hashIndex >= 0 ? annotationPath?.slice(hashIndex + 1) : undefined;
+    const entry =
+        (qualifier && controlConfiguration[`${lineItemTerm}#${qualifier}`]) || controlConfiguration[lineItemTerm];
+    const tableSettings = (entry as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        ?.tableSettings;
+    return interpretColumnPersonalization(tableSettings?.personalization);
 }
 
 /**
@@ -735,7 +777,7 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
 export function getListReportViews(
     manifest: Manifest | undefined,
     targetKey: string | undefined
-): { key: string; entitySet?: string }[] {
+): { key: string; entitySet?: string; annotationPath?: string }[] {
     if (!manifest || !targetKey) {
         return [];
     }
@@ -744,7 +786,7 @@ export function getListReportViews(
     if (!Array.isArray(paths)) {
         return [];
     }
-    const views: { key: string; entitySet?: string }[] = [];
+    const views: { key: string; entitySet?: string; annotationPath?: string }[] = [];
     for (const path of paths) {
         if (
             path &&
@@ -752,7 +794,7 @@ export function getListReportViews(
             path.key.length > 0 &&
             !(typeof path.template === 'string' && path.template.length > 0)
         ) {
-            views.push({ key: path.key, entitySet: path.entitySet });
+            views.push({ key: path.key, entitySet: path.entitySet, annotationPath: path.annotationPath });
         }
     }
     return views;

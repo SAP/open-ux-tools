@@ -86,6 +86,7 @@ export type FEV4ManifestTarget = {
                 paths?: Array<{
                     key?: string;
                     entitySet?: string;
+                    annotationPath?: string;
                     template?: string;
                     primary?: unknown[];
                     secondary?: unknown[];
