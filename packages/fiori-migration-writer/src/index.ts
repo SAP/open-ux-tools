@@ -53,7 +53,7 @@ export const templatesDirPath = join(currentDir, '..', 'templates');
 export { SapUiLibs, PROJECT_TYPE } from './template-types.js';
 
 // Public API - Main classes
-export { ProjectMigrator } from './ProjectMigrator.js';
+export { ProjectMigrator, type MigrateOptions } from './ProjectMigrator.js';
 export { BulkProjectMigrator } from './BulkProjectMigrator.js';
 export { createMemFsEditor } from './utils/fs-adapter.js';
 
