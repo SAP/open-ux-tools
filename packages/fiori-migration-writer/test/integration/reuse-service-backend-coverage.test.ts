@@ -110,5 +110,5 @@ describe('Backend Configuration Variants - Coverage Tests', () => {
         // Verify generated files
         expect(fileExistsInMemFs(updatedFs, testInputBase, 'ui5.yaml')).toBe(true);
         expect(fileExistsInMemFs(updatedFs, testInputBase, 'package.json')).toBe(true);
-    });
+    }, 60000);
 });

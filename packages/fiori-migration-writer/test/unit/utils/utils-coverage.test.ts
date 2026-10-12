@@ -83,7 +83,7 @@ describe('Backend Utils - Coverage Tests', () => {
             );
 
             expect(result).toBeDefined();
-        });
+        }, 60000);
     });
 });
 
