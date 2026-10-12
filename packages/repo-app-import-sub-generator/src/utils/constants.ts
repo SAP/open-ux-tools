@@ -12,6 +12,10 @@ export interface DownloadTypeConfig {
 
 // The source template ID used for filtering the apps in the repository
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
+// Corrected spelling introduced; both IDs must be recognised during the transition period.
+export const adtSourceTemplateIdCorrected = '@sap.adt.servicebinding.deploy:lrop';
+// Both ADT source template IDs (typo and corrected) for backward-compatible matching.
+export const adtSourceTemplateIds: readonly string[] = [adtSourceTemplateId, adtSourceTemplateIdCorrected];
 // The app index field name for the source template ID
 export const sourceTemplateIdField = 'sap.app/sourceTemplate/id';
 

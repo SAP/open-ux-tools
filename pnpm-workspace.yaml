@@ -1,5 +1,6 @@
 packages:
     - 'packages/*'
+    - 'plugins-coding-agents/*'
     - 'examples/*'
     - 'tests/integration/*'
     - 'tests/fixtures/projects/mock'

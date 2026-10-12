@@ -35,9 +35,8 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"~0\\",
+		\\"@sap-ux/create\\": \\"1\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -79,7 +78,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -90,7 +89,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -192,9 +191,8 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"~0\\",
+		\\"@sap-ux/create\\": \\"1\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -236,7 +234,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -247,7 +245,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -354,9 +352,8 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"~0\\",
+		\\"@sap-ux/create\\": \\"1\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -398,7 +395,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -409,7 +406,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -511,9 +508,8 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"~0\\",
+		\\"@sap-ux/create\\": \\"1\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -555,7 +551,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -566,7 +562,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -704,9 +700,8 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"~0\\",
+		\\"@sap-ux/create\\": \\"1\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -748,7 +743,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -759,7 +754,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-proxy-cf
       configuration:
         port: 35729
         path: webapp
@@ -866,9 +861,8 @@ dist/
 		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
 	},
 	\\"devDependencies\\": {
-		\\"@sap-ux/create\\": \\"~0\\",
+		\\"@sap-ux/create\\": \\"1\\",
 		\\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
-		\\"@sap-ux/backend-proxy-middleware-cf\\": \\"~0\\",
 		\\"@sapui5/ts-types\\": \\"^1.141.2\\",
 		\\"@sap/ux-ui5-tooling\\": \\"1\\",
 		\\"@ui5/cli\\": \\"^4.0.33\\",
@@ -910,7 +904,7 @@ builder:
       - /localService/**
 server:
   customMiddleware:
-    - name: backend-proxy-middleware-cf
+    - name: fiori-tools-proxy-cf
       afterMiddleware: compression
       configuration:
         authenticationMethod: route
@@ -921,7 +915,7 @@ server:
         allowLocalDir: true
         rewriteContent: false
     - name: fiori-tools-appreload
-      afterMiddleware: backend-proxy-middleware-cf
+      afterMiddleware: fiori-tools-proxy-cf
       configuration:
         port: 35729
         path: webapp

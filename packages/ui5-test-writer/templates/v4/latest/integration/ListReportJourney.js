@@ -49,11 +49,11 @@ sap.ui.define([
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
         opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
-            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
+            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation()
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField({ property: "<%- property %>" });
+                .and.iAddAdaptationFilterField({ property: "<%- property %>" })
             <%_ }); -%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
+                .and.iConfirmFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- property %>" });
             <%_ }); -%>
@@ -212,6 +212,16 @@ sap.ui.define([
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
             <%_ }); -%>
+        });
+<%_ } -%>
+<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0 && columnPersonalizationSupported !== false) { -%>
+        opaTest("Check columns in adaptation dialog", function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iOpenColumnAdaptation();
+            <%_ textAnnotationColumns.forEach(function(column) { _%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
+            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
+            <%_ }); -%>
+            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iConfirmColumnAdaptation();
         });
 <%_ } -%>
 

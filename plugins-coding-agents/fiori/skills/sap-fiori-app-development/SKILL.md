@@ -1,10 +1,10 @@
 ---
 name: sap-fiori-app-development
-description: 'Guidelines for SAP Fiori app development for CAP and standalone projects. Use this skill when creating or modifying SAP Fiori Elements applications.'
+description: 'Guidelines for SAP Fiori app development for CAP and standalone projects. Use when creating or modifying SAP Fiori Elements applications, adding a List Report, Object Page, or Worklist, or connecting a Fiori app to a CAP service or OData endpoint.'
 argument-hint: 'fiori elements application creation or modification'
 metadata:
   author: sap-fiori-tools
-  version: "0.0.2"
+  version: "0.0.3"
 ---
 
 # SAP Fiori App Development Guidelines (CAP & Standalone Projects)
@@ -89,5 +89,5 @@ The Fiori MCP can add the following page types to existing applications:
      }
    }
    ```
-8. **Updating Service Metadata**: To refresh the local `metadata.xml` from the live backend for an existing Fiori app, do **not** use `download_odata_service_metadata` (that tool is for initial metadata download during app or page creation, not for refreshing metadata already present in the project). Instead, invoke the [`sap-fiori-create-cli` skill's `update service-metadata` section](../sap-fiori-create-cli/SKILL.md#update-service-metadata).
+8. **Updating Service Metadata**: To refresh the local `metadata.xml` from the live backend for an existing Fiori app, do **not** use `download_odata_service_metadata` (that tool is for initial metadata download during app or page creation, not for refreshing metadata already present in the project). Instead, invoke the [`sap-fiori-create-cli` skill's `update service-metadata` section](https://github.com/SAP/open-ux-tools/blob/main/plugins-coding-agents/fiori/skills/sap-fiori-create-cli/SKILL.md#update-service-metadata).
 
