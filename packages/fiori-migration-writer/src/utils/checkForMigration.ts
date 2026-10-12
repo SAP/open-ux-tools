@@ -29,7 +29,6 @@ export const checkForMigration = async (
     type: MigrationTypes,
     libPath?: string
 ): Promise<boolean> => {
-    let migratable;
     let project: { projectInfo: Partial<ImportProjectInfo>; messages: Message[] } = {
         projectInfo: {},
         messages: []
@@ -55,17 +54,13 @@ export const checkForMigration = async (
         sapUXProjectRoot = projectRoot;
     }
 
-    if (
+    const migratable = !(
         project?.projectInfo?.sapux === true ||
         Array.isArray(project.projectInfo.sapux) ||
         project.messages.length > 0 ||
         hasUi5Tooling === true ||
         (await readMigrationSettingsFileIgnoreProjects()).includes(projectRoot) ||
         sapUXProjectRoot !== projectRoot
-    ) {
-        migratable = false;
-    } else {
-        migratable = true;
-    }
+    );
     return migratable;
 };

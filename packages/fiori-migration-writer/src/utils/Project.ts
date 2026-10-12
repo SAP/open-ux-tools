@@ -39,6 +39,55 @@ import {
     getDestinationFromNeoApp
 } from './project-readers/index.js';
 
+/**
+ * Try to load manifest from standard or legacy paths
+ *
+ * @param projectRoot - Project root path
+ * @param webappPath - Webapp path
+ * @returns Manifest and updated webapp path, or undefined if not found
+ */
+async function tryLoadManifest(
+    projectRoot: string,
+    webappPath: string
+): Promise<{ manifest: Manifest; updatedWebappPath: string } | undefined> {
+    // Try standard location first
+    try {
+        const manifest = await getManifestJson(projectRoot, webappPath);
+        return { manifest, updatedWebappPath: webappPath };
+    } catch {
+        // Expected: manifest.json may not exist in standard location
+    }
+
+    // Try legacy path
+    try {
+        const manifest = await getManifestJson(join(projectRoot, legacyPath), webappPath);
+        return { manifest, updatedWebappPath: join(legacyPath, webappPath) };
+    } catch {
+        // Expected: manifest.json not found in either path
+    }
+
+    return undefined;
+}
+
+/**
+ * Try to find manifest in nested reuse lib structure
+ *
+ * @param projectRoot - Project root path
+ * @returns Manifest and webapp path if found
+ */
+async function tryFindNestedLibManifest(
+    projectRoot: string
+): Promise<{ manifest: Manifest; webappPath: string } | undefined> {
+    const nestedLib = await findNestedReuseLibManifest(projectRoot);
+    if (nestedLib) {
+        return {
+            manifest: nestedLib.manifest,
+            webappPath: relative(projectRoot, dirname(nestedLib.manifestPath))
+        };
+    }
+    return undefined;
+}
+
 const defaultProjectInfo: ImportProjectInfo = {
     moduleName: '',
     moduleDescription: '',
@@ -92,56 +141,46 @@ export class ProjectAccess {
             backends: [],
             hasRootIntent: { ...defaultProjectInfo.hasRootIntent }
         };
+
+        // Get initial webapp path
         projectInfo.webappPath = await this.getWebappPath(projectRoot, migrationType, libPath);
-        // Step1. Get manifest.json
-        try {
-            manifest = await this.getManifestJson(projectRoot, projectInfo.webappPath);
-        } catch (error: unknown) {
-            // Expected: manifest.json may not exist in standard location for legacy projects.
-            // Will try legacy path next.
+
+        // Try to load manifest from standard or legacy paths
+        const manifestResult = await tryLoadManifest(projectRoot, projectInfo.webappPath);
+        if (manifestResult) {
+            manifest = manifestResult.manifest;
+            projectInfo.webappPath = manifestResult.updatedWebappPath;
         }
-        const isProjectExtension: boolean | undefined = await this.checkIfProjectExtension(projectRoot);
+
+        // Check project type flags
+        const isProjectExtension = await this.checkIfProjectExtension(projectRoot);
+
+        // If no manifest found, check for reuse lib or nested structure
         if (!manifest) {
-            try {
-                manifest = await this.getManifestJson(join(projectRoot, legacyPath), projectInfo.webappPath);
-                projectInfo.webappPath = join(legacyPath, projectInfo.webappPath);
-            } catch (error: unknown) {
-                // Expected: manifest.json not found in either standard or legacy path.
-                // Valid for reuse libraries and project extensions - they may not have manifest.json.
-                isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType);
+            isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType);
 
-                if (!isReuseLib && !isProjectExtension) {
-                    // UI5 reuse libraries keep manifest.json nested in the namespace source tree
-                    // (e.g. src/sap/company/lib/name/manifest.json) rather than at the project root.
-                    // Pick it up here so the direct-migration path matches the workspace discovery path.
-                    const nestedLib = await findNestedReuseLibManifest(projectRoot);
-                    if (nestedLib) {
-                        manifest = nestedLib.manifest;
-                        projectInfo.webappPath = relative(projectRoot, dirname(nestedLib.manifestPath));
-                        isReuseLib = true;
-                    }
+            if (!isReuseLib && !isProjectExtension) {
+                const nestedLib = await tryFindNestedLibManifest(projectRoot);
+                if (nestedLib) {
+                    manifest = nestedLib.manifest;
+                    projectInfo.webappPath = nestedLib.webappPath;
+                    isReuseLib = true;
                 }
+            }
 
-                if (isReuseLib || isProjectExtension) {
-                    // dont throw error if reuse lib or project extension
-                } else if ((await this.checkMigratableAdaptationProject(projectRoot)) === undefined) {
-                    // Rare! But handle it if its a very old UI5 App
-                    messages = messages.concat([
-                        { type: 'ERROR', description: i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION') }
-                    ]);
+            // Only report error if not a known project type without manifest
+            if (!isReuseLib && !isProjectExtension) {
+                const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
+                if (adaptationCheck === undefined) {
+                    messages.push({ type: 'ERROR', description: i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION') });
                 }
             }
         }
 
-        if (isReuseLib === undefined) {
-            isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType, manifest);
-        }
+        // Determine reuse lib status if not yet known
+        isReuseLib ??= await this.checkIfReuseLib(projectRoot, migrationType, manifest);
 
-        // Check if it's an adaptation project BEFORE deciding it's a regular project
-        // Adaptation projects have manifests but should use processAdaptationProject.
-        // A genuine adaptation project resolves a base-app `reference` (from manifest.appdescr_variant
-        // or .adp/config.json). A stray `uiadaptation` block in a smart-template app's .che/project.json
-        // yields only `{ layer }` with no reference and must not divert it from the regular path.
+        // Check adaptation project status
         const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
         const isAdaptationProject = adaptationCheck?.reference !== undefined;
 
