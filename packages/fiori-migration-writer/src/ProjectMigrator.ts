@@ -93,30 +93,6 @@ export class ProjectMigrator {
      * @returns Promise with fs editor, migration result, and messages
      */
     public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
-    /**
-     * migrate project (legacy signature - deprecated)
-     *
-     * @param projectRoot - Root path of the project to migrate
-     * @param baseUri - Base URI for backend services
-     * @param ui5SnapshotUrl - URL for UI5 snapshot version
-     * @param importProjectInfo - Optional partial project information
-     * @param vscode - Optional VS Code context
-     * @param internalToggle - Enable internal features
-     * @param fs - Optional mem-fs editor instance. If not provided, a new one will be created.
-     * @param strict - Enable strict validation mode (WARNINGs become ERRORs for critical issues)
-     * @returns Promise with fs editor, migration result, and messages
-     * @deprecated Use the options object signature instead
-     */
-    public static async migrate(
-        projectRoot: string,
-        baseUri: string,
-        ui5SnapshotUrl: string,
-        importProjectInfo?: Partial<ImportProjectInfo>,
-        vscode?: any,
-        internalToggle?: boolean,
-        fs?: Editor,
-        strict?: boolean
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
     public static async migrate(
         projectRootOrOptions: string | MigrateOptions,
         baseUri?: string,
@@ -437,6 +413,7 @@ export class ProjectMigrator {
             });
             return messages;
         }
+        // Check and update ui5*.yaml files sequentially - order doesn't matter but list is small
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
             if (await exists(yamlPath)) {

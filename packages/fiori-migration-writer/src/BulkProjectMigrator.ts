@@ -67,15 +67,15 @@ export class BulkProjectMigrator {
         // Create editor here and pass explicitly so ownsEditor is false inside ProjectMigrator.migrate
         // This prevents double-commit (migrate() won't auto-commit when editor is passed)
         const editor = createMemFsEditor();
-        const { fs, result, messages } = await ProjectMigrator.migrate(
-            project.rootPath,
-            project.hostname,
+        const { fs, result, messages } = await ProjectMigrator.migrate({
+            projectRoot: project.rootPath,
+            baseUri: project.hostname,
             ui5SnapshotUrl,
-            project,
+            importProjectInfo: project,
             vscode,
             internalToggle,
-            editor
-        );
+            fs: editor
+        });
 
         // Commit changes to disk for this project
         if (result) {

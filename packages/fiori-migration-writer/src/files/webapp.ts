@@ -43,6 +43,7 @@ async function moveFilesWithGitFallback(
     const runner = new CommandRunner();
     const safeRootPath = await validateRootDirectory(rootPath);
 
+    // Move files sequentially to avoid git/filesystem race conditions
     for (const entry of dirContent) {
         if (!direntToFilter.includes(entry.name)) {
             try {
@@ -93,7 +94,7 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
         // Read directory contents (real fs)
         const entries = await readdir(sourcePath, { withFileTypes: true });
 
-        // Recursively move each entry
+        // Recursively move each entry sequentially to maintain filesystem consistency
         for (const entry of entries) {
             const srcEntry = join(sourcePath, entry.name);
             const destEntry = join(destPath, entry.name);

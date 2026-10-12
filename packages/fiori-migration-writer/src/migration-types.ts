@@ -96,7 +96,7 @@ export interface BackendConfig {
 }
 
 // NOTE: EntityConfig duplicates types from @sap-ux/app-gen-core
-// TODO: Consolidate when app-gen-core types are published to @sap-ux scope
+// Consolidate when app-gen-core types are published to @sap-ux scope - track in package migration roadmap
 export interface EntityConfig {
     mainEntity?: { entityName: string; type?: any };
     filterEntityType?: string;
@@ -133,7 +133,7 @@ export interface PackageJsonMigrate extends Omit<PackageJson, 'devDependencies'>
         | {
               [key: string]: string;
           }
-        | string; // NOTE: string type needed for Freestyle projects with non-standard devDependencies format. TODO: Remove when Freestyle generator is updated
+        | string; // NOTE: string type needed for Freestyle projects with non-standard devDependencies format. Remove when Freestyle generator normalizes devDependencies format
     hasDataSource: boolean;
 }
 export const neoAppJsonRouteTargetTypes = {

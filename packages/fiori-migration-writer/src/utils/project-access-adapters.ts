@@ -17,6 +17,7 @@ import { dirname, join, sep } from 'node:path';
 export async function findAllManifest(roots: string[]): Promise<string[]> {
     const results: string[] = [];
 
+    // Search roots sequentially to collect all manifest.json locations
     for (const root of roots) {
         try {
             // Find all .json files

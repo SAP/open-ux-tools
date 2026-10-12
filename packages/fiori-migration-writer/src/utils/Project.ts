@@ -490,6 +490,7 @@ export class ProjectAccess {
         let reuseLibsRoots = (await getReuseLibs(rootFolders)).filter((lib) => lib.value.type === ReuseLibType.LIBRARY);
         if (reuseLibsRoots.length) {
             const temp: any[] = [];
+            // Process roots sequentially to build accurate exclusion list for reuse libs
             for (const root of roots) {
                 const result = await this.getProjectInfo(root);
                 // get roots for projects

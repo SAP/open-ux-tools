@@ -55,6 +55,7 @@ async function validateDataSources(
     const datasourceKeys = Object.keys(dataSources);
     let metadataValidation = { config: false, fileExists: false };
 
+    // Check datasources sequentially - stops at first valid metadata file found
     for (const datasourceKey of datasourceKeys) {
         const datasource = dataSources[datasourceKey];
 

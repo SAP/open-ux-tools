@@ -260,6 +260,7 @@ export async function cleanupEmptyDirs(rootPath: string, legacyPath: string, pat
 
     const dirsToRemove = [join(rootPath, legacyPath), paths.ffLegacyTestPath, join(rootPath, 'src')];
 
+    // Check and remove directories sequentially to avoid filesystem race conditions
     for (const dir of dirsToRemove) {
         if (await pathExistsOnDisk(dir)) {
             const dirContents = await readdir(dir);

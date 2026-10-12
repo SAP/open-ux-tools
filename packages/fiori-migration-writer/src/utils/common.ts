@@ -6,7 +6,7 @@ export const FIORI_TOOLS_APPRELOAD = 'fiori-tools-appreload';
 export const legacyPath = join('src', 'main');
 export const disableCacheParam = 'sap-ui-xx-viewCache=false';
 
-//todo: reference instead of replicating
+// Reference instead of replicating - consolidate with shared dependency definitions when possible
 export const devDependencies: {
     [key: string]: string;
 } = {

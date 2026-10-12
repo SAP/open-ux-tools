@@ -17,7 +17,7 @@ export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFol
     } else {
         wsRoots = wsFolders || [];
     }
-    // Find all folders containing a pom
+    // Find all folders containing a pom - sequential to collect results in projects array
     const projects: string[] = [];
     for (const root of wsRoots) {
         try {
@@ -49,6 +49,7 @@ async function findWebIDEProject(wsRoot: string, projects: string[]): Promise<vo
             '**/Web/MDKModule/**'
         ] // GH #14290
     });
+    // Check each entry sequentially to collect non-Fiori Tools projects
     for (const entry in entries) {
         let fioriToolsProject = false;
         const file = join(wsRoot, entries[entry]);

@@ -68,7 +68,7 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
         });
     }
 
-    // Check for test files and add corresponding scripts
+    // Check for test files and add corresponding scripts - sequential to maintain script order
     for (const testFile of TEST_FILES) {
         const scriptName = `${testFile.type}-tests`;
         if (
