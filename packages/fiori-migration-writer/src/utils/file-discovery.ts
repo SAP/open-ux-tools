@@ -133,7 +133,7 @@ async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: s
         try {
             await access(path);
             return true;
-        } catch (error: unknown) {
+        } catch {
             // Expected: file/directory may not exist (ENOENT) or may not be accessible (EACCES).
             // This is the standard pattern for existence checks - return false for any access failure.
             return false;

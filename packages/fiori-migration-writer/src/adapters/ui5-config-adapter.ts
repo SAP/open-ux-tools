@@ -78,32 +78,24 @@ function addMockserverMiddleware(orderedYaml: any, templateData: TemplateData): 
 }
 
 /**
- * Generate ui5.yaml content using @sap-ux/ui5-config builder
+ * Build backend configuration from template data and neo-app destinations
  *
- * @param options - UI5 YAML generation options
- * @returns Promise resolving to ui5.yaml content as string
+ * @param templateData - Template data with backend configuration
+ * @param neoappDestinations - Optional array of neo-app destinations
+ * @param messages - Array to collect warning messages
+ * @param destination - Selected destination name
+ * @param firstNeoAppDestination - First neo-app destination name
+ * @param strict - Enable strict validation mode
+ * @returns Array of backend configurations
  */
-export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<string> {
-    const {
-        templateData,
-        neoappDestinations,
-        messages,
-        destination,
-        firstNeoAppDestination,
-        webappPath,
-        setUI5Version,
-        strict = false
-    } = options;
-
-    const config = await UI5Config.newInstance('', { validateSchema: false });
-
-    // Set metadata and type
-    config.setMetadata({
-        name: templateData.ui5Yaml?.name?.toLowerCase() || templateData.project.name?.toLowerCase() || 'app'
-    });
-    config.setType('application');
-
-    // Build backend configuration using helpers
+function buildBackendConfigs(
+    templateData: TemplateData,
+    neoappDestinations?: NeoappDestination[],
+    messages?: Message[],
+    destination?: string,
+    firstNeoAppDestination?: string,
+    strict = false
+): FioriToolsProxyConfigBackend[] {
     let backends: FioriToolsProxyConfigBackend[] = [];
 
     // Add main backend if configured
@@ -132,6 +124,46 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
         const processed = updateYamlBackends(proxyConfigTemp, templateData);
         backends = processed.backend;
     }
+
+    return backends;
+}
+
+
+/**
+ * Generate ui5.yaml content using @sap-ux/ui5-config builder
+ *
+ * @param options - UI5 YAML generation options
+ * @returns Promise resolving to ui5.yaml content as string
+ */
+export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<string> {
+    const {
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        setUI5Version,
+        strict = false
+    } = options;
+
+    const config = await UI5Config.newInstance('', { validateSchema: false });
+
+    // Set metadata and type
+    config.setMetadata({
+        name: templateData.ui5Yaml?.name?.toLowerCase() || templateData.project.name?.toLowerCase() || 'app'
+    });
+    config.setType('application');
+
+    // Build backend configuration using helpers
+    const backends = buildBackendConfigs(
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        strict
+    );
 
     // Add fiori-tools-proxy middleware with all backends
     const proxyConfig: FioriToolsProxyConfig = buildProxyConfig(backends, templateData, setUI5Version);
@@ -210,34 +242,14 @@ export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Prom
     }
 
     // Build backend configuration using helpers
-    let backends: FioriToolsProxyConfigBackend[] = [];
-
-    // Add main backend if configured
-    const mainBackend = buildMainBackend(templateData);
-    if (mainBackend) {
-        backends.push(mainBackend);
-    }
-
-    // Handle neo-app destinations if provided (uses existing helper logic)
-    if (neoappDestinations && neoappDestinations.length > 0) {
-        const tempBackendConfigs = updateNeoYamlBackends(
-            neoappDestinations,
-            backends as unknown as BackendConfig[],
-            templateData,
-            messages || [],
-            destination || '',
-            firstNeoAppDestination,
-            strict
-        );
-        backends = tempBackendConfigs as unknown as FioriToolsProxyConfigBackend[];
-    }
-
-    // Apply additional backend processing (uses existing helper logic)
-    if (backends.length > 0) {
-        const proxyConfigTemp = { backend: backends as unknown as BackendConfig[] };
-        const processed = updateYamlBackends(proxyConfigTemp, templateData);
-        backends = processed.backend;
-    }
+    const backends = buildBackendConfigs(
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        strict
+    );
 
     // Add fiori-tools-proxy middleware with all backends (no UI5 version, no ui5 proxy section for local)
     const proxyConfig: FioriToolsProxyConfig = {
