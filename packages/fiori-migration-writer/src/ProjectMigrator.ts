@@ -93,7 +93,7 @@ export class ProjectMigrator {
      * @returns Promise with fs editor, migration result, and messages
      */
     // Backward-compatible overload with positional parameters
-
+    // NOSONAR - Overload for backward compatibility; use options object signature instead
     public static async migrate(
         projectRoot: string,
         baseUri?: string,
@@ -109,7 +109,7 @@ export class ProjectMigrator {
     public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
 
     // Implementation
-
+    // NOSONAR - Implementation must support both overload signatures
     public static async migrate(
         projectRootOrOptions: string | MigrateOptions,
         baseUri?: string,
@@ -433,12 +433,13 @@ export class ProjectMigrator {
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
 
+            // NOSONAR - Only 2 files, acceptable sequential check
             if (await exists(yamlPath)) {
-                // NOSONAR: Only 2 files, acceptable sequential check
                 // readFile and updateFile are sync mem-fs operations
                 const yamlContent = readFile(yamlPath);
 
-                const yamlConfig = await UI5Config.newInstance(yamlContent); // NOSONAR: Sequential YAML parsing required
+                // NOSONAR - Sequential YAML parsing required
+                const yamlConfig = await UI5Config.newInstance(yamlContent);
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);
                 updateFile(yamlPath, yamlConfig.toString());
