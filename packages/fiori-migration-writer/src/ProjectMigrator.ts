@@ -93,7 +93,7 @@ export class ProjectMigrator {
      * @returns Promise with fs editor, migration result, and messages
      */
     // Backward-compatible overload with positional parameters
-    // eslint-disable-next-line @typescript-eslint/max-params -- Backward compatibility; use options object signature instead
+
     public static async migrate(
         projectRoot: string,
         baseUri?: string,
@@ -109,7 +109,7 @@ export class ProjectMigrator {
     public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
 
     // Implementation
-    // eslint-disable-next-line @typescript-eslint/max-params -- Implementation must support both signatures
+
     public static async migrate(
         projectRootOrOptions: string | MigrateOptions,
         baseUri?: string,
@@ -433,13 +433,11 @@ export class ProjectMigrator {
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
 
-            // eslint-disable-next-line no-await-in-loop -- Only 2 YAML files checked sequentially
             if (await exists(yamlPath)) {
                 // NOSONAR: Only 2 files, acceptable sequential check
                 // readFile and updateFile are sync mem-fs operations
                 const yamlContent = readFile(yamlPath);
 
-                // eslint-disable-next-line no-await-in-loop -- Sequential processing required for UI5Config parsing
                 const yamlConfig = await UI5Config.newInstance(yamlContent); // NOSONAR: Sequential YAML parsing required
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);

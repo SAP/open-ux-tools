@@ -53,7 +53,6 @@ async function moveFilesWithGitFallback(
 
                 // Security: Safe from command injection (see inline comment in calling function)
 
-                // eslint-disable-next-line no-await-in-loop -- Sequential git mv required to prevent race conditions
                 await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]); // NOSONAR: Sequential git operations required
             } catch {
                 // Git command may fail - fallback handled below
@@ -61,13 +60,11 @@ async function moveFilesWithGitFallback(
 
             // Fallback to file system move if git didn't work
 
-            // eslint-disable-next-line no-await-in-loop -- Sequential filesystem check after git operation
             if (await pathExistsOnDisk(join(rootPath, entry.name))) {
                 // NOSONAR: Sequential check after git required
                 const sourcePath = join(rootPath, entry.name);
                 const destPath = join(rootPath, DirName.Webapp, entry.name);
 
-                // eslint-disable-next-line no-await-in-loop -- Sequential recursive move to maintain filesystem consistency
                 await recursiveMove(sourcePath, destPath); // NOSONAR: Filesystem race prevention
             }
         }
@@ -106,7 +103,6 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
             const srcEntry = join(sourcePath, entry.name);
             const destEntry = join(destPath, entry.name);
 
-            // eslint-disable-next-line no-await-in-loop -- Sequential recursive move to maintain parent-child order
             await recursiveMove(srcEntry, destEntry); // NOSONAR: Parent-child order preservation required
         }
 
