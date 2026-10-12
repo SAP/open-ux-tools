@@ -155,12 +155,16 @@ export type ContactCardField = {
 };
 
 /**
- * A table column whose bound property carries both a `Common.Text` annotation and a
- * `UI.TextArrangement` annotation. `textProperty` is the text/description property the
- * column can be sorted by (the `Common.Text` target, e.g. "CustomerName").
+ * A table column whose bound property carries a `Common.Text` annotation. `textProperty` is the
+ * sortable text target (always present); `columnProperty` is the column's own property, omitted when
+ * `UI.TextArrangement` is `TextOnly` (only the text is sortable). When several columns share one text
+ * target, each emits its own `columnProperty` sort test but only the first emits the text-property
+ * test; the rest set `skipTextPropertyTest`.
  */
 export type TextAnnotationColumn = {
+    columnProperty?: string;
     textProperty: string;
+    skipTextPropertyTest?: boolean;
 };
 
 export type BodySubSectionFeatureData = {
@@ -289,6 +293,12 @@ export interface ActionButtonState {
      * For example: "_it/__OperationControl/deductDiscount"
      */
     dynamicPath?: string;
+    /**
+     * Set when the action has no `Core.OperationAvailable` annotation and is bound to a single
+     * instance: it is disabled with no selection and becomes enabled once a row is selected. Unlike
+     * `'dynamic'`, this flip is deterministic, so the generated test can assert both states.
+     */
+    selectionEnables?: boolean;
     /**
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */
