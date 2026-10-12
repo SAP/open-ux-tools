@@ -24,6 +24,15 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
      * @default false
      */
     invertedCalloutTheme?: boolean;
+    /**
+     * When true, skips callout focus restore after creating a new entry.
+     * Use this when the host dismisses the callout and immediately opens its own
+     * focus-taking UI (e.g. a dialog or QuickPick) so that focus restore does not
+     * steal focus from that UI.
+     *
+     * @default false
+     */
+    preventAcceptRestoreFocus?: boolean;
 }
 
 /**
@@ -69,7 +78,8 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         onShowExistingEntry,
         busy,
         suggestion,
-        invertedCalloutTheme
+        invertedCalloutTheme,
+        preventAcceptRestoreFocus
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
     // When the callout is dismissed FluentUI restores focus to the element that was focused
@@ -109,19 +119,22 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
     const onCancel = useCallback((): void => {
         setCalloutVisible(false);
     }, []);
-    const onRestoreFocus = useCallback((params: IPopupRestoreFocusParams): void => {
-        if (skipRestoreFocusRef.current) {
-            // Reset so a subsequent open restores focus as usual.
-            skipRestoreFocusRef.current = false;
-            return;
-        }
-        // Default FluentUI behavior: return focus to the element focused before the callout opened.
-        // Guard with containsFocus to match FluentUI's own default: don't steal focus from an
-        // element outside the callout (e.g. after a click-away dismissal).
-        if (params.containsFocus) {
-            params.originalElement?.focus();
-        }
-    }, []);
+    const onRestoreFocus = useCallback(
+        (params: IPopupRestoreFocusParams): void => {
+            if (skipRestoreFocusRef.current || preventAcceptRestoreFocus) {
+                // Reset so a subsequent open restores focus as usual.
+                skipRestoreFocusRef.current = false;
+                return;
+            }
+            // Default FluentUI behavior: return focus to the element focused before the callout opened.
+            // Guard with containsFocus to match FluentUI's own default: don't steal focus from an
+            // element outside the callout (e.g. after a click-away dismissal).
+            if (params.containsFocus) {
+                params.originalElement?.focus();
+            }
+        },
+        [preventAcceptRestoreFocus]
+    );
 
     return (
         <div className="ui-translatable__button">

@@ -44,6 +44,15 @@ export interface UITranslationInputProps<T extends TranslationEntry> extends ITe
      * @default false
      */
     invertedCalloutTheme?: boolean;
+    /**
+     * When true, skips callout focus restore after creating a new entry.
+     * Pass this when the host will open its own focus-taking UI (e.g. a dialog)
+     * immediately after `onCreateNewEntry` fires, so focus restore does not steal
+     * focus from that UI.
+     *
+     * @default false
+     */
+    preventAcceptRestoreFocus?: boolean;
 }
 
 /**
@@ -185,7 +194,8 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         onShowExistingEntry,
         disabled,
         strings,
-        invertedCalloutTheme
+        invertedCalloutTheme,
+        preventAcceptRestoreFocus
     } = props;
 
     const suggestion = getTranslationSuggestion(props);
@@ -224,6 +234,7 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
                 strings={strings}
                 suggestion={suggestion}
                 invertedCalloutTheme={invertedCalloutTheme}
+                preventAcceptRestoreFocus={preventAcceptRestoreFocus}
             />
         );
     }, [
@@ -238,7 +249,8 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         namingConvention,
         onCreateNewEntry,
         onShowExistingEntry,
-        onUpdateValue
+        onUpdateValue,
+        preventAcceptRestoreFocus
     ]);
 
     const onRenderInput = useCallback(
