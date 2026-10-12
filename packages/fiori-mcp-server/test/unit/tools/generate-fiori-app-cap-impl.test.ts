@@ -58,7 +58,7 @@ const paramTest: GeneratorConfigCAPWithAPI = {
         targetFolder: join(testOutputDir, 'app1'),
         title: 'App 1',
         description: 'Description for App 1',
-        ui5Version: '1.136.7',
+        ui5Version: '1.148.12',
         sapux: true
     },
     service: {
@@ -144,7 +144,7 @@ describe('executeFunctionality', () => {
                 'sapux': true,
                 'targetFolder': join(testOutputDir, 'app1'),
                 'title': 'App 1',
-                'ui5Version': '1.136.7'
+                'ui5Version': '1.148.12'
             },
             'service': {
                 'servicePath': 'odata/v4/cat-service/',
@@ -195,7 +195,7 @@ describe('executeFunctionality', () => {
                 targetFolder: join(testOutputDir, 'app1'),
                 title: 'App 1',
                 description: 'Description for App 1',
-                ui5Version: '1.136.7',
+                ui5Version: '1.148.12',
                 sapux: true
             }
         });
