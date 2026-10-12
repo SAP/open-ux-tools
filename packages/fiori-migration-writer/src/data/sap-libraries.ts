@@ -49,7 +49,7 @@ export async function extractSapLibraries(
         const componentJSPath = join(projectRoot, webappPath, 'Component.js');
         if (await fileExists(componentJSPath)) {
             // sap.ca.scfld.md
-            const componentJsContent = await readFile(componentJSPath);
+            const componentJsContent = readFile(componentJSPath);
             if (componentJsContent.indexOf('sap.ca.scfld.md') > 0) {
                 manifestLibs['sap.ca.scfld.md'] = {};
                 manifestLibs['sap.collaboration'] = {};

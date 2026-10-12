@@ -26,7 +26,7 @@ export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): str
     let libStrOut = '';
     const mlibs = Object.keys(manifestLibs || {});
     // remove spaces and split at comma
-    const strlibs = libsStrInput?.replace(/ /g, '').split(',') || [];
+    const strlibs = libsStrInput?.replaceAll(' ', '').split(',') || [];
     const libs = mlibs.concat(strlibs);
     const uniquelibs = libs.filter((v, i, a) => a.indexOf(v) === i);
 
@@ -110,7 +110,7 @@ export async function generateTemplate(
     const resolvedData = resolveTemplateData(templateData, templateProps);
 
     // 3. Ensure target directory exists (uses fs-adapter)
-    await createDirectory(dirname(targetFile));
+    createDirectory(dirname(targetFile));
 
     // 4. Render template
     const { isRendered = true, opts = {} } = templateProps;
@@ -121,7 +121,7 @@ export async function generateTemplate(
 
     // 6. Write file (uses fs-adapter)
     // Do not catch - let errors propagate to caller for proper handling
-    await writeFile(targetFile, content);
+    writeFile(targetFile, content);
 }
 
 /**

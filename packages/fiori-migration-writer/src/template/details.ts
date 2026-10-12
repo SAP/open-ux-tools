@@ -91,7 +91,7 @@ async function extractPomDetails(
     }
 
     try {
-        const pomFileStr = await readFile(pomXmlPath);
+        const pomFileStr = readFile(pomXmlPath);
         const pomJSON: any = xmlToJson(pomFileStr);
 
         if (!pomJSON) {

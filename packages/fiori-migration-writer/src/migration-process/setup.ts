@@ -19,13 +19,13 @@ export async function setupMigrationDirectories(
 ): Promise<void> {
     // Create localService directory if project has a data source
     if (hasDataSource) {
-        await createDirectory(join(rootPath, projectInfo.webappPath, DirName.LocalService));
+        createDirectory(join(rootPath, projectInfo.webappPath, DirName.LocalService));
     }
 
     // Create test directory if webapp exists
     const webAppPath = join(rootPath, projectInfo.webappPath);
     if (await fileExists(webAppPath)) {
-        await createDirectory(join(rootPath, projectInfo.webappPath, TemplateFileName.Test));
+        createDirectory(join(rootPath, projectInfo.webappPath, TemplateFileName.Test));
     }
 }
 
@@ -39,7 +39,7 @@ export async function removePackageLock(rootPath: string): Promise<void> {
     try {
         const packageLockPath = join(rootPath, 'package-lock.json');
         if (await fileExists(packageLockPath)) {
-            await deleteFile(packageLockPath);
+            deleteFile(packageLockPath);
         }
     } catch (error: unknown) {
         // Expected: package-lock.json deletion may fail due to file permissions or if file is locked.

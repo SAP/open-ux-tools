@@ -374,12 +374,12 @@ export class ProjectMigrator {
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
             if (await exists(yamlPath)) {
-                // Optimize: read file first, then parse (avoids nested await)
-                const yamlContent = await readFile(yamlPath);
+                // readFile and updateFile are sync mem-fs operations
+                const yamlContent = readFile(yamlPath);
                 const yamlConfig = await UI5Config.newInstance(yamlContent);
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);
-                await updateFile(yamlPath, yamlConfig.toString());
+                updateFile(yamlPath, yamlConfig.toString());
             }
         }
         messages.push({
@@ -432,13 +432,13 @@ export class ProjectMigrator {
         const editor = getCurrentEditor();
         if (editor && hasStore(editor)) {
             // mem-fs mode: scan staged files under the webapp folder (paths use forward slashes)
-            const normalizedPrefix = webappFullPath.replace(/\\/g, '/').replace(/\/?$/, '/');
+            const normalizedPrefix = webappFullPath.replaceAll('\\', '/').replace(/\/?$/, '/');
             let found = false;
             editor.store.each((file) => {
                 if (file.state === 'deleted') {
                     return;
                 }
-                const normalizedFilePath = file.path.replace(/\\/g, '/');
+                const normalizedFilePath = file.path.replaceAll('\\', '/');
                 if (normalizedFilePath.startsWith(normalizedPrefix) && isTypeScriptFile(normalizedFilePath)) {
                     found = true;
                 }

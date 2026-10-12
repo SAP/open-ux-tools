@@ -74,13 +74,13 @@ export function isMemFsEnabled(): boolean {
 export function editorHasPath(editor: Editor, path: string): boolean {
     // Normalize path separators to forward slashes for consistent comparison
     // mem-fs stores all paths with forward slashes regardless of OS
-    const normalizedPath = path.replace(/\\/g, '/');
+    const normalizedPath = path.replaceAll('\\', '/');
     const directoryPrefix = normalizedPath.endsWith('/') ? normalizedPath : normalizedPath + '/';
     let found = false;
 
     (editor as EditorWithStore).store.each((file) => {
         // Normalize file path as well for comparison
-        const normalizedFilePath = file.path.replace(/\\/g, '/');
+        const normalizedFilePath = file.path.replaceAll('\\', '/');
         // Check exact match OR files under this directory
         if (normalizedFilePath === normalizedPath || normalizedFilePath.startsWith(directoryPrefix)) {
             found = true;

@@ -64,7 +64,7 @@ async function resolveFromCheProjectJson(projectRoot: string): Promise<string | 
  */
 async function resolveFromUi5Yaml(projectRoot: string): Promise<string | undefined> {
     try {
-        const yamlContent = await readFile(join(projectRoot, FileName.UI5Yaml));
+        const yamlContent = readFile(join(projectRoot, FileName.UI5Yaml));
         return parse(yamlContent)?.resources?.configuration?.paths?.webapp;
     } catch (error: unknown) {
         // File not found or invalid YAML, skip

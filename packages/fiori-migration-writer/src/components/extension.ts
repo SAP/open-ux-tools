@@ -57,9 +57,9 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
         }
     }
     // write .extconfig.json for extension project
-    await updateJSON(join(rootPath, FileName.ExtConfigJson), extensionProjectSettingsJSON);
+    updateJSON(join(rootPath, FileName.ExtConfigJson), extensionProjectSettingsJSON);
     const projectJsonPath = join(rootPath, '.project.json');
     if (deleteProjectJson && (await fileExists(projectJsonPath))) {
-        await deleteFile(projectJsonPath);
+        deleteFile(projectJsonPath);
     }
 }

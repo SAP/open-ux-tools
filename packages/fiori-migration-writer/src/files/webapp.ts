@@ -12,6 +12,7 @@ import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
 import { hasStore } from '../types/mem-fs-types.js';
+import type { Dirent } from 'node:fs';
 
 /**
  * Helper function to check if a path exists on real filesystem (async)
@@ -24,6 +25,44 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
         return true;
     } catch {
         return false;
+    }
+}
+
+/**
+ * Move files using git and fallback to filesystem move
+ *
+ * @param rootPath - Project root path
+ * @param dirContent - Directory entries to process
+ * @param direntToFilter - Files/directories to exclude
+ */
+async function moveFilesWithGitFallback(
+    rootPath: string,
+    dirContent: Dirent[],
+    direntToFilter: string[]
+): Promise<void> {
+    const runner = new CommandRunner();
+    const safeRootPath = await validateRootDirectory(rootPath);
+
+    for (const entry of dirContent) {
+        if (!direntToFilter.includes(entry.name)) {
+            try {
+                // Validate paths before passing to git
+                const relSource = validateGitRelativePath(entry.name);
+                const relDest = validateGitRelativePath(join(DirName.Webapp, entry.name));
+
+                // Security: Safe from command injection (see inline comment in calling function)
+                await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
+            } catch {
+                // Git command may fail - fallback handled below
+            }
+
+            // Fallback to file system move if git didn't work
+            if (await pathExistsOnDisk(join(rootPath, entry.name))) {
+                const sourcePath = join(rootPath, entry.name);
+                const destPath = join(rootPath, DirName.Webapp, entry.name);
+                await recursiveMove(sourcePath, destPath);
+            }
+        }
     }
 }
 
@@ -49,7 +88,7 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
 
     if (isDirectory) {
         // Ensure destination directory exists
-        await mkdir(destPath);
+        mkdir(destPath);
 
         // Read directory contents (real fs)
         const entries = await readdir(sourcePath, { withFileTypes: true });
@@ -68,11 +107,11 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
         }
     } else {
         // It's a file - copy it
-        const content = await readFile(sourcePath);
-        await writeFile(destPath, content);
+        const content = readFile(sourcePath);
+        writeFile(destPath, content);
 
         // Delete source file after copying
-        await deleteFile(sourcePath);
+        deleteFile(sourcePath);
     }
 }
 
@@ -132,9 +171,9 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
         const shouldWriteToWebapp = projectInfo.webappPath && (await exists(join(rootPath, projectInfo.webappPath)));
 
         if (shouldWriteToWebapp) {
-            await updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
+            updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
         } else {
-            await updateJSON(join(rootPath, FileName.Manifest), manifestJson);
+            updateJSON(join(rootPath, FileName.Manifest), manifestJson);
             projectInfo.webappPath = '';
         }
     }
@@ -195,7 +234,7 @@ export async function createWebappFolderAndMigrateFiles(
                     const relativePath = filePath.substring(rootPathWithSep.length);
                     if (relativePath) {
                         const topLevelSegment = relativePath.split(sep)[0];
-                        if (direntToFilter.indexOf(topLevelSegment) === -1) {
+                        if (!direntToFilter.includes(topLevelSegment)) {
                             filesToMove.push(filePath);
                         }
                     }
@@ -211,43 +250,9 @@ export async function createWebappFolderAndMigrateFiles(
                 deleteFile(filePath);
             }
         } else {
-            // Use real filesystem
+            // Use real filesystem - extracted to helper for reduced complexity
             const dirContent = await readdir(rootPath, { withFileTypes: true });
-            const runner = new CommandRunner();
-
-            // Validate root directory once
-            const safeRootPath = await validateRootDirectory(rootPath);
-
-            // Move files to webapp folder
-            for (const path of dirContent) {
-                if (direntToFilter.indexOf(path.name) === -1) {
-                    try {
-                        // Validate paths before passing to git - path.name is from fs.readdir
-                        const relSource = validateGitRelativePath(path.name);
-                        const relDest = validateGitRelativePath(join(DirName.Webapp, path.name));
-
-                        // Security: Safe from command injection because:
-                        // 1. validateGitRelativePath allowlists only safe characters (no shell metacharacters)
-                        // 2. CommandRunner.run uses spawn with array args (no shell interpolation)
-                        // 3. '--' separator prevents option injection
-                        // codeql[js/shell-command-constructed-from-input] - paths validated via allowlist
-                        await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
-                    } catch (error: unknown) {
-                        // Expected: git command may fail if git is not installed or repo is not initialized.
-                        // Fallback to file system move (handled below) is intentional.
-                    }
-
-                    // Fallback to file system move if git didn't work
-                    if (await pathExistsOnDisk(join(rootPath, path.name))) {
-                        const sourcePath = join(rootPath, path.name);
-                        const destPath = join(rootPath, DirName.Webapp, path.name);
-
-                        // Recursively move files and directories
-                        // Source files are automatically deleted after copy completes
-                        await recursiveMove(sourcePath, destPath);
-                    }
-                }
-            }
+            await moveFilesWithGitFallback(rootPath, dirContent, direntToFilter);
         }
 
         // Update webapp path

@@ -28,7 +28,7 @@ export async function renderTemplate(
     opts: object,
     isRendered: boolean
 ): Promise<string> {
-    const templateFile = await readFile(join(templateRoot, fullTemplateName));
+    const templateFile = readFile(join(templateRoot, fullTemplateName));
 
     return isRendered ? render(templateFile, templateData, { ...DEFAULT_EJS_OPTS, ...opts }) : templateFile;
 }

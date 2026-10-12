@@ -148,14 +148,14 @@ export async function copyLibraryFiles(
         await applyTemplates(getLibraryTemplatesMap(), templateData, rootPath, TemplateFileName.LibrarySettings);
 
         //2. Create ui5.yaml
-        const ui5YamlTemplate = await readFile(
+        const ui5YamlTemplate = readFile(
             join(templatesDirPath, TemplateFileName.LibrarySettings, TemplateFileName.UI5Yaml)
         );
 
         const ui5YamlContent = render(ui5YamlTemplate, templateData.ui5Yaml, { escape: escapeXML });
         const ui5YamlJson = parse(ui5YamlContent);
 
-        await updateFile(join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
+        updateFile(join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
         result = messages.length === 0;
     } catch (e) {
         messages.length = 0; // Reset

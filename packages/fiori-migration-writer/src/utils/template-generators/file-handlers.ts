@@ -19,7 +19,7 @@ export async function handleGitIgnoreFile(targetFile: string, templateContent: s
         return templateContent;
     }
 
-    const currentFileContent = await readFile(targetFile);
+    const currentFileContent = readFile(targetFile);
     let mergedContent = `${currentFileContent}\n${templateContent}`;
 
     // Replace `changes_preview.js` so it can be checked in after migration
@@ -162,7 +162,7 @@ async function removeLegacyGruntModule(projectRoot: string, currentFileContent: 
     if (deleteGruntFile) {
         const gruntFilePath = join(projectRoot, 'Gruntfile.js');
         if (await fileExists(gruntFilePath)) {
-            await deleteFile(gruntFilePath);
+            deleteFile(gruntFilePath);
         }
     }
 }

@@ -141,7 +141,7 @@ export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string
             return undefined;
         }
 
-        const htmlContent = await readFile(htmlFilePath);
+        const htmlContent = readFile(htmlFilePath);
         return extractFlpIntentFromConfig(htmlContent);
     } catch (error: unknown) {
         return undefined;
@@ -233,7 +233,7 @@ export async function getFirstBackend(
     let result: { destination?: string; sapClient?: string; scp?: boolean; url?: string } = {};
 
     try {
-        const yamlJSON = parse(await readFile(join(projectRoot, 'ui5.yaml')));
+        const yamlJSON = parse(readFile(join(projectRoot, 'ui5.yaml')));
         const proxyMiddleware = yamlJSON?.server?.customMiddleware.filter((customMiddleware: any) => {
             return (
                 customMiddleware?.name === 'fiori-tools-proxy' ||

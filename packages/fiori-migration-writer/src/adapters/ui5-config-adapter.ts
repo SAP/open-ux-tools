@@ -16,6 +16,46 @@ import { updateNeoYamlBackends, updateYamlBackends } from '../config/backend.js'
 import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './ui5-config-helpers.js';
 
 /**
+ * Add sap-fe-mockserver middleware to the YAML configuration
+ *
+ * @param orderedYaml - YAML object to modify
+ * @param templateData - Template data with mockserver configuration
+ */
+function addMockserverMiddleware(orderedYaml: any, templateData: TemplateData): void {
+    if (!orderedYaml.server) {
+        orderedYaml.server = { customMiddleware: [] };
+    }
+    if (!orderedYaml.server.customMiddleware) {
+        orderedYaml.server.customMiddleware = [];
+    }
+
+    const mockserverMiddleware = {
+        name: 'sap-fe-mockserver',
+        beforeMiddleware: 'fiori-tools-proxy',
+        configuration: {
+            service: {
+                urlBasePath: templateData.ui5Yaml?.servicePath,
+                name: templateData.ui5Yaml?.serviceName ?? '',
+                metadataXmlPath: templateData.ui5Yaml?.metadataXmlPath || '',
+                mockdataRootPath: templateData.ui5Yaml?.mockdataRootPath || '',
+                generateMockData: templateData.ui5Yaml?.generateMockData
+            }
+        }
+    };
+
+    // Find index of fiori-tools-proxy and insert before it
+    const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
+        (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
+    );
+    if (proxyIndex >= 0) {
+        orderedYaml.server.customMiddleware.splice(proxyIndex, 0, mockserverMiddleware);
+    } else {
+        // If proxy not found, add at beginning
+        orderedYaml.server.customMiddleware.unshift(mockserverMiddleware);
+    }
+}
+
+/**
  * Generate ui5.yaml content using @sap-ux/ui5-config builder
  *
  * @param templateData - Migration template data containing project configuration
@@ -214,40 +254,8 @@ export async function generateUI5LocalYamlContent(
     });
 
     // Add sap-fe-mockserver middleware if generateMockData is defined (ui5-local.yaml specific)
-    // Template checks: <% if (locals.generateMockData !== undefined) { %>
     if (templateData.ui5Yaml?.generateMockData !== undefined && templateData.ui5Yaml?.servicePath) {
-        // Insert sap-fe-mockserver middleware before fiori-tools-proxy
-        if (!orderedYaml.server) {
-            orderedYaml.server = { customMiddleware: [] };
-        }
-        if (!orderedYaml.server.customMiddleware) {
-            orderedYaml.server.customMiddleware = [];
-        }
-
-        const mockserverMiddleware = {
-            name: 'sap-fe-mockserver',
-            beforeMiddleware: 'fiori-tools-proxy',
-            configuration: {
-                service: {
-                    urlBasePath: templateData.ui5Yaml.servicePath,
-                    name: templateData.ui5Yaml.serviceName ?? '',
-                    metadataXmlPath: templateData.ui5Yaml.metadataXmlPath || '',
-                    mockdataRootPath: templateData.ui5Yaml.mockdataRootPath || '',
-                    generateMockData: templateData.ui5Yaml.generateMockData
-                }
-            }
-        };
-
-        // Find index of fiori-tools-proxy and insert before it
-        const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
-            (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
-        );
-        if (proxyIndex >= 0) {
-            orderedYaml.server.customMiddleware.splice(proxyIndex, 0, mockserverMiddleware);
-        } else {
-            // If proxy not found, add at beginning
-            orderedYaml.server.customMiddleware.unshift(mockserverMiddleware);
-        }
+        addMockserverMiddleware(orderedYaml, templateData);
     }
 
     // Apply webappPath if provided

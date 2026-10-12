@@ -70,7 +70,7 @@ export async function updateManifestForMigration(
     }
 
     if (saveFile === true) {
-        await updateJSON(join(rootPath, manifestPath), manifestJson);
+        updateJSON(join(rootPath, manifestPath), manifestJson);
     }
 }
 

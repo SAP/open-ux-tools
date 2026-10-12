@@ -138,7 +138,7 @@ export function createProjectData(config: CreateProjectDataConfig): ProjectMigra
         projectTitle: appTitle,
         projectDescription: moduleDescription,
         fullyQualifiedProjectName,
-        fullyQualifiedProjectNameAMD: fullyQualifiedProjectNameAMD.split('.').join('/'),
+        fullyQualifiedProjectNameAMD: fullyQualifiedProjectNameAMD.replaceAll('.', '/'),
         manifestVersion: getManifestVersion(projectUI5Version),
         sapUiLibs,
         type

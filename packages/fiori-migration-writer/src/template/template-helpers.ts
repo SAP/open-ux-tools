@@ -40,9 +40,9 @@ export async function applyTemplates(
         const templateName = TemplateFileName.IndexHtml;
         try {
             const htmlPath = join(projectRoot, DirName.Webapp, templateName);
-            const html = (await readFile(htmlPath)).toString();
+            const html = readFile(htmlPath).toString();
             const updatedHtml = updateThemeAttribute(html, ui5Version ?? '', templateData.project.ui5Theme ?? '');
-            await updateFile(htmlPath, updatedHtml);
+            updateFile(htmlPath, updatedHtml);
             return;
         } catch {
             // File write failed - index.html theme update is non-critical, continue migration

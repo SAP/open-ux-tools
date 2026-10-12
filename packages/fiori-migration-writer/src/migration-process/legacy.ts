@@ -85,7 +85,7 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
 
     let legacyRunnerContent = '';
     try {
-        legacyRunnerContent = await readFile(legacyRunner);
+        legacyRunnerContent = readFile(legacyRunner);
     } catch (e) {
         throw new MigrationError(e, qunitRunner);
     }
@@ -126,19 +126,19 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
     // Handle testsuite.qunit.html file
     const testSuiteRunner = join(ffNewTestPath, TemplateFileName.TestsuiteQunitHtml);
     if (!(await fileExists(testSuiteRunner))) {
-        await updateFile(testSuiteRunner, legacyRunnerContent);
+        updateFile(testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     } else {
         // Rename using copy+delete pattern (mem-fs compatible)
         const oldTestSuite = join(ffNewTestPath, 'testsuite_old.qunit.html');
-        await copyFile(testSuiteRunner, oldTestSuite);
-        await deleteFile(testSuiteRunner);
+        copyFile(testSuiteRunner, oldTestSuite);
+        deleteFile(testSuiteRunner);
 
         // Update references to testsuite.qunit.html
         if (legacyRunnerContent.includes('testsuite.qunit.html')) {
             legacyRunnerContent = legacyRunnerContent.replaceAll('testsuite.qunit.html', 'testsuite_old.qunit.html');
         }
-        await updateFile(testSuiteRunner, legacyRunnerContent);
+        updateFile(testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     }
 }
@@ -156,7 +156,7 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
     for (const path of moduleFilePath) {
         let moduleFileContent;
         try {
-            moduleFileContent = await readFile(join(path, TemplateFileName.ModulePathForTests));
+            moduleFileContent = readFile(join(path, TemplateFileName.ModulePathForTests));
         } catch (e) {
             throw new MigrationError(e, TemplateFileName.ModulePathForTests);
         }
@@ -173,7 +173,7 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
                     0,
                     functionStart + funcBracket.length
                 )}${replaceContent}${moduleFileContent.slice(posReturn)}`;
-                await updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
+                updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
             }
         }
     }
@@ -262,9 +262,9 @@ async function updateGitignore(rootPath: string): Promise<void> {
     }
 
     try {
-        let gitignoreContent = await readFile(gitignore);
+        let gitignoreContent = readFile(gitignore);
         gitignoreContent = gitignoreContent.replaceAll('/src/main', '');
-        await updateFile(gitignore, gitignoreContent);
+        updateFile(gitignore, gitignoreContent);
     } catch (e) {
         throw new MigrationError(e, '.gitignore');
     }
@@ -300,7 +300,7 @@ async function updateNeoApp(rootPath: string): Promise<void> {
                     : route.target
             }));
         }
-        await updateJSON(neoapp, neoappContent);
+        updateJSON(neoapp, neoappContent);
     } catch (e) {
         throw new MigrationError(e, FileName.NeoApp);
     }
@@ -326,7 +326,7 @@ async function updateProjectJson(rootPath: string): Promise<void> {
         if (projectJsonContent.path) {
             projectJsonContent.path = projectJsonContent.path.replace('src/main', '');
         }
-        await updateJSON(projectJson, projectJsonContent);
+        updateJSON(projectJson, projectJsonContent);
     } catch (e) {
         throw new MigrationError(e, 'project.json');
     }
@@ -347,7 +347,7 @@ async function checkForMockserver(rootPath: string, webappPath: string): Promise
     }
 
     try {
-        const indexFile = await readFile(indexPath);
+        const indexFile = readFile(indexPath);
         // Check if mockserver is referenced (case-insensitive)
         if (indexFile.toLowerCase().indexOf('mockserver') !== -1) {
             // Found mockserver reference - mark that index.html should be renamed
