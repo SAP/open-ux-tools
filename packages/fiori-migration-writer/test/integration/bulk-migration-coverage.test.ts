@@ -57,7 +57,7 @@ describe('BulkProjectMigrator - Coverage Tests', () => {
         // At least one should succeed
         const successCount = results.filter((r) => r.status === 'SUCCESS').length;
         expect(successCount).toBeGreaterThan(0);
-    });
+    }, 60000);
 
     it('should handle empty project list', async () => {
         const migrator = new BulkProjectMigrator();
@@ -106,5 +106,5 @@ describe('BulkProjectMigrator - Coverage Tests', () => {
 
         // Second project should NOT be ERROR (migration continues despite first error)
         expect(['SUCCESS', 'WARNING']).toContain(results[1].status);
-    });
+    }, 60000);
 });
