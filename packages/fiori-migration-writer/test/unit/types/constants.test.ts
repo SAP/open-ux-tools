@@ -8,7 +8,7 @@ import {
     neoAppJsonRouteTargetTypes,
     TemplateDataKey,
     sapWattCommonSetting
-} from '../../../src/types/constants.js';
+} from '../../../src/types.js';
 
 describe('Constants', () => {
     describe('ODataVersion', () => {
