@@ -98,7 +98,7 @@ export class ProjectMigrator {
         baseUri?: string,
         ui5SnapshotUrl?: string,
         importProjectInfo?: ImportProjectInfo,
-        vscode?: VSCode,
+        vscode?: any,
         internalToggle?: boolean,
         fs?: Editor,
         strict?: boolean
@@ -113,7 +113,7 @@ export class ProjectMigrator {
         baseUri?: string,
         ui5SnapshotUrl?: string,
         importProjectInfo?: ImportProjectInfo,
-        vscode?: VSCode,
+        vscode?: any,
         internalToggle?: boolean,
         fs?: Editor,
         strict?: boolean
@@ -123,8 +123,8 @@ export class ProjectMigrator {
             typeof projectRootOrOptions === 'string'
                 ? {
                       projectRoot: projectRootOrOptions,
-                      baseUri,
-                      ui5SnapshotUrl,
+                      baseUri: baseUri ?? '',
+                      ui5SnapshotUrl: ui5SnapshotUrl ?? '',
                       importProjectInfo,
                       vscode,
                       internalToggle,
