@@ -138,7 +138,7 @@ export function validateMtaConfig(config: CFBaseConfig): void {
     if (!config.routerType || !config.mtaId || !config.mtaPath) {
         throw new Error(t('error.missingMtaParameters'));
     }
-    if (config.mtaId.length > MAX_MTA_ID_LENGTH || !/^[a-zA-Z_]/.test(config.mtaId)) {
+    if (!/^[a-zA-Z_]/.test(config.mtaId)) {
         throw new Error(t('error.invalidMtaId'));
     }
     if (!/^[\w\-.]*$/.test(config.mtaId)) {
