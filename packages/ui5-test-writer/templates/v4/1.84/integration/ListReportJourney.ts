@@ -25,9 +25,6 @@ const usesFilterFieldIdentifier =
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-import { SortOrder } from "sap/ui/core/library";
-<%_ } -%>
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
@@ -109,15 +106,6 @@ function journey() {
 <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
     opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-    });
-
-<%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-    opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {
-        <%_ textAnnotationColumns.forEach(function(column) { _%>
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
-        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
-        <%_ }); -%>
     });
 
 <%_ } -%>
