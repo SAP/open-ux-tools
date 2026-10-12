@@ -92,9 +92,46 @@ export class ProjectMigrator {
      * @param options - Migration options object
      * @returns Promise with fs editor, migration result, and messages
      */
+    // Backward-compatible overload with positional parameters
     public static async migrate(
-        options: MigrateOptions
+        projectRoot: string,
+        baseUri?: string,
+        ui5SnapshotUrl?: string,
+        importProjectInfo?: ImportProjectInfo,
+        vscode?: VSCode,
+        internalToggle?: boolean,
+        fs?: Editor,
+        strict?: boolean
+    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
+
+    // New preferred signature with options object
+    public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
+
+    // Implementation
+    public static async migrate(
+        projectRootOrOptions: string | MigrateOptions,
+        baseUri?: string,
+        ui5SnapshotUrl?: string,
+        importProjectInfo?: ImportProjectInfo,
+        vscode?: VSCode,
+        internalToggle?: boolean,
+        fs?: Editor,
+        strict?: boolean
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+        // Convert old signature to options object if called with positional parameters
+        const options: MigrateOptions =
+            typeof projectRootOrOptions === 'string'
+                ? {
+                      projectRoot: projectRootOrOptions,
+                      baseUri,
+                      ui5SnapshotUrl,
+                      importProjectInfo,
+                      vscode,
+                      internalToggle,
+                      fs,
+                      strict
+                  }
+                : projectRootOrOptions;
         const {
             projectRoot,
             baseUri: baseUriOpt,
