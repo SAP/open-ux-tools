@@ -68,7 +68,7 @@ export function validateGitRelativePath(relPath: string): SafeGitPath {
         throw new Error('Git path cannot be empty or root');
     }
     // Reject paths that escape the root
-    if (relPath.startsWith('..') || relPath.includes('/..') || relPath.includes('\\..')) {
+    if (relPath.startsWith('..') || relPath.includes('/..') || relPath.includes(String.raw`\..`)) {
         throw new Error('Git path escapes root directory');
     }
     // Reject control characters

@@ -227,9 +227,12 @@ export function getMainEntity(manifest: Manifest): string {
  * @param projectRoot - Root path of the project
  * @returns Backend configuration object
  */
-export function getFirstBackend(
-    projectRoot: string
-): { destination?: string; sapClient?: string; scp?: boolean; url?: string } {
+export function getFirstBackend(projectRoot: string): {
+    destination?: string;
+    sapClient?: string;
+    scp?: boolean;
+    url?: string;
+} {
     let result: { destination?: string; sapClient?: string; scp?: boolean; url?: string } = {};
 
     try {

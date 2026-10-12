@@ -41,7 +41,7 @@ export function getNeoAppData(
 ): { destination: string; neoAppUI5Version: string | undefined; neoappDestinations: NeoappDestination[] } {
     let neoAppUI5Version;
     const neoappDestinations: NeoappDestination[] = [];
-    const sapRoutes: string[] = [
+    const sapRoutes = new Set([
         '/sap/opu/odata4',
         '/sap/opu/odata',
         '/sap/bc/lrep',
@@ -49,7 +49,7 @@ export function getNeoAppData(
         '/sap/public/bc/NWDEMO_MODEL',
         '/sap/bc/ui5_ui5',
         '/sap/bc/ui2/app_index'
-    ];
+    ]);
 
     neoAppJson.routes.forEach((route: any) => {
         // Pick the first destination in the routes
@@ -59,7 +59,7 @@ export function getNeoAppData(
             }
             //filter out paths with /sap/other to avoid breaking app with empty url:"" as we add one /sap destination anyway
             if (
-                !(route.path === route.target.entryPath && sapRoutes.includes(route.path)) &&
+                !(route.path === route.target.entryPath && sapRoutes.has(route.path)) &&
                 route.path !== route.target.name &&
                 !isUiAdaptation
             ) {

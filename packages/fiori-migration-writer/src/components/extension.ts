@@ -17,7 +17,7 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
         // Migration of WebIDE Personal Edition created projects
         let extensionProjectSettingsStr = JSON.stringify(projectInfo.extensionProjectSettings);
         const webDepStr = '/webidedispatcher/destinations/';
-        deleteProjectJson = extensionProjectSettingsStr.indexOf(webDepStr) > -1;
+        deleteProjectJson = extensionProjectSettingsStr.includes(webDepStr);
         extensionProjectSettingsStr = extensionProjectSettingsStr.replaceAll(webDepStr, '/destinations/');
         extensionProjectSettingsJSON = JSON.parse(extensionProjectSettingsStr);
     } catch (error: unknown) {

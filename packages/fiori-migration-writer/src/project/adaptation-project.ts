@@ -81,14 +81,12 @@ export async function processAdaptationProject(config: ProcessAdaptationProjectC
 
             const result = {
                 ...defaultProjectInfo,
-                ...{
-                    uiAdaptation,
-                    moduleName,
-                    rootPath,
-                    ui5Version,
-                    isFioriToolsProject,
-                    destination
-                },
+                uiAdaptation,
+                moduleName,
+                rootPath,
+                ui5Version,
+                isFioriToolsProject,
+                destination,
                 ...neoAppData
             };
             if (neoAppData?.destination) {

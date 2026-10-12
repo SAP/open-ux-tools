@@ -177,46 +177,44 @@ export async function processRegularProject(
         // Update object with latest params
         projectInfo = {
             ...defaultProjectInfo,
-            ...{
-                moduleName: projectName || packageJson?.name,
-                moduleDescription: packageJson?.description || '',
-                sapux: sapux,
-                isFioriToolsProject: sapux || hasUI5ToolingDep,
-                rootPath: projectRoot,
-                webappPath: projectInfo.webappPath,
-                mainServiceURI:
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    mainServiceDatasource?.uri ? mainServiceDatasource.uri : '',
-                mainServiceFsPath: mainServiceDatasource?.settings?.localUri ?? 'localservice/metadata.xml',
-                // Get service version from non FE applications
-                odataVersion,
-                mainEntity: getMainEntity(manifest),
-                ui5Theme: 'sap_fiori_3',
-                FEVersion: feVersion,
-                type: MigrationTypes.project,
-                sapLibs: generateSapLibsStr(manifestLibs || {}, flpSandboxLibs),
-                mainService,
-                floorPlan,
-                namespace: namespace,
-                scp: scp ?? false,
-                destination,
-                appTitle,
-                appVersion,
-                sapClient,
-                backends,
-                isSAPApp,
-                hostname,
-                ui5Version,
-                manifestUI5Version,
-                neoAppUI5Version,
-                flpSandboxFlpIntent,
-                flpSandboxMockFlpIntent,
-                neoappDestinations,
-                firstNeoAppDestination,
-                hasRootIntent,
-                reuseLibs: Object.keys(reuseManifestLibs || {}).join(',')
-            }
+            moduleName: projectName || packageJson?.name,
+            moduleDescription: packageJson?.description || '',
+            sapux: sapux,
+            isFioriToolsProject: sapux || hasUI5ToolingDep,
+            rootPath: projectRoot,
+            webappPath: projectInfo.webappPath,
+            mainServiceURI:
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                mainServiceDatasource?.uri ? mainServiceDatasource.uri : '',
+            mainServiceFsPath: mainServiceDatasource?.settings?.localUri ?? 'localservice/metadata.xml',
+            // Get service version from non FE applications
+            odataVersion,
+            mainEntity: getMainEntity(manifest),
+            ui5Theme: 'sap_fiori_3',
+            FEVersion: feVersion,
+            type: MigrationTypes.project,
+            sapLibs: generateSapLibsStr(manifestLibs || {}, flpSandboxLibs),
+            mainService,
+            floorPlan,
+            namespace: namespace,
+            scp: scp ?? false,
+            destination,
+            appTitle,
+            appVersion,
+            sapClient,
+            backends,
+            isSAPApp,
+            hostname,
+            ui5Version,
+            manifestUI5Version,
+            neoAppUI5Version,
+            flpSandboxFlpIntent,
+            flpSandboxMockFlpIntent,
+            neoappDestinations,
+            firstNeoAppDestination,
+            hasRootIntent,
+            reuseLibs: Object.keys(reuseManifestLibs || {}).join(',')
         };
     } catch (error) {
         messages.push({ type: 'ERROR', description: (error as Error).toString() });

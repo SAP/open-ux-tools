@@ -130,23 +130,22 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
 
     const result: ImportProjectInfo = {
         ...defaultProjectInfo,
-        ...{
-            moduleName,
-            isSAPApp: true,
-            ui5Theme,
-            isFioriToolsProject: hasUI5ToolingDep,
-            ...{ rootPath: projectRoot, type: MigrationTypes.projectExtension },
-            destination: destination as string,
-            scp: scp as boolean,
-            sapClient,
-            hostname,
-            firstNeoAppDestination,
-            neoAppUI5Version,
-            neoappDestinations,
-            extensionProjectSettings,
-            ui5Version,
-            appVersion
-        }
+        moduleName,
+        isSAPApp: true,
+        ui5Theme,
+        isFioriToolsProject: hasUI5ToolingDep,
+        rootPath: projectRoot,
+        type: MigrationTypes.projectExtension,
+        destination: destination as string,
+        scp: scp as boolean,
+        sapClient,
+        hostname,
+        firstNeoAppDestination,
+        neoAppUI5Version,
+        neoappDestinations,
+        extensionProjectSettings,
+        ui5Version,
+        appVersion
     };
     if (manifest) {
         result.manifestUI5Version = getMinUI5VersionAsArray(manifest, true)[0] || '';

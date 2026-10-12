@@ -348,7 +348,7 @@ async function checkForMockserver(rootPath: string, webappPath: string): Promise
     try {
         const indexFile = readFile(indexPath);
         // Check if mockserver is referenced (case-insensitive)
-        if (indexFile.toLowerCase().indexOf('mockserver') !== -1) {
+        if (indexFile.toLowerCase().includes('mockserver')) {
             // Found mockserver reference - mark that index.html should be renamed
             return true;
         }

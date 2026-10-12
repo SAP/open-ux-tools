@@ -51,8 +51,8 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
     // Add mock server task if data source exists
     if (hasDataSource && odataVersion) {
         const mockCmd: Record<string, string> = {
-            [ODataVersion.v2]: `--open \\"test/flpSandboxMockServer.html${urlParam}${appMockIntent}\\"`,
-            [ODataVersion.v4]: `--config ./ui5-mock.yaml --open \\"${testFlpSandboxHtml}${urlParam}${appIntent}\\"`
+            [ODataVersion.v2]: String.raw`--open \"test/flpSandboxMockServer.html${urlParam}${appMockIntent}\"`,
+            [ODataVersion.v4]: String.raw`--config ./ui5-mock.yaml --open \"${testFlpSandboxHtml}${urlParam}${appIntent}\"`
         };
         runTasks.push({
             name: 'start-mock',
@@ -77,7 +77,7 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
         ) {
             runTasks.push({
                 name: scriptName,
-                command: `fiori run --open \\"${testFile.path}\\"`
+                command: String.raw`fiori run --open \"${testFile.path}\"`
             });
         }
     }
@@ -150,25 +150,25 @@ function generateStartCommands(
 
     // Build commands
     let startVariantsCommand: string | undefined =
-        `fiori run --open \\"preview.html${variantCmdUrlParam}${previewAppAnchor}\\"`;
-    let startCommand: string | undefined = `fiori run --open \\"${
+        String.raw`fiori run --open \"preview.html${variantCmdUrlParam}${previewAppAnchor}\"`;
+    let startCommand: string | undefined = String.raw`fiori run --open \"${
         flpSandboxAvailable ? testFlpSandboxHtml : TemplateFileName.IndexHtml
-    }${urlParam}${appIntent}\\"`;
+    }${urlParam}${appIntent}\"`;
     let startNoFlpCommand: string | undefined = '';
 
     if (isGenerateIndex(projectInfo, internalToggle)) {
-        startNoFlpCommand = `fiori run --open \\"${
+        startNoFlpCommand = String.raw`fiori run --open \"${
             keepIndex ? 'index_new.html' : TemplateFileName.IndexHtml
-        }${urlParam}\\"`;
+        }${urlParam}\"`;
     }
 
-    startLocalCommand = `fiori run --config ./ui5-local.yaml --open \\"${startLocalCommand}${urlParam}${
+    startLocalCommand = String.raw`fiori run --config ./ui5-local.yaml --open \"${startLocalCommand}${urlParam}${
         projectInfo.FEVersion === FioriElementsVersion.v4 ? appIntent : appMockIntent
-    }\\"`;
+    }\"`;
 
     // Extension projects have different start commands
     if (projectInfo.type === MigrationTypes.projectExtension) {
-        startCommand = `fiori run --open \\"${TemplateFileName.IndexHtml}${urlParam}${appIntent}\\"`;
+        startCommand = String.raw`fiori run --open \"${TemplateFileName.IndexHtml}${urlParam}${appIntent}\"`;
         startNoFlpCommand = undefined;
         startLocalCommand = undefined;
         startVariantsCommand = undefined;

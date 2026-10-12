@@ -44,10 +44,9 @@ export async function processReuseLibrary(
 
     return {
         ...defaultProjectInfo,
-        ...{
-            moduleName,
-            isFioriToolsProject: hasUI5ToolingDep,
-            ...{ rootPath: projectRoot, type: MigrationTypes.library }
-        }
+        moduleName,
+        isFioriToolsProject: hasUI5ToolingDep,
+        rootPath: projectRoot,
+        type: MigrationTypes.library
     };
 }

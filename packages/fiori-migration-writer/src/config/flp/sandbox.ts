@@ -75,7 +75,7 @@ async function processSandboxFile(
 
         const content = readFile(filePath);
         const libs = extractDataSapUiLibs(content);
-        const hasRootIntent = content.indexOf('rootIntent') !== -1;
+        const hasRootIntent = content.includes('rootIntent');
         const intent = await getFlpIntentFromHtml(filePath);
 
         return {
@@ -108,7 +108,7 @@ async function processMockSandboxFile(
         }
 
         const content = readFile(filePath);
-        const hasRootIntent = content.indexOf('rootIntent') !== -1;
+        const hasRootIntent = content.includes('rootIntent');
 
         return {
             intent,

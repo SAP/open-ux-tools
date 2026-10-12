@@ -32,14 +32,16 @@ export const stripSpaces = (val: string): string => val.replaceAll(/\s/g, '');
  *
  * @param s
  */
-export const escapeSingleQuotes = (s: string): string => s.replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+export const escapeSingleQuotes = (s: string): string =>
+    s.replaceAll('\\', String.raw`\\`).replaceAll("'", String.raw`\'`);
 
 /**
  * escapeDoubleQuotes
  *
  * @param s
  */
-export const escapeDoubleQuotes = (s: string): string => s.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+export const escapeDoubleQuotes = (s: string): string =>
+    s.replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`);
 
 /**
  * Check if directory exists
