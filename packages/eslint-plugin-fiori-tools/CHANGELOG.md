@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Features
+
+- add sap-micro-chart-requires-navigation-entity rule to validate that micro chart measures and dimensions use a 1:n navigation entity path [[ac42d39](https://github.com/SAP/open-ux-tools/commit/ac42d39ce4714558b4e9b36f05cc6dc9acda7f38)]
+
 ## 10.16.0
 
 ### Minor Changes

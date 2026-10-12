@@ -247,18 +247,23 @@ export function getListReportFeatures(
                   )
             : undefined;
 
-    // Columns with a text annotation only get a sort-order test when their bound property also
-    // carries a UI.TextArrangement annotation (checked against the merged metadata), and the text
-    // (sort target) property is not hidden — a hidden property is not a sortable column.
+    // A maintained text annotation emits a sort test for the text target property (no TextArrangement
+    // required). The code column is also sorted, except under TextOnly where it is not sortable.
     const meta = convertedMetadata;
+    const seenTextProperties = new Set<string>();
     const textAnnotationColumns: TextAnnotationColumn[] = meta
-        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
-              .filter(
-                  (candidate) =>
-                      hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty) &&
-                      !isHiddenProperty(meta, listReportPage.entitySet, candidate.textProperty)
-              )
-              .map((candidate) => ({ textProperty: candidate.textProperty }))
+        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => {
+              // Dedupe the text-property sort test per text target; each code column keeps its own.
+              const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
+              seenTextProperties.add(candidate.textProperty);
+              return {
+                  columnProperty: isTextOnlyArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
+                      ? undefined
+                      : candidate.columnProperty,
+                  textProperty: candidate.textProperty,
+                  skipTextPropertyTest
+              };
+          })
         : [];
 
     return {
@@ -761,15 +766,16 @@ export function isHiddenFilter(
 }
 
 /**
- * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.TextArrangement`
- * annotation nested on its `@com.sap.vocabularies.Common.v1.Text` annotation.
+ * Returns true if the property's `UI.TextArrangement` is `TextOnly`, checking both the nested
+ * (`Common.Text`) and sibling (property-level) locations. Under `TextOnly` the code property is not
+ * sortable, so its sort test must be skipped.
  *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property has a text arrangement annotation
+ * @param convertedMetadata - converted OData metadata (metadata merged with local annotations)
+ * @param entitySetName - entity set owning the property (undefined → false)
+ * @param propertyName - property to inspect
+ * @returns true if the text arrangement is TextOnly
  */
-export function hasTextArrangement(
+export function isTextOnlyArrangement(
     convertedMetadata: ConvertedMetadata,
     entitySetName: string | undefined,
     propertyName: string
@@ -779,34 +785,12 @@ export function hasTextArrangement(
     }
     const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
     const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // TextArrangement is a nested annotation on the Common.Text term (see vocabularies-types Common.Text).
-    return property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement !== undefined;
-}
-
-/**
- * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.Hidden` annotation.
- * A hidden property is not exposed as a sortable column in the sort dialog, so it cannot be
- * used as a sort target.
- *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property is hidden
- */
-export function isHiddenProperty(
-    convertedMetadata: ConvertedMetadata,
-    entitySetName: string | undefined,
-    propertyName: string
-): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // The converted `@UI.Hidden` value is a Boolean wrapper object (it carries annotation metadata),
-    // so it is always truthy — coerce via `valueOf()` to read the underlying boolean and treat an
-    // explicit `Hidden: false` as not hidden.
-    return property?.annotations?.UI?.Hidden?.valueOf() === true;
+    // The converter also populates TextArrangement as a property-level sibling of Common.Text, a
+    // shape vocabularies-types does not declare — hence the indexed access.
+    const siblingArrangement = (property?.annotations?.UI as Record<string, unknown> | undefined)?.['TextArrangement'];
+    const textArrangement = property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement ?? siblingArrangement;
+    // The converted enum value stringifies to e.g. "UI.TextArrangementType/TextOnly".
+    return textArrangement !== undefined && String(textArrangement).endsWith('/TextOnly');
 }
 
 /**
