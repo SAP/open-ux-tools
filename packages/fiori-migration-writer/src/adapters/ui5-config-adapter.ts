@@ -128,7 +128,6 @@ function buildBackendConfigs(
     return backends;
 }
 
-
 /**
  * Generate ui5.yaml content using @sap-ux/ui5-config builder
  *
