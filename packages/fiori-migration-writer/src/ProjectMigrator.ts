@@ -108,7 +108,8 @@ export class ProjectMigrator {
     public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
 
     // Implementation
-    public static async migrate( // NOSONAR - Implementation must support both overload signatures
+    public static async migrate(
+        // NOSONAR - Implementation must support both overload signatures
         projectRootOrOptions: string | MigrateOptions,
         baseUri?: string,
         ui5SnapshotUrl?: string,
@@ -431,7 +432,8 @@ export class ProjectMigrator {
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
 
-            if (await exists(yamlPath)) { // NOSONAR - Only 2 files, acceptable sequential check
+            if (await exists(yamlPath)) {
+                // NOSONAR - Only 2 files, acceptable sequential check
                 // readFile and updateFile are sync mem-fs operations
                 const yamlContent = readFile(yamlPath);
 

@@ -60,7 +60,8 @@ async function moveFilesWithGitFallback(
 
             // Fallback to file system move if git didn't work
 
-            if (await pathExistsOnDisk(join(rootPath, entry.name))) { // NOSONAR - Sequential check after git required
+            if (await pathExistsOnDisk(join(rootPath, entry.name))) {
+                // NOSONAR - Sequential check after git required
                 const sourcePath = join(rootPath, entry.name);
                 const destPath = join(rootPath, DirName.Webapp, entry.name);
 
