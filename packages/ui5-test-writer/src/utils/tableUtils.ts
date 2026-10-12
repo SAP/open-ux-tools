@@ -13,13 +13,14 @@ type ColumnModelItem = {
 };
 
 /**
- * A column that carries a text annotation in the spec model. `columnProperty` is the
- * column's own bound property (used to look up the `UI.TextArrangement` annotation in the
- * OData metadata); `textProperty` is the `Common.Text` target property (used as the sort name).
+ * A column that carries a text annotation in the spec model. `columnProperty` is the column's own
+ * bound property; `textProperty` is the `Common.Text` target. `textPropertyNotSortable` flags a text
+ * target reached via a navigation property, which cannot be used as a sort/adaptation name.
  */
 export type TextAnnotationColumnCandidate = {
     columnProperty: string;
     textProperty: string;
+    textPropertyNotSortable?: boolean;
 };
 
 export type ColumnAggregations = TreeAggregations & {
@@ -227,6 +228,17 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
     if (!tableNode) {
         return [];
     }
+    return extractTextAnnotationColumnsFromTableNode(tableNode);
+}
+
+/**
+ * Extracts columns that carry a text annotation from a resolved 'table' aggregation node (used for a
+ * single List Report table or an individual multi-tab view). See {@link extractTextAnnotationColumnsFromNode}.
+ *
+ * @param tableNode - resolved 'table' aggregation node
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationColumnsFromTableNode(tableNode: TreeAggregation): TextAnnotationColumnCandidate[] {
     const columnsAggregation = getAggregations(tableNode)['columns'];
     if (!columnsAggregation) {
         return [];
@@ -244,18 +256,20 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
         if (text?.artifactType !== 'Annotation' || !text.value || text.value.toLowerCase() === 'none') {
             return;
         }
-        // A text target reached through a navigation property (e.g. "_DunningProcedure/DunningProcedure_Text")
-        // is not exposed as a sortable column in the sort dialog, so it cannot be used as a sort name.
-        if (text.value.includes('/')) {
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (columnProperty?.includes('/')) {
             return;
         }
-        const columnProperty = getColumnIdentifier(column, columnKey);
         // Deduplicate by code column: distinct columns may share one text target.
         if (!columnProperty || seenColumnProperties.has(columnProperty)) {
             return;
         }
         seenColumnProperties.add(columnProperty);
-        candidates.push({ columnProperty, textProperty: text.value });
+        const candidate: TextAnnotationColumnCandidate = { columnProperty, textProperty: text.value };
+        if (text.value.includes('/')) {
+            candidate.textPropertyNotSortable = true;
+        }
+        candidates.push(candidate);
     });
     return candidates;
 }

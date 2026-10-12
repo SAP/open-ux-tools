@@ -28,9 +28,11 @@ import {
     extractContactCardColumnsFromTableNode,
     extractTableColumnsFromTableNode,
     extractTextAnnotationColumnsFromNode,
+    extractTextAnnotationColumnsFromTableNode,
     resolvePrimaryTableNode,
     resolveViewTableNodes
 } from './tableUtils.js';
+import type { TextAnnotationColumnCandidate } from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse, merge } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -152,6 +154,36 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
 }
 
 /**
+ * Resolves raw text-annotation candidates into the shape consumed by the journey templates, applying
+ * the `UI.TextArrangement` gate, deduplication by text target, and the per-column skip rules.
+ *
+ * @param candidates - raw candidates from the spec model (one table or one tab)
+ * @param convertedMetadata - converted OData metadata, for the TextArrangement lookup
+ * @param entitySet - entity set backing the table (undefined falls back to no TextOnly gating)
+ * @returns the text-annotation columns to emit tests for
+ */
+function buildTextAnnotationColumns(
+    candidates: TextAnnotationColumnCandidate[],
+    convertedMetadata: ConvertedMetadata,
+    entitySet: string | undefined
+): TextAnnotationColumn[] {
+    const seenTextProperties = new Set<string>();
+    return candidates
+        .map((candidate) => {
+            const columnProperty = isTextOnlyArrangement(convertedMetadata, entitySet, candidate.columnProperty)
+                ? undefined
+                : candidate.columnProperty;
+            const skipTextPropertyTest =
+                candidate.textPropertyNotSortable || seenTextProperties.has(candidate.textProperty);
+            if (!candidate.textPropertyNotSortable) {
+                seenTextProperties.add(candidate.textProperty);
+            }
+            return { columnProperty, textProperty: candidate.textProperty, skipTextPropertyTest };
+        })
+        .filter((column) => column.columnProperty || !column.skipTextPropertyTest);
+}
+
+/**
  * Gets List Report features from the page model using ux-specification.
  *
  * @param listReportPage - the List Report page containing the tree model with feature definitions
@@ -250,20 +282,12 @@ export function getListReportFeatures(
     // A maintained text annotation emits a sort test for the text target property (no TextArrangement
     // required). The code column is also sorted, except under TextOnly where it is not sortable.
     const meta = convertedMetadata;
-    const seenTextProperties = new Set<string>();
     const textAnnotationColumns: TextAnnotationColumn[] = meta
-        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => {
-              // Dedupe the text-property sort test per text target; each code column keeps its own.
-              const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
-              seenTextProperties.add(candidate.textProperty);
-              return {
-                  columnProperty: isTextOnlyArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
-                      ? undefined
-                      : candidate.columnProperty,
-                  textProperty: candidate.textProperty,
-                  skipTextPropertyTest
-              };
-          })
+        ? buildTextAnnotationColumns(
+              extractTextAnnotationColumnsFromNode(listReportPage.model.root),
+              meta,
+              listReportPage.entitySet
+          )
         : [];
 
     return {
@@ -420,6 +444,11 @@ export function getListReportTabs(
     const viewNodes = resolveViewTableNodes(listReportPage.model.root);
     const nodeByKey = new Map(viewNodes.map((entry) => [entry.key, entry.node]));
     const criticalActions = collectCriticalActionNames(convertedMetadata);
+    const columnPersonalizationSupported = isColumnPersonalizationEnabled(
+        manifest,
+        listReportPage.name,
+        listReportPage.contextPath
+    );
     const tabs: ListReportTab[] = [];
     views.forEach((view, index) => {
         // Match the spec-model view node by key; fall back to model order (both lists exclude custom tabs).
@@ -447,6 +476,13 @@ export function getListReportTabs(
         toolBarActions = toolBarActions.concat(
             extractCustomToolBarActionsFromTableNode(tableNode, resolveLabel, convertedMetadata)
         );
+        const textAnnotationColumns = convertedMetadata
+            ? buildTextAnnotationColumns(
+                  extractTextAnnotationColumnsFromTableNode(tableNode),
+                  convertedMetadata,
+                  entitySet
+              )
+            : [];
         tabs.push({
             key: view.key,
             entitySet,
@@ -454,7 +490,9 @@ export function getListReportTabs(
             contactCardColumns: extractContactCardColumnsFromTableNode(tableNode),
             toolBarActions,
             createButton,
-            deleteButton
+            deleteButton,
+            textAnnotationColumns,
+            columnPersonalizationSupported
         });
     });
     return tabs;

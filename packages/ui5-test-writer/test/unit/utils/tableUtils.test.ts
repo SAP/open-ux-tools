@@ -520,13 +520,33 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
     });
 
-    test('excludes a column whose text target traverses a navigation property', () => {
+    test('keeps a column whose text target traverses a navigation property but flags the text as not sortable', () => {
+        // Regression (fin.test.v4.lr2): the column's own property (e.g. "Customer") is sortable and must
+        // still be tested; only the navigation-path text target is unsortable, so it is flagged.
         const node = makeNode({
             'DataField::DunningProcedure': {
                 schema: { keys: [{ name: 'Value', value: 'DunningProcedure' }] },
                 properties: {
                     text: { artifactType: 'Annotation', value: '_DunningProcedure/DunningProcedure_Text' }
                 }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            {
+                columnProperty: 'DunningProcedure',
+                textProperty: '_DunningProcedure/DunningProcedure_Text',
+                textPropertyNotSortable: true
+            }
+        ]);
+    });
+
+    test('excludes a column bound through a navigation property', () => {
+        // Regression (fin.test.rap.lr3): a column from an association (e.g. "_Booking/AirlineID") is
+        // not exposed as a sortable column, so neither it nor its text target may be used as a sort name.
+        const node = makeNode({
+            'DataField::_Booking::AirlineID': {
+                schema: { keys: [{ name: 'Value', value: '_Booking/AirlineID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'AirlineName' } }
             }
         });
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);

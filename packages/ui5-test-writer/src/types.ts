@@ -228,6 +228,8 @@ export type ListReportTab = {
     toolBarActions: ActionButtonState[];
     createButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
     deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+    textAnnotationColumns: TextAnnotationColumn[];
+    columnPersonalizationSupported?: boolean;
 };
 
 export type ListReportFeatures = {

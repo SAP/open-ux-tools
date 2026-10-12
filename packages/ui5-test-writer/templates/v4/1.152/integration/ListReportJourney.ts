@@ -25,7 +25,8 @@ const usesFilterFieldIdentifier =
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
+<%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (tabs && tabs.some(function(tab) { return tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0; }))); -%>
+<%_ if (needsSortOrder) { -%>
 import { SortOrder } from "sap/ui/core/library";
 <%_ } -%>
 
@@ -206,6 +207,36 @@ function journey() {
     });
 
 <%_ } -%>
+<%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
+    opaTest(<%- JSON.stringify("Check the Sort options for columns with a Text annotation in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ tab.textAnnotationColumns.forEach(function(column) { _%>
+        <%_ if (column.columnProperty) { _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending);
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
+        <%_ } _%>
+        <%_ if (!column.skipTextPropertyTest) { _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);
+        <%_ } _%>
+        <%_ }); -%>
+    });
+
+<%_ if (tab.columnPersonalizationSupported !== false) { -%>
+    opaTest(<%- JSON.stringify("Check the presence of the text columns for columns with a Text annotation in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iOpenColumnAdaptation();
+        <%_ tab.textAnnotationColumns.forEach(function(column) { _%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
+        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
+        <%_ }); -%>
+        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iConfirmColumnAdaptation();
+    });
+
+<%_ } -%>
+<%_ } -%>
     opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
         <%_ if (!hideFilterBar) { -%>
@@ -345,16 +376,24 @@ function journey() {
 
 <%_ } -%>
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-    opaTest("Check text annotation for columns", function (_Given: Given, When: When, Then: Then) {
+    opaTest("Check the Sort options for columns with a Text annotation", function (_Given: Given, When: When, Then: Then) {
         <%_ textAnnotationColumns.forEach(function(column) { _%>
+        <%_ if (column.columnProperty) { _%>
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending);
+        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
+        <%_ } _%>
+        <%_ if (!column.skipTextPropertyTest) { _%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
+        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);
+        <%_ } _%>
         <%_ }); -%>
     });
 
 <%_ } -%>
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0 && columnPersonalizationSupported !== false) { -%>
-    opaTest("Check columns in adaptation dialog", function (_Given: Given, When: When, Then: Then) {
+    opaTest("Check the presence of the text columns for columns with a Text annotation", function (_Given: Given, When: When, Then: Then) {
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iOpenColumnAdaptation();
         <%_ textAnnotationColumns.forEach(function(column) { _%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iAddAdaptationColumn({ name: "<%- column.textProperty %>" });

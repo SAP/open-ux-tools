@@ -2316,6 +2316,46 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         expect(result.textAnnotationColumns).toEqual([]);
     });
 
+    test('keeps the code column but skips the text test when the text target is a navigation path (Customer regression)', () => {
+        // Regression (fin.test.v4.lr2): the "Customer" column's own property is sortable, but its text
+        // target "_CustomerDetail/CustomerName" is reached through an association and is not a sortable
+        // column. The code column must still be tested; only the text-property test is suppressed.
+        const page = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        'DataField::Customer': {
+                                            schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                                            properties: {
+                                                text: {
+                                                    artifactType: 'Annotation',
+                                                    value: '_CustomerDetail/CustomerName'
+                                                }
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            entitySet: 'Travel',
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(page, mockLogger, metadataXml);
+        expect(result.textAnnotationColumns).toEqual([
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName', skipTextPropertyTest: true }
+        ]);
+    });
+
     // Regression: project5 shape — the TextArrangement lives in the service metadata (not the local
     // annotation file), and the local annotation.xml carries an unrelated `Annotations` block that
     // targets the same entity type. Parsing both sources with the same fileId made merge overwrite the
@@ -3374,5 +3414,45 @@ describe('getListReportTabs()', () => {
         const manifest = makeManifest([{ key: '1' }, { key: '2' }, { key: '9' }]);
 
         expect(getListReportTabs(page, undefined, manifest).map((tab) => tab.key)).toEqual(['1', '2']);
+    });
+
+    test('populates per-tab textAnnotationColumns from each view table', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::CustomerID': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                    properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+                }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs[0].textAnnotationColumns).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+        ]);
+        expect(tabs[1].textAnnotationColumns).toEqual([]);
     });
 });
