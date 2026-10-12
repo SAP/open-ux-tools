@@ -1,8 +1,9 @@
 import { join } from 'node:path';
-import { mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { validateRootDirectory } from '../../../src/migration-process/legacy-helpers.js';
 import { validateGitRelativePath } from '../../../src/utils/path-validation.js';
+import { renderTemplate } from '../../../src/utils/template/template-renderer.js';
 
 describe('Path Validation Security', () => {
     const testRoot = join(tmpdir(), 'fiori-migration-test-' + Date.now());
@@ -132,6 +133,42 @@ describe('Path Validation Security', () => {
             expect(result).toBe(input);
             // TypeScript branded type ensures it's recognized as SafeGitPath
             expect(typeof result).toBe('string');
+        });
+    });
+
+    describe('renderTemplate path traversal prevention', () => {
+        const templateRoot = join(testRoot, 'templates');
+        const validTemplate = 'valid.ejs';
+
+        beforeAll(() => {
+            mkdirSync(templateRoot, { recursive: true });
+            writeFileSync(join(templateRoot, validTemplate), 'Hello <%= name %>!');
+        });
+
+        test('should render valid template within root', () => {
+            const result = renderTemplate(templateRoot, validTemplate, { name: 'World' }, {}, true);
+            expect(result).toBe('Hello World!');
+        });
+
+        test('should return raw content when isRendered is false', () => {
+            const result = renderTemplate(templateRoot, validTemplate, {}, {}, false);
+            expect(result).toBe('Hello <%= name %>!');
+        });
+
+        test('should reject path traversal with ../', () => {
+            expect(() => renderTemplate(templateRoot, '../../../etc/passwd', {}, {}, false)).toThrow(
+                'Invalid template path'
+            );
+        });
+
+        test('should reject path traversal with nested ../', () => {
+            expect(() => renderTemplate(templateRoot, 'foo/../../../etc/passwd', {}, {}, false)).toThrow(
+                'Invalid template path'
+            );
+        });
+
+        test('should reject absolute paths outside root', () => {
+            expect(() => renderTemplate(templateRoot, '/etc/passwd', {}, {}, false)).toThrow('Invalid template path');
         });
     });
 });
