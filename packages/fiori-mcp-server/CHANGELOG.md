@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-10
+
+#### Bug Fixes
+
+- Update default UI5 version for application generation [[66fc1e1](https://github.com/SAP/open-ux-tools/commit/66fc1e159b926fb2c4b1b331fa4fa9b1c2592e12)]
+
 ## 1.15.8
 
 ### Patch Changes
