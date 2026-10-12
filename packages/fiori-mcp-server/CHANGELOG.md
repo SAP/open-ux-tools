@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-10
+
+#### Bug Fixes
+
+- Update default UI5 version for application generation [[66fc1e1](https://github.com/SAP/open-ux-tools/commit/66fc1e159b926fb2c4b1b331fa4fa9b1c2592e12)]
+
+## 1.15.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 1.15.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
 ## 1.15.6
 
 ### Patch Changes
