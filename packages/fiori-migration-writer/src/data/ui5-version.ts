@@ -1,7 +1,7 @@
 import type { ImportProjectInfo } from '../types.js';
 import { getUI5Versions, minUI5VersionForLocalDev } from '@sap-ux/ui5-info';
 import { getUI5Version } from '../utils/index.js';
-import { default as semver } from 'semver';
+import semver from 'semver';
 
 /**
  * Resolves UI5 versions for migration, handling snapshots and version validation.

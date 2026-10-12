@@ -1,5 +1,5 @@
 import { basename, dirname, join, sep } from 'node:path';
-import { default as fg } from 'fast-glob';
+import fg from 'fast-glob';
 import { DirName, FileName } from '../project-spec-types.js';
 import { isFioriToolsProject, findAllManifest } from './project-access-adapters.js';
 import type { ProjectAppPath, ProjectFolder } from '../types.js';

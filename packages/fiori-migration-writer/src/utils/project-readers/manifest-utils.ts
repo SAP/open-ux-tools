@@ -227,9 +227,9 @@ export function getMainEntity(manifest: Manifest): string {
  * @param projectRoot - Root path of the project
  * @returns Backend configuration object
  */
-export async function getFirstBackend(
+export function getFirstBackend(
     projectRoot: string
-): Promise<{ destination?: string; sapClient?: string; scp?: boolean; url?: string }> {
+): { destination?: string; sapClient?: string; scp?: boolean; url?: string } {
     let result: { destination?: string; sapClient?: string; scp?: boolean; url?: string } = {};
 
     try {
@@ -250,14 +250,11 @@ export async function getFirstBackend(
                 result = backends[0];
             } else if (backends?.length > 1) {
                 // pick the "best" backend
-                result = backends.filter((backend: any) => backend?.path === '/sap')?.[0];
-                if (!result) {
-                    result = backends?.[0];
-                }
+                result = backends.find((backend: any) => backend?.path === '/sap') ?? backends?.[0];
             }
         }
     } catch (error: unknown) {
-        // Do nothing
+        // Expected: ui5.yaml may not exist or may have different structure
     }
     return result;
 }

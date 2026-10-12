@@ -39,6 +39,28 @@ import type { Editor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
 import { i18nText, initI18n } from './i18n.js';
 
+/**
+ * Configuration options for the migrate method
+ */
+export interface MigrateOptions {
+    /** Root path of the project to migrate */
+    projectRoot: string;
+    /** Base URI for backend services */
+    baseUri: string;
+    /** URL for UI5 snapshot version */
+    ui5SnapshotUrl: string;
+    /** Optional partial project information */
+    importProjectInfo?: Partial<ImportProjectInfo>;
+    /** Optional VS Code context */
+    vscode?: any;
+    /** Enable internal features (default: false) */
+    internalToggle?: boolean;
+    /** Optional mem-fs editor instance. If not provided, a new one will be created */
+    fs?: Editor;
+    /** Enable strict validation mode - WARNINGs become ERRORs for critical issues (default: false) */
+    strict?: boolean;
+}
+
 export class ProjectMigrator {
     /**
      * @deprecated This static property is no longer used and will be removed in the next major version.
@@ -62,10 +84,17 @@ export class ProjectMigrator {
      * });
      * ```
      */
-    static fs: Editor | undefined;
+    static readonly fs: Editor | undefined;
 
     /**
      * migrate project
+     *
+     * @param options - Migration options object
+     * @returns Promise with fs editor, migration result, and messages
+     */
+    public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
+    /**
+     * migrate project (legacy signature - deprecated)
      *
      * @param projectRoot - Root path of the project to migrate
      * @param baseUri - Base URI for backend services
@@ -76,6 +105,7 @@ export class ProjectMigrator {
      * @param fs - Optional mem-fs editor instance. If not provided, a new one will be created.
      * @param strict - Enable strict validation mode (WARNINGs become ERRORs for critical issues)
      * @returns Promise with fs editor, migration result, and messages
+     * @deprecated Use the options object signature instead
      */
     public static async migrate(
         projectRoot: string,
@@ -83,14 +113,50 @@ export class ProjectMigrator {
         ui5SnapshotUrl: string,
         importProjectInfo?: Partial<ImportProjectInfo>,
         vscode?: any,
+        internalToggle?: boolean,
+        fs?: Editor,
+        strict?: boolean
+    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
+    public static async migrate(
+        projectRootOrOptions: string | MigrateOptions,
+        baseUri?: string,
+        ui5SnapshotUrl?: string,
+        importProjectInfo?: Partial<ImportProjectInfo>,
+        vscode?: any,
         internalToggle: boolean = false,
         fs?: Editor,
         strict: boolean = false
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+        // Normalize to options object
+        const options: MigrateOptions =
+            typeof projectRootOrOptions === 'string'
+                ? {
+                      projectRoot: projectRootOrOptions,
+                      baseUri: baseUri!,
+                      ui5SnapshotUrl: ui5SnapshotUrl!,
+                      importProjectInfo,
+                      vscode,
+                      internalToggle,
+                      fs,
+                      strict
+                  }
+                : projectRootOrOptions;
+
+        const {
+            projectRoot,
+            baseUri: baseUriOpt,
+            ui5SnapshotUrl: ui5SnapshotUrlOpt,
+            importProjectInfo: importProjectInfoOpt,
+            vscode: vscodeOpt,
+            internalToggle: internalToggleOpt = false,
+            fs: fsOpt,
+            strict: strictOpt = false
+        } = options;
+
         // Create a new isolated editor instance for this migration if not provided
         // This enables concurrent migrations without shared state corruption
-        const ownsEditor = !fs;
-        const editor = fs ?? createMemFsEditor();
+        const ownsEditor = !fsOpt;
+        const editor = fsOpt ?? createMemFsEditor();
         await initI18n();
 
         // Run migration within editor context so all functions have access to it
@@ -102,14 +168,14 @@ export class ProjectMigrator {
                 // Load or fetch project information
                 const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
                     projectRoot,
-                    importProjectInfo
+                    importProjectInfoOpt
                 );
                 messages = messages.concat(projectInfoMessages);
 
-                projectInfo.baseUri = baseUri;
+                projectInfo.baseUri = baseUriOpt;
 
                 // Resolve UI5 versions for migration
-                const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrl);
+                const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrlOpt);
                 projectInfo.localUI5Version = ui5Versions?.[0]?.version;
                 if (/^(snapshot(-untested)?)?$/i.test(projectInfo.ui5Version?.trim() ?? '')) {
                     projectInfo.ui5Version = projectInfo.localUI5Version ?? '';
@@ -129,10 +195,10 @@ export class ProjectMigrator {
                     // V2 is supported (checkForErrors returns true if no ERROR-level messages)
                     const { messages: copyMessages, result: isSuccess } = await this.copyCommonFiles(
                         projectInfo,
-                        vscode,
-                        ui5SnapshotUrl,
-                        internalToggle,
-                        strict
+                        vscodeOpt,
+                        ui5SnapshotUrlOpt,
+                        internalToggleOpt,
+                        strictOpt
                     );
                     messages = messages.concat(copyMessages);
                     result = isSuccess;
@@ -151,7 +217,7 @@ export class ProjectMigrator {
                         fs: updatedFs,
                         messages: copyMessages,
                         result: isSuccess
-                    } = await this.copyAdaptationFiles(projectInfo, ui5SnapshotUrl);
+                    } = await this.copyAdaptationFiles(projectInfo, ui5SnapshotUrlOpt);
                     messages = messages.concat(copyMessages);
                     result = isSuccess;
                     // Update editor to the one returned from copyAdaptationFiles

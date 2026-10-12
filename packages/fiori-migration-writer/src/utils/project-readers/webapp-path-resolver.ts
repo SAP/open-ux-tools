@@ -62,7 +62,7 @@ async function resolveFromCheProjectJson(projectRoot: string): Promise<string | 
  *
  * @param projectRoot
  */
-async function resolveFromUi5Yaml(projectRoot: string): Promise<string | undefined> {
+function resolveFromUi5Yaml(projectRoot: string): string | undefined {
     try {
         const yamlContent = readFile(join(projectRoot, FileName.UI5Yaml));
         return parse(yamlContent)?.resources?.configuration?.paths?.webapp;

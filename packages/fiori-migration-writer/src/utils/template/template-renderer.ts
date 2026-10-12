@@ -6,7 +6,8 @@ import { readFile } from '../file-access.js';
 // esbuild minifies closure-captured variable names, including the `escapeFn` that
 // EJS's compiled template functions reference by name. Passing `escape` explicitly
 // in opts prevents EJS from relying on that renamed closure variable at runtime.
-const DEFAULT_EJS_OPTS: Options = { escape: escapeXML };
+// Setting `async: false` ensures render() returns string synchronously.
+const DEFAULT_EJS_OPTS: Options = { escape: escapeXML, async: false };
 
 /**
  * Render a template file
@@ -21,14 +22,14 @@ const DEFAULT_EJS_OPTS: Options = { escape: escapeXML };
  * @param isRendered - Whether to render the template or return raw content
  * @returns Rendered template content or raw file content
  */
-export async function renderTemplate(
+export function renderTemplate(
     templateRoot: string,
     fullTemplateName: string,
     templateData: Data,
     opts: object,
     isRendered: boolean
-): Promise<string> {
+): string {
     const templateFile = readFile(join(templateRoot, fullTemplateName));
 
-    return isRendered ? render(templateFile, templateData, { ...DEFAULT_EJS_OPTS, ...opts }) : templateFile;
+    return isRendered ? (render(templateFile, templateData, { ...DEFAULT_EJS_OPTS, ...opts }) as string) : templateFile;
 }
