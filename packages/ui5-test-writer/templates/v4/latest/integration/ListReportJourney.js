@@ -222,8 +222,10 @@ sap.ui.define([
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
             When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iOpenColumnAdaptation();
             <%_ tab.textAnnotationColumns.forEach(function(column) { _%>
+            <%_ if (!column.skipTextPropertyTest) { _%>
             When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
             Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
+            <%_ } _%>
             <%_ }); -%>
             When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iConfirmColumnAdaptation();
         });
@@ -388,8 +390,10 @@ sap.ui.define([
         opaTest("Check the presence of the text columns for columns with a Text annotation", function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iOpenColumnAdaptation();
             <%_ textAnnotationColumns.forEach(function(column) { _%>
+            <%_ if (!column.skipTextPropertyTest) { _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
+            <%_ } _%>
             <%_ }); -%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iConfirmColumnAdaptation();
         });

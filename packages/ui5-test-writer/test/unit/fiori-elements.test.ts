@@ -2290,6 +2290,34 @@ export type Then = Opa5 & BaseArrangements & {
                 }
             );
 
+            it('skips the adaptation column when the text target is not sortable/adaptable (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            {
+                                columnProperty: 'Customer',
+                                textProperty: '_CustomerDetail/CustomerName',
+                                skipTextPropertyTest: true
+                            }
+                        ];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+                expect(content).not.toContain('iAddAdaptationColumn({ name: "_CustomerDetail/CustomerName" })');
+                expect(content).toContain('iConfirmColumnAdaptation()');
+            });
+
             it('omits the adaptation-dialog test when column personalization is disabled (JS)', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
@@ -2384,6 +2412,34 @@ export type Then = Opa5 & BaseArrangements & {
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
             );
+
+            it('skips the adaptation column when the text target is not sortable/adaptable (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            {
+                                columnProperty: 'Customer',
+                                textProperty: '_CustomerDetail/CustomerName',
+                                skipTextPropertyTest: true
+                            }
+                        ];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+                expect(content).not.toContain('iAddAdaptationColumn({ name: "_CustomerDetail/CustomerName" })');
+                expect(content).toContain('iConfirmColumnAdaptation()');
+            });
 
             it('omits the adaptation-dialog test when column personalization is disabled (TS)', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
