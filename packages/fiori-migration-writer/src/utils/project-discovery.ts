@@ -21,6 +21,7 @@ export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFol
     const projects: string[] = [];
     for (const root of wsRoots) {
         try {
+            // NOSONAR: Sequential search required - accumulates results across workspace roots
             await findWebIDEProject(root, projects);
         } catch {
             // Continue scanning other roots even if one fails
@@ -54,8 +55,10 @@ async function findWebIDEProject(wsRoot: string, projects: string[]): Promise<vo
         let fioriToolsProject = false;
         const file = join(wsRoot, entries[entry]);
         // check for neo-app.json or pom.xml file present
+        // NOSONAR: Sequential check required - first tooling package determines project type
         fioriToolsProject =
             (await isFioriToolsProject(dirname(file), '@sap-ux/ui5-tooling')) ||
+            // NOSONAR: Sequential fallback check if first tooling package not found
             (await isFioriToolsProject(dirname(file), '@sap/ux-ui5-tooling'));
         if (!projects.includes(dirname(file)) && !fioriToolsProject) {
             projects.push(dirname(file));

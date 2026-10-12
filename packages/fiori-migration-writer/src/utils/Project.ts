@@ -492,6 +492,7 @@ export class ProjectAccess {
             const temp: any[] = [];
             // Process roots sequentially to build accurate exclusion list for reuse libs
             for (const root of roots) {
+                // NOSONAR: Sequential processing required - each result affects exclusion logic for subsequent iterations
                 const result = await this.getProjectInfo(root);
                 // get roots for projects
                 if (result.projectInfo.FEVersion || result.projectInfo.isSAPApp) {

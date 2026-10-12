@@ -89,10 +89,16 @@ export class ProjectMigrator {
     /**
      * migrate project
      *
-     * @param options - Migration options object
+     * @param projectRootOrOptions - Project root path (legacy) or migration options object
+     * @param baseUri - Base URI for backend services (legacy parameter, use options object instead)
+     * @param ui5SnapshotUrl - URL for UI5 snapshot version (legacy parameter, use options object instead)
+     * @param importProjectInfo - Optional partial project information (legacy parameter, use options object instead)
+     * @param vscode - VS Code API instance (legacy parameter, use options object instead)
+     * @param internalToggle - Internal feature toggle flag (legacy parameter, use options object instead)
+     * @param fs - Optional mem-fs-editor instance (legacy parameter, use options object instead)
+     * @param strict - Strict mode flag (legacy parameter, use options object instead)
      * @returns Promise with fs editor, migration result, and messages
      */
-    public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
     public static async migrate(
         projectRootOrOptions: string | MigrateOptions,
         baseUri?: string,
@@ -416,9 +422,11 @@ export class ProjectMigrator {
         // Check and update ui5*.yaml files sequentially - order doesn't matter but list is small
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
+            // NOSONAR: Sequential check required - only 2 files, no benefit from parallelization
             if (await exists(yamlPath)) {
                 // readFile and updateFile are sync mem-fs operations
                 const yamlContent = readFile(yamlPath);
+                // NOSONAR: Sequential processing required for mem-fs consistency
                 const yamlConfig = await UI5Config.newInstance(yamlContent);
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);

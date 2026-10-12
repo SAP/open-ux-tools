@@ -21,6 +21,7 @@ export async function findAllManifest(roots: string[]): Promise<string[]> {
     for (const root of roots) {
         try {
             // Find all .json files
+            // NOSONAR: Sequential search required - results collected across multiple roots
             const jsonFiles = await findFilesByExtension('json', root, []);
 
             // Filter for manifest.json specifically

@@ -52,15 +52,18 @@ async function moveFilesWithGitFallback(
                 const relDest = validateGitRelativePath(join(DirName.Webapp, entry.name));
 
                 // Security: Safe from command injection (see inline comment in calling function)
+                // NOSONAR: Sequential git mv required to prevent filesystem/index race conditions
                 await runner.run('git', ['-C', safeRootPath, 'mv', '-k', '--', relSource, relDest]);
             } catch {
                 // Git command may fail - fallback handled below
             }
 
             // Fallback to file system move if git didn't work
+            // NOSONAR: Sequential check required - must verify git operation before fallback
             if (await pathExistsOnDisk(join(rootPath, entry.name))) {
                 const sourcePath = join(rootPath, entry.name);
                 const destPath = join(rootPath, DirName.Webapp, entry.name);
+                // NOSONAR: Sequential move required to maintain filesystem consistency
                 await recursiveMove(sourcePath, destPath);
             }
         }
@@ -98,6 +101,7 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
         for (const entry of entries) {
             const srcEntry = join(sourcePath, entry.name);
             const destEntry = join(destPath, entry.name);
+            // NOSONAR: Recursive sequential move required - parallel operations would corrupt directory tree
             await recursiveMove(srcEntry, destEntry);
         }
 

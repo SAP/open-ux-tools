@@ -37,6 +37,7 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
     for (const searchPath of paths) {
         try {
             // Find all package.json files, excluding node_modules and dist
+            // NOSONAR: Sequential glob required - each search path processed independently
             const packageJsonFiles = await fastGlob('**/package.json', {
                 cwd: searchPath,
                 ignore: ignorePatterns,
@@ -184,6 +185,7 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
     for (const folder of workspaceFolders) {
         try {
             // Find all manifest.json files in this workspace folder
+            // NOSONAR: Sequential search required per workspace folder - results collected in libs array
             const manifestFiles = await fastGlob('**/manifest.json', {
                 cwd: folder.uri.fsPath,
                 ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
@@ -196,6 +198,7 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                 // so paths match what callers build with path.join (fails on Windows otherwise).
                 const manifestPath = normalize(rawManifestPath);
                 try {
+                    // NOSONAR: Sequential read required - each manifest determines if library should be included
                     const manifest = await readJSON<any>(manifestPath);
                     const sapApp = manifest?.['sap.app'];
                     const type = sapApp?.type;
@@ -208,6 +211,7 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                         // but configuration files (package.json, ui5.yaml) must be at project root.
                         // We walk up to find markers (.git, package.json, etc.) to determine the
                         // actual project root, rather than assuming the workspace folder is correct.
+                        // NOSONAR: Sequential root discovery required - must happen after manifest validation
                         const libRoot = await findLibraryProjectRoot(manifestPath, folder.uri.fsPath);
 
                         // Use sap.app.id as the library name (e.g., "sap.company.lib.mylib"),

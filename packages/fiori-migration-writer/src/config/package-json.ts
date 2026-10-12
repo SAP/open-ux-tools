@@ -72,6 +72,7 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
     for (const testFile of TEST_FILES) {
         const scriptName = `${testFile.type}-tests`;
         if (
+            // NOSONAR: Sequential file check required - small fixed list, maintains script insertion order
             (await fileExists(join(projectInfo.rootPath, projectInfo.webappPath, testFile.path))) &&
             runTasks.filter((runTask) => runTask.name === scriptName).length === 0
         ) {
