@@ -1,5 +1,72 @@
 # @sap-ux/ui5-test-writer
 
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Features
+
+- Split the List Report "Check table columns and actions" journey block into one `opaTest` per action (both single-table and multi-tab), and assert selection states for selection-driven bound actions in the `latest` FE V4 bucket. Fixes an `iCheckRows` timeout in multi-tab journeys by searching before the row check. [[da3aaf9](https://github.com/SAP/open-ux-tools/commit/da3aaf9db632bdce16a04c8f246e3a8aa9b03d1d)]
+
+## 1.16.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Bug Fixes
+
+- Refine List Report text-annotation column sort-order tests. Text/code columns with a maintained `Common.Text` annotation now get `iChangeSortOrder`/`iCheckSortOrder` tests (each reset to `SortOrder.None`), independent of the sort target's `UI.Hidden` state so a hiding annotation mistake is surfaced. Distinct code columns that share one text target each keep their own sort test, while the text-property assertion is emitted once per target. These tests are generated only for the `1.152` and `latest` template buckets (a UI5 version of 1.152.0 or greater, or an unspecified version which resolves to latest). [[9d0af19](https://github.com/SAP/open-ux-tools/commit/9d0af19ba6456d5a610c55db173b6e6825cb9ed7)]
+
+## 1.16.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/preview-middleware 1.2.24 → 1.2.25
+
+## 1.16.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.23 → 1.2.24
+
+## 1.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Features
+
+- Generate OPA column-adaptation-dialog tests validating that text-annotated List Report columns are available in the column personalization dialog (UI5 1.152.0+) [[4144d72](https://github.com/SAP/open-ux-tools/commit/4144d72af16a67860e00f859183da4d6038ef59e)]
+
+## 1.15.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- Chain filter adaptation steps (open/add/confirm) in the semantic-key List Report test so the sap.fe self-managing adapt-filter dialog is not closed twice [[3f8e83c](https://github.com/SAP/open-ux-tools/commit/3f8e83c9bdaf2073176351bc9957234e32571271)]
+
 ## 1.15.6
 
 ### Patch Changes
