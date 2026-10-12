@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
+import type { IPopupRestoreFocusParams } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton/index.js';
 import { UICallout, UICalloutContentPadding } from '../UICallout/index.js';
 import { UiIcons } from '../Icons.js';
@@ -71,6 +72,12 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         invertedCalloutTheme
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
+    // When the callout is dismissed FluentUI restores focus to the element that was focused
+    // before it opened (this button). If accepting the suggestion hands control to a host
+    // dialog that takes focus (e.g. a VS Code QuickPick to choose the i18n file), that focus
+    // restore would steal focus back into the webview and close the host dialog. This ref lets
+    // us skip the restore for a single dismiss triggered by creating a new entry.
+    const skipRestoreFocusRef = useRef(false);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
         if (suggestion.suggest?.type === SuggestValueType.Existing) {
@@ -78,12 +85,18 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
             // Trigger show existing entry callbACK
             onShowExistingEntry?.(suggestion.suggest.entry);
         } else {
+            // Opening the callout — restore focus on the next dismiss unless an accept opts out.
+            skipRestoreFocusRef.current = false;
             setCalloutVisible(!calloutVisible);
         }
     }, [calloutVisible, suggestion]);
     const onAccept = useCallback((): void => {
         if (suggestion.suggest) {
             if (suggestion.suggest.type === SuggestValueType.New) {
+                // Creating a new entry can hand control to a host dialog (e.g. a VS Code
+                // QuickPick). Suppress the callout's focus restore for this dismiss so it does
+                // not steal focus from that dialog.
+                skipRestoreFocusRef.current = true;
                 onCreateNewEntry?.(suggestion.suggest.entry);
             }
             if (value !== suggestion.suggest.i18n) {
@@ -95,6 +108,15 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
     }, [suggestion, onCreateNewEntry, onUpdateValue, value]);
     const onCancel = useCallback((): void => {
         setCalloutVisible(false);
+    }, []);
+    const onRestoreFocus = useCallback((params: IPopupRestoreFocusParams): void => {
+        if (skipRestoreFocusRef.current) {
+            // Reset so a subsequent open restores focus as usual.
+            skipRestoreFocusRef.current = false;
+            return;
+        }
+        // Default FluentUI behavior: return focus to the element focused before the callout opened.
+        params.originalElement?.focus();
     }, []);
 
     return (
@@ -120,6 +142,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     setInitialFocus={true}
                     className={getCalloutClassNames(invertedCalloutTheme)}
                     onDismiss={onCancel}
+                    onRestoreFocus={onRestoreFocus}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
                         {suggestion.message}

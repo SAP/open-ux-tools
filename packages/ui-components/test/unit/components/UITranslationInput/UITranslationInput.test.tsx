@@ -403,6 +403,51 @@ describe('<UITranslationInput />', () => {
         });
     });
 
+    describe('Focus restore on dismiss', () => {
+        const renderForFocus = (value = 'new value') => {
+            render(
+                <UITranslationInput
+                    id={id}
+                    entries={entries}
+                    allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    i18nPrefix={'i18n'}
+                    value={value}
+                    onCreateNewEntry={jest.fn()}
+                />
+            );
+        };
+
+        test('does not restore focus to the trigger when a new entry is created', () => {
+            renderForFocus();
+            // The trigger button is the element FluentUI captures to restore focus to on dismiss.
+            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
+            triggerBtn.focus();
+            clickI18nButton();
+            // Focus is inside the callout when the user confirms (as in the real flow).
+            const confirmBtn = document.querySelector(`#${id}-i18n-button-action-confirm`) as HTMLElement;
+            confirmBtn.focus();
+            fireEvent.click(confirmBtn);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            // Focus must NOT be pulled back to the trigger; otherwise it would steal focus from a
+            // host dialog (e.g. a VS Code QuickPick) opened in response and close it.
+            expect(document.activeElement).not.toBe(triggerBtn);
+        });
+
+        test('restores focus to the trigger when the callout is cancelled', () => {
+            renderForFocus();
+            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
+            triggerBtn.focus();
+            clickI18nButton();
+            const cancelBtn = document.querySelector(`#${id}-i18n-button-action-cancel`) as HTMLElement;
+            cancelBtn.focus();
+            fireEvent.click(cancelBtn);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            // Cancelling keeps the default FluentUI behavior: focus returns to the trigger button.
+            expect(document.activeElement).toBe(triggerBtn);
+        });
+    });
+
     test('Test "string" property', () => {
         const acceptButtonLabel = 'Dummy accept';
         render(
