@@ -17,26 +17,31 @@ export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFol
     } else {
         wsRoots = wsFolders || [];
     }
-    // Find all folders containing a pom - sequential to collect results in projects array
-    const projects: string[] = [];
-    for (const root of wsRoots) {
-        try {
-            // NOSONAR: Sequential search required - accumulates results across workspace roots
-            await findWebIDEProject(root, projects);
-        } catch {
-            // Continue scanning other roots even if one fails
-        }
-    }
-    return projects;
+
+    // Process all workspace roots in parallel
+    const projectArrays = await Promise.all(
+        wsRoots.map(async (root) => {
+            try {
+                return await findWebIDEProject(root);
+            } catch {
+                // Continue scanning other roots even if one fails
+                return [];
+            }
+        })
+    );
+
+    // Flatten all results
+    return projectArrays.flat();
 }
 
 /**
  * Find all maven project(s) by locating pom.xml in the VS code workspace root
  *
  * @param wsRoot
- * @param projects
+ * @returns Array of project paths
  */
-async function findWebIDEProject(wsRoot: string, projects: string[]): Promise<void> {
+async function findWebIDEProject(wsRoot: string): Promise<string[]> {
+    const projects: string[] = [];
     const entries = await fg([`**/${FileName.Pom}`, `**/${FileName.NeoApp}`], {
         cwd: wsRoot,
         ignore: [
@@ -50,20 +55,28 @@ async function findWebIDEProject(wsRoot: string, projects: string[]): Promise<vo
             '**/Web/MDKModule/**'
         ] // GH #14290
     });
-    // Check each entry sequentially to collect non-Fiori Tools projects
-    for (const entry in entries) {
-        let fioriToolsProject = false;
-        const file = join(wsRoot, entries[entry]);
-        // check for neo-app.json or pom.xml file present
-        // NOSONAR: Sequential check required - first tooling package determines project type
-        fioriToolsProject =
-            (await isFioriToolsProject(dirname(file), '@sap-ux/ui5-tooling')) ||
-            // NOSONAR: Sequential fallback check if first tooling package not found
-            (await isFioriToolsProject(dirname(file), '@sap/ux-ui5-tooling'));
-        if (!projects.includes(dirname(file)) && !fioriToolsProject) {
-            projects.push(dirname(file));
-        }
-    }
+
+    // Process all entries in parallel
+    const results = await Promise.all(
+        Object.keys(entries).map(async (entry) => {
+            const file = join(wsRoot, entries[entry]);
+            const dir = dirname(file);
+
+            // Check for neo-app.json or pom.xml file present
+            // Check both tooling packages (await in series is intentional - short-circuit on first match)
+            const fioriToolsProject =
+                (await isFioriToolsProject(dir, '@sap-ux/ui5-tooling')) ||
+                (await isFioriToolsProject(dir, '@sap/ux-ui5-tooling'));
+
+            return !fioriToolsProject ? dir : null;
+        })
+    );
+
+    // Filter out nulls and duplicates
+    const uniqueDirs = [...new Set(results.filter((r): r is string => r !== null))];
+    projects.push(...uniqueDirs);
+
+    return projects;
 }
 
 /**

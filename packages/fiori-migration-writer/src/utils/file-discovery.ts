@@ -34,59 +34,66 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
     const roots: string[] = [];
     const ignorePatterns = ['**/node_modules/**', '**/dist/**', '**/.git/**'];
 
-    for (const searchPath of paths) {
-        try {
-            // Find all package.json files, excluding node_modules and dist
-            // NOSONAR: Sequential glob required - each search path processed independently
-            const packageJsonFiles = await fastGlob('**/package.json', {
-                cwd: searchPath,
-                ignore: ignorePatterns,
-                absolute: true,
-                onlyFiles: true
-            });
+    // Process all search paths in parallel for better performance
+    const pathResults = await Promise.all(
+        paths.map(async (searchPath) => {
+            try {
+                // Find all package.json files, excluding node_modules and dist
+                const packageJsonFiles = await fastGlob('**/package.json', {
+                    cwd: searchPath,
+                    ignore: ignorePatterns,
+                    absolute: true,
+                    onlyFiles: true
+                });
 
-            // Read all package.json files in parallel for better performance
-            const checkResults = await Promise.all(
-                packageJsonFiles.map(async (pkgPath) => {
-                    // fast-glob always returns POSIX separators; normalize to the OS-native
-                    // form so results match paths callers build with path.join (fails on Windows otherwise).
-                    const dir = normalize(dirname(pkgPath));
+                // Read all package.json files in parallel for better performance
+                const checkResults = await Promise.all(
+                    packageJsonFiles.map(async (pkgPath) => {
+                        // fast-glob always returns POSIX separators; normalize to the OS-native
+                        // form so results match paths callers build with path.join (fails on Windows otherwise).
+                        const dir = normalize(dirname(pkgPath));
 
-                    if (sapuxRequired) {
-                        try {
-                            const pkg = await readJSON<any>(pkgPath);
-                            // Check for SAP UX / Fiori Tools markers:
-                            // 1. "sapux": true property (Fiori Tools marker)
-                            // 2. Dependencies starting with @sap-ux/ or @sap/ux- (Fiori Tools packages)
-                            const hasSapux =
-                                pkg?.sapux === true ||
-                                Object.keys(pkg?.dependencies || {}).some(
-                                    (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
-                                ) ||
-                                Object.keys(pkg?.devDependencies || {}).some(
-                                    (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
-                                );
+                        if (sapuxRequired) {
+                            try {
+                                const pkg = await readJSON<any>(pkgPath);
+                                // Check for SAP UX / Fiori Tools markers:
+                                // 1. "sapux": true property (Fiori Tools marker)
+                                // 2. Dependencies starting with @sap-ux/ or @sap/ux- (Fiori Tools packages)
+                                const hasSapux =
+                                    pkg?.sapux === true ||
+                                    Object.keys(pkg?.dependencies || {}).some(
+                                        (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
+                                    ) ||
+                                    Object.keys(pkg?.devDependencies || {}).some(
+                                        (dep) => dep.startsWith('@sap-ux/') || dep.startsWith('@sap/ux-')
+                                    );
 
-                            return hasSapux ? dir : null;
-                        } catch (error: unknown) {
-                            // Expected: package.json may be malformed or unreadable in some projects.
-                            // Safe to skip - project will not be included in results.
-                            return null;
+                                return hasSapux ? dir : null;
+                            } catch (error: unknown) {
+                                // Expected: package.json may be malformed or unreadable in some projects.
+                                // Safe to skip - project will not be included in results.
+                                // Error is intentionally not logged to avoid console noise
+                                return null;
+                            }
+                        } else {
+                            return dir;
                         }
-                    } else {
-                        return dir;
-                    }
-                })
-            );
+                    })
+                );
 
-            // Add non-null results to roots
-            roots.push(...checkResults.filter((r): r is string => r !== null));
-        } catch (error: unknown) {
-            // Expected: search path may not exist, may not be accessible, or fast-glob may fail on invalid patterns.
-            // Safe to skip this path and continue scanning remaining paths - partial results are still useful.
-            continue;
-        }
-    }
+                // Return non-null results
+                return checkResults.filter((r): r is string => r !== null);
+            } catch (error: unknown) {
+                // Expected: search path may not exist, may not be accessible, or fast-glob may fail on invalid patterns.
+                // Safe to skip this path and continue scanning remaining paths - partial results are still useful.
+                // Error is intentionally not logged to avoid console noise
+                return [];
+            }
+        })
+    );
+
+    // Flatten results from all paths
+    roots.push(...pathResults.flat());
 
     // Remove duplicates and sort alphabetically
     return [...new Set(roots)].sort((a, b) => a.localeCompare(b));

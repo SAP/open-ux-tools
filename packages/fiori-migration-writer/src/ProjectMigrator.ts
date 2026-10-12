@@ -89,41 +89,12 @@ export class ProjectMigrator {
     /**
      * migrate project
      *
-     * @param projectRootOrOptions - Project root path (legacy) or migration options object
-     * @param baseUri - Base URI for backend services (legacy parameter, use options object instead)
-     * @param ui5SnapshotUrl - URL for UI5 snapshot version (legacy parameter, use options object instead)
-     * @param importProjectInfo - Optional partial project information (legacy parameter, use options object instead)
-     * @param vscode - VS Code API instance (legacy parameter, use options object instead)
-     * @param internalToggle - Internal feature toggle flag (legacy parameter, use options object instead)
-     * @param fs - Optional mem-fs-editor instance (legacy parameter, use options object instead)
-     * @param strict - Strict mode flag (legacy parameter, use options object instead)
+     * @param options - Migration options object
      * @returns Promise with fs editor, migration result, and messages
      */
     public static async migrate(
-        projectRootOrOptions: string | MigrateOptions,
-        baseUri?: string,
-        ui5SnapshotUrl?: string,
-        importProjectInfo?: Partial<ImportProjectInfo>,
-        vscode?: any,
-        internalToggle: boolean = false,
-        fs?: Editor,
-        strict: boolean = false
+        options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
-        // Normalize to options object
-        const options: MigrateOptions =
-            typeof projectRootOrOptions === 'string'
-                ? {
-                      projectRoot: projectRootOrOptions,
-                      baseUri: baseUri!,
-                      ui5SnapshotUrl: ui5SnapshotUrl!,
-                      importProjectInfo,
-                      vscode,
-                      internalToggle,
-                      fs,
-                      strict
-                  }
-                : projectRootOrOptions;
-
         const {
             projectRoot,
             baseUri: baseUriOpt,

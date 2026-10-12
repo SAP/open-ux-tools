@@ -23,6 +23,7 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
     } catch (error: unknown) {
         // Expected: JSON stringify/parse may fail if extensionProjectSettings contains circular references
         // or invalid data. Safe to fallback to original content - migration will proceed with unmodified settings.
+        // Error is intentionally not logged to avoid console noise for expected edge cases
         extensionProjectSettingsJSON = projectInfo.extensionProjectSettings;
     }
     // apply Destination in extensionProjectSettings
