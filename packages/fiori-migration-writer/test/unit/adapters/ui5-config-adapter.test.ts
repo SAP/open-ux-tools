@@ -4,7 +4,7 @@ import {
     generateUI5MockYamlContent,
     initI18n
 } from '../../../src/index.js';
-import type { TemplateData } from '../../../src/index.js';
+import type { TemplateData, UI5YamlOptions } from '../../../src/index.js';
 import { parse } from 'yaml';
 
 jest.setTimeout(30000);
@@ -23,10 +23,18 @@ const createTemplateData = (overrides: Partial<TemplateData> = {}): TemplateData
     };
 };
 
+// Helper to create UI5YamlOptions
+const createOptions = (templateData: TemplateData, overrides: Partial<UI5YamlOptions> = {}): UI5YamlOptions => {
+    return {
+        templateData,
+        ...overrides
+    };
+};
+
 describe('UI5 Config Adapter - generateUI5YamlContent', () => {
     test('should generate basic ui5.yaml with minimal config', async () => {
         const templateData = createTemplateData();
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
 
         expect(result).toBeTruthy();
         expect(result).toContain('test-app');
@@ -43,7 +51,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             }
         });
 
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         const parsed = parse(result);
 
         const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');
@@ -55,7 +63,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
 
     test('should include fiori-tools-appreload middleware', async () => {
         const templateData = createTemplateData();
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         const parsed = parse(result);
 
         const appreloadMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-appreload');
@@ -72,7 +80,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             }
         });
 
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         const parsed = parse(result);
 
         const previewMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-preview');
@@ -83,7 +91,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
 
     test('should not include preview middleware when appId is missing', async () => {
         const templateData = createTemplateData();
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         const parsed = parse(result);
 
         const previewMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-preview');
@@ -99,15 +107,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             }
         });
 
-        const result = await generateUI5YamlContent(
-            templateData,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            true
-        );
+        const result = await generateUI5YamlContent(createOptions(templateData, { setUI5Version: true }));
         const parsed = parse(result);
 
         const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');
@@ -126,15 +126,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             }
         });
 
-        const result = await generateUI5YamlContent(
-            templateData,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            true
-        );
+        const result = await generateUI5YamlContent(createOptions(templateData, { setUI5Version: true }));
         const parsed = parse(result);
         const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');
 
@@ -151,15 +143,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             }
         });
 
-        const result = await generateUI5YamlContent(
-            templateData,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            false
-        );
+        const result = await generateUI5YamlContent(createOptions(templateData, { setUI5Version: false }));
         const parsed = parse(result);
 
         const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');
@@ -168,7 +152,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
 
     test('should apply webappPath when provided', async () => {
         const templateData = createTemplateData();
-        const result = await generateUI5YamlContent(templateData, undefined, undefined, undefined, undefined, 'webapp');
+        const result = await generateUI5YamlContent(createOptions(templateData, { webappPath: 'webapp' }));
 
         expect(result).toContain('webapp');
     });
@@ -185,7 +169,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             }
         });
 
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         const parsed = parse(result);
 
         const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');
@@ -199,7 +183,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             ui5Yaml: { name: 'TestApp', ui5Url: 'https://ui5.sap.com' }
         });
 
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         expect(result).toContain('testapp');
     });
 
@@ -209,7 +193,7 @@ describe('UI5 Config Adapter - generateUI5YamlContent', () => {
             ui5Yaml: { ui5Url: 'https://ui5.sap.com' }
         });
 
-        const result = await generateUI5YamlContent(templateData);
+        const result = await generateUI5YamlContent(createOptions(templateData));
         expect(result).toContain('app');
     });
 });
@@ -225,7 +209,7 @@ describe('UI5 Config Adapter - generateUI5LocalYamlContent', () => {
             }
         });
 
-        const result = await generateUI5LocalYamlContent(templateData);
+        const result = await generateUI5LocalYamlContent(createOptions(templateData));
         expect(result).toBeTruthy();
         expect(result).toContain('test-app');
         expect(result).toContain('application');
@@ -240,7 +224,7 @@ describe('UI5 Config Adapter - generateUI5LocalYamlContent', () => {
             }
         });
 
-        const result = await generateUI5LocalYamlContent(templateData);
+        const result = await generateUI5LocalYamlContent(createOptions(templateData));
         const parsed = parse(result);
 
         const proxyMiddleware = parsed.server.customMiddleware.find((m: any) => m.name === 'fiori-tools-proxy');

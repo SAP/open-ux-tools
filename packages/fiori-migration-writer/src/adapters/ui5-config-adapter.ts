@@ -16,6 +16,28 @@ import { updateNeoYamlBackends, updateYamlBackends } from '../config/backend.js'
 import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './ui5-config-helpers.js';
 
 /**
+ * Options for generating UI5 YAML content
+ */
+export interface UI5YamlOptions {
+    /** Migration template data containing project configuration */
+    templateData: TemplateData;
+    /** Optional array of neo-app destinations */
+    neoappDestinations?: NeoappDestination[];
+    /** Array to collect warning messages */
+    messages?: Message[];
+    /** Selected destination name */
+    destination?: string;
+    /** First neo-app destination name */
+    firstNeoAppDestination?: string;
+    /** Optional webapp path for builder configuration */
+    webappPath?: string;
+    /** Whether to set UI5 version in proxy middleware */
+    setUI5Version?: boolean;
+    /** Enable strict validation mode (WARNING becomes ERROR) */
+    strict?: boolean;
+}
+
+/**
  * Add sap-fe-mockserver middleware to the YAML configuration
  *
  * @param orderedYaml - YAML object to modify
@@ -58,26 +80,21 @@ function addMockserverMiddleware(orderedYaml: any, templateData: TemplateData): 
 /**
  * Generate ui5.yaml content using @sap-ux/ui5-config builder
  *
- * @param templateData - Migration template data containing project configuration
- * @param neoappDestinations - Optional array of neo-app destinations
- * @param messages - Array to collect warning messages
- * @param destination - Selected destination name
- * @param firstNeoAppDestination - First neo-app destination name
- * @param webappPath - Optional webapp path for builder configuration
- * @param setUI5Version - Whether to set UI5 version in proxy middleware
- * @param strict - Enable strict validation mode (WARNING becomes ERROR)
+ * @param options - UI5 YAML generation options
  * @returns Promise resolving to ui5.yaml content as string
  */
-export async function generateUI5YamlContent(
-    templateData: TemplateData,
-    neoappDestinations?: NeoappDestination[],
-    messages?: Message[],
-    destination?: string,
-    firstNeoAppDestination?: string,
-    webappPath?: string,
-    setUI5Version?: boolean,
-    strict: boolean = false
-): Promise<string> {
+export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<string> {
+    const {
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        setUI5Version,
+        strict = false
+    } = options;
+
     const config = await UI5Config.newInstance('', { validateSchema: false });
 
     // Set metadata and type
@@ -160,24 +177,20 @@ export async function generateUI5YamlContent(
  * when localUI5Version and sapUiLibs are provided. The @sap-ux/ui5-config library
  * auto-adds the framework section based on these settings.
  *
- * @param templateData - Migration template data containing project configuration
- * @param neoappDestinations - Optional array of neo-app destinations
- * @param messages - Array to collect warning messages
- * @param destination - Selected destination name
- * @param firstNeoAppDestination - First neo-app destination name
- * @param webappPath - Optional webapp path for builder configuration
- * @param strict - Enable strict validation mode (WARNING becomes ERROR)
+ * @param options - UI5 YAML generation options (setUI5Version is ignored for local yaml)
  * @returns Promise resolving to ui5-local.yaml content as string
  */
-export async function generateUI5LocalYamlContent(
-    templateData: TemplateData,
-    neoappDestinations?: NeoappDestination[],
-    messages?: Message[],
-    destination?: string,
-    firstNeoAppDestination?: string,
-    webappPath?: string,
-    strict: boolean = false
-): Promise<string> {
+export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Promise<string> {
+    const {
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        strict = false
+    } = options;
+
     const config = await UI5Config.newInstance('', { validateSchema: false });
 
     // Set metadata and type

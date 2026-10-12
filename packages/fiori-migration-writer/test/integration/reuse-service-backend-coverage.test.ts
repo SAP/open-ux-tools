@@ -72,7 +72,7 @@ describe('Service Detection Edge Cases - Coverage Tests', () => {
         // Should handle multiple dataSources without critical errors
         expect(result).toBe(true);
         const criticalErrors = messages.filter((m) => m.type === 'ERROR' && m.severity === 'critical');
-        expect(criticalErrors.length).toBe(0);
+        expect(criticalErrors).toHaveLength(0);
     });
 });
 

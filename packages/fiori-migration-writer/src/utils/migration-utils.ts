@@ -114,7 +114,7 @@ export async function generateTemplate(
 
     // 4. Render template
     const { isRendered = true, opts = {} } = templateProps;
-    let content = await renderTemplate(templateRoot, fullTemplateName, resolvedData, opts, isRendered);
+    let content = renderTemplate(templateRoot, fullTemplateName, resolvedData, opts, isRendered);
 
     // 5. Apply file-specific handlers
     content = await applyFileSpecificHandlers(templateName, content, projectRoot, targetFile, templateData);

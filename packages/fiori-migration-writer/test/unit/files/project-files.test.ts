@@ -222,7 +222,7 @@ describe('project-files', () => {
 
             // With mem-fs, this should succeed even with non-real paths
             expect(result.result).toBe(true);
-            expect(result.messages.length).toBe(0);
+            expect(result.messages).toHaveLength(0);
         });
 
         test('should create ui5.yaml with correct structure', async () => {

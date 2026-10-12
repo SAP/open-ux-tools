@@ -314,51 +314,36 @@ describe('Migration Integration Tests', () => {
     });
 
     describe('Special Cases', () => {
-        test('should migrate webide_v2_lrop_project_no_webapp', async () => {
-            const projectPath = join(TEST_INPUT, 'webide_v2_lrop_project_no_webapp');
-            const fs = loadProjectIntoMemFs(projectPath);
+        test.each([
+            ['webide_v2_lrop_project_no_webapp'],
+            ['webide_v2_lrop_reuselib_ui5_tooling_routing_project'],
+            ['CA_FIORI_INBOXExtension']
+        ])(
+            'should migrate %s',
+            async (projectName) => {
+                const projectPath = join(TEST_INPUT, projectName);
+                const fs = loadProjectIntoMemFs(projectPath);
 
-            const {
-                fs: updatedFs,
-                result,
-                messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
-                fs
-            );
+                const {
+                    fs: updatedFs,
+                    result,
+                    messages
+                } = await ProjectMigrator.migrate(
+                    projectPath,
+                    DUMMY_BACKEND_URL,
+                    UI5_SNAPSHOT_URL,
+                    undefined,
+                    undefined,
+                    false,
+                    fs
+                );
 
-            expect(result).toBe(true);
-            expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            verifyMigratedFiles(updatedFs, projectPath, 'webide_v2_lrop_project_no_webapp');
-        });
-
-        test('should migrate webide_v2_lrop_reuselib_ui5_tooling_routing_project', async () => {
-            const projectPath = join(TEST_INPUT, 'webide_v2_lrop_reuselib_ui5_tooling_routing_project');
-            const fs = loadProjectIntoMemFs(projectPath);
-
-            const {
-                fs: updatedFs,
-                result,
-                messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
-                fs
-            );
-
-            expect(result).toBe(true);
-            expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            verifyMigratedFiles(updatedFs, projectPath, 'webide_v2_lrop_reuselib_ui5_tooling_routing_project');
-        });
+                expect(result).toBe(true);
+                expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
+                verifyMigratedFiles(updatedFs, projectPath, projectName);
+            },
+            60000
+        );
 
         test('should migrate openui5-sample-app', async () => {
             const projectPath = join(TEST_INPUT, 'openui5-sample-app');
@@ -382,29 +367,6 @@ describe('Migration Integration Tests', () => {
             // Just verify it doesn't crash
             expect(result).toBeDefined();
             verifyMigratedFiles(updatedFs, projectPath, 'openui5-sample-app');
-        });
-
-        test('should migrate CA_FIORI_INBOXExtension', async () => {
-            const projectPath = join(TEST_INPUT, 'CA_FIORI_INBOXExtension');
-            const fs = loadProjectIntoMemFs(projectPath);
-
-            const {
-                fs: updatedFs,
-                result,
-                messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
-                fs
-            );
-
-            expect(result).toBe(true);
-            expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
-            verifyMigratedFiles(updatedFs, projectPath, 'CA_FIORI_INBOXExtension');
         });
     });
 

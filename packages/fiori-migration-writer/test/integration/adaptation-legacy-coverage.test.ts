@@ -73,6 +73,6 @@ describe('Legacy NEO App - Coverage Tests', () => {
         // Should succeed or have warnings only
         expect(result).toBe(true);
         const criticalErrors = messages.filter((m) => m.type === 'ERROR' && m.severity === 'critical');
-        expect(criticalErrors.length).toBe(0);
+        expect(criticalErrors).toHaveLength(0);
     });
 });

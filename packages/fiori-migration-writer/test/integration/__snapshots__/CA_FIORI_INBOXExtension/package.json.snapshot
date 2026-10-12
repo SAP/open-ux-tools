@@ -14,14 +14,11 @@ exports[`Migration Integration Tests Special Cases should migrate CA_FIORI_INBOX
   },
   \\"scripts\\": {
     \\"build_old\\": \\"ui5 build --include-task=generateManifestBundle generateCachebusterInfo\\",
-    \\"start-ui5-flp\\": \\"fiori run --open \\\\\\"/test-resources/sap/ushell/shells/sandbox/fioriSandbox.html?sap-theme=sap_bluecrystal&sap-client=001&sap-ushell-test-url-url=..%2F..%2F..%2F..%2F..%2F..&sap-ushell-test-url-additionalInformation=SAPUI5.Component%3Ddemo.fiori.inbox.SAMPLE_FIORI_INBOXExtension#Test-url\\\\\\"\\",
+    \\"start-ui5-flp\\": \\"fiori run --open \\\\\\"/test-resources/sap/ushell/shells/sandbox/fioriSandbox.html?sap-theme=sap_bluecrystal&sap-ushell-test-url-url=..%2F..%2F..%2F..%2F..%2F..&sap-ushell-test-url-additionalInformation=SAPUI5.Component%3Ddemo.fiori.inbox.SAMPLE_FIORI_INBOXExtension#Test-url\\\\\\"\\",
     \\"start_old\\": \\"fiori run --open \\\\\\"index.html?sap-client=001&sap-ui-xx-viewCache=false#title-display\\\\\\"\\",
     \\"deploy_old\\": \\"fiori verify\\",
     \\"deploy-config_old\\": \\"fiori add deploy-config\\",
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#app-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#app-tile\\\\\\"\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#\\\\\\"\\",
     \\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\"

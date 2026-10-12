@@ -54,7 +54,8 @@ export async function findNestedReuseLibManifest(
         const manifest: Manifest = await readJSON(matchedLib.value.path);
         return { manifest, manifestPath: matchedLib.value.path };
     } catch (error: unknown) {
-        // Manifest became unreadable between discovery and read - treat as not found
+        // Expected: manifest.json may become unreadable between discovery and read (race condition),
+        // or may contain invalid JSON. Safe to return undefined - project will be treated as non-reuse library.
         return undefined;
     }
 }
@@ -84,7 +85,8 @@ export async function checkIfReuseLib(
         const reuseManifest: Manifest = await readJSON(join(projectRoot, FileName.Manifest));
         return reuseManifest['sap.app']?.type === 'library';
     } catch (error: unknown) {
-        // manifest not found
+        // Expected: manifest.json may not exist or may be malformed in non-library projects.
+        // Safe to return false - project will not be identified as a reuse library.
         return false;
     }
 }

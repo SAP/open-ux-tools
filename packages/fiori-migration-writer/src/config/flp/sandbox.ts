@@ -116,6 +116,8 @@ async function processMockSandboxFile(
             targetFile: 'test/flpSandboxMockServer.html'
         };
     } catch (error: unknown) {
+        // Expected: flpSandboxMockServer.html may not exist or may be unreadable in legacy projects.
+        // Safe to return empty defaults - mock server configuration is optional.
         return { hasRootIntent: false };
     }
 }

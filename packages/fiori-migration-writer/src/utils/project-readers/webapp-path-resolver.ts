@@ -139,7 +139,7 @@ export async function getWebappPath(projectRoot: string, type?: MigrationTypes, 
     }
 
     // Try ui5.yaml
-    const ui5YamlPath = await resolveFromUi5Yaml(projectRoot);
+    const ui5YamlPath = resolveFromUi5Yaml(projectRoot);
     if (ui5YamlPath) {
         return ui5YamlPath;
     }

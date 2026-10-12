@@ -159,7 +159,7 @@ describe('utils/project-discovery', () => {
             // Should not have duplicates
             const descriptions = result.map((r) => r.description);
             const uniqueDescriptions = [...new Set(descriptions)];
-            expect(descriptions.length).toBe(uniqueDescriptions.length);
+            expect(descriptions).toHaveLength(uniqueDescriptions.length);
         });
 
         it('should return label and description for each project', async () => {

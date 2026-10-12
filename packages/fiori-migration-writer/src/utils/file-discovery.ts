@@ -68,7 +68,8 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
 
                             return hasSapux ? dir : null;
                         } catch (error: unknown) {
-                            // Invalid package.json, skip
+                            // Expected: package.json may be malformed or unreadable in some projects.
+                            // Safe to skip - project will not be included in results.
                             return null;
                         }
                     } else {
@@ -80,8 +81,8 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
             // Add non-null results to roots
             roots.push(...checkResults.filter((r): r is string => r !== null));
         } catch (error: unknown) {
-            // Expected: path may not exist, may not be readable, or fast-glob may fail on invalid patterns.
-            // Safe to skip this path and continue with remaining paths.
+            // Expected: search path may not exist, may not be accessible, or fast-glob may fail on invalid patterns.
+            // Safe to skip this path and continue scanning remaining paths - partial results are still useful.
             continue;
         }
     }
@@ -127,6 +128,8 @@ async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: s
             await access(path);
             return true;
         } catch (error: unknown) {
+            // Expected: file/directory may not exist (ENOENT) or may not be accessible (EACCES).
+            // This is the standard pattern for existence checks - return false for any access failure.
             return false;
         }
     };
@@ -225,12 +228,14 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                         });
                     }
                 } catch (error: unknown) {
-                    // Invalid manifest.json, skip
+                    // Expected: manifest.json may be malformed JSON or unreadable in some library projects.
+                    // Safe to skip - library will not be included in reuse library results.
                     continue;
                 }
             }
         } catch (error: unknown) {
-            // If folder doesn't exist or can't be read, skip it
+            // Expected: workspace folder may not exist, may not be accessible, or fast-glob may fail.
+            // Safe to skip - continue scanning remaining workspace folders for reuse libraries.
             continue;
         }
     }
@@ -279,6 +284,7 @@ export async function findAll(
             }
         }
     } catch (error: unknown) {
-        // If search path doesn't exist or can't be read, just return empty results
+        // Expected: search path may not exist, may not be accessible, or fast-glob may fail on invalid patterns.
+        // Safe to return without adding results - caller receives partial results from other search paths.
     }
 }

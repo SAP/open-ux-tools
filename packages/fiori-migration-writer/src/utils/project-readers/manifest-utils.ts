@@ -123,7 +123,9 @@ function extractFlpIntentFromConfig(htmlContent: string): string | undefined {
             return Object.keys(applications)[0];
         }
     } catch (error: unknown) {
-        // Invalid JSON, return undefined
+        // Expected: FLP sandbox config may contain JavaScript-style JSON (unquoted keys, trailing commas)
+        // that cannot be parsed after our quote-adding heuristics. Safe to return undefined - FLP intent
+        // will be determined from other sources (manifest.json crossNavigation or defaults).
     }
 
     return undefined;
@@ -144,6 +146,8 @@ export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string
         const htmlContent = readFile(htmlFilePath);
         return extractFlpIntentFromConfig(htmlContent);
     } catch (error: unknown) {
+        // Expected: HTML file may be malformed, contain encoding issues, or have unexpected structure.
+        // Safe to return undefined - FLP intent will be derived from manifest.json or use defaults.
         return undefined;
     }
 }

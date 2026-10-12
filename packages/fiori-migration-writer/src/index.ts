@@ -92,6 +92,7 @@ export {
     generateUI5LocalYamlContent,
     generateUI5MockYamlContent
 } from './adapters/ui5-config-adapter.js';
+export type { UI5YamlOptions } from './adapters/ui5-config-adapter.js';
 
 // Additional exports from utils for test compatibility
 export { readManifest, getUI5Version } from './utils/manifest-and-version-utils.js';

@@ -66,6 +66,8 @@ function extractMainServiceDatasource(manifest: Manifest, mainService: string): 
     try {
         return manifest['sap.app']?.dataSources?.[mainService] || {};
     } catch (error: unknown) {
+        // Expected: manifest structure may be malformed in legacy projects, causing property access to throw.
+        // Safe to return empty object - service configuration will be derived from other sources.
         return {};
     }
 }
@@ -108,7 +110,8 @@ async function extractPomDetails(
             sapAppId = resolveAppIdFromPom(manifest['sap.app'].id, pomJSON);
         }
     } catch (error: unknown) {
-        // Do nothing - return defaults
+        // Expected: pom.xml may be malformed or contain invalid XML in legacy WebIDE projects.
+        // Safe to return defaults - app version and ID will be derived from manifest.json instead.
     }
 
     return { sapAppId, appVersion };
@@ -128,7 +131,8 @@ function resolveAppIdFromPom(manifestAppId: string, pomJSON: any): string {
         const result = sapAppIdKey.split('.').reduce((obj: any, key) => obj?.[key], pomJSON);
         return typeof result === 'string' ? result : manifestAppId;
     } catch (error: unknown) {
-        // Can't get AppId from pom.xml - return original
+        // Expected: property path resolution may fail if pom.xml structure doesn't match expected format.
+        // Safe to return original manifest app ID - it will be used as-is or resolved later.
         return manifestAppId;
     }
 }

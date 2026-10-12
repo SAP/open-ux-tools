@@ -1,5 +1,4 @@
-import pkg from 'lodash';
-const { get } = pkg;
+import get from 'lodash/get.js';
 import type { Data } from 'ejs';
 import type { TemplateProperties } from '../../types.js';
 

@@ -94,16 +94,16 @@ export async function generateAndWriteUI5Yaml(config: UI5YamlGenerationConfig): 
         strict = false
     } = config;
 
-    const ui5YamlContent = await generateUI5YamlContent(
+    const ui5YamlContent = await generateUI5YamlContent({
         templateData,
         neoappDestinations,
         messages,
         destination,
         firstNeoAppDestination,
         webappPath,
-        setUI5version,
+        setUI5Version: setUI5version,
         strict
-    );
+    });
 
     updateFile(join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
 }
@@ -129,7 +129,7 @@ export async function generateAndWriteUI5LocalYaml(config: UI5LocalYamlGeneratio
         return;
     }
 
-    const ui5LocalYamlContent = await generateUI5LocalYamlContent(
+    const ui5LocalYamlContent = await generateUI5LocalYamlContent({
         templateData,
         neoappDestinations,
         messages,
@@ -137,7 +137,7 @@ export async function generateAndWriteUI5LocalYaml(config: UI5LocalYamlGeneratio
         firstNeoAppDestination,
         webappPath,
         strict
-    );
+    });
 
     updateFile(join(rootPath, TemplateFileName.UI5LocalYaml), ui5LocalYamlContent);
 }

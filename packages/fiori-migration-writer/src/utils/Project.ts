@@ -88,6 +88,82 @@ async function tryFindNestedLibManifest(
     return undefined;
 }
 
+/**
+ * Handle manifest resolution when no manifest was found in standard locations
+ *
+ * @param projectRoot - Project root path
+ * @param migrationType - Migration type
+ * @param isProjectExtension - Whether project is an extension
+ * @param checkMigratableAdaptationProject - Function to check adaptation project
+ * @param checkIfReuseLib - Function to check if reuse library
+ * @returns Resolution result with manifest, webappPath, isReuseLib flag, and messages
+ */
+async function resolveManifestForUnknownProject(
+    projectRoot: string,
+    migrationType: MigrationTypes | undefined,
+    isProjectExtension: boolean,
+    checkMigratableAdaptationProject: (root: string) => Promise<any>,
+    checkIfReuseLib: (root: string, type?: MigrationTypes) => Promise<boolean>
+): Promise<{
+    manifest?: Manifest;
+    webappPath?: string;
+    isReuseLib: boolean;
+    messages: Message[];
+}> {
+    const messages: Message[] = [];
+    let isReuseLib = await checkIfReuseLib(projectRoot, migrationType);
+    let manifest: Manifest | undefined;
+    let webappPath: string | undefined;
+
+    if (!isReuseLib && !isProjectExtension) {
+        const nestedLib = await tryFindNestedLibManifest(projectRoot);
+        if (nestedLib) {
+            manifest = nestedLib.manifest;
+            webappPath = nestedLib.webappPath;
+            isReuseLib = true;
+        }
+    }
+
+    // Only report error if not a known project type without manifest
+    if (!isReuseLib && !isProjectExtension) {
+        const adaptationCheck = await checkMigratableAdaptationProject(projectRoot);
+        if (adaptationCheck === undefined) {
+            messages.push({ type: 'ERROR', description: i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION') });
+        }
+    }
+
+    return { manifest, webappPath, isReuseLib, messages };
+}
+
+/**
+ * Determine project type and return appropriate flags
+ *
+ * @param isReuseLib - Whether project is a reuse library
+ * @param isProjectExtension - Whether project is a project extension
+ * @param isAdaptationProject - Whether project is an adaptation project
+ * @param manifest - Project manifest
+ * @returns Project type identifier
+ */
+type ProjectType = 'regular' | 'reuseLib' | 'extension' | 'adaptation';
+
+function determineProjectType(
+    isReuseLib: boolean,
+    isProjectExtension: boolean,
+    isAdaptationProject: boolean,
+    manifest?: Manifest
+): ProjectType {
+    if (manifest && !isReuseLib && !isProjectExtension && !isAdaptationProject) {
+        return 'regular';
+    }
+    if (isReuseLib && !isProjectExtension) {
+        return 'reuseLib';
+    }
+    if (isProjectExtension) {
+        return 'extension';
+    }
+    return 'adaptation';
+}
+
 const defaultProjectInfo: ImportProjectInfo = {
     moduleName: '',
     moduleDescription: '',
@@ -155,26 +231,21 @@ export class ProjectAccess {
         // Check project type flags
         const isProjectExtension = await this.checkIfProjectExtension(projectRoot);
 
-        // If no manifest found, check for reuse lib or nested structure
+        // If no manifest found, resolve from unknown project structure
         if (!manifest) {
-            isReuseLib = await this.checkIfReuseLib(projectRoot, migrationType);
-
-            if (!isReuseLib && !isProjectExtension) {
-                const nestedLib = await tryFindNestedLibManifest(projectRoot);
-                if (nestedLib) {
-                    manifest = nestedLib.manifest;
-                    projectInfo.webappPath = nestedLib.webappPath;
-                    isReuseLib = true;
-                }
+            const resolution = await resolveManifestForUnknownProject(
+                projectRoot,
+                migrationType,
+                isProjectExtension,
+                this.checkMigratableAdaptationProject.bind(this),
+                this.checkIfReuseLib.bind(this)
+            );
+            manifest = resolution.manifest;
+            if (resolution.webappPath) {
+                projectInfo.webappPath = resolution.webappPath;
             }
-
-            // Only report error if not a known project type without manifest
-            if (!isReuseLib && !isProjectExtension) {
-                const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
-                if (adaptationCheck === undefined) {
-                    messages.push({ type: 'ERROR', description: i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION') });
-                }
-            }
+            isReuseLib = resolution.isReuseLib;
+            messages = messages.concat(resolution.messages);
         }
 
         // Determine reuse lib status if not yet known
@@ -184,73 +255,116 @@ export class ProjectAccess {
         const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
         const isAdaptationProject = adaptationCheck?.reference !== undefined;
 
-        if (manifest && !isReuseLib && !isProjectExtension && !isAdaptationProject) {
-            const result = await processRegularProject({
-                projectRoot,
-                manifest,
-                defaultProjectInfo,
-                projectInfo,
-                services: {
-                    projectData: {
-                        getPackageJson: this.getPackageJson.bind(this),
-                        getMainEntity: this.getMainEntity.bind(this),
-                        hasUI5Tooling: this.hasUI5Tooling.bind(this)
-                    },
-                    manifestAnalysis: {
-                        getSemanticObjectAction: this.getSemanticObjectAction.bind(this),
-                        getVersionFromManifest: this.getVersionFromManifest.bind(this),
-                        getFloorPlan: this.getFloorPlan.bind(this)
-                    },
-                    backendConfig: {
-                        getFirstBackend: this.getFirstBackend.bind(this),
-                        getFlpIntentFromHtml: this.getFlpIntentFromHtml.bind(this),
-                        getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
-                        getClientFromDestinationName: this.getClientFromDestinationName.bind(this)
-                    }
-                }
-            });
-            projectInfo = result.projectInfo;
-            messages = messages.concat(result.messages);
-        } else if (isReuseLib && !isProjectExtension) {
-            projectInfo = await processReuseLibrary(
-                projectRoot,
-                defaultProjectInfo,
-                workspaceFolders,
-                manifest,
-                this.getPackageJson.bind(this),
-                this.hasUI5Tooling.bind(this),
-                this.getReuseLibModuleName.bind(this)
-            );
-        } else if (isProjectExtension) {
-            projectInfo = await processProjectExtension({
-                projectRoot,
-                defaultProjectInfo,
-                projectInfo,
-                manifest,
-                getPackageJson: this.getPackageJson.bind(this),
-                hasUI5Tooling: this.hasUI5Tooling.bind(this),
-                readProjectExtensionSettings: this.readProjectExtensionSettings.bind(this),
-                getExtensionProjectModuleName: this.getExtensionProjectModuleName.bind(this),
-                getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
-                getFirstBackend: this.getFirstBackend.bind(this),
-                getClientFromDestinationName: this.getClientFromDestinationName.bind(this),
-                getFlpIntentFromHtml: this.getFlpIntentFromHtml.bind(this),
-                getManifestJson: this.getManifestJson.bind(this)
-            });
-        } else {
-            projectInfo = await processAdaptationProject({
-                projectRoot,
-                defaultProjectInfo,
-                projectInfo,
-                checkMigratableAdaptationProject: this.checkMigratableAdaptationProject.bind(this),
-                getPackageJson: this.getPackageJson.bind(this),
-                hasUI5Tooling: this.hasUI5Tooling.bind(this),
-                getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
-                getClientFromDestinationName: this.getClientFromDestinationName.bind(this),
-                getFirstBackend: this.getFirstBackend.bind(this)
-            });
-        }
+        // Process based on project type
+        const projectType = determineProjectType(isReuseLib, isProjectExtension, isAdaptationProject, manifest);
+        const result = await this.processProjectByType(
+            projectType,
+            projectRoot,
+            manifest,
+            projectInfo,
+            workspaceFolders
+        );
+        projectInfo = result.projectInfo;
+        messages = messages.concat(result.messages);
+
         return { projectInfo, messages };
+    }
+
+    /**
+     * Process project based on its type
+     *
+     * @param projectType - Type of project to process
+     * @param projectRoot - Project root path
+     * @param manifest - Project manifest
+     * @param projectInfo - Current project info
+     * @param workspaceFolders - Workspace folders
+     * @returns Processed project info and messages
+     */
+    private static async processProjectByType(
+        projectType: ProjectType,
+        projectRoot: string,
+        manifest: Manifest | undefined,
+        projectInfo: ImportProjectInfo,
+        workspaceFolders?: readonly ProjectFolder[]
+    ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
+        switch (projectType) {
+            case 'regular':
+                return processRegularProject({
+                    projectRoot,
+                    manifest: manifest!,
+                    defaultProjectInfo,
+                    projectInfo,
+                    services: {
+                        projectData: {
+                            getPackageJson: this.getPackageJson.bind(this),
+                            getMainEntity: this.getMainEntity.bind(this),
+                            hasUI5Tooling: this.hasUI5Tooling.bind(this)
+                        },
+                        manifestAnalysis: {
+                            getSemanticObjectAction: this.getSemanticObjectAction.bind(this),
+                            getVersionFromManifest: this.getVersionFromManifest.bind(this),
+                            getFloorPlan: this.getFloorPlan.bind(this)
+                        },
+                        backendConfig: {
+                            getFirstBackend: this.getFirstBackend.bind(this),
+                            getFlpIntentFromHtml: this.getFlpIntentFromHtml.bind(this),
+                            getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
+                            getClientFromDestinationName: this.getClientFromDestinationName.bind(this)
+                        }
+                    }
+                });
+
+            case 'reuseLib':
+                return {
+                    projectInfo: await processReuseLibrary(
+                        projectRoot,
+                        defaultProjectInfo,
+                        workspaceFolders,
+                        manifest,
+                        this.getPackageJson.bind(this),
+                        this.hasUI5Tooling.bind(this),
+                        this.getReuseLibModuleName.bind(this)
+                    ),
+                    messages: []
+                };
+
+            case 'extension':
+                return {
+                    projectInfo: await processProjectExtension({
+                        projectRoot,
+                        defaultProjectInfo,
+                        projectInfo,
+                        manifest,
+                        getPackageJson: this.getPackageJson.bind(this),
+                        hasUI5Tooling: this.hasUI5Tooling.bind(this),
+                        readProjectExtensionSettings: this.readProjectExtensionSettings.bind(this),
+                        getExtensionProjectModuleName: this.getExtensionProjectModuleName.bind(this),
+                        getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
+                        getFirstBackend: this.getFirstBackend.bind(this),
+                        getClientFromDestinationName: this.getClientFromDestinationName.bind(this),
+                        getFlpIntentFromHtml: this.getFlpIntentFromHtml.bind(this),
+                        getManifestJson: this.getManifestJson.bind(this)
+                    }),
+                    messages: []
+                };
+
+            case 'adaptation':
+            default:
+                return {
+                    projectInfo: await processAdaptationProject({
+                        projectRoot,
+                        defaultProjectInfo,
+                        projectInfo,
+                        checkMigratableAdaptationProject: this.checkMigratableAdaptationProject.bind(this),
+                        getPackageJson: this.getPackageJson.bind(this),
+                        hasUI5Tooling: this.hasUI5Tooling.bind(this),
+                        getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
+                        getClientFromDestinationName: this.getClientFromDestinationName.bind(this),
+                        getFirstBackend: this.getFirstBackend.bind(this)
+                    }),
+                    messages: []
+                };
+        }
     }
 
     // ========== Delegated Methods to Utilities ==========
@@ -296,8 +410,8 @@ export class ProjectAccess {
         return getMainEntity(manifest);
     }
 
-    public static async getFirstBackend(projectRoot: string) {
-        return getFirstBackend(projectRoot);
+    public static getFirstBackend(projectRoot: string): Promise<ReturnType<typeof getFirstBackend>> {
+        return Promise.resolve(getFirstBackend(projectRoot));
     }
 
     public static async checkMigratableAdaptationProject(projectRoot: string) {

