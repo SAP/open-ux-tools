@@ -20,10 +20,9 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
         deleteProjectJson = extensionProjectSettingsStr.includes(webDepStr);
         extensionProjectSettingsStr = extensionProjectSettingsStr.replaceAll(webDepStr, '/destinations/');
         extensionProjectSettingsJSON = JSON.parse(extensionProjectSettingsStr);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         // Expected: JSON stringify/parse may fail if extensionProjectSettings contains circular references
         // or invalid data. Safe to fallback to original content - migration will proceed with unmodified settings.
-        // Error is intentionally not logged to avoid console noise for expected edge cases
         extensionProjectSettingsJSON = projectInfo.extensionProjectSettings;
     }
     // apply Destination in extensionProjectSettings
@@ -53,7 +52,7 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
                 `/destinations/${projectInfo.destination}`
             );
             extensionProjectSettingsJSON = JSON.parse(extensionProjectSettingsStr);
-        } catch (error: unknown) {
+        } catch (_error: unknown) {
             // Expected: JSON stringify/parse may fail if destination replacement creates invalid JSON.
             // Safe to fallback to original content - migration will proceed with unmodified settings.
             extensionProjectSettingsJSON = projectInfo.extensionProjectSettings;

@@ -393,11 +393,11 @@ export class ProjectMigrator {
         // Check and update ui5*.yaml files sequentially - order doesn't matter but list is small
         for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
-            // NOSONAR: Sequential check required - only 2 files, no benefit from parallelization
+
             if (await exists(yamlPath)) {
                 // readFile and updateFile are sync mem-fs operations
                 const yamlContent = readFile(yamlPath);
-                // NOSONAR: Sequential processing required for mem-fs consistency
+
                 const yamlConfig = await UI5Config.newInstance(yamlContent);
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);

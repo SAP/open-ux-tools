@@ -145,7 +145,7 @@ export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string
 
         const htmlContent = readFile(htmlFilePath);
         return extractFlpIntentFromConfig(htmlContent);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         // Expected: HTML file may be malformed, contain encoding issues, or have unexpected structure.
         // Safe to return undefined - FLP intent will be derived from manifest.json or use defaults.
         return undefined;

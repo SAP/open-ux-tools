@@ -151,7 +151,7 @@ export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | ob
         // Prepare new JSON file content with previous indentation
         const result = JSON.stringify(fileContent, null, oldContentJson[indent]) + '\n';
         fs.write(filePath, result);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         // Expected: file may not exist yet or may contain invalid JSON (new file creation scenario).
         // Safe to write with default 4-space indentation and trailing newline - this is the standard format.
         const newContent = JSON.stringify(fileContent, null, 4) + '\n';

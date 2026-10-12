@@ -69,10 +69,9 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
                                     );
 
                                 return hasSapux ? dir : null;
-                            } catch (error: unknown) {
+                            } catch (_error: unknown) {
                                 // Expected: package.json may be malformed or unreadable in some projects.
                                 // Safe to skip - project will not be included in results.
-                                // Error is intentionally not logged to avoid console noise
                                 return null;
                             }
                         } else {
@@ -83,10 +82,9 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
 
                 // Return non-null results
                 return checkResults.filter((r): r is string => r !== null);
-            } catch (error: unknown) {
+            } catch (_error: unknown) {
                 // Expected: search path may not exist, may not be accessible, or fast-glob may fail on invalid patterns.
                 // Safe to skip this path and continue scanning remaining paths - partial results are still useful.
-                // Error is intentionally not logged to avoid console noise
                 return [];
             }
         })
@@ -187,71 +185,77 @@ async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: s
  * @returns Array of reuse library information
  */
 export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): Promise<ReuseLibResult[]> {
-    const libs: ReuseLibResult[] = [];
+    // Process all workspace folders in parallel
+    const folderResults = await Promise.all(
+        workspaceFolders.map(async (folder) => {
+            try {
+                // Find all manifest.json files in this workspace folder
+                const manifestFiles = await fastGlob('**/manifest.json', {
+                    cwd: folder.uri.fsPath,
+                    ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
+                    absolute: true,
+                    onlyFiles: true
+                });
 
-    for (const folder of workspaceFolders) {
-        try {
-            // Find all manifest.json files in this workspace folder
-            // NOSONAR: Sequential search required per workspace folder - results collected in libs array
-            const manifestFiles = await fastGlob('**/manifest.json', {
-                cwd: folder.uri.fsPath,
-                ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
-                absolute: true,
-                onlyFiles: true
-            });
+                // Process all manifests in parallel
+                const manifestResults = await Promise.all(
+                    manifestFiles.map(async (rawManifestPath) => {
+                        // fast-glob always returns POSIX separators; normalize to the OS-native form
+                        // so paths match what callers build with path.join (fails on Windows otherwise).
+                        const manifestPath = normalize(rawManifestPath);
+                        try {
+                            const manifest = await readJSON<any>(manifestPath);
+                            const sapApp = manifest?.['sap.app'];
+                            const type = sapApp?.type;
 
-            for (const rawManifestPath of manifestFiles) {
-                // fast-glob always returns POSIX separators; normalize to the OS-native form
-                // so paths match what callers build with path.join (fails on Windows otherwise).
-                const manifestPath = normalize(rawManifestPath);
-                try {
-                    // NOSONAR: Sequential read required - each manifest determines if library should be included
-                    const manifest = await readJSON<any>(manifestPath);
-                    const sapApp = manifest?.['sap.app'];
-                    const type = sapApp?.type;
+                            // Only include libraries and components
+                            if (type === 'library' || type === 'component') {
+                                // Find the actual project root by walking up from manifest directory.
+                                // For UI5 libraries, manifest.json is nested in the source tree following
+                                // namespace structure (e.g., src/sap/company/lib/name/manifest.json),
+                                // but configuration files (package.json, ui5.yaml) must be at project root.
+                                // We walk up to find markers (.git, package.json, etc.) to determine the
+                                // actual project root, rather than assuming the workspace folder is correct.
+                                const libRoot = await findLibraryProjectRoot(manifestPath, folder.uri.fsPath);
 
-                    // Only include libraries and components
-                    if (type === 'library' || type === 'component') {
-                        // Find the actual project root by walking up from manifest directory.
-                        // For UI5 libraries, manifest.json is nested in the source tree following
-                        // namespace structure (e.g., src/sap/company/lib/name/manifest.json),
-                        // but configuration files (package.json, ui5.yaml) must be at project root.
-                        // We walk up to find markers (.git, package.json, etc.) to determine the
-                        // actual project root, rather than assuming the workspace folder is correct.
-                        // NOSONAR: Sequential root discovery required - must happen after manifest validation
-                        const libRoot = await findLibraryProjectRoot(manifestPath, folder.uri.fsPath);
+                                // Use sap.app.id as the library name (e.g., "sap.company.lib.mylib"),
+                                // falling back to the manifest directory's basename if id is missing.
+                                // Note: sapApp.id is a namespace identifier used for module naming in UI5,
+                                // not a file path. It does NOT imply that the folder structure must match
+                                // the namespace components. The libRoot (found above) is the actual project
+                                // root location; the name is only used for metadata (e.g., ui5.yaml name field).
+                                const name = sapApp?.id || basename(dirname(manifestPath));
 
-                        // Use sap.app.id as the library name (e.g., "sap.company.lib.mylib"),
-                        // falling back to the manifest directory's basename if id is missing.
-                        // Note: sapApp.id is a namespace identifier used for module naming in UI5,
-                        // not a file path. It does NOT imply that the folder structure must match
-                        // the namespace components. The libRoot (found above) is the actual project
-                        // root location; the name is only used for metadata (e.g., ui5.yaml name field).
-                        const name = sapApp?.id || basename(dirname(manifestPath));
-
-                        libs.push({
-                            value: {
-                                libRoot,
-                                path: manifestPath,
-                                name,
-                                type: type === 'library' ? ReuseLibType.LIBRARY : ReuseLibType.COMPONENT
+                                return {
+                                    value: {
+                                        libRoot,
+                                        path: manifestPath,
+                                        name,
+                                        type: type === 'library' ? ReuseLibType.LIBRARY : ReuseLibType.COMPONENT
+                                    }
+                                };
                             }
-                        });
-                    }
-                } catch (error: unknown) {
-                    // Expected: manifest.json may be malformed JSON or unreadable in some library projects.
-                    // Safe to skip - library will not be included in reuse library results.
-                    continue;
-                }
-            }
-        } catch (error: unknown) {
-            // Expected: workspace folder may not exist, may not be accessible, or fast-glob may fail.
-            // Safe to skip - continue scanning remaining workspace folders for reuse libraries.
-            continue;
-        }
-    }
+                            return null;
+                        } catch (_error: unknown) {
+                            // Expected: manifest.json may be malformed JSON or unreadable in some library projects.
+                            // Safe to skip - library will not be included in reuse library results.
+                            return null;
+                        }
+                    })
+                );
 
-    return libs;
+                // Filter out nulls
+                return manifestResults.filter((result): result is ReuseLibResult => result !== null);
+            } catch (_error: unknown) {
+                // Expected: workspace folder may not exist, may not be accessible, or fast-glob may fail.
+                // Safe to skip - continue scanning remaining workspace folders for reuse libraries.
+                return [];
+            }
+        })
+    );
+
+    // Flatten results from all folders
+    return folderResults.flat();
 }
 
 /**

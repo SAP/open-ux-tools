@@ -130,7 +130,7 @@ function resolveAppIdFromPom(manifestAppId: string, pomJSON: any): string {
         // Use safe property access instead of eval
         const result = sapAppIdKey.split('.').reduce((obj: any, key) => obj?.[key], pomJSON);
         return typeof result === 'string' ? result : manifestAppId;
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         // Expected: property path resolution may fail if pom.xml structure doesn't match expected format.
         // Safe to return original manifest app ID - it will be used as-is or resolved later.
         return manifestAppId;

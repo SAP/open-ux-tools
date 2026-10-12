@@ -489,20 +489,21 @@ export class ProjectAccess {
         // find reuse libs
         let reuseLibsRoots = (await getReuseLibs(rootFolders)).filter((lib) => lib.value.type === ReuseLibType.LIBRARY);
         if (reuseLibsRoots.length) {
+            // Process all roots in parallel
+            const results = await Promise.all(roots.map((root) => this.getProjectInfo(root)));
+
+            // Collect project roots
             const temp: any[] = [];
-            // Process roots sequentially to build accurate exclusion list for reuse libs
-            for (const root of roots) {
-                // NOSONAR: Sequential processing required - each result affects exclusion logic for subsequent iterations
-                const result = await this.getProjectInfo(root);
-                // get roots for projects
+            results.forEach((result, index) => {
                 if (result.projectInfo.FEVersion || result.projectInfo.isSAPApp) {
-                    temp.push(root);
+                    temp.push(roots[index]);
                 }
-                // in case reuse libs were detected in a project, remove them
-                reuseLibsRoots = reuseLibsRoots.filter(
-                    (lib) => !temp.some((tempRoot) => isSamePath(lib.value.libRoot, tempRoot))
-                );
-            }
+            });
+
+            // Remove reuse libs that are within project roots
+            reuseLibsRoots = reuseLibsRoots.filter(
+                (lib) => !temp.some((tempRoot) => isSamePath(lib.value.libRoot, tempRoot))
+            );
         }
         // if workspace has multiple roots then make sure there are no similar projects
         const projectsUnique: MigratableFolder[] = [...new Set(roots)].map((root) => {

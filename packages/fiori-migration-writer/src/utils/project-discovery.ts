@@ -58,8 +58,8 @@ async function findWebIDEProject(wsRoot: string): Promise<string[]> {
 
     // Process all entries in parallel
     const results = await Promise.all(
-        Object.keys(entries).map(async (entry) => {
-            const file = join(wsRoot, entries[entry]);
+        entries.map(async (entry) => {
+            const file = join(wsRoot, entry);
             const dir = dirname(file);
 
             // Check for neo-app.json or pom.xml file present

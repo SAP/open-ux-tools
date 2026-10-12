@@ -15,7 +15,8 @@ import type {
     ImportProjectInfo,
     PackageJsonContext,
     FLPConfiguration,
-    PackageJsonFeatureFlags
+    PackageJsonFeatureFlags,
+    Script
 } from '../types.js';
 
 interface TestFile {
@@ -68,20 +69,25 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
         });
     }
 
-    // Check for test files and add corresponding scripts - sequential to maintain script order
-    for (const testFile of TEST_FILES) {
-        const scriptName = `${testFile.type}-tests`;
-        if (
-            // NOSONAR: Sequential file check required - small fixed list, maintains script insertion order
-            (await fileExists(join(projectInfo.rootPath, projectInfo.webappPath, testFile.path))) &&
-            runTasks.filter((runTask) => runTask.name === scriptName).length === 0
-        ) {
-            runTasks.push({
-                name: scriptName,
-                command: String.raw`fiori run --open \"${testFile.path}\"`
-            });
-        }
-    }
+    // Check for test files and add corresponding scripts in parallel
+    const testScriptResults = await Promise.all(
+        TEST_FILES.map(async (testFile) => {
+            const scriptName = `${testFile.type}-tests`;
+            const exists = await fileExists(join(projectInfo.rootPath, projectInfo.webappPath, testFile.path));
+            const alreadyExists = runTasks.some((runTask) => runTask.name === scriptName);
+
+            if (exists && !alreadyExists) {
+                return {
+                    name: scriptName,
+                    command: String.raw`fiori run --open \"${testFile.path}\"`
+                };
+            }
+            return null;
+        })
+    );
+
+    // Add non-null test scripts to runTasks
+    runTasks.push(...testScriptResults.filter((script): script is Script => script !== null));
 
     // Clone UI5 dependencies and add V4 mock server if needed
     const ui5DepsCloned = [...ui5Dependencies];

@@ -15,29 +15,30 @@ import { dirname, join, sep } from 'node:path';
  * @returns Array of project root paths (directories containing manifest.json)
  */
 export async function findAllManifest(roots: string[]): Promise<string[]> {
-    const results: string[] = [];
+    // Search all roots in parallel
+    const rootResults = await Promise.all(
+        roots.map(async (root) => {
+            try {
+                // Find all .json files
+                const jsonFiles = await findFilesByExtension('json', root, []);
 
-    // Search roots sequentially to collect all manifest.json locations
-    for (const root of roots) {
-        try {
-            // Find all .json files
-            // NOSONAR: Sequential search required - results collected across multiple roots
-            const jsonFiles = await findFilesByExtension('json', root, []);
+                // Filter for manifest.json specifically
+                const manifestPaths = jsonFiles
+                    .filter((filePath) => filePath.endsWith('manifest.json'))
+                    .map((filePath) => dirname(filePath))
+                    // Filter out webapp subdirectories
+                    .filter((dirPath) => !dirPath.endsWith(`${sep}webapp`));
 
-            // Filter for manifest.json specifically
-            const manifestPaths = jsonFiles
-                .filter((filePath) => filePath.endsWith('manifest.json'))
-                .map((filePath) => dirname(filePath))
-                // Filter out webapp subdirectories
-                .filter((dirPath) => !dirPath.endsWith(`${sep}webapp`));
+                return manifestPaths;
+            } catch {
+                // Continue scanning other roots even if one fails
+                return [];
+            }
+        })
+    );
 
-            results.push(...manifestPaths);
-        } catch {
-            // Continue scanning other roots even if one fails
-        }
-    }
-
-    return [...new Set(results)];
+    // Flatten results from all roots
+    return rootResults.flat();
 }
 
 /**
@@ -54,7 +55,7 @@ export async function isFioriToolsProject(projectPath: string, dependencyName: s
         const packageJsonPath = join(projectPath, 'package.json');
         const packageJson = await readJSON(packageJsonPath);
         return hasDependency(packageJson, dependencyName);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
         // Expected: package.json may not exist or may be malformed in non-Fiori projects.
         // Safe to return false - project will not be identified as a Fiori Tools project.
         return false;
