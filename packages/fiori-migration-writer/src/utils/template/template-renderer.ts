@@ -31,5 +31,7 @@ export function renderTemplate(
 ): string {
     const templateFile = readFile(join(templateRoot, fullTemplateName));
 
+    // NOSONAR - Templates are trusted internal files shipped with this package, not user input.
+    // The templateRoot is always the package's own templates/ directory (see templatesDirPath in index.ts).
     return isRendered ? (render(templateFile, templateData, { ...DEFAULT_EJS_OPTS, ...opts }) as string) : templateFile;
 }
