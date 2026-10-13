@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
 import type { IPopupRestoreFocusParams } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton/index.js';
@@ -82,6 +82,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         preventAcceptRestoreFocus
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
+    const acceptedRef = useRef(false);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
         if (suggestion.suggest?.type === SuggestValueType.Existing) {
@@ -101,7 +102,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                 onUpdateValue?.(suggestion.suggest.i18n ?? '');
             }
         }
-
+        acceptedRef.current = true;
         setCalloutVisible(false);
     }, [suggestion, onCreateNewEntry, onUpdateValue, value]);
     const onCancel = useCallback((): void => {
@@ -109,17 +110,16 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
     }, []);
     const onRestoreFocus = useCallback(
         (params: IPopupRestoreFocusParams): void => {
-            if (preventAcceptRestoreFocus) {
+            const wasAccepted = acceptedRef.current;
+            acceptedRef.current = false;
+            if (wasAccepted) {
                 return;
             }
-            // Default FluentUI behavior: return focus to the element focused before the callout opened.
-            // Guard with containsFocus to match FluentUI's own default: don't steal focus from an
-            // element outside the callout (e.g. after a click-away dismissal).
             if (params.containsFocus) {
                 params.originalElement?.focus();
             }
         },
-        [preventAcceptRestoreFocus]
+        []
     );
 
     return (
@@ -145,7 +145,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     setInitialFocus={true}
                     className={getCalloutClassNames(invertedCalloutTheme)}
                     onDismiss={onCancel}
-                    onRestoreFocus={onRestoreFocus}
+                    onRestoreFocus={preventAcceptRestoreFocus ? onRestoreFocus : undefined}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
                         {suggestion.message}
