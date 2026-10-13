@@ -5,6 +5,7 @@ import type { IndexedAnnotation, ParsedService } from '../../project-context/par
 import type { FeV4ObjectPage, FeV4ListReport } from '../../project-context/linker/fe-v4.js';
 import type { FeV2ListReport, FeV2ObjectPage } from '../../project-context/linker/fe-v2.js';
 import { COMMON_TEXT } from '../../constants.js';
+import { getElementText } from '../../project-context/linker/annotations.js';
 
 export { resolveTextPropertyPath } from '@sap-ux/fiori-annotation-api';
 
@@ -33,9 +34,9 @@ function getScalarValue(element: Element, name: string, ...extraChildNames: stri
         }
         const childEl = child as Element;
         if (childEl.name === name || extraChildNames.includes(childEl.name)) {
-            const textNode = childEl.content.find((c) => c.type === 'text');
-            if (textNode && 'text' in textNode) {
-                return textNode.text;
+            const text = getElementText(childEl);
+            if (text !== undefined) {
+                return text;
             }
         }
     }
