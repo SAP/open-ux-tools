@@ -432,6 +432,19 @@ describe('<UITranslationInput />', () => {
             // host dialog (e.g. a VS Code QuickPick) opened in response and close it.
             expect(document.activeElement).not.toBe(triggerBtn);
         });
+
+        test('restores focus to the trigger on cancel even when preventFocusRestoreOnAccept is true', () => {
+            renderForFocus(true);
+            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
+            triggerBtn.focus();
+            clickI18nButton();
+            const cancelBtn = document.querySelector(`#${id}-i18n-button-action-cancel`) as HTMLElement;
+            cancelBtn.focus();
+            fireEvent.click(cancelBtn);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            // Cancelling must always restore focus regardless of the prop.
+            expect(document.activeElement).toBe(triggerBtn);
+        });
     });
 
     test('Test "string" property', () => {
