@@ -35,7 +35,7 @@ export async function processRegularProject(
         backendConfig;
     const messages: Message[] = [];
     const backends: Backend[] = [];
-    let hostname = (await getFirstBackend(projectRoot))?.url ?? '';
+    let hostname = getFirstBackend(projectRoot)?.url ?? '';
     const mainService = detectMainServiceFromManifest(manifest);
 
     let flpSandboxFlpIntent = getSemanticObjectAction(manifest);
@@ -217,7 +217,10 @@ export async function processRegularProject(
             reuseLibs: Object.keys(reuseManifestLibs || {}).join(',')
         };
     } catch (error) {
-        messages.push({ type: 'ERROR', description: (error as Error).toString() });
+        messages.push({
+            type: 'ERROR',
+            description: error instanceof Error ? error.message : String(error)
+        });
         projectInfo = {
             ...defaultProjectInfo,
             rootPath: projectRoot,

@@ -50,8 +50,8 @@ describe('project-extension', () => {
                 neoappDestinations: []
             }),
         getFirstBackend: jest
-            .fn<() => Promise<{ destination?: string; scp?: boolean; url?: string; sapClient?: string } | undefined>>()
-            .mockResolvedValue({
+            .fn<() => { destination?: string; scp?: boolean; url?: string; sapClient?: string }>()
+            .mockReturnValue({
                 destination: 'BACKEND_DEST',
                 scp: true,
                 url: 'https://backend.example.com',
@@ -134,7 +134,7 @@ describe('project-extension', () => {
 
         it('should handle missing backend data', async () => {
             const config = createMockConfig({
-                getFirstBackend: jest.fn<() => Promise<undefined>>().mockResolvedValue(undefined)
+                getFirstBackend: jest.fn<() => { destination?: string; scp?: boolean; url?: string; sapClient?: string }>().mockReturnValue({})
             });
 
             const result = await processProjectExtension(config);

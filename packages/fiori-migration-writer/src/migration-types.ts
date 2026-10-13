@@ -579,15 +579,12 @@ export interface ManifestAnalysisService {
  * Service for backend configuration operations (backends, intents, destinations, clients)
  */
 export interface BackendConfigService {
-    getFirstBackend: (projectRoot: string) => Promise<
-        | {
-              url?: string;
-              destination?: string;
-              scp?: boolean;
-              sapClient?: string;
-          }
-        | undefined
-    >;
+    getFirstBackend: (projectRoot: string) => {
+        url?: string;
+        destination?: string;
+        scp?: boolean;
+        sapClient?: string;
+    };
     getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
     getDestinationFromNeoApp: (
         projectRoot: string,

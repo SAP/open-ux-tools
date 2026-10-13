@@ -122,7 +122,6 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
         firstNeoAppDestination,
         strict = false
     } = config;
-    const templateRoot = join(templatesDirPath, TemplateFileName.AppSettings);
 
     // Determine if UI5 version should be written to YAML files
     const setUI5version: boolean =
@@ -140,7 +139,6 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
         webappPath,
         setUI5version,
         rootPath,
-        templateRoot,
         hasDataSource,
         strict
     });

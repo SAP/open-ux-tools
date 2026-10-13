@@ -112,6 +112,7 @@ export {
 } from './utils/template-generators/index.js';
 export { validateMetadata } from './utils/service.js';
 export { checkIfReuseLib, getReuseLibModuleName } from './utils/project-readers/reuse-lib-utils.js';
+export { UnsupportedProjectError } from './utils/project-readers/manifest-utils.js';
 export { findAllProjectRoots, getReuseLibs, findAll, ReuseLibType } from './utils/file-discovery.js';
 export { loadOrFetchProjectInfo } from './project/project-info.js';
 export { getUi5ThemeBasedOnUi5Version, updateThemeAttribute } from './utils/UI5Theme.js';

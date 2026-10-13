@@ -28,7 +28,6 @@ export interface UI5YamlGenerationConfig {
     webappPath: string;
     setUI5version: boolean;
     rootPath: string;
-    templateRoot: string;
     strict?: boolean;
 }
 
@@ -43,7 +42,6 @@ export interface UI5LocalYamlGenerationConfig {
     firstNeoAppDestination?: string;
     webappPath: string;
     rootPath: string;
-    templateRoot: string;
     strict?: boolean;
 }
 
@@ -55,7 +53,6 @@ export interface UI5MockYamlGenerationConfig {
     webappPath: string;
     setUI5version: boolean;
     rootPath: string;
-    templateRoot: string;
     hasDataSource: boolean;
 }
 
@@ -71,7 +68,6 @@ export interface UI5YamlAllFilesConfig {
     webappPath: string;
     setUI5version: boolean;
     rootPath: string;
-    templateRoot: string;
     hasDataSource: boolean;
     strict?: boolean;
 }
@@ -194,7 +190,6 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
             webappPath,
             setUI5version,
             rootPath,
-            templateRoot: '', // No longer used, kept for interface compatibility
             strict
         }),
         generateAndWriteUI5LocalYaml({
@@ -205,7 +200,6 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
             firstNeoAppDestination,
             webappPath,
             rootPath,
-            templateRoot: '', // No longer used, kept for interface compatibility
             strict
         }),
         generateAndWriteUI5MockYaml({
@@ -213,7 +207,6 @@ export async function generateAllUI5YamlFiles(config: UI5YamlAllFilesConfig): Pr
             webappPath,
             setUI5version,
             rootPath,
-            templateRoot: '', // No longer used, kept for interface compatibility
             hasDataSource
         })
     ]);

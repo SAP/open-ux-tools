@@ -26,12 +26,12 @@ export interface ProcessAdaptationProjectConfig {
         | undefined
     >;
     getClientFromDestinationName: (destination: string) => string;
-    getFirstBackend: (projectRoot: string) => Promise<
-        | {
-              url?: string;
-          }
-        | undefined
-    >;
+    getFirstBackend: (projectRoot: string) => {
+        url?: string;
+        destination?: string;
+        sapClient?: string;
+        scp?: boolean;
+    };
 }
 
 /**
@@ -94,7 +94,7 @@ export async function processAdaptationProject(config: ProcessAdaptationProjectC
             }
             result.sapClient = getClientFromDestinationName(result.destination) ?? result.sapClient;
 
-            result.hostname = (await getFirstBackend(projectRoot))?.url ?? '';
+            result.hostname = getFirstBackend(projectRoot)?.url ?? '';
 
             return result;
         }

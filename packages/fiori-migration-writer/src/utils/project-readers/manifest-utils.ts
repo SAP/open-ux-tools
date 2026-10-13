@@ -153,12 +153,22 @@ export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string
 }
 
 /**
+ * Error thrown when project type is not supported for migration
+ */
+export class UnsupportedProjectError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'UnsupportedProjectError';
+    }
+}
+
+/**
  * Determine floor plan from manifest and FE version
  *
  * @param manifest - Manifest object
  * @param feVersion - Fiori Elements version
  * @returns Floor plan identifier
- * @throws Error if not suitable for migration
+ * @throws {UnsupportedProjectError} When project type is not suitable for migration
  */
 export function getFloorPlan(manifest: Manifest, feVersion: FioriElementsVersion | undefined): string {
     let floorPlan: string | undefined;
@@ -193,7 +203,7 @@ export function getFloorPlan(manifest: Manifest, feVersion: FioriElementsVersion
         // Don't throw message here it will be handled later in migration : 'Migration of OData V4 Projects is not currently supported';
         return FLOOR_PLAN.ListReportObjectPageV4;
     } else {
-        throw new Error(i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION'));
+        throw new UnsupportedProjectError(i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION'));
     }
 }
 

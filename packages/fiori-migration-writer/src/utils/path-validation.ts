@@ -1,5 +1,5 @@
 import { resolve } from 'node:path';
-import { access } from 'node:fs/promises';
+import { access, lstat } from 'node:fs/promises';
 
 /**
  * Branded type for validated git-safe paths.
@@ -26,10 +26,11 @@ function sanitizedString(str: string): string {
 /**
  * Validates the root directory path before using as working directory
  * Rejects paths with control characters that could enable command injection
+ * Rejects symlinks to prevent operations outside intended workspace
  *
  * @param path - Root directory path to validate
  * @returns Validated absolute path
- * @throws Error if path contains unsafe characters or is not a directory
+ * @throws Error if path contains unsafe characters, is not a directory, or is a symlink
  */
 export async function validateRootDirectory(path: string): Promise<string> {
     const resolved = resolve(path);
@@ -37,10 +38,17 @@ export async function validateRootDirectory(path: string): Promise<string> {
     if (/[\0\r\n`$|&;<>]/.test(resolved)) {
         throw new Error('Path contains unsafe characters');
     }
-    // Ensure it's an existing directory (check real fs, not mem-fs)
+    // Ensure it's an existing directory and not a symlink (check real fs, not mem-fs)
     try {
         await access(resolved);
-    } catch {
+        const stat = await lstat(resolved);
+        if (stat.isSymbolicLink()) {
+            throw new Error(`Path must not be a symlink: ${resolved}`);
+        }
+    } catch (error) {
+        if (error instanceof Error && error.message.includes('symlink')) {
+            throw error;
+        }
         throw new Error('Root directory does not exist');
     }
     // Return a sanitized string to break CodeQL taint tracking

@@ -32,22 +32,19 @@ export interface BackendAndI18nConfigResult {
 export async function extractBackendAndI18nConfig(
     projectRoot: string,
     webappPath: string,
-    getFirstBackend: (projectRoot: string) => Promise<
-        | {
-              destination?: string;
-              scp?: boolean;
-              url?: string;
-              sapClient?: string;
-          }
-        | undefined
-    >,
+    getFirstBackend: (projectRoot: string) => {
+        destination?: string;
+        scp?: boolean;
+        url?: string;
+        sapClient?: string;
+    },
     existingDestination: string,
     existingScp: boolean | undefined,
     existingHostname: string,
     existingSapClient: string
 ): Promise<BackendAndI18nConfigResult> {
     // Get backend configuration
-    const ui5Backend = await getFirstBackend(projectRoot);
+    const ui5Backend = getFirstBackend(projectRoot);
     const destination = ui5Backend?.destination ?? existingDestination;
     const scp = ui5Backend?.scp ?? existingScp;
     const hostname = ui5Backend?.url ?? existingHostname;

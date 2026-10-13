@@ -410,8 +410,8 @@ export class ProjectAccess {
         return getMainEntity(manifest);
     }
 
-    public static getFirstBackend(projectRoot: string): Promise<ReturnType<typeof getFirstBackend>> {
-        return Promise.resolve(getFirstBackend(projectRoot));
+    public static getFirstBackend(projectRoot: string): ReturnType<typeof getFirstBackend> {
+        return getFirstBackend(projectRoot);
     }
 
     public static async checkMigratableAdaptationProject(projectRoot: string) {

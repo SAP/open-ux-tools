@@ -126,7 +126,7 @@ function updateDataSources(manifestJson: Manifest, templateData: TemplateData): 
         return false;
     }
 
-    for (const dataSourceKey in manifestJson['sap.app'].dataSources) {
+    for (const dataSourceKey of Object.keys(manifestJson['sap.app'].dataSources)) {
         const dataSource = manifestJson['sap.app'].dataSources[dataSourceKey];
 
         // Process data source using extracted helper

@@ -35,15 +35,12 @@ export interface ProcessProjectExtensionConfig {
           }
         | undefined
     >;
-    getFirstBackend: (projectRoot: string) => Promise<
-        | {
-              destination?: string;
-              scp?: boolean;
-              url?: string;
-              sapClient?: string;
-          }
-        | undefined
-    >;
+    getFirstBackend: (projectRoot: string) => {
+        destination?: string;
+        sapClient?: string;
+        scp?: boolean;
+        url?: string;
+    };
     getClientFromDestinationName: (destination: string) => string;
     getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
     getManifestJson: (projectRoot: string, webappPath: string) => Promise<Manifest>;
@@ -88,7 +85,7 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
     let destination: string | undefined;
     let hostname = '';
     let sapClient = '';
-    const ui5Backend = await getFirstBackend(projectRoot);
+    const ui5Backend = getFirstBackend(projectRoot);
     destination = ui5Backend?.destination ?? destination;
     const scp = ui5Backend?.scp;
     sapClient = ui5Backend?.sapClient ?? sapClient;

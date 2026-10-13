@@ -63,30 +63,6 @@ export interface MigrateOptions {
 
 export class ProjectMigrator {
     /**
-     * @deprecated This static property is no longer used and will be removed in the next major version.
-     *
-     * **Migration Guide:**
-     * Each migration now uses its own isolated editor instance via AsyncLocalStorage context.
-     * Instead of setting `ProjectMigrator.fs`, use one of these approaches:
-     *
-     * 1. Pass the editor to `migrate()`:
-     * ```typescript
-     * const editor = createMemFsEditor();
-     * await ProjectMigrator.migrate(root, baseUri, url, {}, undefined, false, editor);
-     * ```
-     *
-     * 2. Use `runWithEditor()` for custom editor operations:
-     * ```typescript
-     * import { runWithEditor, createMemFsEditor } from '@sap-ux/fiori-migration-writer';
-     * const editor = createMemFsEditor();
-     * await runWithEditor(editor, async () => {
-     *     // Your migration code here - getCurrentEditor() returns the active editor
-     * });
-     * ```
-     */
-    static readonly fs: Editor | undefined;
-
-    /**
      * migrate project
      *
      * @param options - Migration options object
