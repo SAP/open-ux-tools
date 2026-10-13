@@ -13,14 +13,12 @@ type ColumnModelItem = {
 };
 
 /**
- * A column that carries a text annotation in the spec model. `columnProperty` is the column's own
- * bound property; `textProperty` is the `Common.Text` target. `textPropertyNotSortable` flags a text
- * target reached via a navigation property, which cannot be used as a sort/adaptation name.
+ * A column carrying a `Common.Text` annotation. `columnProperty` is the column's own bound property;
+ * `textProperty` is the text target. A nav-path text target is valid; only a nav-path `columnProperty` is excluded.
  */
 export type TextAnnotationColumnCandidate = {
     columnProperty: string;
     textProperty: string;
-    textPropertyNotSortable?: boolean;
 };
 
 export type ColumnAggregations = TreeAggregations & {
@@ -232,8 +230,37 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
 }
 
 /**
- * Extracts columns that carry a text annotation from a resolved 'table' aggregation node (used for a
- * single List Report table or an individual multi-tab view). See {@link extractTextAnnotationColumnsFromNode}.
+ * Returns the bound property names of a resolved table node's default-available columns, omitting
+ * nav-path and unidentifiable columns. Per-view column source for the metadata text-annotation fallback
+ * (only the primary view carries `properties.text`).
+ *
+ * @param tableNode - resolved 'table' aggregation node
+ * @returns ordered, de-duplicated list of bound column property names
+ */
+export function extractBoundColumnPropertiesFromTableNode(tableNode: TreeAggregation): string[] {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return [];
+    }
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const properties: string[] = [];
+    const seen = new Set<string>();
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (!columnProperty || columnProperty.includes('/') || seen.has(columnProperty)) {
+            return;
+        }
+        seen.add(columnProperty);
+        properties.push(columnProperty);
+    });
+    return properties;
+}
+
+/**
+ * Extracts text-annotation columns from a resolved 'table' node (a single table or one multi-tab view).
  *
  * @param tableNode - resolved 'table' aggregation node
  * @returns candidate columns with their bound property and the text annotation target property
@@ -251,8 +278,7 @@ export function extractTextAnnotationColumnsFromTableNode(tableNode: TreeAggrega
             return;
         }
         const text = column.properties?.text;
-        // The spec model uses the sentinel value "None" (any casing) to mean "no text annotation is
-        // maintained" — such columns must not produce a sort test.
+        // Spec-model sentinel "None" (any casing) means no text annotation is maintained.
         if (text?.artifactType !== 'Annotation' || !text.value || text.value.toLowerCase() === 'none') {
             return;
         }
@@ -260,16 +286,12 @@ export function extractTextAnnotationColumnsFromTableNode(tableNode: TreeAggrega
         if (columnProperty?.includes('/')) {
             return;
         }
-        // Deduplicate by code column: distinct columns may share one text target.
+        // Distinct columns may share one text target; dedupe by code column.
         if (!columnProperty || seenColumnProperties.has(columnProperty)) {
             return;
         }
         seenColumnProperties.add(columnProperty);
-        const candidate: TextAnnotationColumnCandidate = { columnProperty, textProperty: text.value };
-        if (text.value.includes('/')) {
-            candidate.textPropertyNotSortable = true;
-        }
-        candidates.push(candidate);
+        candidates.push({ columnProperty, textProperty: text.value });
     });
     return candidates;
 }

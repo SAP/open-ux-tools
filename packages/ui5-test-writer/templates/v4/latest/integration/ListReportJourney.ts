@@ -216,7 +216,7 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
         When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
         <%_ } _%>
-        <%_ if (!column.skipTextPropertyTest) { _%>
+        <%_ if (!column.skipTextPropertyTest && !column.textPropertyNotSortable) { _%>
         When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
         Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
         When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);
@@ -385,7 +385,7 @@ function journey() {
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
         <%_ } _%>
-        <%_ if (!column.skipTextPropertyTest) { _%>
+        <%_ if (!column.skipTextPropertyTest && !column.textPropertyNotSortable) { _%>
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
         Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
         When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);

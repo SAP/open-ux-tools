@@ -22,13 +22,14 @@ import {
     getTableIdentifiers,
     isColumnPersonalizationEnabled,
     isViewColumnPersonalizationEnabled,
+    getViewTableType,
     getListReportViews,
     getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
-    isTextOnlyArrangement,
     getFilterFieldItems,
-    extractCustomToolBarActions
+    extractCustomToolBarActions,
+    extractTextAnnotationCandidatesFromMetadata
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
@@ -2265,19 +2266,24 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             pageType: 'ListReport'
         }) as unknown as PageWithModelV4;
 
-    test('emits both properties when the merged metadata carries a non-TextOnly TextArrangement', () => {
+    test('emits the code column and its text target when the merged metadata carries a TextArrangement (TextLast)', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
             localAnnotationXml
         ]);
-        // TextLast arrangement: both the code column (CustomerID) and the text property (CustomerName)
-        // are sortable, so both are emitted.
+        // The code column (CustomerID) and its text target (CustomerName) are both asserted — the latest
+        // UI5 keeps the code column separately sortable even with a TextArrangement present.
         expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
     });
 
-    // TextOnly arrangement: the code column renders only the text value, so only the text property is
-    // sortable — columnProperty must be omitted so no sort test is generated against the code column.
+    // TextOnly arrangement: the column renders only the text value. The code column and its text target
+    // are both still asserted (the latest UI5 keeps the code column separately sortable).
     const textOnlyAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
@@ -2292,23 +2298,32 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-    test('omits columnProperty when the arrangement is TextOnly', () => {
+    test('emits the code column and its text target when the arrangement is TextOnly', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
             textOnlyAnnotationXml
         ]);
         expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: undefined, textProperty: 'CustomerName', skipTextPropertyTest: false }
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
     });
 
-    test('emits both properties for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
-        // Regression (fin.test.v4.lr1): CompanyCode carries a Common.Text (CompanyCodeName) with no
-        // UI.TextArrangement, and once the (initially UI.Hidden) target was un-hidden, both the code
-        // column and the text property must produce a sort test. Mirrors that shape with CustomerID /
-        // CustomerName: metadata has the Common.Text but no arrangement, and the target is not hidden.
+    test('emits the code column for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
+        // Regression (fin.test.v4.lr2 view 6): CompanyCode carries a Common.Text (CompanyCodeName) with no
+        // explicit UI.TextArrangement. The code column and its text target are both asserted (the latest
+        // UI5 keeps the code column separately sortable). Mirrors that shape with CustomerID / CustomerName.
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
         expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
     });
 
@@ -2317,10 +2332,12 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
         expect(result.textAnnotationColumns).toEqual([]);
     });
 
-    test('keeps the code column but skips the text test when the text target is a navigation path (Customer regression)', () => {
-        // Regression (fin.test.v4.lr2): the "Customer" column's own property is sortable, but its text
-        // target "_CustomerDetail/CustomerName" is reached through an association and is not a sortable
-        // column. The code column must still be tested; only the text-property test is suppressed.
+    test('emits the code column and the navigation-path text target (Customer regression)', () => {
+        // Regression (fin.test.v4.lr2): the "Customer" column carries a Common.Text. The code column
+        // (Customer) and its text target "_CustomerDetail/CustomerName" are both asserted. Though reached
+        // through an association, the text target is a valid sort name and is tested in both the sort order
+        // and the column-adaptation dialog (the dialog assertion is expected to fail until the service is
+        // adjusted to expose the navigation-path column, per the LoB guidance).
         const page = {
             model: {
                 root: {
@@ -2353,7 +2370,12 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
 
         const result = getListReportFeatures(page, mockLogger, metadataXml);
         expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName', skipTextPropertyTest: true }
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
     });
 
@@ -2414,8 +2436,15 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             undefined,
             [unrelatedLocalAnnotationXml]
         );
+        // TextLast is preserved through the merge, so the code column and its text target are both emitted
+        // (regression was: the arrangement being lost, which previously suppressed the text-target test).
         expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
     });
 
@@ -2449,8 +2478,14 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
 
     test('still emits the column when its text (sort target) property is hidden', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataWithHiddenTextProperty);
+        // The code column and its (hidden) text target are both still emitted.
         expect(result.textAnnotationColumns).toEqual([
-            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
     });
 });
@@ -2761,6 +2796,52 @@ describe('Test isViewColumnPersonalizationEnabled()', () => {
     });
 });
 
+describe('Test getViewTableType()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+
+    test('returns undefined when manifest or target key is missing', () => {
+        expect(getViewTableType(undefined, 'MyLR', 'x#VAR1')).toBeUndefined();
+        expect(getViewTableType(makeManifest({}), undefined, 'x#VAR1')).toBeUndefined();
+    });
+
+    test('resolves the table type from the qualified LineItem key for the view qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { type: 'GridTable' } },
+            [`${lineItem}#VAR2`]: { tableSettings: { type: 'AnalyticalTable' } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2')).toBe(
+            'AnalyticalTable'
+        );
+    });
+
+    test('falls back to the unqualified LineItem key when no qualified key exists', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { type: 'GridTable' } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1')).toBe(
+            'GridTable'
+        );
+    });
+
+    test('returns undefined when no table type is configured', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: true } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', undefined)).toBeUndefined();
+    });
+});
+
 describe('Test getTableIdentifiers()', () => {
     const makeManifest = (paths: unknown): Manifest =>
         ({
@@ -2930,89 +3011,6 @@ describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
     test('isHiddenFilter returns false for an unknown entity set or property', () => {
         expect(isHiddenFilter(metadata, 'Unknown', 'Secret')).toBe(false);
         expect(isHiddenFilter(metadata, 'Items', 'Unknown')).toBe(false);
-    });
-});
-
-describe('Test isTextOnlyArrangement()', () => {
-    const buildMetadataXml = (enumMember: string): string => `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TravelType">
-                <Key><PropertyRef Name="TravelID"/></Key>
-                <Property Name="TravelID" Type="Edm.String"/>
-                <Property Name="CustomerID" Type="Edm.String"/>
-                <Property Name="CustomerName" Type="Edm.String"/>
-                <Property Name="Plain" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
-            </EntityContainer>
-            <Annotations Target="TestService.TravelType/CustomerID">
-                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
-                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="${enumMember}"/>
-                </Annotation>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    test('returns true when the arrangement is TextOnly', () => {
-        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
-        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(true);
-    });
-
-    test('returns false for a non-TextOnly arrangement (TextLast)', () => {
-        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextLast')));
-        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
-    });
-
-    test('returns false for a property without a Text/TextArrangement annotation', () => {
-        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
-        expect(isTextOnlyArrangement(metadata, 'Travel', 'Plain')).toBe(false);
-    });
-
-    test('returns false when the entity set name is undefined', () => {
-        const metadata = convert(parse(buildMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly')));
-        expect(isTextOnlyArrangement(metadata, undefined, 'CustomerID')).toBe(false);
-    });
-
-    // UI.TextArrangement can also be maintained as a sibling annotation directly on the property
-    // (not nested inside Common.Text). TextOnly in that shape must still be detected, otherwise the
-    // code column is wrongly treated as sortable and an invalid sort test is generated.
-    const buildSiblingMetadataXml = (enumMember: string): string => `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TravelType">
-                <Key><PropertyRef Name="TravelID"/></Key>
-                <Property Name="TravelID" Type="Edm.String"/>
-                <Property Name="CustomerID" Type="Edm.String"/>
-                <Property Name="CustomerName" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
-            </EntityContainer>
-            <Annotations Target="TestService.TravelType/CustomerID">
-                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
-                <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="${enumMember}"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    test('returns true for a property-level (sibling) TextOnly arrangement', () => {
-        const metadata = convert(
-            parse(buildSiblingMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly'))
-        );
-        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(true);
-    });
-
-    test('returns false for a property-level (sibling) non-TextOnly arrangement', () => {
-        const metadata = convert(
-            parse(buildSiblingMetadataXml('com.sap.vocabularies.UI.v1.TextArrangementType/TextLast'))
-        );
-        expect(isTextOnlyArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
     });
 });
 
@@ -3522,9 +3520,191 @@ describe('getListReportTabs()', () => {
         const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
 
         expect(tabs[0].textAnnotationColumns).toEqual([
-            { columnProperty: 'CustomerID', textProperty: 'CustomerName', skipTextPropertyTest: false }
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
         ]);
         expect(tabs[1].textAnnotationColumns).toEqual([]);
+    });
+
+    test('falls back to metadata Common.Text for views whose spec model omits properties.text', () => {
+        // Reproduces the multi-tab bug: ux-specification only resolves `properties.text` on the first
+        // view's columns. View 2 here carries the same bound column but no `properties.text`, so the
+        // text target must be sourced from the shared entity type's Common.Text metadata instead.
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            // View 1: columns carry resolved properties.text (as ux-specification populates for the primary view).
+            '1': makeViewNode({
+                'DataField::CompanyCode': {
+                    description: 'Company Code',
+                    schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] },
+                    properties: { text: { artifactType: 'Annotation', value: 'CompanyCode_Text' } }
+                },
+                'DataField::Customer': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                    properties: { text: { artifactType: 'Annotation', value: '_CustomerDetail/CustomerName' } }
+                }
+            }),
+            // View 2: same bound columns but NO properties.text (ux-specification leaves secondary views empty).
+            '2': makeViewNode({
+                'DataField::CompanyCode': {
+                    description: 'Company Code',
+                    schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+                },
+                'DataField::Customer': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'Customer' }] }
+                }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        const expected = [
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ];
+        // View 1 (spec-model path) and view 2 (metadata fallback) now both emit the same tests.
+        expect(tabs[0].textAnnotationColumns).toEqual(expected);
+        expect(tabs[1].textAnnotationColumns).toEqual(expected);
+    });
+
+    test('marks nav-path text target as not sortable for an AnalyticalTable view only', () => {
+        // An AnalyticalTable cannot sort on a navigation-property path (only properties of the
+        // aggregated entity are sortable). View 2 is configured as an AnalyticalTable via its
+        // LineItem#VAR2 controlConfiguration, so its nav-path target must get textPropertyNotSortable:
+        // true, while view 1 (default GridTable) keeps it sortable.
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const columns = {
+            'DataField::CompanyCode': {
+                description: 'Company Code',
+                schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CompanyCode_Text' } }
+            },
+            'DataField::Customer': {
+                description: 'Customer',
+                schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                properties: { text: { artifactType: 'Annotation', value: '_CustomerDetail/CustomerName' } }
+            }
+        };
+        const page = makePage({ '1': makeViewNode(columns), '2': makeViewNode(columns) });
+        const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+        // Manifest carries both the per-view paths (view 2 points at SPV#VAR2) and the
+        // controlConfiguration where LineItem#VAR2 renders an AnalyticalTable.
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [
+                                            { key: '1' },
+                                            { key: '2', annotationPath: '@…SelectionPresentationVariant#VAR2' }
+                                        ]
+                                    },
+                                    controlConfiguration: {
+                                        [lineItem]: { tableSettings: { type: 'GridTable' } },
+                                        [`${lineItem}#VAR2`]: { tableSettings: { type: 'AnalyticalTable' } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        // View 1 (default GridTable): nav-path target remains sortable.
+        expect(tabs[0].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+        // View 2 (AnalyticalTable): nav-path target is skipped in the sort test.
+        expect(tabs[1].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: true
+            }
+        ]);
     });
 
     test('resolves columnPersonalizationSupported per view from each view annotationPath', () => {
@@ -3575,5 +3755,67 @@ describe('getListReportTabs()', () => {
         expect(tabs[0].columnPersonalizationSupported).toBe(true);
         // View 2 (#VAR2) maps to LineItem#VAR2, which disables column personalization.
         expect(tabs[1].columnPersonalizationSupported).toBe(false);
+    });
+});
+
+describe('extractTextAnnotationCandidatesFromMetadata()', () => {
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="PlainColumn" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+    const metadata = convert(parse(metadataXml));
+
+    test('returns a sortable candidate for a direct Common.Text target', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, 'Customer')).toEqual([
+            { columnProperty: 'CompanyCode', textProperty: 'CompanyCode_Text' }
+        ]);
+    });
+
+    test('keeps a navigation text target as a sortable candidate', () => {
+        // The ID column ("Customer") is a real, non-association column, so the test is generated — and a
+        // navigation-path text target is itself a valid sort/adaptation name, emitted unchanged.
+        expect(extractTextAnnotationCandidatesFromMetadata(['Customer'], metadata, 'Customer')).toEqual([
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName' }
+        ]);
+    });
+
+    test('skips columns without a Common.Text annotation', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['PlainColumn'], metadata, 'Customer')).toEqual([]);
+    });
+
+    test('preserves column order and only emits text-annotated columns', () => {
+        expect(
+            extractTextAnnotationCandidatesFromMetadata(
+                ['PlainColumn', 'CompanyCode', 'Customer'],
+                metadata,
+                'Customer'
+            )
+        ).toEqual([
+            { columnProperty: 'CompanyCode', textProperty: 'CompanyCode_Text' },
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName' }
+        ]);
+    });
+
+    test('returns an empty array when the entity set is undefined or missing from metadata', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, undefined)).toEqual([]);
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, 'Unknown')).toEqual([]);
     });
 });

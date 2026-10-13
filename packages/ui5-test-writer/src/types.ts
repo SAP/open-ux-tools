@@ -156,16 +156,17 @@ export type ContactCardField = {
 };
 
 /**
- * A table column whose bound property carries a `Common.Text` annotation. `textProperty` is the
- * sortable text target (always present); `columnProperty` is the column's own property, omitted when
- * `UI.TextArrangement` is `TextOnly` (only the text is sortable). When several columns share one text
- * target, each emits its own `columnProperty` sort test but only the first emits the text-property
- * test; the rest set `skipTextPropertyTest`.
+ * A table column whose bound property carries a `Common.Text` annotation. `columnProperty` is the
+ * column's own (code) property; `textProperty` is the text target. Both are asserted independently.
+ * When columns share one text target, only the first emits the text-property test; the rest set
+ * `skipTextPropertyTest` but still assert their own code column. `textPropertyNotSortable` marks a
+ * nav-path target in an AnalyticalTable view (cannot sort across a navigation); skipped in the sort test only.
  */
 export type TextAnnotationColumn = {
-    columnProperty?: string;
+    columnProperty: string;
     textProperty: string;
     skipTextPropertyTest?: boolean;
+    textPropertyNotSortable?: boolean;
 };
 
 export type BodySubSectionFeatureData = {
