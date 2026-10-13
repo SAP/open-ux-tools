@@ -2,7 +2,7 @@
  * Helper functions for creating and managing webapp folder structure
  */
 
-import { join, sep } from 'node:path';
+import { join } from 'node:path';
 import { stat, readdir, access } from 'node:fs/promises';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
