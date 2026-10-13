@@ -404,7 +404,7 @@ describe('<UITranslationInput />', () => {
     });
 
     describe('Focus restore on dismiss', () => {
-        const renderForFocus = (value = 'new value') => {
+        const renderForFocus = (preventAcceptRestoreFocus?: boolean, value = 'new value') => {
             render(
                 <UITranslationInput
                     id={id}
@@ -414,12 +414,26 @@ describe('<UITranslationInput />', () => {
                     i18nPrefix={'i18n'}
                     value={value}
                     onCreateNewEntry={jest.fn()}
+                    preventAcceptRestoreFocus={preventAcceptRestoreFocus}
                 />
             );
         };
 
-        test('does not restore focus to the trigger when a new entry is created', () => {
+        test('restores focus to the trigger when a new entry is created (default)', () => {
             renderForFocus();
+            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
+            triggerBtn.focus();
+            clickI18nButton();
+            const confirmBtn = document.querySelector(`#${id}-i18n-button-action-confirm`) as HTMLElement;
+            confirmBtn.focus();
+            fireEvent.click(confirmBtn);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            // Default behavior: focus returns to the trigger so keyboard users stay in context.
+            expect(document.activeElement).toBe(triggerBtn);
+        });
+
+        test('does not restore focus to the trigger when preventAcceptRestoreFocus is true', () => {
+            renderForFocus(true);
             // The trigger button is the element FluentUI captures to restore focus to on dismiss.
             const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
             triggerBtn.focus();
