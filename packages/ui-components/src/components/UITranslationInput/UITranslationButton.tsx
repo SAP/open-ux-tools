@@ -108,19 +108,16 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
     const onCancel = useCallback((): void => {
         setCalloutVisible(false);
     }, []);
-    const onRestoreFocus = useCallback(
-        (params: IPopupRestoreFocusParams): void => {
-            const wasAccepted = acceptedRef.current;
-            acceptedRef.current = false;
-            if (wasAccepted) {
-                return;
-            }
-            if (params.containsFocus) {
-                params.originalElement?.focus();
-            }
-        },
-        []
-    );
+    const onRestoreFocus = useCallback((params: IPopupRestoreFocusParams): void => {
+        const wasAccepted = acceptedRef.current;
+        acceptedRef.current = false;
+        if (wasAccepted) {
+            return;
+        }
+        if (params.containsFocus) {
+            params.originalElement?.focus();
+        }
+    }, []);
 
     return (
         <div className="ui-translatable__button">
