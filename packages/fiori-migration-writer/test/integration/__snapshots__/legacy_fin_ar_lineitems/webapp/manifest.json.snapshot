@@ -54,7 +54,7 @@ exports[`Migration Integration Tests Legacy Folder Structure Migration should mi
 		\\"resources\\": \\"resources.json\\",
 		\\"sourceTemplate\\": {
 			\\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
-			\\"version\\": \\"1.0.1\\",
+			\\"version\\": \\"0.0.0\\",
 			\\"toolsId\\": \\"<generated-uuid>\\"
 		}
 	},
