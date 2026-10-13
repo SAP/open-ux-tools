@@ -45,9 +45,7 @@ export interface CreateIdGeneratorEmptyOptions {
  * Options for creating an ID generator.
  */
 export type CreateIdGeneratorOptions =
-    | CreateIdGeneratorWithCacheOptions
-    | CreateIdGeneratorWithFilesystemOptions
-    | CreateIdGeneratorEmptyOptions;
+    CreateIdGeneratorWithCacheOptions | CreateIdGeneratorWithFilesystemOptions | CreateIdGeneratorEmptyOptions;
 
 const CHAR_SPACE = ' ';
 const CHAR_TAB = '\t';
