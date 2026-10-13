@@ -88,6 +88,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -212,6 +214,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -336,6 +340,8 @@ server:
           target:
             destination: DUMMY_DESTINATION
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -500,6 +506,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -637,6 +645,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -773,6 +783,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -870,6 +882,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -989,6 +1003,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1137,6 +1153,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1277,6 +1295,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1389,6 +1409,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1535,6 +1557,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1692,6 +1716,8 @@ server:
           target:
             destination: DUMMY_DESTINATION
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1850,6 +1876,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -2032,6 +2060,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -2167,6 +2197,8 @@ server:
             url: http://sap.example
             client: '000'
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -2401,7 +2433,7 @@ migrate.test_sap.app.title=migrate test",
 }
 `;
 
-exports[`ADP writer useNewSandbox flag does not emit flp section when minVersion < 1.151 1`] = `
+exports[`ADP writer useNewSandbox flag always emits flp.useNewSandbox: true regardless of UI5 version 1`] = `
 Object {
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
@@ -2428,6 +2460,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -2452,56 +2486,6 @@ builder:
 `;
 
 exports[`ADP writer useNewSandbox flag does not emit flp section when minVersion is absent 1`] = `
-Object {
-  "ui5.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"4.0\\"
-metadata:
-  name: my-test-app
-type: application
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-appreload
-      configuration:
-        adp:
-          target:
-            url: http://sap.example
-          ignoreCertErrors: false
-    - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
-      configuration:
-        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - url: http://sap.example
-            path: /sap
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
-",
-    "state": "modified",
-  },
-}
-`;
-
-exports[`ADP writer useNewSandbox flag emits flp.useNewSandbox: true when minVersion >= 1.151 1`] = `
 Object {
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
