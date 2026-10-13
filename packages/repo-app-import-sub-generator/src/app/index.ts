@@ -170,12 +170,14 @@ export default class extends Generator {
             );
             const failEvent =
                 this.downloadType === AppDownloadType.AbapRepository
-                    ? EventName.ABAP_REPO_DOWNLOAD_FAIL
-                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_FAIL;
+                    ? EventName.ABAP_REPO_APP_WRITING_FAILED
+                    : EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED;
+            // Fires when the writing phase throws — includes the caught error message for diagnosis.
             await sendTelemetry(
                 failEvent,
                 TelemetryHelper.createTelemetryData({
                     appType: generatorName,
+                    errorMessage: error instanceof Error ? error.message : String(error),
                     ...this.options.telemetryData
                 }) ?? {}
             ).catch(() => {
@@ -191,6 +193,13 @@ export default class extends Generator {
     private async _generateAbapRepositoryApp(): Promise<void> {
         const webappPath = join(this.projectPath, DirName.Webapp);
         await extractZip(webappPath, this.fs);
+        // Zip was successfully extracted — the download from ABAP repository succeeded.
+        await sendTelemetry(
+            EventName.ABAP_REPO_DOWNLOAD_SUCCESS,
+            TelemetryHelper.createTelemetryData({ appType: generatorName, ...this.options.telemetryData }) ?? {}
+        ).catch(() => {
+            // telemetry errors are non-fatal
+        });
 
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
         if (serviceProvider) {
@@ -234,6 +243,13 @@ export default class extends Generator {
      */
     private async _generateAdtQuickDeployApp(): Promise<void> {
         await extractZip(this.extractedProjectPath, this.fs);
+        // Zip was successfully extracted — the download from ADT quick-deploy succeeded.
+        await sendTelemetry(
+            EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS,
+            TelemetryHelper.createTelemetryData({ appType: generatorName, ...this.options.telemetryData }) ?? {}
+        ).catch(() => {
+            // telemetry errors are non-fatal
+        });
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
@@ -431,10 +447,11 @@ export default class extends Generator {
                 MessageType.notification
             );
             await this._handlePostAppGeneration();
+            // Fires when the full generation pipeline completes without error.
             const successEvent =
                 this.downloadType === AppDownloadType.AbapRepository
-                    ? EventName.ABAP_REPO_DOWNLOAD_SUCCESS
-                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS;
+                    ? EventName.ABAP_REPO_DOWNLOAD_COMPLETE
+                    : EventName.ADT_QUICK_DEPLOY_COMPLETE;
             await sendTelemetry(
                 successEvent,
                 TelemetryHelper.createTelemetryData({

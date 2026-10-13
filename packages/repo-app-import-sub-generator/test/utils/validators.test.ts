@@ -204,7 +204,7 @@ describe('validateAppSelection', () => {
         } as unknown as AppWizard;
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        mockDownloadApp.mockResolvedValue(true);
+        mockDownloadApp.mockResolvedValue({ success: true });
         mockHasQfaJson.mockReturnValue(false);
         await validateAppSelection(answers, appList, undefined, mockAppWizard);
         expect(mockAppWizard.showError).toHaveBeenCalledWith(
@@ -216,7 +216,7 @@ describe('validateAppSelection', () => {
     it('should return true if a valid app is selected and download is successful', async () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        mockDownloadApp.mockResolvedValue(true);
+        mockDownloadApp.mockResolvedValue({ success: true });
         mockHasQfaJson.mockReturnValue(true);
         const result = await validateAppSelection(answers, appList);
 
@@ -227,7 +227,7 @@ describe('validateAppSelection', () => {
     it('should send legacy system telemetry and return a help link if download returns no data', async () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        mockDownloadApp.mockResolvedValue(false);
+        mockDownloadApp.mockResolvedValue({ success: false, errorMessage: t('error.appDownloadFailed') });
         mockGetHelpLink.mockResolvedValue(mockHelpLink);
 
         const result = await validateAppSelection(
@@ -238,10 +238,7 @@ describe('validateAppSelection', () => {
             AppDownloadType.AbapRepository
         );
 
-        expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
-            expect.any(Object)
-        );
+        expect(mockSendTelemetry).toHaveBeenCalledWith(EventName.ABAP_REPO_DOWNLOAD_FAIL, expect.any(Object));
         expect(mockGetHelpLink).toHaveBeenCalledWith(
             HELP_NODES.ABAP_REPO_APP_DOWNLOAD_FAILED,
             ERROR_TYPE.INTERNAL_SERVER_ERROR,
@@ -271,7 +268,7 @@ describe('validateAppSelection', () => {
     it('should skip qfa.json check and return true for ABAP repository download type', async () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
-        mockDownloadApp.mockResolvedValue(true);
+        mockDownloadApp.mockResolvedValue({ success: true });
         (hasQfaJson as jest.Mock).mockReturnValue(false);
 
         const result = await validateAppSelection(

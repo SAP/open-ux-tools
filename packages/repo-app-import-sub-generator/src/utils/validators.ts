@@ -160,12 +160,13 @@ export async function validateAppSelection(
     // Valid app selected, try to download
     if (answers?.appId) {
         try {
-            const downloadSucceeded = await downloadApp(answers.repoName);
-            if (!downloadSucceeded) {
+            const result = await downloadApp(answers.repoName);
+            if (!result.success) {
                 if (downloadType === AppDownloadType.AbapRepository) {
+                    // Fires when the server returns no content — legacy ABAP system without repository content.
                     await sendTelemetry(
-                        EventName.ABAP_REPO_DOWNLOAD_NO_FILES_RETURNED,
-                        TelemetryHelper.createTelemetryData({}) ?? {}
+                        EventName.ABAP_REPO_DOWNLOAD_FAIL,
+                        TelemetryHelper.createTelemetryData({ errorMessage: result.errorMessage }) ?? {}
                     ).catch(() => {
                         // telemetry errors are non-fatal
                     });
