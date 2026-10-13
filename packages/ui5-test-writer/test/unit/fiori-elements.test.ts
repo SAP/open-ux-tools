@@ -2215,7 +2215,12 @@ export type Then = Opa5 & BaseArrangements & {
                 const projectDir = prepareTestFiles('LROPv4');
                 withTextAnnotationColumn();
 
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.152.0', enableTypeScript: true }, metadata, fs);
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.152.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
 
                 const content = lrJourneyContents();
                 expect(content).not.toContain('sap/ui/core/library');
