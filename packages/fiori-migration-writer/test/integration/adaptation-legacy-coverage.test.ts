@@ -22,20 +22,17 @@ describe('Adaptation Project - Coverage Tests', () => {
 
         const fs = loadProjectIntoMemFs(testInputBase);
 
-        const { messages } = await ProjectMigrator.migrate(
-            testInputBase,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { messages } = await ProjectMigrator.migrate({
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
             fs
-        );
+        });
 
         // Should not have critical errors
         const errors = messages.filter((m) => m.type === 'ERROR');
         expect(errors.length).toBeLessThan(3); // Allow some expected errors
-    });
+    }, 30000); // 30 second timeout for integration test
 
     it('should identify manifest.appdescr_variant file', async () => {
         const variantFile = join(testInputBase, 'webapp', 'manifest.appdescr_variant');
