@@ -25,10 +25,6 @@ const usesFilterFieldIdentifier =
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
-<%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (tabs && tabs.some(function(tab) { return tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0; }))); -%>
-<%_ if (needsSortOrder) { -%>
-import { SortOrder } from "sap/ui/core/library";
-<%_ } -%>
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
@@ -208,22 +204,6 @@ function journey() {
 
 <%_ } -%>
 <%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
-    opaTest(<%- JSON.stringify("Check the Sort options for columns with a Text annotation in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
-        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
-        <%_ tab.textAnnotationColumns.forEach(function(column) { _%>
-        <%_ if (column.columnProperty) { _%>
-        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending);
-        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
-        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
-        <%_ } _%>
-        <%_ if (!column.skipTextPropertyTest && !column.textPropertyNotSortable) { _%>
-        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
-        Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
-        When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);
-        <%_ } _%>
-        <%_ }); -%>
-    });
-
 <%_ if (tab.columnPersonalizationSupported !== false) { -%>
     opaTest(<%- JSON.stringify("Check the presence of the text columns for columns with a Text annotation in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
         When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
@@ -374,23 +354,6 @@ function journey() {
 <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
     opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-    });
-
-<%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-    opaTest("Check the Sort options for columns with a Text annotation", function (_Given: Given, When: When, Then: Then) {
-        <%_ textAnnotationColumns.forEach(function(column) { _%>
-        <%_ if (column.columnProperty) { _%>
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending);
-        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.Ascending, true);
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, SortOrder.None);
-        <%_ } _%>
-        <%_ if (!column.skipTextPropertyTest && !column.textPropertyNotSortable) { _%>
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending);
-        Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.Ascending, true);
-        When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, SortOrder.None);
-        <%_ } _%>
-        <%_ }); -%>
     });
 
 <%_ } -%>

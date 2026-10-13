@@ -2097,6 +2097,26 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test or the coreLibrary import —
+            // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
+            // exists from 1.152.0.
+            it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.152.0' }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('"sap/ui/core/library"');
+                expect(content).not.toContain('coreLibrary');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+            });
+
             it('omits the sort-order test and coreLibrary import when there is no text-annotated column', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
@@ -2185,6 +2205,26 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).not.toContain('sap/ui/core/library');
                 expect(content).not.toContain('SortOrder');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+            });
+
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test or the SortOrder import —
+            // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
+            // exists from 1.152.0.
+            it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.152.0', enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('sap/ui/core/library');
+                expect(content).not.toContain('SortOrder');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
             });
 
             it('omits the sort-order test and SortOrder import when there is no text-annotated column', async () => {

@@ -15,12 +15,10 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-<%_ const needsSortOrder = (textAnnotationColumns && textAnnotationColumns.length > 0) || (tabs && tabs.some(function(tab) { return tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0; })); -%>
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"<% if (needsSortOrder) { %>,
-    "sap/ui/core/library"<% } %>
-], function (opaTest, runner<% if (needsSortOrder) { %>, coreLibrary<% } %>) {
+    "./pages/JourneyRunner"
+], function (opaTest, runner) {
     "use strict";
 
     function journey() {
@@ -201,22 +199,6 @@ sap.ui.define([
 
 <%_ } -%>
 <%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
-        opaTest(<%- JSON.stringify("Check the Sort options for columns with a Text annotation in view " + tab.key) %>, function (Given, When, Then) {
-            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
-            <%_ tab.textAnnotationColumns.forEach(function(column) { _%>
-            <%_ if (column.columnProperty) { _%>
-            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.None);
-            <%_ } _%>
-            <%_ if (!column.skipTextPropertyTest && !column.textPropertyNotSortable) { _%>
-            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.None);
-            <%_ } _%>
-            <%_ }); -%>
-        });
-
 <%_ if (tab.columnPersonalizationSupported !== false) { -%>
         opaTest(<%- JSON.stringify("Check the presence of the text columns for columns with a Text annotation in view " + tab.key) %>, function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
@@ -366,23 +348,6 @@ sap.ui.define([
 <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
         opaTest("Check table columns", function (Given, When, Then) {
             Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-        });
-
-<%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-        opaTest("Check the Sort options for columns with a Text annotation", function (Given, When, Then) {
-            <%_ textAnnotationColumns.forEach(function(column) { _%>
-            <%_ if (column.columnProperty) { _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.columnProperty %>" }, coreLibrary.SortOrder.None);
-            <%_ } _%>
-            <%_ if (!column.skipTextPropertyTest && !column.textPropertyNotSortable) { _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.None);
-            <%_ } _%>
-            <%_ }); -%>
         });
 
 <%_ } -%>
