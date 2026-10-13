@@ -230,18 +230,20 @@ export async function createWebappFolderAndMigrateFiles(
 
         if (editor && hasStore(editor)) {
             // Use mem-fs to get directory listing
-            const rootPathWithSep = rootPath.endsWith(sep) ? rootPath : rootPath + sep;
+            // mem-fs stores keys with forward slashes, so normalize separators for Windows compatibility
+            const normalizedRoot = rootPath.replaceAll('\\', '/');
+            const rootPathWithSep = normalizedRoot.endsWith('/') ? normalizedRoot : normalizedRoot + '/';
             const filesToMove: string[] = [];
 
             // Collect all files under root, excluding those whose top-level segment is filtered
             editor.store.each((file) => {
-                const filePath = file.path;
+                const filePath = file.path.replaceAll('\\', '/'); // Normalize mem-fs keys
                 if (filePath.startsWith(rootPathWithSep)) {
                     const relativePath = filePath.substring(rootPathWithSep.length);
                     if (relativePath) {
-                        const topLevelSegment = relativePath.split(sep)[0];
+                        const topLevelSegment = relativePath.split('/')[0]; // Use forward slash for mem-fs paths
                         if (!direntToFilter.includes(topLevelSegment)) {
-                            filesToMove.push(filePath);
+                            filesToMove.push(file.path); // Keep original path for mem-fs operations
                         }
                     }
                 }
@@ -249,7 +251,8 @@ export async function createWebappFolderAndMigrateFiles(
 
             // Move files to webapp folder in mem-fs, preserving their relative subpath
             for (const filePath of filesToMove) {
-                const relativePath = filePath.substring(rootPathWithSep.length);
+                const normalizedPath = filePath.replaceAll('\\', '/');
+                const relativePath = normalizedPath.substring(rootPathWithSep.length);
                 const destPath = join(rootPath, DirName.Webapp, relativePath);
                 const content = readFile(filePath);
                 writeFile(destPath, content);
