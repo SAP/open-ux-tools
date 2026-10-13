@@ -105,7 +105,7 @@ function renderSubcommands(topLevelCmd) {
 function generateRootSkill(spec, version) {
     const frontmatter = `---
 name: sap-fiori-create-cli
-description: Use when asked to run any @sap-ux/create CLI command for SAP Fiori projects. Routes to the specific command skill. Use when the exact subcommand is unknown or when providing general guidance.
+description: Use when asked to run any @sap-ux/create CLI command for SAP Fiori projects.
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
