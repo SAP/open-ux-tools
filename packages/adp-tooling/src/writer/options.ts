@@ -146,7 +146,7 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
  *
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
- * @param useNewSandbox
+ * @param useNewSandbox whether to enable UShell Sandbox 2.0
  */
 function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig, useNewSandbox: boolean) {
     const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
@@ -190,7 +190,7 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig,
  *
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
- * @param useNewSandbox
+ * @param useNewSandbox whether to enable UShell Sandbox 2.0
  */
 function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig, useNewSandbox: boolean) {
     ui5Config.addCustomMiddleware([
