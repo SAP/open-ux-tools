@@ -1,5 +1,5 @@
 ---
-"@sap-ux/fiori-migration-writer": minor
+"@sap-ux/fiori-migration-writer": patch
 ---
 
 FEAT: Introduce new @sap-ux/fiori-migration-writer package
