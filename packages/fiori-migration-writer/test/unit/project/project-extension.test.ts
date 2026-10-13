@@ -134,7 +134,9 @@ describe('project-extension', () => {
 
         it('should handle missing backend data', async () => {
             const config = createMockConfig({
-                getFirstBackend: jest.fn<() => { destination?: string; scp?: boolean; url?: string; sapClient?: string }>().mockReturnValue({})
+                getFirstBackend: jest
+                    .fn<() => { destination?: string; scp?: boolean; url?: string; sapClient?: string }>()
+                    .mockReturnValue({})
             });
 
             const result = await processProjectExtension(config);
