@@ -1,5 +1,17 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.15.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Bug Fixes
+
+- update visual filter skill to distinguish scalar dimensions from managed association foreign keys in CAP [[6d46423](https://github.com/SAP/open-ux-tools/commit/6d4642345e7cc4b7444e9564ceadbf2e4a805e76)]
+
 ## 1.15.9
 
 ### Patch Changes
