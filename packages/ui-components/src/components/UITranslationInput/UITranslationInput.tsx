@@ -52,7 +52,7 @@ export interface UITranslationInputProps<T extends TranslationEntry> extends ITe
      *
      * @default false
      */
-    preventAcceptRestoreFocus?: boolean;
+    preventFocusRestoreOnAccept?: boolean;
 }
 
 /**
@@ -195,7 +195,7 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         disabled,
         strings,
         invertedCalloutTheme,
-        preventAcceptRestoreFocus
+        preventFocusRestoreOnAccept
     } = props;
 
     const suggestion = getTranslationSuggestion(props);
@@ -234,7 +234,7 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
                 strings={strings}
                 suggestion={suggestion}
                 invertedCalloutTheme={invertedCalloutTheme}
-                preventAcceptRestoreFocus={preventAcceptRestoreFocus}
+                preventFocusRestoreOnAccept={preventFocusRestoreOnAccept}
             />
         );
     }, [
@@ -250,7 +250,7 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         onCreateNewEntry,
         onShowExistingEntry,
         onUpdateValue,
-        preventAcceptRestoreFocus
+        preventFocusRestoreOnAccept
     ]);
 
     const onRenderInput = useCallback(

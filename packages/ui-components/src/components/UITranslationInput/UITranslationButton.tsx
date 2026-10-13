@@ -32,7 +32,7 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
      *
      * @default false
      */
-    preventAcceptRestoreFocus?: boolean;
+    preventFocusRestoreOnAccept?: boolean;
 }
 
 /**
@@ -79,7 +79,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         busy,
         suggestion,
         invertedCalloutTheme,
-        preventAcceptRestoreFocus
+        preventFocusRestoreOnAccept
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
     const acceptedRef = useRef(false);
@@ -145,7 +145,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     setInitialFocus={true}
                     className={getCalloutClassNames(invertedCalloutTheme)}
                     onDismiss={onCancel}
-                    onRestoreFocus={preventAcceptRestoreFocus ? onRestoreFocus : undefined}
+                    onRestoreFocus={preventFocusRestoreOnAccept ? onRestoreFocus : undefined}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
                         {suggestion.message}
