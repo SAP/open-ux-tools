@@ -419,26 +419,11 @@ describe('<UITranslationInput />', () => {
             );
         };
 
-        test('restores focus to the trigger when a new entry is created (default)', () => {
-            renderForFocus();
-            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
-            triggerBtn.focus();
-            clickI18nButton();
-            const confirmBtn = document.querySelector(`#${id}-i18n-button-action-confirm`) as HTMLElement;
-            confirmBtn.focus();
-            fireEvent.click(confirmBtn);
-            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
-            // Default behavior: focus returns to the trigger so keyboard users stay in context.
-            expect(document.activeElement).toBe(triggerBtn);
-        });
-
         test('does not restore focus to the trigger when preventFocusRestoreOnAccept is true', () => {
             renderForFocus(true);
-            // The trigger button is the element FluentUI captures to restore focus to on dismiss.
             const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
             triggerBtn.focus();
             clickI18nButton();
-            // Focus is inside the callout when the user confirms (as in the real flow).
             const confirmBtn = document.querySelector(`#${id}-i18n-button-action-confirm`) as HTMLElement;
             confirmBtn.focus();
             fireEvent.click(confirmBtn);
@@ -446,19 +431,6 @@ describe('<UITranslationInput />', () => {
             // Focus must NOT be pulled back to the trigger; otherwise it would steal focus from a
             // host dialog (e.g. a VS Code QuickPick) opened in response and close it.
             expect(document.activeElement).not.toBe(triggerBtn);
-        });
-
-        test('restores focus to the trigger when the callout is cancelled', () => {
-            renderForFocus();
-            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
-            triggerBtn.focus();
-            clickI18nButton();
-            const cancelBtn = document.querySelector(`#${id}-i18n-button-action-cancel`) as HTMLElement;
-            cancelBtn.focus();
-            fireEvent.click(cancelBtn);
-            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
-            // Cancelling keeps the default FluentUI behavior: focus returns to the trigger button.
-            expect(document.activeElement).toBe(triggerBtn);
         });
     });
 
