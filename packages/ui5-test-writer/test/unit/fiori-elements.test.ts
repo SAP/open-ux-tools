@@ -2258,7 +2258,9 @@ export type Then = Opa5 & BaseArrangements & {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                         if (columnPersonalizationSupported !== undefined) {
                             features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
                         }
@@ -2299,6 +2301,7 @@ export type Then = Opa5 & BaseArrangements & {
                     if (features.listReport) {
                         features.listReport.textAnnotationColumns = [
                             {
+                                columnProperty: 'Customer',
                                 textProperty: '_CustomerDetail/CustomerName'
                             }
                         ];
@@ -2376,7 +2379,9 @@ export type Then = Opa5 & BaseArrangements & {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                         if (columnPersonalizationSupported !== undefined) {
                             features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
                         }
@@ -2422,6 +2427,7 @@ export type Then = Opa5 & BaseArrangements & {
                     if (features.listReport) {
                         features.listReport.textAnnotationColumns = [
                             {
+                                columnProperty: 'Customer',
                                 textProperty: '_CustomerDetail/CustomerName'
                             }
                         ];

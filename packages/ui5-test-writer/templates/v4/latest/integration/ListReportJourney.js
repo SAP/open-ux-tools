@@ -15,7 +15,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
-<%_ const needsSortOrder = (textAnnotationColumns && textAnnotationColumns.length > 0) || (tabs && tabs.some(function(tab) { return tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0; })); -%>
+<%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (tabs && tabs.some(function(tab) { return tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0; }))); -%>
 sap.ui.define([
     "sap/ui/test/opaQunit",
     "./pages/JourneyRunner"<% if (needsSortOrder) { %>,
