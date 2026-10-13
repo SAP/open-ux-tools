@@ -1,6 +1,7 @@
 ---
 "@sap-ux/adp-tooling": patch
 "@sap-ux/preview-middleware": patch
+"@sap-ux-private/preview-middleware-client": patch
 "@sap-ux/fiori-mcp-server": patch
 "@sap-ux/fiori-tools-plugin": patch
 ---
