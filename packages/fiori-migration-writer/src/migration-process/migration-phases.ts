@@ -9,8 +9,6 @@ import type { ImportProjectInfo, Message, TemplateData, NeoappDestination } from
 import type { SapAppSourceTemplate } from '../project-spec-types.js';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import { MigrationTypes, distVar } from '../utils/constants.js';
-import { join } from 'node:path';
-import { TemplateFileName, templatesDirPath } from '../index.js';
 
 import { migrateLegacyFolderStructure } from './legacy.js';
 import { setupMigrationDirectories, removePackageLock } from './setup.js';
