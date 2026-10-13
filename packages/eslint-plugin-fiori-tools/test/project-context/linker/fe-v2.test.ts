@@ -317,6 +317,60 @@ describe('FE V2 Linker', () => {
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration.tableType).toMatchSnapshot();
             });
+            test('inlineDelete', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'inlineDelete'
+                            ],
+                            value: true
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.inlineDelete).toMatchSnapshot();
+            });
+            test('multiSelect', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'multiSelect'
+                            ],
+                            value: true
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.multiSelect).toMatchSnapshot();
+            });
         });
     });
 

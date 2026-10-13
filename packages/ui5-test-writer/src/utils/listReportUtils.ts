@@ -247,18 +247,23 @@ export function getListReportFeatures(
                   )
             : undefined;
 
-    // Columns with a text annotation only get a sort-order test when their bound property also
-    // carries a UI.TextArrangement annotation (checked against the merged metadata), and the text
-    // (sort target) property is not hidden — a hidden property is not a sortable column.
+    // A maintained text annotation emits a sort test for the text target property (no TextArrangement
+    // required). The code column is also sorted, except under TextOnly where it is not sortable.
     const meta = convertedMetadata;
+    const seenTextProperties = new Set<string>();
     const textAnnotationColumns: TextAnnotationColumn[] = meta
-        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
-              .filter(
-                  (candidate) =>
-                      hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty) &&
-                      !isHiddenProperty(meta, listReportPage.entitySet, candidate.textProperty)
-              )
-              .map((candidate) => ({ textProperty: candidate.textProperty }))
+        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => {
+              // Dedupe the text-property sort test per text target; each code column keeps its own.
+              const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
+              seenTextProperties.add(candidate.textProperty);
+              return {
+                  columnProperty: isTextOnlyArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
+                      ? undefined
+                      : candidate.columnProperty,
+                  textProperty: candidate.textProperty,
+                  skipTextPropertyTest
+              };
+          })
         : [];
 
     return {
@@ -270,6 +275,11 @@ export function getListReportFeatures(
         contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
         textAnnotationColumns,
+        columnPersonalizationSupported: isColumnPersonalizationEnabled(
+            manifest,
+            listReportPage.name,
+            listReportPage.contextPath
+        ),
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
         tabs: getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log),
@@ -409,6 +419,7 @@ export function getListReportTabs(
     }
     const viewNodes = resolveViewTableNodes(listReportPage.model.root);
     const nodeByKey = new Map(viewNodes.map((entry) => [entry.key, entry.node]));
+    const criticalActions = collectCriticalActionNames(convertedMetadata);
     const tabs: ListReportTab[] = [];
     views.forEach((view, index) => {
         // Match the spec-model view node by key; fall back to model order (both lists exclude custom tabs).
@@ -422,7 +433,13 @@ export function getListReportTabs(
         let deleteButton = buildButtonState();
         if (convertedMetadata && entitySet) {
             const actionNames = getToolBarActionItems(getToolBarActionsFromTableNode(tableNode));
-            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySet, actionNames, log);
+            toolBarActions = safeCheckActionButtonStates(
+                convertedMetadata,
+                entitySet,
+                actionNames,
+                log,
+                criticalActions
+            );
             const buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySet, log);
             createButton = buildButtonState(buttonVisibility?.create);
             deleteButton = buildButtonState(buttonVisibility?.delete);
@@ -537,6 +554,86 @@ export function getCustomFilterFieldProperties(
         }
     }
     return custom;
+}
+
+/**
+ * Finds the LineItem control-configuration entry for the default table.
+ *
+ * @param controlConfiguration - the target's `options.settings.controlConfiguration`
+ * @param contextPath - the page's context path (e.g. `/Travel`), used to match CAP-style prefixed keys
+ * @returns the matched LineItem control-configuration value, or undefined if it cannot be identified
+ */
+function findDefaultTableLineItemConfig(
+    controlConfiguration: Record<string, unknown>,
+    contextPath?: string
+): { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined {
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const isLineItemKey = (key: string): boolean => {
+        const segment = key.substring(key.lastIndexOf('/') + 1);
+        return segment === lineItemTerm || segment.startsWith(`${lineItemTerm}#`);
+    };
+    const lineItemKeys = Object.keys(controlConfiguration).filter(isLineItemKey);
+
+    let key: string | undefined;
+    if (lineItemKeys.length === 1) {
+        key = lineItemKeys[0];
+    } else if (contextPath) {
+        // Multiple LineItem keys: only resolve when exactly one is scoped to this page's context path.
+        const bareUnderContext = `${contextPath}/${lineItemTerm}`;
+        if (controlConfiguration[bareUnderContext]) {
+            key = bareUnderContext;
+        } else {
+            const underContext = lineItemKeys.filter((candidate) => candidate.startsWith(`${contextPath}/`));
+            key = underContext.length === 1 ? underContext[0] : undefined;
+        }
+    }
+
+    return key
+        ? (controlConfiguration[key] as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        : undefined;
+}
+
+/**
+ * Determines whether the List Report table exposes column personalization (the "Columns" adaptation dialog).
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param contextPath - the page's context path, used to resolve CAP-style prefixed LineItem keys
+ * @returns true if the column-adaptation dialog is available for the table
+ */
+export function isColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    contextPath?: string
+): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        | {
+              options?: {
+                  settings?: {
+                      controlConfiguration?: Record<string, unknown>;
+                  };
+              };
+          }
+        | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemConfig = findDefaultTableLineItemConfig(controlConfiguration, contextPath);
+    const personalization = lineItemConfig?.tableSettings?.personalization;
+    if (personalization === undefined) {
+        return true;
+    }
+    if (typeof personalization === 'boolean') {
+        return personalization;
+    }
+    if (typeof personalization === 'object' && personalization !== null) {
+        return personalization.column === true;
+    }
+    return true;
 }
 
 /**
@@ -676,15 +773,16 @@ export function isHiddenFilter(
 }
 
 /**
- * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.TextArrangement`
- * annotation nested on its `@com.sap.vocabularies.Common.v1.Text` annotation.
+ * Returns true if the property's `UI.TextArrangement` is `TextOnly`, checking both the nested
+ * (`Common.Text`) and sibling (property-level) locations. Under `TextOnly` the code property is not
+ * sortable, so its sort test must be skipped.
  *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property has a text arrangement annotation
+ * @param convertedMetadata - converted OData metadata (metadata merged with local annotations)
+ * @param entitySetName - entity set owning the property (undefined → false)
+ * @param propertyName - property to inspect
+ * @returns true if the text arrangement is TextOnly
  */
-export function hasTextArrangement(
+export function isTextOnlyArrangement(
     convertedMetadata: ConvertedMetadata,
     entitySetName: string | undefined,
     propertyName: string
@@ -694,34 +792,12 @@ export function hasTextArrangement(
     }
     const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
     const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // TextArrangement is a nested annotation on the Common.Text term (see vocabularies-types Common.Text).
-    return property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement !== undefined;
-}
-
-/**
- * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.Hidden` annotation.
- * A hidden property is not exposed as a sortable column in the sort dialog, so it cannot be
- * used as a sort target.
- *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property is hidden
- */
-export function isHiddenProperty(
-    convertedMetadata: ConvertedMetadata,
-    entitySetName: string | undefined,
-    propertyName: string
-): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // The converted `@UI.Hidden` value is a Boolean wrapper object (it carries annotation metadata),
-    // so it is always truthy — coerce via `valueOf()` to read the underlying boolean and treat an
-    // explicit `Hidden: false` as not hidden.
-    return property?.annotations?.UI?.Hidden?.valueOf() === true;
+    // The converter also populates TextArrangement as a property-level sibling of Common.Text, a
+    // shape vocabularies-types does not declare — hence the indexed access.
+    const siblingArrangement = (property?.annotations?.UI as Record<string, unknown> | undefined)?.['TextArrangement'];
+    const textArrangement = property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement ?? siblingArrangement;
+    // The converted enum value stringifies to e.g. "UI.TextArrangementType/TextOnly".
+    return textArrangement !== undefined && String(textArrangement).endsWith('/TextOnly');
 }
 
 /**
