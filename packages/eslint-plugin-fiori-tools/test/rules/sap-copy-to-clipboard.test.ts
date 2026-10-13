@@ -52,7 +52,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            'Products',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'copy'
                         ],
@@ -112,7 +112,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            'Products',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'copy'
                         ],
@@ -138,7 +138,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            'Products',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings'
                         ],
                         value: {}

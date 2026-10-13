@@ -128,6 +128,12 @@ export const MAX_MTA_ID_LENGTH = 128;
 export const MAX_MTA_PREFIX_LENGTH = 100;
 export const MAX_MTA_PREFIX_SHORT_LENGTH = 94;
 export const MAX_MTA_PREFIX_SHORTER_LENGTH = 96;
+// Cloud Foundry limits service instance names to 50 characters. The MTA deploy service silently renames
+// any longer `service-name` to `<mta-id>-<hash>` (also capped at 50) at deploy time, but leaves the
+// `destination-content` ServiceInstanceName reference pointing at the original untruncated name, which
+// then fails content deployment. Keep every generated `service-name` within this limit so the name is
+// used verbatim and references stay consistent.
+export const MAX_SERVICE_INSTANCE_NAME_LENGTH = 50;
 export const MAX_ABAP_SERVICE_PREFIX_LENGTH = 24;
 export const MAX_ABAP_SERVICE_NAME_LENGTH = 20;
 

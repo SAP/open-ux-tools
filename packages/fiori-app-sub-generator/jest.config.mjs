@@ -16,4 +16,6 @@ config.modulePathIgnorePatterns = [
     '<rootDir>/test/int/fiori-freestyle/expected-output',
     '<rootDir>/test/int/test-output'
 ];
+// Integration tests run a full Yeoman generator; 5 s default is too tight on loaded CI runners.
+config.testTimeout = 30000;
 export default config;
