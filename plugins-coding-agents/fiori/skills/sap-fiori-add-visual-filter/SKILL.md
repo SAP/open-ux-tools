@@ -1,10 +1,10 @@
 ---
 name: sap-fiori-add-visual-filter
 description: Add visual filters (chart-based) to SAP Fiori Elements filter bar or value help using CAP or ABAP RAP. Use when asked to add chart filters, bar chart selectors, or visual filter bars to a Fiori Elements application.
-argument-hint: field name (e.g., Category, Status)
+argument-hint: visual filter with entity name, dimension field (e.g., Status, Category), measure field (e.g., TotalPrice, Amount), aggregation method (sum/min/max/average/countdistinct), and chart type (Bar/Line)
 metadata:
   author: sap-fiori-tools
-  version: "0.0.6"
+  version: "0.0.7"
 ---
 
 # SAP Fiori Visual Filter
@@ -38,6 +38,8 @@ Add **chart-based filters (Bar/Line)** to filter bar or value help dialog (OData
 5. **Chart type** - Bar or Line (recommend Bar as default)
 
 **DO NOT proceed with implementation until all inputs are confirmed.**
+
+⚠️ **Line chart dimension type restriction:** `ChartType: #Line` only supports dimensions typed as `Edm.Date`, `Edm.TimeOfDay`, or `Edm.DateTimeOffset`. If the requested dimension is a different type (e.g. string/association code like Status, Category), either use `#Bar` instead or confirm with the user that the dimension field is a date/time type before proceeding.
 
 ---
 
@@ -90,16 +92,66 @@ UI.PresentationVariant #visualFilter: {
 }
 ```
 
-### ValueList (on Dimension Field)
+#### Scalar property versus managed association dimension
+
+The annotation location depends on how the dimension is declared in the CAP model:
+
+- A direct scalar property can be annotated inline. For example, `Category : String(80)` is a real entity element, so use `Category @Common.ValueList #visualFilter` inside the `annotate ... with { ... }` block.
+- A managed association is different. For example, `Category : Association to Categories` generates the local foreign key `Category_code`; `Category_code` is not a declared element in the source entity and cannot be annotated inline in that block.
+
+For the scalar `Category` dimension, this is valid:
+
 ```cds
-Category @Common.ValueList #visualFilter: {
-  $Type: 'Common.ValueListType',
-  CollectionPath: 'EntityName',
-  Parameters: [
-    { $Type: 'Common.ValueListParameterInOut', LocalDataProperty: Category, ValueListProperty: 'Category' }
-  ],
-  PresentationVariantQualifier: 'visualFilter'
-}
+annotate MyService.Entity with {
+  Category @Common.ValueList #visualFilter: {
+    $Type: 'Common.ValueListType',
+    CollectionPath: 'Entity',
+    PresentationVariantQualifier: 'visualFilter',
+    Parameters: [
+      { $Type: 'Common.ValueListParameterInOut',
+        LocalDataProperty: Category, ValueListProperty: 'Category' }
+    ]
+  };
+};
+```
+
+For a visual filter whose dimension is the managed `Category` association, use the separate association-key target described below. Do not replace the target with `Category_code` inside the entity annotation block.
+
+#### ⚠️ Dimension is a Managed Association FK (e.g. `Category_code`, `Status_ID`)
+
+When the dimension field is the auto-generated foreign key column of a managed association (e.g. `Category_code` from `Category : Association to Categories`), you **cannot** annotate it inline inside the entity's `annotate ... with { ... }` block — the FK column is not visible as an element there. The CDS compiler will fail with:
+
+```
+Element "Category_code" has not been found
+```
+
+**✅ CORRECT:** Use a **separate `annotate` statement** targeting the association itself — the compiler rewrites it to the FK column:
+
+```cds
+// Compiles to target Travels/Category_code in $metadata
+annotate MyService.Entity:Category with @(
+  Common.ValueList #visualFilter: {
+    $Type                       : 'Common.ValueListType',
+    CollectionPath              : 'Entity',
+    PresentationVariantQualifier: 'visualFilter',
+    Parameters                  : [
+      { $Type: 'Common.ValueListParameterInOut',
+        LocalDataProperty: Category_code, ValueListProperty: 'Category_code' }
+    ]
+  }
+);
+```
+
+Key points:
+- Target syntax: `annotate <Service>.<Entity>:<assoc>` — for a managed to-one association, the compiler copies/rewrites annotations on the association to its generated local FK element. This matches documented CAP compiler behavior (see CAP docs on "Managed Associations"). If other annotations (e.g. `Common.Label`, `Common.Text`) already target the same association elsewhere, they're merged into a single `Annotations Target="...Entity/<assoc>_code"` block in `$metadata`. Verify with `cds compile --to edmx` if unsure.
+- `LocalDataProperty` and `ValueListProperty` both use the **FK column name** (e.g. `Category_code`), not the association name.
+- `CollectionPath` is the **same entity set** that holds the chart data (self-reference), not the code-list entity set.
+
+**❌ WRONG:** Inline annotation inside the entity block — fails to compile:
+```cds
+annotate MyService.Entity with { ... } {
+  Category_code @Common.ValueList #visualFilter: { ... };  // ❌ Element not found
+};
 ```
 
 ### SelectionFields
@@ -108,8 +160,7 @@ UI.SelectionFields: [Category]
 ```
 
 ### Manifest configuration (MANDATORY)
-refer to the "Manifest Configuration" section below.
-
+The shared Manifest Configuration section below applies to CAP and RAP.
 ---
 
 ## ABAP RAP Implementation (4 Steps)
@@ -256,7 +307,7 @@ The **projection view (DDLS file)** and **metadata extension (DDLX file)** are *
    - If these annotations are missing from $metadata, the DDLX is not active OR the service binding needs republishing
 
 ### 5. Manifest configuration (MANDATORY)
-refer to the "Manifest Configuration" section below.
+Use the shared Manifest Configuration section below.
 
 ---
 
@@ -296,6 +347,7 @@ refer to the "Manifest Configuration" section below.
 ```
 
 **Path:** `sap.ui5.routing.targets.<ListReport>.options.settings.controlConfiguration`
+Visual filter settings belong under `controlConfiguration`, not directly under `settings`.
 
 **Important placeholders:**
 - `<YourListReport>` - Your List Report target name (e.g., `TravelList`)
@@ -341,6 +393,9 @@ Refer to the **Application Preview Guidelines** section in the `sap-fiori-app-de
 - Non-numeric measure field
 - Missing compact visual layout configuration in manifest 
 
+**CAP:**
+- Trying to annotate a managed-association FK column (e.g. `Status_code`) inline inside `annotate ... with { ... }` — fails with `Element "..._code" has not been found`. Use a separate `annotate Service.Entity:assoc with (...)` statement instead (see "Dimension is a Managed Association FK" above).
+
 **RAP:**
 - Missing backend aggregation support
 - Using DynamicMeasures instead of Measures
@@ -366,4 +421,5 @@ Refer to the **Application Preview Guidelines** section in the `sap-fiori-app-de
 
 ## References
 
+- **SAP Fiori Elements Visual Filter Documentation**: https://ui5.sap.com/#/topic/5ea9bb1d544a42eabf71822a8a2cb753
 - **ABAP RAP Aggregation support**: https://help.sap.com/docs/abap-cloud/abap-rap/projection-view
