@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-annotation-api [[c22d46a](https://github.com/SAP/open-ux-tools/commit/c22d46a0f58a03ae21947c6d3e66261ce8e07dc5)]
+
 ## 1.15.9
 
 ### Patch Changes
