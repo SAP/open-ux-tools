@@ -1,24 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { getCurrentEditor, createMemFsEditor, editorHasPath } from './fs-adapter.js';
-
-/**
- * Get editor from context, parameter, or create a new one
- * Priority: explicit parameter > context > new instance
- *
- * @param editorOrPath
- */
-function getEditor(editorOrPath: string | Editor): Editor {
-    if (typeof editorOrPath !== 'string') {
-        return editorOrPath;
-    }
-    // Try to get from context
-    const contextEditor = getCurrentEditor();
-    if (contextEditor) {
-        return contextEditor;
-    }
-    // Create a temporary one for backward compatibility (tests, direct API usage)
-    return createMemFsEditor();
-}
+import { editorHasPath, getEditor } from './fs-adapter.js';
 
 /**
  * stripSpaces

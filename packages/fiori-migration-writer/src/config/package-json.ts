@@ -62,7 +62,7 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
     }
 
     // Add control property editor task if applicable
-    if (internalToggle && floorPlan && propertyEditorTaskProjectTypes.includes(floorPlan) && !isSAPApp) {
+    if (internalToggle && floorPlan && (propertyEditorTaskProjectTypes as string[]).includes(floorPlan) && !isSAPApp) {
         runTasks.push({
             name: 'start-control-property-editor',
             command: `fiori run --open 'editor.html'`

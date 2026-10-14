@@ -71,7 +71,8 @@ export const FLOOR_PLAN = {
     AnalyticalListPageV2: 'V2_ANALYTICAL',
     ListReportObjectPageV4: 'V4_LIST_REPORT',
     OverviewPageV2: 'V2_OVERVIEW'
-};
+} as const;
+export type FloorPlan = (typeof FLOOR_PLAN)[keyof typeof FLOOR_PLAN];
 
 export type Backend = {
     source?: string;

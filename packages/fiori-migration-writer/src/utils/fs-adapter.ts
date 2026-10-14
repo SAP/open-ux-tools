@@ -17,10 +17,27 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 const editorContext = new AsyncLocalStorage<Editor>();
 
 type EditorStore = {
-    each: (callback: (file: { path: string }) => void) => void;
+    each: (callback: (file: { path: string; state?: string }) => void) => void;
 };
 
 type EditorWithStore = Editor & { store: EditorStore };
+
+/**
+ * Get editor from context, parameter, or create a new one.
+ * Priority: explicit parameter > context > new instance
+ *
+ * @param editorOrPath - Editor instance or a path string
+ */
+export function getEditor(editorOrPath: string | Editor): Editor {
+    if (typeof editorOrPath !== 'string') {
+        return editorOrPath;
+    }
+    const contextEditor = getCurrentEditor();
+    if (contextEditor) {
+        return contextEditor;
+    }
+    return createMemFsEditor();
+}
 
 /**
  * Create a new mem-fs editor instance
@@ -79,6 +96,9 @@ export function editorHasPath(editor: Editor, path: string): boolean {
     let found = false;
 
     (editor as EditorWithStore).store.each((file) => {
+        if (file.state === 'deleted') {
+            return;
+        }
         // Normalize file path as well for comparison
         const normalizedFilePath = file.path.replaceAll('\\', '/');
         // Check exact match OR files under this directory

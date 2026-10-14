@@ -1,4 +1,6 @@
-# @sap-ux/fiori-migration-writer
+[![Changelog](https://img.shields.io/badge/changelog-8A2BE2)](https://github.com/SAP/open-ux-tools/blob/main/packages/fiori-migration-writer/CHANGELOG.md) [![Github repo](https://img.shields.io/badge/github-repo-blue)](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-migration-writer)
+
+# [`@sap-ux/fiori-migration-writer`](https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-migration-writer)
 
 Writer module for migrating Fiori applications from legacy WebIDE format to modern Fiori tools format.
 

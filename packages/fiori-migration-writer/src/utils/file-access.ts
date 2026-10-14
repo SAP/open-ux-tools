@@ -9,27 +9,7 @@
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
 import { readFile as fsReadFile } from 'node:fs/promises';
-import { createMemFsEditor, editorHasPath, getCurrentEditor, exists as fsAdapterExists } from './fs-adapter.js';
-
-/**
- * Get editor from context, parameter, or create a new one
- * Priority: explicit parameter > context > new instance
- *
- * @param editorOrPath
- */
-function getEditor(editorOrPath: string | Editor): Editor {
-    if (typeof editorOrPath !== 'string') {
-        return editorOrPath;
-    }
-    // Try to get from context
-    const contextEditor = getCurrentEditor();
-    if (contextEditor) {
-        return contextEditor;
-    }
-    // Create a temporary one for backward compatibility (tests, direct API usage)
-    // Note: This won't be automatically committed - caller must handle it
-    return createMemFsEditor();
-}
+import { editorHasPath, getCurrentEditor, exists as fsAdapterExists, getEditor } from './fs-adapter.js';
 
 /**
  * Read a text file
