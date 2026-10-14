@@ -1,10 +1,19 @@
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ProjectMigrator, initI18n } from '../../src/index.js';
+import * as actualUi5Info from '@sap-ux/ui5-info';
 import { loadProjectIntoMemFs, fileExistsInMemFs, getFileFromMemFs } from '../helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../test-constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { toMatchSpecificSnapshot } from 'jest-specific-snapshot';
+
+const PINNED_UI5_VERSION = '1.120.0';
+
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    ...actualUi5Info,
+    getUI5Versions: jest.fn().mockResolvedValue([{ version: PINNED_UI5_VERSION }])
+}));
+
+const { ProjectMigrator, initI18n } = await import('../../src/index.js');
 
 expect.extend({ toMatchSpecificSnapshot });
 
