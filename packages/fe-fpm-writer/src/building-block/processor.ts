@@ -1,6 +1,7 @@
 import { join, posix } from 'node:path';
 import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
+import type { Document as XmldomDocument, Element as XmldomElement } from '@xmldom/xmldom';
 import {
     BuildingBlockType,
     type BuildingBlock,
@@ -44,7 +45,7 @@ interface NamespaceConfig {
  */
 interface ProcessingContext {
     fs: Editor;
-    xmlDocument?: Document;
+    xmlDocument?: XmldomDocument;
     viewPath?: string;
     embeddedFragment?: EmbeddedFragmentData;
     updatedAggregationPath?: string;
@@ -269,7 +270,7 @@ function processCustomFormField(buildingBlockData: BuildingBlock, context: Proce
  * @param element - The XML element representing a button group.
  * @returns The extracted ButtonGroupConfig, or undefined if required attributes are missing.
  */
-function extractButtonGroupConfig(element: Element): ButtonGroupConfig | undefined {
+function extractButtonGroupConfig(element: XmldomElement): ButtonGroupConfig | undefined {
     const name = element.getAttribute('name');
     // extract attributes
     const buttons = element.getAttribute('buttons');
@@ -404,17 +405,23 @@ function processRichTextEditorButtonGroups(buildingBlockData: BuildingBlock, con
     const existingButtonGroupsMap = new Map<string, ButtonGroupConfig>();
 
     if (hasAggregation && xmlDocument && updatedAggregationPath) {
-        const xpathSelect = xpath.useNamespaces((xmlDocument.documentElement as any)?._nsMap ?? {});
+        const xpathSelect = xpath.useNamespaces(
+            (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {}
+        );
         // Example: [<Element: richtexteditor:buttonGroups>] containing all ButtonGroup children
-        const buttonGroupsElements = xpathSelect(updatedAggregationPath, xmlDocument) as Element[];
+        const buttonGroupsElements = xpathSelect(
+            updatedAggregationPath,
+            xmlDocument as unknown as Node
+        ) as unknown as XmldomElement[];
 
         if (buttonGroupsElements.length > 0) {
             const buttonGroupsWrapper = buttonGroupsElements[0];
             const config = getBuildingBlockConfig(BuildingBlockType.RichTextEditorButtonGroups);
             // Read all existing <ButtonGroup> child elements and store their attributes
             const existingButtonGroupElements = Array.from(buttonGroupsWrapper.childNodes).filter(
-                (node) => node.nodeType === 1 && (node as Element).localName === config.aggregationConfig.elementName
-            ) as Element[];
+                (node) =>
+                    node.nodeType === 1 && (node as XmldomElement).localName === config.aggregationConfig.elementName
+            ) as XmldomElement[];
 
             // Build map of existing button groups with their custom attributes
             existingButtonGroupElements.forEach((element) => {
@@ -463,25 +470,26 @@ export function resolveAggregationPath(aggregationPath: string): string {
  * @returns {object} Object containing the updated aggregation path
  */
 function updateAggregationPath(
-    xmlDocument: Document,
+    xmlDocument: XmldomDocument,
     aggregationPath: string,
     config: { aggregationName: string; elementName: string },
     namespace?: NamespaceConfig
 ): { updatedAggregationPath: string; hasElement: boolean } {
-    const nsMap: Record<string, string> = (xmlDocument.documentElement as any)?._nsMap ?? {};
+    const nsMap: Record<string, string> =
+        (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
     const resolvedPath = resolveAggregationPath(aggregationPath);
 
     // First, get the target element from the aggregationPath
-    const targetElement = xpathSelect(resolvedPath, xmlDocument);
+    const targetElement = xpathSelect(resolvedPath, xmlDocument as unknown as Node);
     if (!targetElement || !Array.isArray(targetElement) || targetElement.length === 0) {
         return { updatedAggregationPath: aggregationPath, hasElement: false };
     }
 
-    const targetNode = targetElement[0] as Element;
+    const targetNode = targetElement[0] as unknown as XmldomElement;
 
     // Check if the explicit aggregation exists within the specific target element
-    const hasAggregation = xpathSelect(`./*[local-name()='${config.aggregationName}']`, targetNode);
+    const hasAggregation = xpathSelect(`./*[local-name()='${config.aggregationName}']`, targetNode as unknown as Node);
     if (hasAggregation && Array.isArray(hasAggregation) && hasAggregation.length > 0) {
         return {
             updatedAggregationPath:
@@ -490,7 +498,10 @@ function updateAggregationPath(
         };
     } else {
         // Check if the default aggregation element exists within the specific target element
-        const useDefaultAggregation = xpathSelect(`./*[local-name()='${config.elementName}']`, targetNode);
+        const useDefaultAggregation = xpathSelect(
+            `./*[local-name()='${config.elementName}']`,
+            targetNode as unknown as Node
+        );
         if (useDefaultAggregation && Array.isArray(useDefaultAggregation) && useDefaultAggregation.length > 0) {
             return { updatedAggregationPath: aggregationPath, hasElement: true };
         }
@@ -556,7 +567,7 @@ function processAction(buildingBlockData: BuildingBlock, context: ProcessingCont
  */
 export function processBuildingBlock<T extends BuildingBlock>(
     buildingBlockData: T,
-    xmlDocument: Document,
+    xmlDocument: XmldomDocument,
     manifestPath: string,
     manifest: Manifest,
     aggregationPath: string,

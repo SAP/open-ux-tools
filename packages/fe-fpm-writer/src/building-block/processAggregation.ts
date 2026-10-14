@@ -2,7 +2,15 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { join } from 'node:path';
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import {
+    DOMParser,
+    XMLSerializer,
+    type Document as XmldomDocument,
+    type Node as XmldomNode,
+    type Element as XmldomElement,
+    type Text as XmldomText,
+    type Comment as XmldomComment
+} from '@xmldom/xmldom';
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
 import { coerce, lt } from 'semver';
@@ -37,7 +45,7 @@ import { resolveAggregationPath } from './processor.js';
  * @param fs - the memfs editor instance
  * @returns {Document} the view xml file document
  */
-export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Document {
+export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): XmldomDocument {
     let viewContent: string;
     try {
         viewContent = fs.read(join(basePath, viewPath));
@@ -45,7 +53,7 @@ export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor
         throw new Error(`Unable to read xml view file. Details: ${getErrorMessage(error)}`);
     }
 
-    let viewDocument: Document;
+    let viewDocument: XmldomDocument;
     try {
         viewDocument = new DOMParser(getDOMParserOptions()).parseFromString(viewContent, 'text/xml');
     } catch (error) {
@@ -91,10 +99,10 @@ export function validateFullPageTemplateVersion(manifest: Manifest | undefined):
  * @param xmlDocument - the view XML document
  * @returns {string} the resolved namespace prefix string (e.g. 'macros')
  */
-function resolveMacrosPrefix(xmlDocument: Document): string {
+function resolveMacrosPrefix(xmlDocument: XmldomDocument): string {
     const prefix = getOrAddNamespace(xmlDocument, 'sap.fe.macros', 'macros');
     if (prefix === '') {
-        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+        xmlDocument.documentElement?.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
         return 'macros';
     }
     return prefix;
@@ -186,18 +194,22 @@ function buildPageAggregationFragment(
         stickySubheaderId?: string;
     },
     fragMacrosNS: string,
-    xmlDocument: Document
-): Document {
+    xmlDocument: XmldomDocument
+): XmldomDocument {
     const aggPath = getTemplatePath(`/building-block/page/${aggName}.xml`);
     const aggContent = render(fs.read(aggPath), aggContext, {}); // NOSONAR - template is a controlled file on disk, not user input
-    const extraNamespaces = Array.from(xmlDocument.documentElement.attributes)
+    const extraNamespaces = Array.from(xmlDocument.documentElement?.attributes ?? [])
         .filter((a) => a.name.startsWith('xmlns:') && a.name !== `xmlns:${fragMacrosNS}` && a.name !== 'xmlns:m')
         .map((a) => `${a.name}="${a.value}"`)
         .join(' ');
     const wrapped = `<root xmlns:${fragMacrosNS}="sap.fe.macros" xmlns="sap.m" xmlns:m="sap.m" ${extraNamespaces}>${aggContent}</root>`;
     return new DOMParser(
         getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
-            throw new Error(`Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`);
+            if (level !== 'warning') {
+                throw new Error(
+                    `Unable to parse page aggregation fragment '${aggName}'. Details: [${level}] - ${message}`
+                );
+            }
         })
     ).parseFromString(wrapped, 'text/xml');
 }
@@ -214,8 +226,8 @@ function buildPageAggregationFragment(
  */
 export function appendPageAggregations(
     fs: Editor,
-    xmlDocument: Document,
-    templateDocument: Document,
+    xmlDocument: XmldomDocument,
+    templateDocument: XmldomDocument,
     generateId: IdGeneratorFunction,
     aggNames: readonly PageAggregationName[] = PAGE_AGGREGATIONS,
     useDefaults = true,
@@ -224,6 +236,9 @@ export function appendPageAggregations(
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
     const pageElement = templateDocument.documentElement;
+    if (!pageElement) {
+        throw new Error(`Template document has no root element.`);
+    }
     pageElement.appendChild(templateDocument.createComment(PAGE_TEMPLATE_COMMENT));
     for (const aggName of aggNames) {
         const aggId = generateId(aggName);
@@ -231,7 +246,7 @@ export function appendPageAggregations(
         const ids = buildAggregationIds(aggName, generateId);
         const aggContext = { macrosPrefix, aggId, showDefaultContent, ids, aggIndex: 1, stickySubheaderId };
         const aggDoc = buildPageAggregationFragment(fs, aggName, aggContext, fragMacrosNS, xmlDocument);
-        for (const node of Array.from(aggDoc.documentElement.childNodes)) {
+        for (const node of Array.from(aggDoc.documentElement?.childNodes ?? [])) {
             if (node.nodeType === 1 /* Element */) {
                 pageElement.appendChild(templateDocument.importNode(node, true));
             }
@@ -246,7 +261,7 @@ export function appendPageAggregations(
  * @param el - the DOM Element
  * @returns the local name string, or '' if not a sap.fe.macros element
  */
-function getElementLocalName(el: Element): string {
+function getElementLocalName(el: XmldomElement): string {
     if (el.namespaceURI !== 'sap.fe.macros') {
         return '';
     }
@@ -281,15 +296,15 @@ function buildAggregationComparator(
  *
  * @param pageElement - the macros:Page DOM node whose children should be sorted
  */
-export function sortPageAggregationChildren(pageElement: Node): void {
+export function sortPageAggregationChildren(pageElement: XmldomNode): void {
     const allChildren = Array.from(pageElement.childNodes);
     const aggNames = PAGE_AGGREGATIONS as readonly string[];
 
     // Build pairs of [preceding comments, element] to preserve user comments.
     // Comments that appear before the first element are treated as leading and will remain before all aggregation elements.
     const groups: XmlAggregationGroup[] = [];
-    const leadingComments: Node[] = [];
-    let pendingComments: Node[] = [];
+    const leadingComments: XmldomNode[] = [];
+    let pendingComments: XmldomNode[] = [];
     let firstElementSeen = false;
 
     for (const node of allChildren) {
@@ -298,9 +313,9 @@ export function sortPageAggregationChildren(pageElement: Node): void {
             (firstElementSeen ? pendingComments : leadingComments).push(node);
         } else if (node.nodeType === 1 /* Element */) {
             firstElementSeen = true;
-            groups.push({ comments: pendingComments, element: node as Element, originalIndex: groups.length });
+            groups.push({ comments: pendingComments, element: node as XmldomElement, originalIndex: groups.length });
             pendingComments = [];
-        } else if (node.nodeType === 3 /* Text */ && (node as Text).data?.trim()) {
+        } else if (node.nodeType === 3 /* Text */ && (node as XmldomText).data?.trim()) {
             // Preserve non-whitespace text nodes with their surrounding group
             pendingComments.push(node);
         }
@@ -340,11 +355,19 @@ export function sortPageAggregationChildren(pageElement: Node): void {
  * @param xmlDocument - The XML document to mutate
  * @param aggregationPath - Full XPath to the target aggregation (e.g. '/mvc:View/macros:Page/macros:items')
  */
-export function ensureMissingAggregation(xmlDocument: Document, aggregationPath: string): void {
-    const nsMap: Record<string, string> = (xmlDocument.documentElement as any)?._nsMap ?? {};
+export function ensureMissingAggregation(xmlDocument: XmldomDocument, aggregationPath: string): void {
+    const nsMap: Record<string, string> =
+        (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
 
-    if ((xpathSelect(resolveAggregationPath(aggregationPath), xmlDocument) as Element[]).length > 0) {
+    if (
+        (
+            xpathSelect(
+                resolveAggregationPath(aggregationPath),
+                xmlDocument as unknown as Node
+            ) as unknown as XmldomElement[]
+        ).length > 0
+    ) {
         return;
     }
     const lastSlash = aggregationPath.lastIndexOf('/');
@@ -370,7 +393,7 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
     }
     const resolvedPrefix = getOrAddNamespace(xmlDocument, namespaceUri, prefix);
     if (resolvedPrefix === '' && prefix) {
-        xmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', `xmlns:${prefix}`, namespaceUri);
+        xmlDocument.documentElement?.setAttributeNS('http://www.w3.org/2000/xmlns/', `xmlns:${prefix}`, namespaceUri);
     }
 
     // Rebuild xpathSelect with the prefix explicitly mapped so XPath resolves prefixed steps
@@ -378,8 +401,8 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
     const xpathSelectWithPrefix = xpath.useNamespaces({ ...nsMap, [prefix]: namespaceUri });
     const parentNodes = xpathSelectWithPrefix(
         resolveAggregationPath(aggregationPath.slice(0, lastSlash)),
-        xmlDocument
-    ) as Element[];
+        xmlDocument as unknown as Node
+    ) as unknown as XmldomElement[];
     if (parentNodes.length === 0) {
         return;
     }
@@ -397,8 +420,8 @@ export function ensureMissingAggregation(xmlDocument: Document, aggregationPath:
  * @param macrosPrefix - the resolved prefix string (e.g. 'macros')
  */
 function wrapLooseBuildingBlocksInItems(
-    pageElement: Element,
-    xmlDocument: Document,
+    pageElement: XmldomElement,
+    xmlDocument: XmldomDocument,
     macrosNS: string,
     macrosPrefix: string
 ): void {
@@ -406,9 +429,9 @@ function wrapLooseBuildingBlocksInItems(
     const looseChildren = Array.from(pageElement.childNodes).filter(
         (n) =>
             n.nodeType === 1 /* Element */ &&
-            (n as Element).namespaceURI === macrosNS &&
-            !aggregationSet.has((n as Element).localName)
-    ) as Element[];
+            (n as XmldomElement).namespaceURI === macrosNS &&
+            !aggregationSet.has((n as XmldomElement).localName ?? '')
+    ) as XmldomElement[];
 
     if (looseChildren.length === 0) {
         return;
@@ -416,11 +439,14 @@ function wrapLooseBuildingBlocksInItems(
 
     const itemsName = `${macrosPrefix}:items`;
     let itemsEl = Array.from(pageElement.childNodes).find(
-        (n) => n.nodeType === 1 && (n as Element).namespaceURI === macrosNS && (n as Element).localName === 'items'
-    ) as Element | undefined;
+        (n) =>
+            n.nodeType === 1 &&
+            (n as XmldomElement).namespaceURI === macrosNS &&
+            (n as XmldomElement).localName === 'items'
+    ) as XmldomElement | undefined;
 
     if (!itemsEl) {
-        itemsEl = xmlDocument.createElementNS(macrosNS, itemsName) as Element;
+        itemsEl = xmlDocument.createElementNS(macrosNS, itemsName) as XmldomElement;
         pageElement.insertBefore(itemsEl, looseChildren[0]);
     }
 
@@ -436,13 +462,13 @@ function wrapLooseBuildingBlocksInItems(
  * @param container - the aggregation container element, or undefined if not present
  * @returns {string[]} array of existing child element IDs
  */
-function getExistingContainerIds(container: Element | undefined): string[] {
+function getExistingContainerIds(container: XmldomElement | undefined): string[] {
     if (!container) {
         return [];
     }
     return Array.from(container.childNodes)
         .filter((n) => n.nodeType === 1 /* Element */)
-        .map((n) => (n as Element).getAttribute('id'))
+        .map((n) => (n as XmldomElement).getAttribute('id'))
         .filter((id): id is string => !!id);
 }
 
@@ -454,7 +480,7 @@ function getExistingContainerIds(container: Element | undefined): string[] {
  * @param existingContainer - the existing aggregation container, or undefined on first add
  * @returns {number} 1-based start index for text/press handler numbering
  */
-function deriveAggregationIndex(existingContainer: Element | undefined): number {
+function deriveAggregationIndex(existingContainer: XmldomElement | undefined): number {
     if (!existingContainer) {
         return 1;
     }
@@ -472,7 +498,7 @@ function deriveAggregationIndex(existingContainer: Element | undefined): number 
  * @param viewPath - the path of the xml view relative to the base path
  * @param xmlDocument - the XML document to serialize and write
  */
-function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDocument: Document): void {
+function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDocument: XmldomDocument): void {
     fs.write(join(basePath, viewPath), format(new XMLSerializer().serializeToString(xmlDocument)));
 }
 
@@ -484,10 +510,14 @@ function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDoc
  * @param aggDoc - the rendered template document whose first Element child holds the new children
  * @param xmlDocument - the owner document (used to import nodes)
  */
-function appendChildrenIntoContainer(existingContainer: Element, aggDoc: Document, xmlDocument: Document): void {
-    const renderedWrapper = Array.from(aggDoc.documentElement.childNodes).find(
+function appendChildrenIntoContainer(
+    existingContainer: XmldomElement,
+    aggDoc: XmldomDocument,
+    xmlDocument: XmldomDocument
+): void {
+    const renderedWrapper = Array.from(aggDoc.documentElement?.childNodes ?? []).find(
         (n) => n.nodeType === 1 /* Element */
-    ) as Element | undefined;
+    ) as XmldomElement | undefined;
     if (!renderedWrapper) {
         return;
     }
@@ -526,25 +556,29 @@ export async function generateBuildingBlockAggregation(
     const fragMacrosNS = resolveMacrosPrefix(xmlDocument);
     const macrosPrefix = `${fragMacrosNS}:`;
 
-    const nsMap = (xmlDocument.documentElement as any)?._nsMap ?? {};
+    const nsMap: Record<string, string> =
+        (xmlDocument.documentElement as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     // Prefix-agnostic XPath — works regardless of the alias used in the view for sap.fe.macros.
     const xpathSelect = xpath.useNamespaces(nsMap);
-    const pageNodes = xpathSelect(`//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`, xmlDocument);
+    const pageNodes = xpathSelect(
+        `//*[local-name()='Page' and namespace-uri()='sap.fe.macros']`,
+        xmlDocument as unknown as Node
+    );
     if (!pageNodes || !Array.isArray(pageNodes) || pageNodes.length === 0) {
         throw new Error(`Page element (sap.fe.macros) not found in view ${viewPath}.`);
     }
 
-    const pageElement = pageNodes[0] as Node;
+    const pageElement = pageNodes[0] as unknown as XmldomNode;
     if (aggName === 'footer' && pageElement.nodeType === 1 /* Element */) {
-        (pageElement as Element).setAttribute('showFooter', 'true');
+        (pageElement as XmldomElement).setAttribute('showFooter', 'true');
     }
     const childNodes = Array.from(pageElement.childNodes);
     const macrosNsUri = nsMap[fragMacrosNS] ?? 'sap.fe.macros';
     const hasExistingAggregation = childNodes.some(
         (node) =>
             node.nodeType === 1 /* Element */ &&
-            (node as Element).localName === aggName &&
-            (node as Element).namespaceURI === macrosNsUri
+            (node as XmldomElement).localName === aggName &&
+            (node as XmldomElement).namespaceURI === macrosNsUri
     );
 
     // Find existing container early so its child IDs can seed the ID generator,
@@ -553,9 +587,9 @@ export async function generateBuildingBlockAggregation(
         ? (childNodes.find(
               (n) =>
                   n.nodeType === 1 /* Element */ &&
-                  (n as Element).localName === aggName &&
-                  (n as Element).namespaceURI === macrosNsUri
-          ) as Element | undefined)
+                  (n as XmldomElement).localName === aggName &&
+                  (n as XmldomElement).namespaceURI === macrosNsUri
+          ) as XmldomElement | undefined)
         : undefined;
 
     if (hasExistingAggregation && SINGLE_INSTANCE_PAGE_AGGREGATIONS.has(aggName)) {
@@ -580,16 +614,16 @@ export async function generateBuildingBlockAggregation(
 
     const hasExistingElementChildren = childNodes.some((n) => n.nodeType === 1 /* Element */);
     const hasTemplateComment = childNodes.some(
-        (n) => n.nodeType === 8 /* Comment */ && (n as Comment).data?.includes(PAGE_TEMPLATE_COMMENT)
+        (n) => n.nodeType === 8 /* Comment */ && (n as XmldomComment).data?.includes(PAGE_TEMPLATE_COMMENT)
     );
 
     // Move any loose macros building blocks (e.g. macros:Form, macros:Table) into macros:items
     // before inserting the new named aggregation so the Page DOM stays well-formed.
-    wrapLooseBuildingBlocksInItems(pageElement as Element, xmlDocument, macrosNsUri, fragMacrosNS);
+    wrapLooseBuildingBlocksInItems(pageElement as XmldomElement, xmlDocument, macrosNsUri, fragMacrosNS);
     if (!hasExistingElementChildren && !hasTemplateComment) {
         pageElement.appendChild(xmlDocument.createComment(PAGE_TEMPLATE_COMMENT));
     }
-    for (const node of Array.from(aggDoc.documentElement.childNodes)) {
+    for (const node of Array.from(aggDoc.documentElement?.childNodes ?? [])) {
         if (node.nodeType === 1 /* Element */) {
             pageElement.appendChild(xmlDocument.importNode(node, true));
         }
