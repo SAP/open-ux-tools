@@ -66,14 +66,16 @@ const { runHeadlessGen } = await import('./utils.js');
 const { DeployTarget } = await import('@sap-ux/fiori-generator-shared');
 const { backendSystemBtp, backendSystemOnPrem, INPUT_APP_DIR_ABAP, INPUT_BASE_APP, mockDestinations } =
     await import('./fixtures/constants/index.js');
+const { clearCache } = await import('@sap-ux/abap-deploy-config-sub-generator');
 
 export const ORIGINAL_CWD: string = process.cwd();
 export const OUTPUT_DIR = join(__dirname, '../test-output/abap');
 
+jest.setTimeout(60000);
+
 describe('Test ABAP headless generator', () => {
     let originalStdinIsTTY: boolean | undefined;
     beforeAll(async () => {
-        jest.setTimeout(60000);
         rimraf.rimrafSync(OUTPUT_DIR);
         cpSync(INPUT_APP_DIR_ABAP, OUTPUT_DIR, { recursive: true });
         originalStdinIsTTY = process.stdin.isTTY;
@@ -83,6 +85,7 @@ describe('Test ABAP headless generator', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         spawnSyncMock.mockReturnValue({ status: 0 });
+        clearCache();
     });
     afterEach(() => {
         process.chdir(ORIGINAL_CWD);
