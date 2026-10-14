@@ -1,6 +1,18 @@
+import { jest } from '@jest/globals';
 import type { AxiosError, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, HeadersDefaults } from 'axios';
-import { ServiceProvider } from '../../src/base/service-provider.js';
-import { attachConnectionHandler, Cookies, CSRF } from '../../src/auth/connection.js';
+
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+// Set env var before module is imported — isMockAdpAbapAuthHeaderInjectionEnabled is read at load time
+process.env.ENABLE_MOCK_ADP_ABAP_AUTH_HEADER_INJECTION = 'true';
+
+const { ServiceProvider } = await import('../../src/base/service-provider.js');
+const { attachConnectionHandler, Cookies, CSRF } = await import('../../src/auth/connection.js');
 
 interface AxiosInterceptor<T> {
     fulfilled(response: T);
@@ -56,6 +68,7 @@ describe('connection', () => {
         let spyOnRequestEject;
 
         beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(false);
             testProvider = new ServiceProvider();
             testProvider.defaults = { headers: { common: {} } as HeadersDefaults };
             attachConnectionHandler(testProvider);
@@ -65,9 +78,18 @@ describe('connection', () => {
             spyOnRequestEject = testProvider.interceptors.request.eject = jest.fn();
         });
 
-        it('handlers correctly attached', () => {
+        it('handlers correctly attached outside BAS (no mock ADP interceptor)', () => {
             expect(reqHandlers.length).toBe(2);
             expect(respHandlers.length).toBe(2);
+        });
+
+        it('handlers correctly attached in BAS (includes mock ADP interceptor)', () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const basProvider = new ServiceProvider();
+            basProvider.defaults = { headers: { common: {} } as HeadersDefaults };
+            attachConnectionHandler(basProvider);
+            const basReqHandlers = (basProvider.interceptors.request as unknown)['handlers'];
+            expect(basReqHandlers).toHaveLength(3);
         });
 
         it('request: do not cause problem for normal responses', () => {
@@ -114,6 +136,61 @@ describe('connection', () => {
                 response.headers[CSRF.ResponseHeaderName]
             );
             expect(spyOnRequestEject).toHaveBeenCalledTimes(1);
+        });
+
+        describe('m-adp-abap-authorization header', () => {
+            let basProvider: ServiceProvider;
+            let basReqHandlers: AxiosInterceptor<AxiosRequestConfig>[];
+
+            beforeEach(() => {
+                mockIsAppStudio.mockReturnValue(true);
+                basProvider = new ServiceProvider();
+                basProvider.defaults = { headers: { common: {} } as HeadersDefaults };
+                attachConnectionHandler(basProvider);
+                basReqHandlers = (basProvider.interceptors.request as unknown)['handlers'];
+            });
+
+            const mockAdpInterceptor = () => basReqHandlers[2];
+
+            it('sets header from provider defaults.auth when credentials are present', () => {
+                basProvider.defaults.auth = { username: 'user', password: 'pass' };
+                const request = { headers: undefined } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers.get('m-adp-abap-authorization')).toBe(
+                    `Basic ${Buffer.from('user:pass').toString('base64')}`
+                );
+            });
+
+            it('sets header from request.auth when present, taking precedence over defaults.auth', () => {
+                basProvider.defaults.auth = { username: 'default', password: 'default' };
+                const request = { auth: { username: 'req', password: 'secret' } } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers.get('m-adp-abap-authorization')).toBe(
+                    `Basic ${Buffer.from('req:secret').toString('base64')}`
+                );
+            });
+
+            it('does not set header when no auth credentials are present', () => {
+                const request = { headers: undefined } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers).toBeUndefined();
+            });
+
+            it('does not set header when username or password is missing', () => {
+                basProvider.defaults.auth = { username: 'user', password: '' };
+                const request = { headers: undefined } as unknown as AxiosRequestConfig;
+                mockAdpInterceptor().fulfilled(request);
+                expect((request as any).headers).toBeUndefined();
+            });
+
+            it('does not inject interceptor outside BAS', () => {
+                mockIsAppStudio.mockReturnValue(false);
+                const nonBasProvider = new ServiceProvider();
+                nonBasProvider.defaults = { headers: { common: {} } as HeadersDefaults };
+                attachConnectionHandler(nonBasProvider);
+                const handlers = (nonBasProvider.interceptors.request as unknown)['handlers'];
+                expect(handlers).toHaveLength(2);
+            });
         });
     });
 });
