@@ -9,7 +9,8 @@ export default [
     {
         languageOptions: {
             globals: {
-                globalThis: 'readonly'
+                globalThis: 'readonly',
+                Promise: 'readonly'
             }
         }
     },
