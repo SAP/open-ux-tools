@@ -4,7 +4,16 @@
 
 import type { Rule } from 'eslint';
 
-const CONSOLE_INTERFACE = ['console.log', 'console.warn', 'console.info', 'console.error'] as const;
+const CONSOLE_INTERFACE = [
+    'console.log',
+    'console.warn',
+    'console.info',
+    'console.error',
+    'window.console.log',
+    'window.console.warn',
+    'window.console.info',
+    'window.console.error'
+] as const;
 
 /**
  * Returns `"obj.method"` for a call expression, or `""` if no object is present.
@@ -19,7 +28,12 @@ const CONSOLE_INTERFACE = ['console.log', 'console.warn', 'console.info', 'conso
  * @param node.callee.name
  */
 function getFunctionExpressionStatement(node: {
-    callee: { type: string; object?: { name?: string }; property?: { name: string }; name?: string };
+    callee: {
+        type: string;
+        object?: { name?: string; type?: string; object?: { name?: string }; property?: { name?: string } };
+        property?: { name: string };
+        name?: string;
+    };
 }): string {
     const callee = node.callee;
     if (callee.type !== 'MemberExpression') {
@@ -28,8 +42,12 @@ function getFunctionExpressionStatement(node: {
     if (!callee.object) {
         return '';
     }
-    const objectName = callee.object.name ?? '';
     const methodName = callee.property?.name ?? '';
+    if (callee.object.type === 'MemberExpression') {
+        const objectName = `${callee.object.object?.name ?? ''}.${callee.object.property?.name ?? ''}`;
+        return `${objectName}.${methodName}`;
+    }
+    const objectName = callee.object.name ?? '';
     return `${objectName}.${methodName}`;
 }
 
@@ -44,11 +62,18 @@ function getFunctionExpressionStatement(node: {
  * @param node.init.property.name
  */
 function getFullVarValueExpressionStatement(node: {
-    init: { object?: { name?: string }; property?: { name?: string } };
+    init: {
+        object?: { name?: string; type?: string; object?: { name?: string }; property?: { name?: string } };
+        property?: { name?: string };
+    };
 }): string {
     const init = node.init;
-    const firstPart = init.object?.name ?? '';
     const secondPart = init.property?.name ?? '';
+    if (init.object?.type === 'MemberExpression') {
+        const firstPart = `${init.object.object?.name ?? ''}.${init.object.property?.name ?? ''}`;
+        return `${firstPart}.${secondPart}`;
+    }
+    const firstPart = init.object?.name ?? '';
     return `${firstPart}.${secondPart}`;
 }
 
@@ -68,11 +93,30 @@ const rule: Rule.RuleModule = {
         return {
             VariableDeclarator(node) {
                 const declaratorNode = node as unknown as {
-                    init?: { type?: string; object?: { name?: string }; property?: { name?: string } };
+                    init?: {
+                        type?: string;
+                        object?: {
+                            name?: string;
+                            type?: string;
+                            object?: { name?: string };
+                            property?: { name?: string };
+                        };
+                        property?: { name?: string };
+                    };
                 };
                 if (declaratorNode.init?.type === 'MemberExpression') {
                     const fullExpression = getFullVarValueExpressionStatement(
-                        declaratorNode as { init: { object?: { name?: string }; property?: { name?: string } } }
+                        declaratorNode as {
+                            init: {
+                                object?: {
+                                    name?: string;
+                                    type?: string;
+                                    object?: { name?: string };
+                                    property?: { name?: string };
+                                };
+                                property?: { name?: string };
+                            };
+                        }
                     );
                     if ((CONSOLE_INTERFACE as readonly string[]).includes(fullExpression)) {
                         context.report({ node, messageId: 'consoleNotAllowed' });
@@ -81,7 +125,17 @@ const rule: Rule.RuleModule = {
             },
             CallExpression(node) {
                 const callNode = node as unknown as {
-                    callee: { type: string; object?: { name?: string }; property?: { name: string }; name?: string };
+                    callee: {
+                        type: string;
+                        object?: {
+                            name?: string;
+                            type?: string;
+                            object?: { name?: string };
+                            property?: { name?: string };
+                        };
+                        property?: { name: string };
+                        name?: string;
+                    };
                 };
                 const fullExpression = getFunctionExpressionStatement(callNode);
                 if ((CONSOLE_INTERFACE as readonly string[]).includes(fullExpression)) {

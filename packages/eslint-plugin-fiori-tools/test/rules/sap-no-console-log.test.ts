@@ -27,6 +27,26 @@ ruleTester.run('sap-no-console-log', rule, {
         {
             code: 'var log = console.log;',
             errors: [{ message: errorMessage }]
+        },
+        {
+            code: 'window.console.log("test");',
+            errors: [{ message: errorMessage }]
+        },
+        {
+            code: 'window.console.warn("test");',
+            errors: [{ message: errorMessage }]
+        },
+        {
+            code: 'window.console.info("test");',
+            errors: [{ message: errorMessage }]
+        },
+        {
+            code: 'window.console.error("test");',
+            errors: [{ message: errorMessage }]
+        },
+        {
+            code: 'var log = window.console.log;',
+            errors: [{ message: errorMessage }]
         }
     ]
 });
