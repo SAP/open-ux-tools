@@ -127,7 +127,7 @@ function getGatewayError(data: unknown): ErrorMessage | undefined {
  * @returns the formatted reason, or undefined if no message is available
  */
 function formatGatewayReason(error: ErrorMessage | undefined): string | undefined {
-    const value = typeof error?.message === 'string' ? error.message : error?.message?.value;
+    const value = error?.message?.value;
     if (!value) {
         return undefined;
     }
@@ -188,21 +188,23 @@ export class Ui5AbapRepositoryService extends ODataService {
     private handleAppLookupError(app: string, error: unknown): undefined {
         const message = error instanceof Error ? error.message : JSON.stringify(error);
         this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${message}`);
-        if (isAxiosError(error) && error.response?.data) {
-            const { data } = error.response;
-            const body = typeof data === 'string' ? data : JSON.stringify(data);
-            const gatewayError = getGatewayError(data);
-            // Full response body is only logged at debug level to avoid leaking it at normal log levels
-            this.log.debug(gatewayError ? JSON.stringify(gatewayError) : body);
-            // Surface the Gateway error reason on the re-thrown error so callers that log error.message
-            // at warn/error can diagnose the failure without enabling debug logging
-            const reason = formatGatewayReason(gatewayError);
-            if (reason) {
-                error.message = `${error.message}: ${reason}`;
+        if (isAxiosError(error)) {
+            if (error.response?.data) {
+                const { data } = error.response;
+                const body = typeof data === 'string' ? data : JSON.stringify(data);
+                const gatewayError = getGatewayError(data);
+                // Full response body is only logged at debug level to avoid leaking it at normal log levels
+                this.log.debug(gatewayError ? JSON.stringify(gatewayError) : body);
+                // Surface the Gateway error reason on the re-thrown error so callers that log error.message
+                // at warn/error can diagnose the failure without enabling debug logging
+                const reason = formatGatewayReason(gatewayError);
+                if (reason) {
+                    error.message = `${error.message}: ${reason}`;
+                }
             }
-        }
-        if (isAxiosError(error) && error.response?.status === 404) {
-            return undefined;
+            if (error.response?.status === 404) {
+                return undefined;
+            }
         }
         throw error;
     }
