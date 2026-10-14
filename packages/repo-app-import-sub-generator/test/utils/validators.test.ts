@@ -222,6 +222,18 @@ describe('validateAppSelection', () => {
 
         expect(mockDownloadApp).toHaveBeenCalledWith('testRepo');
         expect(result).toBe(true);
+        expect(mockSendTelemetry).toHaveBeenCalledWith(EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS, expect.any(Object));
+    });
+
+    it('should fire ABAP_REPO_DOWNLOAD_SUCCESS telemetry on successful ABAP repository download', async () => {
+        const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
+        const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
+        mockDownloadApp.mockResolvedValue({ success: true });
+        mockHasQfaJson.mockReturnValue(true);
+
+        await validateAppSelection(answers, appList, undefined, undefined, AppDownloadType.AbapRepository);
+
+        expect(mockSendTelemetry).toHaveBeenCalledWith(EventName.ABAP_REPO_DOWNLOAD_SUCCESS, expect.any(Object));
     });
 
     it('should send legacy system telemetry and return a help link if download returns no data', async () => {

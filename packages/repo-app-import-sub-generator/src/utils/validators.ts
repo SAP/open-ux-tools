@@ -173,6 +173,14 @@ export async function validateAppSelection(
                 }
                 return await generateAppDownloadFailedHelpLink();
             }
+            // Fires when the zip is successfully fetched — before writing begins.
+            const downloadSuccessEvent =
+                downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_DOWNLOAD_SUCCESS
+                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS;
+            await sendTelemetry(downloadSuccessEvent, TelemetryHelper.createTelemetryData({}) ?? {}).catch(() => {
+                // telemetry errors are non-fatal
+            });
             const isQfaJsonPresent: boolean = hasQfaJson();
             if (!isQfaJsonPresent && downloadType === AppDownloadType.ADTQuickDeploy) {
                 appWizard?.showError(
