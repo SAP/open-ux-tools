@@ -1,5 +1,74 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 1.0.69
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Export clearCache utility to allow test isolation of module-level backend system and destination caches [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Release Date
+
+2026-10-14
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/adp-tooling 1.0.63 → 1.0.64
+- @sap-ux/abap-deploy-config-inquirer 2.0.51 → 2.0.52
+- @sap-ux/deploy-config-generator-shared 1.0.42 → 1.0.43
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/abap-deploy-config-writer 1.0.30 → 1.0.31
+
+## 1.0.68
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/abap-deploy-config-writer 1.0.29 → 1.0.30
+- @sap-ux/adp-tooling 1.0.62 → 1.0.63
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/abap-deploy-config-inquirer 2.0.50 → 2.0.51
+- @sap-ux/deploy-config-generator-shared 1.0.41 → 1.0.42
+
+## 1.0.67
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.61 → 1.0.62
+
+## 1.0.66
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.60 → 1.0.61
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/abap-deploy-config-writer 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+- @sap-ux/abap-deploy-config-inquirer 2.0.49 → 2.0.50
+- @sap-ux/deploy-config-generator-shared 1.0.40 → 1.0.41
+
+## 1.0.65
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.59 → 1.0.60
+
 ## 1.0.64
 
 ### Patch Changes

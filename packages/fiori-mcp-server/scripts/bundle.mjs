@@ -222,7 +222,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode'],
+    external: ['vscode', 'chromium-bidi'],
     legalComments: 'linked',
     metafile: true,
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]
@@ -320,7 +320,15 @@ for (const wasmFile of [
     }
 }
 
-// ── Step 5: copy icons ────────────────────────────────────────────────────────
+// ── Step 5: copy playwright-core browsers.json ───────────────────────────────
+// playwright-core resolves browsers.json as path.join(__dirname, "..", "browsers.json")
+// at runtime. After bundling, __dirname is dist/, so it looks one level up at the
+// package root (packages/fiori-mcp-server/). Copy browsers.json there.
+const pwCorePkgDir = findPkgRoot(req.resolve('playwright-core'), 'playwright-core');
+fs.copyFileSync(path.join(pwCorePkgDir, 'browsers.json'), path.join(PKG_ROOT, 'browsers.json'));
+console.log('✓ Copied playwright-core/browsers.json');
+
+// ── Step 6: copy icons ────────────────────────────────────────────────────────
 
 for (const icon of ['icon.png', 'icon.svg']) {
     fs.copyFileSync(path.join(PKG_ROOT, 'assets', icon), path.join(DIST, icon));

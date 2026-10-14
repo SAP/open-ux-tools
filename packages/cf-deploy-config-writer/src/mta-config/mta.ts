@@ -28,10 +28,10 @@ import {
     enableParallelDeployments,
     MAX_MTA_PREFIX_LENGTH,
     MAX_MTA_PREFIX_SHORT_LENGTH,
-    MAX_MTA_PREFIX_SHORTER_LENGTH,
     MAX_ABAP_SERVICE_PREFIX_LENGTH,
     MAX_ABAP_SERVICE_NAME_LENGTH,
-    MAX_MTA_ID_LENGTH
+    MAX_MTA_ID_LENGTH,
+    MAX_SERVICE_INSTANCE_NAME_LENGTH
 } from '../constants.js';
 import { t } from '../i18n.js';
 import type { Logger } from '@sap-ux/logger';
@@ -205,7 +205,7 @@ export class MtaConfig {
                 service: 'xsuaa',
                 'service-plan': 'application',
                 path: './xs-security.json',
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
+                'service-name': this.buildServiceInstanceName('-xsuaa-service'),
                 config: {
                     xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
                     'tenant-mode': 'dedicated',
@@ -242,7 +242,7 @@ export class MtaConfig {
         if (resource && !resource.parameters?.['service-name']) {
             resource.parameters = {
                 ...(resource.parameters ?? {}),
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-${serviceName}-service`
+                'service-name': this.buildServiceInstanceName(`-${serviceName}-service`)
             };
             await this.mta?.updateResource(resource);
             this.resources.set(resourceName, resource);
@@ -270,13 +270,27 @@ export class MtaConfig {
         return resource?.name;
     }
 
+    /**
+     * Builds a Cloud Foundry service instance name from the MTA prefix and a suffix, capped at the
+     * CF 50 character limit. The prefix is truncated (never the suffix) so the resulting `service-name`
+     * is used verbatim by the MTA deploy service instead of being silently renamed to `<mta-id>-<hash>`,
+     * which would otherwise break the matching `destination-content` ServiceInstanceName reference.
+     *
+     * @param {string} suffix - The service suffix including its leading dash (e.g. `-html5-service`)
+     * @returns {string} The service instance name, guaranteed to be at most 50 characters
+     */
+    private buildServiceInstanceName(suffix: string): string {
+        const maxPrefixLength = Math.max(0, MAX_SERVICE_INSTANCE_NAME_LENGTH - suffix.length);
+        return `${this.prefix?.slice(0, maxPrefixLength)}${suffix}`;
+    }
+
     private async addAppFrontResource(): Promise<void> {
         const resource: mta.Resource = {
             name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_SHORT_LENGTH)}-app-front`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'app-front',
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_SHORTER_LENGTH)}-app-front-service`,
+                'service-name': this.buildServiceInstanceName('-app-front-service'),
                 'service-plan': 'developer'
             }
         };
@@ -291,7 +305,7 @@ export class MtaConfig {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-html5-service`,
+                'service-name': this.buildServiceInstanceName('-html5-service'),
                 'service-plan': 'app-host',
                 service: 'html5-apps-repo'
             }
@@ -313,7 +327,7 @@ export class MtaConfig {
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'destination',
-                'service-name': destinationName,
+                'service-name': this.buildServiceInstanceName('-destination-service'),
                 'service-plan': 'lite',
                 config: {
                     ...DestinationServiceConfig.config,

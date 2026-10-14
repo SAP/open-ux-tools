@@ -107,32 +107,7 @@ describe('App Download Utils', () => {
             expect(PromptState.admZip).toBeInstanceOf(AdmZip);
         });
 
-        it('should fall back to ADT file store when downloadFiles returns undefined', async () => {
-            const mockZipBuffer = Buffer.from('mock zip from adt');
-            const mockDownload = jest.fn().mockResolvedValue(undefined);
-            const mockDownloadViaAdt = jest.fn().mockResolvedValue(mockZipBuffer);
-            const mockFileStoreService = {};
-            const mockServiceProvider = {
-                getUi5AbapRepository: jest.fn(() => ({
-                    downloadFiles: mockDownload,
-                    downloadFilesViaAdt: mockDownloadViaAdt,
-                    log: undefined
-                })),
-                getAdtService: jest.fn().mockResolvedValue(mockFileStoreService)
-            };
-
-            PromptState.systemSelection = {
-                connectedSystem: { serviceProvider: mockServiceProvider as unknown as AbapServiceProvider }
-            };
-
-            const result = await downloadApp('Z_LEGACY_APP');
-            expect(result).toBe(true);
-            expect(RepoAppDownloadLogger.logger.debug).toHaveBeenCalledWith(t('error.adtFallbackDownload'));
-            expect(mockDownloadViaAdt).toHaveBeenCalledWith('Z_LEGACY_APP', mockFileStoreService);
-            expect(PromptState.admZip).toBeInstanceOf(AdmZip);
-        });
-
-        it('should return false when downloadFiles returns undefined and ADT service is unavailable', async () => {
+        it('should return success:false when downloadFiles returns undefined', async () => {
             const mockDownload = jest.fn().mockResolvedValue(undefined);
             const mockServiceProvider = {
                 getUi5AbapRepository: jest.fn(() => ({
@@ -146,13 +121,15 @@ describe('App Download Utils', () => {
                 connectedSystem: { serviceProvider: mockServiceProvider as unknown as AbapServiceProvider }
             };
 
-            await expect(downloadApp('Z_NO_ZIP')).resolves.toBe(false);
-            expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.appDownloadFailed'));
+            await expect(downloadApp('Z_NO_ZIP')).resolves.toEqual({
+                success: false,
+                errorMessage: expect.any(String)
+            });
             expect(PromptState.admZip).toBeUndefined();
         });
 
-        it('should log error and return false when ADT fallback throws', async () => {
-            const mockDownload = jest.fn().mockResolvedValue(undefined);
+        it('should return success:false when downloadFiles returns an empty buffer', async () => {
+            const mockDownload = jest.fn().mockResolvedValue(Buffer.alloc(0));
             const mockServiceProvider = {
                 getUi5AbapRepository: jest.fn(() => ({
                     downloadFiles: mockDownload,
@@ -165,10 +142,11 @@ describe('App Download Utils', () => {
                 connectedSystem: { serviceProvider: mockServiceProvider as unknown as AbapServiceProvider }
             };
 
-            await expect(downloadApp('Z_ADT_FAIL')).resolves.toBe(false);
-            expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
-                t('error.adtFallbackDownloadFailed', { error: 'ADT unavailable' })
-            );
+            await expect(downloadApp('Z_EMPTY_ZIP')).resolves.toEqual({
+                success: false,
+                errorMessage: expect.any(String)
+            });
+            expect(PromptState.admZip).toBeUndefined();
         });
     });
 

@@ -16,8 +16,9 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     validateUI5VersionExists: jest.fn().mockResolvedValue(true)
 }));
 
-const { getDefaultNamespace, getDefaultProjectName, getDefaultVersion } =
+const { getDefaultNamespace, getDefaultVersion } =
     await import('../../../../src/app/questions/helper/default-values.js');
+const { getDefaultProjectName } = await import('@sap-ux/adp-tooling');
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';

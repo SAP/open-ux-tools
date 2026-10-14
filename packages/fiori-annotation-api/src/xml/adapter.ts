@@ -650,7 +650,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         const pointer = getEdmxPointer(document.ast);
         throwIf(!pointer, `No root EDMX element found in ${uri}`);
         const deletions = this.removeReferences(writer, document, aliasInfo, usedNames, pointer!);
-        const inserts = this.addReferences(writer, document, aliasInfo, usedNames, pointer!);
+        const inserts = this.addReferences(writer, document, annotationFile, aliasInfo, usedNames, pointer!);
 
         return deletions || inserts;
     }
@@ -690,31 +690,66 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         return toRemove.size > 0;
     }
 
+    private collectReferencesToAdd(
+        annotationFile: AnnotationFile,
+        aliasInfo: AliasInformation,
+        usedNames: Set<string>
+    ): Map<string, { serviceKey?: string }> {
+        const toAdd = new Map<string, { serviceKey?: string }>();
+        const mainNamespaces = this.metadataService.getNamespaces();
+        for (const name of usedNames) {
+            // 1. Already declared as a vocabulary reference in the file — nothing to add
+            if (aliasInfo.aliasMapVocabulary[name]) {
+                continue;
+            }
+            // 2. Vocabulary namespace/alias not yet declared — queue it for insertion
+            const namespace = this.vocabularyService.getVocabularyNamespace(name);
+            if (namespace) {
+                toAdd.set(namespace, {});
+                continue;
+            }
+            // 3. External metadata service namespace (e.g. referenced VH service) — queue if not yet declared.
+            // Skip main service namespaces: getServiceKeyByNamespace returns '' for both "main service" and
+            // "not found", so we exclude main namespaces first to treat '' unambiguously as "not found".
+            if (mainNamespaces.has(name)) {
+                continue;
+            }
+            const serviceKey = this.metadataService.getServiceKeyByNamespace(name);
+            if (serviceKey && !annotationFile.references.some((r) => r.name === name)) {
+                toAdd.set(name, { serviceKey });
+            }
+        }
+        return toAdd;
+    }
+
     private addReferences(
         writer: XMLWriter,
         document: Document,
+        annotationFile: AnnotationFile,
         aliasInfo: AliasInformation,
         usedNames: Set<string>,
         pointer: string
     ): boolean {
-        const toAdd = new Set<string>();
-        for (const name of usedNames) {
-            if (!aliasInfo.aliasMapVocabulary[name]) {
-                const namespace = this.vocabularyService.getVocabularyNamespace(name);
-                if (namespace) {
-                    toAdd.add(namespace);
+        const toAdd = this.collectReferencesToAdd(annotationFile, aliasInfo, usedNames);
+        for (const [namespace, { serviceKey }] of toAdd) {
+            let reference: Reference;
+            if (serviceKey) {
+                const ns = this.documents.get(serviceKey)?.annotationFile.namespace;
+                if (!ns) {
+                    continue;
                 }
+                reference = createReference(
+                    namespace,
+                    undefined,
+                    this.resolveExternalServiceUri(serviceKey, annotationFile.references)
+                );
+            } else {
+                const vocabularyInfo = this.vocabularyService.getVocabulary(namespace);
+                if (!vocabularyInfo) {
+                    continue;
+                }
+                reference = createReference(namespace, vocabularyInfo.defaultAlias, vocabularyInfo.defaultUri);
             }
-        }
-        for (const namespace of toAdd) {
-            const vocabularyInfo = this.vocabularyService.getVocabulary(namespace);
-            if (!vocabularyInfo) {
-                continue;
-            }
-            const alias = vocabularyInfo.defaultAlias;
-            const referenceUri = vocabularyInfo.defaultUri;
-            const reference = createReference(namespace, alias, referenceUri);
-
             writer.addChange({
                 type: INSERT_ELEMENT,
                 pointer: pointer,
@@ -724,6 +759,21 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             });
         }
         return toAdd.size > 0;
+    }
+
+    private resolveExternalServiceUri(uri: string, references: Reference[]): string {
+        try {
+            const mainNamespaces = this.metadataService.getNamespaces();
+            const mainRef = references.find((r) => r.uri !== undefined && mainNamespaces.has(r.name));
+            if (!mainRef?.uri) {
+                return uri;
+            }
+            const mainBase = mainRef.uri.substring(0, mainRef.uri.lastIndexOf('/') + 1);
+            const resolved = new URL(uri, 'https://dummy' + mainBase);
+            return resolved.pathname.replace(/;[^/]*/g, '');
+        } catch {
+            return uri;
+        }
     }
 
     private addMissingMetadataReferences(): void {

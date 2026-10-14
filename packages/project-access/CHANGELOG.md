@@ -1,5 +1,21 @@
 # @sap-ux/project-access
 
+## 2.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support `fallbackLocale` in i18n path resolution and bundle reading. `I18nPropertiesPaths` now includes optional `sap.app.fallbackLocale` and per-model `fallbackLocalePath` fields. `getI18nPropertiesPaths` extracts the fallback locale from `sap.app.i18n` and `sap.ui5.models[key].settings`. `getI18nBundles` merges fallback locale entries into the primary bundle so keys defined only in the fallback file no longer trigger a "not available" warning. New `createI18nEntriesAtPath` export allows writing to a caller-specified properties file path. [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 2.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+
 ## 2.2.1
 
 ### Patch Changes

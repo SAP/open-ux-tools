@@ -24,11 +24,11 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
-    validateUI5VersionExists: mockValidateUI5VersionExists
+    validateUI5VersionExists: mockValidateUI5VersionExists,
+    getDefaultProjectName: mockGetDefaultProjectName
 }));
 
 jest.unstable_mockModule('../../../src/app/questions/helper/default-values', () => ({
-    getDefaultProjectName: mockGetDefaultProjectName,
     getDefaultNamespace: mockGetDefaultNamespace,
     getDefaultVersion: mockGetDefaultVersion
 }));

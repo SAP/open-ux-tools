@@ -1,5 +1,74 @@
 # @sap-ux/generator-adp
 
+## 1.0.70
+
+### Patch Changes
+
+#### Features
+
+- Handle key-user changes with restricted views when importing them into an adaptation project — strip restrictions that cannot be represented in ADP, load the changes in the CLI (where the list prompt validation does not run) and warn in the terminal when imported changes have restricted views, and log in telemetry whether the user chose to import key-user changes [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/adp-tooling 1.0.63 → 1.0.64
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
+## 1.0.69
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/adp-tooling 1.0.62 → 1.0.63
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/project-input-validator 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/telemetry 2.0.9 → 2.0.10
+
+## 1.0.68
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.61 → 1.0.62
+
+## 1.0.67
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.60 → 1.0.61
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+- @sap-ux/inquirer-common 1.0.44 → 1.0.45
+- @sap-ux/odata-service-writer 1.0.23 → 1.0.24
+- @sap-ux/project-input-validator 1.0.21 → 1.0.22
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/telemetry 2.0.8 → 2.0.9
+
+## 1.0.66
+
+### Patch Changes
+
+#### Features
+
+- consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.59 → 1.0.60
+
 ## 1.0.65
 
 ### Patch Changes

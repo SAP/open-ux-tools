@@ -1,5 +1,37 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.40
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Release Date
+
+2026-10-14
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+## 1.0.39
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 1.0.38
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
 ## 1.0.37
 
 ### Patch Changes
