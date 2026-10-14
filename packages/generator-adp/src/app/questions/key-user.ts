@@ -7,7 +7,7 @@ import type {
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAxiosError } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { type SystemLookup, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { type SystemLookup, getConfiguredProvider, isViewRestrictionOnlyChange } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
 import type {
@@ -123,6 +123,7 @@ export class KeyUserImportPrompter {
     getPrompts(promptOptions?: KeyUserImportPromptOptions): KeyUserImportQuestion[] {
         const keyedPrompts: Record<keyUserPromptNames, KeyUserImportQuestion> = {
             [keyUserPromptNames.keyUserSystem]: this.getSystemPrompt(promptOptions?.[keyUserPromptNames.keyUserSystem]),
+            [keyUserPromptNames.keyUserSystemValidationCli]: this.getSystemValidationPromptForCli(),
             [keyUserPromptNames.keyUserUsername]: this.getUsernamePrompt(
                 promptOptions?.[keyUserPromptNames.keyUserUsername]
             ),
@@ -131,7 +132,9 @@ export class KeyUserImportPrompter {
             ),
             [keyUserPromptNames.keyUserAdaptation]: this.getAdaptationPrompt(
                 promptOptions?.[keyUserPromptNames.keyUserAdaptation]
-            )
+            ),
+            [keyUserPromptNames.keyUserAdaptationValidationCli]: this.getAdaptationValidationPromptForCli(),
+            [keyUserPromptNames.keyUserRestrictedViewsLabel]: this.getRestrictedViewsLabelPrompt()
         };
 
         const questions: KeyUserImportQuestion[] = Object.entries(keyedPrompts)
@@ -233,6 +236,74 @@ export class KeyUserImportPrompter {
             validate: async (adaptation: AdaptationDescriptor) => await this.validateKeyUserChanges(adaptation?.id),
             when: () => this.adaptations.length > 1
         } as ListQuestion<KeyUserImportAnswers>;
+    }
+
+    /**
+     * Only used in the CLI context: the system prompt is of type `list`, whose `validate` does not
+     * run on CLI, so the key-user data (flex versions, adaptations and — for a single DEFAULT
+     * adaptation — the changes) would never be loaded. This hidden prompt triggers that loading
+     * once the system has been selected.
+     *
+     * @returns {KeyUserImportQuestion} Dummy prompt that runs in the CLI only.
+     */
+    private getSystemValidationPromptForCli(): KeyUserImportQuestion {
+        return {
+            name: keyUserPromptNames.keyUserSystemValidationCli,
+            when: async (answers: KeyUserImportAnswers): Promise<boolean> => {
+                if (!answers.keyUserSystem) {
+                    return false;
+                }
+                const result = await this.validateSystem(answers.keyUserSystem, answers);
+                if (result !== true) {
+                    throw new Error(typeof result === 'string' ? result : 'Validation failed');
+                }
+                return false;
+            }
+        } as KeyUserImportQuestion;
+    }
+
+    /**
+     * Only used in the CLI context: the adaptation prompt is of type `list`, whose `validate` does
+     * not run on CLI, so the key-user changes for the selected adaptation would never be loaded.
+     * This hidden prompt triggers that loading once an adaptation has been selected.
+     *
+     * @returns {KeyUserImportQuestion} Dummy prompt that runs in the CLI only.
+     */
+    private getAdaptationValidationPromptForCli(): KeyUserImportQuestion {
+        return {
+            name: keyUserPromptNames.keyUserAdaptationValidationCli,
+            when: async (answers: KeyUserImportAnswers): Promise<boolean> => {
+                if (this.adaptations.length <= 1) {
+                    return false;
+                }
+                const result = await this.validateKeyUserChanges(answers.keyUserAdaptation?.id);
+                if (result !== true) {
+                    throw new Error(typeof result === 'string' ? result : 'Validation failed');
+                }
+                return false;
+            }
+        } as KeyUserImportQuestion;
+    }
+
+    /**
+     * Returns the restricted views label prompt.
+     *
+     * @returns {KeyUserImportQuestion} The restricted views label prompt.
+     */
+    private getRestrictedViewsLabelPrompt(): KeyUserImportQuestion {
+        return {
+            type: 'input',
+            name: keyUserPromptNames.keyUserRestrictedViewsLabel,
+            message: t('prompts.keyUserRestrictedViewsLabel'),
+            guiOptions: {
+                type: 'label',
+                link: {
+                    text: t('prompts.keyUserRestrictedViewsLinkText'),
+                    url: 'https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/importing-key-user-changes'
+                }
+            },
+            when: () => this.detectRestrictedViews()
+        } as InputQuestion<KeyUserImportAnswers>;
     }
 
     /**
@@ -401,5 +472,27 @@ export class KeyUserImportPrompter {
             this.logger.debug(e);
             return getUnsupportedApiMessage(e, t('error.keyUserNotSupported'));
         }
+    }
+
+    /**
+     * Checks whether any imported key-user change still carries a view restriction.
+     *
+     * A restriction is either a change that exists solely to restrict views (see
+     * `isViewRestrictionOnlyChange`, which is skipped on write) or a change with a non-empty
+     * `contexts.role` list, on the outer or nested inner content, alongside other content (whose
+     * `contexts` is stripped on write). In all cases the restriction is lost, so the developer must
+     * be notified that the imported views will become non-restricted.
+     *
+     * @returns {boolean} `true` if at least one change has a restricted view.
+     */
+    detectRestrictedViews(): boolean {
+        return this.keyUserChanges.some((change) => {
+            if (isViewRestrictionOnlyChange(change.content)) {
+                return true;
+            }
+            const outerRoles = change.content.contexts?.role?.length ?? 0;
+            const innerRoles = change.content.content?.contexts?.role?.length ?? 0;
+            return outerRoles > 0 || innerRoles > 0;
+        });
     }
 }

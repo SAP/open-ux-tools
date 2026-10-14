@@ -385,6 +385,6 @@ export default class extends DeploymentGenerator {
 
 export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
 export { getAbapQuestions } from './questions.js';
-export { indexHtmlExists } from '../utils/index.js';
+export { indexHtmlExists, clearCache } from '../utils/index.js';
 export { type AbapDeployConfigOptions, DeployProjectType } from './types.js';
 export type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
