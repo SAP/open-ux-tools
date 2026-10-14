@@ -1920,7 +1920,18 @@
    v:langID="1033"
    id="text10-6-6-8"
    style="font-size:9px;font-family:Arial;fill:#ffffff"><v:paragraph
-   v:horizAlign="1" /><v:tabList />flp-config</text>		</g>
+   v:horizAlign="1" /><v:tabList />flp-config</text><path
+   d="m 263.99285,358.09684 h 79.36996 v -34.02 h -79.36996 z"
+   class="st5"
+   id="path10-1-3-9"
+   style="fill:#2a5fa5;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1" /><text
+   x="267.99285"
+   y="343.3331"
+   class="st6"
+   v:langID="1033"
+   id="text10-6-6-9"
+   style="font-size:9px;font-family:Arial;fill:#ffffff"><v:paragraph
+   v:horizAlign="1" /><v:tabList />fiori-mcp-server</text>		</g>
 		<g
    id="shape4-24"
    v:mID="4"

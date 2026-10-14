@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="14in"
+   height="8.2in"
+   viewBox="0 0 1008 590"
+   xml:space="preserve"
+   color-interpolation-filters="sRGB"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg">
+
+  <style type="text/css"><![CDATA[
+    .bg    { fill:#ffffff; stroke:none }
+    .box-d { fill:#ffffff; stroke:#000000; stroke-dasharray:3.5,2.5; stroke-linecap:round; stroke-linejoin:round; stroke-width:0.75 }
+    .box-s { fill:none;    stroke:#000000; stroke-dasharray:3.5,2.5; stroke-linecap:round; stroke-linejoin:round; stroke-width:0.5 }
+    .lbl   { fill:#000000; font-family:Arial; font-size:9px }
+    .lbl-s { fill:#000000; font-family:Arial; font-size:7px }
+    .lbl-i { fill:#555555; font-family:Arial; font-size:7px; font-style:italic }
+    .wht   { fill:#ffffff; font-family:Arial; font-size:8px }
+    .wht-s { fill:#ffffff; font-family:Arial; font-size:7px }
+    /* block fills */
+    .b-blue   { fill:#548bd4; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-dblue  { fill:#2a5fa5; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-grey   { fill:#7f7f7f; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-ltblue { fill:#c6d8f0; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-orange { fill:#ea700d; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    /* arrows */
+    .arrow { fill:none; stroke:#000000; stroke-width:0.75; stroke-linecap:round; stroke-linejoin:round; marker-end:url(#arr) }
+  ]]></style>
+
+  <defs>
+    <marker id="arr" orient="auto" markerUnits="strokeWidth" overflow="visible" refX="0" refY="0">
+      <path d="M 2,1 0,0 2,-1" style="fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round" transform="scale(-6)"/>
+    </marker>
+  </defs>
+
+  <!-- white canvas -->
+  <rect x="0" y="0" width="1008" height="590" class="bg"/>
+
+  <!-- open-ux-tools monorepo outer box (painted first so content sits on top) -->
+  <rect x="8" y="120" width="992" height="430" class="box-d" rx="2"/>
+  <text x="16" y="134" class="lbl" font-weight="bold">open-ux-tools
+    <tspan font-style="italic" font-weight="normal" fill="#666">  (github.com/SAP/open-ux-tools  —  packages/)</tspan>
+  </text>
+
+  <!-- =====================================================================
+       LLM CLIENT  (top centre, above monorepo box)
+  ====================================================================== -->
+  <rect x="334" y="14" width="340" height="44" class="b-ltblue" rx="2"/>
+  <text x="504" y="31" class="lbl" font-weight="bold" text-anchor="middle">LLM Client</text>
+  <text x="504" y="47" class="lbl" text-anchor="middle">BAS Copilot  /  Claude Code  /  GitHub Copilot  /  Cursor  /  …</text>
+
+  <!-- arrows LLM -> servers -->
+  <line x1="420" y1="58" x2="208" y2="140" class="arrow"/>
+  <line x1="504" y1="58" x2="504" y2="140" class="arrow"/>
+  <line x1="588" y1="58" x2="800" y2="140" class="arrow"/>
+  <!-- MCP labels -->
+  <text x="284" y="98"  class="lbl-i" transform="rotate(-27,284,98)">MCP protocol</text>
+  <text x="508" y="99"  class="lbl-i">MCP protocol</text>
+  <text x="640" y="99"  class="lbl-i" transform="rotate(27,640,99)">MCP protocol</text>
+
+
+  <!-- =====================================================================
+       COLUMN 1 — @sap-ux/fiori-mcp-server
+  ====================================================================== -->
+  <rect x="16" y="130" width="316" height="408" class="box-s" rx="2"/>
+  <text x="24" y="145" class="lbl" font-weight="bold">@sap-ux/fiori-mcp-server</text>
+
+  <!-- server entry-point block -->
+  <rect x="85" y="150" width="146" height="28" class="b-orange" rx="1"/>
+  <text x="158" y="169" class="wht" font-weight="bold" text-anchor="middle">MCP Server</text>
+
+  <!-- tools heading -->
+  <text x="24" y="196" class="lbl-i">Exposed tools:</text>
+
+  <!-- tool rows: 2 per row, w=148 h=22, gap=4 -->
+  <!-- row 1 -->
+  <rect x="24"  y="200" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="98"  y="215" class="wht-s" text-anchor="middle">search_docs</text>
+  <rect x="176" y="200" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="250" y="215" class="wht-s" text-anchor="middle">list_fiori_apps</text>
+  <!-- row 2 -->
+  <rect x="24"  y="226" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="98"  y="241" class="wht-s" text-anchor="middle">list_sap_systems</text>
+  <rect x="176" y="226" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="250" y="241" class="wht-s" text-anchor="middle">download_odata_metadata</text>
+  <!-- row 3 -->
+  <rect x="24"  y="252" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="98"  y="267" class="wht-s" text-anchor="middle">generate_fiori_app_odata</text>
+  <rect x="176" y="252" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="250" y="267" class="wht-s" text-anchor="middle">generate_fiori_app_cap</text>
+  <!-- row 4 -->
+  <rect x="24"  y="278" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="98"  y="293" class="wht-s" text-anchor="middle">list_functionality</text>
+  <rect x="176" y="278" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="250" y="293" class="wht-s" text-anchor="middle">get_functionality_details</text>
+  <!-- row 5 -->
+  <rect x="24"  y="304" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="98"  y="319" class="wht-s" text-anchor="middle">execute_functionality</text>
+  <rect x="176" y="304" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="250" y="319" class="wht-s" text-anchor="middle">lookup_ui5_documentation</text>
+
+  <!-- devDeps heading -->
+  <text x="24" y="344" class="lbl-i">devDependencies (esbuild-bundled):</text>
+
+  <!-- dep blocks: 3 per row, w=96 h=20 -->
+  <!-- row 1 -->
+  <rect x="24"  y="350" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="72"  y="364" class="wht-s" text-anchor="middle">project-access</text>
+  <rect x="124" y="350" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="172" y="364" class="wht-s" text-anchor="middle">axios-extension</text>
+  <rect x="224" y="350" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="272" y="364" class="wht-s" text-anchor="middle">adp-tooling</text>
+  <!-- row 2 -->
+  <rect x="24"  y="374" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="72"  y="388" class="wht-s" text-anchor="middle">store</text>
+  <rect x="124" y="374" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="172" y="388" class="wht-s" text-anchor="middle">system-access</text>
+  <rect x="224" y="374" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="272" y="388" class="wht-s" text-anchor="middle">fiori-docs-embeddings</text>
+  <!-- row 3 -->
+  <rect x="24"  y="398" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="72"  y="412" class="wht-s" text-anchor="middle">odata-service-writer</text>
+  <rect x="124" y="398" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="172" y="412" class="wht-s" text-anchor="middle">fe-fpm-writer</text>
+  <rect x="224" y="398" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="272" y="412" class="wht-s" text-anchor="middle">ui5-config</text>
+  <!-- row 4 -->
+  <rect x="24"  y="422" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="72"  y="436" class="wht-s" text-anchor="middle">annotation-converter</text>
+  <rect x="124" y="422" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="172" y="436" class="wht-s" text-anchor="middle">fiori-annotation-api</text>
+  <rect x="224" y="422" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="272" y="436" class="wht-s" text-anchor="middle">logger + telemetry</text>
+  <!-- row 5 -->
+  <rect x="24"  y="446" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="72"  y="460" class="wht-s" text-anchor="middle">btp-utils</text>
+  <rect x="124" y="446" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="172" y="460" class="wht-s" text-anchor="middle">nodejs-utils</text>
+  <rect x="224" y="446" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="272" y="460" class="wht-s" text-anchor="middle">edmx-parser  + more</text>
+
+
+  <!-- =====================================================================
+       COLUMN 2 — @cap-js/mcp-server
+  ====================================================================== -->
+  <rect x="346" y="130" width="316" height="260" class="box-s" rx="2"/>
+  <text x="354" y="145" class="lbl" font-weight="bold">@cap-js/mcp-server
+    <tspan fill="#888888" font-style="italic" font-weight="normal">  (github.com/cap-js/mcp-server)</tspan>
+  </text>
+
+  <rect x="415" y="150" width="146" height="28" class="b-orange" rx="1"/>
+  <text x="488" y="169" class="wht" font-weight="bold" text-anchor="middle">MCP Server</text>
+
+  <text x="354" y="196" class="lbl-i">Exposed tools:</text>
+
+  <rect x="354" y="200" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="428" y="215" class="wht-s" text-anchor="middle">search_docs</text>
+  <rect x="506" y="200" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="580" y="215" class="wht-s" text-anchor="middle">search_model</text>
+
+  <text x="354" y="244" class="lbl-i">devDependencies:</text>
+
+  <rect x="354" y="250" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="402" y="264" class="wht-s" text-anchor="middle">@sap/cds</text>
+  <rect x="454" y="250" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="502" y="264" class="wht-s" text-anchor="middle">cds-dk</text>
+  <rect x="554" y="250" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="602" y="264" class="wht-s" text-anchor="middle">@modelcontextprotocol</text>
+
+  <!-- repo note -->
+  <text x="354" y="302" class="lbl-s" fill="#444">Semantic search over preprocessed CAP docs</text>
+  <text x="354" y="316" class="lbl-s" fill="#444">+ fuzzy search over compiled CDS model definitions</text>
+  <text x="354" y="330" class="lbl-s" fill="#444">(entities, relations, annotations, HTTP endpoints)</text>
+  <text x="354" y="346" class="lbl-s" fill="#444">github.com/cap-js/mcp-server</text>
+
+
+  <!-- =====================================================================
+       COLUMN 3 — @ui5/mcp-server
+  ====================================================================== -->
+  <rect x="676" y="130" width="316" height="320" class="box-s" rx="2"/>
+  <text x="684" y="145" class="lbl" font-weight="bold">@ui5/mcp-server
+    <tspan fill="#888888" font-style="italic" font-weight="normal">  (github.com/UI5/mcp-server)</tspan>
+  </text>
+
+  <rect x="745" y="150" width="146" height="28" class="b-orange" rx="1"/>
+  <text x="818" y="169" class="wht" font-weight="bold" text-anchor="middle">MCP Server</text>
+
+  <text x="684" y="196" class="lbl-i">Exposed tools:</text>
+
+  <!-- row 1 -->
+  <rect x="684" y="200" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="758" y="215" class="wht-s" text-anchor="middle">create_ui5_app</text>
+  <rect x="836" y="200" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="910" y="215" class="wht-s" text-anchor="middle">create_integration_card</text>
+  <!-- row 2 -->
+  <rect x="684" y="226" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="758" y="241" class="wht-s" text-anchor="middle">get_api_reference</text>
+  <rect x="836" y="226" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="910" y="241" class="wht-s" text-anchor="middle">get_guidelines</text>
+  <!-- row 3 -->
+  <rect x="684" y="252" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="758" y="267" class="wht-s" text-anchor="middle">get_project_info</text>
+  <rect x="836" y="252" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="910" y="267" class="wht-s" text-anchor="middle">get_version_info</text>
+  <!-- row 4 -->
+  <rect x="684" y="278" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="758" y="293" class="wht-s" text-anchor="middle">run_manifest_validation</text>
+  <rect x="836" y="278" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="910" y="293" class="wht-s" text-anchor="middle">run_ui5_linter</text>
+  <!-- row 5 -->
+  <rect x="684" y="304" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="758" y="319" class="wht-s" text-anchor="middle">get_typescript_conv_guidelines</text>
+  <rect x="836" y="304" width="148" height="22" class="b-dblue" rx="1"/>
+  <text x="910" y="319" class="wht-s" text-anchor="middle">get_integration_cards_guidelines</text>
+
+  <text x="684" y="348" class="lbl-i">devDependencies:</text>
+
+  <rect x="684" y="354" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="732" y="368" class="wht-s" text-anchor="middle">@ui5/linter</text>
+  <rect x="784" y="354" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="832" y="368" class="wht-s" text-anchor="middle">@ui5/manifest-schema</text>
+  <rect x="884" y="354" width="96" height="20" class="b-grey" rx="1"/>
+  <text x="932" y="368" class="wht-s" text-anchor="middle">@modelcontextprotocol</text>
+
+  <text x="684" y="398" class="lbl-s" fill="#444">github.com/UI5/mcp-server</text>
+
+
+  <!-- =====================================================================
+       LEGEND  (bottom strip)
+  ====================================================================== -->
+  <g transform="translate(16,556)">
+    <rect x="0"   y="-10" width="14" height="14" class="b-orange"/>
+    <text x="18"  y="2"   class="lbl-s">MCP Server entry-point</text>
+
+    <rect x="150" y="-10" width="14" height="14" class="b-dblue"/>
+    <text x="168" y="2"   class="lbl-s">Exposed MCP tool</text>
+
+    <rect x="290" y="-10" width="14" height="14" class="b-grey"/>
+    <text x="308" y="2"   class="lbl-s">devDependency (bundled)</text>
+
+    <rect x="460" y="-10" width="14" height="14" class="b-ltblue"/>
+    <text x="478" y="2"   class="lbl-s">LLM client / consumer</text>
+
+    <line x1="610" y1="-3" x2="648" y2="-3" class="arrow"/>
+    <text x="654" y="2"   class="lbl-s">MCP protocol connection</text>
+  </g>
+
+</svg>

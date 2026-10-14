@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="13in"
+   height="8.6in"
+   viewBox="0 0 936 619"
+   xml:space="preserve"
+   color-interpolation-filters="sRGB"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg">
+
+  <style type="text/css"><![CDATA[
+    .bg       { fill:#ffffff; stroke:none }
+    .box-d    { fill:#ffffff; stroke:#000000; stroke-dasharray:3.5,2.5; stroke-linecap:round; stroke-linejoin:round; stroke-width:0.75 }
+    .box-s    { fill:none;    stroke:#000000; stroke-dasharray:3.5,2.5; stroke-linecap:round; stroke-linejoin:round; stroke-width:0.5 }
+    .lbl      { fill:#000000; font-family:Arial; font-size:9px }
+    .lbl-s    { fill:#000000; font-family:Arial; font-size:7px }
+    .lbl-i    { fill:#555555; font-family:Arial; font-size:7px; font-style:italic }
+    .wht      { fill:#ffffff; font-family:Arial; font-size:8.5px }
+    .wht-s    { fill:#ffffff; font-family:Arial; font-size:7px }
+    .b-blue   { fill:#548bd4; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-dblue  { fill:#2a5fa5; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-grey   { fill:#7f7f7f; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-ltblue { fill:#c6d8f0; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-orange { fill:#ea700d; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .b-peach  { fill:#fbd7bb; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.4 }
+    .arrow    { fill:none; stroke:#000000; stroke-width:0.75; stroke-linecap:round; stroke-linejoin:round; marker-end:url(#arr) }
+    .arrow-d  { fill:none; stroke:#555555; stroke-width:0.6; stroke-dasharray:3,2; stroke-linecap:round; stroke-linejoin:round; marker-end:url(#arr-g) }
+  ]]></style>
+
+  <defs>
+    <marker id="arr" orient="auto" markerUnits="strokeWidth" overflow="visible" refX="0" refY="0">
+      <path d="M 2,1 0,0 2,-1" style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" transform="scale(-5)"/>
+    </marker>
+    <marker id="arr-g" orient="auto" markerUnits="strokeWidth" overflow="visible" refX="0" refY="0">
+      <path d="M 2,1 0,0 2,-1" style="fill:none;stroke:#555555;stroke-width:1;stroke-linecap:round;stroke-linejoin:round" transform="scale(-5)"/>
+    </marker>
+  </defs>
+
+  <!-- white canvas -->
+  <rect x="0" y="0" width="936" height="619" class="bg"/>
+
+
+  <!-- ==================================================================
+       LLM CLIENT  (top, full width)
+  ================================================================== -->
+  <rect x="120" y="12" width="696" height="52" class="b-ltblue" rx="2"/>
+  <text x="468" y="30" class="lbl" font-weight="bold" text-anchor="middle">LLM Client</text>
+  <text x="468" y="50" class="lbl" text-anchor="middle">BAS Copilot  /  Claude Code  /  GitHub Copilot  /  Cursor  /  …</text>
+
+
+  <!-- ==================================================================
+       plugins-coding-agents/fiori  OUTER BOX
+       This package ships BOTH the MCP server config (.mcp.json) AND the skills
+  ================================================================== -->
+  <rect x="8" y="80" width="920" height="520" class="box-d" rx="3"/>
+  <text x="18" y="95" class="lbl" font-weight="bold">plugins-coding-agents/fiori
+    <tspan font-weight="normal" fill="#555555" font-style="italic">  (npm: sap-ux-fiori-tools  —  distributed as a coding-agent plugin)</tspan>
+  </text>
+
+
+  <!-- arrow: LLM -> plugin (MCP) -->
+  <line x1="370" y1="64" x2="280" y2="100" class="arrow"/>
+  <text x="295" y="86" class="lbl-i" transform="rotate(-18,295,86)">MCP protocol</text>
+
+  <!-- arrow: LLM -> plugin (Skills) -->
+  <line x1="566" y1="64" x2="660" y2="100" class="arrow"/>
+  <text x="618" y="83" class="lbl-i" transform="rotate(18,618,83)">skill invocation</text>
+
+
+  <!-- ==================================================================
+       LEFT HALF — MCP server wiring  (.mcp.json)
+  ================================================================== -->
+  <rect x="18"  y="102" width="450" height="488" class="box-s" rx="2"/>
+  <text x="28" y="117" class="lbl" font-weight="bold">.mcp.json  <tspan font-weight="normal" font-style="italic" fill="#555">(MCP server registration)</tspan></text>
+
+  <!-- .mcp.json code snippet -->
+  <rect x="28" y="122" width="430" height="58" style="fill:#f5f5f5;stroke:#cccccc;stroke-width:0.5" rx="2"/>
+  <text x="36" y="137" class="lbl-s" font-family="monospace">"fiori-mcp": {</text>
+  <text x="36" y="149" class="lbl-s" font-family="monospace">  "command": "npx",  "args": ["@sap-ux/fiori-mcp-server", "fiori-mcp"]</text>
+  <text x="36" y="161" class="lbl-s" font-family="monospace">}</text>
+  <text x="36" y="172" class="lbl-s" fill="#777777">type: stdio  /  timeout: 600s</text>
+
+  <!-- arrow .mcp.json -> fiori-mcp-server package -->
+  <line x1="243" y1="180" x2="243" y2="214" class="arrow"/>
+  <text x="248" y="199" class="lbl-i">starts via npx</text>
+
+  <!-- @sap-ux/fiori-mcp-server box -->
+  <rect x="28" y="216" width="430" height="364" class="box-s" rx="2"/>
+  <text x="38" y="231" class="lbl" font-weight="bold">@sap-ux/fiori-mcp-server</text>
+
+  <!-- server entry block -->
+  <rect x="130" y="236" width="226" height="28" class="b-orange" rx="1"/>
+  <text x="243" y="255" class="wht" font-weight="bold" text-anchor="middle">MCP Server  (server.ts)</text>
+
+  <!-- tools section -->
+  <text x="38" y="282" class="lbl-i">Exposed tools:</text>
+
+  <!-- tools: 2 cols x 5 rows, w=202 h=22 gap=4 -->
+  <rect x="38"  y="286" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="139" y="301" class="wht-s" text-anchor="middle">search_docs</text>
+  <rect x="248" y="286" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="349" y="301" class="wht-s" text-anchor="middle">list_fiori_apps</text>
+
+  <rect x="38"  y="312" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="139" y="327" class="wht-s" text-anchor="middle">list_sap_systems</text>
+  <rect x="248" y="312" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="349" y="327" class="wht-s" text-anchor="middle">download_odata_metadata</text>
+
+  <rect x="38"  y="338" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="139" y="353" class="wht-s" text-anchor="middle">generate_fiori_app_odata</text>
+  <rect x="248" y="338" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="349" y="353" class="wht-s" text-anchor="middle">generate_fiori_app_cap</text>
+
+  <rect x="38"  y="364" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="139" y="379" class="wht-s" text-anchor="middle">list_functionality</text>
+  <rect x="248" y="364" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="349" y="379" class="wht-s" text-anchor="middle">get_functionality_details</text>
+
+  <rect x="38"  y="390" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="139" y="405" class="wht-s" text-anchor="middle">execute_functionality</text>
+  <rect x="248" y="390" width="202" height="22" class="b-dblue" rx="1"/>
+  <text x="349" y="405" class="wht-s" text-anchor="middle">lookup_ui5_documentation</text>
+
+  <!-- devDeps section -->
+  <text x="38" y="428" class="lbl-i">devDependencies (esbuild-bundled):</text>
+
+  <!-- dep grid: 3 cols x 4 rows, w=130 h=20 gap=4 -->
+  <rect x="38"  y="434" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="103" y="448" class="wht-s" text-anchor="middle">project-access</text>
+  <rect x="172" y="434" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="237" y="448" class="wht-s" text-anchor="middle">axios-extension</text>
+  <rect x="306" y="434" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="371" y="448" class="wht-s" text-anchor="middle">adp-tooling</text>
+
+  <rect x="38"  y="458" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="103" y="472" class="wht-s" text-anchor="middle">store</text>
+  <rect x="172" y="458" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="237" y="472" class="wht-s" text-anchor="middle">system-access</text>
+  <rect x="306" y="458" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="371" y="472" class="wht-s" text-anchor="middle">fiori-docs-embeddings</text>
+
+  <rect x="38"  y="482" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="103" y="496" class="wht-s" text-anchor="middle">odata-service-writer</text>
+  <rect x="172" y="482" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="237" y="496" class="wht-s" text-anchor="middle">fe-fpm-writer</text>
+  <rect x="306" y="482" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="371" y="496" class="wht-s" text-anchor="middle">fiori-annotation-api</text>
+
+  <rect x="38"  y="506" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="103" y="520" class="wht-s" text-anchor="middle">annotation-converter</text>
+  <rect x="172" y="506" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="237" y="520" class="wht-s" text-anchor="middle">logger + telemetry</text>
+  <rect x="306" y="506" width="130" height="20" class="b-grey" rx="1"/>
+  <text x="371" y="520" class="wht-s" text-anchor="middle">ui5-config + more</text>
+
+
+  <!-- ==================================================================
+       RIGHT HALF — Skills  (plugin.json)
+  ================================================================== -->
+  <rect x="478" y="102" width="450" height="488" class="box-s" rx="2"/>
+  <text x="488" y="117" class="lbl" font-weight="bold">.claude-plugin/plugin.json  +  .github/plugin/plugin.json
+    <tspan font-weight="normal" font-style="italic" fill="#555">  (skill registrations)</tspan>
+  </text>
+
+  <!-- plugin.json snippet -->
+  <rect x="488" y="122" width="430" height="46" style="fill:#f5f5f5;stroke:#cccccc;stroke-width:0.5" rx="2"/>
+  <text x="496" y="137" class="lbl-s" font-family="monospace">"skills": [</text>
+  <text x="496" y="149" class="lbl-s" font-family="monospace">  "./skills/sap-fiori-app-development/",  "./skills/sap-fiori-create-cli/", ...</text>
+  <text x="496" y="161" class="lbl-s" font-family="monospace">]</text>
+
+  <!-- skills: full-width blocks, w=420 h=52 gap=6 -->
+  <text x="488" y="182" class="lbl-i">Skills (SKILL.md — loaded into LLM context on invocation):</text>
+
+  <!-- skill 1 -->
+  <rect x="488" y="186" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="200" class="lbl-s" font-weight="bold">sap-fiori-app-development</text>
+  <text x="498" y="213" class="lbl-s">SAP Fiori App Development Guidelines (CAP &amp; Standalone Projects)</text>
+  <text x="498" y="224" class="lbl-s" fill="#666">How to scaffold, configure, and extend Fiori apps end-to-end</text>
+
+  <!-- skill 2 -->
+  <rect x="488" y="234" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="248" class="lbl-s" font-weight="bold">sap-fiori-create-cli</text>
+  <text x="498" y="261" class="lbl-s">Fiori Create CLI reference</text>
+  <text x="498" y="272" class="lbl-s" fill="#666">CLI commands: create app, update service metadata, convert preview config</text>
+
+  <!-- skill 3 -->
+  <rect x="488" y="282" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="296" class="lbl-s" font-weight="bold">sap-fiori-add-visual-filter</text>
+  <text x="498" y="309" class="lbl-s">SAP Fiori Visual Filter</text>
+  <text x="498" y="320" class="lbl-s" fill="#666">Add visual filters to Fiori Elements Analytical List Page</text>
+
+  <!-- skill 4 -->
+  <rect x="488" y="330" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="344" class="lbl-s" font-weight="bold">sap-fiori-analytical-chart</text>
+  <text x="498" y="357" class="lbl-s">SAP Fiori Analytical Chart</text>
+  <text x="498" y="368" class="lbl-s" fill="#666">Configure analytical charts in Fiori Elements applications</text>
+
+  <!-- skill 5 -->
+  <rect x="488" y="378" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="392" class="lbl-s" font-weight="bold">sap-fiori-tree-table</text>
+  <text x="498" y="405" class="lbl-s">SAP Fiori Tree Table with Recursive Hierarchy</text>
+  <text x="498" y="416" class="lbl-s" fill="#666">RAP &amp; CAP tree tables — read-only, editable, generator-based</text>
+
+  <!-- skill 6 -->
+  <rect x="488" y="426" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="440" class="lbl-s" font-weight="bold">sap-fiori-opa5-test-development</text>
+  <text x="498" y="453" class="lbl-s">SAP Fiori OPA5 Development Skill</text>
+  <text x="498" y="464" class="lbl-s" fill="#666">Write OPA5 tests for Fiori Elements v2 and v4 (journeys, test API)</text>
+
+  <!-- skill 7 -->
+  <rect x="488" y="474" width="420" height="44" class="b-peach" rx="1"/>
+  <text x="498" y="488" class="lbl-s" font-weight="bold">sap-fiori-eslint-plugin</text>
+  <text x="498" y="501" class="lbl-s">SAP Fiori ESLint Plugin</text>
+  <text x="498" y="512" class="lbl-s" fill="#666">Lint, migrate, and set up @sap-ux/eslint-plugin-fiori-tools rules</text>
+
+  <!-- "both clients" label -->
+  <text x="488" y="534" class="lbl-i">Delivered to Claude Code via .claude-plugin/plugin.json</text>
+  <text x="488" y="546" class="lbl-i">Delivered to GitHub Copilot via .github/plugin/plugin.json</text>
+
+  <!-- dashed connector: MCP tools <-> skills (they compose) -->
+  <line x1="468" y1="350" x2="488" y2="350" class="arrow-d"/>
+  <text x="440" y="344" class="lbl-i" text-anchor="middle">tools +</text>
+  <text x="440" y="354" class="lbl-i" text-anchor="middle">skills</text>
+  <text x="440" y="364" class="lbl-i" text-anchor="middle">compose</text>
+
+
+  <!-- ==================================================================
+       LEGEND
+  ================================================================== -->
+  <g transform="translate(18,578)">
+    <rect x="0"   y="-11" width="14" height="14" class="b-orange"/>
+    <text x="18"  y="1"   class="lbl-s">MCP Server entry-point</text>
+
+    <rect x="152" y="-11" width="14" height="14" class="b-dblue"/>
+    <text x="170" y="1"   class="lbl-s">Exposed MCP tool</text>
+
+    <rect x="296" y="-11" width="14" height="14" class="b-grey"/>
+    <text x="314" y="1"   class="lbl-s">devDependency (esbuild-bundled)</text>
+
+    <rect x="484" y="-11" width="14" height="14" class="b-peach"/>
+    <text x="502" y="1"   class="lbl-s">Skill (SKILL.md loaded into LLM context)</text>
+
+    <rect x="700" y="-11" width="14" height="14" class="b-ltblue"/>
+    <text x="718" y="1"   class="lbl-s">LLM client / consumer</text>
+  </g>
+
+</svg>
