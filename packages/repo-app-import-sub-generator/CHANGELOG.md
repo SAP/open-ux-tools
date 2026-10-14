@@ -1,5 +1,27 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.83
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Rename and add telemetry events for ABAP repository and ADT quick-deploy download flows [[1d7dce9](https://github.com/SAP/open-ux-tools/commit/1d7dce973cc865ed3381356dc67bbe153f4eb47e)]
+
+## 1.2.82
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.77 → 3.1.78
+- @sap-ux/fiori-freestyle-writer 3.0.121 → 3.0.121
+- @sap-ux/odata-service-inquirer 3.2.24 → 3.2.24
+
 ## 1.2.81
 
 ### Patch Changes
