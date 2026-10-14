@@ -1,16 +1,44 @@
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as actualUi5Info from '@sap-ux/ui5-info';
+import {
+    defaultMinUi5Version,
+    defaultVersion,
+    getDefaultUI5Theme,
+    getLatestUI5Version,
+    getSapSystemUI5Version,
+    getUi5Themes,
+    latestVersionString,
+    minSupportedSpecVersion,
+    minUI5VersionForLocalDev,
+    minUi5VersionV4Template,
+    supportedUi5VersionFallbacks,
+    ui5ThemeIds,
+    ui5Themes,
+    ui5VersionRequestInfo
+} from '@sap-ux/ui5-info';
 import { loadProjectIntoMemFs, fileExistsInMemFs, getFileFromMemFs } from '../helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../test-constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { toMatchSpecificSnapshot } from 'jest-specific-snapshot';
 
-const PINNED_UI5_VERSION = '1.120.0';
+const PINNED_UI5_VERSION = '1.153.0';
 
 jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
-    ...actualUi5Info,
-    getUI5Versions: jest.fn().mockResolvedValue([{ version: PINNED_UI5_VERSION }])
+    defaultMinUi5Version,
+    defaultVersion,
+    getDefaultUI5Theme,
+    getLatestUI5Version,
+    getSapSystemUI5Version,
+    getUI5Versions: jest.fn().mockResolvedValue([{ version: PINNED_UI5_VERSION }]),
+    getUi5Themes,
+    latestVersionString,
+    minSupportedSpecVersion,
+    minUI5VersionForLocalDev,
+    minUi5VersionV4Template,
+    supportedUi5VersionFallbacks,
+    ui5ThemeIds,
+    ui5Themes,
+    ui5VersionRequestInfo
 }));
 
 const { ProjectMigrator, initI18n } = await import('../../src/index.js');
