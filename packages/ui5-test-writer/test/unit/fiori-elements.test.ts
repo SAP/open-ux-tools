@@ -2025,7 +2025,7 @@ export type Then = Opa5 & BaseArrangements & {
 
         describe('text annotation sort-order test — JS', () => {
             // Inject a textAnnotationColumns entry on top of the real LR features so the generated
-            // journey exercises the new "Check text annotation for columns" opaTest and the
+            // journey exercises the new "Check the Sort options for columns with a Text annotation" opaTest and the
             // conditional coreLibrary import, across all three JS buckets.
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
@@ -2043,8 +2043,10 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
                     .contents as string;
 
-            // The new-style sort tests (columnProperty + SortOrder.None reset) ship only in the
-            // `latest` bucket. An unspecified version resolves to the latest bucket.
+            // The sort test (code column + text target + SortOrder.None reset) ships only in the `latest`
+            // bucket. An unspecified version resolves to the latest bucket. The latest UI5 keeps the code
+            // column separately sortable even when a Common.Text is present, so both the code column and the
+            // text target are asserted independently.
             it.each([
                 ['unspecified version', undefined],
                 ['a newer version', '1.153.0']
@@ -2058,11 +2060,7 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).toContain('"sap/ui/core/library"');
                 expect(content).toContain('function (opaTest, runner, coreLibrary)');
-                expect(content).toContain('opaTest("Check text annotation for columns"');
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending)');
-                expect(content).toContain(
-                    'iCheckSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending, true)'
-                );
+                expect(content).toContain('opaTest("Check the Sort options for columns with a Text annotation"');
                 expect(content).toContain(
                     'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
                 );
@@ -2070,8 +2068,13 @@ export type Then = Opa5 & BaseArrangements & {
                     'iCheckSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending, true)'
                 );
                 // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
+                // The code column is asserted independently of its Common.Text target.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending)');
+                expect(content).toContain(
+                    'iCheckSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending, true)'
+                );
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
             });
 
             // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
@@ -2091,33 +2094,27 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).not.toContain('"sap/ui/core/library"');
                 expect(content).not.toContain('coreLibrary');
-                expect(content).not.toContain('Check text annotation for columns');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
-            it('emits only the text-property sort test when columnProperty is omitted (TextOnly) (JS)', async () => {
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test or the coreLibrary import —
+            // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
+            // exists from 1.152.0.
+            it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (JS)', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
-                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
-                    const features = await actualModelUtils.getAppFeatures(...args);
-                    if (features.listReport) {
-                        // TextOnly arrangement: the code column is not sortable, so columnProperty is omitted.
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
-                    }
-                    return features;
-                });
+                withTextAnnotationColumn();
 
-                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.152.0' }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).not.toContain('"sap/ui/core/library"');
+                expect(content).not.toContain('coreLibrary');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
                 expect(content).toContain(
-                    'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
                 );
-                // The text-property sort test is still reset to SortOrder.None.
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
-                // The code column is not sortable under TextOnly, so no sort test targets CustomerID.
-                expect(content).not.toContain('iChangeSortOrder({ name: "CustomerID" }');
-                expect(content).not.toContain('iCheckSortOrder({ name: "CustomerID" }');
+                expect(content).toContain('iOpenColumnAdaptation()');
             });
 
             it('omits the sort-order test and coreLibrary import when there is no text-annotated column', async () => {
@@ -2129,7 +2126,7 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).not.toContain('"sap/ui/core/library"');
                 expect(content).not.toContain('coreLibrary');
-                expect(content).not.toContain('Check text annotation for columns');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
             afterEach(() => {
@@ -2140,7 +2137,7 @@ export type Then = Opa5 & BaseArrangements & {
         describe('text annotation sort-order test — TS', () => {
             // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
             // exercises the conditional `import { SortOrder } from "sap/ui/core/library"` and the
-            // "Check text annotation for columns" opaTest. New-style sort tests emitted only for the
+            // "Check the Sort options for columns with a Text annotation" opaTest. New-style sort tests emitted only for the
             // `latest` bucket (unspecified version or >= latest threshold).
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
@@ -2158,8 +2155,10 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.ts']
                     .contents as string;
 
-            // The new-style sort tests (columnProperty + SortOrder.None reset) ship only in the
-            // `latest` bucket. An unspecified version resolves to the latest bucket.
+            // The sort test (code column + text target + SortOrder.None reset) ships only in the `latest`
+            // bucket. An unspecified version resolves to the latest bucket. The latest UI5 keeps the code
+            // column separately sortable even when a Common.Text is present, so both the code column and the
+            // text target are asserted independently.
             it.each([
                 ['unspecified version', undefined],
                 ['a newer version', '1.153.0']
@@ -2177,14 +2176,15 @@ export type Then = Opa5 & BaseArrangements & {
 
                 const content = lrJourneyContents();
                 expect(content).toContain('import { SortOrder } from "sap/ui/core/library";');
-                expect(content).toContain('opaTest("Check text annotation for columns"');
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.Ascending)');
-                expect(content).toContain('iCheckSortOrder({ name: "CustomerID" }, SortOrder.Ascending, true)');
+                expect(content).toContain('opaTest("Check the Sort options for columns with a Text annotation"');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.Ascending)');
                 expect(content).toContain('iCheckSortOrder({ name: "CustomerName" }, SortOrder.Ascending, true)');
                 // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
+                // The code column is asserted independently of its Common.Text target.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.Ascending)');
+                expect(content).toContain('iCheckSortOrder({ name: "CustomerID" }, SortOrder.Ascending, true)');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
             });
 
             // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
@@ -2204,31 +2204,32 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).not.toContain('sap/ui/core/library');
                 expect(content).not.toContain('SortOrder');
-                expect(content).not.toContain('Check text annotation for columns');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
-            it('emits only the text-property sort test when columnProperty is omitted (TextOnly) (TS)', async () => {
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test or the SortOrder import —
+            // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
+            // exists from 1.152.0.
+            it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (TS)', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
-                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
-                    const features = await actualModelUtils.getAppFeatures(...args);
-                    if (features.listReport) {
-                        // TextOnly arrangement: the code column is not sortable, so columnProperty is omitted.
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
-                    }
-                    return features;
-                });
+                withTextAnnotationColumn();
 
-                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.152.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
 
                 const content = lrJourneyContents();
-                expect(content).toContain('opaTest("Check text annotation for columns"');
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.Ascending)');
-                // The text-property sort test is still reset to SortOrder.None.
-                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
-                // The code column is not sortable under TextOnly, so no sort test targets CustomerID.
-                expect(content).not.toContain('iChangeSortOrder({ name: "CustomerID" }');
-                expect(content).not.toContain('iCheckSortOrder({ name: "CustomerID" }');
+                expect(content).not.toContain('sap/ui/core/library');
+                expect(content).not.toContain('SortOrder');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
             });
 
             it('omits the sort-order test and SortOrder import when there is no text-annotated column', async () => {
@@ -2240,7 +2241,7 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).not.toContain('sap/ui/core/library');
                 expect(content).not.toContain('SortOrder');
-                expect(content).not.toContain('Check text annotation for columns');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
             afterEach(() => {
@@ -2250,14 +2251,16 @@ export type Then = Opa5 & BaseArrangements & {
 
         describe('column adaptation dialog test — JS', () => {
             // Inject a textAnnotationColumns entry on top of the real LR features so the generated
-            // journey exercises the "Check columns in adaptation dialog" opaTest. The test uses the
+            // journey exercises the "Check the presence of the text columns for columns with a Text annotation" opaTest. The test uses the
             // column-adaptation OPA API that only exists from UI5 1.152.0, so it is rendered only by
             // the `1.152` and `latest` template buckets (ui5Version undefined/newest or >= 1.152.0).
             const withTextAnnotationColumn = (columnPersonalizationSupported?: boolean) => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                         if (columnPersonalizationSupported !== undefined) {
                             features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
                         }
@@ -2280,13 +2283,44 @@ export type Then = Opa5 & BaseArrangements & {
                     fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
 
                     const content = lrJourneyContents();
-                    expect(content).toContain('opaTest("Check columns in adaptation dialog"');
+                    expect(content).toContain(
+                        'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                    );
                     expect(content).toContain('iOpenColumnAdaptation()');
                     expect(content).toContain('iAddAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iCheckAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
             );
+
+            it('adds a navigation-path text target to the adaptation dialog (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            {
+                                columnProperty: 'Customer',
+                                textProperty: '_CustomerDetail/CustomerName'
+                            }
+                        ];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+                // The navigation-path target is emitted even though it fails at runtime today — the service
+                // is expected to be adjusted to expose it as an adaptation column (per LoB guidance).
+                expect(content).toContain('iAddAdaptationColumn({ name: "_CustomerDetail/CustomerName" })');
+                expect(content).toContain('iConfirmColumnAdaptation()');
+            });
 
             it('omits the adaptation-dialog test when column personalization is disabled (JS)', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
@@ -2296,7 +2330,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
                 expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
@@ -2312,7 +2348,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
                 expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
@@ -2323,7 +2361,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
                 expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
@@ -2334,12 +2374,14 @@ export type Then = Opa5 & BaseArrangements & {
 
         describe('column adaptation dialog test — TS', () => {
             // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
-            // exercises the "Check columns in adaptation dialog" opaTest.
+            // exercises the "Check the presence of the text columns for columns with a Text annotation" opaTest.
             const withTextAnnotationColumn = (columnPersonalizationSupported?: boolean) => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                         if (columnPersonalizationSupported !== undefined) {
                             features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
                         }
@@ -2367,13 +2409,44 @@ export type Then = Opa5 & BaseArrangements & {
                     );
 
                     const content = lrJourneyContents();
-                    expect(content).toContain('opaTest("Check columns in adaptation dialog"');
+                    expect(content).toContain(
+                        'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                    );
                     expect(content).toContain('iOpenColumnAdaptation()');
                     expect(content).toContain('iAddAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iCheckAdaptationColumn({ name: "CustomerName" })');
                     expect(content).toContain('iConfirmColumnAdaptation()');
                 }
             );
+
+            it('adds a navigation-path text target to the adaptation dialog (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            {
+                                columnProperty: 'Customer',
+                                textProperty: '_CustomerDetail/CustomerName'
+                            }
+                        ];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+                // The navigation-path target is emitted even though it fails at runtime today — the service
+                // is expected to be adjusted to expose it as an adaptation column (per LoB guidance).
+                expect(content).toContain('iAddAdaptationColumn({ name: "_CustomerDetail/CustomerName" })');
+                expect(content).toContain('iConfirmColumnAdaptation()');
+            });
 
             it('omits the adaptation-dialog test when column personalization is disabled (TS)', async () => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
@@ -2383,7 +2456,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
                 expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
@@ -2399,7 +2474,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
                 expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
@@ -2410,7 +2487,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('Check columns in adaptation dialog');
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
                 expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
