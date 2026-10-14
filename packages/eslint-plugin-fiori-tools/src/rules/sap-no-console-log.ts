@@ -23,6 +23,11 @@ const CONSOLE_INTERFACE = [
  * @param node.callee.type
  * @param node.callee.object
  * @param node.callee.object.name
+ * @param node.callee.object.type
+ * @param node.callee.object.object
+ * @param node.callee.object.object.name
+ * @param node.callee.object.property
+ * @param node.callee.object.property.name
  * @param node.callee.property
  * @param node.callee.property.name
  * @param node.callee.name
@@ -58,6 +63,11 @@ function getFunctionExpressionStatement(node: {
  * @param node.init
  * @param node.init.object
  * @param node.init.object.name
+ * @param node.init.object.type
+ * @param node.init.object.object
+ * @param node.init.object.object.name
+ * @param node.init.object.property
+ * @param node.init.object.property.name
  * @param node.init.property
  * @param node.init.property.name
  */
