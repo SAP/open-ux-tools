@@ -1,5 +1,41 @@
 # @sap-ux/ui5-test-writer
 
+## 1.18.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Generate the List Report text-annotation OPA tests ("Check the Sort options for columns with a Text annotation" and "Check the presence of the text columns for columns with a Text annotation") for multi-table List Reports, emitting a per-view test for every tab (resolving each tab's text-annotated columns from the shared entity type's `Common.Text` metadata, and column personalization from each tab's own LineItem configuration). Rename these tests (previously "Check text annotation for columns" / "Check columns in adaptation dialog") and exclude columns whose own property is bound through a navigation property. A navigation-path text target is still asserted when the column's own property is a real field, except in an AnalyticalTable sort-order test (which cannot sort across a navigation). [[d6b5358](https://github.com/SAP/open-ux-tools/commit/d6b5358f22aec81c83ecaa4d47406f8335ffedbf)]
+
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Features
+
+- Split the List Report "Check table columns and actions" journey block into one `opaTest` per action (both single-table and multi-tab), and assert selection states for selection-driven bound actions in the `latest` FE V4 bucket. Fixes an `iCheckRows` timeout in multi-tab journeys by searching before the row check. [[da3aaf9](https://github.com/SAP/open-ux-tools/commit/da3aaf9db632bdce16a04c8f246e3a8aa9b03d1d)]
+
+## 1.16.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Bug Fixes
+
+- Refine List Report text-annotation column sort-order tests. Text/code columns with a maintained `Common.Text` annotation now get `iChangeSortOrder`/`iCheckSortOrder` tests (each reset to `SortOrder.None`), independent of the sort target's `UI.Hidden` state so a hiding annotation mistake is surfaced. Distinct code columns that share one text target each keep their own sort test, while the text-property assertion is emitted once per target. These tests are generated only for the `1.152` and `latest` template buckets (a UI5 version of 1.152.0 or greater, or an unspecified version which resolves to latest). [[9d0af19](https://github.com/SAP/open-ux-tools/commit/9d0af19ba6456d5a610c55db173b6e6825cb9ed7)]
+
 ## 1.16.2
 
 ### Patch Changes
