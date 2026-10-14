@@ -17,9 +17,8 @@
 
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>,
-    "sap/ui/core/library"<% } %>
-], function (opaTest, runner<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>, coreLibrary<% } %>) {
+    "./pages/JourneyRunner"
+], function (opaTest, runner) {
     "use strict";
 
     function journey() {
@@ -199,6 +198,22 @@ sap.ui.define([
         });
 
 <%_ } -%>
+<%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
+<%_ if (tab.columnPersonalizationSupported !== false) { -%>
+        opaTest(<%- JSON.stringify("Check the presence of the text columns for columns with a Text annotation in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iOpenColumnAdaptation();
+            <%_ tab.textAnnotationColumns.forEach(function(column) { _%>
+            <%_ if (!column.skipTextPropertyTest) { _%>
+            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
+            <%_ } _%>
+            <%_ }); -%>
+            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iConfirmColumnAdaptation();
+        });
+
+<%_ } -%>
+<%_ } -%>
         opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
             <%_ if (!hideFilterBar) { -%>
@@ -336,21 +351,14 @@ sap.ui.define([
         });
 
 <%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-        opaTest("Check text annotation for columns", function (Given, When, Then) {
-            <%_ textAnnotationColumns.forEach(function(column) { _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            <%_ }); -%>
-        });
-
-<%_ } -%>
 <%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0 && columnPersonalizationSupported !== false) { -%>
-        opaTest("Check columns in adaptation dialog", function (Given, When, Then) {
+        opaTest("Check the presence of the text columns for columns with a Text annotation", function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iOpenColumnAdaptation();
             <%_ textAnnotationColumns.forEach(function(column) { _%>
+            <%_ if (!column.skipTextPropertyTest) { _%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iAddAdaptationColumn({ name: "<%- column.textProperty %>" });
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAdaptationColumn({ name: "<%- column.textProperty %>" });
+            <%_ } _%>
             <%_ }); -%>
             When.onThe<%- startLR%>Generated.onTable(defaultTableId).iConfirmColumnAdaptation();
         });

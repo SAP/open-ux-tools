@@ -6,6 +6,7 @@ import {
     extractContactCardColumnsFromNode,
     extractContactCardColumnsFromTableNode,
     extractTextAnnotationColumnsFromNode,
+    extractBoundColumnPropertiesFromTableNode,
     resolvePrimaryTableNode,
     resolveViewTableNodes
 } from '../../../src/utils/tableUtils.js';
@@ -520,13 +521,33 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
     });
 
-    test('excludes a column whose text target traverses a navigation property', () => {
+    test('keeps a column whose text target traverses a navigation property', () => {
+        // Regression (fin.test.v4.lr2): the column's own property (e.g. "DunningProcedure") is a real,
+        // non-association column, so the test is generated — and the navigation-path text target is itself
+        // a valid sort/adaptation name, so it is emitted unchanged.
         const node = makeNode({
             'DataField::DunningProcedure': {
                 schema: { keys: [{ name: 'Value', value: 'DunningProcedure' }] },
                 properties: {
                     text: { artifactType: 'Annotation', value: '_DunningProcedure/DunningProcedure_Text' }
                 }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            {
+                columnProperty: 'DunningProcedure',
+                textProperty: '_DunningProcedure/DunningProcedure_Text'
+            }
+        ]);
+    });
+
+    test('excludes a column bound through a navigation property', () => {
+        // Regression (fin.test.rap.lr3): a column from an association (e.g. "_Booking/AirlineID") is
+        // not exposed as a sortable column, so neither it nor its text target may be used as a sort name.
+        const node = makeNode({
+            'DataField::_Booking::AirlineID': {
+                schema: { keys: [{ name: 'Value', value: '_Booking/AirlineID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'AirlineName' } }
             }
         });
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
@@ -588,5 +609,43 @@ describe('extractTextAnnotationColumnsFromNode()', () => {
             aggregations: { table: { aggregations: {} } }
         } as unknown as TreeAggregation;
         expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+});
+
+describe('extractBoundColumnPropertiesFromTableNode()', () => {
+    test('returns bound property names of default-available columns, skipping nav paths and custom columns', () => {
+        const tableNode = {
+            aggregations: {
+                columns: {
+                    aggregations: {
+                        'DataField::CompanyCode': {
+                            description: 'Company Code',
+                            schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+                        },
+                        'DataField::Customer': {
+                            description: 'Customer',
+                            schema: { keys: [{ name: 'Value', value: 'Customer' }] }
+                        },
+                        // Navigation-bound column: excluded (its identifier contains '/').
+                        'DataField::NavCol': {
+                            description: 'Nav',
+                            schema: { keys: [{ name: 'Value', value: '_Nav/Field' }] }
+                        },
+                        // Adaptation-only column: excluded.
+                        'DataField::Hidden': {
+                            description: 'Hidden',
+                            schema: { keys: [{ name: 'Value', value: 'Hidden' }] },
+                            properties: { availability: { value: 'Adaptation' } }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(extractBoundColumnPropertiesFromTableNode(tableNode)).toEqual(['CompanyCode', 'Customer']);
+    });
+
+    test('returns an empty array when the table node has no columns aggregation', () => {
+        const tableNode = { aggregations: {} } as unknown as TreeAggregation;
+        expect(extractBoundColumnPropertiesFromTableNode(tableNode)).toEqual([]);
     });
 });

@@ -125,7 +125,7 @@ describe('App Download Utils', () => {
             expect(PromptState.admZip).toBeInstanceOf(AdmZip);
         });
 
-        it('should log an error and return false when downloadFiles returns undefined', async () => {
+        it('should return success:false when downloadFiles returns undefined', async () => {
             const mockDownload = jest.fn().mockResolvedValue(undefined);
             const mockServiceProvider = {
                 getUi5AbapRepository: jest.fn(() => ({
@@ -140,11 +140,14 @@ describe('App Download Utils', () => {
                 }
             };
 
-            await expect(downloadApp('Z_NO_ZIP')).resolves.toBe(false);
+            await expect(downloadApp('Z_NO_ZIP')).resolves.toEqual({
+                success: false,
+                errorMessage: expect.any(String)
+            });
             expect(PromptState.admZip).toBeUndefined();
         });
 
-        it('should log an error and return false when downloadFiles returns an empty buffer', async () => {
+        it('should return success:false when downloadFiles returns an empty buffer', async () => {
             const mockDownload = jest.fn().mockResolvedValue(Buffer.alloc(0));
             const mockServiceProvider = {
                 getUi5AbapRepository: jest.fn(() => ({
@@ -159,7 +162,10 @@ describe('App Download Utils', () => {
                 }
             };
 
-            await expect(downloadApp('Z_EMPTY_ZIP')).resolves.toBe(false);
+            await expect(downloadApp('Z_EMPTY_ZIP')).resolves.toEqual({
+                success: false,
+                errorMessage: expect.any(String)
+            });
             expect(PromptState.admZip).toBeUndefined();
         });
     });
