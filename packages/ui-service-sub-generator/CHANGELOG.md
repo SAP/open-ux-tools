@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.57
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/ui-service-inquirer 1.0.56 → 1.0.57
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
 ## 1.0.56
 
 ### Patch Changes
