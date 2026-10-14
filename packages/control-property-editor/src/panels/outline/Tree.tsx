@@ -53,6 +53,8 @@ export const Tree = (): ReactElement => {
         cell: undefined
     });
     const [showActionContextualMenu, setShowActionContextualMenu] = useState<OutlineNodeItem | undefined>();
+    const [multiSelectedIds, setMultiSelectedIds] = useState<string[]>([]);
+    const [contextMenuControlIds, setContextMenuControlIds] = useState<string | string[]>('');
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
@@ -64,12 +66,13 @@ export const Tree = (): ReactElement => {
         const items: OutlineNodeItem[] = [];
         const filteredModel = getFilteredModel(model, filterQuery);
         return { groups: getGroups(filteredModel, items), items };
-    }, [model, filterQuery, selection, controlChanges]);
+    }, [model, filterQuery, selection, multiSelectedIds, controlChanges]);
 
     const selectedClassName =
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
 
     useEffect(() => {
+        setMultiSelectedIds([]);
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
             updateSelectionFromPreview(selectedControl);
         }
@@ -88,7 +91,7 @@ export const Tree = (): ReactElement => {
     }, [selectedControl]);
     useMemo(() => {
         adaptExpandCollapsed(groups, collapsed);
-    }, [groups, collapsed, selection]);
+    }, [groups, collapsed, selection, multiSelectedIds]);
 
     const scrollRef = useCallback((node: Element) => {
         if (node !== null) {
@@ -202,35 +205,54 @@ export const Tree = (): ReactElement => {
     if (items.length === 0 && groups.length === 0) {
         return <NoControlFound />;
     }
+    const toggleMultiSelect = (controlId: string): void => {
+        const primaryId = selection.cell?.controlId ?? (selection.group?.key as string | undefined);
+        setMultiSelectedIds((prev) => {
+            const base = prev.length === 0 && primaryId ? [primaryId] : prev;
+            return base.includes(controlId) ? base.filter((id) => id !== controlId) : [...base, controlId];
+        });
+    };
     const onContextMenuAction = (
         e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
         cellItem?: OutlineNodeItem,
         headerItem?: IGroup
     ): void => {
         e.preventDefault();
-        let selectAction;
         const item = cellItem ?? headerItem?.data;
         const controlId = item.controlId;
-        if (headerItem) {
-            setSelection({
-                group: headerItem,
-                cell: undefined
-            });
-            selectAction = selectControl(headerItem.key);
+        let targetIds: string | string[] = controlId;
+        if (multiSelectedIds.length > 1 && multiSelectedIds.includes(controlId)) {
+            // Right-click within an existing multi-selection targets the whole set and preserves it.
+            targetIds = multiSelectedIds;
         } else {
-            setSelection({
-                group: undefined,
-                cell: item
-            });
-            selectAction = selectControl(controlId);
+            // Right-click elsewhere collapses to single-select, mirroring a plain click.
+            setMultiSelectedIds([]);
+            if (headerItem) {
+                setSelection({
+                    group: headerItem,
+                    cell: undefined
+                });
+                dispatch(selectControl(headerItem.key));
+            } else {
+                setSelection({
+                    group: undefined,
+                    cell: item
+                });
+                dispatch(selectControl(controlId));
+            }
         }
-        dispatch(selectAction);
+        setContextMenuControlIds(targetIds);
         if (item?.controlType !== 'sap.ui.extensionpoint') {
-            dispatch(requestControlContextMenu.pending(controlId));
+            dispatch(requestControlContextMenu.pending(targetIds));
         }
         setShowActionContextualMenu(item);
     };
-    const onSelectCell = (item: OutlineNodeItem): void => {
+    const onSelectCell = (item: OutlineNodeItem, event?: React.MouseEvent): void => {
+        if (event && (event.ctrlKey || event.metaKey)) {
+            toggleMultiSelect(item.controlId);
+            return;
+        }
+        setMultiSelectedIds([]);
         setSelection({
             group: undefined,
             cell: item
@@ -238,8 +260,13 @@ export const Tree = (): ReactElement => {
         const action = selectControl(item.controlId);
         dispatch(action);
     };
-    const onSelectHeader = (node: IGroup | undefined): void => {
+    const onSelectHeader = (node: IGroup | undefined, event?: React.MouseEvent): void => {
         if (node) {
+            if (event && (event.ctrlKey || event.metaKey)) {
+                toggleMultiSelect(node.key);
+                return;
+            }
+            setMultiSelectedIds([]);
             setSelection({
                 group: node,
                 cell: undefined
@@ -275,6 +302,8 @@ export const Tree = (): ReactElement => {
               ]
             : contextMenu?.contextMenuItems;
         return (children ?? []).map((child, index) => {
+            const submenuEntries = 'submenu' in child ? child.submenu : undefined;
+            const hasSubmenu = !!submenuEntries?.length;
             return {
                 key: `${controlId}-${child.id}-${index}`,
                 text: child?.title,
@@ -282,18 +311,44 @@ export const Tree = (): ReactElement => {
                 title: isNavigationMode
                     ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
                     : (child?.tooltip ?? child?.title),
-                onClick(): void {
-                    if (isExtensionPoint) {
-                        dispatch(addExtensionPoint(showActionContextualMenu));
-                    } else {
-                        dispatch(
-                            executeContextMenuAction({
-                                controlId,
-                                actionName: child.id
-                            })
-                        );
-                    }
-                }
+                subMenuProps: hasSubmenu
+                    ? {
+                          directionalHint: UIDirectionalHint.leftTopEdge,
+                          items: submenuEntries.map((sub) => ({
+                              key: `${controlId}-${child.id}-${sub.id}`,
+                              text: sub.title,
+                              disabled: isNavigationMode ? true : !sub.enabled,
+                              title: isNavigationMode
+                                  ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
+                                  : (sub.tooltip ?? sub.title),
+                              onClick(): void {
+                                  // actionName is the parent action id (e.g. CTX_VARIANT_SWITCH_SUBMENU);
+                                  // payload.key is the selected submenu entry id (the target variant key).
+                                  dispatch(
+                                      executeContextMenuAction({
+                                          controlId,
+                                          actionName: child.id,
+                                          payload: { key: sub.id }
+                                      })
+                                  );
+                              }
+                          }))
+                      }
+                    : undefined,
+                onClick: hasSubmenu
+                    ? undefined
+                    : (): void => {
+                          if (isExtensionPoint) {
+                              dispatch(addExtensionPoint(showActionContextualMenu));
+                          } else {
+                              dispatch(
+                                  executeContextMenuAction({
+                                      controlId: contextMenuControlIds,
+                                      actionName: child.id
+                                  })
+                              );
+                          }
+                      }
             };
         });
     };
@@ -304,7 +359,7 @@ export const Tree = (): ReactElement => {
             ref?: (node: HTMLDivElement) => void;
         } = {};
 
-        if (selection.cell?.controlId === item?.controlId) {
+        if (selection.cell?.controlId === item?.controlId || (item && multiSelectedIds.includes(item.controlId))) {
             props.ref = scrollRef;
             classNames.push(selectedClassName);
         }
@@ -332,7 +387,7 @@ export const Tree = (): ReactElement => {
                 id={item.controlId}
                 data-control-id={isExtensionPoint ? `${item.controlId}--extensionPoint` : item.controlId}
                 className={classNames.join(' ')}
-                onClick={(): void => onSelectCell(item)}
+                onClick={(e): void => onSelectCell(item, e)}
                 onContextMenu={(e) => onContextMenuAction(e, item)}>
                 <span {...props} style={{ paddingLeft: paddingValue }} className="tree-cell">
                     {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
@@ -372,7 +427,11 @@ export const Tree = (): ReactElement => {
         }
     };
     const onRenderHeader = (groupHeaderProps?: IGroupHeaderProps): React.JSX.Element | null => {
-        const selectNode = selection.group?.key === groupHeaderProps?.group?.key ? selectedClassName : '';
+        const groupKey = groupHeaderProps?.group?.key;
+        const selectNode =
+            selection.group?.key === groupKey || (groupKey !== undefined && multiSelectedIds.includes(groupKey))
+                ? selectedClassName
+                : '';
         let paddingValue = (groupHeaderProps?.group?.level ?? 0) * 10 + 15;
         // add padding to compensate absence of chevron icon
         if (groupHeaderProps?.group?.count === 0) {
@@ -414,7 +473,7 @@ export const Tree = (): ReactElement => {
                 {...refProps}
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
-                onClick={(): void => onSelectHeader(groupHeaderProps?.group)}
+                onClick={(e): void => onSelectHeader(groupHeaderProps?.group, e)}
                 onContextMenu={(e) => onContextMenuAction(e, undefined, groupHeaderProps?.group)}>
                 <span style={{ paddingLeft: paddingValue }} className="tree-cell">
                     {groupHeaderProps?.group?.count !== 0 && (
