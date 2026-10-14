@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Reuse Library Migration should migrate reuse_library_project 1`] = `
+"{
+	\\"name\\": \\"sap.example.lib.featuretoggle\\",
+	\\"version\\": \\"0.0.1\\",
+	\\"private\\": true,
+	\\"keywords\\": [
+		\\"ui5\\",
+		\\"openui5\\",
+		\\"sapui5\\"
+	],
+	\\"scripts\\": {
+		\\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
+		\\"deploy-config\\": \\"fiori add deploy-config\\"
+	},
+	\\"devDependencies\\": {
+        \\"@ui5/cli\\": \\"^4.0.0\\",
+        \\"@sap/ux-ui5-tooling\\": \\"1\\"
+}
+}
+"
+`;

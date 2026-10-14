@@ -1,0 +1,38 @@
+{
+  "name": "com.example.bulk.project1",
+  "version": "0.0.1",
+  "description": "Test project 1 for bulk migration",
+  "private": true,
+  "devDependencies": {
+    "@ui5/cli": "^4.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "6.0.1",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+  },
+  "sapux": true,
+  "sapuxLayer": "CUSTOMER_BASE",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "scripts": {
+    "start_old": "fiori run --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#fe-lrop\"",
+    "start-local_old": "fiori run --config ./ui5-local.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#fe-lrop\"",
+    "start-noflp_old": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "start-variants-management_old": "fiori run --open \"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\"",
+    "build_old": "ui5 build -a --clean-dest --include-task=generateCachebusterInfo",
+    "deploy_old": "fiori verify",
+    "deploy-config_old": "fiori add deploy-config",
+    "start-mock_old": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#fe-lrop\"",
+    "start": "fiori run --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#fe-lrop\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#fe-lrop\"",
+    "start-noflp": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "start-variants-management": "fiori run --open \"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\"",
+    "build": "ui5 build -a --clean-dest --include-task=generateCachebusterInfo",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
+    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#fe-lrop\""
+  }
+}
