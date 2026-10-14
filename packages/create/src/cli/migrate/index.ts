@@ -1,4 +1,4 @@
-import type { Command } from 'commander';
+import { Command } from 'commander';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
@@ -164,13 +164,13 @@ async function promptConfirm(name: string, message: string, initial: boolean): P
 }
 
 /**
- * Add the 'migrate' command to the provided commander program.
+ * Returns the 'migrate' command for the commander program.
  *
- * @param program - commander program to add the command to
+ * @returns - commander command
  */
-export function addMigrateCommand(program: Command): void {
-    program
-        .command('migrate [project-path]')
+export function getMigrateCommand(): Command {
+    return new Command('migrate')
+        .argument('[project-path]')
         .description(t('migrate.command.description'))
         .option('-d, --destination <name>', t('migrate.command.options.destination'))
         .option('-s, --sap-system-name <name>', t('migrate.command.options.sapSystemName'))
@@ -512,9 +512,13 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
                   ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
               }
             : undefined;
-    const result = internalToggle
-        ? await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, migrationProjectInfo, undefined, true)
-        : await ProjectMigrator.migrate(resolvedPath, baseUri, ui5SnapshotUrl, migrationProjectInfo);
+    const result = await ProjectMigrator.migrate({
+        projectRoot: resolvedPath,
+        baseUri,
+        ui5SnapshotUrl,
+        importProjectInfo: migrationProjectInfo,
+        internalToggle: internalToggle || undefined
+    });
 
     if (result.result) {
         logger.info(t('migrate.status.success'));

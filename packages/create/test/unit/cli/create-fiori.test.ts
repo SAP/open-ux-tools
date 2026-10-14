@@ -180,7 +180,18 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
             findCustomMiddleware: jest.fn()
         })
     },
+    UI5_DEFAULT: {},
     replaceEnvVariables: jest.fn()
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-migration-writer', () => ({
+    ProjectAccess: { checkMigrationStatus: jest.fn() },
+    ProjectMigrator: { migrate: jest.fn() },
+    initI18n: jest.fn().mockResolvedValue(undefined)
+}));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
 }));
 
 jest.unstable_mockModule('@sap-ux/axios-extension', () => ({
