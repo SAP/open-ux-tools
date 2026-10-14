@@ -11,7 +11,7 @@
         "errorProcessingJsonFile": "An error occurred when processing the JSON file: {{- error}}. Ensure that the file is valid.",
         "noAppsDeployed": "No applications deployed to this system can be downloaded.",
         "appDownloadFailed": "The application could not be downloaded. The ABAP system does not support any available download method.",
-        "adtFallbackDownload": "ZIP download not supported on this system. Falling back to ADT file store download.",
+        "adtFallbackDownload": "ZIP download is not supported on this system. Falling back to downloading from the ADT file store.",
         "adtFallbackDownloadFailed": "Downloading from the ADT file store failed: {{- error}}",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in the metadata. Check the metadata.",
