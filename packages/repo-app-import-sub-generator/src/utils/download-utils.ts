@@ -74,7 +74,7 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
  * @param {string} repoName - The repository name of the application.
  * @returns {Promise<boolean>} - Resolves to false if no data was returned, true otherwise.
  */
-export async function downloadApp(repoName: string): Promise<boolean> {
+export async function downloadApp(repoName: string): Promise<{ success: boolean; errorMessage?: string }> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
     const ui5AbapRepository = serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
@@ -99,12 +99,14 @@ export async function downloadApp(repoName: string): Promise<boolean> {
         }
     }
     if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
-        RepoAppDownloadLogger.logger?.error(t('error.appDownloadFailed'));
-        return false;
+        // Legacy ABAP systems may return empty content rather than an error response.
+        const errorMessage = t('error.appDownloadFailed');
+        RepoAppDownloadLogger.logger?.error(errorMessage);
+        return { success: false, errorMessage };
     }
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
     PromptState.admZip = downloadedAppPackage;
-    return true;
+    return { success: true };
 }
 
 /**

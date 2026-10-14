@@ -1,3 +1,4 @@
+export { capPropertiesPath } from './utils/path.js';
 export { getCapI18nBundle, getPropertiesI18nBundle } from './read/index.js';
 export { createCapI18nEntries, createPropertiesI18nEntries, removeAndCreateI18nEntries } from './write/index.js';
 
@@ -11,7 +12,8 @@ export {
     convertToCamelCase,
     convertToPascalCase,
     printPropertiesI18nEntry,
-    printPropertiesI18nAnnotation
+    printPropertiesI18nAnnotation,
+    getCapI18nFiles
 } from './utils/index.js';
 
 export type {

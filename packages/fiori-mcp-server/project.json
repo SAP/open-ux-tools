@@ -1,4 +1,9 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
-    "implicitDependencies": ["@sap-ux/fiori-docs-embeddings"]
+    "implicitDependencies": ["@sap-ux/fiori-docs-embeddings"],
+    "targets": {
+        "build": {
+            "outputs": ["{projectRoot}/dist", "{projectRoot}/browsers.json"]
+        }
+    }
 }

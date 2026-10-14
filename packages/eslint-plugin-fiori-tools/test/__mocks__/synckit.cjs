@@ -29,24 +29,44 @@ function tryAddApp(dir, projectRoot, applications) {
     return false;
 }
 
+function hasCapMarker(dir) {
+    if (fs.existsSync(path.join(dir, '.cdsrc.json'))) {
+        return true;
+    }
+    try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf-8'));
+        return !!(pkg.dependencies?.['@sap/cds'] || pkg.devDependencies?.['@sap/cds']);
+    } catch {
+        return false;
+    }
+}
+
+function findCapProjectRoot(startDir) {
+    let current = startDir;
+    for (let i = 0; i < 10; i++) {
+        if (hasCapMarker(current)) {
+            return current;
+        }
+        const parent = path.dirname(current);
+        if (parent === current) {
+            break;
+        }
+        current = parent;
+    }
+    return null;
+}
+
 function findTestArtifacts(root) {
     const applications = [];
 
-    // Detect CAP project by presence of .cdsrc.json or package.json with @sap/cds dependency
-    const isCap =
-        fs.existsSync(path.join(root, '.cdsrc.json')) ||
-        (() => {
-            try {
-                const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf-8'));
-                return !!(pkg.dependencies?.['@sap/cds'] || pkg.devDependencies?.['@sap/cds']);
-            } catch {
-                return false;
-            }
-        })();
+    // Walk up to find a CAP project root (handles case where root is an app subdirectory)
+    const capProjectRoot = findCapProjectRoot(root);
+    const isCap = capProjectRoot !== null;
     const projectType = isCap ? 'CAPNodejs' : 'EDMXBackend';
+    const effectiveRoot = capProjectRoot ?? root;
 
     // Check if root itself is a Fiori app (e.g. v2-xml-start, v4-xml-start)
-    tryAddApp(root, root, applications);
+    tryAddApp(effectiveRoot, effectiveRoot, applications);
 
     function walk(dir) {
         let entries;
@@ -68,14 +88,14 @@ function findTestArtifacts(root) {
             }
             const fullPath = path.join(dir, entry.name);
             if (entry.isDirectory()) {
-                tryAddApp(fullPath, root, applications);
+                tryAddApp(fullPath, effectiveRoot, applications);
                 walk(fullPath);
             }
         }
     }
 
-    walk(root);
-    return { artifacts: { applications }, projectType };
+    walk(effectiveRoot);
+    return { artifacts: { applications }, projectType, effectiveRoot };
 }
 
 module.exports.createSyncFn = function createSyncFn(workerPath, _options) {
@@ -83,7 +103,16 @@ module.exports.createSyncFn = function createSyncFn(workerPath, _options) {
 
     if (resolvedPath.includes('artifacts')) {
         return function artifactWorkerStub(filePath) {
-            return findTestArtifacts(filePath || process.cwd());
+            const root = filePath || process.cwd();
+            const result = findTestArtifacts(root);
+            const { effectiveRoot, ...rest } = result;
+            const appRoot = rest.artifacts.applications?.[0]?.appRoot ?? effectiveRoot;
+            return {
+                ...rest,
+                i18nPathsByApp: {},
+                appRoot,
+                projectRoot: effectiveRoot
+            };
         };
     }
 

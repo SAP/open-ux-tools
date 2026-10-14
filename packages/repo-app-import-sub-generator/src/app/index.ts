@@ -178,12 +178,14 @@ export default class extends Generator {
             );
             const failEvent =
                 this.downloadType === AppDownloadType.AbapRepository
-                    ? EventName.ABAP_REPO_DOWNLOAD_FAIL
-                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_FAIL;
+                    ? EventName.ABAP_REPO_APP_WRITING_FAILED
+                    : EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED;
+            // Fires when the writing phase throws — includes the caught error message for diagnosis.
             await sendTelemetry(
                 failEvent,
                 TelemetryHelper.createTelemetryData({
                     appType: generatorName,
+                    errorMessage: error instanceof Error ? error.message : String(error),
                     ...this.options.telemetryData
                 }) ?? {}
             ).catch(() => {
@@ -439,10 +441,11 @@ export default class extends Generator {
                 MessageType.notification
             );
             await this._handlePostAppGeneration();
+            // Fires when the full generation pipeline completes without error.
             const successEvent =
                 this.downloadType === AppDownloadType.AbapRepository
-                    ? EventName.ABAP_REPO_DOWNLOAD_SUCCESS
-                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS;
+                    ? EventName.ABAP_REPO_DOWNLOAD_COMPLETE
+                    : EventName.ADT_QUICK_DEPLOY_COMPLETE;
             await sendTelemetry(
                 successEvent,
                 TelemetryHelper.createTelemetryData({

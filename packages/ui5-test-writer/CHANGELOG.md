@@ -1,5 +1,131 @@
 # @sap-ux/ui5-test-writer
 
+## 1.18.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Generate the List Report text-annotation OPA tests ("Check the Sort options for columns with a Text annotation" and "Check the presence of the text columns for columns with a Text annotation") for multi-table List Reports, emitting a per-view test for every tab (resolving each tab's text-annotated columns from the shared entity type's `Common.Text` metadata, and column personalization from each tab's own LineItem configuration). Rename these tests (previously "Check text annotation for columns" / "Check columns in adaptation dialog") and exclude columns whose own property is bound through a navigation property. A navigation-path text target is still asserted when the column's own property is a real field, except in an AnalyticalTable sort-order test (which cannot sort across a navigation). [[d6b5358](https://github.com/SAP/open-ux-tools/commit/d6b5358f22aec81c83ecaa4d47406f8335ffedbf)]
+
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Features
+
+- Split the List Report "Check table columns and actions" journey block into one `opaTest` per action (both single-table and multi-tab), and assert selection states for selection-driven bound actions in the `latest` FE V4 bucket. Fixes an `iCheckRows` timeout in multi-tab journeys by searching before the row check. [[da3aaf9](https://github.com/SAP/open-ux-tools/commit/da3aaf9db632bdce16a04c8f246e3a8aa9b03d1d)]
+
+## 1.16.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Bug Fixes
+
+- Refine List Report text-annotation column sort-order tests. Text/code columns with a maintained `Common.Text` annotation now get `iChangeSortOrder`/`iCheckSortOrder` tests (each reset to `SortOrder.None`), independent of the sort target's `UI.Hidden` state so a hiding annotation mistake is surfaced. Distinct code columns that share one text target each keep their own sort test, while the text-property assertion is emitted once per target. These tests are generated only for the `1.152` and `latest` template buckets (a UI5 version of 1.152.0 or greater, or an unspecified version which resolves to latest). [[9d0af19](https://github.com/SAP/open-ux-tools/commit/9d0af19ba6456d5a610c55db173b6e6825cb9ed7)]
+
+## 1.16.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/preview-middleware 1.2.24 → 1.2.25
+
+## 1.16.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.23 → 1.2.24
+
+## 1.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Features
+
+- Generate OPA column-adaptation-dialog tests validating that text-annotated List Report columns are available in the column personalization dialog (UI5 1.152.0+) [[4144d72](https://github.com/SAP/open-ux-tools/commit/4144d72af16a67860e00f859183da4d6038ef59e)]
+
+## 1.15.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- Chain filter adaptation steps (open/add/confirm) in the semantic-key List Report test so the sap.fe self-managing adapt-filter dialog is not closed twice [[3f8e83c](https://github.com/SAP/open-ux-tools/commit/3f8e83c9bdaf2073176351bc9957234e32571271)]
+
+## 1.15.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/preview-middleware 1.2.22 → 1.2.23
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+
+## 1.15.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.21 → 1.2.22
+
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Bug Fixes
+
+- Use stable ActionIdentifier object instead of translatable label for OData-bound LR table actions [[a104e13](https://github.com/SAP/open-ux-tools/commit/a104e13a356e86fb928aaf932303de2bde21d80e)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.20 → 1.2.21
+
+## 1.15.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.19 → 1.2.20
+
 ## 1.15.1
 
 ### Patch Changes

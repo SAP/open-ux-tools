@@ -11,19 +11,19 @@ sap.ui.define([
             Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
             Given.iResetTestData();
             Given.iStartMyApp();
-            <% if (startLR) { %>Then.onThe<%- startLR %>.iSeeThisPage();<%} %>
+            <% if (startLR) { %>Then.onThe<%- startLR %>Generated.iSeeThisPage();<%} %>
         });
 
 <% if (startLR) { %>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             <% if (!hideFilterBar) { %>
-            When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
+            When.onThe<%- startLR %>Generated.onFilterBar().iExecuteSearch();
             <%} %>
-            Then.onThe<%- startLR%>.onTable().iCheckRows();
+            Then.onThe<%- startLR %>Generated.onTable().iCheckRows();
 <% if (navigatedOP) { %>
-            When.onThe<%- startLR%>.onTable().iPressRow(0);
-            Then.onThe<%- navigatedOP%>.iSeeThisPage();
+            When.onThe<%- startLR %>Generated.onTable().iPressRow(0);
+            Then.onThe<%- navigatedOP %>Generated.iSeeThisPage();
 <%} %>
         });
 <%} %>

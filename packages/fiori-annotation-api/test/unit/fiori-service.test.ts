@@ -1339,6 +1339,116 @@ rating : Rating;
                     createLineItem(files.annotations, [], 'test1', TARGET_INCIDENTS)
                 ]
             });
+
+            describe('external metadata service namespace auto-insert', () => {
+                const VH_URI =
+                    "../../../../srvd_f4/dmo/i_priority/0001;ps='srvd-dmo-sd_incidents-0001';va='com.sap.gateway.srvd.dmo.sd_incidents.v0001.et-incidents.priority'/$metadata";
+                const VH_NS = 'com.sap.gateway.srvd_f4.dmo.i_priority.v0001';
+                const VH_METADATA_PATH = join(
+                    __dirname,
+                    '../data/v4-xml-start/webapp/localService/srvd_f4/dmo/i_priority/0001/metadata.xml'
+                );
+
+                async function setupService(): Promise<{ service: FioriAnnotationService; editor: Editor }> {
+                    const project = PROJECTS.V4_XML_START;
+                    const editor = await createFsEditorForProject(project.root);
+
+                    // Inject Common.ValueListReferences so the adapter discovers the VH service URI
+                    const annotationPath = pathFromUri(project.files.annotations);
+                    const annotationContent = editor.read(annotationPath)!;
+                    editor.write(
+                        annotationPath,
+                        annotationContent.replace(
+                            '</Schema>',
+                            `    <Annotations Target="IncidentService.Incidents/priority_code">
+                <Annotation Term="Common.ValueListReferences">
+                    <Collection>
+                        <String>${VH_URI}</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>`
+                        )
+                    );
+
+                    const service = await FioriAnnotationService.createService(
+                        await getProject(project.root),
+                        project.serviceName,
+                        '',
+                        editor,
+                        { commitOnSave: false }
+                    );
+                    await service.sync();
+
+                    // Feed the VH service metadata to the adapter
+                    const vhMetadata = await promises.readFile(VH_METADATA_PATH, 'utf-8');
+                    const vhFiles = new Map([[VH_URI, { data: vhMetadata, localFilePath: VH_METADATA_PATH }]]);
+                    service.syncExternalServices(vhFiles);
+
+                    return { service, editor };
+                }
+
+                test('inserts edmx:Reference for external VH service namespace', async () => {
+                    const { service, editor } = await setupService();
+                    const annotationPath = pathFromUri(PROJECTS.V4_XML_START.files.annotations);
+
+                    service.edit({
+                        kind: ChangeType.InsertAnnotation,
+                        uri: PROJECTS.V4_XML_START.files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: `${VH_NS}.I_PriorityType/Priority`,
+                            value: {
+                                term: `${COMMON}.ExternalID`,
+                                value: {
+                                    type: ExpressionType.Path,
+                                    Path: 'PriorityText'
+                                }
+                            }
+                        }
+                    });
+                    await service.save();
+
+                    expect(editor.read(annotationPath)).toMatchSnapshot();
+                });
+
+                test('does not insert duplicate edmx:Reference on second save', async () => {
+                    const { service, editor } = await setupService();
+                    const annotationPath = pathFromUri(PROJECTS.V4_XML_START.files.annotations);
+
+                    const change = {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: PROJECTS.V4_XML_START.files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: `${VH_NS}.I_PriorityType/Priority`,
+                            value: {
+                                term: `${COMMON}.ExternalID`,
+                                value: {
+                                    type: ExpressionType.Path,
+                                    Path: 'PriorityText'
+                                }
+                            }
+                        }
+                    } as const;
+
+                    service.edit(change);
+                    await service.save({ resyncAfterSave: true });
+
+                    // Re-register VH service after resync clears metadataService
+                    const vhMetadata = await promises.readFile(VH_METADATA_PATH, 'utf-8');
+                    const vhFiles = new Map([[VH_URI, { data: vhMetadata, localFilePath: VH_METADATA_PATH }]]);
+                    service.syncExternalServices(vhFiles);
+
+                    service.edit(change);
+                    await service.save();
+
+                    const result = editor.read(annotationPath)!;
+                    const vhIncludePattern = new RegExp(`<edmx:Include Namespace="${VH_NS}"`, 'g');
+                    const vhReferenceCount = (result.match(vhIncludePattern) ?? []).length;
+                    expect(vhReferenceCount).toBe(1);
+                });
+            });
         });
 
         describe('embedded annotation', () => {
