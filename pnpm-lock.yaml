@@ -1033,6 +1033,9 @@ importers:
       '@xmldom/xmldom':
         specifier: ~0.9.12
         version: 0.9.12
+      adm-zip:
+        specifier: 0.6.0
+        version: 0.6.0
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -1073,6 +1076,9 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
+      '@types/adm-zip':
+        specifier: 0.5.8
+        version: 0.5.8
       '@types/lodash':
         specifier: 4.17.24
         version: 4.17.24
@@ -11631,6 +11637,10 @@ packages:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  adm-zip@0.6.0:
+    resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
+    engines: {node: '>=14.0'}
 
   adm-zip@0.6.1:
     resolution: {integrity: sha512-Xwrja8nx9e5o2N1my4DsKCeKpdrnACyr1wtbPxBDgGzKzKyE9kRtBFA8mWldI+RVlD7CBZNWY/wQ2+ydwOR6kQ==}
@@ -28104,6 +28114,8 @@ snapshots:
       acorn: 8.16.0
 
   acorn@8.16.0: {}
+
+  adm-zip@0.6.0: {}
 
   adm-zip@0.6.1: {}
 
