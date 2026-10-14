@@ -173,6 +173,7 @@ async function getAppList(
             RepoAppDownloadLogger.logger?.debug(`Retrying without ${sourceTemplateIdField} and search params`);
             return retryAbapAppListFetch(appIndex);
         }
+        const message = error instanceof Error ? error.message : String(error);
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }
