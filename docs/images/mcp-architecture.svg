@@ -84,7 +84,7 @@
   <rect x="24"  y="226" width="148" height="22" class="b-dblue" rx="1"/>
   <text x="98"  y="241" class="wht-s" text-anchor="middle">list_sap_systems</text>
   <rect x="176" y="226" width="148" height="22" class="b-dblue" rx="1"/>
-  <text x="250" y="241" class="wht-s" text-anchor="middle">download_odata_metadata</text>
+  <text x="250" y="241" class="wht-s" text-anchor="middle">download_odata_service_metadata</text>
   <!-- row 3 -->
   <rect x="24"  y="252" width="148" height="22" class="b-dblue" rx="1"/>
   <text x="98"  y="267" class="wht-s" text-anchor="middle">generate_fiori_app_odata</text>
@@ -211,7 +211,7 @@
   <text x="910" y="293" class="wht-s" text-anchor="middle">run_ui5_linter</text>
   <!-- row 5 -->
   <rect x="684" y="304" width="148" height="22" class="b-dblue" rx="1"/>
-  <text x="758" y="319" class="wht-s" text-anchor="middle">get_typescript_conv_guidelines</text>
+  <text x="758" y="319" class="wht-s" text-anchor="middle">get_typescript_conversion_guidelines</text>
   <rect x="836" y="304" width="148" height="22" class="b-dblue" rx="1"/>
   <text x="910" y="319" class="wht-s" text-anchor="middle">get_integration_cards_guidelines</text>
 
