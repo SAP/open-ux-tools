@@ -1,5 +1,13 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.15.12
+
+### Patch Changes
+
+#### Features
+
+- Adds a new create-skill-sap-fiori-tools agent skill for authoring, reviewing, and refactoring SAP Fiori tools skills [[9e2493c](https://github.com/SAP/open-ux-tools/commit/9e2493c5306eb41ec6452a4180fffb4e4e7df7f6)]
+
 ## 1.15.11
 
 ### Patch Changes
