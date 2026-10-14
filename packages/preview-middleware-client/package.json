@@ -12,9 +12,10 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "build": "npm-run-all -l -p build:type-check build:component",
+        "build": "npm-run-all -l -s clean:dist -p build:type-check build:component",
         "build:type-check": "tsc --noEmit",
-        "build:component": "ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
+        "build:component": "ui5 build --exclude-task minify --exclude-task generateComponentPreload",
+        "clean:dist": "rimraf dist",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
