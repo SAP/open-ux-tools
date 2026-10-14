@@ -12,7 +12,7 @@
         "noAppsDeployed": "No applications deployed to this system can be downloaded.",
         "appDownloadFailed": "The application could not be downloaded. The ABAP system does not support any available download method.",
         "adtFallbackDownload": "ZIP download not supported on this system. Falling back to ADT file store download.",
-        "adtFallbackDownloadFailed": "ADT file store download failed: {{- error}}",
+        "adtFallbackDownloadFailed": "Downloading from the ADT file store failed: {{- error}}",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in the metadata. Check the metadata.",
             "invalidServiceName": "Invalid or missing `serviceName` in `serviceBindingDetails`. Check the `serviceName`.",
