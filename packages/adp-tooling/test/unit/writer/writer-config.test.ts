@@ -132,7 +132,6 @@ describe('getConfig', () => {
                 frameworkUrl: 'https://ui5.sap.com',
                 minVersion: '1.137.0',
                 shouldSetMinVersion: true,
-                systemVersion: '1.137.0',
                 version: '1.135.0'
             },
             options: { fioriTools: true, enableTypeScript: false },

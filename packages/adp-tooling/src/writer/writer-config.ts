@@ -194,8 +194,7 @@ export function getUi5Config(
         minVersion: getMinUI5VersionForManifest(publicVersions, systemVersion),
         version: getFormattedVersion(ui5Version),
         frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
-        shouldSetMinVersion: shouldSetMinUI5Version(systemVersion),
-        systemVersion
+        shouldSetMinVersion: shouldSetMinUI5Version(systemVersion)
     };
 }
 
