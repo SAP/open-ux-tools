@@ -1,5 +1,77 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.15.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Adds a new create-skill-sap-fiori-tools agent skill for authoring, reviewing, and refactoring SAP Fiori tools skills [[9e2493c](https://github.com/SAP/open-ux-tools/commit/9e2493c5306eb41ec6452a4180fffb4e4e7df7f6)]
+
+## 1.15.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-annotation-api [[c22d46a](https://github.com/SAP/open-ux-tools/commit/c22d46a0f58a03ae21947c6d3e66261ce8e07dc5)]
+
+## 1.15.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-10
+
+#### Bug Fixes
+
+- Update default UI5 version for application generation [[66fc1e1](https://github.com/SAP/open-ux-tools/commit/66fc1e159b926fb2c4b1b331fa4fa9b1c2592e12)]
+
+## 1.15.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 1.15.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
 ## 1.15.6
 
 ### Patch Changes

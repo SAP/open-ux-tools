@@ -1,5 +1,50 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Replace \\bid regex boundary with negative lookbehind in isElementIdAvailable to prevent false positives on compound attributes like data-id [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.3.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.2 → 1.1.3
+
+## 1.3.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/fiori-annotation-api 1.1.1 → 1.1.2
+
+## 1.3.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- add stickySubheaderProvider to Page BB template to remove empty space between header and tab bar [[ce5ec7e](https://github.com/SAP/open-ux-tools/commit/ce5ec7e5b77e04ff2479007730c6e90a035b598a)]
+
 ## 1.3.20
 
 ### Patch Changes

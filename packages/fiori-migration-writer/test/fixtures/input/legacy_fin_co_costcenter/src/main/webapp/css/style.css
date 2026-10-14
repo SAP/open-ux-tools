@@ -1,0 +1,12 @@
+.sapFinGLCostCenter .sapUiFioriListReportToolbar { width: 100%; box-sizing: border-box; padding: 1rem; }
+.sapFinGLCostCenter .sapUiFioriListReportIconTabBar { padding: 0 2rem 2rem; width: 100%; box-sizing: border-box; }
+.sapFinGLCostCenter .sapUiFioriListReportIconTabBar .sapMITBContent {  padding: 0; }
+.sapFinGLCostCenter .sapUiTableCtrlEmptyMsg { font-size: 1rem; }
+.sapFinGLCostCenter .sapFioriListReportToolbar { padding: 1rem 2rem 0; }
+.sapFinGLCostCenter .sapFioriListReportTable { padding: 0 2rem; }
+.sapFinGLCostCenter .sapFioriListReportPageOverflow .sapMPageScroll { overflow: auto; }
+.sapUiMedia-Std-Desktop .sapFioriListReportSmartTable { padding: 1rem 2rem; }
+.sapUiMedia-Std-Tablet  .sapFioriListReportSmartTable { padding: 1rem; }
+.sapUiMedia-Std-Phone   .sapFioriListReportSmartTable { padding: 1rem 0; }
+.sapFioriListReportPageOverflow .sapMPageScroll { overflow: auto; }
+
