@@ -1209,7 +1209,7 @@ importers:
     dependencies:
       '@sap/bas-sdk':
         specifier: '>=3.13.7'
-        version: 3.13.7(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap/cf-tools':
         specifier: 3.3.1
         version: 3.3.1
@@ -2009,7 +2009,7 @@ importers:
         version: link:../ui5-config
       '@sap/bas-sdk':
         specifier: '>=3.13.7'
-        version: 3.13.7(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -3938,7 +3938,7 @@ importers:
         version: link:../system-access
       '@sap/bas-sdk':
         specifier: '>=3.13.7'
-        version: 3.13.7(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        version: 3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -10120,8 +10120,8 @@ packages:
     resolution: {integrity: sha512-0wbXJlAOenEal6nMspDKJev8fWDYA+MuRbi6iTHNdusRT2fisM9v+IWllT4fzeut6+Sd3l+5qKtA/AlbM5zGfA==}
     engines: {node: ^20.20.0 || ^22.x || ^24.x}
 
-  '@sap/bas-sdk@3.13.7':
-    resolution: {integrity: sha512-R7LsbZ1qajZrCTRu0iRpfC7fovdiZ26/mnjlHVAzcEAGgTJoOndR+8QzVZ2z0yiDao7IzJcJP1kDKpKYkV7J0w==}
+  '@sap/bas-sdk@3.13.16':
+    resolution: {integrity: sha512-Y07tQjqj+FVqY6yMR9v6LyDLW6kHNfvGKB5UVd9tgM3p/R2aAuRRf87H8vL66cdxw7Tora8JpRV3DJ5spGra7w==}
 
   '@sap/cds-compiler@4.8.0':
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
@@ -25665,7 +25665,7 @@ snapshots:
 
   '@sap-ux/btp-utils@2.0.6(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap/bas-sdk': 3.13.7(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap/bas-sdk': 3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap/cf-tools': 3.3.1
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -25948,13 +25948,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sap/bas-sdk@3.13.7(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap/bas-sdk@3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
-      lodash: 4.18.1
       url-join: 4.0.1
       ws: 8.21.0
     transitivePeerDependencies:
