@@ -85,7 +85,13 @@ export {
 } from './utils/index.js';
 
 // Additional exports from adapters for test compatibility
-export { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './adapters/ui5-config-helpers.js';
+export {
+    buildMainBackend,
+    buildProxyConfig,
+    buildPreviewMiddleware,
+    buildReuseLibsShims,
+    addReuseLibsShimsToConfig
+} from './adapters/ui5-config-helpers.js';
 export {
     generateUI5YamlContent,
     generateUI5LocalYamlContent,

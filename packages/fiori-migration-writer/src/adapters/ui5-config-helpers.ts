@@ -62,7 +62,7 @@ export async function buildReuseLibsShims(
 
             if (matchedLib) {
                 // Calculate relative path from project root to library root
-                const libRoot = matchedLib.value.libRoot;
+                const _libRoot = matchedLib.value.libRoot;
                 const manifestDir = dirname(matchedLib.value.path);
 
                 // Use the manifest directory as the library path (contains src/ with the library code)
@@ -175,4 +175,26 @@ export function buildPreviewMiddleware(templateData: TemplateData): any[] | unde
             }
         }
     ];
+}
+
+/**
+ * Add reuse library shims configuration to UI5Config instance if project has reuse libs
+ *
+ * @param config - UI5Config instance to add configuration to
+ * @param templateData - Template data containing project configuration
+ * @param projectRoot - Optional root path of the project being migrated
+ * @param workspaceFolders - Optional workspace folders to search for reuse libraries
+ */
+export async function addReuseLibsShimsToConfig(
+    config: any,
+    templateData: TemplateData,
+    projectRoot?: string,
+    workspaceFolders?: readonly ProjectFolder[]
+): Promise<void> {
+    if (projectRoot && workspaceFolders) {
+        const shimsConfig = await buildReuseLibsShims(templateData, projectRoot, workspaceFolders);
+        if (shimsConfig) {
+            config.addCustomConfiguration('sap.watt.common.plugin.fioriOptions', shimsConfig);
+        }
+    }
 }
