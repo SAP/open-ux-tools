@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { updateFile } from '../utils/index.js';
 import { TemplateFileName } from '../index.js';
-import type { TemplateData, NeoappDestination, Message, Ui5MockYaml } from '../types.js';
+import type { TemplateData, NeoappDestination, Message, Ui5MockYaml, ProjectFolder } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import {
     generateUI5YamlContent,
@@ -30,6 +30,7 @@ export interface UI5YamlGenerationConfig {
     setUI5version: boolean;
     rootPath: string;
     strict?: boolean;
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 /**
@@ -44,6 +45,7 @@ export interface UI5LocalYamlGenerationConfig {
     webappPath: string;
     rootPath: string;
     strict?: boolean;
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 /**
@@ -71,6 +73,7 @@ export interface UI5YamlAllFilesConfig {
     rootPath: string;
     hasDataSource: boolean;
     strict?: boolean;
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 /**
@@ -89,7 +92,8 @@ export async function generateAndWriteUI5Yaml(fs: Editor, config: UI5YamlGenerat
         webappPath,
         setUI5version,
         rootPath,
-        strict = false
+        strict = false,
+        workspaceFolders
     } = config;
 
     const ui5YamlContent = await generateUI5YamlContent({
@@ -100,7 +104,9 @@ export async function generateAndWriteUI5Yaml(fs: Editor, config: UI5YamlGenerat
         firstNeoAppDestination,
         webappPath,
         setUI5Version: setUI5version,
-        strict
+        strict,
+        projectRoot: rootPath,
+        workspaceFolders
     });
 
     updateFile(fs, join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
@@ -121,7 +127,8 @@ export async function generateAndWriteUI5LocalYaml(fs: Editor, config: UI5LocalY
         firstNeoAppDestination,
         webappPath,
         rootPath,
-        strict = false
+        strict = false,
+        workspaceFolders
     } = config;
     // Only generate for regular projects, not library or extension projects
     if (templateData.project.type !== MigrationTypes.project) {
@@ -135,7 +142,9 @@ export async function generateAndWriteUI5LocalYaml(fs: Editor, config: UI5LocalY
         destination,
         firstNeoAppDestination,
         webappPath,
-        strict
+        strict,
+        projectRoot: rootPath,
+        workspaceFolders
     });
 
     updateFile(fs, join(rootPath, TemplateFileName.UI5LocalYaml), ui5LocalYamlContent);
@@ -181,7 +190,8 @@ export async function generateAllUI5YamlFiles(fs: Editor, config: UI5YamlAllFile
         setUI5version,
         rootPath,
         hasDataSource,
-        strict = false
+        strict = false,
+        workspaceFolders
     } = config;
 
     // Generate all YAML files in parallel for better performance
@@ -195,7 +205,8 @@ export async function generateAllUI5YamlFiles(fs: Editor, config: UI5YamlAllFile
             webappPath,
             setUI5version,
             rootPath,
-            strict
+            strict,
+            workspaceFolders
         }),
         generateAndWriteUI5LocalYaml(fs, {
             templateData,
@@ -205,7 +216,8 @@ export async function generateAllUI5YamlFiles(fs: Editor, config: UI5YamlAllFile
             firstNeoAppDestination,
             webappPath,
             rootPath,
-            strict
+            strict,
+            workspaceFolders
         }),
         generateAndWriteUI5MockYaml(fs, {
             templateData,

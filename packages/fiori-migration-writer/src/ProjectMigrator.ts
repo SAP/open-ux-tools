@@ -31,7 +31,7 @@ import { loadOrFetchProjectInfo, validateProjectForMigration } from './project/i
 // Data functions
 import { resolveUI5VersionsForMigration } from './data/index.js';
 
-import type { ImportProjectInfo, Message } from './types.js';
+import type { ImportProjectInfo, Message, ProjectFolder } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
@@ -57,6 +57,8 @@ export interface MigrateOptions {
     fs?: Editor;
     /** Enable strict validation mode - WARNINGs become ERRORs for critical issues (default: false) */
     strict?: boolean;
+    /** Workspace folders to search for reuse libraries */
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 export class ProjectMigrator {
@@ -111,7 +113,8 @@ export class ProjectMigrator {
             vscode: vscodeOpt,
             internalToggle: internalToggleOpt = false,
             fs: fsOpt,
-            strict: strictOpt = false
+            strict: strictOpt = false,
+            workspaceFolders: workspaceFoldersOpt
         } = options;
 
         // Create a new isolated editor instance for this migration if not provided
@@ -150,7 +153,8 @@ export class ProjectMigrator {
                 vscode: vscodeOpt,
                 ui5SnapshotUrl: ui5SnapshotUrlOpt,
                 internalToggle: internalToggleOpt,
-                strict: strictOpt
+                strict: strictOpt,
+                workspaceFolders: workspaceFoldersOpt
             });
             messages = dispatch.messages;
             result = dispatch.result;
@@ -236,7 +240,7 @@ export class ProjectMigrator {
         editor: Editor,
         projectInfo: ImportProjectInfo,
         messages: Message[],
-        opts: { vscode: any; ui5SnapshotUrl: string; internalToggle: boolean; strict: boolean }
+        opts: { vscode: any; ui5SnapshotUrl: string; internalToggle: boolean; strict: boolean; workspaceFolders?: readonly ProjectFolder[] }
     ): Promise<{ result: boolean; messages: Message[] }> {
         const isSupportedApp =
             projectInfo.isSAPApp ||
@@ -251,7 +255,8 @@ export class ProjectMigrator {
                 opts.vscode,
                 opts.ui5SnapshotUrl,
                 opts.internalToggle,
-                opts.strict
+                opts.strict,
+                opts.workspaceFolders
             );
             return { result, messages: messages.concat(copyMessages) };
         }
@@ -291,7 +296,8 @@ export class ProjectMigrator {
         vscode: any,
         ui5SnapshotUrl: string,
         internalToggle: boolean = false,
-        strict: boolean = false
+        strict: boolean = false,
+        workspaceFolders?: readonly ProjectFolder[]
     ): Promise<{ result: boolean; messages: Message[] }> {
         const messages: Message[] = [];
         const { isSAPApp = false, rootPath, destination, neoappDestinations, firstNeoAppDestination } = projectInfo;
@@ -371,7 +377,8 @@ export class ProjectMigrator {
                 neoappDestinations,
                 sourceTemplateTest: projectInfo.sourceTemplate,
                 firstNeoAppDestination,
-                strict
+                strict,
+                workspaceFolders
             });
 
             // Phase 4: Apply all templates

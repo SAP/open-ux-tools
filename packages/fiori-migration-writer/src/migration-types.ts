@@ -128,6 +128,7 @@ export interface ProjectMigrate extends Project {
     neoAppUI5Version?: string;
     semanticObject: string;
     type?: MigrationTypes;
+    reuseLibs?: string;
 }
 export interface PackageJsonMigrate extends Omit<PackageJson, 'devDependencies'> {
     pointToIndexHtml?: boolean;
