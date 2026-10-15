@@ -29,7 +29,7 @@ export function readFile(pathOrFs: string | Editor, path?: string): string {
  *
  * @param pathOrFs - Path to file, or Editor instance
  * @param path - Path to file (if first param is Editor)
- * @returns Parsed JSON object with indentation metadata for round-trip preservation
+ * @returns Parsed JSON object
  */
 export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string): Promise<T> {
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
@@ -44,24 +44,7 @@ export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string
         content = fs.read(filePath);
     }
 
-    // Parse with JSON.parse for consistent SyntaxError behavior
-    const result = JSON.parse(content);
-
-    // Also parse with parseJson to extract indentation metadata
-    // This is needed for updateJSON to preserve formatting
-    try {
-        const resultWithIndent = parseJson(content);
-        // Copy indent metadata to the result object
-        const indent = Symbol.for('indent');
-        if (resultWithIndent[indent]) {
-            result[indent] = resultWithIndent[indent];
-        }
-    } catch (error: unknown) {
-        // If parseJson fails, we still have the result from JSON.parse
-        // updateJSON will use default 4-space indentation
-    }
-
-    return result as T;
+    return JSON.parse(content) as T;
 }
 
 /**
@@ -72,23 +55,18 @@ export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string
  * @returns true if file exists, false otherwise
  */
 export async function fileExists(pathOrFs: string | Editor, path?: string): Promise<boolean> {
-    const editor = getCurrentEditor();
-    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
-
-    // When called with just a path string and no editor context, check filesystem directly
-    if (typeof pathOrFs === 'string' && !editor) {
+    // String path: delegate to the single shared existence check (mem-fs staged OR real fs).
+    if (typeof pathOrFs === 'string') {
         return fsAdapterExists(pathOrFs);
     }
 
-    // In mem-fs context, check if file is staged in mem-fs first
-    const fs = getEditor(pathOrFs);
-    if (editorHasPath(fs, filePath)) {
+    // Explicit editor argument: check that editor's staged files, then fall back to real fs.
+    // The real-fs fallback prevents overwriting files not yet loaded into the given editor
+    // (e.g., the mockserver.js overwrite bug).
+    const filePath = path!;
+    if (editorHasPath(pathOrFs, filePath)) {
         return true;
     }
-
-    // If not in mem-fs, check real filesystem
-    // This prevents overwriting existing files that haven't been loaded into mem-fs yet
-    // (e.g., the mockserver.js overwrite bug)
     try {
         await access(filePath);
         return true;

@@ -2,9 +2,8 @@
  * Helper functions for extracting template details from manifest and pom.xml
  */
 import { join } from 'node:path';
-import { access } from 'node:fs/promises';
 import { TemplateFileName } from '../index.js';
-import { readFile } from '../utils/index.js';
+import { fileExists, readFile } from '../utils/index.js';
 import type { Manifest, ManifestNamespace, FioriElementsVersion } from '../project-spec-types.js';
 import { xmlToJson } from '../utils/service.js';
 import { isAppFreestyle } from '../utils/common.js';
@@ -89,9 +88,7 @@ async function extractPomDetails(
     let appVersion = existingAppVersion;
 
     const pomXmlPath = join(projectRoot, TemplateFileName.Pom);
-    try {
-        await access(pomXmlPath);
-    } catch {
+    if (!(await fileExists(pomXmlPath))) {
         return { sapAppId, appVersion };
     }
 

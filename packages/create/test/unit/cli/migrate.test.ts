@@ -605,6 +605,10 @@ describe('migrate command', () => {
     });
 
     test('should use project default UI5 version when not provided', async () => {
+        // Force the non-interactive path so the test is deterministic regardless of whether
+        // it runs in a TTY (interactive) or CI (piped stdin) environment.
+        const originalIsTTY = process.stdin.isTTY;
+        Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
         mockPrompt.mockResolvedValueOnce({ clientValue: '100' });
 
         const command = new Command('sap-ux');
@@ -613,6 +617,8 @@ describe('migrate command', () => {
         await command.parseAsync(
             getArgv(['migrate', testProjectRoot, '--destination', 'myDest', '--hostname', 'myhost.com'])
         );
+
+        Object.defineProperty(process.stdin, 'isTTY', { value: originalIsTTY, configurable: true });
 
         expect(mockMigrate).toHaveBeenCalledWith(
             expect.objectContaining({

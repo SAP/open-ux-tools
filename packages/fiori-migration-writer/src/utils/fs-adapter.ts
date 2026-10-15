@@ -10,6 +10,7 @@ import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import { access } from 'node:fs/promises';
 import { AsyncLocalStorage } from 'node:async_hooks';
+import fastGlob from 'fast-glob';
 import { normalizePath } from './file-system-utils.js';
 
 /**
@@ -19,6 +20,7 @@ const editorContext = new AsyncLocalStorage<Editor>();
 
 type EditorStore = {
     each: (callback: (file: { path: string; state?: string }) => void) => void;
+    get: (filepath: string) => { contents: Buffer | null };
 };
 
 type EditorWithStore = Editor & { store: EditorStore };
@@ -60,6 +62,33 @@ export function createMemFsEditor(): Editor {
  */
 export function runWithEditor<T>(editor: Editor, callback: () => T | Promise<T>): T | Promise<T> {
     return editorContext.run(editor, callback);
+}
+
+/**
+ * Load every file under a project folder into the mem-fs store.
+ *
+ * Pulling files into the store makes existence checks that scan the store (editorHasPath)
+ * see the real project tree, so later writes do not overwrite untracked files. Loading via
+ * the store's get() does not mark files as modified, so commit() still skips them.
+ *
+ * @param editor - Mem-fs editor whose store should be populated
+ * @param projectRoot - Absolute path to the project folder to load
+ */
+export async function loadProjectIntoEditor(editor: Editor, projectRoot: string): Promise<void> {
+    const files = await fastGlob('**/*', {
+        cwd: projectRoot,
+        ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
+        absolute: true,
+        onlyFiles: true,
+        dot: true
+    });
+    const store = (editor as EditorWithStore).store;
+    for (const file of files) {
+        // get() lazily reads the file into the store without marking it modified.
+        // The store resolves and keys the path itself; editorHasPath normalizes separators
+        // at comparison time, so both sides stay consistent cross-platform.
+        store.get(file);
+    }
 }
 
 /**
@@ -112,19 +141,20 @@ export function editorHasPath(editor: Editor, path: string): boolean {
 }
 
 /**
- * Check if file/directory exists (async)
- * Uses editor from context if available, otherwise checks real filesystem
+ * Check if a file/directory exists (async).
+ *
+ * When an editor is in context, the migration tree is already loaded into mem-fs, so a staged
+ * path is authoritative. A real-filesystem check is still used as a fallback so files that were
+ * never loaded into mem-fs are not reported missing (and therefore not silently overwritten).
  *
  * @param path - Path to check
- * @returns True if exists in mem-fs (when editor available) OR on real filesystem
+ * @returns True if staged in mem-fs OR present on the real filesystem
  */
 export async function exists(path: string): Promise<boolean> {
     const editor = getCurrentEditor();
-    if (editor) {
-        // In mem-fs mode, check mem-fs only
-        return editorHasPath(editor, path);
+    if (editor && editorHasPath(editor, path)) {
+        return true;
     }
-    // No editor context - check real filesystem
     try {
         await access(path);
         return true;
