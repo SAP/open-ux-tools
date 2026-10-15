@@ -1,10 +1,50 @@
-import { describe, it, expect, beforeAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
-import { ProjectMigrator, initI18n } from '../../src/index.js';
+import {
+    defaultMinUi5Version,
+    defaultVersion,
+    getDefaultUI5Theme,
+    getLatestUI5Version,
+    getSapSystemUI5Version,
+    getUi5Themes,
+    latestVersionString,
+    minSupportedSpecVersion,
+    minUI5VersionForLocalDev,
+    minUi5VersionV4Template,
+    supportedUi5VersionFallbacks,
+    ui5ThemeIds,
+    ui5Themes,
+    ui5VersionRequestInfo
+} from '@sap-ux/ui5-info';
 import { loadProjectIntoMemFs } from '../helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../test-constants.js';
+
+const PINNED_UI5_VERSION = '1.153.0';
+
+// Mock the UI5 version lookup to avoid a real network request to https://ui5.sap.com
+// during migration (resolveUI5VersionsForMigration -> getUI5Versions), which otherwise
+// makes the first test in this file slow and flaky on CI.
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    defaultMinUi5Version,
+    defaultVersion,
+    getDefaultUI5Theme,
+    getLatestUI5Version,
+    getSapSystemUI5Version,
+    getUI5Versions: jest.fn().mockResolvedValue([{ version: PINNED_UI5_VERSION }]),
+    getUi5Themes,
+    latestVersionString,
+    minSupportedSpecVersion,
+    minUI5VersionForLocalDev,
+    minUi5VersionV4Template,
+    supportedUi5VersionFallbacks,
+    ui5ThemeIds,
+    ui5Themes,
+    ui5VersionRequestInfo
+}));
+
+const { ProjectMigrator, initI18n } = await import('../../src/index.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -57,7 +97,7 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         expect(result).toBeDefined();
-    }, 10000);
+    });
 
     it('should handle adaptation project without package.json (legacy WebIDE)', async () => {
         const testProjectPath = join(testOutputDir, 'adaptation-no-package');
