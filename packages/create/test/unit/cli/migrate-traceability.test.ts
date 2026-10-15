@@ -94,7 +94,7 @@ describe('Migration Traceability', () => {
 
         // Check that a log file was created
         const files = readdirSync(logsDir);
-        expect(files.length).toBe(1);
+        expect(files).toHaveLength(1);
         expect(files[0]).toMatch(/^my-project_.*\.json$/);
 
         // Verify log file contents
@@ -124,7 +124,7 @@ describe('Migration Traceability', () => {
 
         const logsDir = getMigrationLogsDirectory();
         const files = readdirSync(logsDir);
-        expect(files.length).toBe(1);
+        expect(files).toHaveLength(1);
 
         const logFilePath = join(logsDir, files[0]);
         const logContent = JSON.parse(readFileSync(logFilePath, 'utf-8'));
