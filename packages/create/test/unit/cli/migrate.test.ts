@@ -578,8 +578,8 @@ describe('migrate command', () => {
         );
     });
 
-    test('should prompt for UI5 version when not provided', async () => {
-        mockPrompt.mockResolvedValueOnce({ clientValue: '100' }).mockResolvedValueOnce({ version: '1.108.0' });
+    test('should use project default UI5 version when not provided', async () => {
+        mockPrompt.mockResolvedValueOnce({ clientValue: '100' });
 
         const command = new Command('sap-ux');
         command.addCommand(getMigrateCommand());
@@ -592,7 +592,7 @@ describe('migrate command', () => {
             expect.objectContaining({
                 projectRoot: expect.any(String),
                 baseUri: 'https://myhost.com',
-                ui5SnapshotUrl: 'https://ui5.sap.com/1.108.0',
+                ui5SnapshotUrl: '',
                 importProjectInfo: {
                     destination: 'myDest',
                     hostname: 'myhost.com',

@@ -343,6 +343,11 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
         return validateUI5Version(optionVersion);
     }
 
+    // Empty string passed explicitly (-u '') or non-interactive: use project default
+    if (optionVersion === '' || !process.stdin.isTTY) {
+        return undefined;
+    }
+
     const response = await prompts({
         type: 'text',
         name: 'version',
