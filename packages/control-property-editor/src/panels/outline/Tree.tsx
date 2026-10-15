@@ -54,7 +54,7 @@ export const Tree = (): ReactElement => {
     });
     const [showActionContextualMenu, setShowActionContextualMenu] = useState<OutlineNodeItem | undefined>();
     const [multiSelectedIds, setMultiSelectedIds] = useState<string[]>([]);
-    const [contextMenuControlIds, setContextMenuControlIds] = useState<string | string[]>('');
+    const [contextMenuControlIds, setContextMenuControlIds] = useState<string | string[] | undefined>(undefined);
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
@@ -343,7 +343,7 @@ export const Tree = (): ReactElement => {
                           } else {
                               dispatch(
                                   executeContextMenuAction({
-                                      controlId: contextMenuControlIds,
+                                      controlId: contextMenuControlIds ?? controlId,
                                       actionName: child.id
                                   })
                               );
