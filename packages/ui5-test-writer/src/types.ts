@@ -86,6 +86,7 @@ export type FEV4ManifestTarget = {
                 paths?: Array<{
                     key?: string;
                     entitySet?: string;
+                    annotationPath?: string;
                     template?: string;
                     primary?: unknown[];
                     secondary?: unknown[];
@@ -155,12 +156,17 @@ export type ContactCardField = {
 };
 
 /**
- * A table column whose bound property carries both a `Common.Text` annotation and a
- * `UI.TextArrangement` annotation. `textProperty` is the text/description property the
- * column can be sorted by (the `Common.Text` target, e.g. "CustomerName").
+ * A table column whose bound property carries a `Common.Text` annotation. `columnProperty` is the
+ * column's own (code) property; `textProperty` is the text target. Both are asserted independently.
+ * When columns share one text target, only the first emits the text-property test; the rest set
+ * `skipTextPropertyTest` but still assert their own code column. `textPropertyNotSortable` marks a
+ * nav-path target in an AnalyticalTable view (cannot sort across a navigation); skipped in the sort test only.
  */
 export type TextAnnotationColumn = {
+    columnProperty: string;
     textProperty: string;
+    skipTextPropertyTest?: boolean;
+    textPropertyNotSortable?: boolean;
 };
 
 export type BodySubSectionFeatureData = {
@@ -224,6 +230,8 @@ export type ListReportTab = {
     toolBarActions: ActionButtonState[];
     createButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
     deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+    textAnnotationColumns: TextAnnotationColumn[];
+    columnPersonalizationSupported?: boolean;
 };
 
 export type ListReportFeatures = {
@@ -247,6 +255,11 @@ export type ListReportFeatures = {
      * annotation; used to generate sort-order tests against the text/description property.
      */
     textAnnotationColumns?: TextAnnotationColumn[];
+    /**
+     * Whether the table exposes column personalization (the "Columns" adaptation dialog).
+     * Absent/true means enabled (the Fiori elements default).
+     */
+    columnPersonalizationSupported?: boolean;
     isALP?: boolean;
     /**
      * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
@@ -284,6 +297,12 @@ export interface ActionButtonState {
      * For example: "_it/__OperationControl/deductDiscount"
      */
     dynamicPath?: string;
+    /**
+     * Set when the action has no `Core.OperationAvailable` annotation and is bound to a single
+     * instance: it is disabled with no selection and becomes enabled once a row is selected. Unlike
+     * `'dynamic'`, this flip is deterministic, so the generated test can assert both states.
+     */
+    selectionEnables?: boolean;
     /**
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */

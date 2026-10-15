@@ -1,5 +1,49 @@
 # @sap-ux/adp-tooling
 
+## 1.0.64
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Features
+
+- Handle key-user changes with restricted views when importing them into an adaptation project — strip restrictions that cannot be represented in ADP, load the changes in the CLI (where the list prompt validation does not run) and warn in the terminal when imported changes have restricted views, and log in telemetry whether the user chose to import key-user changes [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
+## 1.0.63
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/project-input-validator 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.0.62
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
 ## 1.0.61
 
 ### Patch Changes

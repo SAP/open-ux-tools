@@ -1,5 +1,56 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.56
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Release Date
+
+2026-10-14
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/odata-service-inquirer 3.2.24 → 3.2.25
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
+## 0.3.55
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+#### Release Date
+
+2026-10-08
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/mockserver-config-writer 1.0.21 → 1.0.22
+- @sap-ux/odata-service-inquirer 3.2.23 → 3.2.24
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/telemetry 2.0.9 → 2.0.10
+
 ## 0.3.54
 
 ### Patch Changes

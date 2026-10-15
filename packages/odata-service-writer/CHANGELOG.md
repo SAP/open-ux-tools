@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/mockserver-config-writer 1.0.21 → 1.0.22
+
 ## 1.0.24
 
 ### Patch Changes

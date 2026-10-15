@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<!--  For QUnit documentation, see https://qunitjs.com/ -->
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	
+	<title>Manage Customer Line Items QUnit Testsuite with Environment fin.ar.lineitems.display</title>
+	        <script>
+            window["sap-ushell-config"] = {
+                    services: {
+                         NavTargetResolution: {
+                             config: {
+                                 allowTestUrlComponentConfig : true
+                             }
+                         }
+                    }
+            }
+        </script>
+    <!-- Workaround to load Ushell: this will work in gerrit-voter and eclipse-->
+	<script src="sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>
+	<script src="sap/ushell/bootstrap/sandbox.js"></script>
+    <!-- Workaround to load Ushell: this will work in WEB IDE-->
+	<script src="../../main/webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>
+	<script src="../../main/webapp/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+
+	<script id="sap-ui-bootstrap" 
+		src="../resources/sap-ui-core.js"
+		data-sap-ui-evt-oninit="main();"
+		data-sap-ui-libs="sap.m"
+		data-sap-ui-theme="sap_bluecrystal"
+		data-sap-ui-compatVersion="1.16"
+		data-sap-ui-xx-bindingSyntax="complex"
+		data-sap-ui-resourceroots='{"fin.ar.lineitems.display.test": "./"}'>
+	</script>
+	<!-- Workaround to load Ushell: this will work in gerrit-voter and eclipse-->
+	<script src="sap/ushell/bootstrap/standalone.js"></script>
+	<!-- Workaround to load Ushell: this will work in WEB IDE-->
+	<script src="../../main/webapp/test-resources/sap/ushell/bootstrap/standalone.js"></script>
+
+	<script type="text/javascript">
+		// mixin other Models - default ./fioriSandboxConfig.js already executed;
+		sap.ushell && sap.ushell.fiorisandbox && sap.ushell.fiorisandbox.readSandboxConfig();
+
+		/**
+		 * Main method to be executed once SAPUI5 has been initialized.
+		 */
+		function main() {
+			"use strict";
+			/*global sap */
+	
+			sap.ui.getCore().attachInitEvent(function() {
+				// sapui5 blocks the system from scrolling!
+				$("html").css("overflow","initial");
+				
+				// see also http://api.qunitjs.com/QUnit.config/
+				QUnit.start();
+			});
+	
+			// load and register Fiori2 icon font
+			jQuery.sap.require("sap.ushell.iconfonts");
+			jQuery.sap.require("sap.ushell.services.AppConfiguration");
+			sap.ushell.iconfonts.registerFiori2IconFont();
+
+			//added with 1.6.1-SNAPSHOT because otherwise createRenderer will search in
+			//Uncaught Error: failed to load 'sap/ushell/renderers/fiorisandbox/Renderer.js' from http://localhost:8080/fin.ar.lineitems.display/resources/../renderers/fiorisandbox/Renderer.js
+			if (URI(window.location.href).path().indexOf("/src/test/qunit") > -1){
+				//in WEB-IDE use this (see isInWebIde: function() in ModulePathForTests)
+				jQuery.sap.registerModulePath("sap.ushell.renderers.fiorisandbox", "../../main/webapp/test-resources/sap/ushell/renderers/fiorisandbox");
+			} else {
+				//use this in eclipse and gerrit-voter
+				jQuery.sap.registerModulePath("sap.ushell.renderers.fiorisandbox", "sap/ushell/renderers/fiorisandbox");
+			}
+			// clean fiori loading screen markup before placing main content
+			var oContent = sap.ushell.Container.createRenderer("fiorisandbox");
+			
+		}
+	</script>
+	
+	
+	<link rel="stylesheet" href="../resources/sap/ui/thirdparty/qunit.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="../resources/sap/ui/thirdparty/qunit.js"></script>
+	<script type="text/javascript">
+		QUnit.config.autostart = false;
+		// Delay start of execution of QUnits until the FioriSandbox and SAPUI5 is set up properly.
+		// for details see also http://api.qunitjs.com/QUnit.config/
+	</script>
+	<script type="text/javascript" src="../resources/sap/ui/qunit/qunit-junit.js"></script>
+	<script type="text/javascript" src="../resources/sap/ui/qunit/QUnitUtils.js"></script>
+	
+	<script type="text/javascript" src="testsuite/unit.infra.js"></script>
+	
+	<!-- Testsuite -->
+	<script type="text/javascript" src="testsuite/unit.withenv.js"></script>
+</head>
+
+<body class="sapUiBody sapUShellFullHeight" role="application">
+	<div id="qunit"></div>
+	<div id="content" style="opacity:0.6; height:75%; width:50%; position:fixed; z-index:1; left:48%; top:25%"></div>
+</body>
+
+</html>

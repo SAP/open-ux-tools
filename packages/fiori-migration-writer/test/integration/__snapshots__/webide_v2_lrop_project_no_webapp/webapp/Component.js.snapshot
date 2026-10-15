@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate webide_v2_lrop_project_no_webapp 1`] = `
+"sap.ui.define(['sap/suite/ui/generic/template/lib/AppComponent'], function (AppComponent) {
+    return AppComponent.extend('migration_test01.Component', {
+        metadata: {
+            manifest: 'json'
+        }
+    });
+});
+"
+`;

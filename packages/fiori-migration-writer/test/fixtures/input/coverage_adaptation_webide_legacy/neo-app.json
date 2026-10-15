@@ -1,0 +1,28 @@
+{
+  "welcomeFile": "/webapp/index.html",
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "BACKEND_SYSTEM",
+        "entryPath": "/sap/opu/odata"
+      },
+      "description": "Backend OData Services"
+    }
+  ],
+  "sendWelcomeFileRedirect": true,
+  "destination": {
+    "url": "https://dummy.example.com:443",
+    "host": "dummy.example.com"
+  }
+}
