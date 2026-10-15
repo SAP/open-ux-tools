@@ -133,6 +133,35 @@ describe('Ui5AbapRepositoryService', () => {
         });
     });
 
+    describe('downloadFilesViaAdt', () => {
+        test('should recursively collect files and return a ZIP buffer', async () => {
+            const mockFileStoreService = {
+                getAppArchiveContent: jest
+                    .fn()
+                    .mockResolvedValueOnce([
+                        { path: '/webapp', type: 'folder' },
+                        { path: '/Component.js', type: 'file' }
+                    ])
+                    .mockResolvedValueOnce([{ path: '/webapp/index.html', type: 'file' }])
+                    .mockResolvedValueOnce('<html/>')
+                    .mockResolvedValueOnce('Component content')
+            } as any;
+
+            const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);
+            expect(result).toBeInstanceOf(Buffer);
+            expect(result!.length).toBeGreaterThan(0);
+        });
+
+        test('should return undefined when no files are found', async () => {
+            const mockFileStoreService = {
+                getAppArchiveContent: jest.fn().mockResolvedValue([])
+            } as any;
+
+            const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);
+            expect(result).toBeUndefined();
+        });
+    });
+
     describe('deploy', () => {
         const archive = Buffer.from('TestData');
         test('deploy new app with destination', async () => {

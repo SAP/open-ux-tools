@@ -1,4 +1,5 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { FileStoreService } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { PromptState } from '../prompts/prompt-state.js';
@@ -67,6 +68,8 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
 
 /**
  * Downloads application files from the ABAP repository.
+ * First attempts download via ABAP_REPOSITORY_SRV (requires SAP_UI 754+).
+ * Falls back to ADT FileStoreService on older systems.
  *
  * @param {string} repoName - The repository name of the application.
  * @returns `{ success: true }` on success, or `{ success: false, errorMessage }` if the server
@@ -74,10 +77,28 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
  */
 export async function downloadApp(repoName: string): Promise<{ success: boolean; errorMessage?: string }> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-    const ui5AbapRepository = await serviceProvider.getUi5AbapRepository();
+    const ui5AbapRepository = serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
     RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
-    const downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    let downloadedAppPackage: Buffer | undefined;
+    try {
+        downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    } catch (error) {
+        // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
+        // Fall through to the ADT FileStoreService fallback below.
+        RepoAppDownloadLogger.logger?.debug(`ABAP_REPOSITORY_SRV unavailable, falling back to ADT: ${(error as Error).message}`);
+    }
+    if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
+        RepoAppDownloadLogger.logger?.debug(t('error.adtFallbackDownload'));
+        try {
+            const fileStoreService = await serviceProvider.getAdtService<FileStoreService>(FileStoreService);
+            if (fileStoreService) {
+                downloadedAppPackage = await ui5AbapRepository.downloadFilesViaAdt(repoName, fileStoreService);
+            }
+        } catch (error) {
+            RepoAppDownloadLogger.logger?.error(t('error.adtFallbackDownloadFailed', { error: (error as Error).message }));
+        }
+    }
     if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
         // Legacy ABAP systems may return empty content rather than an error response.
         const errorMessage = t('error.appDownloadFailed');
@@ -85,7 +106,6 @@ export async function downloadApp(repoName: string): Promise<{ success: boolean;
         return { success: false, errorMessage };
     }
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
-    // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;
     return { success: true };
 }
