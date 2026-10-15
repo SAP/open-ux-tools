@@ -63,7 +63,7 @@ exports[`Migration Integration Tests Edge Cases and Error Handling should handle
     },
     \\"sourceTemplate\\": {
       \\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
-      \\"version\\": \\"0.0.0\\",
+      \\"version\\": \\"<migrator-version>\\",
       \\"toolsId\\": \\"<generated-uuid>\\"
     }
   },
