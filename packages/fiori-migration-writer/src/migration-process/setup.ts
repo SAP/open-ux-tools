@@ -1,6 +1,4 @@
 import { join } from 'node:path';
-import { DirName } from '../project-spec-types.js';
-import { TemplateFileName } from '../index.js';
 import { fileExists, deleteFile } from '../utils/index.js';
 import type { ImportProjectInfo } from '../types.js';
 
@@ -8,14 +6,14 @@ import type { ImportProjectInfo } from '../types.js';
  * Sets up necessary directories for migration
  * Note: mem-fs handles directory creation implicitly when files are written
  *
- * @param projectInfo - Project information
- * @param rootPath - Root path of the project
- * @param hasDataSource - Whether project has a data source
+ * @param _projectInfo - Project information (unused - kept for API compatibility)
+ * @param _rootPath - Root path of the project (unused - kept for API compatibility)
+ * @param _hasDataSource - Whether project has a data source (unused - kept for API compatibility)
  */
 export async function setupMigrationDirectories(
-    projectInfo: ImportProjectInfo,
-    rootPath: string,
-    hasDataSource: boolean
+    _projectInfo: ImportProjectInfo,
+    _rootPath: string,
+    _hasDataSource: boolean
 ): Promise<void> {
     // mem-fs handles directory creation implicitly when files are written to paths
     // No explicit directory creation needed

@@ -37,4 +37,3 @@ export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: 
     // Use editorHasPath instead of fs.exists() to avoid side effect of staging paths
     return editorHasPath(fs, dir);
 }
-
