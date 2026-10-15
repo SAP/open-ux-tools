@@ -32,8 +32,8 @@ server:
             client: ''
             url: ''
           ignoreCertErrors: false
-          flp:
-            useNewSandbox: true
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
