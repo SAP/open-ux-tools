@@ -13,7 +13,12 @@ import { parse, stringify } from 'yaml';
 import { setWebappPath, setAppreloadPath } from '../data/yaml.js';
 import type { TemplateData, BackendConfig, NeoappDestination, Message, ProjectFolder } from '../types.js';
 import { updateNeoYamlBackends, updateYamlBackends } from '../config/backend.js';
-import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware, buildReuseLibsShims } from './ui5-config-helpers.js';
+import {
+    buildMainBackend,
+    buildProxyConfig,
+    buildPreviewMiddleware,
+    addReuseLibsShimsToConfig
+} from './ui5-config-helpers.js';
 
 /**
  * Options for generating UI5 YAML content
@@ -174,9 +179,6 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
     const proxyConfig: FioriToolsProxyConfig = buildProxyConfig(backends, templateData, setUI5Version);
     config.addFioriToolsProxyMiddleware(proxyConfig);
 
-    // Add fiori-tools-appreload middleware
-    config.addFioriToolsAppReloadMiddleware();
-
     // Add fiori-tools-preview middleware if configured
     const previewMiddleware = buildPreviewMiddleware(templateData);
     if (previewMiddleware) {
@@ -184,12 +186,7 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
     }
 
     // Add reuse library shims configuration if project has reuse libs
-    if (projectRoot && workspaceFolders) {
-        const shimsConfig = await buildReuseLibsShims(templateData, projectRoot, workspaceFolders);
-        if (shimsConfig) {
-            config.addCustomConfiguration('sap.watt.common.plugin.fioriOptions', shimsConfig);
-        }
-    }
+    await addReuseLibsShimsToConfig(config, templateData, projectRoot, workspaceFolders);
 
     const yamlContent = config.toString();
 
@@ -283,12 +280,7 @@ export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Prom
     }
 
     // Add reuse library shims configuration if project has reuse libs
-    if (projectRoot && workspaceFolders) {
-        const shimsConfig = await buildReuseLibsShims(templateData, projectRoot, workspaceFolders);
-        if (shimsConfig) {
-            config.addCustomConfiguration('sap.watt.common.plugin.fioriOptions', shimsConfig);
-        }
-    }
+    await addReuseLibsShimsToConfig(config, templateData, projectRoot, workspaceFolders);
 
     const yamlContent = config.toString();
 
