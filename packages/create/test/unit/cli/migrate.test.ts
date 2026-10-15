@@ -485,7 +485,7 @@ describe('migrate command', () => {
                     destination: destination.Name,
                     hostname: 'demo.example.test',
                     sapClient: destination['sap-client'],
-                    scp: true
+                    scp: false
                 }
             })
         );
@@ -496,7 +496,6 @@ describe('migrate command', () => {
             .mockResolvedValueOnce({ confirmPath: true })
             .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'myDest' })
-            .mockResolvedValueOnce({ host: 'myhost.com' })
             .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
@@ -515,7 +514,6 @@ describe('migrate command', () => {
             .mockResolvedValueOnce({ customPath: testProjectRoot })
             .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'myDest' })
-            .mockResolvedValueOnce({ host: 'myhost.com' })
             .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
@@ -532,7 +530,6 @@ describe('migrate command', () => {
         mockPrompt
             .mockResolvedValueOnce({ useDestination: true })
             .mockResolvedValueOnce({ dest: 'promptDest' })
-            .mockResolvedValueOnce({ host: 'myhost.com' })
             .mockResolvedValueOnce({ clientValue: '100' })
             .mockResolvedValueOnce({ version: '' });
 
@@ -545,13 +542,30 @@ describe('migrate command', () => {
         expect(mockMigrate).toHaveBeenCalledWith(
             expect.objectContaining({
                 projectRoot: expect.any(String),
-                baseUri: 'https://myhost.com',
+                baseUri: '',
                 ui5SnapshotUrl: '',
                 importProjectInfo: {
                     destination: 'promptDest',
-                    hostname: 'myhost.com',
                     sapClient: '100'
                 }
+            })
+        );
+    });
+
+    test('should not prompt for hostname when --destination is provided outside BAS', async () => {
+        mockPrompt.mockResolvedValueOnce({ clientValue: '100' }).mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--destination', 'myDest']));
+
+        expect(mockPrompt).not.toHaveBeenCalledWith(expect.objectContaining({ name: 'host' }));
+        expect(mockPrompt).not.toHaveBeenCalledWith(expect.objectContaining({ name: 'useDestination' }));
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                baseUri: '',
+                importProjectInfo: expect.objectContaining({ destination: 'myDest' })
             })
         );
     });

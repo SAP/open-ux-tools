@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { resolve, basename } from 'node:path';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectAccess, ProjectMigrator, initI18n as initMigrationI18n } from '@sap-ux/fiori-migration-writer';
 import { DestinationProxyType, isAppStudio, listDestinations, type Destination } from '@sap-ux/btp-utils';
@@ -227,7 +227,6 @@ async function checkForceRequired(resolvedPath: string, force: boolean): Promise
     // Check for Fiori tools indicators in package.json
     let isToolsProject = false;
     try {
-        const { readFileSync } = await import('node:fs');
         const packageJsonPath = resolve(resolvedPath, 'package.json');
         if (existsSync(packageJsonPath)) {
             const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
@@ -271,34 +270,36 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
         destination = validateDestination(destination);
     }
 
-    if (appStudio && !destination) {
-        destination = validateDestination(
-            await promptRequiredText(
-                'dest',
-                t('migrate.prompts.enterBASDestination'),
-                t('migrate.prompts.destinationField')
-            )
-        );
-    } else if (!appStudio && !hostname) {
+    if (appStudio) {
         if (!destination) {
-            const useDestination = await promptConfirm('useDestination', t('migrate.prompts.useDestination'), true);
-
-            if (useDestination) {
-                const dest = await promptRequiredText(
+            destination = validateDestination(
+                await promptRequiredText(
                     'dest',
-                    t('migrate.prompts.enterBTPDestination'),
+                    t('migrate.prompts.enterBASDestination'),
                     t('migrate.prompts.destinationField')
-                );
-                destination = validateDestination(dest);
-            }
+                )
+            );
+        }
+    } else if (!hostname && !destination) {
+        const useDestination = await promptConfirm('useDestination', t('migrate.prompts.useDestination'), true);
+
+        if (useDestination) {
+            const dest = await promptRequiredText(
+                'dest',
+                t('migrate.prompts.enterBTPDestination'),
+                t('migrate.prompts.destinationField')
+            );
+            destination = validateDestination(dest);
         }
 
-        const host = await promptRequiredText(
-            'host',
-            t('migrate.prompts.enterHostname'),
-            t('migrate.prompts.hostnameField')
-        );
-        hostname = validateHostname(host);
+        if (!destination) {
+            const host = await promptRequiredText(
+                'host',
+                t('migrate.prompts.enterHostname'),
+                t('migrate.prompts.hostnameField')
+            );
+            hostname = validateHostname(host);
+        }
     }
 
     return { destination, hostname };
@@ -409,7 +410,8 @@ async function findBASDestination(
     }
 
     try {
-        const sourceOrigin = new URL(hostname).origin;
+        const normalizedHostname = /^https?:\/\//i.test(hostname) ? hostname : `https://${hostname}`;
+        const sourceOrigin = new URL(normalizedHostname).origin;
         const matches = systems.filter((system) => new URL(system.url).origin === sourceOrigin);
         if (matches.length === 1) {
             return matches[0];
@@ -427,7 +429,10 @@ async function findBASDestination(
                     value: system
                 }))
             });
-            return answer.system as MigrationSystem | undefined;
+            if (answer.system === undefined) {
+                throw new Error(t('migrate.validation.operationCancelled'));
+            }
+            return answer.system as MigrationSystem;
         }
     } catch {
         // Invalid source or destination URLs cannot be matched safely.
@@ -441,7 +446,7 @@ function toMigrationSystem(destination: Destination): MigrationSystem {
         name: destination.Name,
         url: destination.Host,
         client: destination['sap-client'] || undefined,
-        scp: destination.ProxyType === DestinationProxyType.ON_PREMISE
+        scp: destination.ProxyType !== DestinationProxyType.ON_PREMISE
     };
 }
 
@@ -557,8 +562,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     // 6. Execute migration
     logger.info(t('migrate.status.starting'));
 
-    // Set baseUri: preserve a matched system URL unless the user explicitly overrides its hostname.
-    let baseUri = destination ? `/${destination}` : '';
+    // Set baseUri: BAS routes by destination name via the proxy; outside BAS only a full hostname URL is valid.
+    let baseUri = isAppStudio() && destination ? `/${destination}` : '';
     if (matchedSystem?.url && !options.hostname) {
         baseUri = matchedSystem.url;
     } else if (hostname) {
