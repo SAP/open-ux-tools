@@ -7,6 +7,10 @@ import { DestinationProxyType, isAppStudio, listDestinations, type Destination }
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
 import { execNpmCommand } from '@sap-ux/project-access';
+import {
+    validateClient as validateClientInput,
+    validateSpecialChars as validateSpecialCharsInput
+} from '@sap-ux/project-input-validator';
 import { getLogger } from '../../tracing/index.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
 import { t } from '../../i18n.js';
@@ -23,6 +27,22 @@ interface MigrateCommandOptions {
 }
 
 type MigrationSystem = Pick<BackendSystem, 'name' | 'url' | 'client'> & { scp: boolean };
+
+/**
+ * Helper to convert validator result (boolean | string) to throw-on-error format.
+ * Project input validators return true or error message; this converts to exception.
+ *
+ * @param validatorResult - result from @sap-ux/project-input-validator function
+ * @param value - the validated value to return on success
+ * @returns validated value
+ * @throws Error if validation failed
+ */
+function enforceValidation<T>(validatorResult: boolean | string, value: T): T {
+    if (validatorResult === true) {
+        return value;
+    }
+    throw new Error(validatorResult);
+}
 
 /**
  * Validate a path to prevent directory traversal attacks.
@@ -46,6 +66,7 @@ function validatePath(path: string): string {
 
 /**
  * Validate a destination/system name to prevent injection attacks.
+ * Uses @sap-ux/project-input-validator for consistent validation.
  *
  * @param destination - destination name to validate
  * @returns validated destination
@@ -53,10 +74,7 @@ function validatePath(path: string): string {
  */
 function validateDestination(destination: string): string {
     // Allow alphanumeric, underscores, hyphens (typical SAP destination/system names)
-    if (!/^[a-zA-Z0-9_-]+$/.test(destination)) {
-        throw new Error(t('migrate.validation.destinationInvalid'));
-    }
-    return destination;
+    return enforceValidation(validateSpecialCharsInput(destination, '^[a-zA-Z0-9_-]+$'), destination);
 }
 
 /**
@@ -88,6 +106,7 @@ function getHostnameFromUrl(url: string): string | undefined {
 
 /**
  * Validate a SAP client number.
+ * Uses @sap-ux/project-input-validator for consistent validation.
  *
  * @param client - client number to validate
  * @returns validated client
@@ -95,10 +114,7 @@ function getHostnameFromUrl(url: string): string | undefined {
  */
 function validateClient(client: string): string {
     // SAP clients are 3-digit numbers (000-999)
-    if (!/^\d{3}$/.test(client)) {
-        throw new Error(t('migrate.validation.clientInvalid'));
-    }
-    return client;
+    return enforceValidation(validateClientInput(client), client);
 }
 
 /**

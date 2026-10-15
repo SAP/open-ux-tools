@@ -87,6 +87,18 @@ jest.unstable_mockModule('prompts', () => ({
     default: mockPrompt
 }));
 
+// Mock project-input-validator functions
+jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
+    validateClient: (client: string) => {
+        const isValid = /^\d{3}$/.test(client);
+        return isValid ? true : `Invalid client: ${client}`;
+    },
+    validateSpecialChars: (value: string, regexp?: string) => {
+        const regex = new RegExp(regexp || '^[a-zA-Z0-9_$.\\-]+$', 'g');
+        return regex.test(value) ? true : `Invalid characters in: ${value}`;
+    }
+}));
+
 const { getMigrateCommand } = await import('../../../src/cli/migrate/index.js');
 
 describe('migrate command', () => {
