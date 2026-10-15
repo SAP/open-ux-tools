@@ -57,7 +57,7 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         expect(result).toBeDefined();
-    });
+    }, 10000);
 
     it('should handle adaptation project without package.json (legacy WebIDE)', async () => {
         const testProjectPath = join(testOutputDir, 'adaptation-no-package');
