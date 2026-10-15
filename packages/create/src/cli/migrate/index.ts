@@ -126,8 +126,8 @@ function validateClient(client: string): string {
  * @throws Error if version contains unsafe characters
  */
 function validateUI5Version(version: string): string {
-    // Allow semantic version format: digits, dots, optional snapshot suffix
-    if (!/^\d+\.\d+\.\d+(-snapshot)?$/.test(version)) {
+    // Allow semantic version format: digits, dots, optional snapshot suffix (case-insensitive)
+    if (!/^\d+\.\d+\.\d+(-snapshot)?$/i.test(version)) {
         throw new Error(t('migrate.validation.ui5VersionInvalid'));
     }
     return version;
@@ -248,8 +248,9 @@ async function checkForceRequired(resolvedPath: string, force: boolean): Promise
         if (existsSync(packageJsonPath)) {
             const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
             const devDeps = packageJson.devDependencies || {};
-            // Fiori tools projects have @sap/ux-* or @ui5/* dev dependencies
-            isToolsProject = Object.keys(devDeps).some((dep) => dep.startsWith('@sap/ux-') || dep.startsWith('@ui5/'));
+            // Fiori tools projects have @sap/ux-* dev dependencies
+            // Note: @ui5/* packages like @ui5/cli are generic build tools, not Fiori-specific
+            isToolsProject = Object.keys(devDeps).some((dep) => dep.startsWith('@sap/ux-'));
         }
     } catch {
         // If we can't read package.json, assume not a tools project
@@ -317,6 +318,14 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
             );
             hostname = validateHostname(host);
         }
+    } else if (!hostname && destination) {
+        // Outside BAS with destination but no hostname - prompt for hostname
+        const host = await promptRequiredText(
+            'host',
+            t('migrate.prompts.enterHostname'),
+            t('migrate.prompts.hostnameField')
+        );
+        hostname = validateHostname(host);
     }
 
     return { destination, hostname };
@@ -361,8 +370,8 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
         return validateUI5Version(optionVersion);
     }
 
-    // Empty string passed explicitly (-u '') or non-interactive: use project default
-    if (optionVersion === '' || !process.stdin.isTTY) {
+    // Non-interactive: use project default
+    if (!process.stdin.isTTY) {
         return undefined;
     }
 
@@ -451,7 +460,11 @@ async function findBASDestination(
             }
             return answer.system as MigrationSystem;
         }
-    } catch {
+    } catch (error) {
+        // Re-throw cancellation errors so the user can abort
+        if ((error as Error).message === t('migrate.validation.operationCancelled')) {
+            throw error;
+        }
         // Invalid source or destination URLs cannot be matched safely.
     }
 
@@ -542,10 +555,10 @@ function resolveMigrationOptions(
         client:
             options.client ??
             matchedSystem?.client ??
-            (options.destination || options.sapSystemName
-                ? ProjectAccess.getClientFromDestinationName(options.destination ?? options.sapSystemName ?? '') ||
-                  undefined
-                : undefined)
+            (ProjectAccess.getClientFromDestinationName(
+                options.destination ?? options.sapSystemName ?? matchedSystem?.name ?? ''
+            ) ||
+                undefined)
     };
 }
 
@@ -698,7 +711,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 
     const baseUri = calculateBaseUri(destination, hostname, matchedSystem, !!options.hostname);
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
-    const migrationHostname = hostname ?? matchedSystem?.url;
+    const migrationHostname = hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined);
 
     // Initialize i18n for proper error messages
     await initMigrationI18n();

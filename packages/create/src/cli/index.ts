@@ -38,7 +38,7 @@ export async function handleCreateFioriCommand(argv: string[]): Promise<void> {
         // Initialize i18n before executing commands
         await initI18n();
         const program = getCommanderProgram();
-        program.parse(argv);
+        await program.parseAsync(argv);
     } catch (error) {
         // Commander report meaningful error messages, output only if log level is set to debug
         logger.debug(error as string | object);
