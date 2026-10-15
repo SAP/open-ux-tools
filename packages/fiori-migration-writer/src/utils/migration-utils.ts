@@ -7,6 +7,7 @@ import { v4 as uuidV4 } from 'uuid';
 import type { TemplateProperties, SapUxLayer } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { writeFile } from './file-access.js';
+import uniq from 'lodash/uniq.js';
 
 // Get current directory using import.meta.url (ESM)
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -22,16 +23,13 @@ const sapLibsRegexFilter = /(?:^sap|\.sap)/;
  * @param libsStrInput
  */
 export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): string {
-    let libStrOut = '';
     const mlibs = Object.keys(manifestLibs || {});
     // remove spaces and split at comma
     const strlibs = libsStrInput?.replaceAll(' ', '').split(',') || [];
     const libs = mlibs.concat(strlibs);
-    const uniquelibs = libs.filter((v, i, a) => a.indexOf(v) === i);
+    const uniquelibs = uniq(libs);
 
-    libStrOut = uniquelibs.filter((ele) => sapLibsRegexFilter.test(ele)).join(', ');
-
-    return libStrOut;
+    return uniquelibs.filter((ele) => sapLibsRegexFilter.test(ele)).join(', ');
 }
 
 /**
