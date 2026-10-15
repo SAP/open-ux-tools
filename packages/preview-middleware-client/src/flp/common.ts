@@ -321,7 +321,6 @@ export function startRtaForAppInstance(
     const options: RTAOptions = {
         rootControl: view,
         validateAppVersion: false,
-        showToolbars: false,
         flexSettings: flexSettingsWithoutPlugin
     };
 
