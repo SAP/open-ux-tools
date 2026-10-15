@@ -10,6 +10,7 @@ import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import { access } from 'node:fs/promises';
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { normalizePath } from './file-system-utils.js';
 
 /**
  * AsyncLocalStorage for tracking the current migration's editor
@@ -91,7 +92,7 @@ export function isMemFsEnabled(): boolean {
 export function editorHasPath(editor: Editor, path: string): boolean {
     // Normalize path separators to forward slashes for consistent comparison
     // mem-fs stores all paths with forward slashes regardless of OS
-    const normalizedPath = path.replaceAll('\\', '/');
+    const normalizedPath = normalizePath(path);
     const directoryPrefix = normalizedPath.endsWith('/') ? normalizedPath : normalizedPath + '/';
     let found = false;
 
@@ -100,7 +101,7 @@ export function editorHasPath(editor: Editor, path: string): boolean {
             return;
         }
         // Normalize file path as well for comparison
-        const normalizedFilePath = file.path.replaceAll('\\', '/');
+        const normalizedFilePath = normalizePath(file.path);
         // Check exact match OR files under this directory
         if (normalizedFilePath === normalizedPath || normalizedFilePath.startsWith(directoryPrefix)) {
             found = true;

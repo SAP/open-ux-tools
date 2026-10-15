@@ -2,6 +2,15 @@ import type { Editor } from 'mem-fs-editor';
 import { editorHasPath, getEditor } from './fs-adapter.js';
 
 /**
+ * Normalize path separators to forward slashes for cross-platform compatibility
+ * mem-fs and many tools expect forward slashes regardless of OS
+ *
+ * @param path - Path to normalize
+ * @returns Path with forward slashes
+ */
+export const normalizePath = (path: string): string => path.replaceAll('\\', '/');
+
+/**
  * stripSpaces
  *
  * @param val
