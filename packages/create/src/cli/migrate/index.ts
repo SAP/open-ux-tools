@@ -41,7 +41,8 @@ function enforceValidation<T>(validatorResult: boolean | string, value: T): T {
     if (validatorResult === true) {
         return value;
     }
-    throw new Error(validatorResult);
+    // If not true, must be false or an error message string
+    throw new Error(typeof validatorResult === 'string' ? validatorResult : 'Validation failed');
 }
 
 /**
