@@ -1,7 +1,7 @@
 import type {
     ActionsCatalog,
+    ApplicationInfo,
     ElementContext,
-    InteractiveElement,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction
@@ -12,9 +12,11 @@ import type {
  * Zod schema in `types/input.ts` derives its enum from this tuple, so
  * adding a step here is the only place that needs to change.
  *
- * The original six steps drive the RTA workflow itself; the last three
- * (`get_page_actions`, `call_page_action`, `press_interactive`) drive
- * pre-RTA navigation via the FrontendActionRegistry on the page.
+ * The RTA workflow steps (`start`, `get_overlays`, `get_context`,
+ * `call_action`, `save`, `get_application_info`, `cleanup`, `stop`,
+ * `restart`) map 1:1 to the Flex frontend actions; the
+ * page-action steps (`get_page_actions`, `call_page_action`) drive pre-RTA
+ * navigation via the page-action registry on the page.
  *
  * Action lists per control are no longer exposed as a standalone step —
  * the editor page returns them inline via `get_overlays` (`actionsCatalog`
@@ -26,11 +28,12 @@ export const STEPS = [
     'get_context',
     'call_action',
     'save',
+    'get_application_info',
+    'cleanup',
     'stop',
     'restart',
     'get_page_actions',
-    'call_page_action',
-    'press_interactive'
+    'call_page_action'
 ] as const;
 
 export type Step = (typeof STEPS)[number];
@@ -80,6 +83,14 @@ export interface SaveStepResult {
     saved: boolean;
 }
 
+export interface GetApplicationInfoStepResult {
+    applicationInfo: ApplicationInfo;
+}
+
+export interface CleanupStepResult {
+    cleaned: boolean;
+}
+
 export interface StopStepResult {
     stopped: true;
 }
@@ -92,16 +103,9 @@ export interface RestartStepResult {
 
 export interface GetPageActionsStepResult {
     registered: RegisteredPageAction[];
-    interactive: InteractiveElement[];
-    /** Set to `true` when the interactive scan hit its internal cap. */
-    interactiveTruncated?: true;
 }
 
 export interface CallPageActionStepResult {
-    result: PageActionRunResult;
-}
-
-export interface PressInteractiveStepResult {
     result: PageActionRunResult;
 }
 
@@ -111,8 +115,9 @@ export type RunRtaWorkflowStepResult =
     | GetContextStepResult
     | CallActionStepResult
     | SaveStepResult
+    | GetApplicationInfoStepResult
+    | CleanupStepResult
     | StopStepResult
     | RestartStepResult
     | GetPageActionsStepResult
-    | CallPageActionStepResult
-    | PressInteractiveStepResult;
+    | CallPageActionStepResult;

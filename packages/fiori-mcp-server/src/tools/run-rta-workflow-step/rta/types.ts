@@ -160,25 +160,9 @@ export interface RegisteredPageAction {
 }
 
 /**
- * One entry in the interactive-element list returned by `getPageActions`.
- * Best-effort scan of the live DOM (root view + static area + open dialogs);
- * the LLM can call `press_interactive` with the `controlId` to trigger it.
- */
-export interface InteractiveElement {
-    /** UI5 element id where available, otherwise the DOM id. */
-    controlId: string;
-    /** `tagName`, e.g. `BUTTON` or `ui5-button`. */
-    controlType: string;
-    /** Visible label / text / aria-label / placeholder / title. */
-    label: string;
-    /** Coarse classification used by the LLM to decide press vs. type. */
-    kind: 'button' | 'input' | 'listItem' | 'tab' | 'link' | 'other';
-}
-
-/**
- * Result envelope of `callPageAction` / `pressInteractive`. The page-action
- * surface uses HITL via `needs_user_action`: if a precondition failed (e.g.
- * mandatory filter not set) the LLM should surface `reason` to the user.
+ * Result envelope of `callPageAction`. The page-action surface uses HITL via
+ * `needs_user_action`: if a precondition failed (e.g. mandatory filter not
+ * set) the LLM should surface `reason` to the user.
  */
 export interface PageActionRunResult {
     status: 'ok' | 'needs_user_action';
@@ -188,4 +172,21 @@ export interface PageActionRunResult {
     reason?: string;
     /** Set when `status === 'ok'`. PoC actions don't return data; reserved for future use. */
     data?: unknown;
+}
+
+/**
+ * Application metadata reported by the `getApplicationInfo` frontend action.
+ * Resolved from the running app's manifest and Flex runtime info.
+ */
+export interface ApplicationInfo {
+    /** `sap.app/id` from the manifest. */
+    appId: string;
+    /** Backend system id, as reported by Flex runtime info. */
+    system: string;
+    /** Backend client, as reported by Flex runtime info. */
+    client: string;
+    /** `sap.app/title` from the manifest. */
+    appTitle: string;
+    /** `sap.app/applicationVersion/version` from the manifest. */
+    appVersion: string;
 }
