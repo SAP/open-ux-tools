@@ -38,6 +38,33 @@ describe('File Access Utilities', () => {
             const exists = await fileExists(join(testRoot, 'does-not-exist.txt'));
             expect(exists).toBe(false);
         });
+
+        test('should return true for a file that exists on disk but is not staged in mem-fs', async () => {
+            // This is the mockserver.js overwrite bug: fileExists was only checking mem-fs,
+            // so a pre-existing file on disk was invisible and would be overwritten.
+            const testFile = join(testRoot, 'pre-existing.txt');
+            writeFileSync(testFile, 'original content');
+
+            const fs = createMemFsEditor();
+            let existsInEditorContext: boolean | undefined;
+            await runWithEditor(fs, async () => {
+                existsInEditorContext = await fileExists(testFile);
+            });
+
+            expect(existsInEditorContext).toBe(true);
+        });
+
+        test('should return false for a file that does not exist on disk or in mem-fs', async () => {
+            const testFile = join(testRoot, 'never-created.txt');
+
+            const fs = createMemFsEditor();
+            let existsInEditorContext: boolean | undefined;
+            await runWithEditor(fs, async () => {
+                existsInEditorContext = await fileExists(testFile);
+            });
+
+            expect(existsInEditorContext).toBe(false);
+        });
     });
 
     describe('readFile', () => {

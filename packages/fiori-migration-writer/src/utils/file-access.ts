@@ -8,7 +8,7 @@
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
-import { readFile as fsReadFile } from 'node:fs/promises';
+import { readFile as fsReadFile, access } from 'node:fs/promises';
 import { editorHasPath, getCurrentEditor, exists as fsAdapterExists, getEditor } from './fs-adapter.js';
 
 /**
@@ -79,9 +79,18 @@ export async function fileExists(pathOrFs: string | Editor, path?: string): Prom
     if (typeof pathOrFs === 'string' && !editor) {
         return fsAdapterExists(pathOrFs);
     }
-    // Otherwise use mem-fs editor
+    // In mem-fs context: a file exists if it is staged in mem-fs OR already on the real filesystem.
+    // Checking mem-fs alone misses pre-existing files that haven't been loaded into the editor.
     const fs = getEditor(pathOrFs);
-    return editorHasPath(fs, filePath);
+    if (editorHasPath(fs, filePath)) {
+        return true;
+    }
+    try {
+        await access(filePath);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 /**
