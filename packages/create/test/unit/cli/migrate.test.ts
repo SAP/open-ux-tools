@@ -58,9 +58,16 @@ jest.unstable_mockModule('../../../src/cli/utils/system-lookup.js', () => ({
 }));
 
 const mockGetProjectInfo = jest.fn() as jest.Mock;
-const mockRunNpmInstallCommand = jest.fn() as jest.Mock;
-jest.unstable_mockModule('../../../src/common/index.js', () => ({
-    runNpmInstallCommand: (...args: unknown[]) => mockRunNpmInstallCommand(...args)
+const mockExecNpmCommand = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    execNpmCommand: (...args: unknown[]) => mockExecNpmCommand(...args)
+}));
+
+const mockWriteMigrationLog = jest.fn() as jest.Mock;
+const mockGetMigrationLogsDirectory = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../src/cli/migrate/traceability.js', () => ({
+    writeMigrationLog: (...args: unknown[]) => mockWriteMigrationLog(...args),
+    getMigrationLogsDirectory: () => mockGetMigrationLogsDirectory()
 }));
 
 const mockMigrate = jest.fn() as jest.Mock;
@@ -113,6 +120,8 @@ describe('migrate command', () => {
                 commit: jest.fn((callback: (err?: Error) => void) => callback())
             }
         });
+        mockExecNpmCommand.mockResolvedValue('npm install output');
+        mockGetMigrationLogsDirectory.mockReturnValue('/home/user/.fioritools/migration-logs');
         mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {
             throw new Error('process.exit called');
         }) as any);
@@ -154,9 +163,16 @@ describe('migrate command', () => {
             })
         );
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('successfully'));
-        expect(mockRunNpmInstallCommand).toHaveBeenCalledWith(expect.stringContaining('bare-minimum'), [], {
-            logger: loggerMock
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(['install'], {
+            cwd: expect.stringContaining('bare-minimum'),
+            logger: expect.objectContaining({
+                info: expect.any(Function),
+                warn: expect.any(Function),
+                error: expect.any(Function),
+                debug: expect.any(Function)
+            })
         });
+        expect(mockWriteMigrationLog).toHaveBeenCalled();
     });
 
     test('should migrate with hostname', async () => {
@@ -313,12 +329,12 @@ describe('migrate command', () => {
             getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100', '--skip-install'])
         );
 
-        expect(mockRunNpmInstallCommand).not.toHaveBeenCalled();
+        expect(mockExecNpmCommand).not.toHaveBeenCalled();
         expect(loggerMock.warn).toHaveBeenCalledWith(expect.stringContaining('npm install'));
     });
 
     test('should report dependency installation failures after migration', async () => {
-        mockRunNpmInstallCommand.mockResolvedValueOnce(new Error('Dependency conflict'));
+        mockExecNpmCommand.mockRejectedValueOnce(new Error('Dependency conflict'));
         mockPrompt.mockResolvedValueOnce({ version: '' });
 
         const command = new Command('sap-ux');
