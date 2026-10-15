@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Reuse Library Migration should migrate reuse_library_project 1`] = `
+"specVersion: \\"4.0\\"
+metadata:
+  name: sap.example.lib.featuretoggle
+type: library
+"
+`;

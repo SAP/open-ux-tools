@@ -1,5 +1,26 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.1.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Bug Fixes
+
+- Auto-insert edmx:Reference for external metadata service namespaces when writing annotations [[c22d46a](https://github.com/SAP/open-ux-tools/commit/c22d46a0f58a03ae21947c6d3e66261ce8e07dc5)]
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/cds-odata-annotation-converter 1.1.0 → 1.1.0
+
 ## 1.1.1
 
 ### Patch Changes

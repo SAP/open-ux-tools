@@ -177,14 +177,14 @@ exports[`Cloud foundry generator tests Validate new managed approuter is added w
         "destinations": [
           {
             "Name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_html_repo_host",
-            "ServiceInstanceName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-html5-service",
+            "ServiceInstanceName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-html5-service",
             "ServiceKeyName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host-key",
             "sap.cloud.service": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           },
           {
             "Authentication": "OAuth2UserTokenExchange",
             "Name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_auth",
-            "ServiceInstanceName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",
+            "ServiceInstanceName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",
             "ServiceKeyName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-auth-key",
             "sap.cloud.service": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           },
@@ -290,7 +290,7 @@ exports[`Cloud foundry generator tests Validate new managed approuter is added w
         "version": "1.0.0",
       },
       "service": "destination",
-      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-destination-service",
+      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-destination-service",
       "service-plan": "lite",
     },
     "type": "org.cloudfoundry.managed-service",
@@ -310,7 +310,7 @@ exports[`Cloud foundry generator tests Validate new managed approuter is added w
       },
       "path": "./xs-security.json",
       "service": "xsuaa",
-      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",
+      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",
       "service-plan": "application",
     },
     "type": "org.cloudfoundry.managed-service",
@@ -319,7 +319,7 @@ exports[`Cloud foundry generator tests Validate new managed approuter is added w
     "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host",
     "parameters": {
       "service": "html5-apps-repo",
-      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-html5-service",
+      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-html5-service",
       "service-plan": "app-host",
     },
     "type": "org.cloudfoundry.managed-service",

@@ -1,0 +1,56 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
+        <edmx:Include Namespace="SEPMRA_PROD_MAN" Alias="SEPMRA_PROD_MAN"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
+        	<Annotations Target="SEPMRA_PROD_MAN.SEPMRA_C_PD_ContactPersonType">
+        	<Annotation Term="UI.HeaderInfo">
+					<Record Type="UI.HeaderInfoType">
+						<PropertyValue Property="TypeName" String="Contact"/>
+						<PropertyValue Property="TypeNamePlural" String="Contacts"/>
+						<PropertyValue Property="Title">
+							<Record Type="UI.DataField">
+								<PropertyValue Property="Value" Path="ContactPerson"/>
+							</Record>
+						</PropertyValue>
+						<PropertyValue Property="Description">
+							<Record Type="UI.DataField">
+								<PropertyValue Property="Value" Path="Supplier"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+
+	<Annotation Term="UI.LineItem" Qualifier="ContactDetails">
+					<Collection>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="ContactPerson"/>
+						</Record>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="Supplier"/>
+						</Record>
+					</Collection>
+				</Annotation>
+                	<Annotation Term="UI.PresentationVariant" Qualifier="byDefault5">
+					<Record Type="UI.PresentationVariantType">
+						<PropertyValue Property="SortOrder">
+							<Collection>
+								<Record Type="Common.SortOrderType">
+									<PropertyValue Property="Property" PropertyPath="ContactPerson"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="MaxItems" Int="5"/>
+					</Record>
+				</Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

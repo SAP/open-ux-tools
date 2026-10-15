@@ -67,12 +67,22 @@ export interface I18nPropertiesPaths {
      * Absolute path to the i18n.properties file from sap.app namespace.
      */
     'sap.app': string;
+    /**
+     * Absolute path to the fallback locale i18n file from sap.app namespace, e.g. i18n_en.properties.
+     * Only set when `fallbackLocale` is configured in `sap.app.i18n`.
+     */
+    'sap.app.fallbackLocale'?: string;
     models: {
         [modelKey: string]: {
             /**
              * Absolute path to the i18n.properties files.
              */
             path: string;
+            /**
+             * Absolute path to the fallback locale i18n file, e.g. i18n_en.properties.
+             * Only set when `fallbackLocale` is configured in the model settings.
+             */
+            fallbackLocalePath?: string;
         };
     };
 }
