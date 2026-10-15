@@ -485,6 +485,7 @@ async function executeNpmInstall(
     try {
         await execNpmCommand(['install'], {
             cwd: resolvedPath,
+            throwOnError: true,
             logger: {
                 info: (msg: string | object) => {
                     const message = typeof msg === 'string' ? msg : JSON.stringify(msg);

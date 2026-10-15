@@ -177,6 +177,7 @@ describe('migrate command', () => {
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('successfully'));
         expect(mockExecNpmCommand).toHaveBeenCalledWith(['install'], {
             cwd: expect.stringContaining('bare-minimum'),
+            throwOnError: true,
             logger: expect.objectContaining({
                 info: expect.any(Function),
                 warn: expect.any(Function),
