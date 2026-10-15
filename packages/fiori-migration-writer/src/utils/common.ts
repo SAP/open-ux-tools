@@ -42,12 +42,7 @@ export {
 } from './project-discovery.js';
 
 // Re-export from file-system-utils
-export {
-    stripSpaces,
-    escapeSingleQuotes,
-    escapeDoubleQuotes,
-    doesDirectoryExists
-} from './file-system-utils.js';
+export { stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, doesDirectoryExists } from './file-system-utils.js';
 
 // Re-export from manifest-and-version-utils
 export {

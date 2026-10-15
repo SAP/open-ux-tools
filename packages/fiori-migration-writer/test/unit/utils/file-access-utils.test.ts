@@ -1,15 +1,7 @@
 import { join } from 'node:path';
 import { mkdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import {
-    readFile,
-    readJSON,
-    fileExists,
-    writeFile,
-    updateFile,
-    updateJSON,
-    initI18n
-} from '../../../src/index.js';
+import { readFile, readJSON, fileExists, writeFile, updateFile, updateJSON, initI18n } from '../../../src/index.js';
 import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
 
 describe('File Access Utilities', () => {

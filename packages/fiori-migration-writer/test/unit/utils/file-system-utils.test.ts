@@ -1,9 +1,4 @@
-import {
-    stripSpaces,
-    escapeSingleQuotes,
-    escapeDoubleQuotes,
-    initI18n
-} from '../../../src/index.js';
+import { stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, initI18n } from '../../../src/index.js';
 
 describe('File System Utils', () => {
     beforeAll(async () => {
