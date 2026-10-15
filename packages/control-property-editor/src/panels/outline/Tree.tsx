@@ -34,6 +34,9 @@ interface OutlineNodeItem extends OutlineNode {
     path: string[];
 }
 
+/** The control id(s) a context menu targets: a single control, a multi-selection, or none yet. */
+type ContextMenuTarget = string | string[] | undefined;
+
 export const Tree = (): ReactElement => {
     // padding + height of `Search` bar
     const SEARCH_HEIGHT = 57;
@@ -54,7 +57,7 @@ export const Tree = (): ReactElement => {
     });
     const [showActionContextualMenu, setShowActionContextualMenu] = useState<OutlineNodeItem | undefined>();
     const [multiSelectedIds, setMultiSelectedIds] = useState<string[]>([]);
-    const [contextMenuControlIds, setContextMenuControlIds] = useState<string | string[] | undefined>(undefined);
+    const [contextMenuControlIds, setContextMenuControlIds] = useState<ContextMenuTarget>(undefined);
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
@@ -205,7 +208,7 @@ export const Tree = (): ReactElement => {
     if (items.length === 0 && groups.length === 0) {
         return <NoControlFound />;
     }
-    const isSameControlTarget = (a: string | string[] | undefined, b: string | string[] | undefined): boolean => {
+    const isSameControlTarget = (a: ContextMenuTarget, b: ContextMenuTarget): boolean => {
         if (Array.isArray(a) && Array.isArray(b)) {
             return a.length === b.length && a.every((id, index) => id === b[index]);
         }
