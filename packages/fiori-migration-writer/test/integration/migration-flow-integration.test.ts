@@ -49,6 +49,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEST_INPUT = join(__dirname, '../fixtures/input');
 const UUID_PATTERN = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
 const UUID_TEST_PATTERN = /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i;
+// Replaces the version inside sourceTemplate written by the migrator (read from package.json at runtime)
+const SOURCE_TEMPLATE_VERSION_PATTERN = /("@sap\/ux-app-migrator:[^"]*",\s*"version"\s*:\s*)"[^"]*"/gs;
 
 expect.addSnapshotSerializer({
     test: (value: unknown): boolean =>
@@ -94,7 +96,9 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
         const content = getFileFromMemFs(fs, projectPath, file);
         expect(content).toBeDefined();
         if (content) {
-            const normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
+            const normalizedContent = content
+                .replace(UUID_PATTERN, '<generated-uuid>')
+                .replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
             const snapshotPath = join(__dirname, '__snapshots__', appName, file + '.snapshot');
             expect(normalizedContent).toMatchSpecificSnapshot(snapshotPath);
         }
@@ -106,9 +110,11 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
     optionalFiles.forEach((file) => {
         const content = getFileFromMemFs(fs, projectPath, file);
         if (content) {
-            // Normalize UUIDs in content before snapshot comparison
+            // Normalize UUIDs and migrator version before snapshot comparison
             // toMatchSpecificSnapshot doesn't use snapshot serializers, so we normalize manually
-            const normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
+            const normalizedContent = content
+                .replace(UUID_PATTERN, '<generated-uuid>')
+                .replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
 
             // Use specific snapshot path per app and file
             const snapshotPath = join(__dirname, '__snapshots__', appName, file + '.snapshot');

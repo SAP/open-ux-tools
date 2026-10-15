@@ -13,7 +13,7 @@ exports[`Migration Integration Tests Special Cases should migrate CA_FIORI_INBOX
 		\\"title\\": \\"{{SHELL_TITLE}}\\",
 		\\"sourceTemplate\\": {
 			\\"id\\": \\"@sap/ux-app-migrator:extension\\",
-			\\"version\\": \\"1.0.1\\",
+			\\"version\\": \\"<migrator-version>\\",
 			\\"toolsId\\": \\"<generated-uuid>\\"
 		}
 	},

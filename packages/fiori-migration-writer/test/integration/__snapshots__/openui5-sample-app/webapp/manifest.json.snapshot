@@ -8,7 +8,7 @@ exports[`Migration Integration Tests Special Cases should migrate openui5-sample
 		\\"type\\": \\"application\\",
 		\\"sourceTemplate\\": {
 			\\"id\\": \\"@sap/ux-app-migrator:freestyle\\",
-			\\"version\\": \\"1.0.1\\",
+			\\"version\\": \\"<migrator-version>\\",
 			\\"toolsId\\": \\"<generated-uuid>\\"
 		}
 	},
