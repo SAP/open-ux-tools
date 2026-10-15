@@ -29580,6 +29580,10 @@ snapshots:
     dependencies:
       babel-jest: 30.4.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
 
+  jest-scss-transform@1.0.4(babel-jest@30.4.1(@babel/core@8.0.0)(supports-color@8.1.1)):
+    dependencies:
+      babel-jest: 30.4.1(@babel/core@8.0.0)(supports-color@8.1.1)
+
   jest-snapshot@29.7.0(supports-color@8.1.1):
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
