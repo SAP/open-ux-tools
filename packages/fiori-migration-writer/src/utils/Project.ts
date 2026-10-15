@@ -510,12 +510,15 @@ export class ProjectAccess {
                 const isApp = !!(result.projectInfo.FEVersion || result.projectInfo.isSAPApp);
                 if (isApp) {
                     appRoots.push(root);
-                } else if (reuseLibRootPaths.has(root) || result.projectInfo.type === MigrationTypes.library) {
+                } else if (
+                    [...reuseLibRootPaths].some((libRoot) => isSamePath(libRoot, root)) ||
+                    result.projectInfo.type === MigrationTypes.library
+                ) {
                     libraryOnlyRoots.add(root);
                 }
                 // in case reuse libs were detected in an application project, remove them
                 reuseLibsRoots = reuseLibsRoots.filter(
-                    (lib) => !appRoots.some((appRoot) => lib.value.libRoot === appRoot)
+                    (lib) => !appRoots.some((appRoot) => isSamePath(lib.value.libRoot, appRoot))
                 );
             }
         }
@@ -533,13 +536,13 @@ export class ProjectAccess {
         // A single library root can contain several nested manifest.json files (the library manifest
         // plus per-component manifests), each of which getReuseLibs resolves back to the same libRoot.
         // Emit one entry per library root so the webview does not list the same library multiple times.
-        const seenLibRoots = new Set<string>();
+        const seenLibPaths: string[] = [];
         const reuseLibsUnique: MigratableFolder[] = reuseLibsRoots
             .filter((lib) => {
-                if (seenLibRoots.has(lib.value.libRoot)) {
+                if (seenLibPaths.some((path) => isSamePath(path, lib.value.path))) {
                     return false;
                 }
-                seenLibRoots.add(lib.value.libRoot);
+                seenLibPaths.push(lib.value.path);
                 return true;
             })
             .map((lib) => {
