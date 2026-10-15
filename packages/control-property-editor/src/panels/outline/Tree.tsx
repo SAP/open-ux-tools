@@ -205,6 +205,12 @@ export const Tree = (): ReactElement => {
     if (items.length === 0 && groups.length === 0) {
         return <NoControlFound />;
     }
+    const isSameControlTarget = (a: string | string[] | undefined, b: string | string[] | undefined): boolean => {
+        if (Array.isArray(a) && Array.isArray(b)) {
+            return a.length === b.length && a.every((id, index) => id === b[index]);
+        }
+        return a === b;
+    };
     const toggleMultiSelect = (controlId: string): void => {
         const primaryId = selection.cell?.controlId ?? (selection.group?.key as string | undefined);
         setMultiSelectedIds((prev) => {
@@ -292,6 +298,9 @@ export const Tree = (): ReactElement => {
         }
         const { controlId, controlType } = showActionContextualMenu;
         const isExtensionPoint = controlType === 'sap.ui.extensionpoint';
+        const target = contextMenuControlIds ?? controlId;
+        const actionsMatchTarget = contextMenu !== undefined && isSameControlTarget(contextMenu.controlId, target);
+        const resolvedItems = actionsMatchTarget ? contextMenu?.contextMenuItems : [];
         const children = isExtensionPoint
             ? [
                   {
@@ -300,7 +309,7 @@ export const Tree = (): ReactElement => {
                       enabled: true
                   }
               ]
-            : contextMenu?.contextMenuItems;
+            : resolvedItems;
         return (children ?? []).map((child, index) => {
             const submenuEntries = 'submenu' in child ? child.submenu : undefined;
             const hasSubmenu = !!submenuEntries?.length;
@@ -326,7 +335,7 @@ export const Tree = (): ReactElement => {
                                   // payload.key is the selected submenu entry id (the target variant key).
                                   dispatch(
                                       executeContextMenuAction({
-                                          controlId,
+                                          controlId: target,
                                           actionName: child.id,
                                           payload: { key: sub.id }
                                       })
@@ -343,7 +352,7 @@ export const Tree = (): ReactElement => {
                           } else {
                               dispatch(
                                   executeContextMenuAction({
-                                      controlId: contextMenuControlIds ?? controlId,
+                                      controlId: target,
                                       actionName: child.id
                                   })
                               );
@@ -359,7 +368,10 @@ export const Tree = (): ReactElement => {
             ref?: (node: HTMLDivElement) => void;
         } = {};
 
-        if (selection.cell?.controlId === item?.controlId || (item && multiSelectedIds.includes(item.controlId))) {
+        if (
+            (multiSelectedIds.length === 0 && selection.cell?.controlId === item?.controlId) ||
+            (item && multiSelectedIds.includes(item.controlId))
+        ) {
             props.ref = scrollRef;
             classNames.push(selectedClassName);
         }
@@ -429,7 +441,8 @@ export const Tree = (): ReactElement => {
     const onRenderHeader = (groupHeaderProps?: IGroupHeaderProps): React.JSX.Element | null => {
         const groupKey = groupHeaderProps?.group?.key;
         const selectNode =
-            selection.group?.key === groupKey || (groupKey !== undefined && multiSelectedIds.includes(groupKey))
+            (multiSelectedIds.length === 0 && selection.group?.key === groupKey) ||
+            (groupKey !== undefined && multiSelectedIds.includes(groupKey))
                 ? selectedClassName
                 : '';
         let paddingValue = (groupHeaderProps?.group?.level ?? 0) * 10 + 15;

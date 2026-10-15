@@ -524,4 +524,47 @@ describe('OutlinePanel', () => {
         fireEvent.click(secondChild);
         expect(dispatch).toHaveBeenCalledWith(selectControl('01-02'));
     });
+
+    test('tree - Ctrl/Cmd+click deselecting the primary row removes its highlight', () => {
+        const { container } = render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, true),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        const firstChild = screen.getByText(/^first child of one$/i);
+        const secondChild = screen.getByText(/^second child of one$/i);
+
+        // primary = 01-01, then add 01-02, then Ctrl+click 01-01 again to remove it from the multi-selection
+        fireEvent.click(firstChild);
+        fireEvent.click(secondChild, { ctrlKey: true });
+        fireEvent.click(firstChild, { ctrlKey: true });
+
+        const row0101 = container.querySelector('[data-control-id="01-01"]');
+        const row0102 = container.querySelector('[data-control-id="01-02"]');
+        // the deselected row must not stay highlighted via the stale primary selection
+        expect(row0101?.className).not.toContain('app-panel-selected-bg');
+        expect(row0102?.className).toContain('app-panel-selected-bg');
+    });
+
+    test('tree - a context-menu response for a different control is not shown', () => {
+        render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, true),
+                filterQuery: filterInitOptions,
+                // response in the store belongs to another control id (stale / out-of-order)
+                contextMenu: {
+                    controlId: '99',
+                    contextMenuItems: [{ id: 'STALE_ACTION', enabled: true, title: 'Stale Action' }]
+                }
+            }
+        });
+
+        const firstChild = screen.getByText(/^first child of one$/i);
+        fireEvent.contextMenu(firstChild);
+
+        // the menu must not surface actions fetched for a different target
+        expect(screen.queryByText(/^Stale Action$/i)).toBeNull();
+    });
 });
