@@ -106,6 +106,32 @@ describe('Migration Traceability', () => {
         expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Migration log written to'));
     });
 
+    test('writeMigrationLog should warn when writing the log fails', () => {
+        const logEntry: MigrationLogEntry = {
+            timestamp: '2026-10-15T10:30:45.123Z',
+            projectPath: '/path/to/my-project',
+            projectName: 'my-project',
+            migrationMessages: [],
+            migrationSuccess: true
+        };
+
+        const mockLogger = {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn()
+        };
+
+        // Create a file where the logs directory should be so that mkdirSync/writeFileSync fails.
+        const fioriToolsDir = getFioriToolsDirectory();
+        mkdirSync(fioriToolsDir, { recursive: true });
+        writeFileSync(join(fioriToolsDir, 'migration-logs'), 'not a directory', 'utf-8');
+
+        writeMigrationLog(logEntry, mockLogger as any);
+
+        expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Failed to write migration log'));
+    });
+
     test('writeMigrationLog should work with migration failure', () => {
         const logEntry: MigrationLogEntry = {
             timestamp: '2026-10-15T10:30:45.123Z',

@@ -94,6 +94,10 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
         return isValid ? true : `Invalid client: ${client}`;
     },
     validateSpecialChars: (value: string, regexp?: string) => {
+        // Sentinel used to exercise the non-string (boolean false) validator-failure branch.
+        if (value === '__return_false__') {
+            return false;
+        }
         const regex = new RegExp(regexp || '^[a-zA-Z0-9_$.\\-]+$', 'g');
         return regex.test(value) ? true : `Invalid characters in: ${value}`;
     }
@@ -658,5 +662,326 @@ describe('migrate command', () => {
                 importProjectInfo: expect.objectContaining({ hostname: 'myhost.com', sapClient: '200' })
             })
         );
+    });
+
+    test('should reject a project path that does not exist', async () => {
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(
+            command.parseAsync(getArgv(['migrate', join(testProjectRoot, 'does-not-exist')]))
+        ).rejects.toThrow();
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should reject a project path with unsafe characters', async () => {
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(command.parseAsync(getArgv(['migrate', 'some;rm -rf path']))).rejects.toThrow();
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should reject an invalid hostname', async () => {
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(
+            command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'bad host!', '--client', '100']))
+        ).rejects.toThrow();
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should reject an invalid UI5 version', async () => {
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(
+            command.parseAsync(
+                getArgv([
+                    'migrate',
+                    testProjectRoot,
+                    '--hostname',
+                    'myhost.com',
+                    '--client',
+                    '100',
+                    '--ui5-version',
+                    'not-a-version'
+                ])
+            )
+        ).rejects.toThrow();
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should throw when the project path prompt is cancelled', async () => {
+        // confirmPath declined, then the custom path prompt is cancelled (undefined response)
+        mockPrompt.mockResolvedValueOnce({ confirmPath: false }).mockResolvedValueOnce({});
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(command.parseAsync(getArgv(['migrate']))).rejects.toThrow();
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should throw when a confirm prompt is cancelled', async () => {
+        // confirmPath prompt cancelled (undefined response)
+        mockPrompt.mockResolvedValueOnce({});
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(command.parseAsync(getArgv(['migrate']))).rejects.toThrow();
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should prompt interactively for the UI5 version in a TTY', async () => {
+        const originalIsTTY = process.stdin.isTTY;
+        Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+        mockPrompt.mockResolvedValueOnce({ version: '1.120.0' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(
+            getArgv([
+                'migrate',
+                testProjectRoot,
+                '--destination',
+                'myDest',
+                '--hostname',
+                'myhost.com',
+                '--client',
+                '100'
+            ])
+        );
+
+        Object.defineProperty(process.stdin, 'isTTY', { value: originalIsTTY, configurable: true });
+
+        expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ name: 'version' }));
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.objectContaining({ ui5SnapshotUrl: 'https://ui5.sap.com/1.120.0' })
+        );
+    });
+
+    test('should ignore an empty interactive UI5 version response', async () => {
+        const originalIsTTY = process.stdin.isTTY;
+        Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(
+            getArgv([
+                'migrate',
+                testProjectRoot,
+                '--destination',
+                'myDest',
+                '--hostname',
+                'myhost.com',
+                '--client',
+                '100'
+            ])
+        );
+
+        Object.defineProperty(process.stdin, 'isTTY', { value: originalIsTTY, configurable: true });
+
+        expect(mockMigrate).toHaveBeenCalledWith(expect.objectContaining({ ui5SnapshotUrl: '' }));
+    });
+
+    test('should continue when resolving a migration system throws', async () => {
+        mockGetProjectInfo.mockRejectedValueOnce(new Error('project info unavailable'));
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']));
+
+        expect(loggerMock.debug).toHaveBeenCalledWith(expect.stringContaining('migration system'));
+        expect(mockMigrate).toHaveBeenCalled();
+    });
+
+    test('should match a BAS destination by hostname when name does not match', async () => {
+        const destination = {
+            Name: 'DEMOCLNT001',
+            Host: 'https://demo.example.test',
+            ProxyType: 'OnPremise',
+            'sap-client': '001'
+        };
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { destination: undefined, hostname: 'demo.example.test', sapClient: '' },
+            messages: []
+        });
+        mockListDestinations.mockResolvedValue({ [destination.Name]: destination });
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                importProjectInfo: expect.objectContaining({ destination: destination.Name })
+            })
+        );
+    });
+
+    test('should prompt to select a BAS destination when multiple hosts match', async () => {
+        const destinationA = {
+            Name: 'DEMOCLNT001',
+            Host: 'https://demo.example.test',
+            ProxyType: 'OnPremise',
+            'sap-client': '001'
+        };
+        const destinationB = {
+            Name: 'DEMOCLNT002',
+            Host: 'https://demo.example.test',
+            ProxyType: 'Internet',
+            'sap-client': '002'
+        };
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { destination: undefined, hostname: 'demo.example.test', sapClient: '' },
+            messages: []
+        });
+        mockListDestinations.mockResolvedValue({
+            [destinationA.Name]: destinationA,
+            [destinationB.Name]: destinationB
+        });
+        mockPrompt
+            .mockResolvedValueOnce({
+                system: { name: destinationB.Name, url: destinationB.Host, client: '002', scp: true }
+            })
+            .mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ type: 'select', name: 'system' }));
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.objectContaining({
+                importProjectInfo: expect.objectContaining({ destination: destinationB.Name })
+            })
+        );
+    });
+
+    test('should abort when the BAS destination selection is cancelled', async () => {
+        const destinationA = {
+            Name: 'DEMOCLNT001',
+            Host: 'https://demo.example.test',
+            ProxyType: 'OnPremise',
+            'sap-client': '001'
+        };
+        const destinationB = {
+            Name: 'DEMOCLNT002',
+            Host: 'https://demo.example.test',
+            ProxyType: 'Internet',
+            'sap-client': '002'
+        };
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { destination: undefined, hostname: 'demo.example.test', sapClient: '' },
+            messages: []
+        });
+        mockListDestinations.mockResolvedValue({
+            [destinationA.Name]: destinationA,
+            [destinationB.Name]: destinationB
+        });
+        // Selection cancelled (undefined response), then destination prompt still cancelled
+        mockPrompt.mockResolvedValueOnce({});
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(command.parseAsync(getArgv(['migrate', testProjectRoot]))).rejects.toThrow();
+    });
+
+    test('should capture npm install errors and security warnings in the log', async () => {
+        mockExecNpmCommand.mockImplementationOnce((_args: string[], opts: any) => {
+            opts.logger.debug('resolving dependencies');
+            opts.logger.info('found 3 vulnerabilities');
+            opts.logger.info({ phase: 'install' });
+            opts.logger.error('npm ERR! something broke');
+            return Promise.resolve();
+        });
+        mockPrompt.mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']));
+
+        const logEntry = mockWriteMigrationLog.mock.calls[0][0] as any;
+        expect(logEntry.npmInstall.success).toBe(true);
+        expect(logEntry.npmInstall.securityWarnings).toEqual(
+            expect.arrayContaining([expect.stringContaining('vulnerabilities')])
+        );
+    });
+
+    test('should throw a generic error when a validator returns false', async () => {
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await expect(
+            command.parseAsync(
+                getArgv(['migrate', testProjectRoot, '--destination', '__return_false__', '--hostname', 'myhost.com'])
+            )
+        ).rejects.toThrow('Validation failed');
+
+        expect(mockMigrate).not.toHaveBeenCalled();
+    });
+
+    test('should ignore a matched system with an unparseable URL', async () => {
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { hostname: 'backend.example.com', sapClient: '001' },
+            messages: []
+        });
+        mockGetService.mockResolvedValue({});
+        // Matched system carries a URL that URL() cannot parse, exercising the catch fallback.
+        mockFindSystemByUrl.mockResolvedValue({ name: 'SIDCLNT001', url: 'not a url', client: '001' });
+        mockPrompt.mockResolvedValueOnce({ host: 'myhost.com' }).mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockMigrate).toHaveBeenCalledWith(
+            expect.objectContaining({ importProjectInfo: expect.objectContaining({ hostname: 'myhost.com' }) })
+        );
+    });
+
+    test('should return no BAS destination when neither name nor hostname match', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetProjectInfo.mockResolvedValueOnce({
+            projectInfo: { destination: 'UNKNOWN', hostname: undefined, sapClient: '' },
+            messages: []
+        });
+        mockListDestinations.mockResolvedValue({
+            KNOWN: { Name: 'KNOWN', Host: 'https://other.example.test', ProxyType: 'OnPremise' }
+        });
+        mockPrompt
+            .mockResolvedValueOnce({ dest: 'myDest' })
+            .mockResolvedValueOnce({ clientValue: '' })
+            .mockResolvedValueOnce({ version: '' });
+
+        const command = new Command('sap-ux');
+        command.addCommand(getMigrateCommand());
+
+        await command.parseAsync(getArgv(['migrate', testProjectRoot]));
+
+        expect(mockMigrate).toHaveBeenCalled();
     });
 });
