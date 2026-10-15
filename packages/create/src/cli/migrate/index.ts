@@ -70,7 +70,9 @@ function validateHostname(hostname: string): string {
     const strippedHostname = hostname.replace(/^https?:\/\//i, '');
     // RFC-compliant hostname with an optional port.
     // Simplified: alphanumeric + hyphens, no leading/trailing hyphens, optional port
-    if (!/^[a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])?(\.[a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])?)*(:\d+)?$/.test(strippedHostname)) {
+    if (
+        !/^[a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])?(\.[a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])?)*(:\d+)?$/.test(strippedHostname)
+    ) {
         throw new Error(t('migrate.validation.hostnameInvalid'));
     }
     return strippedHostname;
@@ -460,7 +462,10 @@ async function executeNpmInstall(
                 info: (msg: string | object) => {
                     const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
                     // Capture security vulnerabilities
-                    if (message.toLowerCase().includes('vulnerabilities') || message.toLowerCase().includes('security')) {
+                    if (
+                        message.toLowerCase().includes('vulnerabilities') ||
+                        message.toLowerCase().includes('security')
+                    ) {
                         npmSecurityWarnings.push(message);
                     }
                     logger.info(msg);
