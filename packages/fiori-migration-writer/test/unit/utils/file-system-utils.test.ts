@@ -1,5 +1,4 @@
 import {
-    doesPropertyExist,
     stripSpaces,
     escapeSingleQuotes,
     escapeDoubleQuotes,
@@ -11,23 +10,23 @@ describe('File System Utils', () => {
         await initI18n();
     });
 
-    describe('doesPropertyExist', () => {
+    describe('Object.hasOwn (replaces doesPropertyExist)', () => {
         test('should return true for existing property', () => {
             const obj = { foo: { bar: 'value' }, baz: 123 };
-            expect(doesPropertyExist(obj, 'foo')).toBe(true);
-            expect(doesPropertyExist(obj, 'baz')).toBe(true);
+            expect(Object.hasOwn(obj, 'foo')).toBe(true);
+            expect(Object.hasOwn(obj, 'baz')).toBe(true);
         });
 
         test('should return false for non-existing property', () => {
             const obj = { foo: { bar: 'value' } };
-            expect(doesPropertyExist(obj, 'missing')).toBe(false);
-            expect(doesPropertyExist(obj, 'notThere')).toBe(false);
+            expect(Object.hasOwn(obj, 'missing')).toBe(false);
+            expect(Object.hasOwn(obj, 'notThere')).toBe(false);
         });
 
         test('should handle objects with nested properties', () => {
             const obj = { foo: { bar: 'value' } };
-            expect(doesPropertyExist(obj, 'foo')).toBe(true);
-            expect(doesPropertyExist(obj.foo, 'bar')).toBe(true);
+            expect(Object.hasOwn(obj, 'foo')).toBe(true);
+            expect(Object.hasOwn(obj.foo, 'bar')).toBe(true);
         });
     });
 

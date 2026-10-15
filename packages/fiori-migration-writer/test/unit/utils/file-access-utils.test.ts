@@ -8,7 +8,6 @@ import {
     writeFile,
     updateFile,
     updateJSON,
-    createDirectory,
     initI18n
 } from '../../../src/index.js';
 import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
@@ -168,16 +167,14 @@ describe('File Access Utilities', () => {
         });
     });
 
-    describe('createDirectory', () => {
-        test('should create directory recursively', async () => {
+    describe('mem-fs directory handling', () => {
+        test('should create directory implicitly when writing file', async () => {
             const nestedDir = join(testRoot, 'nested', 'deep', 'directory');
 
             const fs = createMemFsEditor();
             await runWithEditor(fs, async () => {
-                createDirectory(nestedDir);
-
-                // In mem-fs mode, directories are created implicitly when files are written
-                // So we write a file to the directory and then check it exists
+                // mem-fs creates directories implicitly when files are written
+                // No explicit directory creation needed
                 const testFile = join(nestedDir, 'test.txt');
                 writeFile(testFile, 'test');
 

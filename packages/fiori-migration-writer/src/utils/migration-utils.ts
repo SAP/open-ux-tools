@@ -7,7 +7,6 @@ import { v4 as uuidV4 } from 'uuid';
 import type { TemplateProperties, SapUxLayer } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { writeFile } from './file-access.js';
-import { createDirectory } from './file-system-utils.js';
 
 // Get current directory using import.meta.url (ESM)
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -109,17 +108,14 @@ export async function generateTemplate(
     // 2. Resolve template data
     const resolvedData = resolveTemplateData(templateData, templateProps);
 
-    // 3. Ensure target directory exists (uses fs-adapter)
-    createDirectory(dirname(targetFile));
-
-    // 4. Render template
+    // 3. Render template (mem-fs handles directory creation implicitly)
     const { isRendered = true, opts = {} } = templateProps;
     let content = renderTemplate(templateRoot, fullTemplateName, resolvedData, opts, isRendered);
 
-    // 5. Apply file-specific handlers
+    // 4. Apply file-specific handlers
     content = await applyFileSpecificHandlers(templateName, content, projectRoot, targetFile, templateData);
 
-    // 6. Write file (uses fs-adapter)
+    // 5. Write file (mem-fs handles directory creation implicitly)
     // Do not catch - let errors propagate to caller for proper handling
     writeFile(targetFile, content);
 }
