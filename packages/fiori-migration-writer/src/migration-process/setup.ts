@@ -1,12 +1,12 @@
 import { join } from 'node:path';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
-import { createDirectory, fileExists, deleteFile } from '../utils/index.js';
+import { fileExists, deleteFile } from '../utils/index.js';
 import type { ImportProjectInfo } from '../types.js';
 
 /**
  * Sets up necessary directories for migration
- * Creates localService directory if data source exists, and test directory if webapp exists
+ * Note: mem-fs handles directory creation implicitly when files are written
  *
  * @param projectInfo - Project information
  * @param rootPath - Root path of the project
@@ -17,16 +17,8 @@ export async function setupMigrationDirectories(
     rootPath: string,
     hasDataSource: boolean
 ): Promise<void> {
-    // Create localService directory if project has a data source
-    if (hasDataSource) {
-        createDirectory(join(rootPath, projectInfo.webappPath, DirName.LocalService));
-    }
-
-    // Create test directory if webapp exists
-    const webAppPath = join(rootPath, projectInfo.webappPath);
-    if (await fileExists(webAppPath)) {
-        createDirectory(join(rootPath, projectInfo.webappPath, TemplateFileName.Test));
-    }
+    // mem-fs handles directory creation implicitly when files are written to paths
+    // No explicit directory creation needed
 }
 
 /**

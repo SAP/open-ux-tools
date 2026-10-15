@@ -79,12 +79,16 @@ export async function fileExists(pathOrFs: string | Editor, path?: string): Prom
     if (typeof pathOrFs === 'string' && !editor) {
         return fsAdapterExists(pathOrFs);
     }
-    // In mem-fs context: a file exists if it is staged in mem-fs OR already on the real filesystem.
-    // Checking mem-fs alone misses pre-existing files that haven't been loaded into the editor.
+
+    // In mem-fs context, check if file is staged in mem-fs first
     const fs = getEditor(pathOrFs);
     if (editorHasPath(fs, filePath)) {
         return true;
     }
+
+    // If not in mem-fs, check real filesystem
+    // This prevents overwriting existing files that haven't been loaded into mem-fs yet
+    // (e.g., the mockserver.js overwrite bug)
     try {
         await access(filePath);
         return true;

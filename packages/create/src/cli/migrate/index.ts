@@ -516,6 +516,141 @@ async function executeNpmInstall(
 }
 
 /**
+ * Resolve migration options with fallbacks from matched system.
+ *
+ * @param options
+ * @param matchedSystem
+ */
+function resolveMigrationOptions(
+    options: MigrateCommandOptions,
+    matchedSystem: MigrationSystem | undefined
+): MigrateCommandOptions {
+    return {
+        ...options,
+        destination: options.destination ?? options.sapSystemName ?? matchedSystem?.name,
+        hostname: options.hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined),
+        client:
+            options.client ??
+            matchedSystem?.client ??
+            (options.destination || options.sapSystemName
+                ? ProjectAccess.getClientFromDestinationName(options.destination ?? options.sapSystemName ?? '') ||
+                  undefined
+                : undefined)
+    };
+}
+
+/**
+ * Calculate base URI for migration.
+ * Priority: hostname > matchedSystem.url (if no hostname override) > destination (BAS only).
+ *
+ * @param destination
+ * @param hostname
+ * @param matchedSystem
+ * @param hostnameOverride
+ */
+function calculateBaseUri(
+    destination: string | undefined,
+    hostname: string | undefined,
+    matchedSystem: MigrationSystem | undefined,
+    hostnameOverride: boolean
+): string {
+    // Start with destination-based URI: BAS routes by destination name via the proxy;
+    // outside BAS only a full hostname URL is valid.
+    let baseUri = isAppStudio() && destination ? `/${destination}` : '';
+
+    // Override with matched system URL if present and no hostname override
+    if (matchedSystem?.url && !hostnameOverride) {
+        baseUri = matchedSystem.url;
+    }
+    // Override with hostname if provided (takes precedence)
+    else if (hostname) {
+        baseUri = `https://${hostname}`;
+    }
+
+    return baseUri;
+}
+
+/**
+ * Log migration messages by type.
+ *
+ * @param messages
+ * @param logger
+ */
+function logMigrationMessages(
+    messages: Array<{ type: string; description: string }>,
+    logger: ReturnType<typeof getLogger>
+): void {
+    logger.info(t('migrate.status.messages'));
+    messages.forEach((msg) => {
+        const logMessage = `  ${msg.type}: ${msg.description}`;
+        if (msg.type === 'ERROR') {
+            logger.error(logMessage);
+        } else if (msg.type === 'WARNING') {
+            logger.warn(logMessage);
+        } else {
+            logger.info(logMessage);
+        }
+    });
+}
+
+/**
+ * Handle successful migration - install dependencies and write log.
+ *
+ * @param result
+ * @param options
+ * @param resolvedPath
+ * @param migrationLogEntry
+ * @param logger
+ */
+async function handleMigrationSuccess(
+    result: any,
+    options: MigrateCommandOptions,
+    resolvedPath: string,
+    migrationLogEntry: MigrationLogEntry,
+    logger: ReturnType<typeof getLogger>
+): Promise<void> {
+    logger.info(t('migrate.status.success'));
+
+    if (result.messages?.length) {
+        logMigrationMessages(result.messages, logger);
+    }
+
+    if (options.skipInstall) {
+        logger.warn(t('migrate.status.skipInstallWarning'));
+    } else {
+        logger.info(t('migrate.status.installing'));
+        migrationLogEntry.npmInstall = await executeNpmInstall(resolvedPath, logger);
+    }
+
+    writeMigrationLog(migrationLogEntry, logger);
+    logger.info(`Migration log location: ${getMigrationLogsDirectory()}`);
+}
+
+/**
+ * Handle failed migration - write log and throw error.
+ *
+ * @param result
+ * @param migrationLogEntry
+ * @param logger
+ */
+function handleMigrationFailure(
+    result: any,
+    migrationLogEntry: MigrationLogEntry,
+    logger: ReturnType<typeof getLogger>
+): never {
+    logger.error(t('migrate.status.failed'));
+
+    if (result.messages?.length) {
+        result.messages.forEach((msg: { type: string; description: string }) => logger.error(`  ${msg.description}`));
+    }
+
+    writeMigrationLog(migrationLogEntry, logger);
+    logger.info(`Migration log location: ${getMigrationLogsDirectory()}`);
+
+    throw new Error(t('migrate.status.failedError'));
+}
+
+/**
  * Execute the migration command.
  *
  * @param projectPath - path to the project to migrate
@@ -536,19 +671,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 
     const matchedSystem = await findMigrationSystem(resolvedPath);
 
-    // 3. Get destination or hostname
-    const resolvedOptions = {
-        ...options,
-        destination: options.destination ?? options.sapSystemName ?? matchedSystem?.name,
-        hostname: options.hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined),
-        client:
-            options.client ??
-            matchedSystem?.client ??
-            (options.destination || options.sapSystemName
-                ? ProjectAccess.getClientFromDestinationName(options.destination ?? options.sapSystemName ?? '') ||
-                  undefined
-                : undefined)
-    };
+    // 3. Resolve options with fallbacks
+    const resolvedOptions = resolveMigrationOptions(options, matchedSystem);
     const { destination, hostname } = await getDestinationOrHostname(resolvedOptions);
 
     // 4. Get optional client
@@ -562,13 +686,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     // 6. Execute migration
     logger.info(t('migrate.status.starting'));
 
-    // Set baseUri: BAS routes by destination name via the proxy; outside BAS only a full hostname URL is valid.
-    let baseUri = isAppStudio() && destination ? `/${destination}` : '';
-    if (matchedSystem?.url && !options.hostname) {
-        baseUri = matchedSystem.url;
-    } else if (hostname) {
-        baseUri = `https://${hostname}`;
-    }
+    const baseUri = calculateBaseUri(destination, hostname, matchedSystem, !!options.hostname);
     const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
     const migrationHostname = hostname ?? matchedSystem?.url;
 
@@ -577,7 +695,6 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     const internalToggle = isInternalFeaturesSettingEnabled();
 
     // Load project info first, then merge CLI overrides
-    // Pass only the override fields so ProjectMigrator loads full metadata and merges
     const migrationProjectInfo =
         sapClient || destination || hostname
             ? {
@@ -587,6 +704,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
                   ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
               }
             : undefined;
+
     const result = await ProjectMigrator.migrate({
         projectRoot: resolvedPath,
         baseUri,
@@ -605,43 +723,8 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     };
 
     if (result.result) {
-        logger.info(t('migrate.status.success'));
-        if (result.messages?.length) {
-            logger.info(t('migrate.status.messages'));
-            result.messages.forEach((msg: { type: string; description: string }) => {
-                const logMessage = `  ${msg.type}: ${msg.description}`;
-                if (msg.type === 'ERROR') {
-                    logger.error(logMessage);
-                } else if (msg.type === 'WARNING') {
-                    logger.warn(logMessage);
-                } else {
-                    logger.info(logMessage);
-                }
-            });
-        }
-
-        if (options.skipInstall) {
-            logger.warn(t('migrate.status.skipInstallWarning'));
-        } else {
-            logger.info(t('migrate.status.installing'));
-            migrationLogEntry.npmInstall = await executeNpmInstall(resolvedPath, logger);
-        }
-
-        // Write traceability log
-        writeMigrationLog(migrationLogEntry, logger);
-        logger.info(`Migration log location: ${getMigrationLogsDirectory()}`);
+        await handleMigrationSuccess(result, options, resolvedPath, migrationLogEntry, logger);
     } else {
-        logger.error(t('migrate.status.failed'));
-        if (result.messages?.length) {
-            result.messages.forEach((msg: { type: string; description: string }) =>
-                logger.error(`  ${msg.description}`)
-            );
-        }
-
-        // Write traceability log even on failure
-        writeMigrationLog(migrationLogEntry, logger);
-        logger.info(`Migration log location: ${getMigrationLogsDirectory()}`);
-
-        throw new Error(t('migrate.status.failedError'));
+        handleMigrationFailure(result, migrationLogEntry, logger);
     }
 }
