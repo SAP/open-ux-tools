@@ -3,20 +3,19 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync, readdirSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
-// Mock homedir to use a temp directory for tests
 const testHomeDir = join(tmpdir(), 'test-fiori-tools-traceability');
-jest.unstable_mockModule('node:os', () => ({
-    homedir: () => testHomeDir,
-    tmpdir
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getFioriToolsDirectory: () => join(testHomeDir, '.fioritools')
 }));
 
 const {
-    getFioriToolsDirectory,
     getMigrationLogsDirectory,
     ensureMigrationLogsDirectory,
     generateLogFileName,
     writeMigrationLog
 } = await import('../../../src/cli/migrate/traceability.js');
+
+const { getFioriToolsDirectory } = await import('@sap-ux/store');
 
 import type { MigrationLogEntry } from '../../../src/cli/migrate/traceability.js';
 

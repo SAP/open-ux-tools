@@ -1,7 +1,7 @@
-import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
+import { getFioriToolsDirectory } from '@sap-ux/store';
 
 export interface MigrationLogEntry {
     timestamp: string;
@@ -15,15 +15,6 @@ export interface MigrationLogEntry {
         securityWarnings?: string[];
     };
     migrationSuccess: boolean;
-}
-
-/**
- * Get the Fiori tools directory in the user's home directory.
- *
- * @returns path to Fiori tools directory
- */
-export function getFioriToolsDirectory(): string {
-    return join(homedir(), '.fioritools');
 }
 
 /**
