@@ -1,5 +1,17 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-15
+
+#### Bug Fixes
+
+- Exclude sourceTemplate version from snapshot comparison to prevent pipeline failures on version bump [[435329c](https://github.com/SAP/open-ux-tools/commit/435329c6063769e4cb3c39064bcdcbba8ed79279)]
+
 ## 0.0.1
 
 ### Patch Changes
