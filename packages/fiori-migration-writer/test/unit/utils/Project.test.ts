@@ -23,13 +23,12 @@ describe('ProjectAccess.getProjectRoots', () => {
         // descendant-only filter because manifestRoot === root, then gets appended and scanned
         // twice again. The fix rejects exact matches (manifestRoot === root || manifestRoot.startsWith(root + sep)).
         const WSUri = URI.file(join(fixturesDir, 'app-with-package-and-pom'));
-        const projectRoots = await ProjectAccess.getProjectRoots(
-            [createProjectFolder(WSUri.fsPath)],
-            false
-        );
+        const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
         expect(projectRoots.length).toEqual(1);
         expect(projectRoots[0].type).toEqual(MigrationTypes.project);
-        expect(projectRoots[0].root.endsWith(join('fixtures', 'project-roots', 'app-with-package-and-pom'))).toEqual(true);
+        expect(projectRoots[0].root.endsWith(join('fixtures', 'project-roots', 'app-with-package-and-pom'))).toEqual(
+            true
+        );
     });
 
     it('should include a regular app with an embedded library (not filtered out)', async () => {
@@ -42,13 +41,17 @@ describe('ProjectAccess.getProjectRoots', () => {
         // Should have 2 entries: one for the app (project type) and one for the nested lib (library type)
         expect(projectRoots.length).toEqual(2);
         const appEntry = projectRoots.find(
-            (p) => p.type === MigrationTypes.project && p.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib'))
+            (p) =>
+                p.type === MigrationTypes.project &&
+                p.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib'))
         );
         const libEntry = projectRoots.find((p) => p.type === MigrationTypes.library);
         expect(appEntry).toBeDefined();
         expect(libEntry).toBeDefined();
         expect(appEntry?.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib'))).toEqual(true);
-        expect(libEntry?.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib', 'libs', 'test-lib'))).toEqual(true);
+        expect(
+            libEntry?.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib', 'libs', 'test-lib'))
+        ).toEqual(true);
     });
 
     it('should return a single entry for a reuse library that also has a ui5.yaml and .che entryPath', async () => {
@@ -58,10 +61,7 @@ describe('ProjectAccess.getProjectRoots', () => {
         // at the nested manifest, so project-type resolution also finds the library manifest. The root
         // must be reported exactly once, as a library — not twice.
         const WSUri = URI.file(join(fixturesDir, 'reuselib-ui5yaml'));
-        const projectRoots = await ProjectAccess.getProjectRoots(
-            [createProjectFolder(WSUri.fsPath)],
-            false
-        );
+        const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
         expect(projectRoots.length).toEqual(1);
         expect(projectRoots[0].type).toEqual(MigrationTypes.library);
         expect(projectRoots[0].root.endsWith(join('fixtures', 'project-roots', 'reuselib-ui5yaml'))).toEqual(true);
@@ -83,10 +83,7 @@ describe('ProjectAccess.getProjectRoots', () => {
         // └── src/sap/nw/core/om/lib/printreuse/
         //     └── manifest.json (libPath = dirname of this)
         const WSUri = URI.file(join(fixturesDir, 'reuselib-ui5yaml'));
-        const projectRoots = await ProjectAccess.getProjectRoots(
-            [createProjectFolder(WSUri.fsPath)],
-            false
-        );
+        const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
         expect(projectRoots.length).toEqual(1);
         const libEntry = projectRoots[0];
         expect(libEntry.type).toEqual(MigrationTypes.library);
@@ -100,7 +97,18 @@ describe('ProjectAccess.getProjectRoots', () => {
         expect(libEntry.libPath).toContain('src');
         expect(
             libEntry.libPath?.endsWith(
-                join('fixtures', 'project-roots', 'reuselib-ui5yaml', 'src', 'sap', 'nw', 'core', 'om', 'lib', 'printreuse')
+                join(
+                    'fixtures',
+                    'project-roots',
+                    'reuselib-ui5yaml',
+                    'src',
+                    'sap',
+                    'nw',
+                    'core',
+                    'om',
+                    'lib',
+                    'printreuse'
+                )
             )
         ).toEqual(true);
     });
