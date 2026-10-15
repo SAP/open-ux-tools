@@ -316,9 +316,7 @@ describe('UI5 Config Helpers - addReuseLibsShimsToConfig', () => {
                 reuseLibs: 'com.example.lib1'
             }
         };
-        const workspaceFolders: ProjectFolder[] = [
-            { uri: 'file:///workspace', name: 'workspace' }
-        ];
+        const workspaceFolders: ProjectFolder[] = [{ uri: 'file:///workspace', name: 'workspace' }];
 
         await addReuseLibsShimsToConfig(mockConfig, templateData, undefined, workspaceFolders);
 
@@ -347,9 +345,7 @@ describe('UI5 Config Helpers - addReuseLibsShimsToConfig', () => {
         const templateData: Partial<TemplateData> = {
             project: {}
         };
-        const workspaceFolders: ProjectFolder[] = [
-            { uri: 'file:///workspace', name: 'workspace' }
-        ];
+        const workspaceFolders: ProjectFolder[] = [{ uri: 'file:///workspace', name: 'workspace' }];
 
         await addReuseLibsShimsToConfig(mockConfig, templateData, '/project/root', workspaceFolders);
 
