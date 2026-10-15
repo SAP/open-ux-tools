@@ -1,0 +1,165 @@
+import { jest, describe, test, expect, beforeEach, afterEach } from '@jest/globals';
+import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync, readdirSync, chmodSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+
+// Mock homedir to use a temp directory for tests
+const testHomeDir = join(tmpdir(), 'test-fiori-tools-traceability');
+jest.unstable_mockModule('node:os', () => ({
+    homedir: () => testHomeDir,
+    tmpdir
+}));
+
+const {
+    getFioriToolsDirectory,
+    getMigrationLogsDirectory,
+    ensureMigrationLogsDirectory,
+    generateLogFileName,
+    writeMigrationLog
+} = await import('../../../src/cli/migrate/traceability.js');
+
+import type { MigrationLogEntry } from '../../../src/cli/migrate/traceability.js';
+
+describe('Migration Traceability', () => {
+    beforeEach(() => {
+        // Clean up test directory before each test
+        if (existsSync(testHomeDir)) {
+            rmSync(testHomeDir, { recursive: true, force: true });
+        }
+    });
+
+    afterEach(() => {
+        // Clean up test directory after each test
+        if (existsSync(testHomeDir)) {
+            rmSync(testHomeDir, { recursive: true, force: true });
+        }
+    });
+
+    test('getFioriToolsDirectory should return correct path', () => {
+        const fioriToolsDir = getFioriToolsDirectory();
+        expect(fioriToolsDir).toBe(join(testHomeDir, '.fioritools'));
+    });
+
+    test('getMigrationLogsDirectory should return correct path', () => {
+        const logsDir = getMigrationLogsDirectory();
+        expect(logsDir).toBe(join(testHomeDir, '.fioritools', 'migration-logs'));
+    });
+
+    test('ensureMigrationLogsDirectory should create directory', () => {
+        const logsDir = getMigrationLogsDirectory();
+        expect(existsSync(logsDir)).toBe(false);
+
+        ensureMigrationLogsDirectory();
+
+        expect(existsSync(logsDir)).toBe(true);
+    });
+
+    test('generateLogFileName should create valid filename', () => {
+        const projectName = 'my-project';
+        const timestamp = '2026-10-15T10:30:45.123Z';
+        const fileName = generateLogFileName(projectName, timestamp);
+
+        expect(fileName).toMatch(/^my-project_\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}\.json$/);
+        expect(fileName).toContain('my-project');
+    });
+
+    test('writeMigrationLog should create JSON log file', () => {
+        const logEntry: MigrationLogEntry = {
+            timestamp: '2026-10-15T10:30:45.123Z',
+            projectPath: '/path/to/my-project',
+            projectName: 'my-project',
+            migrationMessages: [
+                { type: 'INFO', description: 'Migration started' },
+                { type: 'WARNING', description: 'Some warning' }
+            ],
+            npmInstall: {
+                success: true,
+                warnings: ['npm WARN deprecated package@1.0.0'],
+                securityWarnings: ['found 2 vulnerabilities']
+            },
+            migrationSuccess: true
+        };
+
+        const mockLogger = {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn()
+        };
+
+        writeMigrationLog(logEntry, mockLogger as any);
+
+        const logsDir = getMigrationLogsDirectory();
+        expect(existsSync(logsDir)).toBe(true);
+
+        // Check that a log file was created
+        const files = readdirSync(logsDir);
+        expect(files.length).toBe(1);
+        expect(files[0]).toMatch(/^my-project_.*\.json$/);
+
+        // Verify log file contents
+        const logFilePath = join(logsDir, files[0]);
+        const logContent = JSON.parse(readFileSync(logFilePath, 'utf-8'));
+        expect(logContent).toEqual(logEntry);
+
+        // Verify logger was called
+        expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Migration log written to'));
+    });
+
+    test('writeMigrationLog should handle errors gracefully', () => {
+        const logEntry: MigrationLogEntry = {
+            timestamp: '2026-10-15T10:30:45.123Z',
+            projectPath: '/invalid/path',
+            projectName: 'invalid-project',
+            migrationMessages: [],
+            migrationSuccess: false
+        };
+
+        const mockLogger = {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn()
+        };
+
+        // Create directory but make it read-only to cause write error
+        ensureMigrationLogsDirectory();
+        const logsDir = getMigrationLogsDirectory();
+        chmodSync(logsDir, 0o444);
+
+        writeMigrationLog(logEntry, mockLogger as any);
+
+        // Verify logger was called with warning
+        expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Failed to write migration log'));
+
+        // Restore permissions for cleanup
+        chmodSync(logsDir, 0o755);
+    });
+
+    test('writeMigrationLog should work with migration failure', () => {
+        const logEntry: MigrationLogEntry = {
+            timestamp: '2026-10-15T10:30:45.123Z',
+            projectPath: '/path/to/failed-project',
+            projectName: 'failed-project',
+            migrationMessages: [{ type: 'ERROR', description: 'Migration failed' }],
+            npmInstall: {
+                success: false,
+                errors: ['npm ERR! code ERESOLVE', 'npm ERR! ERESOLVE unable to resolve dependency tree'],
+                warnings: ['npm WARN deprecated package@1.0.0']
+            },
+            migrationSuccess: false
+        };
+
+        writeMigrationLog(logEntry);
+
+        const logsDir = getMigrationLogsDirectory();
+        const files = readdirSync(logsDir);
+        expect(files.length).toBe(1);
+
+        const logFilePath = join(logsDir, files[0]);
+        const logContent = JSON.parse(readFileSync(logFilePath, 'utf-8'));
+        expect(logContent.migrationSuccess).toBe(false);
+        expect(logContent.npmInstall?.success).toBe(false);
+        expect(logContent.npmInstall?.errors).toEqual(expect.arrayContaining(['npm ERR! code ERESOLVE']));
+    });
+});

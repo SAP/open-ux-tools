@@ -1,15 +1,16 @@
 import { Command } from 'commander';
-import { resolve } from 'node:path';
+import { resolve, basename } from 'node:path';
 import { existsSync } from 'node:fs';
 import prompts from 'prompts';
 import { ProjectAccess, ProjectMigrator, initI18n as initMigrationI18n } from '@sap-ux/fiori-migration-writer';
 import { DestinationProxyType, isAppStudio, listDestinations, type Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
-import { runNpmInstallCommand } from '../../common/index.js';
+import { execNpmCommand } from '@sap-ux/project-access';
 import { getLogger } from '../../tracing/index.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
 import { t } from '../../i18n.js';
+import { writeMigrationLog, getMigrationLogsDirectory, type MigrationLogEntry } from './traceability.js';
 
 interface MigrateCommandOptions {
     destination?: string;
@@ -68,10 +69,9 @@ function validateDestination(destination: string): string {
 function validateHostname(hostname: string): string {
     const strippedHostname = hostname.replace(/^https?:\/\//i, '');
     // RFC-compliant hostname with an optional port.
+    // Simplified: alphanumeric + hyphens, no leading/trailing hyphens, optional port
     if (
-        !/^(?!-)(?!.*-$)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(:\d+)?$/.test(
-            strippedHostname
-        )
+        !/^[a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])?(\.[a-zA-Z\d]([a-zA-Z\d-]*[a-zA-Z\d])?)*(:\d+)?$/.test(strippedHostname)
     ) {
         throw new Error(t('migrate.validation.hostnameInvalid'));
     }
@@ -110,7 +110,7 @@ function validateClient(client: string): string {
  */
 function validateUI5Version(version: string): string {
     // Allow semantic version format: digits, dots, optional snapshot suffix
-    if (!/^[0-9]+\.[0-9]+\.[0-9]+(-snapshot)?$/.test(version)) {
+    if (!/^\d+\.\d+\.\d+(-snapshot)?$/.test(version)) {
         throw new Error(t('migrate.validation.ui5VersionInvalid'));
     }
     return version;
@@ -441,6 +441,71 @@ function toMigrationSystem(destination: Destination): MigrationSystem {
 }
 
 /**
+ * Execute npm install and capture errors, warnings, and security issues.
+ *
+ * @param resolvedPath - project path
+ * @param logger - logger instance
+ * @returns npm install result with captured messages
+ */
+async function executeNpmInstall(
+    resolvedPath: string,
+    logger: ReturnType<typeof getLogger>
+): Promise<MigrationLogEntry['npmInstall']> {
+    const npmErrors: string[] = [];
+    const npmWarnings: string[] = [];
+    const npmSecurityWarnings: string[] = [];
+
+    try {
+        await execNpmCommand(['install'], {
+            cwd: resolvedPath,
+            logger: {
+                info: (msg: string | object) => {
+                    const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
+                    // Capture security vulnerabilities
+                    if (
+                        message.toLowerCase().includes('vulnerabilities') ||
+                        message.toLowerCase().includes('security')
+                    ) {
+                        npmSecurityWarnings.push(message);
+                    }
+                    logger.info(msg);
+                },
+                warn: (msg: string | object) => {
+                    const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
+                    npmWarnings.push(message);
+                    logger.warn(msg);
+                },
+                error: (msg: string | object) => {
+                    const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
+                    npmErrors.push(message);
+                    logger.error(msg);
+                },
+                debug: (msg: string | object) => {
+                    logger.debug(msg);
+                }
+            } as any
+        });
+
+        logger.info(t('npm.installSuccess'));
+        return {
+            success: true,
+            ...(npmWarnings.length > 0 && { warnings: npmWarnings }),
+            ...(npmSecurityWarnings.length > 0 && { securityWarnings: npmSecurityWarnings })
+        };
+    } catch (error) {
+        const installError = error as Error;
+        npmErrors.push(installError.message);
+        logger.error(t('migrate.status.installFailed'));
+        return {
+            success: false,
+            errors: npmErrors,
+            ...(npmWarnings.length > 0 && { warnings: npmWarnings }),
+            ...(npmSecurityWarnings.length > 0 && { securityWarnings: npmSecurityWarnings })
+        };
+    }
+}
+
+/**
  * Execute the migration command.
  *
  * @param projectPath - path to the project to migrate
@@ -520,11 +585,20 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
         internalToggle: internalToggle || undefined
     });
 
+    // Prepare migration log entry
+    const migrationLogEntry: MigrationLogEntry = {
+        timestamp: new Date().toISOString(),
+        projectPath: resolvedPath,
+        projectName: basename(resolvedPath),
+        migrationMessages: result.messages || [],
+        migrationSuccess: result.result
+    };
+
     if (result.result) {
         logger.info(t('migrate.status.success'));
         if (result.messages?.length) {
             logger.info(t('migrate.status.messages'));
-            result.messages.forEach((msg) => {
+            result.messages.forEach((msg: { type: string; description: string }) => {
                 const logMessage = `  ${msg.type}: ${msg.description}`;
                 if (msg.type === 'ERROR') {
                     logger.error(logMessage);
@@ -540,16 +614,24 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
             logger.warn(t('migrate.status.skipInstallWarning'));
         } else {
             logger.info(t('migrate.status.installing'));
-            const installError = await runNpmInstallCommand(resolvedPath, [], { logger });
-            if (installError) {
-                logger.error(t('migrate.status.installFailed'));
-            }
+            migrationLogEntry.npmInstall = await executeNpmInstall(resolvedPath, logger);
         }
+
+        // Write traceability log
+        writeMigrationLog(migrationLogEntry, logger);
+        logger.info(`Migration log location: ${getMigrationLogsDirectory()}`);
     } else {
         logger.error(t('migrate.status.failed'));
         if (result.messages?.length) {
-            result.messages.forEach((msg) => logger.error(`  ${msg.description}`));
+            result.messages.forEach((msg: { type: string; description: string }) =>
+                logger.error(`  ${msg.description}`)
+            );
         }
+
+        // Write traceability log even on failure
+        writeMigrationLog(migrationLogEntry, logger);
+        logger.info(`Migration log location: ${getMigrationLogsDirectory()}`);
+
         throw new Error(t('migrate.status.failedError'));
     }
 }
