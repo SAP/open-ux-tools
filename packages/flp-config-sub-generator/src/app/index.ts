@@ -169,6 +169,11 @@ export default class extends Generator {
             process.exit(0); // only relevant for CLI
         }
 
+        if (answers.title === '') {
+            // '' (empty string) should be set as undefined
+            answers.title = undefined;
+        }
+
         if (answers.subTitle === '') {
             // '' (empty string) should be set as undefined
             answers.subTitle = undefined;
