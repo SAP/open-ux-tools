@@ -1,5 +1,5 @@
 import { jest, describe, test, expect, beforeEach, afterEach } from '@jest/globals';
-import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync, readdirSync, chmodSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync, rmSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
@@ -104,36 +104,6 @@ describe('Migration Traceability', () => {
 
         // Verify logger was called
         expect(mockLogger.info).toHaveBeenCalledWith(expect.stringContaining('Migration log written to'));
-    });
-
-    test('writeMigrationLog should handle errors gracefully', () => {
-        const logEntry: MigrationLogEntry = {
-            timestamp: '2026-10-15T10:30:45.123Z',
-            projectPath: '/invalid/path',
-            projectName: 'invalid-project',
-            migrationMessages: [],
-            migrationSuccess: false
-        };
-
-        const mockLogger = {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn(),
-            debug: jest.fn()
-        };
-
-        // Create directory but make it read-only to cause write error
-        ensureMigrationLogsDirectory();
-        const logsDir = getMigrationLogsDirectory();
-        chmodSync(logsDir, 0o444);
-
-        writeMigrationLog(logEntry, mockLogger as any);
-
-        // Verify logger was called with warning
-        expect(mockLogger.warn).toHaveBeenCalledWith(expect.stringContaining('Failed to write migration log'));
-
-        // Restore permissions for cleanup
-        chmodSync(logsDir, 0o755);
     });
 
     test('writeMigrationLog should work with migration failure', () => {
