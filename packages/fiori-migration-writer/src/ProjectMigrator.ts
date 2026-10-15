@@ -237,6 +237,17 @@ export class ProjectMigrator {
      * @param strict - Enable strict validation mode (WARNINGs become ERRORs for critical issues)
      * @returns Migration result with status and messages
      */
+    /**
+     * Copy common files and apply migration transformations
+     *
+     * @param projectInfo - Project information
+     * @param vscode - VS Code context
+     * @param ui5SnapshotUrl - UI5 snapshot URL
+     * @param internalToggle - Enable internal features
+     * @param strict - Enable strict validation mode
+     * @param workspaceFolders - Workspace folders to search for reuse libraries
+     * @returns Migration result with messages
+     */
     private static async copyCommonFiles(
         projectInfo: ImportProjectInfo,
         vscode: any,
