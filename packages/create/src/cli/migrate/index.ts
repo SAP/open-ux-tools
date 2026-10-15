@@ -479,7 +479,6 @@ async function executeNpmInstall(
     logger: ReturnType<typeof getLogger>
 ): Promise<MigrationLogEntry['npmInstall']> {
     const npmErrors: string[] = [];
-    const npmWarnings: string[] = [];
     const npmSecurityWarnings: string[] = [];
 
     try {
@@ -498,11 +497,6 @@ async function executeNpmInstall(
                     }
                     logger.info(msg);
                 },
-                warn: (msg: string | object) => {
-                    const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
-                    npmWarnings.push(message);
-                    logger.warn(msg);
-                },
                 error: (msg: string | object) => {
                     const message = typeof msg === 'string' ? msg : JSON.stringify(msg);
                     npmErrors.push(message);
@@ -517,7 +511,6 @@ async function executeNpmInstall(
         logger.info(t('npm.installSuccess'));
         return {
             success: true,
-            ...(npmWarnings.length > 0 && { warnings: npmWarnings }),
             ...(npmSecurityWarnings.length > 0 && { securityWarnings: npmSecurityWarnings })
         };
     } catch (error) {
@@ -527,7 +520,6 @@ async function executeNpmInstall(
         return {
             success: false,
             errors: npmErrors,
-            ...(npmWarnings.length > 0 && { warnings: npmWarnings }),
             ...(npmSecurityWarnings.length > 0 && { securityWarnings: npmSecurityWarnings })
         };
     }

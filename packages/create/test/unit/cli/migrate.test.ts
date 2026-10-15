@@ -180,7 +180,6 @@ describe('migrate command', () => {
             throwOnError: true,
             logger: expect.objectContaining({
                 info: expect.any(Function),
-                warn: expect.any(Function),
                 error: expect.any(Function),
                 debug: expect.any(Function)
             })
