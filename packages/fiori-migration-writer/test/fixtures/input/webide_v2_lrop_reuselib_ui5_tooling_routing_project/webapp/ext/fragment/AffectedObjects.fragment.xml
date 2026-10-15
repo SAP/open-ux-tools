@@ -1,0 +1,84 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:smartTable="sap.ui.comp.smarttable"
+	xmlns:customData="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+
+	<smartTable:SmartTable 
+		id="AffectedObjectsSmartTable" 		
+		width="100%" 
+		
+		entitySet="C_DefectRecordAffectedObject" 
+		tableBindingPath="to_DefectAffectedObjectTP" 
+		persistencyKey="AffectedObjects::AffcdObjTab1" 
+
+		editable="{= ${ui>/editable} }"
+		requestAtLeastFields="Update_mc,DefectInternalID,DefectAffectedObject,DraftUUID,IsActiveEntity"
+		direction="Column" 
+		fitContainer="true" 
+		tableType="ResponsiveTable"
+		enableAutoBinding="true" 
+		demandPopin="true" 
+		useExportToExcel="false" 
+		useVariantManagement="false" 
+		showVariantManagement="false" 
+		initialNoDataText="{i18n|sap.suite.ui.generic.template.ObjectPage|C_DefectRecord>NOITEMS_SMARTTABLE}"
+		
+		beforeRebindTable="onBeforeRebindAffectedObjectsSmartTable"
+		
+		customData:useSmartField="true"
+		customData:useSmartToggle="true">
+		
+			<smartTable:customToolbar>
+				<OverflowToolbar design="Transparent">
+					<ToolbarSpacer/>
+					<Button
+						id="DetermineAffectedObjects"
+						text="{i18n>AFFECTED_OBJECTS_TABLE_DETERMINE}"
+						press="onClickActionAddAffectedObject"
+						visible="{parts: [{path: 'Determine_affected_objects_ac'}, {path: 'ui>/editable'}], formatter: '.getActionEnabled' }"
+						enabled="{parts: [{path: 'Determine_affected_objects_ac'}, {path: 'ui>/editable'}], formatter: '.getActionEnabled' }"
+					/>
+					<Button
+						id="AffectedObjectSelectAsDefective"
+						text="{i18n>AFFECTED_OBJECT_SELECT_AS_DEFECTIVE}"
+						press="onClickActionAffectedObjectSelectAsDefective"
+						visible="{parts: [{path: 'Add_affected_object_ac'}, {path: 'ui>/editable'}], formatter: '.getActionEnabled' }"
+						enabled="{parts: [{path: 'Add_affected_object_ac'}, {path: 'ui>/editable'}], formatter: '.getActionEnabled' }"
+					/>
+					<Button
+						id="AddAffectedObject"
+						text="{i18n>AFFECTED_OBJECTS_TABLE_ADD}"
+						press="onClickActionAddAffectedObject"
+						visible="{parts: [{path: 'Add_affected_object_ac'}, {path: 'ui>/editable'}], formatter: '.getActionEnabled' }"
+						enabled="{parts: [{path: 'Add_affected_object_ac'}, {path: 'ui>/editable'}], formatter: '.getActionEnabled' }"
+					/>
+					<Button
+						id="RemoveAffectedObject"
+						text="{i18n>AFFECTED_OBJECTS_TABLE_REMOVE}"
+						press="onClickActionRemoveAffectedObject"
+						visible="{parts: [{path: 'ui>/editable'},
+										  {path: '/removeAffcdObjActionEnabled', model: 'affectedObjectTableState'}], 
+						                 formatter: '.getActionRemoveVisible' }"
+						enabled="{parts: [{path: 'ui>/editable'}, 
+						                  {path: '/affectedObjectsTableHasSelectedItems', model: 'affectedObjectTableState'}], 
+						                 formatter: '.getActionRemoveEnabled' }"
+					/>
+					<MenuButton 
+						id="AffectedObjectActionsMenu" 
+						type="Ghost" 
+						text="{i18n>AFFECTED_OBJECTS_ACTIONS}" 
+						buttonMode="Regular"
+						useDefaultActionOnly="true">
+						<menu>
+							<Menu items="affectedObjectTableState>affectedObjectsTableActions">
+							</Menu>
+						</menu>
+					</MenuButton>
+				</OverflowToolbar>
+			</smartTable:customToolbar>
+		
+		</smartTable:SmartTable>
+
+</core:FragmentDefinition>

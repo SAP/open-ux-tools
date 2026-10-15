@@ -1,0 +1,100 @@
+{
+  "projectType": [
+    "sap.watt.saptoolsets.fiori.project.ui5template.smartProject",
+    "sap.watt.uitools.ide.fiori",
+    "sap.watt.saptoolsets.fiori.project.uiadaptation",
+    "com.sap.webide.hybrid.cordova"
+  ],
+  "generation": [
+    {
+      "templateId": "ui5template.smartTemplateCommon",
+      "templateVersion": "1.40.12",
+      "dateTimeStamp": "Fri, 07 Jul 2017 12:26:17 GMT"
+    },
+    {
+      "templateId": "ui5template.smartTemplate",
+      "templateVersion": "1.40.12",
+      "dateTimeStamp": "Fri, 07 Jul 2017 12:26:18 GMT"
+    },
+    {
+      "templateId": "uiadaptation.changespreviewjs",
+      "templateVersion": "0.0.0",
+      "dateTimeStamp": "Thu, 15 Mar 2018 07:56:50 GMT"
+    },
+    {
+      "templateId": "ui5template.objectpageextension",
+      "templateVersion": "1.0.0",
+      "dateTimeStamp": "Thu, 01 Feb 2018 07:15:50 GMT"
+    },
+    {
+      "templateId": "uiadaptation.uiadaptationpanehtml",
+      "templateVersion": "0.0.0",
+      "dateTimeStamp": "Tue, 27 Feb 2018 13:18:14 GMT"
+    }
+  ],
+  "mockpreview": {
+    "mockUri": "/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/",
+    "metadataFilePath": "localService/metadata.xml",
+    "loadJSONFiles": false,
+    "loadCustomRequests": false,
+    "mockRequestsFilePath": ""
+  },
+  "translation": {
+    "translationDomain": "",
+    "supportedLanguages": "en,fr,de",
+    "defaultLanguage": "en",
+    "defaultI18NPropertyFile": "i18n.properties",
+    "resourceModelName": "i18n"
+  },
+  "basevalidator": {
+    "services": {
+      "xml": "fioriXmlAnalysis",
+      "js": "fioriJsValidator"
+    }
+  },
+  "codeCheckingTriggers": {
+    "notifyBeforePush": true,
+    "notifyBeforePushLevel": "Error",
+    "blockPush": false,
+    "blockPushLevel": "Error"
+  },
+  "hybrid": {
+    "fioriLPAppID": "HAT_MOBILE_APP-display",
+    "backendDestination": "UYT",
+    "hatVersion": "1.28.0",
+    "oDataConfigs": [
+      {
+        "hybridOdata": {
+          "name": "mainService",
+          "serviceUrl": ""
+        },
+        "originOdata": {
+          "name": "mainService",
+          "serviceUrl": "/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/"
+        }
+      },
+      {
+        "hybridOdata": {
+          "name": "QM_DEFECT_RECORD_ANNO_MDL",
+          "serviceUrl": ""
+        },
+        "originOdata": {
+          "name": "QM_DEFECT_RECORD_ANNO_MDL",
+          "serviceUrl": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='QM_DEFECT_RECORD_ANNO_MDL',Version='0001')/$value/"
+        }
+      }
+    ]
+  },
+  "hcpdeploy": {
+    "account": "fiori",
+    "name": "i2dqmdefectrecords1",
+    "entryPath": "webapp"
+  },
+  "appparams": [
+    {
+      "paramName": "sap-ui-xx-lesssupport",
+      "paramValue": "true",
+      "paramActive": true
+    }
+  ]
+}
