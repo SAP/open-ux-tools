@@ -24,7 +24,7 @@ describe('ProjectAccess.getProjectRoots', () => {
         // twice again. The fix rejects exact matches (manifestRoot === root || manifestRoot.startsWith(root + sep)).
         const WSUri = URI.file(join(fixturesDir, 'app-with-package-and-pom'));
         const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
-        expect(projectRoots.length).toEqual(1);
+        expect(projectRoots).toHaveLength(1);
         expect(projectRoots[0].type).toEqual(MigrationTypes.project);
         expect(projectRoots[0].root.endsWith(join('fixtures', 'project-roots', 'app-with-package-and-pom'))).toEqual(
             true
@@ -39,7 +39,7 @@ describe('ProjectAccess.getProjectRoots', () => {
         const WSUri = URI.file(join(fixturesDir, 'app-with-nested-lib'));
         const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
         // Should have 2 entries: one for the app (project type) and one for the nested lib (library type)
-        expect(projectRoots.length).toEqual(2);
+        expect(projectRoots).toHaveLength(2);
         const appEntry = projectRoots.find(
             (p) =>
                 p.type === MigrationTypes.project &&
@@ -62,7 +62,7 @@ describe('ProjectAccess.getProjectRoots', () => {
         // must be reported exactly once, as a library — not twice.
         const WSUri = URI.file(join(fixturesDir, 'reuselib-ui5yaml'));
         const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
-        expect(projectRoots.length).toEqual(1);
+        expect(projectRoots).toHaveLength(1);
         expect(projectRoots[0].type).toEqual(MigrationTypes.library);
         expect(projectRoots[0].root.endsWith(join('fixtures', 'project-roots', 'reuselib-ui5yaml'))).toEqual(true);
     });
@@ -84,7 +84,7 @@ describe('ProjectAccess.getProjectRoots', () => {
         //     └── manifest.json (libPath = dirname of this)
         const WSUri = URI.file(join(fixturesDir, 'reuselib-ui5yaml'));
         const projectRoots = await ProjectAccess.getProjectRoots([createProjectFolder(WSUri.fsPath)], false);
-        expect(projectRoots.length).toEqual(1);
+        expect(projectRoots).toHaveLength(1);
         const libEntry = projectRoots[0];
         expect(libEntry.type).toEqual(MigrationTypes.library);
 

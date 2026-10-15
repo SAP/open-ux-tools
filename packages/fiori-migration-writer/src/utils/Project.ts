@@ -505,8 +505,11 @@ export class ProjectAccess {
         if (reuseLibsRoots.length) {
             const reuseLibRootPaths = new Set(reuseLibsRoots.map((lib) => lib.value.libRoot));
             const appRoots: string[] = [];
-            for (const root of roots) {
-                const result = await this.getProjectInfo(root);
+            // Fetch all project info in parallel for performance
+            const projectInfoResults = await Promise.all(roots.map((root) => this.getProjectInfo(root)));
+            for (let i = 0; i < roots.length; i++) {
+                const root = roots[i];
+                const result = projectInfoResults[i];
                 const isApp = !!(result.projectInfo.FEVersion || result.projectInfo.isSAPApp);
                 if (isApp) {
                     appRoots.push(root);
@@ -516,11 +519,11 @@ export class ProjectAccess {
                 ) {
                     libraryOnlyRoots.add(root);
                 }
-                // in case reuse libs were detected in an application project, remove them
-                reuseLibsRoots = reuseLibsRoots.filter(
-                    (lib) => !appRoots.some((appRoot) => isSamePath(lib.value.libRoot, appRoot))
-                );
             }
+            // After classifying all roots, filter out reuse libs detected in application projects
+            reuseLibsRoots = reuseLibsRoots.filter(
+                (lib) => !appRoots.some((appRoot) => isSamePath(lib.value.libRoot, appRoot))
+            );
         }
 
         // if workspace has multiple roots then make sure there are no similar projects
