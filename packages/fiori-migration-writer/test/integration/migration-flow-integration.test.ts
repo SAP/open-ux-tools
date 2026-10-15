@@ -118,7 +118,10 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
         if (content) {
             let normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
             if (normalizeVersion) {
-                normalizedContent = normalizedContent.replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
+                normalizedContent = normalizedContent.replace(
+                    SOURCE_TEMPLATE_VERSION_PATTERN,
+                    '$1"<migrator-version>"'
+                );
             }
             const snapshotPath = join(__dirname, '__snapshots__', appName, file + '.snapshot');
             expect(normalizedContent).toMatchSpecificSnapshot(snapshotPath);
@@ -135,7 +138,10 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
             // toMatchSpecificSnapshot doesn't use snapshot serializers, so we normalize manually
             let normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
             if (normalizeVersion) {
-                normalizedContent = normalizedContent.replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
+                normalizedContent = normalizedContent.replace(
+                    SOURCE_TEMPLATE_VERSION_PATTERN,
+                    '$1"<migrator-version>"'
+                );
             }
 
             // Use specific snapshot path per app and file
