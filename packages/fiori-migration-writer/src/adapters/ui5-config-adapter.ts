@@ -209,6 +209,9 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
     const proxyConfig: FioriToolsProxyConfig = buildProxyConfig(backends, templateData, setUI5Version);
     config.addFioriToolsProxyMiddleware(proxyConfig);
 
+    // Add fiori-tools-appreload middleware
+    config.addFioriToolsAppReloadMiddleware();
+
     // Add fiori-tools-preview middleware if configured
     const previewMiddleware = buildPreviewMiddleware(templateData);
     if (previewMiddleware) {
