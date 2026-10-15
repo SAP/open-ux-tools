@@ -1,9 +1,7 @@
 import type { Command } from 'commander';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
-import { getService } from '@sap-ux/store';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import type { BackendSystem } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
+import { rejectIfAppStudio, getSystemService, toPublicView } from '../utils/system-store.js';
 
 /**
  * Add the "list system" subcommand to a passed command.
@@ -35,21 +33,11 @@ Example:
 async function listSystems(asJson: boolean): Promise<void> {
     const logger = getLogger();
     try {
-        if (isAppStudio()) {
-            logger.error(
-                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
-            );
+        if (rejectIfAppStudio(logger)) {
             return;
         }
 
-        // When emitting JSON, pass a silent logger to getService so that
-        // @sap-ux/store diagnostic messages (e.g. "Using KeyStoreManager…") do
-        // not appear on stdout before the JSON payload and break piped consumers.
-        const storeLogger = asJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
-        const service = await getService<BackendSystem, BackendSystemKey>({
-            entityName: 'system',
-            logger: storeLogger
-        });
+        const service = await getSystemService(asJson);
         // Pass no filter so all systems are returned regardless of connection type
         const systems = await service.getAll();
 
@@ -71,25 +59,6 @@ async function listSystems(asJson: boolean): Promise<void> {
         // is visible when --verbose / debug logging is enabled.
         logger.debug(error);
     }
-}
-
-/**
- * Returns a view of a system with only non-sensitive fields.
- *
- * @param system - the backend system
- * @returns non-sensitive system data
- */
-function toPublicView(system: BackendSystem): Record<string, unknown> {
-    return {
-        name: system.name,
-        url: system.url,
-        client: system.client,
-        systemType: system.systemType,
-        authenticationType: system.authenticationType,
-        connectionType: system.connectionType,
-        userDisplayName: system.userDisplayName,
-        hasSensitiveData: system.hasSensitiveData
-    };
 }
 
 /**

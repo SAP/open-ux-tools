@@ -5,7 +5,7 @@ import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { isMemFsEnabled, getCurrentEditor, exists } from '../utils/fs-adapter.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
-import { hasStore } from '../types/mem-fs-types.js';
+import { hasStore, type EditorWithStore } from '../types/mem-fs-types.js';
 
 // Re-export for backward compatibility with tests
 export { validateRootDirectory } from '../utils/path-validation.js';
@@ -45,101 +45,50 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
  * @param rootPath - Project root path
  * @param paths - Legacy paths object
  */
+/**
+ * Move all mem-fs files rooted at `fromPath` to be rooted at `toPath`.
+ * Iterates the store after collecting to avoid modifying during iteration.
+ *
+ * mem-fs keys use the OS-native separator, so comparisons use `sep`.
+ */
+function moveMemFsDirectory(fs: EditorWithStore, fromPath: string, toPath: string): void {
+    const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
+
+    fs.store.each((file) => {
+        const filePath = file.path;
+        if (filePath === fromPath || filePath.startsWith(fromPath + sep)) {
+            const relativePath = filePath === fromPath ? '' : filePath.substring(fromPath.length + 1);
+            const newPath = relativePath ? join(toPath, relativePath) : toPath;
+            filesToMove.push({ oldPath: filePath, newPath });
+        }
+    });
+
+    for (const { oldPath, newPath } of filesToMove) {
+        const fileContent = fs.read(oldPath);
+        fs.write(newPath, fileContent);
+        fs.delete(oldPath);
+    }
+}
+
 async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
-    const fs = getCurrentEditor();
-    if (!fs || !hasStore(fs)) {
+    const editor = getCurrentEditor();
+    if (!editor || !hasStore(editor)) {
         return;
     }
 
     // Move webapp files from src/main/webapp to webapp
     if (await exists(paths.ffLegacyWebappPath)) {
-        // Iterate through all files in mem-fs store
-        // mem-fs stores files with absolute paths as keys
-        const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
-
-        fs.store.each((file) => {
-            const filePath = file.path;
-
-            // Check if this file is under the legacy webapp path.
-            // mem-fs keys use the OS-native separator, so compare with `sep` (not a hardcoded '/')
-            // or the match fails on Windows and no files are moved.
-            if (filePath === paths.ffLegacyWebappPath || filePath.startsWith(paths.ffLegacyWebappPath + sep)) {
-                // Calculate relative path from legacy webapp
-                const relativePath =
-                    filePath === paths.ffLegacyWebappPath
-                        ? ''
-                        : filePath.substring(paths.ffLegacyWebappPath.length + 1);
-                const newPath = relativePath
-                    ? join(rootPath, DirName.Webapp, relativePath)
-                    : join(rootPath, DirName.Webapp);
-
-                filesToMove.push({ oldPath: filePath, newPath });
-            }
-        });
-
-        // Move files (do this after iteration to avoid modifying during iteration)
-        for (const { oldPath, newPath } of filesToMove) {
-            const fileContent = fs.read(oldPath);
-            fs.write(newPath, fileContent);
-            fs.delete(oldPath);
-        }
+        moveMemFsDirectory(editor, paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
     }
 
-    // Move test/qunit to webapp/test
+    // Move test/qunit to webapp/test/qunit
     if (await exists(paths.ffLegacyTestQunitPath)) {
-        const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
-
-        fs.store.each((file) => {
-            const filePath = file.path;
-
-            if (filePath === paths.ffLegacyTestQunitPath || filePath.startsWith(paths.ffLegacyTestQunitPath + sep)) {
-                const relativePath =
-                    filePath === paths.ffLegacyTestQunitPath
-                        ? ''
-                        : filePath.substring(paths.ffLegacyTestQunitPath.length + 1);
-                const newPath = relativePath
-                    ? join(paths.ffNewTestPath, 'qunit', relativePath)
-                    : join(paths.ffNewTestPath, 'qunit');
-
-                filesToMove.push({ oldPath: filePath, newPath });
-            }
-        });
-
-        for (const { oldPath, newPath } of filesToMove) {
-            const fileContent = fs.read(oldPath);
-            fs.write(newPath, fileContent);
-            fs.delete(oldPath);
-        }
+        moveMemFsDirectory(editor, paths.ffLegacyTestQunitPath, join(paths.ffNewTestPath, 'qunit'));
     }
 
-    // Move test/uiveri5 to webapp/test
+    // Move test/uiveri5 to webapp/test/uiveri5
     if (await exists(paths.ffLegacyTestuiveri5Path)) {
-        const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
-
-        fs.store.each((file) => {
-            const filePath = file.path;
-
-            if (
-                filePath === paths.ffLegacyTestuiveri5Path ||
-                filePath.startsWith(paths.ffLegacyTestuiveri5Path + sep)
-            ) {
-                const relativePath =
-                    filePath === paths.ffLegacyTestuiveri5Path
-                        ? ''
-                        : filePath.substring(paths.ffLegacyTestuiveri5Path.length + 1);
-                const newPath = relativePath
-                    ? join(paths.ffNewTestPath, 'uiveri5', relativePath)
-                    : join(paths.ffNewTestPath, 'uiveri5');
-
-                filesToMove.push({ oldPath: filePath, newPath });
-            }
-        });
-
-        for (const { oldPath, newPath } of filesToMove) {
-            const fileContent = fs.read(oldPath);
-            fs.write(newPath, fileContent);
-            fs.delete(oldPath);
-        }
+        moveMemFsDirectory(editor, paths.ffLegacyTestuiveri5Path, join(paths.ffNewTestPath, 'uiveri5'));
     }
 }
 
