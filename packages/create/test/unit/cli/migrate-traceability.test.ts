@@ -8,12 +8,8 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getFioriToolsDirectory: () => join(testHomeDir, '.fioritools')
 }));
 
-const {
-    getMigrationLogsDirectory,
-    ensureMigrationLogsDirectory,
-    generateLogFileName,
-    writeMigrationLog
-} = await import('../../../src/cli/migrate/traceability.js');
+const { getMigrationLogsDirectory, ensureMigrationLogsDirectory, generateLogFileName, writeMigrationLog } =
+    await import('../../../src/cli/migrate/traceability.js');
 
 const { getFioriToolsDirectory } = await import('@sap-ux/store');
 

@@ -50,6 +50,10 @@ export function buildLegacyPaths(rootPath: string, legacyPath: string): LegacyPa
  * Iterates the store after collecting to avoid modifying during iteration.
  *
  * mem-fs keys use the OS-native separator, so comparisons use `sep`.
+ *
+ * @param fs
+ * @param fromPath
+ * @param toPath
  */
 function moveMemFsDirectory(fs: EditorWithStore, fromPath: string, toPath: string): void {
     const filesToMove: Array<{ oldPath: string; newPath: string }> = [];
