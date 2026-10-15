@@ -1,4 +1,5 @@
 import { join, dirname } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
     defaultMinUi5Version,
@@ -60,12 +61,31 @@ expect.addSnapshotSerializer({
 });
 
 /**
+ * Returns true if the project's input manifest already had a sourceTemplate.version,
+ * meaning migration preserves it rather than writing the current package version.
+ * In that case we should NOT normalize it — preserving the literal value in snapshots
+ * ensures we catch regressions that accidentally overwrite or drop the existing version.
+ */
+function inputHasSourceTemplateVersion(projectPath: string): boolean {
+    try {
+        const manifest = JSON.parse(readFileSync(join(projectPath, 'webapp', 'manifest.json'), 'utf8'));
+        return typeof manifest?.['sap.app']?.sourceTemplate?.version === 'string';
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Helper to verify migrated files using per-file snapshots
  * Creates separate snapshot files for each app to make reviews manageable
  */
 function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): void {
     // Core configuration files - these MUST exist after migration
     const requiredFiles = ['package.json', 'ui5.yaml', '.gitignore'];
+    // Only normalize the migrator-written version when the input had no pre-existing version.
+    // If the input already had sourceTemplate.version, migration preserves it as-is (no pipeline churn)
+    // and we keep the literal value in the snapshot to catch accidental overwrites.
+    const normalizeVersion = !inputHasSourceTemplateVersion(projectPath);
 
     // Optional core config files
     const optionalCoreFiles = ['ui5-local.yaml', 'ui5-mock.yaml'];
@@ -96,9 +116,10 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
         const content = getFileFromMemFs(fs, projectPath, file);
         expect(content).toBeDefined();
         if (content) {
-            const normalizedContent = content
-                .replace(UUID_PATTERN, '<generated-uuid>')
-                .replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
+            let normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
+            if (normalizeVersion) {
+                normalizedContent = normalizedContent.replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
+            }
             const snapshotPath = join(__dirname, '__snapshots__', appName, file + '.snapshot');
             expect(normalizedContent).toMatchSpecificSnapshot(snapshotPath);
         }
@@ -112,9 +133,10 @@ function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): 
         if (content) {
             // Normalize UUIDs and migrator version before snapshot comparison
             // toMatchSpecificSnapshot doesn't use snapshot serializers, so we normalize manually
-            const normalizedContent = content
-                .replace(UUID_PATTERN, '<generated-uuid>')
-                .replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
+            let normalizedContent = content.replace(UUID_PATTERN, '<generated-uuid>');
+            if (normalizeVersion) {
+                normalizedContent = normalizedContent.replace(SOURCE_TEMPLATE_VERSION_PATTERN, '$1"<migrator-version>"');
+            }
 
             // Use specific snapshot path per app and file
             const snapshotPath = join(__dirname, '__snapshots__', appName, file + '.snapshot');
