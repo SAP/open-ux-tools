@@ -7,9 +7,12 @@ import {
     getOrAddNamespace,
     getXPathStringsForXmlFile,
     getDOMParserOptions,
+    getExistingButtonGroups,
+    getFilterBarIdsInFile,
     TEMPLATE_NAMESPACES
 } from '../../../../../src/building-block/prompts/utils/xml.js';
 import { DOMParser } from '@xmldom/xmldom';
+import type { Document as XmldomDocument } from '@xmldom/xmldom';
 import { isElementIdAvailable } from '../../../../../src/common/utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -73,13 +76,14 @@ describe('utils - xml', () => {
                 available: true
             },
             {
-                name: 'Invalid xml(warning)',
+                name: 'Invalid xml(fatalError)',
                 content: '<a>aaa</b>',
                 id: 'Test',
                 available: true
             },
             {
-                name: 'Invalid xml(warning), but duplicate id',
+                // parsing throws, but regex fallback detects the id in the raw content
+                name: 'Invalid xml(fatalError), but duplicate id',
                 content: '<a id="Test">aaa</b>',
                 id: 'Test',
                 available: false
@@ -102,24 +106,41 @@ describe('utils - xml', () => {
             fs.write(path, content);
             expect(isElementIdAvailable(fs, path, id)).toEqual(available);
         });
+
+        it('logs a warning via the provided logger when parsing fails', () => {
+            const path = join(projectPath, `webapp/ext/Broken.xml`);
+            fs.write(path, '<a id="Test">aaa</b>');
+            const logger = { warn: jest.fn() };
+            isElementIdAvailable(fs, path, 'Test', logger as never);
+            expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('isElementIdAvailable'));
+        });
+
+        it('correctly handles id with regex metacharacters in the fallback text search', () => {
+            const path = join(projectPath, `webapp/ext/BrokenMetaId.xml`);
+            // 'filter.bar' contains a dot — without escaping, the regex would match 'filter-bar' too
+            fs.write(path, '<a id="filter-bar">aaa</b>');
+            expect(isElementIdAvailable(fs, path, 'filter.bar')).toBe(true);
+            fs.write(path, '<a id="filter.bar">aaa</b>');
+            expect(isElementIdAvailable(fs, path, 'filter.bar')).toBe(false);
+        });
     });
 });
 
 describe('getOrAddNamespace', () => {
-    function createFragmentXmlDoc(attrs: Record<string, string> = {}) {
+    function createFragmentXmlDoc(attrs: Record<string, string> = {}): XmldomDocument {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
             .join(' ');
         const xml = `<core:FragmentDefinition ${attrString}></core:FragmentDefinition>`;
-        return new DOMParser().parseFromString(xml, 'application/xml');
+        return new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
     }
 
-    function createViewXmlDoc(attrs: Record<string, string> = {}) {
+    function createViewXmlDoc(attrs: Record<string, string> = {}): XmldomDocument {
         const attrString = Object.entries(attrs)
             .map(([k, v]) => `${k}="${v}"`)
             .join(' ');
         const xml = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" ${attrString}></mvc:View>`;
-        return new DOMParser().parseFromString(xml, 'application/xml');
+        return new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
     }
 
     it('returns existing prefix for macros namespace in mvc:View', () => {
@@ -169,7 +190,7 @@ describe('getOrAddNamespace', () => {
             <RichTextEditorWithMetadata metaPath="/Travel/Status" id="RichTextEditor">
             </RichTextEditorWithMetadata>
         </core:FragmentDefinition>`;
-        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        const xmlDoc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
@@ -181,7 +202,7 @@ describe('getOrAddNamespace', () => {
                 <content />
             </Page>
         </mvc:View>`;
-        const xmlDoc = new DOMParser().parseFromString(xml, 'application/xml');
+        const xmlDoc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(xml, 'application/xml');
         expect(getOrAddNamespace(xmlDoc, 'sap.fe.macros', 'macros')).toBe('');
         expect(xmlDoc.documentElement.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
@@ -192,6 +213,67 @@ describe('getXPathStringsForXmlFile', () => {
 
     beforeAll(() => {
         fs = create(createStorage());
+    });
+
+    it('handles document with no element children (PI-only firstChild)', () => {
+        const viewPath = '/test/PiOnly.view.xml';
+        // A document whose firstChild is a ProcessingInstruction — it has no ELEMENT children,
+        // so the while-loop visits the PI node and the null-guard on node covers the !node branch
+        // via the typed null possibility on firstChild.
+        fs.write(viewPath, `<?xml version="1.0"?><mvc:View xmlns:mvc="sap.ui.core.mvc"/>`);
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        expect(typeof inputChoices).toBe('object');
+    });
+
+    it('uses macros:Page as pageMacroDefinition when macros is the default namespace (empty prefix)', () => {
+        // macrosNamespace returns '' when macros is defined as the default xmlns
+        // the falsy branch on line 116: macrosNamespace ? `${...}:Page` : 'macros:Page'
+        const viewPath = '/test/DefaultNsMacros.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.fe.macros">
+    <Page title="Main"/>
+</mvc:View>`
+        );
+        const { pageMacroDefinition } = getXPathStringsForXmlFile(viewPath, fs);
+        expect(pageMacroDefinition).toBe('macros:Page');
+    });
+
+    it('falls back to macros prefix when macros is default namespace and macros:Page has no items child', () => {
+        // macrosNamespace is '' (falsy) — covers the `macrosNamespace || 'macros'` branch
+        // in addMacrosItemsPathIfMissing (line 82) and the call site (line 136)
+        const viewPath = '/test/DefaultNsMacrosWithPage.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.fe.macros">
+    <Page id="MyPage" title="cp">
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        // synthesized path uses 'macros' as the fallback prefix
+        expect(keys.some((k) => k.includes('macros:items'))).toBe(true);
+    });
+
+    it('synthesizes macros:items using nodeName when macros:Page node already has a prefix', () => {
+        // covers the truthy branch: (node as XmldomElement).prefix ? node.nodeName : `${resolved}:Page`
+        const viewPath = '/test/CpWithPrefix.view.xml';
+        fs.write(
+            viewPath,
+            `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros" xmlns="sap.m">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp">
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`
+        );
+        const { inputChoices } = getXPathStringsForXmlFile(viewPath, fs);
+        const keys = Object.keys(inputChoices);
+        // The synthesized path uses macros:Page (from node.nodeName) / macros:items
+        expect(keys.some((k) => k.includes('macros:Page/macros:items'))).toBe(true);
     });
 
     it('synthesizes macros:items path when macros:Page exists but has no macros:items child', () => {
@@ -251,15 +333,18 @@ describe('getDOMParserOptions', () => {
         const options = getDOMParserOptions(undefined, (level, message) => {
             calls.push([level, message]);
         });
-        new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        try {
+            new DOMParser(options).parseFromString(invalidXml, 'text/xml');
+        } catch {
+            // fatalError throws a ParseError in xmldom 0.9+; handler still gets called before the throw
+        }
         expect(calls.length).toBeGreaterThan(0);
         expect(calls[0][0]).toBeDefined();
     });
 
-    test('silent handler returns partial DOM without throwing', () => {
+    test('silent handler: fatal parse error still throws ParseError in xmldom 0.9+', () => {
         const options = getDOMParserOptions(undefined, () => {});
-        const doc = new DOMParser(options).parseFromString(invalidXml, 'text/xml');
-        expect(doc).toBeDefined();
+        expect(() => new DOMParser(options).parseFromString(invalidXml, 'text/xml')).toThrow();
     });
 
     test('xmlns option resolves macros prefix from TEMPLATE_NAMESPACES', () => {
@@ -293,5 +378,141 @@ describe('getDOMParserOptions', () => {
         const options = getDOMParserOptions(TEMPLATE_NAMESPACES, handler);
         expect(options.onError).toBe(handler);
         expect(options.xmlns).toBe(TEMPLATE_NAMESPACES);
+    });
+});
+
+describe('getOrAddNamespace - null documentElement', () => {
+    it('returns the default prefix when documentElement is null', () => {
+        const doc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            '<root/>',
+            'text/xml'
+        ) as unknown as XmldomDocument;
+        Object.defineProperty(doc, 'documentElement', { value: null, configurable: true });
+        expect(getOrAddNamespace(doc, 'sap.fe.macros', 'macros')).toBe('macros');
+    });
+});
+
+describe('getExistingButtonGroups', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('returns empty set when RTE element is not found at aggregation path', async () => {
+        const filePath = '/test/NoRte.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:macros="sap.fe.macros">
+    <macros:Table id="T1"/>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(filePath, `/core:FragmentDefinition/macros:RTE`, fs);
+        expect(result.size).toBe(0);
+    });
+
+    it('returns empty set when RTE element has no buttonGroups child', async () => {
+        const filePath = '/test/RteNoGroups.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status"/>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result.size).toBe(0);
+    });
+
+    it('returns button group names when RTE has buttonGroups children', async () => {
+        const filePath = '/test/RteWithGroups.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status">
+        <richtexteditor:buttonGroups>
+            <richtexteditor:ButtonGroup name="font-style" buttons="bold,italic"/>
+            <richtexteditor:ButtonGroup name="clipboard" buttons="cut,copy,paste"/>
+        </richtexteditor:buttonGroups>
+    </richtexteditor:RichTextEditorWithMetadata>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result).toEqual(new Set(['font-style', 'clipboard']));
+    });
+
+    it('skips ButtonGroup elements that have no name attribute', async () => {
+        const filePath = '/test/RteGroupNoName.fragment.xml';
+        fs.write(
+            filePath,
+            `<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:richtexteditor="sap.fe.macros.richtexteditor">
+    <richtexteditor:RichTextEditorWithMetadata id="RTE1" metaPath="/Travel/Status">
+        <richtexteditor:buttonGroups>
+            <richtexteditor:ButtonGroup buttons="bold,italic"/>
+        </richtexteditor:buttonGroups>
+    </richtexteditor:RichTextEditorWithMetadata>
+</core:FragmentDefinition>`
+        );
+        const result = await getExistingButtonGroups(
+            filePath,
+            `/core:FragmentDefinition/richtexteditor:RichTextEditorWithMetadata`,
+            fs
+        );
+        expect(result.size).toBe(0);
+    });
+});
+
+describe('getFilterBarIdsInFile', () => {
+    let fs: Editor;
+
+    beforeAll(() => {
+        fs = create(createStorage());
+    });
+
+    it('returns ids of FilterBar elements', async () => {
+        const filePath = '/test/FilterBarIds.view.xml';
+        fs.write(
+            filePath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
+    <macros:FilterBar id="FB1"/>
+    <macros:FilterBar id="FB2"/>
+</mvc:View>`
+        );
+        const result = await getFilterBarIdsInFile(filePath, fs);
+        expect(result).toEqual(['FB1', 'FB2']);
+    });
+
+    it('skips FilterBar elements with no id attribute', async () => {
+        // covers the falsy branch of `if (id)` in getFilterBarIdsInFile
+        const filePath = '/test/FilterBarNoId.view.xml';
+        fs.write(
+            filePath,
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros">
+    <macros:FilterBar metaPath="@com.sap.vocabularies.UI.v1.SelectionFields"/>
+</mvc:View>`
+        );
+        const result = await getFilterBarIdsInFile(filePath, fs);
+        expect(result).toEqual([]);
+    });
+});
+
+describe('getOrAddNamespace - empty prefix', () => {
+    it('adds namespace as default xmlns when prefix is empty string', () => {
+        // covers the `prefix === '' ? 'xmlns' : \`xmlns:\${prefix}\`` truthy branch
+        const xml = `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>`;
+        const doc = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
+            xml,
+            'application/xml'
+        ) as unknown as XmldomDocument;
+        const result = getOrAddNamespace(doc, 'sap.fe.macros', '');
+        expect(result).toBe('');
+        expect(doc.documentElement?.getAttribute('xmlns')).toBe('sap.fe.macros');
     });
 });

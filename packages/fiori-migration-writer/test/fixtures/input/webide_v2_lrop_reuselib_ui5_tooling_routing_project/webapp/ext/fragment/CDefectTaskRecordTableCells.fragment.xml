@@ -1,0 +1,4 @@
+<core:FragmentDefinition 
+	xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:sapm="sap.m" >
+	<sapm:Link text="{to_DefectQltyTskProcsrNotes/QualityTaskProcsrNotesPreview}" id="QualityTaskProcsrNotesPreview" press="onQualityTaskProcsrNotesPreviewPress"/>
+</core:FragmentDefinition>

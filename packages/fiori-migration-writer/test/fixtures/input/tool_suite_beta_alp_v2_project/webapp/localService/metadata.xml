@@ -1,0 +1,1325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ccw-715.example.com:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="Measures"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="MM_PUR_SUPLRCONF_MNTR_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="C_ConfimationCatValueHelpType" sap:label="Value Help For Confirmation Category" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SupplierConfirmationCategory"/>
+                </Key>
+                <Property Name="SupplierConfirmationCategory" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:text="ConfirmationText" sap:label="Confirm. Category" sap:quickinfo="Confirmation Category"/>
+                <Property Name="ConfirmationText" Type="Edm.String" MaxLength="20" sap:label="Description" sap:quickinfo="Confirmation Category: Description"/>
+                <Property Name="SupplierConfCategoryName" Type="Edm.String" MaxLength="24"/>
+            </EntityType>
+            <EntityType Name="C_MM_AccountAssignCatValueHelpType" sap:label="Account Assignment Category Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="AccountAssignmentCategory"/>
+                </Key>
+                <Property Name="AccountAssignmentCategory" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:text="AcctAssignmentCategoryName" sap:label="Account Assignment Category"/>
+                <Property Name="AcctAssignmentCategoryName" Type="Edm.String" MaxLength="20" sap:label="Account Assignment Category Description"/>
+            </EntityType>
+            <EntityType Name="C_MM_CompanyCodeValueHelpType" sap:label="Company Code Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="CompanyCode"/>
+                </Key>
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code"/>
+                <Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name" sap:quickinfo="Name of Company Code or Company"/>
+            </EntityType>
+            <EntityType Name="C_MM_DeliveryDateCatValueHelpType" sap:label="Delivery Date Category Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DelivDateCategory"/>
+                </Key>
+                <Property Name="DelivDateCategory" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:text="DelivDateTypeDesc" sap:label="Date type" sap:quickinfo="Date type (day, week, month, interval)"/>
+                <Property Name="DelivDateTypeDesc" Type="Edm.String" MaxLength="20" sap:label="Date type description" sap:quickinfo="Description of date type"/>
+            </EntityType>
+            <EntityType Name="C_MM_MaterialGroupValueHelpType" sap:label="Material Group Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MaterialGroup"/>
+                </Key>
+                <Property Name="MaterialGroup" Type="Edm.String" Nullable="false" MaxLength="9" sap:display-format="UpperCase" sap:text="MaterialGroupName" sap:label="Product Group"/>
+                <Property Name="MaterialGroupName" Type="Edm.String" MaxLength="20" sap:label="Product Group Description"/>
+            </EntityType>
+            <EntityType Name="C_MM_MaterialValueHelpType" sap:label="Material Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="Plant"/>
+                </Key>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:display-format="UpperCase" sap:text="MaterialName" sap:label="Material" sap:quickinfo="Material Number"/>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Plant"/>
+                <Property Name="MaterialName" Type="Edm.String" MaxLength="40" sap:label="Material Description"/>
+                <Property Name="PlantName" Type="Edm.String" MaxLength="30" sap:label="Plant Name"/>
+                <Property Name="MaterialGroup" Type="Edm.String" MaxLength="9" sap:display-format="UpperCase" sap:label="Material Group"/>
+                <Property Name="MaterialGroupName" Type="Edm.String" MaxLength="20" sap:label="Product Group Desc." sap:quickinfo="Product Group Description"/>
+                <Property Name="MaterialType" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Material Type"/>
+                <Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Authorization Group"/>
+                <Property Name="MaterialTypeName" Type="Edm.String" MaxLength="25" sap:label="Material Type Desc." sap:quickinfo="Description of Material Type"/>
+                <Property Name="MaterialBaseUnit" Type="Edm.String" MaxLength="3" sap:label="Base Unit of Measure" sap:semantics="unit-of-measure"/>
+            </EntityType>
+            <EntityType Name="C_MM_PlantValueHelpType" sap:label="Plant Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Plant"/>
+                    <PropertyRef Name="PurchasingOrganization"/>
+                </Key>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="PlantName" sap:label="Plant"/>
+                <Property Name="PurchasingOrganization" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="PurchasingOrganizationName" sap:label="Purchasing Organization"/>
+                <Property Name="PlantName" Type="Edm.String" MaxLength="30" sap:label="Plant Name"/>
+                <Property Name="PurchasingOrganizationName" Type="Edm.String" MaxLength="20" sap:label="Purchasing Organization Name"/>
+                <Property Name="CityName" Type="Edm.String" MaxLength="40" sap:label="City"/>
+                <Property Name="PostalCode" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Postal Code" sap:quickinfo="City Postal Code"/>
+            </EntityType>
+            <EntityType Name="C_MM_PurDocsSuplrConfVHType" sap:label="Value Help for PO and SA" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingDocument"/>
+                </Key>
+                <Property Name="PurchasingDocument" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Purchasing Document" sap:quickinfo="Purchasing Document Number"/>
+                <Property Name="PurchasingOrganization" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Purch. Organization" sap:quickinfo="Purchasing Organization"/>
+                <Property Name="PurchasingGroup" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Purchasing Group"/>
+                <Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code"/>
+                <Property Name="PurchasingDocumentCategory" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Purch. Doc. Category" sap:quickinfo="Purchasing Document Category"/>
+                <Property Name="PurchasingDocumentType" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Purchasing Doc. Type" sap:quickinfo="Purchasing Document Type"/>
+            </EntityType>
+            <EntityType Name="C_MM_ServicePerformerValueHelpType" sap:label="Service Performer Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ServicePerformer"/>
+                    <PropertyRef Name="Supplier"/>
+                </Key>
+                <Property Name="ServicePerformer" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:text="ServicePerformerName" sap:label="Service Performer ID" sap:quickinfo="Business Partner Number"/>
+                <Property Name="Supplier" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Supplier ID" sap:quickinfo="Account Number of Supplier"/>
+                <Property Name="SupplierName" Type="Edm.String" MaxLength="35" sap:label="Supplier Name" sap:quickinfo="Name 1"/>
+                <Property Name="ServicePerformerName" Type="Edm.String" MaxLength="81" sap:label="Performer Full Name" sap:quickinfo="BUSINESS PARTNER NAME"/>
+                <Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Authorization Group"/>
+                <Property Name="FirstName" Type="Edm.String" MaxLength="40" sap:label="Performer First Name" sap:quickinfo="First Name of Business Partner (Person)"/>
+                <Property Name="LastName" Type="Edm.String" MaxLength="40" sap:label="Performer Last Name" sap:quickinfo="Last Name of Business Partner (Person)"/>
+            </EntityType>
+            <EntityType Name="C_MM_StorLocValueHelpType" sap:label="Storage Location Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="StorageLocation"/>
+                    <PropertyRef Name="Plant"/>
+                </Key>
+                <Property Name="StorageLocation" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="StorageLocationName" sap:label="Storage Location"/>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="PlantName" sap:label="Plant"/>
+                <Property Name="StorageLocationName" Type="Edm.String" MaxLength="16" sap:label="Storage Loc. Name" sap:quickinfo="Storage Location Name"/>
+                <Property Name="PlantName" Type="Edm.String" MaxLength="30" sap:label="Plant Name"/>
+            </EntityType>
+            <EntityType Name="C_MM_SupplierValueHelpType" sap:label="Supplier" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Supplier"/>
+                    <PropertyRef Name="CompanyCode"/>
+                </Key>
+                <Property Name="Supplier" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:text="SupplierName" sap:label="Supplier" sap:quickinfo="Account Number of Supplier"/>
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
+                <Property Name="SupplierName" Type="Edm.String" MaxLength="80" sap:label="Name of Supplier"/>
+                <Property Name="Country" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Country Key"/>
+                <Property Name="CityName" Type="Edm.String" MaxLength="40" sap:label="City"/>
+                <Property Name="PostalCode" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Postal Code" sap:quickinfo="City Postal Code"/>
+                <Property Name="Region" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Region" sap:quickinfo="Region (State, Province, County)"/>
+                <Property Name="SortField" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Search Term" sap:quickinfo="Sort Field"/>
+                <Property Name="FirstName" Type="Edm.String" MaxLength="40" sap:label="First Name" sap:quickinfo="First Name of Business Partner (Person)"/>
+                <Property Name="LastName" Type="Edm.String" MaxLength="40" sap:label="Last Name" sap:quickinfo="Last Name of Business Partner (Person)"/>
+                <Property Name="OrganizationBPName1" Type="Edm.String" MaxLength="40" sap:label="Name 1" sap:quickinfo="Name 1 of organization"/>
+                <Property Name="OrganizationBPName2" Type="Edm.String" MaxLength="40" sap:label="Name 2" sap:quickinfo="Name 2 of organization"/>
+                <Property Name="OrganizationBPName3" Type="Edm.String" MaxLength="40" sap:label="Name 3" sap:quickinfo="Name 3 of organization"/>
+                <Property Name="OrganizationBPName4" Type="Edm.String" MaxLength="40" sap:label="Name 4" sap:quickinfo="Name 4 of organization"/>
+                <Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Authorization" sap:quickinfo="Authorization Group"/>
+                <Property Name="SupplierAccountGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:label="Account Group" sap:quickinfo="Supplier Account Group"/>
+            </EntityType>
+            <EntityType Name="C_MM_ValidityStatusValHelpType" sap:label="Validity status drop down" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Status"/>
+                </Key>
+                <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="20" sap:display-format="UpperCase" sap:text="Name" sap:label="Validity Status ID" sap:quickinfo="Purchase Contract Validity Status"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Validity Status" sap:quickinfo="Contract Status"/>
+            </EntityType>
+            <EntityType Name="C_PurchasingCategoryValueHelpType" sap:label="Purchasing Category Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurgCatUUID"/>
+                    <PropertyRef Name="PurchasingCategory"/>
+                </Key>
+                <Property Name="PurgCatUUID" Type="Edm.Guid" Nullable="false" sap:text="PurgCatName" sap:label="Purchasing Cat. UUID" sap:quickinfo="Purchasing Category UUID"/>
+                <Property Name="PurchasingCategory" Type="Edm.String" Nullable="false" MaxLength="20" sap:display-format="UpperCase" sap:text="PurgCatName" sap:label="Purchasing Category" sap:quickinfo="Purchasing Category ID"/>
+                <Property Name="PurgCatName" Type="Edm.String" MaxLength="60" sap:label="Purchasing Cat. Name" sap:quickinfo="Name of Purchasing Category"/>
+                <Property Name="PurgCatIsInactive" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:label="Status" sap:quickinfo="Inactive Status"/>
+            </EntityType>
+            <EntityType Name="C_PurchasingDocTypeValueHelpType" sap:label="Purchasing Doc Type Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingDocumentType"/>
+                    <PropertyRef Name="PurchasingDocumentCategory"/>
+                </Key>
+                <Property Name="PurchasingDocumentType" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="PurchasingDocumentTypeName" sap:label="Purchasing Doc. Type" sap:quickinfo="Purchasing Document Type"/>
+                <Property Name="PurchasingDocumentCategory" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:label="Purch. Doc. Category" sap:quickinfo="Purchasing Document Category"/>
+                <Property Name="PurchasingDocumentTypeName" Type="Edm.String" MaxLength="20" sap:label="Doc. Type Descript." sap:quickinfo="Short Description of Purchasing Document Type"/>
+            </EntityType>
+            <EntityType Name="C_PurchasingGroupValueHelpType" sap:label="Purchasing Group Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingGroup"/>
+                </Key>
+                <Property Name="PurchasingGroup" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="UpperCase" sap:text="PurchasingGroupName" sap:label="Purchasing Group"/>
+                <Property Name="PurchasingGroupName" Type="Edm.String" MaxLength="18" sap:label="Purchasing Grp Name" sap:quickinfo="Purchasing Group Name"/>
+                <Property Name="PurchasingGroupPhoneNumber" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="Tel. No. of Purchasing Grp" sap:quickinfo="Telephone number of purchasing group (buyer group)"/>
+                <Property Name="PhoneNumber" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase" sap:label="Tel. No. with Dialing Code" sap:quickinfo="Telephone no.: dialling code+number"/>
+                <Property Name="PhoneNumberExtension" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Extension" sap:quickinfo="Telephone no.: Extension"/>
+                <Property Name="FaxNumber" Type="Edm.String" MaxLength="31" sap:label="Fax" sap:quickinfo="Fax number of purchasing (buyer) group"/>
+                <Property Name="EmailAddress" Type="Edm.String" MaxLength="241" sap:label="Email Address" sap:semantics="email"/>
+            </EntityType>
+            <EntityType Name="C_PurchasingOrgValueHelpType" sap:label="Purchasing Organization Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingOrganization"/>
+                </Key>
+                <Property Name="PurchasingOrganization" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="PurchasingOrganizationName" sap:label="Purchasing Organization"/>
+                <Property Name="PurchasingOrganizationName" Type="Edm.String" MaxLength="20" sap:label="Purchasing Organization Name"/>
+                <Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code"/>
+                <Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name" sap:quickinfo="Name of Company Code or Company"/>
+            </EntityType>
+            <EntityType Name="C_PurDocItemCategoryValueHelpType" sap:label="Purchasing Doc Item Category Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingDocumentItemCategory"/>
+                </Key>
+                <Property Name="PurchasingDocumentItemCategory" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:text="PurgDocItemCategoryName" sap:label="Item Category" sap:quickinfo="Item Category in Purchasing Document" sap:filterable="false"/>
+                <Property Name="PurgDocExternalItemCategory" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:text="PurgDocItemCategoryName" sap:label="Item Category" sap:quickinfo="Item Category in Purchasing Document"/>
+                <Property Name="PurgDocItemCategoryName" Type="Edm.String" MaxLength="20" sap:label="Text for Item Cat." sap:quickinfo="Text for Item Category"/>
+            </EntityType>
+            <EntityType Name="C_PurgDocSuplrConfMainResult" sap:semantics="aggregate" sap:label="Monitor Supplier Confirmations" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" Nullable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PurchasingDocument" Type="Edm.String" MaxLength="10" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:label="Purchasing Document" sap:quickinfo="Purchasing Document Number" sap:value-list="standard"/>
+                <Property Name="PurchasingDocumentItem" Type="Edm.String" MaxLength="5" sap:aggregation-role="dimension" sap:display-format="NonNegative" sap:label="Item" sap:quickinfo="Item Number of Purchasing Document"/>
+                <Property Name="SupplierConfirmationCategory" Type="Edm.String" MaxLength="2" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:filter-restriction="single-value" sap:required-in-filter="true" sap:text="SupplierConfCategoryName" sap:label="Confirmation Category" sap:value-list="fixed-values"/>
+                <Property Name="ScheduleLine" Type="Edm.String" MaxLength="4" sap:aggregation-role="dimension" sap:display-format="NonNegative" sap:label="Schedule Line" sap:quickinfo="Delivery Schedule Line Counter"/>
+                <Property Name="AccountAssignmentCategory" Type="Edm.String" MaxLength="1" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="AcctAssignmentCategoryName" sap:label=" Account Assignment Category" sap:quickinfo="Account Assignment Category" sap:value-list="standard"/>
+                <Property Name="AcctAssignmentCategoryName" Type="Edm.String" MaxLength="20" sap:label="AcctAssgntCateg Desc" sap:quickinfo="Account Assignment Category Description"/>
+                <Property Name="SupplierConfCategoryName" Type="Edm.String" MaxLength="20" sap:label="Description" sap:quickinfo="Confirmation Category: Description"/>
+                <Property Name="PurchasingDocumentCategoryName" Type="Edm.String" MaxLength="60"/>
+                <Property Name="PurchasingDocumentCategory" Type="Edm.String" MaxLength="1" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PurchasingDocumentCategoryName" sap:label="Document Category" sap:quickinfo="Purchasing Document Category" sap:value-list="fixed-values"/>
+                <Property Name="PurchasingDocumentType" Type="Edm.String" MaxLength="4" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PurchasingDocumentTypeName" sap:label="Document Type" sap:value-list="standard"/>
+                <Property Name="PurchasingDocumentTypeName" Type="Edm.String" MaxLength="20" sap:label="Doc. Type Descript." sap:quickinfo="Short Description of Purchasing Document Type" sap:filterable="false"/>
+                <Property Name="PurgDocOrderQuantityUnit" Type="Edm.String" MaxLength="3" sap:aggregation-role="dimension" sap:label="Order Unit" sap:quickinfo="Purchase Order Unit of Measure" sap:sortable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="ScheduledQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Scheduled Quantity" sap:sortable="false"/>
+                <Property Name="PurchaseOrderItem" Type="Edm.String" MaxLength="16" sap:aggregation-role="dimension" sap:label="Purchasing Document Item" sap:sortable="false"/>
+                <Property Name="PurchasingGroup" Type="Edm.String" MaxLength="3" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PurchasingGroupName" sap:label="Purchasing Group" sap:value-list="standard"/>
+                <Property Name="Supplier" Type="Edm.String" MaxLength="10" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="SupplierName" sap:label="Supplier" sap:value-list="standard"/>
+                <Property Name="DocumentCurrency" Type="Edm.String" MaxLength="5" sap:aggregation-role="dimension" sap:label="Document Currency" sap:quickinfo="Currency Key" sap:sortable="false" sap:semantics="currency-code"/>
+                <Property Name="SupplierName" Type="Edm.String" MaxLength="80" sap:label="Supplier Name" sap:quickinfo="Name of Supplier"/>
+                <Property Name="Plant" Type="Edm.String" MaxLength="4" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PlantName" sap:label="Plant" sap:value-list="standard"/>
+                <Property Name="PurchasingOrganization" Type="Edm.String" MaxLength="4" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PurchasingOrganizationName" sap:label="Purchasing Organization" sap:value-list="standard"/>
+                <Property Name="DocumentDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Document Date" sap:quickinfo="Purchasing Document Date"/>
+                <Property Name="ScheduleLineDeliveryDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Delivery Date" sap:quickinfo="Item delivery date"/>
+                <Property Name="Material" Type="Edm.String" MaxLength="40" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="MaterialName" sap:label="Material" sap:value-list="standard"/>
+                <Property Name="MaterialName" Type="Edm.String" MaxLength="40" sap:label="Material Name" sap:quickinfo="Material Description"/>
+                <Property Name="ServicePerformer" Type="Edm.String" MaxLength="10" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="ServicePerformerName" sap:label="Service Performer" sap:value-list="standard"/>
+                <Property Name="ServicePerformerName" Type="Edm.String" MaxLength="81" sap:label="Service Performer Name"/>
+                <Property Name="PerformancePeriodStartDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Start of Performance Period" sap:quickinfo="Start Date for Period of Performance"/>
+                <Property Name="PerformancePeriodEndDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="End of Performance Period" sap:quickinfo="End Date for Period of Performance"/>
+                <Property Name="PurchasingDocumentItemText" Type="Edm.String" MaxLength="40" sap:aggregation-role="dimension" sap:label="Item Description" sap:quickinfo="Short Text"/>
+                <Property Name="SupplierConfirmationControlKey" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase" sap:text="SupplierConfControlKeyName" sap:label="Confirmation Control" sap:quickinfo="Confirmation Control Key"/>
+                <Property Name="SupplierConfControlKeyName" Type="Edm.String" MaxLength="20" sap:label="Description" sap:quickinfo="Confirmation Category: Description"/>
+                <Property Name="DelivDateCategory" Type="Edm.String" MaxLength="1" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:label="Delivery Date Category" sap:quickinfo="Category of Delivery Date" sap:value-list="standard"/>
+                <Property Name="OrderQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Item Quantity" sap:quickinfo="Purchase Order Quantity" sap:sortable="false"/>
+                <Property Name="NetAmount" Type="Edm.Decimal" Precision="14" Scale="3" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Item Value"/>
+                <Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code" sap:value-list="standard"/>
+                <Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name" sap:quickinfo="Name of Company Code or Company"/>
+                <Property Name="PurgDocExternalItemCategory" Type="Edm.String" MaxLength="1" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PurgDocItemCategoryName" sap:label="Item Category" sap:quickinfo="Item Category in Purchasing Document" sap:value-list="standard"/>
+                <Property Name="PurgDocItemCategoryName" Type="Edm.String" MaxLength="20" sap:label="Text for Item Cat." sap:quickinfo="Text for Item Category"/>
+                <Property Name="PurchasingDocumentItemCategory" Type="Edm.String" MaxLength="1" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:label="Item Category" sap:quickinfo="Item Category in Purchasing Document"/>
+                <Property Name="PurchasingDocumentStatus" Type="Edm.String" MaxLength="1" sap:aggregation-role="dimension" sap:display-format="NonNegative" sap:text="PurchasingDocumentStatusName" sap:label="Order Status" sap:value-list="standard"/>
+                <Property Name="PurchasingDocumentStatusName" Type="Edm.String" MaxLength="60" sap:label="Order Status Name"/>
+                <Property Name="KeyDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Key Date"/>
+                <Property Name="StillToBeDeliveredQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Quantity to be Delivered" sap:sortable="false"/>
+                <Property Name="StillToBeDeliveredValue" Type="Edm.Decimal" Precision="21" Scale="5" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Value to be Delivered" sap:quickinfo="Value of PO Items to be Delivered"/>
+                <Property Name="StillToInvoiceQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Quantity to be Invoiced" sap:sortable="false"/>
+                <Property Name="StillToInvoiceValue" Type="Edm.Decimal" Precision="21" Scale="5" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Value to be Invoiced" sap:quickinfo="Value of PO Items to be Invoiced"/>
+                <Property Name="InvoiceReceiptQty" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Invoice Quantity"/>
+                <Property Name="InvoiceReceiptAmount" Type="Edm.Decimal" Precision="21" Scale="3" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Invoice Value"/>
+                <Property Name="CommittedQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Confirmed Quantity" sap:quickinfo="Committed Quantity" sap:sortable="false"/>
+                <Property Name="ScheduleLineAmountInTransCrcy" Type="Edm.Decimal" Precision="16" Scale="3" sap:aggregation-role="measure" sap:unit="DisplayCurrency" sap:label="Scheduled Quantity Value"/>
+                <Property Name="NetPriceAmount" Type="Edm.Decimal" Precision="12" Scale="3" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Net Order Price" sap:quickinfo="Net Price in Purchasing Document (in Document Currency)"/>
+                <Property Name="NetPriceQuantity" Type="Edm.Decimal" Precision="5" Scale="0" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Price Unit"/>
+                <Property Name="ScheduleLineCommittedAmount" Type="Edm.Decimal" Precision="14" Scale="3" sap:aggregation-role="measure" sap:unit="DisplayCurrency" sap:label="Confirmed Quantity Value"/>
+                <Property Name="ScheduleLinePndgQtyInStkUnit" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Pending Quantity" sap:sortable="false"/>
+                <Property Name="ScheduleLinePndgAmtInTransCrcy" Type="Edm.Decimal" Precision="17" Scale="3" sap:aggregation-role="measure" sap:unit="DisplayCurrency" sap:label="Pending Quantity Value"/>
+                <Property Name="PurchasingIsBlockedForSupplier" Type="Edm.String" MaxLength="60" sap:aggregation-role="dimension" sap:label="Supplier Block Status" sap:sortable="false"/>
+                <Property Name="DisplayCurrency" Type="Edm.String" MaxLength="5" sap:aggregation-role="dimension" sap:label="Display Currency" sap:sortable="false" sap:filterable="false" sap:semantics="currency-code"/>
+                <Property Name="PlantName" Type="Edm.String" MaxLength="30" sap:label="Plant Name"/>
+                <Property Name="PurchasingOrganizationName" Type="Edm.String" MaxLength="20" sap:label="Purch. Org. Name" sap:quickinfo="Purchasing Organization Name"/>
+                <Property Name="PurchasingGroupName" Type="Edm.String" MaxLength="18" sap:label="Purchasing Grp Name" sap:quickinfo="Purchasing Group Name"/>
+                <Property Name="MaterialGroup" Type="Edm.String" MaxLength="9" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="MaterialGroupName" sap:label="Material Group" sap:value-list="standard"/>
+                <Property Name="MaterialGroupName" Type="Edm.String" MaxLength="20" sap:label="Material Group Description" sap:quickinfo="Product Group Description"/>
+                <Property Name="DurationToNextStatusInDays" Type="Edm.String" MaxLength="10" sap:aggregation-role="dimension" sap:text="DomainText" sap:label="Delivery Schedule Date" sap:value-list="fixed-values"/>
+                <Property Name="DomainText" Type="Edm.String" MaxLength="60"/>
+                <Property Name="PurchasingCategory" Type="Edm.String" MaxLength="20" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="PurgCatName" sap:label="Purchasing Category" sap:quickinfo="Purchasing Category ID" sap:value-list="standard"/>
+                <Property Name="PurgCatName" Type="Edm.String" MaxLength="60" sap:label="Purchasing Category Name" sap:quickinfo="Name of Purchasing Category" sap:filterable="false"/>
+                <Property Name="Status" Type="Edm.String" MaxLength="2" sap:aggregation-role="dimension" sap:text="StatusDescription" sap:label="Agreement Validity Status" sap:value-list="fixed-values"/>
+                <Property Name="StatusDescription" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase" sap:label="Validity Status" sap:quickinfo="Contract Status"/>
+                <Property Name="ReleasedQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Agreement Released Quantity"/>
+                <Property Name="ReleasedAmount" Type="Edm.Decimal" Precision="24" Scale="5" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Agreement Released Value"/>
+                <Property Name="GoodsReceiptQty" Type="Edm.Decimal" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="PurgDocOrderQuantityUnit" sap:label="Delivered Quantity"/>
+                <Property Name="GoodsReceiptAmountInCoCodeCrcy" Type="Edm.Decimal" Precision="24" Scale="5" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Delivered Value"/>
+                <Property Name="ValidityStartDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Agreement Valid From" sap:quickinfo="Start of Validity Period"/>
+                <Property Name="ValidityEndDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Agreement Valid To" sap:quickinfo="End of Validity Period"/>
+                <Property Name="TargetAmount" Type="Edm.Decimal" Precision="16" Scale="3" sap:aggregation-role="dimension" sap:unit="DisplayCurrency" sap:label="Agreement Target Value"/>
+                <Property Name="RequirementTracking" Type="Edm.String" MaxLength="10" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:label="Requirement Tracking Number"/>
+                <Property Name="StorageLocation" Type="Edm.String" MaxLength="4" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="StorageLocationName" sap:label="Storage Location" sap:value-list="standard"/>
+                <Property Name="StorageLocationName" Type="Edm.String" MaxLength="16" sap:label="Storage Loc. Name" sap:quickinfo="Storage Location Name"/>
+                <Property Name="PurchaseOrderStatus" Type="Edm.String" MaxLength="2" sap:aggregation-role="dimension" sap:text="PurchaseOrderStatusName" sap:label="Purchase Order Status" sap:value-list="fixed-values"/>
+                <Property Name="PurchaseOrderStatusName" Type="Edm.String" MaxLength="60" sap:label="Short Descript." sap:quickinfo="Short Text for Fixed Values" sap:filterable="false"/>
+                <Property Name="PurchasingProcessingStatus" Type="Edm.String" MaxLength="2" sap:aggregation-role="dimension" sap:display-format="UpperCase" sap:text="ProcessingStatusDesc" sap:label="Agreement Status" sap:quickinfo="Purchasing document processing state" sap:value-list="standard"/>
+                <Property Name="ProcessingStatusDesc" Type="Edm.String" MaxLength="60" sap:label="Short Descript." sap:quickinfo="Short Text for Fixed Values" sap:filterable="false"/>
+                <Property Name="CreationDate" Type="Edm.DateTime" Precision="0" sap:aggregation-role="dimension" sap:display-format="Date" sap:filter-restriction="interval" sap:label="Created On" sap:quickinfo="Date on Which Record Was Created"/>
+                <Property Name="NumberOfPurchaseOrderItems" Type="Edm.Int32" sap:aggregation-role="measure" sap:label="PD Items" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="to_SuplrConfDelivDeadlineWkTxt" Relationship="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_122F9E1D2A1596ED650B4F12A9A370B3" FromRole="FromRole_assoc_122F9E1D2A1596ED650B4F12A9A370B3" ToRole="ToRole_assoc_122F9E1D2A1596ED650B4F12A9A370B3"/>
+                <NavigationProperty Name="to_SupplierConfOrdSts" Relationship="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_B8C57FF66116F34208243EE934A8BCBF" FromRole="FromRole_assoc_B8C57FF66116F34208243EE934A8BCBF" ToRole="ToRole_assoc_B8C57FF66116F34208243EE934A8BCBF"/>
+                <NavigationProperty Name="Parameters" Relationship="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_C32CCD49D7128CAA042F405F26A17896" FromRole="ToRole_assoc_C32CCD49D7128CAA042F405F26A17896" ToRole="FromRole_assoc_C32CCD49D7128CAA042F405F26A17896" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="C_PurgDocSuplrConfMainParameters" sap:semantics="parameters" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="P_DisplayCurrency"/>
+                </Key>
+                <Property Name="P_DisplayCurrency" Type="Edm.String" Nullable="false" MaxLength="5" sap:display-format="UpperCase" sap:parameter="mandatory" sap:label="Display Currency" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:value-list="standard" sap:semantics="currency-code"/>
+                <NavigationProperty Name="Results" Relationship="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_C32CCD49D7128CAA042F405F26A17896" FromRole="FromRole_assoc_C32CCD49D7128CAA042F405F26A17896" ToRole="ToRole_assoc_C32CCD49D7128CAA042F405F26A17896"/>
+            </EntityType>
+            <EntityType Name="C_PurOrdProcessingStatusVHType" sap:label="Purch doc processing state value help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DomainValue"/>
+                </Key>
+                <Property Name="DomainValue" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:text="DomainText" sap:label="Lower Value" sap:quickinfo="Values for Domains: Single Value/Lower Limit"/>
+                <Property Name="DomainText" Type="Edm.String" MaxLength="60" sap:label="Short Descript." sap:quickinfo="Short Text for Fixed Values"/>
+            </EntityType>
+            <EntityType Name="C_SubcontrgShipgStsVHType" sap:label="Value Help for Shipping Status" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ShippingStatus"/>
+                </Key>
+                <Property Name="ShippingStatus" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="ShippingStatusText"/>
+                <Property Name="ShippingStatusText" Type="Edm.String" MaxLength="60" sap:label="Shipping Status"/>
+            </EntityType>
+            <EntityType Name="I_CompanyCodeStdVHType" sap:label="Company Code" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="CompanyCode"/>
+                </Key>
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code"/>
+                <Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name" sap:quickinfo="Name of Company Code or Company"/>
+            </EntityType>
+            <EntityType Name="I_CurrencyType" sap:label="Currency" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Currency"/>
+                </Key>
+                <Property Name="Currency" Type="Edm.String" Nullable="false" MaxLength="5" sap:text="Currency_Text" sap:label="Currency" sap:quickinfo="Currency Key" sap:semantics="currency-code"/>
+                <Property Name="Currency_Text" Type="Edm.String" MaxLength="40" sap:label="Description" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Decimals" Type="Edm.Byte" sap:label="Decimal Places" sap:quickinfo="Number of decimal places"/>
+                <Property Name="CurrencyISOCode" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="ISO Code" sap:quickinfo="ISO Currency Code"/>
+                <Property Name="AlternativeCurrencyKey" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase" sap:label="Alternative Key"/>
+                <Property Name="IsPrimaryCurrencyForISOCrcy" Type="Edm.Boolean" sap:display-format="UpperCase" sap:label="Primary" sap:quickinfo="Primary SAP Currency Code for ISO Code"/>
+            </EntityType>
+            <EntityType Name="I_PurchaseOrderStatusValueHelpType" sap:label="Purchase Order Status Value Help" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingDocumentStatus"/>
+                </Key>
+                <Property Name="PurchasingDocumentStatus" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:text="PurchasingDocumentStatusName" sap:label="Order Status" sap:quickinfo="Purchasing Document Status"/>
+                <Property Name="PurchasingDocumentStatusName" Type="Edm.String" MaxLength="60" sap:label="Purchasing Document Status" sap:quickinfo="Short Text for Fixed Values"/>
+            </EntityType>
+            <EntityType Name="I_PurgDocCategorySubsetType" sap:label="Purchasing Document Category Subset" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingDocumentCategory"/>
+                </Key>
+                <Property Name="PurchasingDocumentCategory" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="PurchasingDocumentCategory_Text"/>
+                <Property Name="PurchasingDocumentCategory_Text" Type="Edm.String" MaxLength="60" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="I_SuplrConfDelivDateDeadlineWkType" sap:label="Supplier Confirmation Delivery Date Deadline Week" sap:value-list="true" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DurationToNextStatusInDays"/>
+                </Key>
+                <Property Name="DurationToNextStatusInDays" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="DurationToNextStatusInDays_Text"/>
+                <Property Name="DurationToNextStatusInDays_Text" Type="Edm.String" MaxLength="60" sap:label="Delivery Schedule Date" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="I_SuplrConfDelivDeadlineWkTxtType" sap:label="Supplier Confirmation Deadline Week Text" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Language"/>
+                    <PropertyRef Name="DurationToNextStatusInDays"/>
+                </Key>
+                <Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Lang." sap:quickinfo="Language Key"/>
+                <Property Name="DurationToNextStatusInDays" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="DomainText"/>
+                <Property Name="DomainText" Type="Edm.String" MaxLength="60" sap:label="Delivery Schedule Date"/>
+            </EntityType>
+            <EntityType Name="I_SupplierConfOrdStsType" sap:label="Supplier Confirmation Order Status" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchasingDocumentStatus"/>
+                </Key>
+                <Property Name="PurchasingDocumentStatus" Type="Edm.String" Nullable="false" MaxLength="10" sap:text="PurchasingDocumentStatus_Text" sap:label="Order Status ID"/>
+                <Property Name="PurchasingDocumentStatus_Text" Type="Edm.String" MaxLength="60" sap:label="Order Status" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <Association Name="assoc_C32CCD49D7128CAA042F405F26A17896" sap:content-version="1">
+                <End Type="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainParameters" Multiplicity="1" Role="FromRole_assoc_C32CCD49D7128CAA042F405F26A17896"/>
+                <End Type="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult" Multiplicity="*" Role="ToRole_assoc_C32CCD49D7128CAA042F405F26A17896"/>
+            </Association>
+            <Association Name="assoc_B8C57FF66116F34208243EE934A8BCBF" sap:content-version="1">
+                <End Type="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult" Multiplicity="1" Role="FromRole_assoc_B8C57FF66116F34208243EE934A8BCBF"/>
+                <End Type="MM_PUR_SUPLRCONF_MNTR_SRV.I_SupplierConfOrdStsType" Multiplicity="1" Role="ToRole_assoc_B8C57FF66116F34208243EE934A8BCBF"/>
+            </Association>
+            <Association Name="assoc_122F9E1D2A1596ED650B4F12A9A370B3" sap:content-version="1">
+                <End Type="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult" Multiplicity="1" Role="FromRole_assoc_122F9E1D2A1596ED650B4F12A9A370B3"/>
+                <End Type="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDeadlineWkTxtType" Multiplicity="1" Role="ToRole_assoc_122F9E1D2A1596ED650B4F12A9A370B3"/>
+            </Association>
+            <EntityContainer Name="MM_PUR_SUPLRCONF_MNTR_SRV_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="C_ConfimationCatValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_ConfimationCatValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_AccountAssignCatValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_AccountAssignCatValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_CompanyCodeValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_CompanyCodeValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_DeliveryDateCatValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_DeliveryDateCatValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_MaterialGroupValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_MaterialGroupValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_MaterialValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_MaterialValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_PlantValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_PlantValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_PurDocsSuplrConfVH" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_PurDocsSuplrConfVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_ServicePerformerValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_ServicePerformerValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_StorLocValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_StorLocValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_SupplierValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_MM_ValidityStatusValHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_ValidityStatusValHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="C_PurchasingCategoryValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingCategoryValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_PurchasingDocTypeValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingDocTypeValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_PurchasingGroupValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingGroupValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_PurchasingOrgValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingOrgValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_PurDocItemCategoryValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurDocItemCategoryValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="C_PurgDocSuplrConfMainResults" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:addressable="false" sap:requires-filter="true" sap:content-version="1"/>
+                <EntitySet Name="C_PurgDocSuplrConfMain" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainParameters" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="C_PurOrdProcessingStatusVH" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurOrdProcessingStatusVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="C_SubcontrgShipgStsVH" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.C_SubcontrgShipgStsVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_CompanyCodeStdVH" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_CompanyCodeStdVHType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_Currency" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_CurrencyType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_PurchaseOrderStatusValueHelp" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_PurchaseOrderStatusValueHelpType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_PurgDocCategorySubset" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_PurgDocCategorySubsetType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_SuplrConfDelivDateDeadlineWk" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDateDeadlineWkType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_SuplrConfDelivDeadlineWkTxt" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDeadlineWkTxtType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="I_SupplierConfOrdSts" EntityType="MM_PUR_SUPLRCONF_MNTR_SRV.I_SupplierConfOrdStsType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+                <AssociationSet Name="assoc_122F9E1D2A1596ED650B4F12A9A370B3" Association="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_122F9E1D2A1596ED650B4F12A9A370B3" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="C_PurgDocSuplrConfMainResults" Role="FromRole_assoc_122F9E1D2A1596ED650B4F12A9A370B3"/>
+                    <End EntitySet="I_SuplrConfDelivDeadlineWkTxt" Role="ToRole_assoc_122F9E1D2A1596ED650B4F12A9A370B3"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_C32CCD49D7128CAA042F405F26A17896" Association="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_C32CCD49D7128CAA042F405F26A17896" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="C_PurgDocSuplrConfMain" Role="FromRole_assoc_C32CCD49D7128CAA042F405F26A17896"/>
+                    <End EntitySet="C_PurgDocSuplrConfMainResults" Role="ToRole_assoc_C32CCD49D7128CAA042F405F26A17896"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_B8C57FF66116F34208243EE934A8BCBF" Association="MM_PUR_SUPLRCONF_MNTR_SRV.assoc_B8C57FF66116F34208243EE934A8BCBF" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="C_PurgDocSuplrConfMainResults" Role="FromRole_assoc_B8C57FF66116F34208243EE934A8BCBF"/>
+                    <End EntitySet="I_SupplierConfOrdSts" Role="ToRole_assoc_B8C57FF66116F34208243EE934A8BCBF"/>
+                </AssociationSet>
+            </EntityContainer>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/CompanyCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Company Code"/>
+                        <PropertyValue Property="CollectionPath" String="I_CompanyCodeStdVH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocument" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Value Help for PO and SA"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_PurDocsSuplrConfVH"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingDocument"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocument"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingOrganization"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentType"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/SupplierConfirmationCategory" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Value Help For Confirmation Category"/>
+                        <PropertyValue Property="CollectionPath" String="C_ConfimationCatValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="SupplierConfirmationCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="SupplierConfirmationCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="ConfirmationText"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="SupplierConfCategoryName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues"/>
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/AccountAssignmentCategory" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Account Assignment Category Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_AccountAssignCatValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="AccountAssignmentCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="AccountAssignmentCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AcctAssignmentCategoryName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentCategory" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchasing Document Category Subset"/>
+                        <PropertyValue Property="CollectionPath" String="I_PurgDocCategorySubset"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingDocumentCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentCategory_Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchasing Doc Type Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_PurchasingDocTypeValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingDocumentType"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentType"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentTypeName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingGroup" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchasing Group Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_PurchasingGroupValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingGroup"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingGroupName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingGroupPhoneNumber"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PhoneNumber"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PhoneNumberExtension"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="FaxNumber"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="EmailAddress"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Supplier" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Supplier"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_SupplierValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Supplier"/>
+                                    <PropertyValue Property="ValueListProperty" String="Supplier"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="SupplierName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PostalCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Region"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Plant" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Plant Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_PlantValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Plant"/>
+                                    <PropertyValue Property="ValueListProperty" String="Plant"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingOrganization"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingOrganization"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PlantName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingOrganizationName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PostalCode"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingOrganization" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchasing Organization Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_PurchasingOrgValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingOrganization"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingOrganization"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingOrganizationName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Material" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Material Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_MaterialValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Material"/>
+                                    <PropertyValue Property="ValueListProperty" String="Material"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Plant"/>
+                                    <PropertyValue Property="ValueListProperty" String="Plant"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PlantName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialGroupName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialType"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialTypeName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ServicePerformer" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Service Performer Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_ServicePerformerValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="ServicePerformer"/>
+                                    <PropertyValue Property="ValueListProperty" String="ServicePerformer"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Supplier"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="SupplierName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="ServicePerformerName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="FirstName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="LastName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/DelivDateCategory" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Delivery Date Category Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_DeliveryDateCatValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="DelivDateCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="DelivDateCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="DelivDateTypeDesc"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/CompanyCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Company Code Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_CompanyCodeValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurgDocExternalItemCategory" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchasing Doc Item Category Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_PurDocItemCategoryValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingDocumentItemCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentItemCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurgDocExternalItemCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurgDocExternalItemCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurgDocItemCategoryName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentStatus" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Supplier Confirmation Order Status"/>
+                        <PropertyValue Property="CollectionPath" String="I_SupplierConfOrdSts"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingDocumentStatus"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentStatus"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentStatus_Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/MaterialGroup" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Material Group Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_MaterialGroupValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="MaterialGroup"/>
+                                    <PropertyValue Property="ValueListProperty" String="MaterialGroup"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="MaterialGroupName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/DurationToNextStatusInDays" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Supplier Confirmation Delivery Date Deadline Week"/>
+                        <PropertyValue Property="CollectionPath" String="I_SuplrConfDelivDateDeadlineWk"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="DurationToNextStatusInDays"/>
+                                    <PropertyValue Property="ValueListProperty" String="DurationToNextStatusInDays"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="DurationToNextStatusInDays_Text"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingCategory" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchasing Category Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_PurchasingCategoryValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingCategory"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingCategory"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurgCatName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurgCatIsInactive"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Status" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Validity status drop down"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_ValidityStatusValHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Status"/>
+                                    <PropertyValue Property="ValueListProperty" String="Status"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Name"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/StorageLocation" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Storage Location Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="C_MM_StorLocValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="StorageLocation"/>
+                                    <PropertyValue Property="ValueListProperty" String="StorageLocation"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Plant"/>
+                                    <PropertyValue Property="ValueListProperty" String="Plant"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="StorageLocationName"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PlantName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchaseOrderStatus" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purchase Order Status Value Help"/>
+                        <PropertyValue Property="CollectionPath" String="I_PurchaseOrderStatusValueHelp"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchaseOrderStatus"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentStatus"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingDocumentStatusName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingProcessingStatus" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Purch doc processing state value help"/>
+                        <PropertyValue Property="CollectionPath" String="C_PurOrdProcessingStatusVH"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="PurchasingProcessingStatus"/>
+                                    <PropertyValue Property="ValueListProperty" String="PurchasingProcessingStatus"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="DomainValue"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="DomainText"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainParameters/P_DisplayCurrency" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="Label" String="Currency"/>
+                        <PropertyValue Property="CollectionPath" String="I_Currency"/>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="P_DisplayCurrency"/>
+                                    <PropertyValue Property="ValueListProperty" String="Currency"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Currency_Text"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Decimals"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CurrencyISOCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="AlternativeCurrencyKey"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="IsPrimaryCurrencyForISOCrcy"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.MM_PUR_SUPLRCONF_MNTR_SRV_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+                <Annotation Term="Aggregation.ApplySupported">
+                    <Record>
+                        <PropertyValue Property="Transformations">
+                            <Collection>
+                                <String>aggregate</String>
+                                <String>groupby</String>
+                                <String>filter</String>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Rollup" EnumMember="None"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.MM_PUR_SUPLRCONF_MNTR_SRV_Entities/C_PurDocItemCategoryValueHelp" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>PurchasingDocumentItemCategory</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.MM_PUR_SUPLRCONF_MNTR_SRV_Entities/C_PurgDocSuplrConfMain" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>P_DisplayCurrency</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.NavigationRestrictions">
+                    <Record>
+                        <PropertyValue Property="RestrictedProperties">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="Parameters"/>
+                                    <PropertyValue Property="FilterRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Filterable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.SortRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonSortableProperties">
+                            <Collection>
+                                <PropertyPath>P_DisplayCurrency</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.MM_PUR_SUPLRCONF_MNTR_SRV_Entities/C_PurgDocSuplrConfMainResults" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="RequiresFilter" Bool="true"/>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>ID</PropertyPath>
+                                <PropertyPath>PurchasingDocumentTypeName</PropertyPath>
+                                <PropertyPath>DisplayCurrency</PropertyPath>
+                                <PropertyPath>PurgCatName</PropertyPath>
+                                <PropertyPath>PurchaseOrderStatusName</PropertyPath>
+                                <PropertyPath>ProcessingStatusDesc</PropertyPath>
+                                <PropertyPath>NumberOfPurchaseOrderItems</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="RequiredProperties">
+                            <Collection>
+                                <PropertyPath>SupplierConfirmationCategory</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="FilterExpressionRestrictions">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="SupplierConfirmationCategory"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleValue"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="DocumentDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="ScheduleLineDeliveryDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="PerformancePeriodStartDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="PerformancePeriodEndDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="KeyDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="ValidityStartDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="ValidityEndDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="CreationDate"/>
+                                    <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.SortRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonSortableProperties">
+                            <Collection>
+                                <PropertyPath>ID</PropertyPath>
+                                <PropertyPath>PurgDocOrderQuantityUnit</PropertyPath>
+                                <PropertyPath>ScheduledQuantity</PropertyPath>
+                                <PropertyPath>PurchaseOrderItem</PropertyPath>
+                                <PropertyPath>DocumentCurrency</PropertyPath>
+                                <PropertyPath>OrderQuantity</PropertyPath>
+                                <PropertyPath>StillToBeDeliveredQuantity</PropertyPath>
+                                <PropertyPath>StillToInvoiceQuantity</PropertyPath>
+                                <PropertyPath>CommittedQuantity</PropertyPath>
+                                <PropertyPath>ScheduleLinePndgQtyInStkUnit</PropertyPath>
+                                <PropertyPath>PurchasingIsBlockedForSupplier</PropertyPath>
+                                <PropertyPath>DisplayCurrency</PropertyPath>
+                                <PropertyPath>NumberOfPurchaseOrderItems</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_AccountAssignCatValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>AccountAssignmentCategory</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_CompanyCodeValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>CompanyCode</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_DeliveryDateCatValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>DelivDateCategory</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_MaterialGroupValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>MaterialGroup</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_MaterialValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>Plant</PropertyPath>
+                        <PropertyPath>Material</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_PlantValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingOrganization</PropertyPath>
+                        <PropertyPath>Plant</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_ServicePerformerValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>ServicePerformer</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_StorLocValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>StorageLocation</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>CompanyCode</PropertyPath>
+                        <PropertyPath>Supplier</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_ValidityStatusValHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>Status</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurDocItemCategoryValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingDocumentItemCategory</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingCategoryValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingCategory</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingDocTypeValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingDocumentType</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingGroupValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingGroup</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingOrgValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingOrganization</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>ScheduleLinePndgQtyInStkUnit</PropertyPath>
+                        <PropertyPath>PurchaseOrderItem</PropertyPath>
+                        <PropertyPath>PurchasingDocument</PropertyPath>
+                        <PropertyPath>Material</PropertyPath>
+                        <PropertyPath>Supplier</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_PurchaseOrderStatusValueHelpType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>PurchasingDocumentStatus</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_CurrencyType/Currency" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.UnitSpecificScale" Path="Decimals"/>
+            </Annotations>
+            <atom:link rel="self" href="https://ccw-715.example.com:443/sap/opu/odata/sap/MM_PUR_SUPLRCONF_MNTR_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="https://ccw-715.example.com:443/sap/opu/odata/sap/MM_PUR_SUPLRCONF_MNTR_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

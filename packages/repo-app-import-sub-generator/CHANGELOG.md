@@ -1,5 +1,35 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.85
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/fiori-tools-settings 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/odata-service-inquirer 3.2.24 → 3.2.25
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/fiori-elements-writer 3.1.79 → 3.1.80
+- @sap-ux/fiori-freestyle-writer 3.0.122 → 3.0.123
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+- @sap-ux/abap-deploy-config-writer 1.0.30 → 1.0.31
+
+## 1.2.84
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.78 → 3.1.79
+- @sap-ux/fiori-freestyle-writer 3.0.121 → 3.0.122
+- @sap-ux/odata-service-inquirer 3.2.24 → 3.2.24
+
 ## 1.2.83
 
 ### Patch Changes
