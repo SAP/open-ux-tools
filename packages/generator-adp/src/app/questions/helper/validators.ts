@@ -154,9 +154,9 @@ export async function validateProjectPath(
 /**
  * Validates the MTA project name entered when creating a new MTA project.
  *
- * Ensures the name is non-empty, uses only allowed characters (letters, numbers, dots,
- * underscores, hyphens; starting with a letter or number) and that no folder with that name
- * already exists in the selected parent location.
+ * Ensures the name is non-empty, at most 20 characters, uses only allowed characters (letters,
+ * numbers, dots, underscores, hyphens; starting with a letter or number) and that no folder with
+ * that name already exists in the selected parent location.
  *
  * @param {string} value - The MTA project name to validate.
  * @param {string} [parentPath] - The parent folder the new MTA project will be created in.
@@ -166,6 +166,10 @@ export function validateMtaId(value: string, parentPath?: string): string | bool
     const validationResult = validateEmptyString(value);
     if (typeof validationResult === 'string') {
         return validationResult;
+    }
+
+    if (value.length > 20) {
+        return t('error.mtaIdTooLong');
     }
 
     if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(value)) {

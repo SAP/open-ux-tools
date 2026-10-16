@@ -329,6 +329,15 @@ describe('validateMtaId', () => {
         expect(validateMtaId('my.mta_project-1')).toBe(true);
     });
 
+    test('should return error for a name longer than 20 characters', () => {
+        expect(validateMtaId('a'.repeat(21))).toBe(t('error.mtaIdTooLong'));
+    });
+
+    test('should return true for a name of exactly 20 characters', () => {
+        mockExistsSync.mockReturnValue(false);
+        expect(validateMtaId('a'.repeat(20))).toBe(true);
+    });
+
     test('should return error for a name with invalid characters', () => {
         expect(validateMtaId('my project')).toBe(t('error.mtaIdInvalid'));
     });
