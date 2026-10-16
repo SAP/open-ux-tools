@@ -1,5 +1,12 @@
-import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware, initI18n } from '../../../src/index.js';
-import type { TemplateData } from '../../../src/types.js';
+import {
+    buildMainBackend,
+    buildProxyConfig,
+    buildPreviewMiddleware,
+    buildReuseLibsShims,
+    addReuseLibsShimsToConfig,
+    initI18n
+} from '../../../src/index.js';
+import type { TemplateData, ProjectFolder } from '../../../src/types.js';
 
 jest.setTimeout(30000);
 
@@ -266,5 +273,82 @@ describe('UI5 Config Helpers - buildPreviewMiddleware', () => {
         };
         const result = buildPreviewMiddleware(templateData);
         expect(result![0].configuration.ui5Theme).toBe('sap_horizon');
+    });
+});
+
+describe('UI5 Config Helpers - buildReuseLibsShims', () => {
+    test('should return undefined when reuseLibs is not configured', async () => {
+        const templateData: Partial<TemplateData> = {
+            project: {}
+        };
+        const result = await buildReuseLibsShims(templateData, '/project/root', []);
+        expect(result).toBeUndefined();
+    });
+
+    test('should return undefined when reuseLibs is empty string', async () => {
+        const templateData: Partial<TemplateData> = {
+            project: {
+                reuseLibs: ''
+            }
+        };
+        const result = await buildReuseLibsShims(templateData, '/project/root', []);
+        expect(result).toBeUndefined();
+    });
+
+    test('should return undefined when no workspace folders provided', async () => {
+        const templateData: Partial<TemplateData> = {
+            project: {
+                reuseLibs: 'com.example.lib1,com.example.lib2'
+            }
+        };
+        const result = await buildReuseLibsShims(templateData, '/project/root', []);
+        expect(result).toBeUndefined();
+    });
+});
+
+describe('UI5 Config Helpers - addReuseLibsShimsToConfig', () => {
+    test('should not add configuration when projectRoot is undefined', async () => {
+        const mockConfig = {
+            addCustomConfiguration: jest.fn()
+        };
+        const templateData: Partial<TemplateData> = {
+            project: {
+                reuseLibs: 'com.example.lib1'
+            }
+        };
+        const workspaceFolders: ProjectFolder[] = [{ uri: 'file:///workspace', name: 'workspace' }];
+
+        await addReuseLibsShimsToConfig(mockConfig, templateData, undefined, workspaceFolders);
+
+        expect(mockConfig.addCustomConfiguration).not.toHaveBeenCalled();
+    });
+
+    test('should not add configuration when workspaceFolders is undefined', async () => {
+        const mockConfig = {
+            addCustomConfiguration: jest.fn()
+        };
+        const templateData: Partial<TemplateData> = {
+            project: {
+                reuseLibs: 'com.example.lib1'
+            }
+        };
+
+        await addReuseLibsShimsToConfig(mockConfig, templateData, '/project/root', undefined);
+
+        expect(mockConfig.addCustomConfiguration).not.toHaveBeenCalled();
+    });
+
+    test('should not add configuration when reuseLibs is empty', async () => {
+        const mockConfig = {
+            addCustomConfiguration: jest.fn()
+        };
+        const templateData: Partial<TemplateData> = {
+            project: {}
+        };
+        const workspaceFolders: ProjectFolder[] = [{ uri: 'file:///workspace', name: 'workspace' }];
+
+        await addReuseLibsShimsToConfig(mockConfig, templateData, '/project/root', workspaceFolders);
+
+        expect(mockConfig.addCustomConfiguration).not.toHaveBeenCalled();
     });
 });

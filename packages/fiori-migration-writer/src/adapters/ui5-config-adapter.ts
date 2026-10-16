@@ -11,9 +11,14 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { FioriToolsProxyConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import { parse, stringify } from 'yaml';
 import { setWebappPath, setAppreloadPath } from '../data/yaml.js';
-import type { TemplateData, BackendConfig, NeoappDestination, Message } from '../types.js';
+import type { TemplateData, BackendConfig, NeoappDestination, Message, ProjectFolder } from '../types.js';
 import { updateNeoYamlBackends, updateYamlBackends } from '../config/backend.js';
-import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './ui5-config-helpers.js';
+import {
+    buildMainBackend,
+    buildProxyConfig,
+    buildPreviewMiddleware,
+    addReuseLibsShimsToConfig
+} from './ui5-config-helpers.js';
 
 /**
  * Options for generating UI5 YAML content
@@ -35,6 +40,10 @@ export interface UI5YamlOptions {
     setUI5Version?: boolean;
     /** Enable strict validation mode (WARNING becomes ERROR) */
     strict?: boolean;
+    /** Project root path for calculating relative paths to reuse libraries */
+    projectRoot?: string;
+    /** Workspace folders to search for reuse libraries */
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 /**
@@ -143,7 +152,9 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
         firstNeoAppDestination,
         webappPath,
         setUI5Version,
-        strict = false
+        strict = false,
+        projectRoot,
+        workspaceFolders
     } = options;
 
     const config = await UI5Config.newInstance('', { validateSchema: false });
@@ -176,6 +187,9 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
     if (previewMiddleware) {
         config.addCustomMiddleware(previewMiddleware);
     }
+
+    // Add reuse library shims configuration if project has reuse libs
+    await addReuseLibsShimsToConfig(config, templateData, projectRoot, workspaceFolders);
 
     const yamlContent = config.toString();
 
@@ -219,7 +233,9 @@ export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Prom
         destination,
         firstNeoAppDestination,
         webappPath,
-        strict = false
+        strict = false,
+        projectRoot,
+        workspaceFolders
     } = options;
 
     const config = await UI5Config.newInstance('', { validateSchema: false });
@@ -265,6 +281,9 @@ export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Prom
     if (previewMiddleware) {
         config.addCustomMiddleware(previewMiddleware);
     }
+
+    // Add reuse library shims configuration if project has reuse libs
+    await addReuseLibsShimsToConfig(config, templateData, projectRoot, workspaceFolders);
 
     const yamlContent = config.toString();
 

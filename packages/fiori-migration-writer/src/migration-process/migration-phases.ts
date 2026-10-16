@@ -5,7 +5,7 @@
  * This extraction reduces cognitive complexity and improves testability
  */
 
-import type { ImportProjectInfo, Message, TemplateData, NeoappDestination } from '../types.js';
+import type { ImportProjectInfo, Message, TemplateData, NeoappDestination, ProjectFolder } from '../types.js';
 import type { SapAppSourceTemplate } from '../project-spec-types.js';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import { MigrationTypes, distVar } from '../utils/constants.js';
@@ -34,6 +34,7 @@ export interface GenerateAppSettingsConfig {
     sourceTemplateTest?: SapAppSourceTemplate;
     firstNeoAppDestination?: string;
     strict?: boolean;
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 /**
@@ -118,7 +119,8 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
         neoappDestinations,
         sourceTemplateTest,
         firstNeoAppDestination,
-        strict = false
+        strict = false,
+        workspaceFolders
     } = config;
 
     // Determine if UI5 version should be written to YAML files
@@ -138,7 +140,8 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
         setUI5version,
         rootPath,
         hasDataSource,
-        strict
+        strict,
+        workspaceFolders
     });
 
     // Update manifest.json

@@ -1,5 +1,90 @@
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { TemplateData } from '../types.js';
+import type { TemplateData, ProjectFolder } from '../types.js';
+import { getReuseLibs, ReuseLibType } from '../utils/file-discovery.js';
+import { relative, dirname } from 'node:path';
+import { URI } from 'vscode-uri';
+
+/**
+ * Build reuse libraries shims configuration for ui5.yaml customConfiguration
+ *
+ * Maps reuse library names from manifest dependencies to their local paths in the workspace.
+ * This allows the UI5 loader to resolve reuse libraries locally instead of trying to fetch
+ * them from the backend.
+ *
+ * @param templateData - Template data containing project info with reuseLibs
+ * @param projectRoot - Root path of the project being migrated
+ * @param workspaceFolders - Workspace folders to search for reuse libraries
+ * @returns Shims configuration object or undefined if no reuse libs
+ */
+export async function buildReuseLibsShims(
+    templateData: TemplateData,
+    projectRoot: string,
+    workspaceFolders?: readonly ProjectFolder[]
+): Promise<{ reuseLibs?: Record<string, string[]> } | undefined> {
+    // Check if project has reuse library dependencies
+    const reuseLibsString = templateData.project.reuseLibs;
+    if (!reuseLibsString || !workspaceFolders || workspaceFolders.length === 0) {
+        return undefined;
+    }
+
+    // Parse comma-separated reuse library names
+    const reuseLibNames = reuseLibsString
+        .split(',')
+        .map((name: string) => name.trim())
+        .filter((name: string) => name.length > 0);
+
+    if (reuseLibNames.length === 0) {
+        return undefined;
+    }
+
+    try {
+        // Convert ProjectFolder[] to format expected by getReuseLibs
+        const workspaceFoldersWithUri = workspaceFolders.map((folder) => ({
+            uri: URI.file(folder.uri.fsPath),
+            name: folder.name,
+            index: folder.index
+        }));
+
+        // Discover all reuse libraries in the workspace
+        const discoveredLibs = await getReuseLibs(workspaceFoldersWithUri);
+        const reuseLibraries = discoveredLibs.filter((lib) => lib.value.type === ReuseLibType.LIBRARY);
+
+        if (reuseLibraries.length === 0) {
+            return undefined;
+        }
+
+        // Build shims mapping: library name -> relative path from project root
+        const reuseLibs: Record<string, string[]> = {};
+
+        for (const libName of reuseLibNames) {
+            // Find the discovered library matching this name
+            const matchedLib = reuseLibraries.find((lib) => lib.value.name === libName);
+
+            if (matchedLib) {
+                // Calculate relative path from project root to library root
+                const _libRoot = matchedLib.value.libRoot;
+                const manifestDir = dirname(matchedLib.value.path);
+
+                // Use the manifest directory as the library path (contains src/ with the library code)
+                const relativePath = relative(projectRoot, manifestDir);
+
+                // Shims expect array of paths (supports multiple locations)
+                reuseLibs[libName] = [relativePath || '.'];
+            }
+        }
+
+        // Only return if we found at least one library
+        if (Object.keys(reuseLibs).length === 0) {
+            return undefined;
+        }
+
+        return { reuseLibs };
+    } catch (error) {
+        // If reuse lib discovery fails, return undefined to skip shims configuration
+        // The app may still work if libraries are available via backend
+        return undefined;
+    }
+}
 
 /**
  * Build main backend configuration from template data
@@ -96,4 +181,26 @@ export function buildPreviewMiddleware(templateData: TemplateData): any[] | unde
             }
         }
     ];
+}
+
+/**
+ * Add reuse library shims configuration to UI5Config instance if project has reuse libs
+ *
+ * @param config - UI5Config instance to add configuration to
+ * @param templateData - Template data containing project configuration
+ * @param projectRoot - Optional root path of the project being migrated
+ * @param workspaceFolders - Optional workspace folders to search for reuse libraries
+ */
+export async function addReuseLibsShimsToConfig(
+    config: any,
+    templateData: TemplateData,
+    projectRoot?: string,
+    workspaceFolders?: readonly ProjectFolder[]
+): Promise<void> {
+    if (projectRoot && workspaceFolders) {
+        const shimsConfig = await buildReuseLibsShims(templateData, projectRoot, workspaceFolders);
+        if (shimsConfig) {
+            config.addCustomConfiguration('sap.watt.common.plugin.fioriOptions', shimsConfig);
+        }
+    }
 }

@@ -33,7 +33,7 @@ import { loadOrFetchProjectInfo, validateProjectForMigration } from './project/i
 // Data functions
 import { resolveUI5VersionsForMigration } from './data/index.js';
 
-import type { ImportProjectInfo, Message } from './types.js';
+import type { ImportProjectInfo, Message, ProjectFolder } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
@@ -59,6 +59,8 @@ export interface MigrateOptions {
     fs?: Editor;
     /** Enable strict validation mode - WARNINGs become ERRORs for critical issues (default: false) */
     strict?: boolean;
+    /** Workspace folders to search for reuse libraries */
+    workspaceFolders?: readonly ProjectFolder[];
 }
 
 export class ProjectMigrator {
@@ -117,7 +119,8 @@ export class ProjectMigrator {
             vscode: vscodeOpt,
             internalToggle: internalToggleOpt = false,
             fs: fsOpt,
-            strict: strictOpt = false
+            strict: strictOpt = false,
+            workspaceFolders: workspaceFoldersOpt
         } = options;
 
         // Create a new isolated editor instance for this migration if not provided
@@ -165,7 +168,8 @@ export class ProjectMigrator {
                         vscodeOpt,
                         ui5SnapshotUrlOpt,
                         internalToggleOpt,
-                        strictOpt
+                        strictOpt,
+                        workspaceFoldersOpt
                     );
                     messages = messages.concat(copyMessages);
                     result = isSuccess;
@@ -233,12 +237,24 @@ export class ProjectMigrator {
      * @param strict - Enable strict validation mode (WARNINGs become ERRORs for critical issues)
      * @returns Migration result with status and messages
      */
+    /**
+     * Copy common files and apply migration transformations
+     *
+     * @param projectInfo - Project information
+     * @param vscode - VS Code context
+     * @param ui5SnapshotUrl - UI5 snapshot URL
+     * @param internalToggle - Enable internal features
+     * @param strict - Enable strict validation mode
+     * @param workspaceFolders - Workspace folders to search for reuse libraries
+     * @returns Migration result with messages
+     */
     private static async copyCommonFiles(
         projectInfo: ImportProjectInfo,
         vscode: any,
         ui5SnapshotUrl: string,
         internalToggle: boolean = false,
-        strict: boolean = false
+        strict: boolean = false,
+        workspaceFolders?: readonly ProjectFolder[]
     ): Promise<{ result: boolean; messages: Message[] }> {
         const messages: Message[] = [];
         const { isSAPApp = false, rootPath, destination, neoappDestinations, firstNeoAppDestination } = projectInfo;
@@ -316,7 +332,8 @@ export class ProjectMigrator {
                 neoappDestinations,
                 sourceTemplateTest: projectInfo.sourceTemplate,
                 firstNeoAppDestination,
-                strict
+                strict,
+                workspaceFolders
             });
 
             // Phase 4: Apply all templates
