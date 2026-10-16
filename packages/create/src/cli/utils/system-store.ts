@@ -29,7 +29,7 @@ export function rejectIfAppStudio(logger: ReturnType<typeof getLogger>): boolean
  * @param silentForJson - suppress store log output when true
  * @returns configured store service
  */
-export async function getSystemService(silentForJson: boolean) {
+export function getSystemService(silentForJson: boolean) {
     const logger = getLogger();
     const storeLogger = silentForJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
     return getService<BackendSystem, BackendSystemKey>({
