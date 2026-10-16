@@ -274,8 +274,8 @@ importers:
         specifier: 2.9.0
         version: 2.9.0
       yargs-parser:
-        specifier: 21.1.1
-        version: 21.1.1
+        specifier: 22.0.0
+        version: 22.0.0
 
   examples/fe-fpm-cli:
     dependencies:
@@ -1183,8 +1183,8 @@ importers:
         specifier: 3.0.7
         version: 3.0.7(supports-color@8.1.1)
       mime-types:
-        specifier: ^2.1.35
-        version: 2.1.35
+        specifier: ^3.0.2
+        version: 3.0.2
       portfinder:
         specifier: 1.0.38
         version: 1.0.38(supports-color@8.1.1)
@@ -1202,8 +1202,8 @@ importers:
         specifier: 1.17.17
         version: 1.17.17
       '@types/mime-types':
-        specifier: ^2.1.4
-        version: 2.1.4
+        specifier: ^3.0.1
+        version: 3.0.1
 
   packages/btp-utils:
     dependencies:
@@ -3531,8 +3531,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       yargs-parser:
-        specifier: 21.1.1
-        version: 21.1.1
+        specifier: 22.0.0
+        version: 22.0.0
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -11021,8 +11021,8 @@ packages:
   '@types/methods@1.1.4':
     resolution: {integrity: sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ==}
 
-  '@types/mime-types@2.1.4':
-    resolution: {integrity: sha512-lfU4b34HOri+kAY5UheuFMWPDOI+OPceBSHZKp69gEyTL/mmJ4cnU6Y/rlme3UL3GyOn6Y42hyIEw0/q8sWx5w==}
+  '@types/mime-types@3.0.1':
+    resolution: {integrity: sha512-xRMsfuQbnRq1Ef+C+RKaENOxXX87Ygl38W1vDfPHRku02TgQr+Qd8iivLtAMcR0KF5/29xlnFihkTlbqFrGOVQ==}
 
   '@types/mime@4.0.0':
     resolution: {integrity: sha512-5eEkJZ/BLvTE3vXGKkWlyTSUVZuzj23Wj8PoyOq2lt5I3CYbiLBOPb3XmCW6QcuOibIUE6emHXHt9E/F/rCa6w==}
@@ -27215,7 +27215,7 @@ snapshots:
 
   '@types/methods@1.1.4': {}
 
-  '@types/mime-types@2.1.4': {}
+  '@types/mime-types@3.0.1': {}
 
   '@types/mime@4.0.0':
     dependencies:
