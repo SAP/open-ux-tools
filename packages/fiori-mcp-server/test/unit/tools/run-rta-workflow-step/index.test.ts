@@ -6,11 +6,13 @@ import type { FrontendActionTransport } from '../../../../src/tools/run-rta-work
 const mockDisconnectSite = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 const mockStopBrowser = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 const mockCallFrontendAction = jest.fn<FrontendActionTransport['callFrontendAction']>();
+const mockFetchViaContext = jest.fn<FrontendActionTransport['fetchViaContext']>();
 let registryEmpty = true;
 
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/index.js', () => ({
     defaultTransport: {
         callFrontendAction: mockCallFrontendAction,
+        fetchViaContext: mockFetchViaContext,
         disconnectSite: mockDisconnectSite,
         stopBrowser: mockStopBrowser
     },
@@ -28,6 +30,7 @@ const mockSaveChanges = jest.fn<any>();
 const mockGetPageActions = jest.fn<any>();
 const mockCallPageAction = jest.fn<any>();
 const mockPressInteractive = jest.fn<any>();
+const mockGetODataMetadata = jest.fn<any>();
 
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.js', () => ({
     startRta: mockStartRta,
@@ -38,6 +41,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
     getPageActions: mockGetPageActions,
     callPageAction: mockCallPageAction,
     pressInteractive: mockPressInteractive,
+    getODataMetadata: mockGetODataMetadata,
     FrontendActionError: class FrontendActionError extends Error {
         code: string;
         constructor(name: string, code: string, msg: string) {
@@ -257,6 +261,31 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 payload: { controlId: 'ctrl1', actionId: 'rename', actionPayload: { newLabel: 'Hi' } }
             })) as any;
             expect(result.success).toBe(true);
+        });
+    });
+
+    describe('get_odata_metadata step', () => {
+        test('passes uris to getODataMetadata and returns its entries', async () => {
+            mockGetODataMetadata.mockResolvedValue({ entries: [{ url: 'api/svc/', metadata: '<edmx/>' }] });
+            const result = (await runRtaWorkflowStep({
+                step: 'get_odata_metadata',
+                site: SITE,
+                payload: { uris: ['api/svc/'] }
+            })) as any;
+            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/']);
+            expect(result).toEqual({ entries: [{ url: 'api/svc/', metadata: '<edmx/>' }] });
+        });
+
+        test('rejects when payload.uris is missing', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'get_odata_metadata', site: SITE, payload: {} })
+            ).rejects.toThrow(/uris/i);
+        });
+
+        test('rejects when payload.uris is not a string array', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'get_odata_metadata', site: SITE, payload: { uris: 'x' } })
+            ).rejects.toThrow(/uris/i);
         });
     });
 });

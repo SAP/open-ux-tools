@@ -1,6 +1,7 @@
 import type {
     ActionsCatalog,
     ElementContext,
+    GetODataMetadataResult,
     InteractiveElement,
     Overlay,
     PageActionRunResult,
@@ -30,7 +31,8 @@ export const STEPS = [
     'restart',
     'get_page_actions',
     'call_page_action',
-    'press_interactive'
+    'press_interactive',
+    'get_odata_metadata'
 ] as const;
 
 export type Step = (typeof STEPS)[number];
@@ -113,6 +115,12 @@ export interface PressInteractiveStepResult {
     result: PageActionRunResult;
 }
 
+/**
+ * Result of the `get_odata_metadata` step: one entry per requested OData URI,
+ * each carrying formatted EDMX or a per-entry error.
+ */
+export type GetODataMetadataStepResult = GetODataMetadataResult;
+
 export type RunRtaWorkflowStepResult =
     | StartStepResult
     | GetOverlaysStepResult
@@ -123,4 +131,5 @@ export type RunRtaWorkflowStepResult =
     | RestartStepResult
     | GetPageActionsStepResult
     | CallPageActionStepResult
-    | PressInteractiveStepResult;
+    | PressInteractiveStepResult
+    | GetODataMetadataStepResult;
