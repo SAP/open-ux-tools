@@ -8,6 +8,32 @@ export interface FrontendActionResult<T = unknown> {
 }
 
 /**
+ * Reserved payload the bridge returns from a `start`/`restart` call when the
+ * editor URL served a backend login page (CF XSUAA / ABAP reentrance) instead
+ * of the app, so the webclient bridge never injected. It rides a successful
+ * (`isSuccess: true`) envelope so `unwrap` does not throw — "needs login" is
+ * deliberately distinct from a genuine action failure (`isSuccess: false`).
+ */
+export interface NeedsUserActionPayload {
+    __needsUserAction: 'backend_login_required';
+    message: string;
+}
+
+/**
+ * Type guard for {@link NeedsUserActionPayload}.
+ *
+ * @param value Unwrapped frontend-action payload.
+ * @returns `true` when the payload is the reserved backend-login signal.
+ */
+export function isNeedsUserAction(value: unknown): value is NeedsUserActionPayload {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        (value as Record<string, unknown>).__needsUserAction === 'backend_login_required'
+    );
+}
+
+/**
  * Transport that delivers Joule frontend action calls to the running
  * adaptation editor. The `rta/` layer depends on this interface, not on the
  * concrete Playwright implementation, so a fake transport can be injected

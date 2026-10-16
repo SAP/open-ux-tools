@@ -5,4 +5,5 @@ export {
     isRegistryEmpty,
     stopBrowser
 } from './playwright-bridge.js';
-export type { FrontendActionResult, FrontendActionTransport } from './types.js';
+export { isNeedsUserAction } from './types.js';
+export type { FrontendActionResult, FrontendActionTransport, NeedsUserActionPayload } from './types.js';

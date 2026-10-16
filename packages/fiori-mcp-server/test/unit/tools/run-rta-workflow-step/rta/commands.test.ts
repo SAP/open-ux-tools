@@ -58,6 +58,23 @@ describe('rta/commands', () => {
         expect(result).toEqual({ rtaStarted: true });
     });
 
+    test('startRta surfaces backend_login_required without throwing', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(
+            ok({ __needsUserAction: 'backend_login_required', message: 'please log in' })
+        );
+        const result = await startRta(transport, { site: SITE, frameId: FRAME });
+        expect(result).toEqual({
+            rtaStarted: false,
+            needsUserAction: 'backend_login_required',
+            message: 'please log in'
+        });
+    });
+
+    test('startRta still throws on a genuine action failure', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(fail('GENERIC_ERROR', 'boom'));
+        await expect(startRta(transport, { site: SITE, frameId: FRAME })).rejects.toThrow(/startRTA/);
+    });
+
     test('getOverlays calls getOverlaysInformation', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(
             ok({

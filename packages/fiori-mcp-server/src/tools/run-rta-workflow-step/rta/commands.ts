@@ -1,3 +1,4 @@
+import { isNeedsUserAction } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
 import type {
     ActionsCatalog,
@@ -56,15 +57,31 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
 }
 
 /**
+ * Result of a `startRta` call. On the normal path `rtaStarted` is `true`. When
+ * the editor URL served a backend login page (CF XSUAA / ABAP reentrance),
+ * `rtaStarted` is `false` and `needsUserAction` carries the structured signal
+ * so the caller can prompt the human to log in and retry — instead of throwing.
+ */
+export interface StartRtaResult {
+    rtaStarted: boolean;
+    needsUserAction?: 'backend_login_required';
+    message?: string;
+}
+
+/**
  * Starts Runtime Authoring on the editor page.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns `{ rtaStarted: true }` once RTA has started.
+ * @returns `{ rtaStarted: true }` once RTA has started, or a `backend_login_required` signal.
  */
-export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<{ rtaStarted: boolean }> {
+export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<StartRtaResult> {
     const name = action('startRTA');
-    return unwrap(name, await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, {}, page.frameId));
+    const payload = unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId));
+    if (isNeedsUserAction(payload)) {
+        return { rtaStarted: false, needsUserAction: payload.__needsUserAction, message: payload.message };
+    }
+    return { rtaStarted: true };
 }
 
 /**

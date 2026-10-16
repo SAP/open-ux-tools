@@ -100,6 +100,22 @@ describe('runRtaWorkflowStep dispatcher', () => {
             });
             expect(result).toMatchObject({ rtaStarted: true });
         });
+
+        test('passes backend_login_required through to the result', async () => {
+            mockStartRta.mockResolvedValue({
+                rtaStarted: false,
+                needsUserAction: 'backend_login_required',
+                message: 'log in'
+            });
+            const result = await runRtaWorkflowStep({ step: 'start', site: SITE, frameId: FRAME });
+            expect(result).toMatchObject({
+                site: SITE,
+                frameId: FRAME,
+                rtaStarted: false,
+                needsUserAction: 'backend_login_required',
+                message: 'log in'
+            });
+        });
     });
 
     describe('get_overlays step', () => {
@@ -122,6 +138,19 @@ describe('runRtaWorkflowStep dispatcher', () => {
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
             expect(mockStartRta).toHaveBeenCalled();
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
+        });
+
+        test('passes backend_login_required through to the result', async () => {
+            mockStartRta.mockResolvedValue({
+                rtaStarted: false,
+                needsUserAction: 'backend_login_required',
+                message: 'log in'
+            });
+            const result = await runRtaWorkflowStep({ step: 'restart', site: SITE, frameId: FRAME });
+            expect(result).toMatchObject({
+                rtaStarted: false,
+                needsUserAction: 'backend_login_required'
+            });
         });
     });
 

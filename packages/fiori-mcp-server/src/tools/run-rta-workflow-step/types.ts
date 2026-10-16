@@ -61,6 +61,10 @@ export interface StartStepResult {
     /** Echo of the frameId — carry this forward to every subsequent step. */
     frameId: string;
     rtaStarted: boolean;
+    /** Set when the editor URL served a backend login page instead of the app. */
+    needsUserAction?: 'backend_login_required';
+    /** Human-readable guidance accompanying `needsUserAction`. */
+    message?: string;
 }
 
 export interface GetOverlaysStepResult {
@@ -88,6 +92,10 @@ export interface RestartStepResult {
     site: string;
     frameId: string;
     rtaStarted: boolean;
+    /** Set when the editor URL served a backend login page instead of the app. */
+    needsUserAction?: 'backend_login_required';
+    /** Human-readable guidance accompanying `needsUserAction`. */
+    message?: string;
 }
 
 export interface GetPageActionsStepResult {
