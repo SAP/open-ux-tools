@@ -197,7 +197,13 @@ export function getMigrateCommand(): Command {
         .option('-f, --force', t('migrate.command.options.force'))
         .option('-n, --skip-install', t('migrate.command.options.skipInstall'))
         .action(async (projectPath: string | undefined, options: MigrateCommandOptions) => {
-            await migrate(projectPath, options);
+            try {
+                await migrate(projectPath, options);
+            } catch (error) {
+                const logger = getLogger();
+                logger.error(error instanceof Error ? error.message : String(error));
+                process.exit(1);
+            }
         });
 }
 

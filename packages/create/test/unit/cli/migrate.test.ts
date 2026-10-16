@@ -263,9 +263,9 @@ describe('migrate command', () => {
 
         await expect(
             command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']))
-        ).rejects.toThrow('Migration failed');
+        ).rejects.toThrow('process.exit called');
 
-        expect(loggerMock.error).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Migration failed'));
     });
 
     test('should handle migration error exception', async () => {
@@ -278,7 +278,9 @@ describe('migrate command', () => {
 
         await expect(
             command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']))
-        ).rejects.toThrow('Unexpected error');
+        ).rejects.toThrow('process.exit called');
+
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Unexpected error'));
     });
 
     test('should log migration messages by type', async () => {
@@ -938,7 +940,9 @@ describe('migrate command', () => {
             command.parseAsync(
                 getArgv(['migrate', testProjectRoot, '--destination', '__return_false__', '--hostname', 'myhost.com'])
             )
-        ).rejects.toThrow('Validation failed');
+        ).rejects.toThrow('process.exit called');
+
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('Validation failed'));
 
         expect(mockMigrate).not.toHaveBeenCalled();
     });
