@@ -10,7 +10,7 @@ import {
     probeBridge,
     recordBackendOrigin
 } from './session.js';
-import type { FrontendActionResult, FrontendActionTransport, NeedsUserActionPayload } from './types.js';
+import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport, NeedsUserActionPayload } from './types.js';
 
 // Module-scope singleton state.
 //   `browser` — launched once and reused for the lifetime of the Node process.
@@ -325,12 +325,36 @@ export function isRegistryEmpty(): boolean {
 }
 
 /**
+ * Issues an authenticated GET through the browser context registered for
+ * `site`, reusing its approuter session cookies. Does not launch a browser or
+ * open a page — if no session is registered for `site`, throws so the caller
+ * can tell the agent to run the `start` step first.
+ *
+ * @param site URL whose registered context should issue the request.
+ * @param url Absolute URL to GET (resolved against the localhost `site` origin by the caller).
+ * @returns The response status, content-type, and body text.
+ */
+export async function fetchViaContext(site: string, url: string): Promise<FetchViaContextResult> {
+    const rpc = connectionRegistry.get(site);
+    if (!rpc) {
+        throw new Error('No active editor session for this site. Run the "start" step first.');
+    }
+    const response = await rpc.context.request.get(url, { maxRedirects: 5 });
+    return {
+        status: response.status(),
+        contentType: response.headers()['content-type'] ?? '',
+        body: await response.text()
+    };
+}
+
+/**
  * Default transport — the Playwright-backed implementation bound from this
  * module's exports. The `rta/` layer consumes this when no transport is
  * injected explicitly.
  */
 export const defaultTransport: FrontendActionTransport = {
     callFrontendAction,
+    fetchViaContext,
     disconnectSite,
     stopBrowser
 };
