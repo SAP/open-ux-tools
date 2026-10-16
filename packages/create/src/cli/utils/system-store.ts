@@ -1,25 +1,7 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { getService } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { getLogger } from '../../tracing/index.js';
-
-/**
- * Check if running in AppStudio and log an error if so.
- * Returns true when in AppStudio (caller should abort).
- *
- * @param logger - logger instance to write the error to
- * @returns true when running in AppStudio
- */
-export function rejectIfAppStudio(logger: ReturnType<typeof getLogger>): boolean {
-    if (isAppStudio()) {
-        logger.error(
-            'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
-        );
-        return true;
-    }
-    return false;
-}
 
 /**
  * Create a store service for BackendSystem entities.

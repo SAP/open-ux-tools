@@ -1,7 +1,8 @@
 import type { Command } from 'commander';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
-import { rejectIfAppStudio, getSystemService, toPublicView } from '../utils/system-store.js';
+import { getSystemService, toPublicView } from '../utils/system-store.js';
 
 /**
  * Add the "list system" subcommand to a passed command.
@@ -33,7 +34,10 @@ Example:
 async function listSystems(asJson: boolean): Promise<void> {
     const logger = getLogger();
     try {
-        if (rejectIfAppStudio(logger)) {
+        if (isAppStudio()) {
+            logger.error(
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+            );
             return;
         }
 
