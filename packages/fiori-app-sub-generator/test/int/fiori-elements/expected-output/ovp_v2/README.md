@@ -10,7 +10,7 @@
 |**Service URL**<br>https://sap-ux-mock-services-v2-ovp.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/GWSAMPLE_BASIC|
 |**Module Name**<br>ovp_v2|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
-|**Namespace**<br>testNameSpace|
+|**Namespace**<br>testnamespace|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.98.0|
 |**Enable TypeScript**<br>False|

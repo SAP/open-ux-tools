@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
 import { UIDatePicker } from '../../../src/components/UIDatePicker';
 
 describe('<UIDatePicker />', () => {
@@ -18,41 +18,46 @@ describe('<UIDatePicker />', () => {
     });
 
     it('Should render a UIDatePicker component', () => {
-        const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} />);
-        expect(wrapper.find('.ui-DatePicker').length).toEqual(1);
-        expect(wrapper.find('input[type="datetime-local"]').length).toEqual(1);
+        const { container } = render(<UIDatePicker {...defaultProps} />);
+        expect(container.querySelectorAll('.ui-DatePicker')).toHaveLength(1);
+        expect(container.querySelectorAll('input[type="datetime-local"]')).toHaveLength(1);
     });
 
     it('Should render a UIDatePicker component, date only', () => {
-        const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
-        expect(wrapper.find('.ui-DatePicker').length).toEqual(1);
-        expect(wrapper.find('input[type="date"]').length).toEqual(1);
+        const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
+        expect(container.querySelectorAll('.ui-DatePicker')).toHaveLength(1);
+        expect(container.querySelectorAll('input[type="date"]')).toHaveLength(1);
     });
 
     it('onInputChange', () => {
-        const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
-        wrapper.find('input[type="text"]').simulate('change', { target: { value: '2022-08-22' } });
+        const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
+        const textInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+        fireEvent.change(textInput, { target: { value: '2022-08-22' } });
         expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
     });
 
     it('onInputChange, undefined', () => {
-        const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
-        wrapper.instance()['onInputChange']({}, undefined);
+        const ref = React.createRef<UIDatePicker>();
+        render(<UIDatePicker {...defaultProps} dateOnly ref={ref} />);
+        // Access the private onInputChange method via the class instance
+        (ref.current as any)['onInputChange']({}, undefined);
         expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('');
     });
 
     it('onPickerChange', () => {
-        const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
-        wrapper.find('input[type="date"]').simulate('change', { target: { value: '2022-08-22' } });
+        const { container } = render(<UIDatePicker {...defaultProps} dateOnly />);
+        const pickerInput = container.querySelector('input[type="date"]') as HTMLInputElement;
+        fireEvent.change(pickerInput, { target: { value: '2022-08-22' } });
         expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
     });
 
     it('onPickerChange, datetime without seconds', () => {
-        const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} />);
-        wrapper.find('input[type="datetime-local"]').simulate('change', { target: { value: '2022-08-22T22:00' } });
+        const { container } = render(<UIDatePicker {...defaultProps} />);
+        const pickerInput = container.querySelector('input[type="datetime-local"]') as HTMLInputElement;
+        fireEvent.change(pickerInput, { target: { value: '2022-08-22T22:00' } });
         expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22T22:00:00');
     });

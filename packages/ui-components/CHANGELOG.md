@@ -1,5 +1,75 @@
 # @sap-ux/ui-components
 
+## 3.0.16
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 3.0.15
+
+## 3.0.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-31
+
+#### Bug Fixes
+
+- Remove empty space in UIFlexibleTable actions column when reorder or delete actions are not rendered [[8ee2690](https://github.com/SAP/open-ux-tools/commit/8ee2690f3d00e6d0ce5b3cbd2e880ebb2a012208)]
+
+## 3.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Bug Fixes
+
+- Update UIIcon import to use direct path instead of barrel to avoid circular resolution [[ef7c4b4](https://github.com/SAP/open-ux-tools/commit/ef7c4b4cce828fff70c10389bd58f6f02179d10d)]
+
+## 3.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Features
+
+- Add shared CSS variables for the UI spacing scale [[f044e50](https://github.com/SAP/open-ux-tools/commit/f044e50fb85f83baac12fcac96e5453bd6da6f7a)]
+
+## 3.0.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-17
+
+#### Bug Fixes
+
+- Align ValidationWarning icon circle with Info, Success and Warning icons by shifting circle and checkmark 1px right [[50c09b5](https://github.com/SAP/open-ux-tools/commit/50c09b507035c9876f4d098cfa4294864d73e0e8)]
+
+## 3.0.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- UIButtons - menu open shortcut(alt + arrow down) does not propagate event which leads to issue that focus is left from button. Allow to propagate event [[830573e](https://github.com/SAP/open-ux-tools/commit/830573e1da6ec7e3768f8b1c58f70513ef269d29)]
+
 ## 3.0.9
 
 ### Patch Changes

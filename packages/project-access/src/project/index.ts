@@ -23,7 +23,12 @@ export {
 export { filterDataSourcesByType, getMainService, getUsedEntitiesFromManifest } from './service.js';
 export type { UsedEntity } from './service.js';
 export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies.js';
-export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n/index.js';
+export {
+    getCapI18nFolderNames,
+    getI18nPropertiesPaths,
+    getI18nBundles,
+    createI18nEntriesAtPath
+} from './i18n/index.js';
 export {
     getAppProgrammingLanguage,
     getAppType,
@@ -63,3 +68,4 @@ export {
 } from './specification.js';
 export { readFlexChanges } from './flex-changes.js';
 export { isUI5IdUnique } from './ui5-xml-id-validator.js';
+export { resolveApplicationTitle } from './app-title.js';

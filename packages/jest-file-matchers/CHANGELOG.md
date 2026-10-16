@@ -1,5 +1,17 @@
 # @sap-ux/jest-file-matchers
 
+## 1.0.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-24
+
+#### Bug Fixes
+
+- updateSnapshot for nested folders [[2d01f43](https://github.com/SAP/open-ux-tools/commit/2d01f43bc43fcb76584f697e2cb8c813c801db67)]
+
 ## 1.0.2
 
 ### Patch Changes

@@ -3,7 +3,7 @@ sap.ui.define(
     function (Component) {
         "use strict";
 
-        return Component.extend("testNameSpace.lropv2file.Component", {
+        return Component.extend("testnamespace.lropv2file.Component", {
             metadata: {
                 manifest: "json"
             }

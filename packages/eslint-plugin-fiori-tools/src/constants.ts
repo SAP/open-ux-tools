@@ -1,7 +1,14 @@
 export const UI_LINE_ITEM = 'com.sap.vocabularies.UI.v1.LineItem';
+export const UI_CHART = 'com.sap.vocabularies.UI.v1.Chart';
+export const UI_DATA_FIELD_FOR_ANNOTATION = 'com.sap.vocabularies.UI.v1.DataFieldForAnnotation';
 export const COMMON_TEXT = 'com.sap.vocabularies.Common.v1.Text';
 export const COMMON_TEXT_ARRANGEMENT = 'com.sap.vocabularies.Common.v1.TextArrangement';
 export const COMMON_LABEL = 'com.sap.vocabularies.Common.v1.Label';
 export const UI_HIDDEN = 'com.sap.vocabularies.UI.v1.Hidden';
 export const UI_TEXT_ARRANGEMENT = 'com.sap.vocabularies.UI.v1.TextArrangement';
 export const UI_FIELD_GROUP = 'com.sap.vocabularies.UI.v1.FieldGroup';
+export const CAPABILITIES_SORT_RESTRICTIONS = 'Org.OData.Capabilities.V1.SortRestrictions';
+export const CAPABILITIES_FILTER_RESTRICTIONS = 'Org.OData.Capabilities.V1.FilterRestrictions';
+export const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
+export const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
+export const UI_REFERENCE_FACET = 'com.sap.vocabularies.UI.v1.ReferenceFacet';

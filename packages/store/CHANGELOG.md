@@ -1,5 +1,17 @@
 # @sap-ux/store
 
+## 2.0.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Upgrade @zowe/secrets-for-zowe-sdk 8.32.0 → 8.35.3 [[3af3daf](https://github.com/SAP/open-ux-tools/commit/3af3dafef0833d88bc2cf77de1ad1a4d69f8fa36)]
+
 ## 2.0.6
 
 ### Patch Changes

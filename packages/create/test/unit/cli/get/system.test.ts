@@ -30,6 +30,12 @@ jest.unstable_mockModule('@sap-ux/store', () => ({
     getService: jest.fn().mockResolvedValue(mockedService)
 }));
 
+// Mock findSystemByUrl
+const mockFindSystemByUrl = jest.fn();
+jest.unstable_mockModule('../../../../src/cli/utils/system-lookup', () => ({
+    findSystemByUrl: mockFindSystemByUrl
+}));
+
 const { addSystemGetCommand } = await import('../../../../src/cli/get/system.js');
 
 const mockSystem = new BackendSystem({
@@ -59,6 +65,7 @@ describe('system/get', () => {
         mockGetLogger.mockReturnValue(loggerMock);
         isAppStudioMock.mockReturnValue(false);
         mockedService.read.mockResolvedValue(mockSystem);
+        mockFindSystemByUrl.mockResolvedValue(mockSystem);
     });
 
     test('should print system details in human-readable format', async () => {
@@ -70,7 +77,7 @@ describe('system/get', () => {
         await command.parseAsync(getArgv(['system', '--url', 'https://my-sap.example.com']));
 
         // Then
-        expect(mockedService.read).toHaveBeenCalledTimes(1);
+        expect(mockFindSystemByUrl).toHaveBeenCalledTimes(1);
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('My System'));
         expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining('https://my-sap.example.com'));
         // Sensitive data must never appear
@@ -103,7 +110,7 @@ describe('system/get', () => {
 
     test('should log error when system not found', async () => {
         // Given
-        mockedService.read.mockResolvedValue(undefined);
+        mockFindSystemByUrl.mockResolvedValue(undefined);
         const command = new Command('get');
         addSystemGetCommand(command);
 

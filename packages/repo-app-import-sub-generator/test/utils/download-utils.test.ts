@@ -124,6 +124,50 @@ describe('App Download Utils', () => {
             expect(mockDownload).toHaveBeenCalledWith('Z_TEST_REPO');
             expect(PromptState.admZip).toBeInstanceOf(AdmZip);
         });
+
+        it('should return success:false when downloadFiles returns undefined', async () => {
+            const mockDownload = jest.fn().mockResolvedValue(undefined);
+            const mockServiceProvider = {
+                getUi5AbapRepository: jest.fn(() => ({
+                    downloadFiles: mockDownload,
+                    log: undefined
+                }))
+            };
+
+            PromptState.systemSelection = {
+                connectedSystem: {
+                    serviceProvider: mockServiceProvider as unknown as AbapServiceProvider
+                }
+            };
+
+            await expect(downloadApp('Z_NO_ZIP')).resolves.toEqual({
+                success: false,
+                errorMessage: expect.any(String)
+            });
+            expect(PromptState.admZip).toBeUndefined();
+        });
+
+        it('should return success:false when downloadFiles returns an empty buffer', async () => {
+            const mockDownload = jest.fn().mockResolvedValue(Buffer.alloc(0));
+            const mockServiceProvider = {
+                getUi5AbapRepository: jest.fn(() => ({
+                    downloadFiles: mockDownload,
+                    log: undefined
+                }))
+            };
+
+            PromptState.systemSelection = {
+                connectedSystem: {
+                    serviceProvider: mockServiceProvider as unknown as AbapServiceProvider
+                }
+            };
+
+            await expect(downloadApp('Z_EMPTY_ZIP')).resolves.toEqual({
+                success: false,
+                errorMessage: expect.any(String)
+            });
+            expect(PromptState.admZip).toBeUndefined();
+        });
     });
 
     describe('fetchServiceMetadata', () => {

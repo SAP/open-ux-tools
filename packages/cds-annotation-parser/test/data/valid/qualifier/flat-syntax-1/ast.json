@@ -1,37 +1,45 @@
 {
-  "type": "annotation",
+  "type": "flattened-expression",
   "range": "[(0,0)..(0,36)]",
-  "term": {
-    "type": "path",
+  "path": {
+    "type": "flattened-path",
     "range": "[(0,0)..(0,32)]",
     "value": "UI.HeaderInfo#abc.Description",
     "segments": [
       {
-        "type": "identifier",
-        "range": "[(0,0)..(0,2)]",
-        "value": "UI",
-        "quoted": false
+        "type": "flattened-annotation-segment",
+        "range": "[(0,0)..(0,19)]",
+        "prefix": false,
+        "vocabulary": {
+          "type": "identifier",
+          "range": "[(0,0)..(0,2)]",
+          "value": "UI",
+          "quoted": false
+        },
+        "term": {
+          "type": "identifier",
+          "range": "[(0,5)..(0,15)]",
+          "value": "HeaderInfo",
+          "quoted": true
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "range": "[(0,16)..(0,19)]",
+          "value": "abc"
+        }
       },
       {
-        "type": "identifier",
-        "range": "[(0,5)..(0,15)]",
-        "value": "HeaderInfo",
-        "quoted": true
-      },
-      {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,21)..(0,32)]",
-        "value": "Description",
-        "quoted": false
+        "name": {
+          "type": "identifier",
+          "range": "[(0,21)..(0,32)]",
+          "value": "Description",
+          "quoted": false
+        }
       }
     ],
     "separators": [
-      {
-        "type": "separator",
-        "range": "[(0,2)..(0,3)]",
-        "value": ".",
-        "escaped": false
-      },
       {
         "type": "separator",
         "range": "[(0,20)..(0,21)]",
@@ -39,11 +47,6 @@
         "escaped": false
       }
     ]
-  },
-  "qualifier": {
-    "type": "qualifier",
-    "range": "[(0,16)..(0,19)]",
-    "value": "abc"
   },
   "colon": {
     "type": "token",

@@ -1,4 +1,5 @@
 import { join as joinPosix } from 'node:path/posix';
+import { isAxiosError } from 'axios';
 
 import { ODataVersion } from '../base/odata-service.js';
 import { ServiceProvider } from '../base/service-provider.js';
@@ -301,11 +302,18 @@ export class AbapServiceProvider extends ServiceProvider {
      * Collects ValueListReferences annotation values from the service metadata and annotation files.
      *
      * @param references - Service references for which metadata should be fetched.
+     * @param waitForFirst - When true and more than one reference is provided, the first request is awaited before
+     *   the remaining requests are fired in parallel. An authentication failure (401/403) on the first request
+     *   aborts the entire fetch — useful to prevent cascading redirects in SSO/ReentranceTicket auth flows.
      * @returns A list of ValueListReferences found in the metadata and annotations.
      */
-    public async fetchExternalServices(references: ExternalServiceReference[]): Promise<ExternalService[]> {
+    public async fetchExternalServices(
+        references: ExternalServiceReference[],
+        waitForFirst = false
+    ): Promise<ExternalService[]> {
         const valueListReferences: ExternalService[] = [];
-        const allPromises = references.map(async (reference) => {
+
+        const fetchOne = async (reference: ExternalServiceReference, rejectOnAuthError = false): Promise<void> => {
             const { serviceRootPath, value } = reference;
             const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
             const externalService = this.service(externalServicePath);
@@ -326,13 +334,30 @@ export class AbapServiceProvider extends ServiceProvider {
                     });
                 }
             } catch (error) {
+                const status = isAxiosError(error) ? error.response?.status : undefined;
+                if (rejectOnAuthError && (status === 401 || status === 403)) {
+                    throw error;
+                }
                 this.log.warn(
-                    `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
+                    `Could not fetch value list reference metadata from ${externalServicePath}, ${(error as Error).message}`
                 );
             }
-        });
+        };
 
-        await Promise.allSettled(allPromises);
+        if (waitForFirst) {
+            const [first, ...rest] = references;
+            try {
+                await fetchOne(first, true);
+            } catch {
+                this.log.warn('Authentication failure fetching external service metadata, aborting remaining requests');
+                return valueListReferences;
+            }
+            if (rest.length > 0) {
+                await Promise.allSettled(rest.map((ref) => fetchOne(ref)));
+            }
+        } else {
+            await Promise.allSettled(references.map((ref) => fetchOne(ref)));
+        }
 
         return valueListReferences;
     }

@@ -83,7 +83,7 @@ jobs:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload blob report to GitHub Actions Artifacts
               if: ${{ !cancelled() }}
-              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
               with:
                 
                 name: blob-report-${{ matrix.ui5-version }}
@@ -117,7 +117,7 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Download blob reports from GitHub Actions Artifacts
-              uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+              uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
               with:
                   path: tests/integration/adaptation-editor/all-blob-reports
                   pattern: blob-report-*
@@ -127,7 +127,7 @@ jobs:
               run: cd tests/integration/adaptation-editor && npx playwright merge-reports --reporter html ./all-blob-reports
 
             - name: Upload HTML report
-              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
               with:
                   name: playwright-report-${{ github.run_attempt }}
                   path: tests/integration/adaptation-editor/playwright-report

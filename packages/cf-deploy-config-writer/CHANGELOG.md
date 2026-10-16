@@ -1,5 +1,108 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+
+## 1.1.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Bug Fixes
+
+- Cap generated managed service-names at the Cloud Foundry 50 character limit so long MTA IDs no longer produce service instance names that get silently truncated at deploy time, breaking destination-content ServiceInstanceName references [[4342a95](https://github.com/SAP/open-ux-tools/commit/4342a95613263821ed938f82b6ac9f59a4cc379a)]
+
+## 1.1.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.1 → 2.2.2
+
+## 1.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.0 → 2.2.1
+
+## 1.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.9 → 1.0.10
+
+## 1.1.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Upgrade js-yaml 4.2.0 → 4.3.1 to address CVE (GHSA-pm4m-ph32-ghv5) [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+- @sap-ux/project-access 2.1.12 → 2.1.13
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.1.11 → 2.1.12
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- Standalone approuter no longer creates duplicate XSUAA resource when one already exists in mta.yaml; new XSUAA resources now use `-auth` suffix instead of `-uaa` [[3d5c396](https://github.com/SAP/open-ux-tools/commit/3d5c396818cb9e75670292fa8bd91588905d0d64)]
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.1.9 → 2.1.10
+
 ## 1.0.20
 
 ### Patch Changes

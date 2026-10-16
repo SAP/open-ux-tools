@@ -46,6 +46,17 @@ export interface AnnotationDataSourceResponse {
 
 type ControllerInfo = { controllerName: string };
 
+interface ControllerExtensionLookup {
+    baseControllerExists: boolean;
+    baseControllerPath: string;
+    baseControllerPathFromRoot: string;
+    instanceControllerExists: boolean;
+    instanceControllerPath: string;
+    instanceControllerPathFromRoot: string;
+    missingChangeFilePaths: string[];
+    isTsSupported: boolean;
+}
+
 /**
  * @description Handles API Routes
  */
@@ -54,6 +65,8 @@ export default class RoutesHandler {
      * Whether this is running in build path mode (CF ADP using build output).
      */
     private readonly isBuildPathMode: boolean;
+
+    private readonly isWin32 = os.platform() === 'win32';
 
     /**
      * Constructor taking project as input.
@@ -173,42 +186,25 @@ export default class RoutesHandler {
         next: NextFunction
     ): Promise<void> => {
         try {
-            const query = req.query as { name: string };
+            const query = req.query as { name: string; viewId?: string };
             const controllerName = query.name;
+            const viewId = query.viewId;
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
-            let controllerPathFromRoot = '';
-            let controllerExists = false;
-            let controllerPath = '';
-            let changeFilePath = '';
+            const lookup = await this.resolveControllerExtensions(codeExtFiles, controllerName, viewId);
+            const {
+                baseControllerExists,
+                baseControllerPath,
+                baseControllerPathFromRoot,
+                instanceControllerExists,
+                instanceControllerPath,
+                instanceControllerPathFromRoot,
+                missingChangeFilePaths,
+                isTsSupported
+            } = lookup;
 
-            const project = this.util.getProject();
-            const sourcePath = project.getSourcePath();
-            const rootPath = this.util.getProject().getRootPath();
-            const projectName = project.getName();
-
-            const isTsSupported = isTypescriptSupported(rootPath);
-
-            const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
-                path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
-
-            for (const file of codeExtFiles) {
-                const fileStr = await file.getString();
-                const change = JSON.parse(fileStr) as CodeExtChange;
-
-                if (change.selector.controllerName === controllerName) {
-                    const baseFileName = change.content.codeRef.replace('coding/', '');
-                    const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
-                    controllerPath = getPath(sourcePath, fileName);
-                    controllerPathFromRoot = getPath(projectName, fileName);
-                    changeFilePath = getPath(projectName, file.getName(), '');
-                    controllerExists = true;
-                    break;
-                }
-            }
-
-            if (controllerExists && !fs.existsSync(controllerPath)) {
-                const errorMsg = `Please delete the change file at "${changeFilePath}" and retry creating the controller extension.`;
+            if (!baseControllerExists && !instanceControllerExists && missingChangeFilePaths.length > 0) {
+                const errorMsg = `Please delete the change file(s) at "${missingChangeFilePaths.join('", "')}" and retry creating the controller extension.`;
                 this.logger.debug(errorMsg);
                 res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
                 return;
@@ -217,21 +213,99 @@ export default class RoutesHandler {
             const isRunningInBAS = isAppStudio();
 
             this.sendFilesResponse(res, {
-                controllerExists,
-                controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
-                controllerPathFromRoot,
+                baseControllerExists,
+                baseControllerPath: this.toResponsePath(baseControllerPath),
+                baseControllerPathFromRoot,
+                instanceControllerExists,
+                instanceControllerPath: this.toResponsePath(instanceControllerPath),
+                instanceControllerPathFromRoot,
                 isRunningInBAS,
                 isTsSupported
             });
             this.logger.debug(
-                controllerExists
-                    ? `Controller exists at '${controllerPath}'`
-                    : `Controller with controllerName '${controllerName}' does not exist`
+                `Controller '${controllerName}' existence — base: ${baseControllerExists}, instance (viewId '${
+                    viewId ?? ''
+                }'): ${instanceControllerExists}`
             );
         } catch (e) {
             this.handleErrorMessage(res, next, e);
         }
     };
+
+    /**
+     * Resolves base and instance-specific controller extensions from the workspace's codeExt change files.
+     *
+     * @param codeExtFiles codeExt change files read from the workspace
+     * @param controllerName Controller name matched to each change's selector
+     * @param viewId Optional view ID used to detect an instance-specific extension for the current view
+     * @returns Existence flags and paths for base or instance controllers, plus any stale change reference
+     */
+    private async resolveControllerExtensions(
+        codeExtFiles: Resource[],
+        controllerName: string,
+        viewId: string | undefined
+    ): Promise<ControllerExtensionLookup> {
+        const project = this.util.getProject();
+        const sourcePath = project.getSourcePath();
+        const projectName = project.getName();
+        const isTsSupported = isTypescriptSupported(project.getRootPath());
+
+        const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
+            path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+
+        const lookup: ControllerExtensionLookup = {
+            baseControllerExists: false,
+            baseControllerPath: '',
+            baseControllerPathFromRoot: '',
+            instanceControllerExists: false,
+            instanceControllerPath: '',
+            instanceControllerPathFromRoot: '',
+            missingChangeFilePaths: [],
+            isTsSupported
+        };
+
+        for (const file of codeExtFiles) {
+            const change = JSON.parse(await file.getString()) as CodeExtChange;
+
+            const changeViewId = change.content.viewId;
+            const isBase = !changeViewId;
+            const isInstanceForView = !!viewId && changeViewId === viewId;
+
+            if (change.selector.controllerName !== controllerName || (!isBase && !isInstanceForView)) {
+                continue;
+            }
+
+            const baseFileName = change.content.codeRef.replace('coding/', '');
+            const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
+            const controllerPath = getPath(sourcePath, fileName);
+            const controllerPathFromRoot = getPath(projectName, fileName);
+            const changeFilePath = getPath(projectName, file.getName(), '');
+
+            if (!fs.existsSync(controllerPath)) {
+                lookup.missingChangeFilePaths.push(changeFilePath);
+                this.logger.debug(
+                    `Change file at "${changeFilePath}" references a missing controller at "${controllerPath}".`
+                );
+                continue;
+            }
+
+            if (isBase) {
+                lookup.baseControllerExists = true;
+                lookup.baseControllerPath = controllerPath;
+                lookup.baseControllerPathFromRoot = controllerPathFromRoot;
+            } else {
+                lookup.instanceControllerExists = true;
+                lookup.instanceControllerPath = controllerPath;
+                lookup.instanceControllerPathFromRoot = controllerPathFromRoot;
+            }
+        }
+
+        // A stale change file (missing controller on disk) is only fatal when no valid controller
+        // was found at all. If a valid base or instance controller exists alongside the stale entry,
+        // the 200 response reflects what is actually present and the debug log above provides
+        // server-side visibility of the dangling change file.
+        return lookup;
+    }
 
     /**
      * Handler for writing a controller extension file to the workspace.
@@ -380,7 +454,7 @@ export default class RoutesHandler {
                     const annotationExists = fs.existsSync(annotationPath);
                     apiResponse[dataSourceId].annotationDetails = {
                         fileName: path.parse(localAnnotationUri).base,
-                        annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                        annotationPath: this.toResponsePath(annotationPath),
                         annotationPathFromRoot,
                         annotationExistsInWS: annotationExists
                     };
@@ -403,6 +477,10 @@ export default class RoutesHandler {
         const variant = await getVariant(basePath);
 
         return await ManifestService.initMergedManifest(this.provider, basePath, variant, this.logger);
+    }
+
+    private toResponsePath(p: string): string {
+        return p && this.isWin32 ? `/${p}` : p;
     }
 }
 

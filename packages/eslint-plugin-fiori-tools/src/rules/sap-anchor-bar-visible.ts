@@ -17,7 +17,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [ANCHOR_BAR_VISIBLE]:
-                'The "anchorBarVisible" property should not be set to false in manifest settings. Remove this property from the object page header configuration. Exception: Form entry object pages can have both "visible" and "anchorBarVisible" set to false.'
+                'The `anchorBarVisible` property should not be set to `false` in manifest settings. Remove this property from the object page header configuration. Exception: Form entry object pages can have both `visible` and `anchorBarVisible` set to `false`.'
         },
         fixable: 'code'
     },

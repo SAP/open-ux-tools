@@ -51,7 +51,7 @@ describe('validateUI5VersionExists', () => {
 
         const version = '1.120.0';
         const result = await validateUI5VersionExists(version);
-        expect(axiosGetMock).toHaveBeenCalledWith('https://sapcdn.com/ui5/1.120.0/1.120.0.min.js');
+        expect(axiosGetMock).toHaveBeenCalledWith('https://sapcdn.com/ui5/1.120.0/1.120.0.min.js', expect.any(Object));
         expect(result).toBe(true);
     });
 

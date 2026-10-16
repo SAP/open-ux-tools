@@ -16,6 +16,7 @@ import postcss from 'postcss';
 import yargsParser from 'yargs-parser';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import * as esbuild from 'esbuild';
 
 /**
@@ -25,6 +26,10 @@ import * as esbuild from 'esbuild';
  * issue #1212 / #1632 until a fixed release is available.
  * @type {import('esbuild').Plugin}
  */
+const _require = createRequire(import.meta.url);
+const { makeLicensePlugin } = _require('./esbuildLicensePlugin.cjs');
+
+// from https://github.com/bvaughn/react-virtualized/issues/1212#issuecomment-847759202 workaround for https://github.com/bvaughn/react-virtualized/issues/1632 until it is released.
 const resolveFixup = {
     name: 'resolve-fixup',
     setup(build) {
@@ -43,6 +48,7 @@ const commonConfig = {
     metafile: true,
     sourcemap: true,
     minify: true,
+    legalComments: 'linked',
     logLevel: 'warning',
     loader: {
         '.jpg': 'file',
@@ -73,6 +79,7 @@ const browserConfig = {
     target: 'chrome90',
     format: 'iife',
     plugins: [
+        makeLicensePlugin(),
         resolveFixup,
         sassPlugin({
             async transform(source, dirname, path) {
@@ -107,9 +114,6 @@ const handleCliParams = (options, args = []) => {
 
     outOptions.watch = yargs.watch ? true : outOptions.watch;
     outOptions.watch = yargs.watch === 'false' ? false : outOptions.watch;
-
-    outOptions.metafile = yargs.metafile ? true : outOptions.metafile;
-    outOptions.metafile = yargs.metafile === 'false' ? false : outOptions.metafile;
 
     outOptions.sourcemap = yargs.sourcemap !== undefined ? yargs.sourcemap : outOptions.sourcemap;
 

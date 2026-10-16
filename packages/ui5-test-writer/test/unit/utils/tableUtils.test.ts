@@ -1,17 +1,24 @@
 import {
     getColumnIdentifier,
     transformTableColumns,
-    extractTableColumnsFromNode
+    extractTableColumnsFromNode,
+    extractTableColumnsFromTableNode,
+    extractContactCardColumnsFromNode,
+    extractContactCardColumnsFromTableNode,
+    extractTextAnnotationColumnsFromNode,
+    extractBoundColumnPropertiesFromTableNode,
+    resolvePrimaryTableNode,
+    resolveViewTableNodes
 } from '../../../src/utils/tableUtils.js';
 import type { ColumnAggregations } from '../../../src/utils/tableUtils.js';
 import type { TreeAggregation } from '@sap/ux-specification/dist/types/src/parser';
 
 describe('getColumnIdentifier()', () => {
-    test('returns Value key for a standard column', () => {
+    test('returns the bound property path for a plain DataField column', () => {
         const column = {
             schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
         };
-        expect(getColumnIdentifier(column)).toBe('ProductID');
+        expect(getColumnIdentifier(column, 'DataField::ProductID')).toBe('ProductID');
     });
 
     test('returns Key entry for a custom column', () => {
@@ -19,10 +26,10 @@ describe('getColumnIdentifier()', () => {
             custom: true,
             schema: { keys: [{ name: 'Key', value: 'myCustomCol' }] }
         };
-        expect(getColumnIdentifier(column)).toBe('myCustomCol');
+        expect(getColumnIdentifier(column, 'someAggregationKey')).toBe('myCustomCol');
     });
 
-    test('returns undefined when standard column has no Value key', () => {
+    test('returns undefined when standard column has no Value schema entry and no columnKey', () => {
         const column = {
             schema: { keys: [{ name: 'Label', value: 'Something' }] }
         };
@@ -34,20 +41,38 @@ describe('getColumnIdentifier()', () => {
             custom: true,
             schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
         };
-        expect(getColumnIdentifier(column)).toBeUndefined();
+        expect(getColumnIdentifier(column, 'someAggregationKey')).toBeUndefined();
+    });
+
+    test('returns the full aggregation key for DataFieldForAnnotation Contact-card columns', () => {
+        const column = {
+            schema: { keys: [{ name: 'Target', value: '_UserContactCard/Communication.Contact' }] }
+        };
+        expect(getColumnIdentifier(column, 'DataFieldForAnnotation::_UserContactCard::Contact')).toBe(
+            'DataFieldForAnnotation::_UserContactCard::Contact'
+        );
+    });
+
+    test('returns the full aggregation key for non-Contact DataFieldForAnnotation columns', () => {
+        const column = {
+            schema: { keys: [{ name: 'Target', value: 'FieldGroup#PostalCodeCity' }] }
+        };
+        expect(getColumnIdentifier(column, 'DataFieldForAnnotation::FieldGroup::PostalCodeCity')).toBe(
+            'DataFieldForAnnotation::FieldGroup::PostalCodeCity'
+        );
     });
 });
 
 describe('transformTableColumns()', () => {
-    test('maps standard columns using Value key with header from description', () => {
+    test('keys plain DataField columns by the bound property path', () => {
         const columnAggregations: ColumnAggregations = {
-            'ProductID::col': {
+            'DataField::ProductID': {
                 path: [],
                 aggregations: {},
                 description: 'Product ID',
                 schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
             },
-            'Name::col': {
+            'DataField::Name': {
                 path: [],
                 aggregations: {},
                 description: 'Name',
@@ -77,7 +102,7 @@ describe('transformTableColumns()', () => {
 
     test('omits header when description is absent', () => {
         const columnAggregations: ColumnAggregations = {
-            'ProductID::col': {
+            'DataField::ProductID': {
                 path: [],
                 aggregations: {},
                 schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
@@ -88,11 +113,12 @@ describe('transformTableColumns()', () => {
         });
     });
 
-    test('falls back to index as key when identifier cannot be determined', () => {
+    test('falls back to index as key when a custom column has no Key entry', () => {
         const columnAggregations: ColumnAggregations = {
-            unknownCol: {
+            myCol: {
                 path: [],
                 aggregations: {},
+                custom: true,
                 description: 'Unknown',
                 schema: { keys: [{ name: 'Label', value: 'something' }] }
             }
@@ -104,6 +130,65 @@ describe('transformTableColumns()', () => {
 
     test('returns empty object for empty input', () => {
         expect(transformTableColumns({})).toEqual({});
+    });
+
+    test('keys Contact-card columns by their full aggregation key', () => {
+        const columnAggregations: ColumnAggregations = {
+            'DataField::TravelID': {
+                path: [],
+                aggregations: {},
+                description: 'Travel ID',
+                schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+            },
+            'DataFieldForAnnotation::_Agency::Contact': {
+                path: [],
+                aggregations: {},
+                description: 'Agency',
+                schema: { keys: [{ name: 'Target', value: '_Agency/Communication.Contact' }] }
+            }
+        };
+        expect(transformTableColumns(columnAggregations)).toEqual({
+            TravelID: { header: 'Travel ID' },
+            'DataFieldForAnnotation::_Agency::Contact': { header: 'Agency' }
+        });
+    });
+
+    test('skips columns whose availability is not Default', () => {
+        const columnAggregations: ColumnAggregations = {
+            'DataField::TravelID': {
+                path: [],
+                aggregations: {},
+                description: 'Travel ID',
+                schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+            },
+            myCustomColumn: {
+                path: [],
+                aggregations: {},
+                custom: true,
+                description: 'Custom Column',
+                schema: { keys: [{ name: 'Key', value: 'myCustomColumn' }] },
+                properties: { availability: { value: 'Adaptation' } }
+            },
+            myHiddenColumn: {
+                path: [],
+                aggregations: {},
+                custom: true,
+                description: 'Hidden',
+                schema: { keys: [{ name: 'Key', value: 'myHiddenColumn' }] },
+                properties: { availability: { value: 'Hidden' } }
+            },
+            'DataField::Default': {
+                path: [],
+                aggregations: {},
+                description: 'Default',
+                schema: { keys: [{ name: 'Value', value: 'Default' }] },
+                properties: { availability: { value: 'Default' } }
+            }
+        };
+        expect(transformTableColumns(columnAggregations)).toEqual({
+            TravelID: { header: 'Travel ID' },
+            Default: { header: 'Default' }
+        });
     });
 });
 
@@ -124,11 +209,11 @@ function makeNode(columnItems: Record<string, unknown>): TreeAggregation {
 describe('extractTableColumnsFromNode()', () => {
     test('extracts columns from a node with a table aggregation', () => {
         const node = makeNode({
-            'ProductID::col': {
+            'DataField::ProductID': {
                 description: 'Product ID',
                 schema: { keys: [{ name: 'Value', value: 'ProductID' }] }
             },
-            'Name::col': {
+            'DataField::Name': {
                 description: 'Name',
                 schema: { keys: [{ name: 'Value', value: 'Name' }] }
             }
@@ -162,5 +247,405 @@ describe('extractTableColumnsFromNode()', () => {
             aggregations: { table: { aggregations: {} } }
         } as unknown as TreeAggregation;
         expect(extractTableColumnsFromNode(node)).toEqual({});
+    });
+});
+
+describe('extractContactCardColumnsFromNode()', () => {
+    test('extracts a single Contact column keyed by its aggregation key', () => {
+        const node = makeNode({
+            'DataField::TravelID': {
+                schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+            },
+            'DataFieldForAnnotation::_Agency::Contact': {
+                schema: { keys: [{ name: 'Target', value: '_Agency/@Communication.Contact' }] }
+            }
+        });
+        expect(extractContactCardColumnsFromNode(node)).toEqual([
+            { property: 'DataFieldForAnnotation::_Agency::Contact' }
+        ]);
+    });
+
+    test('extracts multiple Contact columns and ignores regular columns', () => {
+        const node = makeNode({
+            'DataField::TravelID': {
+                schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+            },
+            'DataFieldForAnnotation::_Agency::Contact': {
+                schema: { keys: [{ name: 'Target', value: '_Agency/@Communication.Contact' }] }
+            },
+            'DataFieldForAnnotation::_Customer::Contact': {
+                schema: { keys: [{ name: 'Target', value: '_Customer/@Communication.Contact' }] }
+            },
+            'DataFieldForAnnotation::Status::DataPoint': {
+                schema: { keys: [{ name: 'Target', value: 'Status/@UI.DataPoint' }] }
+            }
+        });
+        expect(extractContactCardColumnsFromNode(node)).toEqual([
+            { property: 'DataFieldForAnnotation::_Agency::Contact' },
+            { property: 'DataFieldForAnnotation::_Customer::Contact' }
+        ]);
+    });
+
+    test('returns empty array when node has no table aggregation', () => {
+        const node = { aggregations: {} } as unknown as TreeAggregation;
+        expect(extractContactCardColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('returns empty array when table has no columns aggregation', () => {
+        const node = {
+            aggregations: { table: { aggregations: {} } }
+        } as unknown as TreeAggregation;
+        expect(extractContactCardColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('skips Contact-card columns whose availability is not Default', () => {
+        const node = makeNode({
+            'DataField::TravelID': {
+                schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+            },
+            'DataFieldForAnnotation::_Agency::Contact': {
+                schema: { keys: [{ name: 'Target', value: '_Agency/@Communication.Contact' }] },
+                properties: { availability: { value: 'Adaptation' } }
+            },
+            'DataFieldForAnnotation::_Customer::Contact': {
+                schema: { keys: [{ name: 'Target', value: '_Customer/@Communication.Contact' }] }
+            }
+        });
+        expect(extractContactCardColumnsFromNode(node)).toEqual([
+            { property: 'DataFieldForAnnotation::_Customer::Contact' }
+        ]);
+    });
+
+    test('returns empty array when no columns are Contact-annotated', () => {
+        const node = makeNode({
+            'DataField::TravelID': {
+                schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+            }
+        });
+        expect(extractContactCardColumnsFromNode(node)).toEqual([]);
+    });
+});
+
+describe('resolvePrimaryTableNode()', () => {
+    const columnsAgg = { aggregations: { columns: { aggregations: {} } } };
+
+    test('returns undefined when the node has no table aggregation', () => {
+        const node = { aggregations: {} } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBeUndefined();
+    });
+
+    test('returns the table node directly for a single-table List Report / OP section', () => {
+        const tableNode = columnsAgg;
+        const node = { aggregations: { table: tableNode } } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBe(tableNode);
+    });
+
+    test('returns the first non-empty view node for a multi-view List Report', () => {
+        // Multi-view LR: root.table holds `views[key]` per-tab nodes instead of `columns` directly.
+        // View "5" is a custom tab (empty aggregations); the first view with columns ("1") is chosen.
+        const view1 = columnsAgg;
+        const node = {
+            aggregations: {
+                table: {
+                    aggregations: {
+                        views: {
+                            aggregations: {
+                                '5': { aggregations: {} },
+                                '1': view1,
+                                '2': columnsAgg
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBe(view1);
+    });
+
+    test('returns undefined when a views block has no view with columns', () => {
+        const node = {
+            aggregations: {
+                table: {
+                    aggregations: {
+                        views: { aggregations: { '5': { aggregations: {} } } }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(resolvePrimaryTableNode(node)).toBeUndefined();
+    });
+
+    test('extractTableColumnsFromNode reads the first view node columns for a multi-view LR', () => {
+        const node = {
+            aggregations: {
+                table: {
+                    aggregations: {
+                        views: {
+                            aggregations: {
+                                '1': {
+                                    aggregations: {
+                                        columns: {
+                                            aggregations: {
+                                                'DataField::Name': {
+                                                    description: 'Name',
+                                                    schema: { keys: [{ name: 'Value', value: 'Name' }] }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(extractTableColumnsFromNode(node)).toEqual({ Name: { header: 'Name' } });
+    });
+});
+
+function makeMultiViewNode(views: Record<string, Record<string, unknown> | undefined>): TreeAggregation {
+    const viewAggregations: Record<string, unknown> = {};
+    for (const [key, columnItems] of Object.entries(views)) {
+        viewAggregations[key] = columnItems
+            ? { aggregations: { columns: { aggregations: columnItems } } }
+            : { aggregations: {} }; // custom tab: no columns/toolBar
+    }
+    return {
+        aggregations: { table: { aggregations: { views: { aggregations: viewAggregations } } } }
+    } as unknown as TreeAggregation;
+}
+
+describe('resolveViewTableNodes()', () => {
+    test('returns an empty array for a single-table List Report (no views)', () => {
+        const node = { aggregations: { table: { aggregations: { columns: { aggregations: {} } } } } };
+        expect(resolveViewTableNodes(node as unknown as TreeAggregation)).toEqual([]);
+    });
+
+    test('returns an empty array when there is no table aggregation', () => {
+        expect(resolveViewTableNodes({ aggregations: {} } as unknown as TreeAggregation)).toEqual([]);
+    });
+
+    test('returns each usable view node keyed by its view key, skipping custom (empty) tabs', () => {
+        const node = makeMultiViewNode({
+            '1': { 'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } } },
+            '5': undefined, // custom tab — no columns/toolBar
+            '6': { 'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } } }
+        });
+        const result = resolveViewTableNodes(node);
+        expect(result.map((entry) => entry.key)).toEqual(['1', '6']);
+        expect(extractTableColumnsFromTableNode(result[0].node)).toEqual({ A: { header: 'A' } });
+        expect(extractTableColumnsFromTableNode(result[1].node)).toEqual({ B: { header: 'B' } });
+    });
+});
+
+describe('extractTableColumnsFromTableNode() / extractContactCardColumnsFromTableNode()', () => {
+    test('reads columns and Contact-card columns directly from a resolved table node', () => {
+        const tableNode = {
+            aggregations: {
+                columns: {
+                    aggregations: {
+                        'DataField::TravelID': {
+                            description: 'Travel ID',
+                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+                        },
+                        'DataFieldForAnnotation::_Agency::Contact': {
+                            description: 'Agency',
+                            schema: { keys: [{ name: 'Target', value: '_Agency/@Communication.Contact' }] }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(extractTableColumnsFromTableNode(tableNode)).toEqual({
+            TravelID: { header: 'Travel ID' },
+            'DataFieldForAnnotation::_Agency::Contact': { header: 'Agency' }
+        });
+        expect(extractContactCardColumnsFromTableNode(tableNode)).toEqual([
+            { property: 'DataFieldForAnnotation::_Agency::Contact' }
+        ]);
+    });
+});
+
+describe('extractTextAnnotationColumnsFromNode()', () => {
+    test('includes a column whose text is an Annotation with a real value', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+        ]);
+    });
+
+    test('excludes a column whose text value is "none"', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'none' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('excludes a column whose text value is the "None" sentinel (any casing)', () => {
+        // Regression (fin.test.v4.lr1): the spec model marks a column without a maintained text
+        // annotation with the sentinel value "None" (capital N). It must not produce a sort test.
+        const node = makeNode({
+            'DataField::AccountingDocument': {
+                schema: { keys: [{ name: 'Value', value: 'AccountingDocument' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'None' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('excludes a column whose text artifactType is not "Annotation"', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Property', value: 'CustomerName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('excludes a column without a text property', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('keeps a column whose text target traverses a navigation property', () => {
+        // Regression (fin.test.v4.lr2): the column's own property (e.g. "DunningProcedure") is a real,
+        // non-association column, so the test is generated — and the navigation-path text target is itself
+        // a valid sort/adaptation name, so it is emitted unchanged.
+        const node = makeNode({
+            'DataField::DunningProcedure': {
+                schema: { keys: [{ name: 'Value', value: 'DunningProcedure' }] },
+                properties: {
+                    text: { artifactType: 'Annotation', value: '_DunningProcedure/DunningProcedure_Text' }
+                }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            {
+                columnProperty: 'DunningProcedure',
+                textProperty: '_DunningProcedure/DunningProcedure_Text'
+            }
+        ]);
+    });
+
+    test('excludes a column bound through a navigation property', () => {
+        // Regression (fin.test.rap.lr3): a column from an association (e.g. "_Booking/AirlineID") is
+        // not exposed as a sortable column, so neither it nor its text target may be used as a sort name.
+        const node = makeNode({
+            'DataField::_Booking::AirlineID': {
+                schema: { keys: [{ name: 'Value', value: '_Booking/AirlineID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'AirlineName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('excludes an annotated column whose availability is not Default', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: {
+                    availability: { value: 'Adaptation' },
+                    text: { artifactType: 'Annotation', value: 'CustomerName' }
+                }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('keeps distinct code columns that share the same text property', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            },
+            'DataField::CustomerNo': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerNo' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName' },
+            { columnProperty: 'CustomerNo', textProperty: 'CustomerName' }
+        ]);
+    });
+
+    test('de-duplicates columns that resolve to the same code column', () => {
+        const node = makeNode({
+            'DataField::CustomerID': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+            },
+            'DataField::CustomerID::dup': {
+                schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CustomerFullName' } }
+            }
+        });
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([
+            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+        ]);
+    });
+
+    test('returns empty array when node has no table aggregation', () => {
+        const node = { aggregations: {} } as unknown as TreeAggregation;
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+
+    test('returns empty array when table has no columns aggregation', () => {
+        const node = {
+            aggregations: { table: { aggregations: {} } }
+        } as unknown as TreeAggregation;
+        expect(extractTextAnnotationColumnsFromNode(node)).toEqual([]);
+    });
+});
+
+describe('extractBoundColumnPropertiesFromTableNode()', () => {
+    test('returns bound property names of default-available columns, skipping nav paths and custom columns', () => {
+        const tableNode = {
+            aggregations: {
+                columns: {
+                    aggregations: {
+                        'DataField::CompanyCode': {
+                            description: 'Company Code',
+                            schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+                        },
+                        'DataField::Customer': {
+                            description: 'Customer',
+                            schema: { keys: [{ name: 'Value', value: 'Customer' }] }
+                        },
+                        // Navigation-bound column: excluded (its identifier contains '/').
+                        'DataField::NavCol': {
+                            description: 'Nav',
+                            schema: { keys: [{ name: 'Value', value: '_Nav/Field' }] }
+                        },
+                        // Adaptation-only column: excluded.
+                        'DataField::Hidden': {
+                            description: 'Hidden',
+                            schema: { keys: [{ name: 'Value', value: 'Hidden' }] },
+                            properties: { availability: { value: 'Adaptation' } }
+                        }
+                    }
+                }
+            }
+        } as unknown as TreeAggregation;
+        expect(extractBoundColumnPropertiesFromTableNode(tableNode)).toEqual(['CompanyCode', 'Customer']);
+    });
+
+    test('returns an empty array when the table node has no columns aggregation', () => {
+        const tableNode = { aggregations: {} } as unknown as TreeAggregation;
+        expect(extractBoundColumnPropertiesFromTableNode(tableNode)).toEqual([]);
     });
 });

@@ -25,6 +25,8 @@ sap.ui.define([
         QUnit.module("TravelObjectPageObjectPage journey");
 
         opaTest("Navigate to TravelObjectPageObjectPage", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
             Then.onTheTravelListGenerated.onTable().iCheckRows();
             When.onTheTravelListGenerated.onTable().iPressRow(0);
@@ -49,8 +51,11 @@ sap.ui.define([
         });
 
 
-        opaTest("Check body sections of the Object Page", function (Given, When, Then) {
+        opaTest("Check the number of sections of the Object Page", function (_Given, _When, Then) {
             Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
+        });
+
+        opaTest("Check the Travel section of the Object Page", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Travel");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Travel" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "TravelID" });
@@ -63,10 +68,13 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "LatestCancellationDate" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Memo" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: "Travel" }).iCheckField({ property: "Status" });
+        });
+
+        opaTest("Check the Booking section of the Object Page", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
             Then.onTheTravelObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheTravelObjectPageGenerated.onTable({ property: "_Booking" }).iCheckColumns(undefined, {"BookingID":{"header":"Booking Number"},"BookingDate":{"header":"Booking Date"},"CustomerID":{"header":"Customer ID"},"AirlineID":{"header":"Airline ID"},"ConnectionID":{"header":"Flight Number"},"FlightDate":{"header":"Flight Date"},"FlightPrice":{"header":"Flight Price"},"DestinationRisk":{"header":"Destination Risk"}});
-       });
+        });
 
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup

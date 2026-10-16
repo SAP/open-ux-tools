@@ -18,7 +18,8 @@ const CalloutWithText = (props: { id: string }): JSX.Element => {
                 id={id}
                 iconProps={{ iconName: UiIcons.Bulb }}
                 checked={isCalloutVisible}
-                onClick={toggleCallout}></UIIconButton>
+                onClick={toggleCallout}>
+            </UIIconButton>
             {isCalloutVisible && (
                 <UICallout
                     target={`#${id}`}
@@ -28,7 +29,24 @@ const CalloutWithText = (props: { id: string }): JSX.Element => {
                     onDismiss={() => toggleCallout()}
                     calloutWidth={300}
                     calloutMinWidth={300}
-                    contentPadding={UICalloutContentPadding.Standard}>
+                    contentPadding={UICalloutContentPadding.Standard}
+                    styles={{
+                        root: {
+                            [property]: 'red'
+                        },
+                        beak: {
+                            [property]: 'green'
+                        },
+                        beakCurtain: {
+                            [property]: 'blue'
+                        },
+                        calloutMain: {
+                            [property]: 'yellow'
+                        },
+                        container: {
+                            [property]: 'green'
+                        }
+                    }}>
                     <div>
                         lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut
                         labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris

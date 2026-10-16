@@ -39,6 +39,7 @@ export {
     getSpecificationPath,
     getI18nPropertiesPaths,
     getI18nBundles,
+    createI18nEntriesAtPath,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,
     getMinimumUI5Version,
@@ -68,7 +69,8 @@ export {
     getMainService,
     getGlobalCdsHomePath,
     isUI5IdUnique,
-    getUsedEntitiesFromManifest
+    getUsedEntitiesFromManifest,
+    resolveApplicationTitle
 } from './project/index.js';
 export type { UsedEntity } from './project/index.js';
 export { execNpmCommand } from './command/npm-command.js';

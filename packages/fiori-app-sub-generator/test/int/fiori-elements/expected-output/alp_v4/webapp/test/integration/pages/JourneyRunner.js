@@ -1,13 +1,13 @@
 sap.ui.define([
     "sap/fe/test/JourneyRunner",
-	"testNameSpace/alpv4/test/integration/pages/SalesOrderItemList.gen",
-	"testNameSpace/alpv4/test/integration/pages/SalesOrderItemObjectPage.gen",
-	"testNameSpace/alpv4/test/integration/pages/MaterialDetailsObjectPage.gen"
+	"testnamespace/alpv4/test/integration/pages/SalesOrderItemList.gen",
+	"testnamespace/alpv4/test/integration/pages/SalesOrderItemObjectPage.gen",
+	"testnamespace/alpv4/test/integration/pages/MaterialDetailsObjectPage.gen"
 ], function (JourneyRunner, SalesOrderItemListGenerated, SalesOrderItemObjectPageGenerated, MaterialDetailsObjectPageGenerated) {
     'use strict';
 
     const runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4') + '/test/flpSandbox.html#testNameSpacealpv4-tile',
+        launchUrl: sap.ui.require.toUrl('testnamespace/alpv4') + '/test/flpSandbox.html#testnamespacealpv4-tile',
         pages: {
 			onTheSalesOrderItemListGenerated: SalesOrderItemListGenerated,
 			onTheSalesOrderItemObjectPageGenerated: SalesOrderItemObjectPageGenerated,

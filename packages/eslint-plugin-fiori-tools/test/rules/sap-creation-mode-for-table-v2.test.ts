@@ -31,7 +31,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'creationRows'
@@ -90,7 +90,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -121,7 +121,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'badValue'
@@ -138,7 +138,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'creationRows'
@@ -147,7 +147,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid createMode value: "badValue" in Products section. The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue` in Products section. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -190,7 +190,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid createMode value: "badValue". The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -215,7 +215,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid createMode value: "badValue". The recommended value is "creationRows". Valid values are: creationRows, creationRowsHiddenInEditMode, newPage.'
+                            'Invalid `createMode` value: `badValue`. The recommended value is `creationRows`. Valid values are: `creationRows`, `creationRowsHiddenInEditMode`, `newPage`.'
                     }
                 ]
             },
@@ -236,7 +236,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -252,7 +252,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'creationRows'
@@ -269,7 +269,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -279,7 +279,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
+                            'Creation mode is not supported for analytical tables. Remove the `createMode` or `creationMode` property.'
                     }
                 ]
             },
@@ -300,7 +300,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -331,7 +331,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -341,7 +341,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
+                            'Creation mode is not supported for analytical tables. Remove the `createMode` or `creationMode` property.'
                     }
                 ]
             },
@@ -365,7 +365,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider adding createMode at the application level for a better user experience.'
+                        message: 'Consider adding `createMode` at the application level for a better user experience.'
                     }
                 ]
             },
@@ -390,8 +390,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems'
-                            // here createMode is missing, report on parent e.g. SalesOrderItems
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem'
+                            // here createMode is missing, report on parent e.g. to_Product::com.sap.vocabularies.UI.v1.LineItem
                         ],
                         value: 'badValue'
                     }
@@ -411,14 +411,14 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems'
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem'
                         ],
                         value: 'badValue'
                     }
                 ]),
                 errors: [
                     {
-                        message: 'Consider adding createMode at the application level for a better user experience.'
+                        message: 'Consider adding `createMode` at the application level for a better user experience.'
                     }
                 ]
             },

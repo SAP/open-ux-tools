@@ -1,8 +1,32 @@
 # @sap-ux/fiori-tools-settings
 
+## 1.1.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Pass suppressErrors glob option to mem-fs delete to prevent ENOTDIR crash when parent directory doesn't exist on disk [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Features
+
+- add optional autoOpen parameter to loadApplicationInfoFromSettings function to control whether Application Info Page automatically opens after generation [[8e64538](https://github.com/SAP/open-ux-tools/commit/8e64538911bfb5151f8c9b8144c1618846a1cf58)]
+
 ## 1.0.1
 
-*Released: 2026-06-03T14:58:37Z*
+_Released: 2026-06-03T14:58:37Z_
 
 ### Patch Changes
 
@@ -10,7 +34,7 @@
 
 ## 1.0.0
 
-*Released: 2026-05-30T20:54:07Z*
+_Released: 2026-05-30T20:54:07Z_
 
 ### Major Changes
 
@@ -45,7 +69,7 @@
 
 ## 0.3.0
 
-*Released: 2026-05-15T08:12:20Z*
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -53,7 +77,7 @@
 
 ## 0.2.4
 
-*Released: 2026-05-14T11:45:51Z*
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -61,7 +85,7 @@
 
 ## 0.2.3
 
-*Released: 2025-12-15T10:50:50Z*
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -69,7 +93,7 @@
 
 ## 0.2.2
 
-*Released: 2025-11-05T06:53:42Z*
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -77,7 +101,7 @@
 
 ## 0.2.1
 
-*Released: 2025-10-06T17:09:01Z*
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -85,7 +109,7 @@
 
 ## 0.2.0
 
-*Released: 2025-05-14T22:35:53Z*
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 

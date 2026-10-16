@@ -12,6 +12,7 @@ export interface ExtendControllerData {
 export type DeferredExtendControllerData = {
     codeRef: string;
     viewId: string;
+    instanceSpecific: boolean;
 };
 
 /**

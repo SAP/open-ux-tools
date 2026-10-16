@@ -221,7 +221,7 @@ modules:
       - name: base-app-front
         parameters:
           content-target: true
-      - name: base-uaa
+      - name: base-auth
     parameters:
       config:
         destinations:
@@ -243,7 +243,7 @@ modules:
         properties:
           srv-url: \${default-url}
     requires:
-      - name: base-uaa
+      - name: base-auth
 resources:
   - name: base-app-front
     type: org.cloudfoundry.managed-service
@@ -251,16 +251,20 @@ resources:
       service: app-front
       service-name: base-app-front-service
       service-plan: developer
-  - name: base-uaa
+  - name: base-auth
     type: org.cloudfoundry.managed-service
     parameters:
-      path: ./xs-security.json
       service: xsuaa
-      service-name: base-xsuaa-service
       service-plan: application
+      path: ./xs-security.json
+      service-name: base-xsuaa-service
       config:
         xsappname: base-\${org}-\${space}
         tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
+            - x509
 "
 `;
 

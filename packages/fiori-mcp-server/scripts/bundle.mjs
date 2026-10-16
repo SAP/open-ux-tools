@@ -74,6 +74,7 @@ function findPkgRoot(entryPath, pkgName) {
 
 // createRequire rooted at the package so pnpm symlinks resolve correctly
 const req = createRequire(path.join(PKG_ROOT, 'package.json'));
+const { makeLicensePlugin } = req('../../esbuildLicensePlugin.cjs');
 
 // onnxruntime-web is a dep of @huggingface/transformers. Resolve via transformers' context
 // so pnpm symlinks resolve correctly even though onnxruntime-web is not a direct dep here.
@@ -221,8 +222,10 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode'],
-    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin]
+    external: ['vscode', 'chromium-bidi'],
+    legalComments: 'linked',
+    metafile: true,
+    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]
 });
 
 console.log('✓ esbuild bundle complete');
@@ -317,7 +320,15 @@ for (const wasmFile of [
     }
 }
 
-// ── Step 5: copy icons ────────────────────────────────────────────────────────
+// ── Step 5: copy playwright-core browsers.json ───────────────────────────────
+// playwright-core resolves browsers.json as path.join(__dirname, "..", "browsers.json")
+// at runtime. After bundling, __dirname is dist/, so it looks one level up at the
+// package root (packages/fiori-mcp-server/). Copy browsers.json there.
+const pwCorePkgDir = findPkgRoot(req.resolve('playwright-core'), 'playwright-core');
+fs.copyFileSync(path.join(pwCorePkgDir, 'browsers.json'), path.join(PKG_ROOT, 'browsers.json'));
+console.log('✓ Copied playwright-core/browsers.json');
+
+// ── Step 6: copy icons ────────────────────────────────────────────────────────
 
 for (const icon of ['icon.png', 'icon.svg']) {
     fs.copyFileSync(path.join(PKG_ROOT, 'assets', icon), path.join(DIST, icon));

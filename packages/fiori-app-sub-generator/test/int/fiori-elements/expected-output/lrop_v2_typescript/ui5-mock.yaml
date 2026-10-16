@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2typescript
+  name: testnamespace.lropv2typescript
 type: application
 server:
   customMiddleware:
@@ -32,7 +32,7 @@ server:
           theme: sap_belize
           path: test/flpSandbox.html
           intent:
-            object: testNameSpacelropv2typescript
+            object: testnamespacelropv2typescript
             action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression

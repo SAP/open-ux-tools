@@ -22,7 +22,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [CONDENSED_TABLE_LAYOUT]:
-                '"condensedTableLayout" must be set to true when using a grid table, analytical table, or tree table.'
+                '`condensedTableLayout` must be set to `true` when using a grid table, analytical table, or tree table.'
         },
         fixable: 'code'
     },

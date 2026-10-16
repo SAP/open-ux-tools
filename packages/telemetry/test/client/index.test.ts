@@ -6,17 +6,15 @@ const spyTrackEvent = jest.fn();
 jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
+        public context: any;
         public setUseDiskRetryCaching: any;
-        public addTelemetryProcessor: any;
         public trackEvent: any;
         constructor() {
             this.config = {
                 samplingPercentage: 0
             };
+            this.context = { tags: {} };
             this.setUseDiskRetryCaching = jest.fn();
-            this.addTelemetryProcessor = (fn: any) => {
-                fn({ tags: {} });
-            };
             this.trackEvent = (event: any) => spyTrackEvent(event);
         }
     }
@@ -42,5 +40,18 @@ describe('ClientFactory Tests', () => {
         // Singleton
         const telemetryClient2: Client = ClientFactory.getTelemetryClient();
         expect(telemetryClient).toEqual(telemetryClient2);
+    });
+
+    test('Built connection string includes configured Ingestion/Live endpoints', () => {
+        TelemetrySettings.azureInstrumentationKey = 'test-key';
+        TelemetrySettings.azureIngestionEndpoint = 'https://custom-ingest.example.com/';
+        TelemetrySettings.azureLiveEndpoint = 'https://custom-live.example.com/';
+        ClientFactory['clientMap'].clear();
+
+        const connectionString = ClientFactory.getTelemetryClient().getApplicationKey();
+
+        expect(connectionString).toContain('InstrumentationKey=test-key');
+        expect(connectionString).toContain('IngestionEndpoint=https://custom-ingest.example.com/');
+        expect(connectionString).toContain('LiveEndpoint=https://custom-live.example.com/');
     });
 });

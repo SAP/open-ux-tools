@@ -11,7 +11,7 @@
         "outDir": "./dist",
         "baseUrl": "./",
         "paths": {
-            "testNameSpace/lropv2typescript/*": [
+            "testnamespace/lropv2typescript/*": [
                 "./webapp/*"
             ]
         },

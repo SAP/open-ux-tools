@@ -25,7 +25,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 
     return new ListReport(
         {
-            appId: 'testNameSpace.alpv4',
+            appId: 'testnamespace.alpv4',
             componentId: 'SalesOrderItemList',
             entitySet: 'SalesOrderItem'
         },

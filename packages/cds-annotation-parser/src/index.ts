@@ -31,12 +31,14 @@ export {
     MULTI_LINE_STRING_LITERAL_TYPE,
     SEPARATOR_TYPE,
     IDENTIFIER_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE,
     operatorMap,
     positionIsInExpressionWhiteSpace,
     containsIncorrectExpressions,
-    getEdmOperatorMap,
-    nodeRange,
-    isContainer
+    getEdmOperatorMap
 } from './transformer/index.js';
 
 export type {
@@ -67,9 +69,21 @@ export type {
     AnnotationNode,
     Assignment,
     Separator,
-    NarrowAnnotationNode
+    NarrowAnnotationNode,
+    FlattenedExpression,
+    FlattenedPath,
+    FlattenedPathSegment,
+    FlattenedAnnotationSegment,
+    FlattenedPropertySegment
 } from './transformer/index.js';
 
-export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer/index.js';
+export {
+    arePositionsEqual,
+    copyPosition,
+    copyRange,
+    areRangesEqual,
+    nodeRange,
+    isContainer
+} from './transformer/index.js';
 export { ReservedProperties, isReservedProperty } from './constants.js';
 export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node.js';

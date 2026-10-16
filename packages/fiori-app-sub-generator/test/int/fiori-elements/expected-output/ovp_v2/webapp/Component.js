@@ -3,7 +3,7 @@ sap.ui.define(
     function (Component) {
         "use strict";
 
-        return Component.extend("testNameSpace.ovpv2.Component", {
+        return Component.extend("testnamespace.ovpv2.Component", {
             metadata: {
                 manifest: "json"
             }

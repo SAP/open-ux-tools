@@ -10,7 +10,7 @@
 |**Service URL**<br>https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/|
 |**Module Name**<br>worklist_v4|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
-|**Namespace**<br>testNameSpace|
+|**Namespace**<br>testnamespace|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.99.0|
 |**Enable TypeScript**<br>False|

@@ -207,6 +207,19 @@ describe('ConfigPrompter Integration Tests', () => {
             });
         });
 
+        it('system prompt validate should call getConfiguredProvider without username and password', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(mockGetConfiguredProvider).toHaveBeenCalledWith(
+                { system: dummyAnswers.system, client: undefined },
+                expect.anything()
+            );
+        });
+
         it('system prompt validate should set ui5 properties when system ui5 version is NOT detected', async () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
@@ -401,6 +414,86 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toEqual(true);
             expect(configPrompter.projectType).toEqual(AdaptationProjectType.ON_PREMISE);
+        });
+
+        it('system prompt validate should set isAuthRequired to false in BAS when getCsrfToken succeeds', async () => {
+            const mockGetCsrfToken = jest.fn().mockResolvedValue(undefined);
+            const providerWithLrep = {
+                ...provider,
+                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
+            } as unknown as AbapServiceProvider;
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(true);
+            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter['isAuthRequired']).toBe(false);
+            expect(mockGetCsrfToken).toHaveBeenCalledTimes(1);
+        });
+
+        it('system prompt validate should set isAuthRequired to true in BAS when getCsrfToken returns 401', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                response: { status: 401 }
+            } as AxiosError;
+            const mockGetCsrfToken = jest.fn().mockRejectedValue(axiosError);
+            const providerWithLrep = {
+                ...provider,
+                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
+            } as unknown as AbapServiceProvider;
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(true);
+            mockIsAxiosError.mockReturnValue(true);
+            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter['isAuthRequired']).toBe(true);
+        });
+
+        it('system prompt validate should return error message when getCsrfToken fails with a non-401 error in BAS', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                message: 'Internal Server Error',
+                response: { status: 500 }
+            } as AxiosError;
+            const mockGetCsrfToken = jest.fn().mockRejectedValue(axiosError);
+            const providerWithLrep = {
+                ...provider,
+                getLayeredRepository: jest.fn().mockReturnValue({ getCsrfToken: mockGetCsrfToken })
+            } as unknown as AbapServiceProvider;
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(true);
+            mockIsAxiosError.mockReturnValue(true);
+            mockGetConfiguredProvider.mockResolvedValue(providerWithLrep);
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(axiosError.message);
         });
     });
 
@@ -666,6 +759,20 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(passwordPrompt).toBeDefined();
             const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
             expect(result).toEqual(`Authentication error: ${axiosError.message}`);
+        });
+
+        it('password prompt should have applyDefaultWhenDirty set to true to prevent stale credentials being resubmitted on system change', () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            expect((passwordPrompt as any)?.guiOptions?.applyDefaultWhenDirty).toBe(true);
+        });
+
+        it('password prompt should have an empty string default to ensure field is cleared when system changes', () => {
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+            expect(passwordPrompt?.default).toBe('');
         });
 
         it('password prompt additionalMessages should return undefined if system additional messages are already set', async () => {

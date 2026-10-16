@@ -11,12 +11,13 @@ import type {
     FEV4ManifestTarget,
     JourneyParams,
     AppFeatures,
+    ActionButtonState,
     WriteContext,
     OPAGenerationOptions
 } from './types.js';
 import { SupportedPageTypes, ValidationError, DotFileExtension } from './types.js';
 import { t } from './i18n.js';
-import { FileName, DirName, getWebappPath, updatePackageScript } from '@sap-ux/project-access';
+import { FileName, DirName, getWebappPath, updatePackageScript, getMainService } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 import { getAppFeatures } from './utils/modelUtils.js';
 import { addPathsToQUnitJs, readHtmlTargetFromQUnitJs } from './utils/opaQUnitUtils.js';
@@ -25,8 +26,63 @@ import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+import { getListReportViews, isALPManifestTarget } from './utils/listReportUtils.js';
+import { resolveOriginatingView } from './utils/objectPageUtils.js';
+import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const V4_TEMPLATE_LATEST = 'latest';
+const V4_TEMPLATE_1_84 = '1.84';
+const V4_TEMPLATE_BUCKETS = [
+    { minVersion: '1.153.0', template: V4_TEMPLATE_LATEST },
+    { minVersion: '1.152.0', template: '1.152' },
+    { minVersion: '1.148.0', template: '1.148' }
+];
+
+function getTemplateUi5Version(ui5Version?: string): string {
+    if (!ui5Version) {
+        return V4_TEMPLATE_LATEST;
+    }
+    for (const bucket of V4_TEMPLATE_BUCKETS) {
+        if (compareUI5VersionGte(ui5Version, bucket.minVersion)) {
+            return bucket.template;
+        }
+    }
+    return V4_TEMPLATE_1_84;
+}
+
+/**
+ * Removes action tests the target template bucket cannot render, so journeys omit them instead of
+ * emitting assertions that fail on older runtimes:
+ * - custom (manifest-declared) actions: rendered only by `1.152` and `latest` buckets.
+ * - menu (drop-down) actions: rendered by `1.148`, `1.152`, and `latest`; the `1.84` bucket has no menu template.
+ *
+ * @param appFeatures - the extracted app feature data (mutated in place)
+ * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / '1.152' / 'latest')
+ */
+export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Version: string): void {
+    const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST && templateUi5Version !== '1.152';
+    const stripMenu = templateUi5Version === V4_TEMPLATE_1_84;
+    if (!stripCustom && !stripMenu) {
+        return;
+    }
+    const keep = (action: ActionButtonState): boolean =>
+        !(stripCustom && action.custom) && !(stripMenu && action.menuType);
+    if (appFeatures.listReport?.toolBarActions) {
+        appFeatures.listReport.toolBarActions = appFeatures.listReport.toolBarActions.filter(keep);
+    }
+    appFeatures.objectPages?.forEach((objectPage) => {
+        if (objectPage.headerActions) {
+            objectPage.headerActions = objectPage.headerActions.filter(keep);
+        }
+        objectPage.bodySections?.forEach((section) => {
+            if (section.actions) {
+                section.actions = section.actions.filter(keep);
+            }
+        });
+    });
+}
 
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
@@ -55,28 +111,52 @@ export async function generateOPAFiles(
 
     const config = createConfig(manifest, options, hideFilterBar);
 
-    // When any page in the app uses the FPM template, all generated files must be JS.
-    // FPM has no TypeScript templates, so a mixed FPM + LR/OP app cannot use TS test files.
-    const hasFPMPage = config.pages.some((page) => page.template === 'FPM');
     // In standalone mode, auto-detect TS vs JS from the project (presence of `tsconfig.json`)
     // when the caller has not made an explicit choice. This enforces "TS app → TS tests, JS app → JS tests".
-    const enableTypeScript =
-        !hasFPMPage && (options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig))));
+    const enableTypeScript = options.enableTypeScript ?? (standalone && existsSync(join(basePath, FileName.Tsconfig)));
     const dotFileExtension: DotFileExtension = enableTypeScript ? DotFileExtension.TS : DotFileExtension.JS;
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
-    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
+    const templateUi5Version = getTemplateUi5Version(options.ui5Version);
+    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`, templateUi5Version);
     const testOutDirPath = join(await getWebappPath(basePath), 'test');
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
+    // Drop action tests the target template bucket cannot render (custom actions: latest only;
+    // menu actions: 1.148 and latest).
+    removeUnsupportedActions(appFeatures, templateUi5Version);
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
     const LROP = findLROP(config.pages, manifest);
+    // Only projects with a startup ListReport page (LROP) or an FPM page get ux-specification-derived
+    // journeys. All other project types (ObjectPage-only, Analytical List Page, unrecognized) fall back
+    // to the generic FirstJourney starter.
+    const generateUxSpecJourneys = !!LROP.pageLR || !!appFeatures.fpm;
+    // ALP pages are tagged with the `AnalyticalListPage` template in `createPageConfig`, which already
+    // excludes them from `findLROP` above (it matches only `template === 'ListReport'`). An ALP is a
+    // ListReport component under the hood with no dedicated page-object template or framework class, so
+    // now that detection is done, normalize the marker back to `ListReport` for all downstream rendering.
+    for (const page of config.pages) {
+        if (page.template === 'AnalyticalListPage') {
+            page.template = 'ListReport';
+        }
+    }
+    // Resolve which LR tab the navigated Object Page is reached from, so the multi-tab journey navigates
+    // from that tab rather than always the default one (the OP may live on a non-default tab's entity set).
+    const navigatedOPTabKey = LROP.pageOP
+        ? resolveOriginatingView(
+              getListReportViews(manifest, LROP.pageLR?.targetKey),
+              LROP.pageOP.entitySet,
+              LROP.pageLR?.entitySet
+          )?.key
+        : undefined;
     const journeyParams: JourneyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
         navigatedOP: LROP.pageOP?.targetKey,
-        hideFilterBar: config.hideFilterBar
+        navigatedOPTabKey,
+        hideFilterBar: config.hideFilterBar,
+        serviceUri: getServiceUri(manifest)
     };
 
     const writeContext: WriteContext = {
@@ -89,6 +169,8 @@ export async function generateOPAFiles(
         log,
         journeyParams,
         dotFileExtension,
+        templateUi5Version,
+        generateUxSpecJourneys,
         modifiedFiles: []
     };
 
@@ -391,6 +473,17 @@ function getAppFromManifest(manifest: Manifest, forcedAppID?: string): { appID: 
 }
 
 /**
+ * Resolves the OData service URI used by `iResetMockData({ ServiceUri })` at the start of each journey.
+ *
+ * @param manifest - the app descriptor of the app
+ * @returns the main service's URI, or an empty string if it cannot be resolved
+ */
+function getServiceUri(manifest: Manifest): string {
+    const mainService = getMainService(manifest);
+    return (mainService && manifest['sap.app']?.dataSources?.[mainService]?.uri) || '';
+}
+
+/**
  * Create the page configuration object from the app descriptor and the target key.
  *
  * @param manifest - the app descriptor of the app
@@ -419,6 +512,10 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
             isStartup: false,
             fileName: targetKey + '.gen'
         };
+
+        if (isALPManifestTarget(target)) {
+            pageConfig.template = 'AnalyticalListPage';
+        }
 
         if (target.options.settings.contextPath) {
             pageConfig.contextPath = target.options.settings.contextPath;
@@ -623,7 +720,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
     const generatedJourneys: string[] = [];
 
-    if (appFeatures.listReport?.name) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.listReport?.name) {
         editor.copyTpl(
             join(rootV4TemplateDirPath, 'integration', `ListReportJourney${dotFileExtension}`),
             join(testOutDirPath, 'integration', `${appFeatures.listReport.name}Journey.gen${dotFileExtension}`),
@@ -640,7 +737,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         generatedJourneys.push(appFeatures.listReport.name);
     }
 
-    if (appFeatures.objectPages && appFeatures.objectPages.length > 0) {
+    if (writeContext.generateUxSpecJourneys && appFeatures.objectPages && appFeatures.objectPages.length > 0) {
         appFeatures.objectPages.forEach((objectPage) => {
             if (objectPage.name) {
                 editor.copyTpl(
@@ -661,17 +758,10 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         });
     }
 
-    if (appFeatures.fpm?.name) {
-        // FPM TypeScript support is out of scope for the initial TS OPA5 work
-        // (LROP only). The FPM journey path below is hardcoded `.js` and there is
-        // no `FPM.ts` template, so we force `DotFileExtension.JS` for the FPM
-        // page-object regardless of the configured `dotFileExtension`. Otherwise
-        // an LR-OP-FPM mix with `enableTypeScript` would crash in `writePageObject`
-        // when trying to load the missing `FPM.ts` template.
-        // Future work: add FPM.ts/FPMJourney.ts templates and switch to `dotFileExtension`.
+    if (writeContext.generateUxSpecJourneys && appFeatures.fpm?.name) {
         editor.copyTpl(
-            join(rootV4TemplateDirPath, 'integration', 'FPMJourney.js'),
-            join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.gen.js`),
+            join(rootV4TemplateDirPath, 'integration', `FPMJourney${dotFileExtension}`),
+            join(testOutDirPath, 'integration', `${appFeatures.fpm.name}Journey.gen${dotFileExtension}`),
             {
                 ...journeyParams,
                 ...appFeatures.fpm
@@ -684,7 +774,7 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
         generatedJourneys.push(appFeatures.fpm.name);
     }
 
-    if (generatedJourneys.length === 0 && !writeContext.hasPreexistingTests) {
+    if (generatedJourneys.length === 0 && !writeContext.incompatibleTestSetup) {
         writeFallbackJourney(writeContext);
     }
 
@@ -699,9 +789,14 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
  */
 function writeFallbackJourney(writeContext: WriteContext): void {
     const { config, rootV4TemplateDirPath, testOutDirPath, editor, journeyParams, dotFileExtension } = writeContext;
+    const fallbackPath = join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`);
+    // Do not clobber an existing fallback file (e.g. a user-edited FirstJourney in a preexisting test setup).
+    if (editor.exists(fallbackPath)) {
+        return;
+    }
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', `FirstJourney${dotFileExtension}`),
-        join(testOutDirPath, 'integration', `${config.opaJourneyFileName}${dotFileExtension}`),
+        fallbackPath,
         journeyParams,
         undefined,
         {
@@ -839,14 +934,13 @@ function writeOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys
  * @returns true if the file was written, false otherwise
  */
 function updateReferencesInOpaTestsStartupFiles(writeContext: WriteContext, generatedJourneys: string[] = []): boolean {
-    return addPathsToQUnitJs(
-        generatedJourneys.map((page) => {
-            return `${writeContext.config.appPath}/test/integration/${page}Journey.gen`;
-        }),
-        writeContext.testOutDirPath,
-        writeContext.editor,
-        writeContext.log
-    );
+    // With no ux-spec journeys, wire the fallback journey (plain `opaJourneyFileName`, no `Journey.gen`
+    // suffix) into the existing qunit harness so the test setup remains runnable.
+    const journeyPaths =
+        generatedJourneys.length > 0
+            ? generatedJourneys.map((page) => `${writeContext.config.appPath}/test/integration/${page}Journey.gen`)
+            : [`${writeContext.config.appPath}/test/integration/${writeContext.config.opaJourneyFileName}`];
+    return addPathsToQUnitJs(journeyPaths, writeContext.testOutDirPath, writeContext.editor, writeContext.log);
 }
 
 /**
@@ -866,11 +960,9 @@ function writePageObject(
     fs: Editor,
     dotFileExtension: DotFileExtension
 ): OpaPageWriteInfo {
-    // FPM has no .ts template; force .js regardless of the configured extension
-    const ext = pageConfig.template === 'FPM' ? DotFileExtension.JS : dotFileExtension;
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${ext}`),
-        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${ext}`),
+        join(rootTemplateDirPath, 'integration', 'pages', `${pageConfig.template}${dotFileExtension}`),
+        join(testOutDirPath, 'integration', 'pages', `${pageConfig.targetKey}.gen${dotFileExtension}`),
         pageConfig,
         undefined,
         {
@@ -881,7 +973,7 @@ function writePageObject(
         targetKey: pageConfig.targetKey,
         appPath: pageConfig.appPath,
         fileName: `${pageConfig.targetKey}.gen`,
-        dotFileExtension: ext,
+        dotFileExtension,
         template: pageConfig.template,
         appID: pageConfig.appID,
         componentID: pageConfig.componentID,

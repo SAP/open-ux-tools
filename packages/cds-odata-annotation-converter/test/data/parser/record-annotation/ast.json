@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(7,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,14)..(1,15)]"
+                    "range": "[(1,14)..(1,15)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",

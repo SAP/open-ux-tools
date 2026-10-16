@@ -1,0 +1,71 @@
+// define a root UIComponent which exposes the main view
+jQuery.sap.declare("fin.co.costcenter.manage.Component");
+jQuery.sap.require("sap.ca.scfld.md.ComponentBase");
+
+// extent of sap.ca.scfld.md.ComponentBase
+sap.ca.scfld.md.ComponentBase.extend("fin.co.costcenter.manage.Component", {
+	metadata : sap.ca.scfld.md.ComponentBase.createMetaData("FS", { 
+		"manifest" : "json",
+//		"name": "Fullscreen Sample",
+//		"version" :  "${project.version}",
+//		"library" : "fin.co.costcenter.manage",
+//		"includes" : ["css/style.css"],
+//		"dependencies" : {
+//			"libs" : ["sap.m","sap.me","sap.ui.table","sap.ui.comp","sap.ui.unified"],
+//			"components" : [],
+//		},
+//		config: {
+//			fullWidth : true,
+//			"resourceBundle" : "i18n/i18n.properties",
+//			"titleResource" : "FULLSCREEN_TITLE",
+//		},
+		viewPath : "fin.co.costcenter.manage.view",
+		fullScreenPageRoutes : {
+			// fill the routes to your full screen pages in here.
+			"searchscreen" : {
+				"pattern" : "",
+				"view" : "S1"
+			},
+			"localstate-oldapproach": {
+		        "pattern" : "sap-iapp-state={id}", 
+		        "view" : "S1"
+		    },
+		    "localstate-newapproach" : {
+		        "pattern" : "{?query}",
+		        "view" : "S1"
+		    },
+			"appctx" : {
+				"pattern" : "context/{filter}/{filterData}/{timeStamp}",
+				"view" : "S1"
+			}
+		},
+	}),	
+	
+	getCompactCozyClass : function() {
+		if (this._sCompactCozyClass === undefined) {
+			if(jQuery(document.body).hasClass("sapUiSizeCozy") || jQuery(document.body).hasClass("sapUiSizeCompact")){
+				this._sCompactCozyClass = "";
+			}
+			else if (!sap.ui.Device.support.touch) { 
+				this._sCompactCozyClass = "sapUiSizeCompact";
+			} else {
+				this._sCompactCozyClass = "sapUiSizeCozy"; 
+			}
+		}
+		return this._sCompactCozyClass;
+	},
+
+	/**
+	 * Initialize the application
+	 * 
+	 * @returns {sap.ui.core.Control} the content
+	 */
+	createContent : function() {
+		var oViewData = {component: this};
+		return sap.ui.view({
+			viewName : "fin.co.costcenter.manage.Main",
+			type : sap.ui.core.mvc.ViewType.XML,
+			viewData : oViewData
+		});
+	}
+});

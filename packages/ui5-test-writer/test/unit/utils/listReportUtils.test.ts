@@ -20,17 +20,25 @@ import {
     safeGetSemanticKeyProperties,
     getCustomFilterFieldProperties,
     getTableIdentifiers,
+    isColumnPersonalizationEnabled,
+    isViewColumnPersonalizationEnabled,
+    getViewTableType,
+    getListReportViews,
+    getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
-    getFilterFieldItems
+    getFilterFieldItems,
+    extractCustomToolBarActions,
+    extractTextAnnotationCandidatesFromMetadata
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application';
 import type { Manifest } from '@sap-ux/project-access';
-import { parse } from '@sap-ux/edmx-parser';
+import { parse, merge } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -1506,14 +1514,14 @@ describe('Test getListReportFeatures()', () => {
                             aggregations: {
                                 columns: {
                                     aggregations: {
-                                        col1: {
+                                        'DataField::IDColumn': {
                                             description: 'ID',
                                             custom: false,
                                             schema: {
                                                 keys: [{ name: 'Value', value: 'IDColumn' }]
                                             }
                                         } as unknown as TreeAggregation,
-                                        col2: {
+                                        'DataField::NameColumn': {
                                             description: 'Name',
                                             custom: false,
                                             schema: {
@@ -2103,6 +2111,385 @@ describe('Test safeGetSemanticKeyProperties()', () => {
     });
 });
 
+describe('getListReportFeatures() — contactCardColumns extraction', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    test('exposes Contact-annotated table columns as contactCardColumns', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        TravelIDCol: {
+                                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] },
+                                            description: 'Travel'
+                                        } as unknown as TreeAggregation,
+                                        'DataFieldForAnnotation::_Agency::Contact': {
+                                            schema: {
+                                                keys: [
+                                                    {
+                                                        name: 'Target',
+                                                        value: '_Agency/@Communication.Contact'
+                                                    }
+                                                ]
+                                            },
+                                            description: 'Agency'
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger);
+        expect(result.contactCardColumns).toEqual([{ property: 'DataFieldForAnnotation::_Agency::Contact' }]);
+    });
+
+    test('returns an empty contactCardColumns array when no Contact columns exist', () => {
+        const pageModel: PageWithModelV4 = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        TravelIDCol: {
+                                            schema: { keys: [{ name: 'Value', value: 'TravelID' }] }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(pageModel, mockLogger);
+        expect(result.contactCardColumns).toEqual([]);
+    });
+});
+
+describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
+    let mockLogger: Logger;
+
+    beforeEach(() => {
+        mockLogger = {
+            warn: jest.fn(),
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+    });
+
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const localAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextLast"/>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const buildPageModel = (): PageWithModelV4 =>
+        ({
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        'DataField::CustomerID': {
+                                            schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                                            properties: {
+                                                text: { artifactType: 'Annotation', value: 'CustomerName' }
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            entitySet: 'Travel',
+            pageType: 'ListReport'
+        }) as unknown as PageWithModelV4;
+
+    test('emits the code column and its text target when the merged metadata carries a TextArrangement (TextLast)', () => {
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
+            localAnnotationXml
+        ]);
+        // The code column (CustomerID) and its text target (CustomerName) are both asserted — the latest
+        // UI5 keeps the code column separately sortable even with a TextArrangement present.
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+
+    // TextOnly arrangement: the column renders only the text value. The code column and its text target
+    // are both still asserted (the latest UI5 keeps the code column separately sortable).
+    const textOnlyAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly"/>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('emits the code column and its text target when the arrangement is TextOnly', () => {
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
+            textOnlyAnnotationXml
+        ]);
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+
+    test('emits the code column for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
+        // Regression (fin.test.v4.lr2 view 6): CompanyCode carries a Common.Text (CompanyCodeName) with no
+        // explicit UI.TextArrangement. The code column and its text target are both asserted (the latest
+        // UI5 keeps the code column separately sortable). Mirrors that shape with CustomerID / CustomerName.
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+
+    test('returns an empty array when there is no metadata', () => {
+        const result = getListReportFeatures(buildPageModel(), mockLogger);
+        expect(result.textAnnotationColumns).toEqual([]);
+    });
+
+    test('emits the code column and the navigation-path text target (Customer regression)', () => {
+        // Regression (fin.test.v4.lr2): the "Customer" column carries a Common.Text. The code column
+        // (Customer) and its text target "_CustomerDetail/CustomerName" are both asserted. Though reached
+        // through an association, the text target is a valid sort name and is tested in both the sort order
+        // and the column-adaptation dialog (the dialog assertion is expected to fail until the service is
+        // adjusted to expose the navigation-path column, per the LoB guidance).
+        const page = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        'DataField::Customer': {
+                                            schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                                            properties: {
+                                                text: {
+                                                    artifactType: 'Annotation',
+                                                    value: '_CustomerDetail/CustomerName'
+                                                }
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            entitySet: 'Travel',
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(page, mockLogger, metadataXml);
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+
+    // Regression: project5 shape — the TextArrangement lives in the service metadata (not the local
+    // annotation file), and the local annotation.xml carries an unrelated `Annotations` block that
+    // targets the same entity type. Parsing both sources with the same fileId made merge overwrite the
+    // metadata's property annotations, wiping out the TextArrangement so no sort-order test was emitted.
+    const metadataWithTextArrangement = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextLast"/>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    const unrelatedLocalAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="TestService.TravelType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.FieldGroup" Qualifier="GeneratedGroup">
+                    <Record Type="com.sap.vocabularies.UI.v1.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                    <PropertyValue Property="Value" Path="TravelID"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('keeps the metadata TextArrangement when a local annotation file targets the same entity type', () => {
+        const result = getListReportFeatures(
+            buildPageModel(),
+            mockLogger,
+            metadataWithTextArrangement,
+            undefined,
+            undefined,
+            [unrelatedLocalAnnotationXml]
+        );
+        // TextLast is preserved through the merge, so the code column and its text target are both emitted
+        // (regression was: the arrangement being lost, which previously suppressed the text-target test).
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+
+    // Regression (fin.test.v4.lr1): the text (sort target) property carries UI.Hidden. The sort test is
+    // still emitted regardless — a hidden sort target is treated as a likely annotation mistake that the
+    // (typically failing) generated test should surface to the developer, not silently suppress.
+    const metadataWithHiddenTextProperty = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="TravelType">
+                <Key><PropertyRef Name="TravelID"/></Key>
+                <Property Name="TravelID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
+            </EntityContainer>
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextLast"/>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="TestService.TravelType/CustomerName">
+                <Annotation Term="com.sap.vocabularies.UI.v1.Hidden"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('still emits the column when its text (sort target) property is hidden', () => {
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataWithHiddenTextProperty);
+        // The code column and its (hidden) text target are both still emitted.
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+});
+
 describe('Test getCustomFilterFieldProperties()', () => {
     const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
         ({
@@ -2148,6 +2535,310 @@ describe('Test getCustomFilterFieldProperties()', () => {
         expect(result.has('StandardField')).toBe(false);
         expect(result.has('EmptyTemplate')).toBe(false);
         expect(result.size).toBe(1);
+    });
+});
+
+describe('Test isColumnPersonalizationEnabled()', () => {
+    const makeManifest = (personalization?: boolean | Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        '@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: personalization === undefined ? {} : { personalization }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('enabled when manifest is undefined', () => {
+        expect(isColumnPersonalizationEnabled(undefined, 'MyLR')).toBe(true);
+    });
+
+    test('enabled when target key is undefined', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(false), undefined)).toBe(true);
+    });
+
+    test('enabled when controlConfiguration/tableSettings is absent', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(true);
+    });
+
+    test('enabled when personalization is absent (default)', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(), 'MyLR')).toBe(true);
+    });
+
+    test('enabled when personalization is true', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(true), 'MyLR')).toBe(true);
+    });
+
+    test('disabled when personalization is false', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(false), 'MyLR')).toBe(false);
+    });
+
+    test('enabled when personalization object sets column: true', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest({ sort: true, column: true }), 'MyLR')).toBe(true);
+    });
+
+    test('disabled when personalization object sets column: false', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest({ sort: true, column: false }), 'MyLR')).toBe(false);
+    });
+
+    test('disabled when personalization object omits column', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest({ sort: true }), 'MyLR')).toBe(false);
+    });
+
+    const makeManifestWithKey = (
+        controlConfigurationKey: string,
+        personalization?: boolean | Record<string, unknown>
+    ): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        [controlConfigurationKey]: {
+                                            tableSettings: personalization === undefined ? {} : { personalization }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('resolves qualified LineItem key (@...LineItem#Main) when personalization is false', () => {
+        const manifest = makeManifestWithKey('@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(false);
+    });
+
+    test('resolves context-prefixed LineItem key when personalization is false', () => {
+        const manifest = makeManifestWithKey('/Travel/@com.sap.vocabularies.UI.v1.LineItem', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('resolves context-prefixed qualified LineItem key when personalization is false', () => {
+        const manifest = makeManifestWithKey('/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('resolves single qualified key without context path (single-table LR)', () => {
+        const manifest = makeManifestWithKey('@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', undefined)).toBe(false);
+    });
+
+    test('does not combine settings from unrelated tables (multi-table ambiguity → enabled)', () => {
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        '/Travel/@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: { personalization: false }
+                                        },
+                                        '/Booking/@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: { personalization: true }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        // No contextPath → ambiguous, must not pick either table's setting
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(true);
+        // With contextPath → resolves the matching table only
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Booking')).toBe(true);
+    });
+
+    const makeManifestWithKeys = (entries: Record<string, boolean | Record<string, unknown>>): Manifest => {
+        const controlConfiguration: Record<string, unknown> = {};
+        for (const [key, personalization] of Object.entries(entries)) {
+            controlConfiguration[key] = { tableSettings: { personalization } };
+        }
+        return {
+            'sap.ui5': { routing: { targets: { MyLR: { options: { settings: { controlConfiguration } } } } } }
+        } as unknown as Manifest;
+    };
+
+    test('does not guess among conflicting qualifiers under one context (disabled first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Alt': true
+        });
+        // Two qualified keys under the same context path → default table's qualifier is undetermined.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(true);
+    });
+
+    test('does not guess among conflicting qualifiers under one context (enabled first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Alt': true,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false
+        });
+        // Key order must not change the outcome: still undetermined → enabled.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(true);
+    });
+
+    test('does not mask a disabled default table with an unrelated bare entry (bare first)', () => {
+        const manifest = makeManifestWithKeys({
+            '@com.sap.vocabularies.UI.v1.LineItem': true,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false
+        });
+        // The bare entry belongs to another table; the context-scoped qualified key is the default
+        // table and disables personalization.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('does not mask a disabled default table with an unrelated bare entry (qualified first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false,
+            '@com.sap.vocabularies.UI.v1.LineItem': true
+        });
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('prefers the context-prefixed bare key over an unrelated qualified key', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem': false,
+            '/Booking/@com.sap.vocabularies.UI.v1.LineItem#Main': true
+        });
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+});
+
+describe('Test isViewColumnPersonalizationEnabled()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+
+    test('returns true when manifest or target key is missing', () => {
+        expect(isViewColumnPersonalizationEnabled(undefined, 'MyLR', 'x#VAR1')).toBe(true);
+        expect(isViewColumnPersonalizationEnabled(makeManifest({}), undefined, 'x#VAR1')).toBe(true);
+    });
+
+    test('matches the qualified LineItem key for the view annotationPath qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: true } },
+            [`${lineItem}#VAR2`]: { tableSettings: { personalization: { column: false } } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(
+                manifest,
+                'MyLR',
+                'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2'
+            )
+        ).toBe(false);
+    });
+
+    test('falls back to the unqualified LineItem key when no qualified key exists', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: { column: false } } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1')
+        ).toBe(false);
+    });
+
+    test('treats a null personalization as enabled (Fiori elements default)', () => {
+        const manifest = makeManifest({
+            [`${lineItem}#VAR3`]: { tableSettings: { personalization: null } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(
+                manifest,
+                'MyLR',
+                'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR3'
+            )
+        ).toBe(true);
+    });
+
+    test('returns true when controlConfiguration is absent', () => {
+        const manifest = {
+            'sap.ui5': { routing: { targets: { MyLR: { options: { settings: {} } } } } }
+        } as unknown as Manifest;
+        expect(isViewColumnPersonalizationEnabled(manifest, 'MyLR', 'x#VAR1')).toBe(true);
+    });
+
+    test('uses the unqualified key when the view annotationPath has no qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: false } }
+        });
+        expect(isViewColumnPersonalizationEnabled(manifest, 'MyLR', undefined)).toBe(false);
+    });
+});
+
+describe('Test getViewTableType()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+
+    test('returns undefined when manifest or target key is missing', () => {
+        expect(getViewTableType(undefined, 'MyLR', 'x#VAR1')).toBeUndefined();
+        expect(getViewTableType(makeManifest({}), undefined, 'x#VAR1')).toBeUndefined();
+    });
+
+    test('resolves the table type from the qualified LineItem key for the view qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { type: 'GridTable' } },
+            [`${lineItem}#VAR2`]: { tableSettings: { type: 'AnalyticalTable' } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2')).toBe(
+            'AnalyticalTable'
+        );
+    });
+
+    test('falls back to the unqualified LineItem key when no qualified key exists', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { type: 'GridTable' } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1')).toBe(
+            'GridTable'
+        );
+    });
+
+    test('returns undefined when no table type is configured', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: true } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', undefined)).toBeUndefined();
     });
 });
 
@@ -2205,6 +2896,56 @@ describe('Test getTableIdentifiers()', () => {
             { key: '2', template: '' }
         ]);
         expect(getTableIdentifiers(manifest, 'MyLR')).toEqual(['1', '2']);
+    });
+});
+
+describe('Test getListReportViews()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { views: { paths } } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('returns empty array when manifest or target key is undefined', () => {
+        expect(getListReportViews(undefined, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest([{ key: '1' }]), undefined)).toEqual([]);
+    });
+
+    test('returns empty array when views.paths is missing or not an array', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([]);
+        expect(getListReportViews(makeManifest('not-an-array'), 'MyLR')).toEqual([]);
+    });
+
+    test('returns each non-custom view with its optional entity set, in manifest order', () => {
+        // Mirrors the fin.test.v4.lr2 CustomerList views: default tabs (no entitySet) plus a
+        // CompanyCodeDetail tab; the custom (template) tab and keyless entries are skipped.
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '2' },
+            { key: '3' },
+            { key: '5', template: 'my.app.ext.CustomTab' },
+            { key: '' },
+            undefined,
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+        expect(getListReportViews(manifest, 'MyLR')).toEqual([
+            { key: '1', entitySet: undefined },
+            { key: '2', entitySet: undefined },
+            { key: '3', entitySet: undefined },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+    });
+
+    test('returns a single view (does not collapse to empty like getTableIdentifiers)', () => {
+        // Unlike getTableIdentifiers, a single non-custom view is still returned so the OP mapping
+        // can resolve its originating tab.
+        expect(getListReportViews(makeManifest([{ key: '1' }]), 'MyLR')).toEqual([{ key: '1', entitySet: undefined }]);
     });
 });
 
@@ -2432,5 +3173,649 @@ describe('Test getListReportFeatures() semantic-key HiddenFilter exclusion', () 
         const result = getListReportFeatures(pageModel, mockLogger, metadataXml);
         // TravelID is missing and not hidden → kept; BookingID is hidden → dropped
         expect(result.semanticKey?.missingFromFilterBar).toEqual(['TravelID']);
+    });
+});
+
+describe('extractCustomToolBarActions()', () => {
+    const buildModel = (actions: TreeAggregations): TreeModel =>
+        ({
+            root: {
+                aggregations: {
+                    table: {
+                        aggregations: {
+                            toolBar: {
+                                aggregations: {
+                                    actions: { aggregations: actions } as unknown as TreeAggregation
+                                }
+                            } as unknown as TreeAggregation
+                        }
+                    } as unknown as TreeAggregation
+                }
+            } as unknown as TreeAggregation,
+            name: 'test',
+            schema: {}
+        }) as unknown as TreeModel;
+
+    test('extracts only entries tagged actionType "Custom", matched by resolved label', () => {
+        const model = buildModel({
+            MyCustomAction: {
+                description: '{i18n>customAction1}',
+                schema: { actionType: 'Custom' },
+                aggregations: {}
+            } as unknown as TreeAggregation,
+            'DataFieldForAction::svc.Foo::svc.Bar': {
+                description: 'Foo',
+                schema: { actionType: 'Annotation' },
+                aggregations: {}
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) =>
+            label === '{i18n>customAction1}'
+                ? { label: 'My Custom Action 1', unresolved: false }
+                : { label: label ?? '', unresolved: false };
+
+        const result = extractCustomToolBarActions(model, resolve);
+        expect(result).toEqual([
+            {
+                label: 'My Custom Action 1',
+                action: '',
+                visible: true,
+                enabled: true,
+                custom: true,
+                labelUnresolved: undefined
+            }
+        ]);
+    });
+
+    test('flags an unresolved custom label', () => {
+        const model = buildModel({
+            MyCustomAction: {
+                description: '{i18n>missing}',
+                schema: { actionType: 'Custom' },
+                aggregations: {}
+            } as unknown as TreeAggregation
+        });
+        const resolve = (label: string | undefined) => ({ label: label ?? '', unresolved: true });
+        expect(extractCustomToolBarActions(model, resolve)[0]).toMatchObject({
+            label: '{i18n>missing}',
+            custom: true,
+            labelUnresolved: true
+        });
+    });
+
+    test('returns an empty array when there are no custom actions', () => {
+        const model = buildModel({});
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([]);
+    });
+
+    test('extracts a menu button with its child actions when metadata is available', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: '{i18n>customAction1}',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            },
+                            myAction2: {
+                                description: '{i18n>customAction2}',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        const childLabels: Record<string, string> = {
+            '{i18n>customAction1}': 'Custom Action 1',
+            '{i18n>customAction2}': 'Custom Action 2'
+        };
+        const resolve = (label: string | undefined) => ({
+            label: (label && childLabels[label]) || label || '',
+            unresolved: false
+        });
+        const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
+
+        expect(extractCustomToolBarActions(model, resolve, convertedMetadata)).toEqual([
+            {
+                label: 'My Menu Button',
+                action: '',
+                visible: true,
+                enabled: true,
+                menuType: 'CustomMenu',
+                labelUnresolved: undefined,
+                menuActions: [
+                    { label: 'Custom Action 1', visible: true, labelUnresolved: undefined },
+                    { label: 'Custom Action 2', visible: true, labelUnresolved: undefined }
+                ]
+            }
+        ]);
+    });
+
+    test('emits a label-only menu button (child labels, no annotation resolution) when no metadata is available', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: 'Custom Action 1',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        expect(extractCustomToolBarActions(model, (label) => ({ label: label ?? '', unresolved: false }))).toEqual([
+            {
+                label: 'My Menu Button',
+                action: '',
+                visible: true,
+                enabled: true,
+                menuType: 'CustomMenu',
+                labelUnresolved: undefined,
+                menuActions: [{ label: 'Custom Action 1', visible: true, labelUnresolved: undefined }]
+            }
+        ]);
+    });
+
+    test('flags a menu with a defaultAction as a split button', () => {
+        const model = buildModel({
+            MenuActions: {
+                description: 'My Menu Button',
+                menuType: 'CustomMenu',
+                schema: { actionType: 'CustomMenu' },
+                properties: { defaultAction: { value: 'myAction2' } },
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            myAction1: {
+                                description: 'Custom Action 1',
+                                schema: { actionType: 'Custom' },
+                                aggregations: {}
+                            }
+                        }
+                    }
+                }
+            } as unknown as TreeAggregation
+        });
+        const convertedMetadata = { actions: [], namespace: 'svc' } as unknown as ConvertedMetadata;
+        expect(
+            extractCustomToolBarActions(
+                model,
+                (label) => ({ label: label ?? '', unresolved: false }),
+                convertedMetadata
+            )[0]
+        ).toMatchObject({ label: 'My Menu Button', menuType: 'CustomMenu', splitButton: true });
+    });
+});
+
+describe('getListReportTabs()', () => {
+    const makeManifest = (paths: unknown): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: { targets: { MyLR: { options: { settings: { views: { paths } } } } } }
+            }
+        }) as unknown as Manifest;
+
+    const makeViewNode = (columns: Record<string, unknown>, customActionDescription?: string): TreeAggregation => {
+        const aggregations: Record<string, unknown> = { columns: { aggregations: columns } };
+        if (customActionDescription) {
+            aggregations['toolBar'] = {
+                aggregations: {
+                    actions: {
+                        aggregations: {
+                            CustomAction: { schema: { actionType: 'Custom' }, description: customActionDescription }
+                        }
+                    }
+                }
+            };
+        }
+        return { aggregations } as unknown as TreeAggregation;
+    };
+
+    const makePage = (views: Record<string, TreeAggregation>): PageWithModelV4 =>
+        ({
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: { table: { aggregations: { views: { aggregations: views } } } } } }
+        }) as unknown as PageWithModelV4;
+
+    test('returns an empty array for a single-table List Report (no views block)', () => {
+        const page = {
+            name: 'MyLR',
+            entitySet: 'Customer',
+            model: { root: { aggregations: {} } }
+        } as unknown as PageWithModelV4;
+        expect(getListReportTabs(page, undefined, undefined)).toEqual([]);
+    });
+
+    test('returns an empty array when only one non-custom tab exists', () => {
+        const page = makePage({ '1': makeViewNode({}) });
+        const manifest = makeManifest([{ key: '1' }, { key: '5', template: 'x.CustomTab' }]);
+        expect(getListReportTabs(page, undefined, manifest)).toEqual([]);
+    });
+
+    test('builds per-tab data, resolving each tab entity set and skipping custom tabs', () => {
+        const page = makePage({
+            '1': makeViewNode(
+                { 'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } } },
+                'My Custom Action'
+            ),
+            '6': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([
+            { key: '1' },
+            { key: '5', template: 'x.CustomTab' },
+            { key: '6', entitySet: 'CompanyCodeDetail' }
+        ]);
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        expect(tabs).toHaveLength(2);
+        expect(tabs[0]).toMatchObject({
+            key: '1',
+            entitySet: 'Customer',
+            tableColumns: { A: { header: 'A' } },
+            contactCardColumns: [],
+            toolBarActions: [{ label: 'My Custom Action', custom: true, visible: true }]
+        });
+        expect(tabs[0].createButton.visible).toBe(false);
+        expect(tabs[1]).toMatchObject({
+            key: '6',
+            entitySet: 'CompanyCodeDetail',
+            tableColumns: { B: { header: 'B' } },
+            contactCardColumns: [],
+            toolBarActions: []
+        });
+    });
+
+    test('resolves per-tab action and button state when metadata is available', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.String"/></EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs.map((tab) => tab.key)).toEqual(['1', '2']);
+        expect(Array.isArray(tabs[0].toolBarActions)).toBe(true);
+        expect(typeof tabs[0].createButton.visible).toBe('boolean');
+    });
+
+    test('skips a manifest view that has no matching spec-model table node', () => {
+        // Manifest declares three tabs but the spec model only carries table nodes for two of them.
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }, { key: '9' }]);
+
+        expect(getListReportTabs(page, undefined, manifest).map((tab) => tab.key)).toEqual(['1', '2']);
+    });
+
+    test('populates per-tab textAnnotationColumns from each view table', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::CustomerID': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                    properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+                }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs[0].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+        expect(tabs[1].textAnnotationColumns).toEqual([]);
+    });
+
+    test('falls back to metadata Common.Text for views whose spec model omits properties.text', () => {
+        // Reproduces the multi-tab bug: ux-specification only resolves `properties.text` on the first
+        // view's columns. View 2 here carries the same bound column but no `properties.text`, so the
+        // text target must be sourced from the shared entity type's Common.Text metadata instead.
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            // View 1: columns carry resolved properties.text (as ux-specification populates for the primary view).
+            '1': makeViewNode({
+                'DataField::CompanyCode': {
+                    description: 'Company Code',
+                    schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] },
+                    properties: { text: { artifactType: 'Annotation', value: 'CompanyCode_Text' } }
+                },
+                'DataField::Customer': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                    properties: { text: { artifactType: 'Annotation', value: '_CustomerDetail/CustomerName' } }
+                }
+            }),
+            // View 2: same bound columns but NO properties.text (ux-specification leaves secondary views empty).
+            '2': makeViewNode({
+                'DataField::CompanyCode': {
+                    description: 'Company Code',
+                    schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+                },
+                'DataField::Customer': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'Customer' }] }
+                }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        const expected = [
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ];
+        // View 1 (spec-model path) and view 2 (metadata fallback) now both emit the same tests.
+        expect(tabs[0].textAnnotationColumns).toEqual(expected);
+        expect(tabs[1].textAnnotationColumns).toEqual(expected);
+    });
+
+    test('marks nav-path text target as not sortable for an AnalyticalTable view only', () => {
+        // An AnalyticalTable cannot sort on a navigation-property path (only properties of the
+        // aggregated entity are sortable). View 2 is configured as an AnalyticalTable via its
+        // LineItem#VAR2 controlConfiguration, so its nav-path target must get textPropertyNotSortable:
+        // true, while view 1 (default GridTable) keeps it sortable.
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const columns = {
+            'DataField::CompanyCode': {
+                description: 'Company Code',
+                schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CompanyCode_Text' } }
+            },
+            'DataField::Customer': {
+                description: 'Customer',
+                schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                properties: { text: { artifactType: 'Annotation', value: '_CustomerDetail/CustomerName' } }
+            }
+        };
+        const page = makePage({ '1': makeViewNode(columns), '2': makeViewNode(columns) });
+        const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+        // Manifest carries both the per-view paths (view 2 points at SPV#VAR2) and the
+        // controlConfiguration where LineItem#VAR2 renders an AnalyticalTable.
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [
+                                            { key: '1' },
+                                            { key: '2', annotationPath: '@…SelectionPresentationVariant#VAR2' }
+                                        ]
+                                    },
+                                    controlConfiguration: {
+                                        [lineItem]: { tableSettings: { type: 'GridTable' } },
+                                        [`${lineItem}#VAR2`]: { tableSettings: { type: 'AnalyticalTable' } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        // View 1 (default GridTable): nav-path target remains sortable.
+        expect(tabs[0].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+        // View 2 (AnalyticalTable): nav-path target is skipped in the sort test.
+        expect(tabs[1].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: true
+            }
+        ]);
+    });
+
+    test('resolves columnPersonalizationSupported per view from each view annotationPath', () => {
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [
+                                            {
+                                                key: '1',
+                                                annotationPath: 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1'
+                                            },
+                                            {
+                                                key: '2',
+                                                annotationPath:
+                                                    'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2'
+                                            }
+                                        ]
+                                    },
+                                    controlConfiguration: {
+                                        [lineItem]: { tableSettings: { personalization: true } },
+                                        [`${lineItem}#VAR2`]: { tableSettings: { personalization: { column: false } } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        // View 1 (#VAR1) has no matching LineItem#VAR1 key, so it falls back to the enabled default.
+        expect(tabs[0].columnPersonalizationSupported).toBe(true);
+        // View 2 (#VAR2) maps to LineItem#VAR2, which disables column personalization.
+        expect(tabs[1].columnPersonalizationSupported).toBe(false);
+    });
+});
+
+describe('extractTextAnnotationCandidatesFromMetadata()', () => {
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="PlainColumn" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+    const metadata = convert(parse(metadataXml));
+
+    test('returns a sortable candidate for a direct Common.Text target', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, 'Customer')).toEqual([
+            { columnProperty: 'CompanyCode', textProperty: 'CompanyCode_Text' }
+        ]);
+    });
+
+    test('keeps a navigation text target as a sortable candidate', () => {
+        // The ID column ("Customer") is a real, non-association column, so the test is generated — and a
+        // navigation-path text target is itself a valid sort/adaptation name, emitted unchanged.
+        expect(extractTextAnnotationCandidatesFromMetadata(['Customer'], metadata, 'Customer')).toEqual([
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName' }
+        ]);
+    });
+
+    test('skips columns without a Common.Text annotation', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['PlainColumn'], metadata, 'Customer')).toEqual([]);
+    });
+
+    test('preserves column order and only emits text-annotated columns', () => {
+        expect(
+            extractTextAnnotationCandidatesFromMetadata(
+                ['PlainColumn', 'CompanyCode', 'Customer'],
+                metadata,
+                'Customer'
+            )
+        ).toEqual([
+            { columnProperty: 'CompanyCode', textProperty: 'CompanyCode_Text' },
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName' }
+        ]);
+    });
+
+    test('returns an empty array when the entity set is undefined or missing from metadata', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, undefined)).toEqual([]);
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, 'Unknown')).toEqual([]);
     });
 });

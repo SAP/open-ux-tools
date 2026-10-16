@@ -27,6 +27,7 @@ import {
     loadApps,
     loadCfConfig,
     storeCredentials,
+    getDefaultProjectName,
     getOrCreateServiceInstanceKeys
 } from '@sap-ux/adp-tooling';
 import {
@@ -46,6 +47,7 @@ import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
 import { getPackageInfo, installDependencies } from '../utils/deps.js';
 import { initI18n, t } from '../utils/i18n.js';
+import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
 import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
@@ -66,7 +68,7 @@ import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
 import { CFServicesPrompter } from './questions/cf-services.js';
 import { ConfigPrompter } from './questions/configuration.js';
-import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values.js';
+import { getDefaultNamespace } from './questions/helper/default-values.js';
 import { validateJsonInput } from './questions/helper/validators.js';
 import {
     TargetEnv,
@@ -74,6 +76,7 @@ import {
     type AdpGeneratorOptions,
     type AttributePromptOptions,
     type JsonInput,
+    type JsonInputFile,
     type OptionalPromptsConfig
 } from './types.js';
 import { getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
@@ -140,6 +143,10 @@ export default class extends Generator {
      * passed as a CLI argument.
      */
     private readonly jsonInput?: JsonInput;
+    /**
+     * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
+     */
+    private jsonInputFile?: JsonInputFile;
     /**
      * Instance of AbapServiceProvider.
      */
@@ -335,7 +342,10 @@ export default class extends Generator {
                     this.logger
                 );
                 const keyUserQuestions = this.keyUserPrompter.getPrompts({
-                    keyUserSystem: { default: this.configAnswers.system }
+                    keyUserSystem: { default: this.configAnswers.system },
+                    keyUserSystemValidationCli: { hide: !this.isCli },
+                    keyUserAdaptationValidationCli: { hide: !this.isCli },
+                    keyUserRestrictedViewsLabel: { hide: this.isCli }
                 });
                 await this.prompt(keyUserQuestions);
             }
@@ -409,7 +419,7 @@ export default class extends Generator {
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
             const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
-            const keyUserChanges = this.jsonInput ? this.jsonInput.keyUserChanges : this.keyUserPrompter?.changes;
+            const keyUserChanges = this.jsonInput ? this.jsonInputFile?.keyUserChanges : this.keyUserPrompter?.changes;
             const projectType = this._getProjectType();
 
             const packageJson = getPackageInfo();
@@ -482,6 +492,12 @@ export default class extends Generator {
                 });
         }
 
+        if (this.isCli && this.keyUserPrompter?.detectRestrictedViews()) {
+            this.logger.warn(
+                `${t('prompts.keyUserRestrictedViewsLabel')} ${t('prompts.keyUserRestrictedViewsDocLink')}`
+            );
+        }
+
         if (this.isCli || this.isCfEnv || this.shouldCreateExtProject) {
             return;
         }
@@ -524,7 +540,10 @@ export default class extends Generator {
             wasFlpConfigDone: this.attributeAnswers?.addFlpConfig ?? false,
             wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
             wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
-            wasExtProjectGenerated: this.shouldCreateExtProject ?? false
+            wasExtProjectGenerated: this.shouldCreateExtProject ?? false,
+            wereKeyUserChangesImported: this.jsonInput
+                ? !!this.jsonInputFile?.keyUserChanges?.length
+                : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {
             telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
@@ -761,6 +780,10 @@ export default class extends Generator {
     private async _initFromJson(): Promise<void> {
         if (!this.jsonInput) {
             return;
+        }
+
+        if (this.jsonInput.id) {
+            this.jsonInputFile = await readJsonInputFile(this.jsonInput.id);
         }
 
         const {

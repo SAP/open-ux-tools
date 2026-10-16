@@ -15,7 +15,8 @@ jest.unstable_mockModule('node:fs', () => ({
 }));
 
 jest.unstable_mockModule('../../../../src/base/project-builder', () => ({
-    runBuild: mockRunBuild
+    runBuild: mockRunBuild,
+    getPreviewManifest: jest.fn()
 }));
 
 const { ManifestServiceCF } = await import('../../../../src/cf/services/manifest.js');

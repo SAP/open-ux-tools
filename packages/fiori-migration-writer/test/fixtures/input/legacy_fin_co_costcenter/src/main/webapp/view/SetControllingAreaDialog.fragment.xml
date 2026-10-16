@@ -1,0 +1,37 @@
+<core:FragmentDefinition id="fin.co.costcenter.manage.fragment.view" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog id="fin.co.costcenter.manage.fragment.dialog" title="{i18n>SET_CONTROLLING_AREA_TITLE}" class="sapUiSizeCompact" width="800px">
+		<l:Grid id="fin.co.costcenter.manage.fragment.grid" defaultSpan="L12 M12 S12" width="800px">
+			<l:content>
+				<f:SimpleForm id="fin.co.costcenter.manage.fragment.simpleform" maxContainerCols="4" layout="GridLayout" editable="true" labelSpanL="1"
+					labelSpanM="1" emptySpanL="0" emptySpanM="0" columnsL="3" columnsM="2" columnsS="1">
+					<f:content>
+						<core:Title/>
+						<Label id="fin.co.costcenter.manage.fragment.title" design="Standard" text="{i18n>C_CTRL_AREA}" TextAlign="Begin">
+							<layoutData>
+								<l:GridData id="fin.co.costcenter.manage.griddata" span="L2 M2 S2"/>
+							</layoutData>
+						</Label>
+						<Input id='input.ControllingArea' maxLength="4" showValueHelp="true" showSuggestion="true" change="onChangeinput"
+							valueHelpRequest="onF4ControllingArea">
+							<layoutData>
+								<l:GridData id="fin.co.costcenter.manage.griddata2" span="L1 M1 S1"/>
+							</layoutData>
+						</Input>
+						<Text design="Standard" id='input.ControllingAreaName'>
+							<layoutData>
+								<l:GridData id="fin.co.costcenter.manage.griddata3" span="L3 M3 S3"/>
+							</layoutData>
+						</Text >
+					</f:content>
+				</f:SimpleForm>
+			</l:content>
+		</l:Grid>
+		<beginButton>
+			<Button id="leftButton" text="{i18n>OK}" enabled="true" press="onControllingAreaDialogOK"></Button>
+		</beginButton>
+		<endButton>
+			<Button id="rightButton" text="{i18n>CANCEL}" enabled="true" press="onControllingAreaDialogCancel"></Button>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

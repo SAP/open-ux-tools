@@ -235,7 +235,7 @@ pnpm audit
 - axios, esbuild, fast-xml-parser, lodash, tar (security patches)
 - Review and update these regularly
 
-### 7. Modern TypeScript
+### 6. Modern TypeScript
 
 **All code should be written in modern TypeScript.**
 
@@ -248,7 +248,15 @@ pnpm audit
 - Use async/await over raw Promises
 - Leverage TypeScript features: generics, union types, type guards, etc.
 - Avoid `any` type - use `unknown` or proper types
-- **Avoid TypeScript enums** - prefer union types or const objects for better type safety and tree-shaking
+- **Never use TypeScript enums** — this is a hard rule, not a preference. Regular enums compile to real JS objects (runtime overhead, no tree-shaking); `const enum` avoids that overhead but creates brittle implicit coupling that breaks under `isolatedModules` / esbuild. Use `const` objects with `as const` and derive union types from them instead:
+  ```typescript
+  // ✅ Correct
+  export const Direction = { Up: 'up', Down: 'down' } as const;
+  export type Direction = (typeof Direction)[keyof typeof Direction];
+
+  // ❌ Wrong — never do this
+  export enum Direction { Up = 'up', Down = 'down' }
+  ```
 - Avoid using the non-null assertion operator (!). Use optional chaining (?.), nullish coalescing (??), or explicit type guards to handle potentially null/undefined values.
 - Prefer type guards over `as SomeType` casts. If a cast is unavoidable after a runtime check, add a comment explaining why.
 
@@ -323,6 +331,21 @@ BUMP: Rebuild bundle with updated @sap-ux/fiori-docs-embeddings
 ```
 
 **If you add a new esbuild-bundling package**, add its name to `ESBUILD_BUNDLING_PACKAGES` in `scripts/validate-changesets.mjs` — its bundled dep set is derived automatically from the dependency graph.
+
+**pnpm workspace alias cascades:**
+
+Some packages declare workspace dependencies using pnpm aliases, where the key in `package.json` differs from the real package name:
+
+```json
+"@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
+"@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*"
+```
+
+The changesets `updateInternalDependencies` cascade only matches by key — it never sees the real package name behind the alias and silently skips the cascade. When the aliased package is published to npm the `workspace:` protocol is replaced with a pinned version, so consumers of the alias are permanently tied to whatever version was current at publish time.
+
+This is enforced automatically: `pnpm validate:changesets` scans all workspace `package.json` files to detect alias dependencies and will error if a consumer package is missing a changeset when the aliased real package is being released. No manual list to maintain — any new alias is picked up automatically.
+
+**If you add a new pnpm workspace alias dependency**, no extra configuration is needed — `validate-changesets.mjs` will detect it automatically and enforce the cascade.
 
 **Private packages and changesets:**
 
@@ -842,6 +865,7 @@ pnpm outdated
 13. ❌ **Don't run all tests when working on a single package** - Use `pnpm --filter @sap-ux/[package-name] test` instead of `pnpm test` at root
 14. ❌ **Don't hardcode version numbers in documentation** - Reference source files (like package.json) instead, as versions change frequently
 15. ❌ **Don't pin peerDependencies to exact versions** - Use open semver ranges (e.g., `^9` not `9.39.1`) so consumers can use any compatible release
+16. ❌ **Never use TypeScript enums** — use `const` objects with `as const` and derived union types instead. No exceptions, even for internal/private packages.
 
 ## Summary Checklist
 
@@ -854,6 +878,7 @@ Before submitting changes, verify:
 - [ ] `pnpm lint:dependency-versions` passes
 - [ ] Changeset created if source code or runtime dependencies changed
 - [ ] If releasing a bundled workspace devDep, cascade changeset added for each consumer in `scripts/validate-changesets.mjs`
+- [ ] If releasing a package consumed via a pnpm workspace alias, cascade changeset added for the alias consumer (`pnpm validate:changesets` will catch this automatically)
 - [ ] No pnpm audit vulnerabilities introduced
 - [ ] Code follows TypeScript and ESLint standards
 - [ ] Tests follow given/when/then pattern

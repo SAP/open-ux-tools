@@ -1,3 +1,5 @@
+import type { ToolsLogger } from '@sap-ux/logger';
+
 import type { UI5Version } from '../types.js';
 import { fetchInternalVersions } from './fetch.js';
 import { isFeatureSupportedVersion, addSnapshot, buildSystemVersionLabel, formatUi5Version } from './format.js';
@@ -117,10 +119,11 @@ export function checkSystemVersionPattern(version: string | undefined): string |
  * and then filters them based on a minimum supported version (in this case '1.71.0').
  *
  * @param {string} latestVersion - The latest public version string.
+ * @param {ToolsLogger} logger - Optional logger instance.
  * @returns {Promise<string[]>} A promise that resolves to an array of internal version strings.
  */
-export async function getInternalVersions(latestVersion: string): Promise<string[]> {
-    const releasedVersions = await fetchInternalVersions(latestVersion);
+export async function getInternalVersions(latestVersion: string, logger?: ToolsLogger): Promise<string[]> {
+    const releasedVersions = await fetchInternalVersions(latestVersion, logger);
     return releasedVersions.filter((version) => isFeatureSupportedVersion('1.71.0', version));
 }
 
@@ -160,12 +163,14 @@ export async function getHigherVersions(version: string, publicVersions: UI5Vers
  * @param {string | undefined} systemVersion - The current system version (can be undefined).
  * @param {boolean} isCustomerBase - Indicates if the project is customer based.
  * @param {UI5Version} publicVersions - The public UI5 version data.
+ * @param {ToolsLogger} logger - Optional logger instance.
  * @returns {Promise<string[]>} A promise that resolves to an array of relevant version strings.
  */
 export async function getRelevantVersions(
     systemVersion: string | undefined,
     isCustomerBase: boolean,
-    publicVersions: UI5Version
+    publicVersions: UI5Version,
+    logger?: ToolsLogger
 ): Promise<string[]> {
     let formattedVersion = '',
         systemSnapshotLabel = '',
@@ -180,7 +185,7 @@ export async function getRelevantVersions(
     }
 
     if (!isCustomerBase) {
-        versions = await getInternalVersions(latestPublicVersion);
+        versions = await getInternalVersions(latestPublicVersion, logger);
         if (formattedVersion) {
             const regex = new RegExp(`${formattedVersion} `, 'g');
             versions = versions.map((v) =>

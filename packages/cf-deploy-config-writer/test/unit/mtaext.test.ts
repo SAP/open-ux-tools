@@ -14,7 +14,10 @@ ufs.use(realFs as any).use(memfs.vol as any);
 (ufs as any).realpath = realFs.realpath;
 (ufs as any).realpathSync = realFs.realpathSync;
 
-jest.unstable_mockModule('node:fs', () => ufs);
+jest.unstable_mockModule('node:fs', () => ({
+    ...ufs,
+    default: ufs
+}));
 
 const { MockMta } = await import('./mockMta.js');
 jest.unstable_mockModule('@sap/mta-lib', () => ({

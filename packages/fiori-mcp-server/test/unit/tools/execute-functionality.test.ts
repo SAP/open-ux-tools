@@ -47,6 +47,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/flex', () => ({
 // Dynamic imports after mocks
 const { executeFunctionality } = await import('../../../src/tools/index.js');
 const addPageDependency = await import('../../../src/tools/functionalities/page/index.js');
+const { RESOLVE_APPLICATION_TIMEOUT_MS } = await import('../../../src/utils/schema-utils.js');
 
 const appPathLropV4 = join(__dirname, '../../test-data/original/lrop');
 const fsEditor = create(createStorage());
@@ -284,14 +285,42 @@ describe('executeFunctionality', () => {
         expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
     });
 
-    test('Without appPath', async () => {
-        await expect(
-            executeFunctionality({
-                appPath: '',
-                functionalityId: 'add-page',
-                parameters: {}
-            })
-        ).rejects.toThrow('appPath parameter is required');
+    describe('appPath validation', () => {
+        test('throws when appPath is empty string', async () => {
+            await expect(
+                executeFunctionality({
+                    appPath: '',
+                    functionalityId: 'add-page',
+                    parameters: {}
+                })
+            ).rejects.toThrow('appPath parameter is required');
+        });
+
+        test('throws when appPath is whitespace only', async () => {
+            await expect(
+                executeFunctionality({
+                    appPath: '   ',
+                    functionalityId: 'add-page',
+                    parameters: {}
+                })
+            ).rejects.toThrow('appPath parameter is required');
+        });
+
+        test('throws when resolveApplication times out', async () => {
+            jest.useFakeTimers();
+            try {
+                mockCreateApplicationAccess.mockImplementation(() => new Promise<never>(() => undefined));
+                const promise = executeFunctionality({
+                    appPath: '/some/path',
+                    functionalityId: 'add-page',
+                    parameters: {}
+                });
+                jest.advanceTimersByTime(RESOLVE_APPLICATION_TIMEOUT_MS);
+                await expect(promise).rejects.toThrow('resolveApplication timed out');
+            } finally {
+                jest.useRealTimers();
+            }
+        });
     });
 
     test('Without functionalityId', async () => {
@@ -302,6 +331,16 @@ describe('executeFunctionality', () => {
                 parameters: {}
             })
         ).rejects.toThrow('functionalityId parameter is required');
+    });
+
+    test('Without parameters', async () => {
+        await expect(
+            executeFunctionality({
+                appPath,
+                functionalityId: 'add-page',
+                parameters: undefined as unknown as Record<string, unknown>
+            })
+        ).rejects.toThrow('parameters is required');
     });
 
     test('Change page property - flex change', async () => {

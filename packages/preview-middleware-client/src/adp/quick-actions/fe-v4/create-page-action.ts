@@ -43,8 +43,9 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             const controlInfo = getControllerInfoForControl(this.control);
-            const data = await getExistingController(controlInfo.controllerName);
-            const controllerPath = data.controllerPathFromRoot.replaceAll(/\//g, '.').replace(/\.[^.]+$/, '');
+            const data = await getExistingController(controlInfo.controllerName, controlInfo.viewId);
+            const controllerPathFromRoot = data.baseControllerPathFromRoot || data.instanceControllerPathFromRoot || '';
+            const controllerPath = controllerPathFromRoot.replaceAll('/', '.').replace(/\.[^.]+$/, '');
             await DialogFactory.createDialog(
                 overlay,
                 this.context.rta,

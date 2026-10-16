@@ -4,7 +4,12 @@ import { Position, Range, TextEdit } from '@sap-ux/odata-annotation-core-types';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import { PrintPattern, resolveTarget } from '@sap-ux/cds-odata-annotation-converter';
-import type { Annotation } from '@sap-ux/cds-annotation-parser';
+import {
+    type FlattenedAnnotationSegment,
+    ANNOTATION_TYPE,
+    type Annotation,
+    type FlattenedExpression
+} from '@sap-ux/cds-annotation-parser';
 
 import { getTokenRange } from './utils.js';
 import { tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens.js';
@@ -143,24 +148,40 @@ export function getDeletionRangeForNode(
     vocabularyAliases: Set<string>,
     termIndex: number,
     tokens: CompilerToken[],
-    annotation: Annotation,
+    annotation: Annotation | FlattenedExpression,
     target: string
 ): DeletionRange | undefined {
-    if (annotation?.range) {
-        const termValue = annotation.term.value;
-        const nativeCdsTermName = vocabularyService.cdsVocabulary.reverseNameMap.get(termValue) ?? '';
-        const tokenRange = getTokenRange(tokens, annotation.range);
-        const kind = findTermKind(vocabularyAliases, tokens, tokenRange, nativeCdsTermName);
-
-        return {
-            kind,
-            printPattern: resolveTarget(target).printPattern,
-            termRange: { start: termIndex, end: termIndex },
-            tokenRange,
-            isExpanded: false
-        };
+    if (!annotation?.range) {
+        return undefined;
     }
-    return undefined;
+
+    let termValue: string;
+    if (annotation.type === ANNOTATION_TYPE) {
+        termValue = annotation.term.value;
+    } else {
+        const vocabulary = (annotation.path.segments[0] as FlattenedAnnotationSegment).vocabulary?.value;
+        termValue =
+            (vocabulary ? vocabulary + '.' : '') +
+            (annotation.path.segments[0] as FlattenedAnnotationSegment).term.value;
+    }
+    const nativeCdsTermName = vocabularyService.cdsVocabulary.reverseNameMap.get(termValue) ?? '';
+    const tokenRange = getTokenRange(tokens, annotation.range);
+    const kind = findTermKind(vocabularyAliases, tokens, tokenRange, nativeCdsTermName);
+
+    return {
+        kind,
+        printPattern: resolveTarget(target).printPattern,
+        termRange: { start: termIndex, end: termIndex },
+        tokenRange,
+        isExpanded: false
+    };
+}
+
+function getEscapedTerm(text: string): string {
+    if (text.startsWith('![') && text.includes('.')) {
+        return text.split('.')[0].substring(2);
+    }
+    return '';
 }
 
 function findTermKind(
@@ -174,6 +195,8 @@ function findTermKind(
         if (nativeCdsTermName && tokens[i].text === nativeCdsTermName) {
             deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME; // e.g. @title
         } else if (vocabularyAliases.has(tokens[i].text) && tokens[i + 1].text === '.') {
+            deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME;
+        } else if (vocabularyAliases.has(getEscapedTerm(tokens[i].text))) {
             deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME;
         } else if (/^\w+$/.test(tokens[i].text)) {
             // TODO use better regular expression for OData simple identifier

@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
 import { type Service, FloorplanFE } from '../../../src/types/index.js';
 import { MIN_UI5_VERSION_PAGE_BUILDING_BLOCK } from '@sap-ux/fe-fpm-writer';
+import { validateViewName } from '@sap-ux/project-input-validator';
 
 // Pre-import actuals
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
@@ -97,13 +98,8 @@ describe('prompting.ts', () => {
         });
 
         it('should validate view name correctly', () => {
-            const validate = getViewQuestion().validate as (input: string) => boolean | string;
-
-            expect(validate('')).toBe(t('prompts.viewName.validationMessages.viewNameRequired'));
-            expect(validate('Invalid Name')).toBe(t('prompts.viewName.validationMessages.viewNameInvalid'));
-            expect(validate('a'.repeat(121))).toBe(t('prompts.viewName.validationMessages.viewNameTooLong'));
-            expect(validate('ValidName')).toBe(true);
-            expect(validate('123')).toBe(t('prompts.viewName.validationMessages.viewNameInvalid')); // Must start with a letter
+            // validateViewName behaviour is tested in @sap-ux/project-input-validator/test/ui5-validators.test.ts
+            expect(getViewQuestion().validate).toBe(validateViewName);
         });
     });
 

@@ -2,9 +2,19 @@ import { jest } from '@jest/globals';
 import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types.js';
 import { PromptNames, AppDownloadType } from '../../src/app/types.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import { adtSourceTemplateId, generatorTitleConfig } from '../../src/utils/constants.js';
+import {
+    adtSourceTemplateId,
+    appListResultFields,
+    appListFieldsWithoutSourceTemplate,
+    generatorTitleConfig,
+    adtSourceTemplateIdCorrected,
+    sourceTemplateIdField
+} from '../../src/utils/constants.js';
 import { t } from '../../src/utils/i18n.js';
 import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
+
+const createAxiosError = (status: number, message: string): Error =>
+    Object.assign(new Error(message), { isAxiosError: true, response: { status } });
 
 jest.unstable_mockModule('../../src/utils/logger', () => {
     const mock = {
@@ -61,7 +71,7 @@ describe('fetchAppListForSelectedSystem', () => {
         expect(result).toEqual([]);
     });
 
-    it('should filter out ADT source template apps for AbapRepository download type', async () => {
+    it('should filter out ADT source template apps for AbapRepository download type on modern systems', async () => {
         const adtApp = { 'sap.app/sourceTemplate/id': adtSourceTemplateId, id: 'adt-app' };
         const regularApp = { 'sap.app/sourceTemplate/id': 'some/other/template', id: 'regular-app' };
         const noTemplateApp = { id: 'no-template-app' };
@@ -75,7 +85,71 @@ describe('fetchAppListForSelectedSystem', () => {
             undefined,
             AppDownloadType.AbapRepository
         );
+
+        expect(mockSearch).toHaveBeenCalledTimes(1);
+        expect(mockSearch).toHaveBeenCalledWith(expect.anything(), appListResultFields);
         expect(result).toEqual([regularApp, noTemplateApp]);
+    });
+
+    it('should retry without sourceTemplate/id and search params for AbapRepository download type on older systems (HTTP 400)', async () => {
+        const regularApp = { 'sap.app/id': 'regular-app', repoName: 'repo1', url: 'http://url' };
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
+        const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(mockSearch).toHaveBeenNthCalledWith(1, expect.anything(), appListResultFields);
+        expect(mockSearch).toHaveBeenNthCalledWith(2, {}, appListFieldsWithoutSourceTemplate);
+        expect(result).toEqual([regularApp]);
+    });
+
+    it('should return empty array and log error when retry also fails on older systems', async () => {
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
+        const retryError = new Error('Network failure');
+        const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockRejectedValueOnce(retryError);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.applicationListFetchError', { error: retryError.message })
+        );
+        expect(result).toEqual([]);
+    });
+
+    it('should not retry for AbapRepository when the error is not HTTP 400', async () => {
+        const unrelatedError = createAxiosError(500, 'Internal Server Error');
+        const mockSearch = jest.fn().mockRejectedValueOnce(unrelatedError);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(1);
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.applicationListFetchError', { error: unrelatedError.message })
+        );
+        expect(result).toEqual([]);
     });
 
     it('should log an error if getAppList throws an error', async () => {
@@ -89,6 +163,61 @@ describe('fetchAppListForSelectedSystem', () => {
             t('error.applicationListFetchError', { error: error.message })
         );
         expect(result).toEqual([]);
+    });
+
+    it('should include apps with corrected ADT source template ID in ADTQuickDeploy flow', async () => {
+        const legacyApp = { 'sap.app/id': 'legacy-app', [sourceTemplateIdField]: adtSourceTemplateId };
+        const correctedApp = { 'sap.app/id': 'corrected-app', [sourceTemplateIdField]: adtSourceTemplateIdCorrected };
+        const mockSearch = jest.fn().mockResolvedValueOnce([legacyApp]).mockResolvedValueOnce([correctedApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(result).toEqual([legacyApp, correctedApp]);
+    });
+
+    it('should deduplicate apps returned by both ADTQuickDeploy searches', async () => {
+        const app = { 'sap.app/id': 'shared-app', [sourceTemplateIdField]: adtSourceTemplateId };
+        const mockSearch = jest.fn().mockResolvedValue([app]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(result).toEqual([app]);
+    });
+
+    it('should filter out apps with corrected ADT source template ID from AbapRepository flow', async () => {
+        const correctedAdtApp = {
+            'sap.app/id': 'corrected-adt-app',
+            [sourceTemplateIdField]: adtSourceTemplateIdCorrected
+        };
+        const regularApp = { 'sap.app/id': 'regular-app', [sourceTemplateIdField]: 'some/other/template' };
+        const mockSearch = jest.fn().mockResolvedValue([correctedAdtApp, regularApp]);
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            undefined,
+            AppDownloadType.AbapRepository
+        );
+
+        expect(result).toEqual([regularApp]);
     });
 });
 

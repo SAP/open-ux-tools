@@ -1,0 +1,124 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 16,
+              "endOffset": 16
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "ValueList",
+                          "startOffset": 0,
+                          "endOffset": 8
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 8
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "entity",
+                          "startOffset": 10,
+                          "endOffset": 15
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 10,
+                      "endOffset": 15
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "tokenTypeName": "PathSegmentSeparator",
+                    "image": ".",
+                    "startOffset": 9,
+                    "endOffset": 9
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 15
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "path": [
+                  {
+                    "name": "path",
+                    "children": {
+                      "pathSegment": [
+                        {
+                          "name": "pathSegment",
+                          "children": {
+                            "Identifier": [
+                              {
+                                "tokenTypeName": "Identifier",
+                                "image": "SomeEntity",
+                                "startOffset": 18,
+                                "endOffset": 27
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 18,
+                            "endOffset": 27
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 18,
+                      "endOffset": 27
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 18,
+                "endOffset": 27
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 27
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 27
+  }
+}

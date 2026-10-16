@@ -1,5 +1,78 @@
 # @sap-ux/project-access
 
+## 2.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support `fallbackLocale` in i18n path resolution and bundle reading. `I18nPropertiesPaths` now includes optional `sap.app.fallbackLocale` and per-model `fallbackLocalePath` fields. `getI18nPropertiesPaths` extracts the fallback locale from `sap.app.i18n` and `sap.ui5.models[key].settings`. `getI18nBundles` merges fallback locale entries into the primary bundle so keys defined only in the fallback file no longer trigger a "not available" warning. New `createI18nEntriesAtPath` export allows writing to a caller-specified properties file path. [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 2.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+
+## 2.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.3 → 1.0.4
+
+## 2.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Features
+
+- Add resolveApplicationTitle to resolve app title from manifest and i18n [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
+## 2.1.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+
+## 2.1.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @ui5/manifest 1.88.0 → 1.89.0 [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/i18n 1.0.2 → 1.0.3
+
+## 2.1.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 2.1.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+
 ## 2.1.9
 
 ### Patch Changes

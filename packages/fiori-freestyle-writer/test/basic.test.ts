@@ -9,15 +9,19 @@ import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-jest.unstable_mockModule('read-pkg-up', () => ({
-    default: {
-        sync: jest.fn().mockReturnValue({
-            packageJson: {
-                name: 'mocked-package-name',
-                version: '9.9.9-mocked'
-            }
-        })
-    }
+jest.unstable_mockModule('read-package-up', () => ({
+    readPackageUp: jest.fn().mockResolvedValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    }),
+    readPackageUpSync: jest.fn().mockReturnValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    })
 }));
 
 const mockApplyCAPUpdates = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);

@@ -13,6 +13,8 @@ export type TelemetryHelperProperties = {
  * - internalFeature: if UX tooling InternalFeature is enabled
  * - watchTelemetrySettingStore: watch changes to telemetry setting in the store and update runtime settings accordingly (recommended for extensions)
  * - resourceId: Id of cloud telemetry resource (e.g. Azure application insights resource is supported).
+ * - ingestionEndpoint: override the default Azure App Insights regional ingestion endpoint.
+ * - liveEndpoint: override the default Azure App Insights regional live-metrics endpoint.
  *
  */
 export type ToolsSuiteTelemetryInitSettings = {
@@ -20,6 +22,8 @@ export type ToolsSuiteTelemetryInitSettings = {
     internalFeature: boolean;
     watchTelemetrySettingStore: boolean;
     resourceId?: string;
+    ingestionEndpoint?: string;
+    liveEndpoint?: string;
 };
 
 export enum ToolsId {

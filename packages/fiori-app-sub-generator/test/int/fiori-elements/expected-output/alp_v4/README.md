@@ -10,7 +10,7 @@
 |**Service URL**<br>https://sap-ux-mock-services-v4-alp.cfapps.us10.hana.ondemand.com/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/|
 |**Module Name**<br>alp_v4|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
-|**Namespace**<br>testNameSpace|
+|**Namespace**<br>testnamespace|
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.92.0|
 |**Enable TypeScript**<br>False|

@@ -8,7 +8,7 @@
     "appName": "worklist_v4",
     "appTitle": "Project's \"Title\"",
     "appDescription": "Test 'Project' \"Description\"",
-    "appNamespace": "testNameSpace",
+    "appNamespace": "testnamespace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.99.0",
     "showMockDataInfo": true,

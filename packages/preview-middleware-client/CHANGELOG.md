@@ -1,5 +1,117 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.26
+
+## 1.2.25
+
+## 1.2.24
+
+## 1.2.23
+
+## 1.2.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Bug Fixes
+
+- Resolved an issue where the "Add Subpage" quick action generated a page ID in an incorrect format for ODATA v4 applications. [[f9088c0](https://github.com/SAP/open-ux-tools/commit/f9088c07570be4fb6c2b5d72c97213cabeffde16)]
+
+## 1.2.21
+
+## 1.2.20
+
+## 1.2.19
+
+## 1.2.18
+
+## 1.2.17
+
+## 1.2.16
+
+## 1.2.15
+
+## 1.2.14
+
+## 1.2.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-15
+
+#### Bug Fixes
+
+- Add Subpage greyed out when multiple navigation properties target the same entity set [[fb8fd7a](https://github.com/SAP/open-ux-tools/commit/fb8fd7abaf0149663650b31c3010303e619e99f7)]
+
+## 1.2.12
+
+## 1.2.11
+
+## 1.2.10
+
+## 1.2.9
+
+## 1.2.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- Correct UI label texts in the controller extension dialog [[b19615c](https://github.com/SAP/open-ux-tools/commit/b19615cc5d3c846c9c38ade51a24c078a1c06060)]
+
+## 1.2.7
+
+## 1.2.6
+
+## 1.2.5
+
+## 1.2.4
+
+## 1.2.3
+
+## 1.2.2
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Features
+
+- Ability to create entity specific controller extensions [[57cb8f9](https://github.com/SAP/open-ux-tools/commit/57cb8f93bb625ca20a4a0096a4f7369bb1e3ec75)]
+
+## 1.2.0
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Register the ADP variant's changes namespace to the local dev server in FLP Sandbox 2.0 so flex-change resources (fragments, controller extensions) resolve locally instead of the backend, matching Sandbox 1 behaviour. [[6fac8d4](https://github.com/SAP/open-ux-tools/commit/6fac8d45439a76e078fd6e6f6964b05d797e411e)]
+
+## 1.1.3
+
+## 1.1.2
+
+## 1.1.1
+
+## 1.1.0
+
 ## 1.0.49
 
 ## 1.0.48

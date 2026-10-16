@@ -27,6 +27,8 @@ sap.ui.define([
         const defaultTableId = "";
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
 
             Then.onTheTravelListGenerated.iSeeThisPage();
@@ -43,27 +45,56 @@ sap.ui.define([
         //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField("Search Term");
         //     When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
         //     Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();
+        //     When.onTheTravelListGenerated.onFilterBar().iChangeSearchField(undefined);
+        //     Then.onTheTravelListGenerated.onFilterBar().iCheckSearchField(undefined);
         // });
 
-        opaTest("Check table columns and actions", function (Given, When, Then) {
+        opaTest("Check the create button", function (Given, When, Then) {
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckCreate({ visible: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressCreate();
+        });
+
+        opaTest("Check the delete button", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressDelete();
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
+        });
+
+        opaTest("Check the Draft Template action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Draft Template");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Draft Template", { enabled: true });
+        });
+
+        opaTest("Check the Active Template action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Active Template");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Active Template", { enabled: true });
+        });
+
+        opaTest("Check the Deduct Discount action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Deduct Discount");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Deduct Discount", { enabled: false });
+        });
+
+        opaTest("Check the Check Travel action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Check Travel");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Check Travel", { enabled: false });
+        });
+
+        opaTest("Check the Set To New action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Set To New");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Set To New", { enabled: false });
+        });
+
+        opaTest("Check the Set To Booked action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Set To Booked");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Set To Booked", { enabled: false });
+        });
+
+        opaTest("Check the Set Cancel Date to Tomorrow action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Set Cancel Date to Tomorrow");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Set Cancel Date to Tomorrow", { enabled: false });
+        });
+
+        opaTest("Check table columns", function (Given, When, Then) {
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {"TravelID":{"header":"Travel ID"},"AgencyID":{"header":"Agency ID"},"CustomerID":{"header":"Customer ID"},"BeginDate":{"header":"Starting Date"},"EndDate":{"header":"End Date"},"BookingFee":{"header":"Booking Fee"},"TotalPrice":{"header":"Total Price"},"LatestCancellationDate":{"header":"Latest Cancellation Date"},"Memo":{"header":"Description"},"Status":{"header":"Travel Status"}});
         });
 

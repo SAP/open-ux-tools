@@ -1,0 +1,2354 @@
+[{
+		"TaskSupports": {
+			"AddAttachments": false,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": false,
+			"Description": false,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": false,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": false,
+			"CancelResubmission": false,
+			"Confirm": true,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+
+		"SAP__Origin": "Q7D_004_TGW",
+		"InstanceID": "000001750567",
+		"TaskDefinitionID": "TS21500004",
+		"TaskDefinitionName": "Approve Credit Limit",
+		"TaskTitle": "Approve Credit Limit for Harry",
+		"Priority": "HIGH",
+		"Status": "READY",
+		"StatusText": "StatusText 1",
+		"CreatedOn": "/Date(1424149556000)/",
+		"CreatedBy": "CreatedBy 1",
+		"CreatedByName": "Vikram Rao",
+		"Processor": "Processor 1",
+		"ProcessorName": "ProcessorName 1",
+		"SubstitutedUser": "SubstitutedUser 1",
+		"SubstitutedUserName": "SubstitutedUserName 1",
+		"StartDeadLine": "/Date(1021352756000)/",
+		"CompletionDeadLine": "/Date(1440651722000)/",
+		"ExpiryDate": "/Date(1509253556000)/",
+		"IsEscalated": true,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "mime_type 1",
+		"PriorityNumber": 4,
+		"ScenarioID": "ScenarioID 1",
+		"ForwardingUser": "ForwardingUser 1",
+		"ForwardingUserName": "ForwardingUserName 1",
+		"CompletedOn": "/Date(1550466356000)/",
+		"ResumeOn": "/Date(947912756000)/",
+		"ForwardedOn": "/Date(1069995956000)/",
+		"ForwardedUser": "ForwardedUser 1",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": true,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": false,
+			"Description": false,
+			"PossibleAgents": false,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": false,
+			"TaskObject": false,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": true,
+			"Claim": false,
+			"Forward": true,
+			"Release": true,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "Q7D_004_TGW",
+		"InstanceID": "0000017505673",
+		"TaskDefinitionID": "TS21500006",
+		"TaskDefinitionName": "Approve Capital Expenditure",
+		"TaskTitle": "Approve Capital Expenditure",
+		"Priority": "VERY_HIGH",
+		"Status": "RESERVED",
+		"StatusText": "StatusText 2",
+		"CreatedOn": "/Date(1214283956000)/",
+		"CreatedBy": "CreatedBy 2",
+		"CreatedByName": "CreatedByName 2",
+		"Processor": "Processor 2",
+		"ProcessorName": "ProcessorName 2",
+		"SubstitutedUser": "SubstitutedUser 2",
+		"SubstitutedUserName": "SubstitutedUserName 2",
+		"StartDeadLine": "/Date(964242356000)/",
+		"CompletionDeadLine": "/Date(1552021556000)/",
+		"ExpiryDate": "/Date(1416373556000)/",
+		"IsEscalated": true,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": false,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "mime_type 2",
+		"PriorityNumber": 1,
+		"ScenarioID": "ScenarioID 2",
+		"ForwardingUser": "ForwardingUser 2",
+		"ForwardingUserName": "ForwardingUserName 2",
+		"CompletedOn": "/Date(1123477556000)/",
+		"ResumeOn": "/Date(1356066356000)/",
+		"ForwardedOn": "/Date(1162011956000)/",
+		"ForwardedUser": "ForwardedUser 2",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 2',InstanceID='InstanceID 2')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": false,
+			"CreatedByDetails": false,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": false,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": false,
+			"TaskObject": true,
+			"UIExecutionLink": false,
+			"CancelResubmission": true,
+			"Confirm": true,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": false
+		},
+		"SAP__Origin": "Q7D_004_TGW",
+		"InstanceID": "0000017505675",
+		"TaskDefinitionID": "TS02700002",
+		"TaskDefinitionName": "Leave Request",
+		"TaskTitle": "Process Leave Request for Hari",
+		"Priority": "LOW",
+		"Status": "READY",
+		"StatusText": "StatusText 3",
+		"CreatedOn": "/Date(1158987956000)/",
+		"CreatedBy": "CreatedBy 3",
+		"CreatedByName": "Vijay Rao",
+		"Processor": "Processor 3",
+		"ProcessorName": "ProcessorName 3",
+		"SubstitutedUser": "SubstitutedUser 3",
+		"SubstitutedUserName": "SubstitutedUserName 3",
+		"StartDeadLine": "/Date(1249189556000)/",
+		"CompletionDeadLine": "/Date(1177650356000)/",
+		"ExpiryDate": "/Date(1420866356000)/",
+		"IsEscalated": false,
+		"SupportsComments": false,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": false,
+		"SupportsClaim": false,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "mime_type 3",
+		"PriorityNumber": 6,
+		"ScenarioID": "ScenarioID 3",
+		"ForwardingUser": "ForwardingUser 3",
+		"ForwardingUserName": "ForwardingUserName 3",
+		"CompletedOn": "/Date(1109048756000)/",
+		"ResumeOn": "/Date(1428123956000)/",
+		"ForwardedOn": "/Date(1449205556000)/",
+		"ForwardedUser": "ForwardedUser 3",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='0000017505675')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": false,
+			"CreatedByDetails": true,
+			"CustomAttributeData": false,
+			"Description": false,
+			"PossibleAgents": true,
+			"PotentialOwners": false,
+			"ProcessingLogs": false,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": false,
+			"TaskObject": false,
+			"UIExecutionLink": false,
+			"CancelResubmission": false,
+			"Confirm": true,
+			"Claim": false,
+			"Forward": true,
+			"Release": true,
+			"Resubmit": false,
+			"SetPriority": false
+		},
+		"SAP__Origin": "Q7D_004_TGW",
+		"InstanceID": "000001750569",
+		"TaskDefinitionID": "TS02700001",
+		"TaskDefinitionName": "Employee Leaves",
+		"TaskTitle": "Approve Leave Request for Sheetal",
+		"Priority": "MEDIUM",
+		"Status": "READY",
+		"StatusText": "StatusText 4",
+		"CreatedOn": "/Date(1321765556000)/",
+		"CreatedBy": "CreatedBy 4",
+		"CreatedByName": "Payal Singh",
+		"Processor": "Processor 4",
+		"ProcessorName": "ProcessorName 4",
+		"SubstitutedUser": "SubstitutedUser 4",
+		"SubstitutedUserName": "SubstitutedUserName 4",
+		"StartDeadLine": "/Date(1068008756000)/",
+		"CompletionDeadLine": "/Date(1035781556000)/",
+		"ExpiryDate": "/Date(1197867956000)/",
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": false,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": true,
+		"SupportsClaim": false,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "mime_type 4",
+		"PriorityNumber": 5,
+		"ScenarioID": "ScenarioID 4",
+		"ForwardingUser": "ForwardingUser 4",
+		"ForwardingUserName": "ForwardingUserName 4",
+		"CompletedOn": "/Date(1321592756000)/",
+		"ResumeOn": "/Date(1430715956000)/",
+		"ForwardedOn": "/Date(1138856756000)/",
+		"ForwardedUser": "ForwardedUser 4",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750569')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": false,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": false,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": false,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": false,
+			"UIExecutionLink": true,
+			"CancelResubmission": true,
+			"Confirm": false,
+			"Claim": false,
+			"Forward": false,
+			"Release": true,
+			"Resubmit": false,
+			"SetPriority": true
+		},
+		"SAP__Origin": "SAP__Origin 5",
+		"InstanceID": "InstanceID 5",
+		"TaskDefinitionID": "TaskDefinitionID 5",
+		"TaskDefinitionName": "TaskDefinitionName 5",
+		"TaskTitle": "TaskTitle 5",
+		"Priority": "Priority 5",
+		"Status": "Status 5",
+		"StatusText": "StatusText 5",
+		"CreatedOn": "/Date(1152421556000)/",
+		"CreatedBy": "CreatedBy 5",
+		"CreatedByName": "CreatedByName 5",
+		"Processor": "Processor 5",
+		"ProcessorName": "ProcessorName 5",
+		"SubstitutedUser": "SubstitutedUser 5",
+		"SubstitutedUserName": "SubstitutedUserName 5",
+		"StartDeadLine": "/Date(953355956000)/",
+		"CompletionDeadLine": "/Date(1560834356000)/",
+		"ExpiryDate": "/Date(1358312756000)/",
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": false,
+		"SupportsAttachments": false,
+		"HasAttachments": false,
+		"HasPotentialOwners": false,
+		"SupportsClaim": true,
+		"SupportsRelease": true,
+		"SupportsForward": true,
+		"mime_type": "mime_type 5",
+		"PriorityNumber": 8084,
+		"ScenarioID": "ScenarioID 5",
+		"ForwardingUser": "ForwardingUser 5",
+		"ForwardingUserName": "ForwardingUserName 5",
+		"CompletedOn": "/Date(1373864756000)/",
+		"ResumeOn": "/Date(1311224756000)/",
+		"ForwardedOn": "/Date(1384059956000)/",
+		"ForwardedUser": "ForwardedUser 5",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 5',InstanceID='InstanceID 5')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": true,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": false,
+			"CreatedByDetails": false,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": false,
+			"PotentialOwners": false,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": false,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": true,
+			"Claim": false,
+			"Forward": true,
+			"Release": true,
+			"Resubmit": false,
+			"SetPriority": true
+		},
+		"SAP__Origin": "SAP__Origin 6",
+		"InstanceID": "InstanceID 6",
+		"TaskDefinitionID": "TaskDefinitionID 6",
+		"TaskDefinitionName": "TaskDefinitionName 6",
+		"TaskTitle": "TaskTitle 6",
+		"Priority": "Priority 6",
+		"Status": "Status 6",
+		"StatusText": "StatusText 6",
+		"CreatedOn": "/Date(1294463156000)/",
+		"CreatedBy": "CreatedBy 6",
+		"CreatedByName": "CreatedByName 6",
+		"Processor": "Processor 6",
+		"ProcessorName": "ProcessorName 6",
+		"SubstitutedUser": "SubstitutedUser 6",
+		"SubstitutedUserName": "SubstitutedUserName 6",
+		"StartDeadLine": "/Date(1508648756000)/",
+		"CompletionDeadLine": "/Date(1500613556000)/",
+		"ExpiryDate": "/Date(1497848756000)/",
+		"IsEscalated": true,
+		"SupportsComments": false,
+		"HasComments": false,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": false,
+		"SupportsClaim": false,
+		"SupportsRelease": true,
+		"SupportsForward": true,
+		"mime_type": "mime_type 6",
+		"PriorityNumber": 2144,
+		"ScenarioID": "ScenarioID 6",
+		"ForwardingUser": "ForwardingUser 6",
+		"ForwardingUserName": "ForwardingUserName 6",
+		"CompletedOn": "/Date(1362891956000)/",
+		"ResumeOn": "/Date(1028523956000)/",
+		"ForwardedOn": "/Date(1077512756000)/",
+		"ForwardedUser": "ForwardedUser 6",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 6',InstanceID='InstanceID 6')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": false,
+			"AddComments": false,
+			"Attachments": false,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": false,
+			"Description": false,
+			"PossibleAgents": false,
+			"PotentialOwners": false,
+			"ProcessingLogs": true,
+			"ProcessorDetails": false,
+			"TaskDefinitionData": false,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": true,
+			"Confirm": true,
+			"Claim": false,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "SAP__Origin 7",
+		"InstanceID": "InstanceID 7",
+		"TaskDefinitionID": "TaskDefinitionID 7",
+		"TaskDefinitionName": "TaskDefinitionName 7",
+		"TaskTitle": "TaskTitle 7",
+		"Priority": "Priority 7",
+		"Status": "Status 7",
+		"StatusText": "StatusText 7",
+		"CreatedOn": "/Date(1295845556000)/",
+		"CreatedBy": "CreatedBy 7",
+		"CreatedByName": "CreatedByName 7",
+		"Processor": "Processor 7",
+		"ProcessorName": "ProcessorName 7",
+		"SubstitutedUser": "SubstitutedUser 7",
+		"SubstitutedUserName": "SubstitutedUserName 7",
+		"StartDeadLine": "/Date(1193202356000)/",
+		"CompletionDeadLine": "/Date(1563253556000)/",
+		"ExpiryDate": "/Date(1278651956000)/",
+		"IsEscalated": false,
+		"SupportsComments": false,
+		"HasComments": false,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": false,
+		"SupportsClaim": false,
+		"SupportsRelease": false,
+		"SupportsForward": false,
+		"mime_type": "mime_type 7",
+		"PriorityNumber": 9357,
+		"ScenarioID": "ScenarioID 7",
+		"ForwardingUser": "ForwardingUser 7",
+		"ForwardingUserName": "ForwardingUserName 7",
+		"CompletedOn": "/Date(1228107956000)/",
+		"ResumeOn": "/Date(1404968756000)/",
+		"ForwardedOn": "/Date(1270443956000)/",
+		"ForwardedUser": "ForwardedUser 7",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 7',InstanceID='InstanceID 7')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": false,
+			"AddComments": true,
+			"Attachments": false,
+			"Comments": false,
+			"CreatedByDetails": false,
+			"CustomAttributeData": false,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": false,
+			"ProcessingLogs": true,
+			"ProcessorDetails": false,
+			"TaskDefinitionData": true,
+			"TaskObject": false,
+			"UIExecutionLink": false,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": false,
+			"Release": true,
+			"Resubmit": false,
+			"SetPriority": true
+		},
+		"SAP__Origin": "SAP__Origin 8",
+		"InstanceID": "InstanceID 8",
+		"TaskDefinitionID": "TaskDefinitionID 8",
+		"TaskDefinitionName": "TaskDefinitionName 8",
+		"TaskTitle": "TaskTitle 8",
+		"Priority": "Priority 8",
+		"Status": "Status 8",
+		"StatusText": "StatusText 8",
+		"CreatedOn": "/Date(1140152756000)/",
+		"CreatedBy": "CreatedBy 8",
+		"CreatedByName": "CreatedByName 8",
+		"Processor": "Processor 8",
+		"ProcessorName": "ProcessorName 8",
+		"SubstitutedUser": "SubstitutedUser 8",
+		"SubstitutedUserName": "SubstitutedUserName 8",
+		"StartDeadLine": "/Date(998024756000)/",
+		"CompletionDeadLine": "/Date(1459400756000)/",
+		"ExpiryDate": "/Date(1503119156000)/",
+		"IsEscalated": true,
+		"SupportsComments": true,
+		"HasComments": false,
+		"SupportsAttachments": false,
+		"HasAttachments": true,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": true,
+		"SupportsForward": true,
+		"mime_type": "mime_type 8",
+		"PriorityNumber": 437,
+		"ScenarioID": "ScenarioID 8",
+		"ForwardingUser": "ForwardingUser 8",
+		"ForwardingUserName": "ForwardingUserName 8",
+		"CompletedOn": "/Date(1181106356000)/",
+		"ResumeOn": "/Date(1456203956000)/",
+		"ForwardedOn": "/Date(1085720756000)/",
+		"ForwardedUser": "ForwardedUser 8",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 8',InstanceID='InstanceID 8')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": false,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": false,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": false,
+			"PossibleAgents": true,
+			"PotentialOwners": false,
+			"ProcessingLogs": false,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": true,
+			"Claim": true,
+			"Forward": false,
+			"Release": false,
+			"Resubmit": false,
+			"SetPriority": false
+		},
+		"SAP__Origin": "SAP__Origin 9",
+		"InstanceID": "InstanceID 9",
+		"TaskDefinitionID": "TaskDefinitionID 9",
+		"TaskDefinitionName": "TaskDefinitionName 9",
+		"TaskTitle": "TaskTitle 9",
+		"Priority": "Priority 9",
+		"Status": "Status 9",
+		"StatusText": "StatusText 9",
+		"CreatedOn": "/Date(1046667956000)/",
+		"CreatedBy": "CreatedBy 9",
+		"CreatedByName": "CreatedByName 9",
+		"Processor": "Processor 9",
+		"ProcessorName": "ProcessorName 9",
+		"SubstitutedUser": "SubstitutedUser 9",
+		"SubstitutedUserName": "SubstitutedUserName 9",
+		"StartDeadLine": "/Date(1531890356000)/",
+		"CompletionDeadLine": "/Date(1491109556000)/",
+		"ExpiryDate": "/Date(1155186356000)/",
+		"IsEscalated": true,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": false,
+		"SupportsClaim": false,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "mime_type 9",
+		"PriorityNumber": 2669,
+		"ScenarioID": "ScenarioID 9",
+		"ForwardingUser": "ForwardingUser 9",
+		"ForwardingUserName": "ForwardingUserName 9",
+		"CompletedOn": "/Date(1341810356000)/",
+		"ResumeOn": "/Date(1071464756000)/",
+		"ForwardedOn": "/Date(1367039156000)/",
+		"ForwardedUser": "ForwardedUser 9",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 9',InstanceID='InstanceID 9')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"AddAttachments": false,
+			"AddComments": true,
+			"Attachments": false,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": false,
+			"Description": false,
+			"PossibleAgents": true,
+			"PotentialOwners": false,
+			"ProcessingLogs": false,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": false,
+			"TaskObject": false,
+			"UIExecutionLink": false,
+			"CancelResubmission": true,
+			"Confirm": false,
+			"Claim": false,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": false,
+			"SetPriority": true
+		},
+		"SAP__Origin": "SAP__Origin 10",
+		"InstanceID": "InstanceID 10",
+		"TaskDefinitionID": "TaskDefinitionID 10",
+		"TaskDefinitionName": "TaskDefinitionName 10",
+		"TaskTitle": "TaskTitle 10",
+		"Priority": "Priority 10",
+		"Status": "Status 10",
+		"StatusText": "StatusText 10",
+		"CreatedOn": "/Date(1038114356000)/",
+		"CreatedBy": "CreatedBy 10",
+		"CreatedByName": "CreatedByName 10",
+		"Processor": "Processor 10",
+		"ProcessorName": "ProcessorName 10",
+		"SubstitutedUser": "SubstitutedUser 10",
+		"SubstitutedUserName": "SubstitutedUserName 10",
+		"StartDeadLine": "/Date(952319156000)/",
+		"CompletionDeadLine": "/Date(1155531956000)/",
+		"ExpiryDate": "/Date(1053147956000)/",
+		"IsEscalated": true,
+		"SupportsComments": true,
+		"HasComments": false,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": false,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": false,
+		"mime_type": "mime_type 10",
+		"PriorityNumber": 8375,
+		"ScenarioID": "ScenarioID 10",
+		"ForwardingUser": "ForwardingUser 10",
+		"ForwardingUserName": "ForwardingUserName 10",
+		"CompletedOn": "/Date(1348031156000)/",
+		"ResumeOn": "/Date(1411016756000)/",
+		"ForwardedOn": "/Date(988520756000)/",
+		"ForwardedUser": "ForwardedUser 10",
+		"__metadata": {
+			"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')",
+			"type": "TASKPROCESSING.Task"
+		},
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "TaskCollection(SAP__Origin='SAP__Origin 10',InstanceID='InstanceID 10')/TaskObjects"
+			}
+		}
+	},
+
+	{
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "000000457714",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of purchase order",
+		"TaskTitle": "Please release purchase order 4500010210",
+		"Priority": "MEDIUM",
+		"Status": "READY",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "ANANDM",
+		"ForwardingUserName": "ANANDM",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000457714')/TaskObjects"
+			}
+		}
+
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "000000455959",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of purchase order",
+		"TaskTitle": "Please release purchase order 4500010839",
+		"Priority": "MEDIUM",
+		"Status": "READY",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": true,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "MIUSER9",
+		"ForwardingUserName": "User 9 My Inbox",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455959')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": true,
+			"Attachments": true,
+			"Comments": false,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "000000461240",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of purchase order",
+		"TaskTitle": "Please release purchase order 4500010815",
+		"Priority": "MEDIUM",
+		"Status": "READY",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000461240')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "000000455327",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of purchase order",
+		"TaskTitle": "Please release purchase order 4500010126",
+		"Priority": "MEDIUM",
+		"Status": "READY",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='000000455327')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "0000004553271",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of purchase order",
+		"TaskTitle": "Please release purchase order 45",
+		"Priority": "LOW",
+		"Status": "COMPLETED",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "Aditya",
+		"CreatedByName": "Aditya Kumar",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553271')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": false,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "0000004553278",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of purchase order",
+		"TaskTitle": "Please release purchase order 4500010126",
+		"Priority": "MEDIUM",
+		"Status": "COMPLETED",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553278')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": true,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "00000045532789",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Release of supply order",
+		"TaskTitle": "Please release supply order 7789126",
+		"Priority": "MEDIUM",
+		"Status": "FOR_RESUBMISSION",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 5,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532789')/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": true,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "0000004553",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Shipment of Purchase Order",
+		"TaskTitle": "Shipment order number : 3746872",
+		"Priority": "HIGH",
+		"Status": "FOR_RESUBMISSION",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 4,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='0000004553')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045532)/TaskObjects"
+			}
+		}
+	}, {
+		"TaskSupports": {
+			"__metadata": {
+				"type": "TASKPROCESSING.TaskSupports"
+			},
+			"AddAttachments": true,
+			"AddComments": false,
+			"Attachments": true,
+			"Comments": true,
+			"CreatedByDetails": true,
+			"CustomAttributeData": true,
+			"Description": true,
+			"PossibleAgents": true,
+			"PotentialOwners": true,
+			"ProcessingLogs": true,
+			"ProcessorDetails": true,
+			"TaskDefinitionData": true,
+			"TaskObject": true,
+			"UIExecutionLink": true,
+			"CancelResubmission": true,
+			"Confirm": false,
+			"Claim": true,
+			"Forward": true,
+			"Release": false,
+			"Resubmit": true,
+			"SetPriority": true
+		},
+		"SAP__Origin": "QE4_910_TGW",
+		"InstanceID": "00000045531",
+		"TaskDefinitionID": "TS20000166",
+		"TaskDefinitionName": "Shipment of Purchase Order",
+		"TaskTitle": "Shipment order number : 900",
+		"Priority": "HIGH",
+		"Status": "FOR_RESUBMISSION",
+		"StatusText": "",
+		"CreatedOn": "\/Date(1158987956000)\/",
+		"CreatedBy": "WF-BATCH",
+		"CreatedByName": "Workflow System",
+		"Processor": "",
+		"ProcessorName": "",
+		"SubstitutedUser": "",
+		"SubstitutedUserName": "",
+		"StartDeadLine": null,
+		"CompletionDeadLine": null,
+		"ExpiryDate": null,
+		"IsEscalated": false,
+		"SupportsComments": true,
+		"HasComments": true,
+		"SupportsAttachments": true,
+		"HasAttachments": false,
+		"HasPotentialOwners": true,
+		"SupportsClaim": true,
+		"SupportsRelease": false,
+		"SupportsForward": true,
+		"mime_type": "",
+		"PriorityNumber": 4,
+		"ScenarioID": "",
+		"ForwardingUser": "",
+		"ForwardingUserName": "",
+		"CompletedOn": null,
+		"ResumeOn": null,
+		"ForwardedOn": null,
+		"ForwardedUser": "",
+		"TaskDefinitionData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/TaskDefinitionData"
+			}
+		},
+		"Description": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/Description"
+			}
+		},
+		"UIExecutionLink": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/UIExecutionLink"
+			}
+		},
+		"CustomAttributeData": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/CustomAttributeData"
+			}
+		},
+		"Comments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/Comments"
+			}
+		},
+		"Attachments": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/Attachments"
+			}
+		},
+		"CreatedByDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/CreatedByDetails"
+			}
+		},
+		"ProcessorDetails": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/ProcessorDetails"
+			}
+		},
+		"PossibleAgents": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/PossibleAgents"
+			}
+		},
+		"PotentialOwners": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/PotentialOwners"
+			}
+		},
+		"ProcessingLogs": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/ProcessingLogs"
+			}
+		},
+		"TaskObjects": {
+			"__deferred": {
+				"uri": "http://localhost:8080/uilib-sample/proxy/https/wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/TaskCollection(SAP__Origin='QE4_910_TGW',InstanceID='00000045531')/TaskObjects"
+			}
+		}
+	}
+
+]

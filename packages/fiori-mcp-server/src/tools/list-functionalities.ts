@@ -10,39 +10,37 @@ import type { Parser } from '@sap/ux-specification';
  *
  * @param params - The input parameters for listing functionalities.
  * @param params.appPath - The path to the application.
- * @returns A promise that resolves to either a ListFunctionalitiesOutput object or an error message string.
+ * @returns A promise that resolves to a ListFunctionalitiesOutput object.
  */
-export async function listFunctionalities(
-    params: ListFunctionalitiesInput
-): Promise<ListFunctionalitiesOutput | string> {
+export async function listFunctionalities(params: ListFunctionalitiesInput): Promise<ListFunctionalitiesOutput> {
     const { appPath } = params;
+    if (!appPath?.trim()) {
+        throw new Error('appPath parameter is required');
+    }
+
     let functionalities: Functionality[] = [];
-    try {
-        // If we need dynamic handlers then we can add additional method in interface of FUNCTIONALITIES_HANDLERS
-        for (const functionality of FUNCTIONALITIES_DETAILS) {
-            functionalities.push({
-                functionalityId: functionality.functionalityId,
-                description: functionality.description
-            });
-        }
-        const project = await resolveApplication(appPath);
-        const apps = project?.applicationAccess?.project.apps ?? {};
-        if (project?.applicationAccess && Object.keys(apps).length) {
-            const { applicationAccess } = project;
-            const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
-            const application = await ftfsFileIo.getApplicationModel();
-            if (application) {
-                functionalities = functionalities.concat(await getAppFunctionalities(applicationAccess, application));
-                const pages = Object.keys(application?.pages ?? {});
-                for (const pageId of pages) {
-                    functionalities = functionalities.concat(
-                        await getPageFunctionalities(applicationAccess, application, pageId)
-                    );
-                }
+    // If we need dynamic handlers then we can add additional method in interface of FUNCTIONALITIES_HANDLERS
+    for (const functionality of FUNCTIONALITIES_DETAILS) {
+        functionalities.push({
+            functionalityId: functionality.functionalityId,
+            description: functionality.description
+        });
+    }
+    const project = await resolveApplication(appPath);
+    const apps = project?.applicationAccess?.project.apps ?? {};
+    if (project?.applicationAccess && Object.keys(apps).length) {
+        const { applicationAccess } = project;
+        const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
+        const application = await ftfsFileIo.getApplicationModel();
+        if (application) {
+            functionalities = functionalities.concat(await getAppFunctionalities(applicationAccess, application));
+            const pages = Object.keys(application?.pages ?? {});
+            for (const pageId of pages) {
+                functionalities = functionalities.concat(
+                    await getPageFunctionalities(applicationAccess, application, pageId)
+                );
             }
         }
-    } catch (error) {
-        return `Error while trying to list functionalities: ${error.message}`;
     }
     return {
         applicationPath: appPath,

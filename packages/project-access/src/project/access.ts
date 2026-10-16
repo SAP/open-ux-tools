@@ -21,7 +21,8 @@ import {
     createCapI18nEntries,
     createManifestI18nEntries,
     createUI5I18nEntries,
-    createAnnotationI18nEntries
+    createAnnotationI18nEntries,
+    createI18nEntriesAtPath
 } from './i18n/index.js';
 
 import { getProject } from './info.js';
@@ -142,6 +143,18 @@ class ApplicationAccessImp implements ApplicationAccess {
      */
     createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[]): Promise<boolean> {
         return createCapI18nEntries(this.project.root, filePath, newI18nEntries, this.options?.fs);
+    }
+
+    /**
+     * Maintains new translation entries at a specific i18n properties file path.
+     * Use this when the target file is already known (e.g. chosen by the user from a picker).
+     *
+     * @param filePath absolute path to the target `.properties` file
+     * @param newEntries translation entries to write
+     * @returns boolean or exception
+     */
+    createI18nEntriesAtPath(filePath: string, newEntries: NewI18nEntry[]): Promise<boolean> {
+        return createI18nEntriesAtPath(this.project.root, filePath, newEntries, this.options?.fs);
     }
 
     /**

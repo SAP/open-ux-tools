@@ -5,14 +5,19 @@ import {
     getElementAttributeValue,
     toFullyQualifiedName,
     parseIdentifier,
-    ELEMENT_TYPE,
     getElementAttribute,
     toFullyQualifiedPath,
     parsePath
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
-import { UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
+import {
+    UI_FIELD_GROUP,
+    UI_LINE_ITEM,
+    UI_CHART,
+    UI_DATA_FIELD_FOR_ANNOTATION,
+    UI_COLLECTION_FACET
+} from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -58,7 +63,10 @@ export type HeaderSectionNode = AnnotationBasedNode<'header-section', FieldGroup
 export type TableNode = AnnotationBasedNode<'table'>;
 export type FieldGroupNode = AnnotationBasedNode<'field-group'>;
 
-export type AnnotationNode = TableSectionNode | TableNode | HeaderSectionNode | FieldGroupNode;
+// NOSONAR - ChartNode provides semantic meaning for code readability
+export type ChartNode = AnnotationBasedNode<'chart'>;
+
+export type AnnotationNode = TableSectionNode | TableNode | HeaderSectionNode | FieldGroupNode | ChartNode;
 export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
@@ -89,6 +97,64 @@ export function collectTables(feVersion: 'v2' | 'v4', entityType: string, servic
 }
 
 /**
+ * Extracts nested facet records from a CollectionFacet's Facets property.
+ *
+ * @param record - The CollectionFacet element
+ * @returns Array of nested record elements
+ */
+function getCollectionFacetRecords(record: Element): Element[] {
+    const facetsPropValue = getPropertyValueElement(record, 'Facets');
+    if (facetsPropValue) {
+        const [nestedCollection] = elementsWithName(Edm.Collection, facetsPropValue);
+        if (nestedCollection) {
+            return elementsWithName(Edm.Record, nestedCollection);
+        }
+    }
+    return [];
+}
+
+/**
+ * Recursively collects table sections from facet records, traversing nested CollectionFacets at any depth.
+ *
+ * @param records - Facet records to process
+ * @param aliasInfo - Alias information for resolving namespaces
+ * @param entityType - Entity type name
+ * @param service - Parsed OData service
+ * @param facets - The root Facets annotation
+ * @param index - Index of the enclosing top-level facet record
+ * @param sections - Accumulator for collected table section nodes
+ */
+function collectTableSectionsFromRecords(
+    records: Element[],
+    aliasInfo: AliasInformation,
+    entityType: string,
+    service: ParsedService,
+    facets: IndexedAnnotation,
+    index: number,
+    sections: TableSectionNode[]
+): void {
+    for (const record of records) {
+        const type = getRecordType(aliasInfo, record);
+        if (type === UI_COLLECTION_FACET) {
+            collectTableSectionsFromRecords(
+                getCollectionFacetRecords(record),
+                aliasInfo,
+                entityType,
+                service,
+                facets,
+                index,
+                sections
+            );
+        } else {
+            const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
+            if (section?.type === 'table-section') {
+                sections.push(section);
+            }
+        }
+    }
+}
+
+/**
  * Collects object page table sections.
  *
  * @param entityType - Entity type name
@@ -108,14 +174,9 @@ function getOPTableSections(entityType: string, service: ParsedService): TableSe
     }
     const records = elementsWithName(Edm.Record, collection);
     const aliasInfo = service.artifacts.aliasInfo[facets.top.uri];
-    let index = 0;
-    for (const record of records) {
-        const section = processReferenceFacetRecord(record, aliasInfo, entityType, service, facets, index);
-        if (section?.type === 'table-section') {
-            sections.push(section);
-        }
-        index++;
-    }
+    records.forEach((record, index) => {
+        collectTableSectionsFromRecords([record], aliasInfo, entityType, service, facets, index, sections);
+    });
     return sections;
 }
 
@@ -176,10 +237,144 @@ export function collectSections(
     return sections;
 }
 
+/**
+ * Resolves an annotation path string to a `ChartNode` if it points to a `UI.Chart` annotation.
+ *
+ * @param entityType - The entity type from which the path is relative.
+ * @param annotationPath - The raw annotation path (e.g. `to_History/@UI.Chart#MicroChart`).
+ * @param aliasInfo - Alias information for resolving namespace prefixes.
+ * @param service - The parsed OData service.
+ * @returns A `ChartNode` if the path resolves to a `UI.Chart`, or `undefined` otherwise.
+ */
+function resolveChartAnnotation(
+    entityType: string,
+    annotationPath: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService
+): ChartNode | undefined {
+    const fullyQualifiedPath = toFullyQualifiedPath(
+        aliasInfo.aliasMap,
+        '',
+        parsePath(`/${entityType}/${annotationPath}`)
+    );
+    const atIdx = fullyQualifiedPath.indexOf('@');
+    if (atIdx === -1) {
+        return undefined;
+    }
+    const [term, qualifier] = fullyQualifiedPath.substring(atIdx + 1).split('#');
+    if (term !== UI_CHART) {
+        return undefined;
+    }
+    const referencedEntityType = getReferencedEntityType(aliasInfo, entityType, annotationPath, service);
+    if (!referencedEntityType) {
+        return undefined;
+    }
+    const indexKey = buildAnnotationIndexKey(referencedEntityType, UI_CHART);
+    const indexedAnnotation = service.index.annotations[indexKey]?.[qualifier ?? 'undefined'];
+    if (!indexedAnnotation) {
+        return undefined;
+    }
+    return {
+        type: 'chart',
+        annotation: indexedAnnotation,
+        annotationPath: toFullyQualifiedPath(
+            aliasInfo.aliasMap,
+            aliasInfo.currentFileNamespace,
+            parsePath(annotationPath)
+        ),
+        children: []
+    };
+}
+
+/**
+ * Inspects a single record from a `UI.LineItem` collection and, if it is a
+ * `DataFieldForAnnotation` whose `Target` resolves to `UI.Chart`, pushes a
+ * `ChartNode` onto `charts` (deduped by annotation identity).
+ *
+ * @param record - The `Edm.Record` element to inspect.
+ * @param entityType - The entity type from which the annotation path is relative.
+ * @param aliasInfo - Alias information for namespace resolution.
+ * @param service - The parsed OData service.
+ * @param charts - Accumulator for collected chart nodes.
+ */
+function collectChartFromLineItemRecord(
+    record: Element,
+    entityType: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService,
+    charts: ChartNode[]
+): void {
+    if (getRecordType(aliasInfo, record) !== UI_DATA_FIELD_FOR_ANNOTATION) {
+        return;
+    }
+    const path = getTargetAnnotationPath(record);
+    if (!path) {
+        return;
+    }
+    const chartNode = resolveChartAnnotation(entityType, path, aliasInfo, service);
+    if (chartNode && !charts.some((c) => c.annotation === chartNode.annotation)) {
+        charts.push(chartNode);
+    }
+}
+
+/**
+ * Collects chart nodes referenced from a `UI.LineItem` table annotation via
+ * `DataFieldForAnnotation.Target` → `UI.Chart`.
+ *
+ * @param tableNode - The table annotation node (from `page.lookup['table']`).
+ * @param service - The parsed OData service.
+ * @returns Array of chart nodes referenced from the table.
+ */
+export function collectChartsFromTableNode(tableNode: TableNode, service: ParsedService): ChartNode[] {
+    const charts: ChartNode[] = [];
+    const entityType = tableNode.annotation.target;
+    const [collection] = elementsWithName(Edm.Collection, tableNode.annotation.top.value);
+    if (!collection) {
+        return charts;
+    }
+    const aliasInfo = service.artifacts.aliasInfo[tableNode.annotation.top.uri];
+    for (const record of elementsWithName(Edm.Record, collection)) {
+        collectChartFromLineItemRecord(record, entityType, aliasInfo, service, charts);
+    }
+    return charts;
+}
+
+/**
+ * Collects chart nodes referenced from a `UI.FieldGroup` annotation via the `Data` collection's
+ * `DataFieldForAnnotation.Target` → `UI.Chart`.
+ *
+ * @param fieldGroupNode - The field group annotation node (from `page.lookup['field-group']`).
+ * @param service - The parsed OData service.
+ * @returns Array of chart nodes referenced from the field group.
+ */
+export function collectChartsFromFieldGroupNode(fieldGroupNode: FieldGroupNode, service: ParsedService): ChartNode[] {
+    const charts: ChartNode[] = [];
+    const entityType = fieldGroupNode.annotation.target;
+    const [record] = elementsWithName(Edm.Record, fieldGroupNode.annotation.top.value);
+    if (!record) {
+        return charts;
+    }
+    const dataPropertyValue = elementsWithName(Edm.PropertyValue, record).find(
+        (pv) => getElementAttributeValue(pv, Edm.Property) === 'Data'
+    );
+    if (!dataPropertyValue) {
+        return charts;
+    }
+    const [collection] = elementsWithName(Edm.Collection, dataPropertyValue);
+    if (!collection) {
+        return charts;
+    }
+    const aliasInfo = service.artifacts.aliasInfo[fieldGroupNode.annotation.top.uri];
+    for (const dataRecord of elementsWithName(Edm.Record, collection)) {
+        collectChartFromLineItemRecord(dataRecord, entityType, aliasInfo, service, charts);
+    }
+    return charts;
+}
+
 const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
     content.find((c) => (c as Element).name === name);
 
-const getElementText = (element: ElementChild): string | undefined =>
+export const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content?.find((c) => c.type === 'text')?.text;
 
 /**
@@ -411,59 +606,55 @@ export function getRecordType(aliasInfo: AliasInformation, element: Element): st
 }
 
 /**
- * Returns AnnotationPath property value.
+ * Returns the PropertyValue child element of a record for the given property name.
  *
- * @param record -The record element
- * @returns - Annotation path string
+ * @param record - The record element to search in
+ * @param propertyName - The value of the Property attribute to be matched (such as 'Target', 'ID', 'Facets')
+ * @returns The matching PropertyValue element, or undefined
  */
-function getTargetAnnotationPath(record: Element): string | undefined {
-    const target = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            return name === 'Target';
-        }
-        return false;
-    });
-    if (target?.type === ELEMENT_TYPE) {
-        const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
-        if (stringAttribute) {
-            return stringAttribute.value;
-        } else {
-            const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
-            if (annotationPathContent) {
-                return getElementText(annotationPathContent);
-            }
-        }
-    }
-    return undefined;
+export function getPropertyValueElement(record: Element, propertyName: string): Element | undefined {
+    return elementsWithName(Edm.PropertyValue, record).find(
+        (el) => getElementAttributeValue(el, Edm.Property) === propertyName
+    );
 }
 
 /**
- * Returns ID property value.
+ * Returns the AnnotationPath property value of the Target property in a record element.
+ * Handles both attribute form (`AnnotationPath="..."`) and child-element form (`<AnnotationPath>...</AnnotationPath>`).
  *
  * @param record - The record element
- * @returns - String ID value
+ * @returns The annotation path string, or undefined if not found
+ */
+export function getTargetAnnotationPath(record: Element): string | undefined {
+    const target = getPropertyValueElement(record, 'Target');
+    if (!target) {
+        return undefined;
+    }
+    const stringAttribute = getElementAttribute(target, Edm.AnnotationPath);
+    if (stringAttribute) {
+        return stringAttribute.value;
+    }
+    const annotationPathContent = findContentByName(target.content, Edm.AnnotationPath);
+    return annotationPathContent ? getElementText(annotationPathContent) : undefined;
+}
+
+/**
+ * Returns the value of the ID property.
+ *
+ * @param record - The record element
+ * @returns The string ID value, or undefined if not found
  */
 function getId(record: Element): string | undefined {
-    const id = record.content.find((child) => {
-        if (child.type === ELEMENT_TYPE && child.name === Edm.PropertyValue) {
-            const name = getElementAttributeValue(child, Edm.Property);
-            return name === 'ID';
-        }
-        return false;
-    });
-    if (id?.type === ELEMENT_TYPE) {
-        const stringAttribute = getElementAttribute(id, Edm.String);
-        if (stringAttribute) {
-            return stringAttribute.value;
-        } else {
-            const idContent = findContentByName(id.content, Edm.String);
-            if (idContent) {
-                return getElementText(idContent);
-            }
-        }
+    const id = getPropertyValueElement(record, 'ID');
+    if (!id) {
+        return undefined;
     }
-    return undefined;
+    const stringAttribute = getElementAttribute(id, Edm.String);
+    if (stringAttribute) {
+        return stringAttribute.value;
+    }
+    const idContent = findContentByName(id.content, Edm.String);
+    return idContent ? getElementText(idContent) : undefined;
 }
 
 /**
@@ -485,8 +676,36 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
     if (!entity) {
         return undefined;
     }
+    const resolved = resolveNavigationProperties(entity, segments);
+    if (resolved) {
+        return resolved;
+    }
+    // Fallback: when entity set content doesn't carry nav properties directly (e.g. V4 metadata
+    // where nav props live on the entity type), resolve through the structured type instead.
+    const structuredType = entity.structuredType;
+    if (!structuredType) {
+        return;
+    }
+    const entityType = service.artifacts.metadataService.getMetadataElement(structuredType);
+    return entityType ? resolveNavigationProperties(entityType, segments) : undefined;
+}
 
-    return resolveNavigationProperties(entity, segments);
+export function getEntityTypeForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
+    if (!contextPath.startsWith('/')) {
+        return;
+    }
+    const path = contextPath.substring(1);
+    const [entityTypeName, ...segments] = path.split('/');
+    if (!entityTypeName) {
+        return;
+    }
+    const entityType =
+        service.index.entityTypes[entityTypeName] ??
+        service.index.entityTypes[entityTypeName.split('.').pop() ?? entityTypeName];
+    if (!entityType) {
+        return undefined;
+    }
+    return resolveNavigationProperties(entityType, segments);
 }
 
 /**
@@ -495,7 +714,7 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
  * @param root - The starting metadata element
  * @param segments - Array of navigation property names to traverse
  */
-function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
+export function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {
         return root;
     }
@@ -522,12 +741,36 @@ export interface ObjectPageLike {
 }
 
 /**
- * Links an object page header section with its field group annotation.
- * Used by both FE v2 and v4 linkers.
+ * Collects chart nodes from a page's linked table and field-group lookup entries and adds them
+ * to `page.lookup['chart']`. Must be called after the table and field-group linker steps so
+ * that only charts actually displayed on the page are collected.
  *
- * @param section - Header section node to link
- * @param page - The object page being linked
+ * @param page - Object with a `lookup` map; satisfied by both LR and OP page types.
+ * @param page.lookup - Object holding page elements.
+ * @param service - The parsed OData service.
  */
+export function collectPageCharts(
+    page: { lookup: { [key: string]: any[] | undefined } },
+    service: ParsedService
+): void {
+    for (const tableEntry of (page.lookup['table'] ?? []) as Array<{ annotation?: TableNode }>) {
+        if (tableEntry.annotation) {
+            for (const chartNode of collectChartsFromTableNode(tableEntry.annotation, service)) {
+                page.lookup['chart'] ??= [];
+                page.lookup['chart']!.push({ type: 'chart', annotation: chartNode, configuration: {}, children: [] });
+            }
+        }
+    }
+    for (const fieldGroupEntry of (page.lookup['field-group'] ?? []) as Array<{ annotation?: FieldGroupNode }>) {
+        if (fieldGroupEntry.annotation) {
+            for (const chartNode of collectChartsFromFieldGroupNode(fieldGroupEntry.annotation, service)) {
+                page.lookup['chart'] ??= [];
+                page.lookup['chart']!.push({ type: 'chart', annotation: chartNode, configuration: {}, children: [] });
+            }
+        }
+    }
+}
+
 export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPageLike): void {
     if (section.type !== 'header-section') {
         return;
@@ -556,4 +799,24 @@ export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPa
         page.lookup[control.type] ??= [];
         page.lookup[control.type]!.push(control);
     }
+}
+
+/**
+ * Retrieves the fully qualified annotation term for a given annotation record.
+ *
+ * @param aliasInfo - Alias information for resolving fully qualified names
+ * @param record - The metadata element representing the annotation record
+ * @returns The fully qualified annotation term, or undefined if it cannot be determined
+ */
+export function getTargetAnnotationTerm(aliasInfo: AliasInformation, record: Element): string | undefined {
+    const annotationPath = getTargetAnnotationPath(record);
+    if (!annotationPath) {
+        return undefined;
+    }
+    const lastAt = annotationPath.lastIndexOf('@');
+    if (lastAt === -1) {
+        return undefined;
+    }
+    const termWithAlias = annotationPath.slice(lastAt + 1).split('#')[0];
+    return toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parseIdentifier(termWithAlias));
 }

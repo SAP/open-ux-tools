@@ -1,35 +1,38 @@
 {
-    "type": "annotation",
-    "term": {
-        "type": "path",
+    "type": "flattened-expression",
+    "path": {
+        "type": "flattened-path",
         "value": "Common.SideEffects.TargetProperties",
         "segments": [
             {
-                "type": "identifier",
-                "value": "Common",
-                "range": "[(0,0)..(0,6)]",
-                "quoted": false
+                "type": "flattened-annotation-segment",
+                "vocabulary": {
+                    "type": "identifier",
+                    "value": "Common",
+                    "range": "[(0,0)..(0,6)]",
+                    "quoted": false
+                },
+                "prefix": false,
+                "term": {
+                    "type": "identifier",
+                    "value": "SideEffects",
+                    "range": "[(0,7)..(0,18)]",
+                    "quoted": false
+                },
+                "range": "[(0,0)..(0,18)]"
             },
             {
-                "type": "identifier",
-                "value": "SideEffects",
-                "range": "[(0,7)..(0,18)]",
-                "quoted": false
-            },
-            {
-                "type": "identifier",
-                "value": "TargetProperties",
-                "range": "[(0,19)..(0,35)]",
-                "quoted": false
+                "type": "flattened-property-segment",
+                "name": {
+                    "type": "identifier",
+                    "value": "TargetProperties",
+                    "range": "[(0,19)..(0,35)]",
+                    "quoted": false
+                },
+                "range": "[(0,19)..(0,35)]"
             }
         ],
         "separators": [
-            {
-                "type": "separator",
-                "value": ".",
-                "range": "[(0,6)..(0,7)]",
-                "escaped": false
-            },
             {
                 "type": "separator",
                 "value": ".",

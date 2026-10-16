@@ -2,10 +2,7 @@ import { createWriteStream, existsSync, promises } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import * as archiver from 'archiver';
 import { glob } from 'glob-gitignore';
-import type { Ignore } from 'ignore';
-import ignoreModule from 'ignore';
-const ignore: (options?: { ignorecase?: boolean; ignoreCase?: boolean; allowRelativePaths?: boolean }) => Ignore =
-    typeof ignoreModule === 'function' ? ignoreModule : (ignoreModule as any).default;
+
 import { t } from '../i18n.js';
 import { byteNumberToSizeString } from '../formatter.js';
 
@@ -83,7 +80,7 @@ async function getFileList(cwd: string): Promise<string[]> {
     const files = await glob(globPattern, {
         cwd,
         dot,
-        ignore: ignore().add(ignores),
+        ignore: ignores,
         mark: true,
         skip
     });

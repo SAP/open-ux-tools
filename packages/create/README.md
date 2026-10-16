@@ -34,7 +34,7 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
-The available subcommands are: `adaptation-project`
+The available subcommands are: `adaptation-project` and `opa5-tests`
 
 
 --------------------------------
@@ -59,6 +59,21 @@ Options:
 - `--ts` - Enable TypeScript support for the generated project.
 - `--package [package]` - The ABAP package to be used for deployments.
 - `--transport [transport]` - The ABAP transport to be used for deployments.
+
+--------------------------------
+
+## [`generate opa5-tests`](#generate-opa5-tests)
+
+Generate OPA5 integration tests for an existing SAP Fiori elements (OData V4) application.
+
+Example:
+
+`npx --yes @sap-ux/create@latest generate opa5-tests`
+
+Options:
+- `-t, --typescript` - Force generation of TypeScript test files. Otherwise, TypeScript is auto-detected from the presence of a `tsconfig.json`.
+- `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -299,7 +314,8 @@ Options:
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
-- `--skip-check` - Skip connection verification before saving
+- `--skip-credentials-prompt` - Skip credential prompts. No credentials will be saved, but may be added later if required
+- `--skip-connection-validation` - Skip connection verification before saving
 
 --------------------------------
 
@@ -416,7 +432,7 @@ Command group for updating saved resources. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest update [subcommand] [options]`
 
-The available subcommands are: `system`
+The available subcommands are: `system` and `service-metadata`
 
 
 --------------------------------
@@ -441,7 +457,30 @@ Options:
 - `--username <string>` - New username
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
 - `--clear-credentials` - Remove stored credentials from the system
-- `--skip-check` - Skip connection verification before saving
+- `--skip-connection-validation` - Skip connection verification before saving
+- `--skip-check` - (Deprecated: use --skip-connection-validation) Skip connection verification before saving
+
+--------------------------------
+
+## [`update service-metadata`](#update-service-metadata)
+
+Refresh the local OData service metadata.xml from the live backend for a Fiori application.
+Also fetches value-help (external) service metadata when available.
+
+Only supported for Fiori applications connected to an EDMX backend. CAP applications are not supported,
+as their service metadata is generated locally from the CDS model rather than fetched from a backend.
+
+Example:
+
+`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app`
+
+`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app --simulate`
+
+Options:
+- `--service <name>` - Name of the data source in manifest.json (defaults to mainService or first service)
+- `--no-value-help` - Skip fetching value-help (external) service metadata
+- `-s, --simulate` - Simulate only. Do not write. Also sets `--verbose`.
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 

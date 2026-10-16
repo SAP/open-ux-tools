@@ -19,7 +19,10 @@ const {
     getReuseComponentChecker,
     resetReuseComponentChecker,
     matchesChangeProperty,
-    checkForExistingChange
+    checkForExistingChange,
+    getPendingCodeExtViewIds,
+    getControllerInfoForControl,
+    getControllerInfo
 } = await import('open/ux/preview/client/adp/utils');
 
 describe('utils', () => {
@@ -176,6 +179,54 @@ describe('utils', () => {
         });
     });
 
+    describe('getPendingCodeExtViewIds', () => {
+        const mockRta = new RuntimeAuthoringMock({} as RTAOptions);
+        const codeExtCommand = (controllerName: string, viewId?: string) => ({
+            getProperty: jest.fn(() => 'codeExt'),
+            getPreparedChange: jest.fn(() => ({
+                convertToFileContent: jest.fn(() => ({
+                    changeType: 'codeExt',
+                    selector: { controllerName },
+                    content: viewId ? { codeRef: 'coding/x.js', viewId } : { codeRef: 'coding/x.js' }
+                }))
+            }))
+        });
+
+        it('collects undefined for a base change and the viewId for an instance-specific change', () => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [codeExtCommand('my.Controller'), codeExtCommand('my.Controller', 'view1')])
+            }));
+
+            const result = getPendingCodeExtViewIds(mockRta, 'my.Controller');
+            expect(result).toEqual([undefined, 'view1']);
+        });
+
+        it('descends into composite commands and ignores non-codeExt sub-commands', () => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [
+                    {
+                        getCommands: jest.fn(() => [
+                            { getProperty: jest.fn(() => 'addXML') },
+                            codeExtCommand('my.Controller', 'view2')
+                        ])
+                    }
+                ])
+            }));
+
+            const result = getPendingCodeExtViewIds(mockRta, 'my.Controller');
+            expect(result).toEqual(['view2']);
+        });
+
+        it('ignores codeExt changes for a different controller name', () => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [codeExtCommand('other.Controller', 'view1')])
+            }));
+
+            const result = getPendingCodeExtViewIds(mockRta, 'my.Controller');
+            expect(result).toEqual([]);
+        });
+    });
+
     describe('getReuseComponentChecker', () => {
         const ui5VersionInfo = { major: 1, minor: 120 };
         const ui5Control = {} as Element;
@@ -264,6 +315,109 @@ describe('utils', () => {
             const isReuseComponentMock = isReuseComponentApi.mockReturnValue(true);
             expect(checker('controlId')).toBe(true);
             expect(isReuseComponentMock).toHaveBeenCalled();
+        });
+    });
+
+    describe('getControllerInfoForControl', () => {
+        const OP_VIEW_ID = 'app---ObjectPage.view.Details::SEPMRA_C_PD_Product';
+        const OP_CONTROLLER = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
+        const OP_MODULE = 'sap/suite/ui/generic/template/ObjectPage/view/Details.controller';
+        const SUB_VIEW_ID = `${OP_VIEW_ID}--supplierView`;
+
+        beforeEach(() => {
+            FlexUtils.getViewForControl.mockReset();
+        });
+
+        it('returns controller name and view id when already on a controller-bearing view (module name)', () => {
+            const control = {};
+            const view = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(OP_MODULE),
+                getController: jest.fn(),
+                getParent: jest.fn().mockReturnValue({})
+            };
+            FlexUtils.getViewForControl.mockReturnValue(view);
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: `module:${OP_MODULE}`, viewId: OP_VIEW_ID });
+            expect(FlexUtils.getViewForControl).toHaveBeenCalledTimes(1);
+        });
+
+        it('returns controller name via class-name fallback when no module name', () => {
+            const control = {};
+            const view = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({ getName: () => OP_CONTROLLER })
+                }),
+                getParent: jest.fn().mockReturnValue({})
+            };
+            FlexUtils.getViewForControl.mockReturnValue(view);
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: OP_CONTROLLER, viewId: OP_VIEW_ID });
+            expect(FlexUtils.getViewForControl).toHaveBeenCalledTimes(1);
+        });
+
+        it('climbs to parent controller-bearing view when nearest view has no controller', () => {
+            const parent = {};
+            const subView = {
+                getId: jest.fn().mockReturnValue(SUB_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue(undefined),
+                getParent: jest.fn().mockReturnValue(parent)
+            };
+            const opView = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue({
+                    getMetadata: jest.fn().mockReturnValue({ getName: () => OP_CONTROLLER })
+                }),
+                getParent: jest.fn().mockReturnValue(null)
+            };
+            const control = {};
+            FlexUtils.getViewForControl.mockImplementation((arg) => {
+                return arg === control ? subView : opView;
+            });
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: OP_CONTROLLER, viewId: OP_VIEW_ID });
+        });
+
+        it('terminates without infinite loop when no controller is found anywhere', () => {
+            const subView = {
+                getId: jest.fn().mockReturnValue(SUB_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(undefined),
+                getController: jest.fn().mockReturnValue(undefined),
+                getParent: jest.fn().mockReturnValue(null)
+            };
+            const control = {};
+            FlexUtils.getViewForControl.mockReturnValue(subView);
+
+            const result = getControllerInfoForControl(control as never);
+
+            expect(result).toEqual({ controllerName: '', viewId: SUB_VIEW_ID });
+        });
+
+        it('getControllerInfo delegates to getControllerInfoForControl via overlay element', () => {
+            const element = {};
+            const overlay = { getElement: jest.fn().mockReturnValue(element) };
+            const view = {
+                getId: jest.fn().mockReturnValue(OP_VIEW_ID),
+                getControllerModuleName: jest.fn().mockReturnValue(OP_MODULE),
+                getController: jest.fn(),
+                getParent: jest.fn().mockReturnValue(null)
+            };
+            FlexUtils.getViewForControl.mockReturnValue(view);
+
+            const result = getControllerInfo(overlay as never);
+
+            expect(result).toEqual({ controllerName: `module:${OP_MODULE}`, viewId: OP_VIEW_ID });
+            expect(overlay.getElement).toHaveBeenCalled();
         });
     });
 });

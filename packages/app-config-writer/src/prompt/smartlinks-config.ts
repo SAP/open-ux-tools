@@ -144,7 +144,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
                 }
             },
             {
-                type: 'invisible',
+                type: 'password',
                 name: 'password',
                 message: `${chalk.cyan(t('info.password'))}`,
                 validate: (value: string): boolean | string => {

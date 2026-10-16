@@ -1339,6 +1339,116 @@ rating : Rating;
                     createLineItem(files.annotations, [], 'test1', TARGET_INCIDENTS)
                 ]
             });
+
+            describe('external metadata service namespace auto-insert', () => {
+                const VH_URI =
+                    "../../../../srvd_f4/dmo/i_priority/0001;ps='srvd-dmo-sd_incidents-0001';va='com.sap.gateway.srvd.dmo.sd_incidents.v0001.et-incidents.priority'/$metadata";
+                const VH_NS = 'com.sap.gateway.srvd_f4.dmo.i_priority.v0001';
+                const VH_METADATA_PATH = join(
+                    __dirname,
+                    '../data/v4-xml-start/webapp/localService/srvd_f4/dmo/i_priority/0001/metadata.xml'
+                );
+
+                async function setupService(): Promise<{ service: FioriAnnotationService; editor: Editor }> {
+                    const project = PROJECTS.V4_XML_START;
+                    const editor = await createFsEditorForProject(project.root);
+
+                    // Inject Common.ValueListReferences so the adapter discovers the VH service URI
+                    const annotationPath = pathFromUri(project.files.annotations);
+                    const annotationContent = editor.read(annotationPath)!;
+                    editor.write(
+                        annotationPath,
+                        annotationContent.replace(
+                            '</Schema>',
+                            `    <Annotations Target="IncidentService.Incidents/priority_code">
+                <Annotation Term="Common.ValueListReferences">
+                    <Collection>
+                        <String>${VH_URI}</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>`
+                        )
+                    );
+
+                    const service = await FioriAnnotationService.createService(
+                        await getProject(project.root),
+                        project.serviceName,
+                        '',
+                        editor,
+                        { commitOnSave: false }
+                    );
+                    await service.sync();
+
+                    // Feed the VH service metadata to the adapter
+                    const vhMetadata = await promises.readFile(VH_METADATA_PATH, 'utf-8');
+                    const vhFiles = new Map([[VH_URI, { data: vhMetadata, localFilePath: VH_METADATA_PATH }]]);
+                    service.syncExternalServices(vhFiles);
+
+                    return { service, editor };
+                }
+
+                test('inserts edmx:Reference for external VH service namespace', async () => {
+                    const { service, editor } = await setupService();
+                    const annotationPath = pathFromUri(PROJECTS.V4_XML_START.files.annotations);
+
+                    service.edit({
+                        kind: ChangeType.InsertAnnotation,
+                        uri: PROJECTS.V4_XML_START.files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: `${VH_NS}.I_PriorityType/Priority`,
+                            value: {
+                                term: `${COMMON}.ExternalID`,
+                                value: {
+                                    type: ExpressionType.Path,
+                                    Path: 'PriorityText'
+                                }
+                            }
+                        }
+                    });
+                    await service.save();
+
+                    expect(editor.read(annotationPath)).toMatchSnapshot();
+                });
+
+                test('does not insert duplicate edmx:Reference on second save', async () => {
+                    const { service, editor } = await setupService();
+                    const annotationPath = pathFromUri(PROJECTS.V4_XML_START.files.annotations);
+
+                    const change = {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: PROJECTS.V4_XML_START.files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: `${VH_NS}.I_PriorityType/Priority`,
+                            value: {
+                                term: `${COMMON}.ExternalID`,
+                                value: {
+                                    type: ExpressionType.Path,
+                                    Path: 'PriorityText'
+                                }
+                            }
+                        }
+                    } as const;
+
+                    service.edit(change);
+                    await service.save({ resyncAfterSave: true });
+
+                    // Re-register VH service after resync clears metadataService
+                    const vhMetadata = await promises.readFile(VH_METADATA_PATH, 'utf-8');
+                    const vhFiles = new Map([[VH_URI, { data: vhMetadata, localFilePath: VH_METADATA_PATH }]]);
+                    service.syncExternalServices(vhFiles);
+
+                    service.edit(change);
+                    await service.save();
+
+                    const result = editor.read(annotationPath)!;
+                    const vhIncludePattern = new RegExp(`<edmx:Include Namespace="${VH_NS}"`, 'g');
+                    const vhReferenceCount = (result.match(vhIncludePattern) ?? []).length;
+                    expect(vhReferenceCount).toBe(1);
+                });
+            });
         });
 
         describe('embedded annotation', () => {
@@ -2656,6 +2766,209 @@ rating : Rating;
                                 },
                                 uri: project.files.annotations,
                                 pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('with qualifiers and embedded annotation', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with {
+                        priority @(
+                            ![Common.Text#abc] : priority.name,
+                            ![Common.Text#abc.@UI.TextArrangement#xyz] : #TextFirst,
+                        )
+                    };
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents/priority',
+                                    term: `${COMMON}.Text`,
+                                    qualifier: 'abc'
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, flattened expression value', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].AxisScaling.ScaleBehavior: #AutoScale,
+                        ![UI.Chart#chartStatus].AxisScaling.AutoScaleBehavior.ZeroAlwaysVisible: true,
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/0/value/Record/propertyValues/1/value/Record/propertyValues/0/value'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, nested record', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, nested record property', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.Test: true,
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0'
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('partial annotation deletion, nested record property value', async () => {
+                    // deletion logic doesn't work correctly with ![]
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with @(
+                        ![UI.Chart#chartStatus].ChartType: #Line,
+                        ![UI.Chart#chartStatus].AxisScaling: {
+                            AutoScaleBehavior.Test: true,
+                            AutoScaleBehavior.ZeroAlwaysVisible: true,
+                        }
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.Chart`,
+                                    qualifier: 'chartStatus'
+                                },
+                                uri: project.files.annotations,
+                                pointer:
+                                    '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0/value'
                             }
                         ],
                         'IncidentService',
@@ -4313,6 +4626,94 @@ rating : Rating;
             expect(text).toMatchSnapshot();
         });
 
+        test('update record property', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            using from '../../srv/common';
+            annotate IncidentService.Incidents with @(
+                UI.HeaderInfo.TypeNamePlural : 'TypeNamePlural was here on app',
+                UI.HeaderInfo.Title : {
+                    Value : title,
+                },
+            );`;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.HeaderInfo`
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value',
+                        content: {
+                            type: 'primitive',
+                            expressionType: 'String',
+                            value: 'New text'
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('update nested record property', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            using from '../../srv/common';
+            annotate IncidentService.Incidents with @(
+                UI.HeaderInfo.TypeNamePlural : 'TypeNamePlural was here on app',
+                UI.HeaderInfo.Title : {
+                    Value.Property : title,
+                },
+            );`;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.HeaderInfo`
+                        },
+                        uri: project.files.annotations,
+                        pointer:
+                            '/record/propertyValues/1/value/Record/propertyValues/0/value/Record/propertyValues/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'String',
+                                String: 'New text'
+                            },
+                            previousType: 'Path'
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
         test('delete record property value', async () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
@@ -4327,6 +4728,11 @@ rating : Rating;
                 },
                 UI.HeaderInfo : {
                     Title.Value: title
+                },
+                UI.HeaderInfo#abc : {
+                    Title: {
+                        Value: title,
+                    }
                 }
             );`;
             fsEditor.write(path, testData);
@@ -4359,7 +4765,17 @@ rating : Rating;
                             term: `${UI}.HeaderInfo`
                         },
                         uri: project.files.annotations,
-                        pointer: '/record/propertyValues/2/record/propertyValues/0/value'
+                        pointer: '/record/propertyValues/2/value/Record/propertyValues/0/value'
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.HeaderInfo`,
+                            qualifier: 'abc'
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value/Record/propertyValues/0/value'
                     }
                 ],
                 'IncidentService',

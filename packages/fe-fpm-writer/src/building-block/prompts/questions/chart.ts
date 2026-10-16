@@ -117,10 +117,14 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                 },
                 [UIAnnotationTerms.Chart]
             ),
-            getAggregationPathPrompt(context, {
-                message: t('aggregation') as string,
-                guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
-            }),
+            getAggregationPathPrompt(
+                context,
+                {
+                    message: t('aggregation') as string,
+                    guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
+                },
+                { defaultTarget: 'items' }
+            ),
             getFilterBarIdPrompt(context, {
                 message: t('filterBar.message') as string,
                 type: 'list',

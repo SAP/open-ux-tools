@@ -1,7 +1,7 @@
 {
   "_version": "1.28.0",
   "sap.app": {
-    "id": "testNameSpace.lropv4",
+    "id": "testnamespace.lropv4",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -70,7 +70,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "testNameSpace.lropv4.i18n.i18n"
+          "bundleName": "testnamespace.lropv4.i18n.i18n"
         }
       },
       "": {

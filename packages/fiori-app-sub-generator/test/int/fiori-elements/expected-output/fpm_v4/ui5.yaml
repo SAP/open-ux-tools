@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.fpmv4
+  name: testnamespace.fpmv4
 type: application
 server:
   customMiddleware:
@@ -31,7 +31,7 @@ server:
           theme: sap_fiori_3
           path: test/flpSandbox.html
           intent:
-            object: testNameSpacefpmv4
+            object: testnamespacefpmv4
             action: tile
 builder:
   resources:

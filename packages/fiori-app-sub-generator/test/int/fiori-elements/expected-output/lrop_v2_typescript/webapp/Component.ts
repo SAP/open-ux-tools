@@ -1,7 +1,7 @@
 import BaseComponent from "sap/suite/ui/generic/template/lib/AppComponent";
 
 /**
- * @namespace testNameSpace.lropv2typescript
+ * @namespace testnamespace.lropv2typescript
  */
 export default class Component extends BaseComponent {
 

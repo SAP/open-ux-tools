@@ -20,12 +20,14 @@ import { ProjectContext } from '../project-context/project-context.js';
 import { FioriAnnotationSourceCode, visitorKeys as annotationVisitorKeys } from './annotations/source-code.js';
 import { DiagnosticCache } from './diagnostic-cache.js';
 import { FioriChangeSourceCode } from './change/source-code.js';
+import { FioriI18nSourceCode, parseI18nToAst, visitorKeys as i18nVisitorKeys } from './i18n/source-code.js';
+import type { I18nDocument, I18nNode } from './i18n/source-code.js';
 
 export type FioriLanguageOptions = {};
 export type FioriSourceCode =
-    FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode | FioriChangeSourceCode;
-export type RootNode = DocumentNode | XMLDocument;
-export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode;
+    FioriJSONSourceCode | FioriXMLSourceCode | FioriAnnotationSourceCode | FioriChangeSourceCode | FioriI18nSourceCode;
+export type RootNode = DocumentNode | XMLDocument | I18nDocument;
+export type Node = AnyNode | XMLAstNode | XMLToken | AnyAnnotationNode | I18nNode;
 
 export type FioriParseResultAst = {
     context: ProjectContext;
@@ -46,6 +48,10 @@ export type FioriParseResultAst = {
         | {
               type: 'change';
               root: DocumentNode;
+          }
+        | {
+              type: 'i18n';
+              root: I18nDocument;
           };
 };
 
@@ -73,7 +79,12 @@ export class FioriLanguage implements Language<{
      */
     validateLanguageOptions(_languageOptions: FioriLanguageOptions): void {} // NOSONAR - Empty method required by ESLint Language interface
 
-    visitorKeys = { ...xmlVisitorKeys, ...Object.fromEntries(jsonVisitorKeys), ...annotationVisitorKeys };
+    visitorKeys = {
+        ...xmlVisitorKeys,
+        ...Object.fromEntries(jsonVisitorKeys),
+        ...annotationVisitorKeys,
+        ...i18nVisitorKeys
+    };
 
     /**
      * Parses a Fiori file (manifest.json, XML annotations, or CDS annotations).
@@ -93,103 +104,27 @@ export class FioriLanguage implements Language<{
         DiagnosticCache.clear(uri);
         const projectContext = ProjectContext.updateFile(uri, text);
         const document = projectContext.index.documents[uri];
-        if (path.endsWith('.change')) {
-            return {
-                ok: true,
-                ast: {
-                    uri,
-                    context: projectContext,
-                    document: {
-                        type: 'change',
-                        root: parseJson(text, {
-                            mode: 'json',
-                            ranges: true,
-                            tokens: true,
-                            allowTrailingCommas: false
-                        })
-                    }
-                }
-            };
-        }
         if (!document) {
-            if (path.endsWith('.xml')) {
-                try {
-                    const { cst, tokenVector } = parseXml(text);
-                    const ast = buildAst(cst as DocumentCstNode, tokenVector);
-                    return {
-                        ok: true,
-                        ast: {
-                            uri,
-                            context: projectContext,
-                            document: {
-                                type: 'xml',
-                                root: ast
-                            }
-                        }
-                    };
-                } catch (e) {
-                    return {
-                        ok: false,
-                        errors: [
-                            {
-                                line: 0,
-                                column: 0,
-                                message: `Failed to parse XML file ${path}: ${(e as Error).message}`
-                            }
-                        ]
-                    };
-                }
-            }
-            if (path.endsWith('.json')) {
-                return {
-                    ok: true,
-                    ast: {
-                        uri,
-                        context: projectContext,
-                        document: {
-                            type: 'json',
-                            root: parseJson(text, {
-                                mode: 'json',
-                                ranges: true,
-                                tokens: true,
-                                allowTrailingCommas: false
-                            })
-                        }
-                    }
-                };
-            }
-            if (path.endsWith('.cds')) {
-                // NOSONAR - TODO: add warning for orphaned cds files
-                // we're not checking files that are not part of a fiori app, but we don't want to throw either?
-                // other option is to let user add such files to ignore list in eslint config
-                return {
-                    ok: true,
-                    ast: {
-                        uri,
-                        context: projectContext,
-                        document: {
-                            type: 'annotation',
-                            root: {
-                                type: 'annotation-file',
-                                references: [],
-                                targets: [],
-                                uri
-                            }
-                        }
-                    }
-                };
-            }
-            return {
-                ok: false,
-                errors: [
-                    {
-                        line: 0,
-                        column: 0,
-                        message: `File ${path} is not part of a Fiori project or could not be indexed.`
-                    }
-                ]
-            };
+            return this.parseText(text, projectContext, uri, path);
         }
+        return this.getParsedDocument(document, projectContext, uri, path);
+    }
+
+    /**
+     * Gets the parsed representation of a Fiori document.
+     *
+     * @param document - The document to parse
+     * @param projectContext - The project context containing the document
+     * @param uri - The URI of the document
+     * @param path - The file path of the document
+     * @returns The parse result containing the FioriParseResultAst
+     */
+    private getParsedDocument(
+        document: ProjectContext['documents'][string],
+        projectContext: ProjectContext,
+        uri: string,
+        path: string
+    ): ParseResult<FioriParseResultAst> {
         if (document.type === 'Document') {
             return {
                 ok: true,
@@ -197,7 +132,7 @@ export class FioriLanguage implements Language<{
                     uri,
                     context: projectContext,
                     document: {
-                        type: 'json',
+                        type: path.endsWith('.change') ? 'change' : 'json',
                         root: document
                     }
                 }
@@ -228,6 +163,127 @@ export class FioriLanguage implements Language<{
             };
         }
         throw new Error('Unsupported document type');
+    }
+
+    /**
+     * Parses the given text as a Fiori document.
+     *
+     * @param text - The text content of the document
+     * @param projectContext - The project context containing the document
+     * @param uri - The URI of the document
+     * @param path - The file path of the document
+     * @returns The parse result containing the FioriParseResultAst
+     */
+    private parseText(
+        text: string,
+        projectContext: ProjectContext,
+        uri: string,
+        path: string
+    ): ParseResult<FioriParseResultAst> {
+        if (path.endsWith('.change') || path.endsWith('.json')) {
+            try {
+                const content = parseJson(text, {
+                    mode: 'json',
+                    ranges: true,
+                    tokens: true,
+                    allowTrailingCommas: false
+                });
+                return {
+                    ok: true,
+                    ast: {
+                        uri,
+                        context: projectContext,
+                        document: {
+                            type: path.endsWith('.change') ? 'change' : 'json',
+                            root: content
+                        }
+                    }
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    errors: [
+                        {
+                            line: 0,
+                            column: 0,
+                            message: `Failed to parse file ${path}: ${(e as Error).message}`
+                        }
+                    ]
+                };
+            }
+        }
+        if (path.endsWith('.xml')) {
+            try {
+                const { cst, tokenVector } = parseXml(text);
+                const ast = buildAst(cst as DocumentCstNode, tokenVector);
+                return {
+                    ok: true,
+                    ast: {
+                        uri,
+                        context: projectContext,
+                        document: {
+                            type: 'xml',
+                            root: ast
+                        }
+                    }
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    errors: [
+                        {
+                            line: 0,
+                            column: 0,
+                            message: `Failed to parse XML file ${path}: ${(e as Error).message}`
+                        }
+                    ]
+                };
+            }
+        }
+        if (path.endsWith('.cds')) {
+            // NOSONAR - TODO: add warning for orphaned cds files
+            // we're not checking files that are not part of a fiori app, but we don't want to throw either?
+            // other option is to let user add such files to ignore list in eslint config
+            return {
+                ok: true,
+                ast: {
+                    uri,
+                    context: projectContext,
+                    document: {
+                        type: 'annotation',
+                        root: {
+                            type: 'annotation-file',
+                            references: [],
+                            targets: [],
+                            uri
+                        }
+                    }
+                }
+            };
+        }
+        if (path.endsWith('.properties')) {
+            return {
+                ok: true,
+                ast: {
+                    uri,
+                    context: projectContext,
+                    document: {
+                        type: 'i18n',
+                        root: parseI18nToAst(text)
+                    }
+                }
+            };
+        }
+        return {
+            ok: false,
+            errors: [
+                {
+                    line: 0,
+                    column: 0,
+                    message: `File ${path} is not part of a Fiori project or could not be indexed.`
+                }
+            ]
+        };
     }
 
     /**
@@ -262,6 +318,13 @@ export class FioriLanguage implements Language<{
             });
         } else if (document.type === 'change') {
             return new FioriChangeSourceCode({
+                text,
+                ast: document.root,
+                projectContext: parseResult.ast.context,
+                uri: parseResult.ast.uri
+            });
+        } else if (document.type === 'i18n') {
+            return new FioriI18nSourceCode({
                 text,
                 ast: document.root,
                 projectContext: parseResult.ast.context,

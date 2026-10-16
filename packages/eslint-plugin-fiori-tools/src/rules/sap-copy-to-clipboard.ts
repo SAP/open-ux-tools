@@ -21,7 +21,7 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [COPY_TO_CLIPBOARD]:
-                'Copy To Clipboard in the {{sectionText}}table must be correctly configured. If not set, the "Copy" button is displayed'
+                '`{{property}}` in the {{sectionText}}table must be correctly configured. If not set, the "Copy" button is displayed'
         },
         fixable: 'code'
     },
@@ -54,7 +54,8 @@ const rule: FioriRuleDefinition = createFioriRule({
                 node,
                 messageId: COPY_TO_CLIPBOARD,
                 data: {
-                    sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : ''
+                    sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '',
+                    property: diagnostic.property
                 },
                 fix: createJsonFixer({
                     context,
@@ -85,7 +86,8 @@ function checkConfiguration(
 ): void {
     let config;
     let wrongValue = false;
-    if (isV2Table(table)) {
+    const isV2 = isV2Table(table);
+    if (isV2) {
         config = table.configuration.copy;
     } else {
         config = table.configuration.disableCopyToClipboard;
@@ -99,6 +101,7 @@ function checkConfiguration(
         const copyIssue: CopyToClipboard | undefined = {
             type: COPY_TO_CLIPBOARD,
             pageName: page.targetName,
+            property: isV2 ? 'copy' : 'disableCopyToClipboard',
             pageSectionName,
             manifest: {
                 uri: parsedApp.manifest.manifestUri,

@@ -1,5 +1,29 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- Replace opa5_docu.md and fiori-tools-opa-guide.md with OPA5 skill reference files as embeddings source [[3c76112](https://github.com/SAP/open-ux-tools/commit/3c7611299ff6b7b8f610285e2846430fffd859dd)]
+
+## 1.2.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Dependency Updates
+
+- Rebuild embeddings with updated @sap-ux/create docs (update metadata command, --service and --no-value-help options, EDMX-backend-only limitation) [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
 ## 1.2.6
 
 ### Patch Changes

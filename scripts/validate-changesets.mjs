@@ -5,9 +5,7 @@ import path from 'node:path';
 import yaml from 'yaml';
 
 // Packages that should not have major version bumps
-const BLOCKED_MAJOR_PACKAGES = [
-    '@sap-ux/eslint-plugin-fiori-tools'
-];
+const BLOCKED_MAJOR_PACKAGES = ['@sap-ux/eslint-plugin-fiori-tools'];
 
 /**
  * Packages that use esbuild to bundle their dependency graph into the dist output.
@@ -25,8 +23,18 @@ const BLOCKED_MAJOR_PACKAGES = [
 const ESBUILD_BUNDLING_PACKAGES = [
     '@sap-ux/fiori-mcp-server',
     'sap-ux-sap-systems-ext',
-    '@sap-ux/eslint-plugin-fiori-tools'
+    '@sap-ux/eslint-plugin-fiori-tools',
+    '@sap-ux/generator-odata-downloader'
 ];
+
+/**
+ * When a source package is released, all listed followers must also have a changeset.
+ * Follower versions are independent — they do not mirror the source version, they simply
+ * advance in lockstep (e.g. fiori-mcp-server 1.1.1→1.1.2 triggers fiori-tools-plugin 2.1.9→2.1.10).
+ */
+const VERSION_FOLLOWERS = {
+    '@sap-ux/fiori-mcp-server': ['@sap-ux/fiori-tools-plugin']
+};
 
 const __dirname = import.meta.dirname;
 const ROOT = path.join(__dirname, '..');
@@ -67,9 +75,7 @@ function transitiveWorkspaceDeps(startName, pkgMap) {
         visited.add(name);
         const pkg = pkgMap.get(name);
         if (!pkg) return;
-        const toFollow = isRoot
-            ? { ...pkg.dependencies, ...pkg.devDependencies }
-            : { ...pkg.dependencies };
+        const toFollow = isRoot ? { ...pkg.dependencies, ...pkg.devDependencies } : { ...pkg.dependencies };
         for (const dep of Object.keys(toFollow)) {
             if (pkgMap.has(dep)) walk(dep, false);
         }
@@ -77,6 +83,33 @@ function transitiveWorkspaceDeps(startName, pkgMap) {
     walk(startName, true);
     visited.delete(startName); // exclude self
     return visited;
+}
+
+/**
+ * Build a reverse map of real package name → set of consumer packages that
+ * declare it via a pnpm workspace alias (where the dependency key differs from
+ * the real package name). Derived automatically by scanning all workspace
+ * package.json files — no manual list to maintain.
+ *
+ * The changesets `updateInternalDependencies` cascade only matches by key, so
+ * it never sees the real package name behind an alias and misses these cascades.
+ */
+function buildAliasDependencyReverseMap(pkgMap) {
+    /** @type {Map<string, Set<string>>} */
+    const reverse = new Map();
+    for (const [consumerName, pkg] of pkgMap.entries()) {
+        const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+        for (const [depKey, depValue] of Object.entries(allDeps)) {
+            if (pkgMap.has(depKey)) continue; // not an alias — key matches a real package name
+            const aliasMatch = typeof depValue === 'string' && depValue.match(/^workspace:(@[^@]+)@/);
+            if (aliasMatch && pkgMap.has(aliasMatch[1])) {
+                const realName = aliasMatch[1];
+                if (!reverse.has(realName)) reverse.set(realName, new Set());
+                reverse.get(realName).add(consumerName);
+            }
+        }
+    }
+    return reverse;
 }
 
 /**
@@ -96,6 +129,43 @@ function buildBundledDepReverseMap(pkgMap) {
         }
     }
     return reverse;
+}
+
+/**
+ * Find packages that are missing a cascading changeset.
+ * Returns two maps so callers can generate distinct messages for each case:
+ * - bundlerCascades: esbuild bundlers that inline a dep being released
+ * - aliasCascades: pnpm alias consumers whose pinned dep is being released
+ */
+function findMissingCascades(packagesWithChangesets, pkgMap) {
+    /** @type {Map<string, Set<string>>} */
+    const bundlerCascades = new Map();
+    /** @type {Map<string, Set<string>>} */
+    const aliasCascades = new Map();
+
+    const reverseMap = buildBundledDepReverseMap(pkgMap);
+    for (const [dep, bundlers] of reverseMap.entries()) {
+        if (!packagesWithChangesets.has(dep)) continue;
+        for (const bundler of bundlers) {
+            if (!packagesWithChangesets.has(bundler)) {
+                if (!bundlerCascades.has(bundler)) bundlerCascades.set(bundler, new Set());
+                bundlerCascades.get(bundler).add(dep);
+            }
+        }
+    }
+
+    const aliasReverseMap = buildAliasDependencyReverseMap(pkgMap);
+    for (const [dep, consumers] of aliasReverseMap.entries()) {
+        if (!packagesWithChangesets.has(dep)) continue;
+        for (const consumer of consumers) {
+            if (!packagesWithChangesets.has(consumer)) {
+                if (!aliasCascades.has(consumer)) aliasCascades.set(consumer, new Set());
+                aliasCascades.get(consumer).add(dep);
+            }
+        }
+    }
+
+    return { bundlerCascades, aliasCascades };
 }
 
 function validateChangesets() {
@@ -147,8 +217,8 @@ function validateChangesets() {
         if (summary && !VALID_SUMMARY_PREFIX.test(summary)) {
             errors.push(
                 `❌ Invalid changeset summary in ${file}\n` +
-                `   Summary: "${summary.slice(0, 80)}"\n` +
-                `   Must start with FEAT:, FIX:, BUMP:, or INFRA:`
+                    `   Summary: "${summary.slice(0, 80)}"\n` +
+                    `   Must start with FEAT:, FIX:, BUMP:, or INFRA:`
             );
         }
     }
@@ -157,22 +227,56 @@ function validateChangesets() {
     // workspace dependency is being released. esbuild inlines the full module
     // graph at build time, so even indirect deps end up in the bundle.
     const pkgMap = buildPackageMap();
-    const reverseMap = buildBundledDepReverseMap(pkgMap);
-    for (const [dep, bundlers] of reverseMap.entries()) {
-        if (!packagesWithChangesets.has(dep)) continue;
+    const { bundlerCascades, aliasCascades } = findMissingCascades(packagesWithChangesets, pkgMap);
 
-        for (const bundler of bundlers) {
-            if (!packagesWithChangesets.has(bundler)) {
+    for (const [bundler, deps] of bundlerCascades.entries()) {
+        for (const dep of deps) {
+            errors.push(
+                `❌ Missing cascading changeset for "${bundler}"\n` +
+                    `   Reason: "${dep}" is being released and "${bundler}" bundles it via esbuild.\n` +
+                    `   The bundler must be re-published so consumers receive the updated bundle.\n` +
+                    `   Fix: Add a changeset for "${bundler}" (patch bump, BUMP: prefix):\n\n` +
+                    `     ---\n` +
+                    `     "${bundler}": patch\n` +
+                    `     ---\n\n` +
+                    `     BUMP: Rebuild bundle with updated ${dep}\n` +
+                    `   To add a new bundling package: scripts/validate-changesets.mjs → ESBUILD_BUNDLING_PACKAGES`
+            );
+        }
+    }
+
+    // Check that packages with aliased workspace deps have a changeset whenever
+    // any of those aliased deps is being released. Derived automatically.
+    for (const [consumer, deps] of aliasCascades.entries()) {
+        for (const dep of deps) {
+            errors.push(
+                `❌ Missing cascading changeset for "${consumer}"\n` +
+                    `   Reason: "${dep}" is being released and "${consumer}" declares it as a pnpm workspace alias dependency.\n` +
+                    `   The consumer must be re-published so its pinned version is updated.\n` +
+                    `   Fix: Add a changeset for "${consumer}" (patch bump, BUMP: prefix):\n\n` +
+                    `     ---\n` +
+                    `     "${consumer}": patch\n` +
+                    `     ---\n\n` +
+                    `     BUMP: Update pinned version of ${dep}`
+            );
+        }
+    }
+
+    // Check that version-follower packages have a changeset whenever their
+    // source package is being released. Follower versions are independent —
+    // they advance in lockstep, not mirroring the source version number.
+    for (const [source, followers] of Object.entries(VERSION_FOLLOWERS)) {
+        if (!packagesWithChangesets.has(source)) continue;
+        for (const follower of followers) {
+            if (!packagesWithChangesets.has(follower)) {
                 errors.push(
-                    `❌ Missing cascading changeset for "${bundler}"\n` +
-                        `   Reason: "${dep}" is being released and "${bundler}" bundles it via esbuild.\n` +
-                        `   The bundler must be re-published so consumers receive the updated bundle.\n` +
-                        `   Fix: Add a changeset for "${bundler}" (patch bump, BUMP: prefix):\n\n` +
+                    `❌ Missing cascading changeset for "${follower}"\n` +
+                        `   Reason: "${source}" is being released and "${follower}" must advance in lockstep.\n` +
+                        `   Fix: Add a changeset for "${follower}" (patch bump, BUMP: prefix):\n\n` +
                         `     ---\n` +
-                        `     "${bundler}": patch\n` +
+                        `     "${follower}": patch\n` +
                         `     ---\n\n` +
-                        `     BUMP: Rebuild bundle with updated ${dep}\n` +
-                        `   To add a new bundling package: scripts/validate-changesets.mjs → ESBUILD_BUNDLING_PACKAGES`
+                        `     BUMP: Sync version with ${source}`
                 );
             }
         }
@@ -187,4 +291,79 @@ function validateChangesets() {
     console.log('✅ All changesets validated successfully');
 }
 
-validateChangesets();
+function toSafeName(name) {
+    return name.replace(/^@/, '').replace(/\//g, '__');
+}
+
+function fixCascadeChangesets() {
+    const files = fs.readdirSync(CHANGESET_DIR);
+    const changesetFiles = files.filter((f) => f.endsWith('.md') && f !== 'README.md');
+
+    /** @type {Set<string>} */
+    const packagesWithChangesets = new Set();
+
+    for (const file of changesetFiles) {
+        const content = fs.readFileSync(path.join(CHANGESET_DIR, file), 'utf8');
+
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        if (!frontmatterMatch) continue;
+
+        const frontmatter = yaml.parse(frontmatterMatch[1]);
+
+        for (const pkg of Object.keys(frontmatter)) {
+            packagesWithChangesets.add(pkg);
+        }
+    }
+
+    if (packagesWithChangesets.size === 0) {
+        console.log('No changesets found — nothing to cascade');
+        return;
+    }
+
+    const pkgMap = buildPackageMap();
+    const { bundlerCascades, aliasCascades } = findMissingCascades(packagesWithChangesets, pkgMap);
+
+    // Merge both maps without overwriting: packages that are both a bundler and an alias
+    // consumer need deps from both sets in the same changeset.
+    /** @type {Map<string, { deps: Set<string>; isBundler: boolean }>} */
+    const allMissing = new Map();
+    for (const [pkg, deps] of bundlerCascades) {
+        allMissing.set(pkg, { deps: new Set(deps), isBundler: true });
+    }
+    for (const [pkg, deps] of aliasCascades) {
+        if (allMissing.has(pkg)) {
+            for (const d of deps) allMissing.get(pkg).deps.add(d);
+        } else {
+            allMissing.set(pkg, { deps: new Set(deps), isBundler: false });
+        }
+    }
+
+    if (allMissing.size === 0) {
+        console.log('No cascade changesets needed');
+        return;
+    }
+
+    for (const [pkg, { deps, isBundler }] of allMissing.entries()) {
+        const filename = `cascade-${toSafeName(pkg)}.md`;
+        const filepath = path.join(CHANGESET_DIR, filename);
+
+        if (fs.existsSync(filepath)) {
+            console.log(`${filename} already exists — skipping`);
+            continue;
+        }
+
+        const depList = [...deps].join(', ');
+        const message = isBundler
+            ? `BUMP: Rebuild bundle with updated ${depList}`
+            : `BUMP: Update pinned version of ${depList}`;
+        const content = `---\n"${pkg}": patch\n---\n\n${message}\n`;
+        fs.writeFileSync(filepath, content);
+        console.log(`Generated: .changeset/${filename} (triggered by: ${depList})`);
+    }
+}
+
+if (process.argv.includes('--fix')) {
+    fixCascadeChangesets();
+} else {
+    validateChangesets();
+}

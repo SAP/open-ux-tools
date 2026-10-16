@@ -200,9 +200,12 @@ export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
  */
 export enum keyUserPromptNames {
     keyUserSystem = 'keyUserSystem',
+    keyUserSystemValidationCli = 'keyUserSystemValidationCli',
     keyUserUsername = 'keyUserUsername',
     keyUserPassword = 'keyUserPassword',
-    keyUserAdaptation = 'keyUserAdaptation'
+    keyUserAdaptation = 'keyUserAdaptation',
+    keyUserAdaptationValidationCli = 'keyUserAdaptationValidationCli',
+    keyUserRestrictedViewsLabel = 'keyUserRestrictedViewsLabel'
 }
 
 export interface KeyUserSystemPromptOptions {
@@ -225,14 +228,21 @@ export interface KeyUserAdaptationPromptOptions {
     hide?: boolean;
 }
 
+export interface KeyUserRestrictedViewsLabelPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the key-user import inquirer & the prompts.
  */
 export type KeyUserImportPromptOptions = Partial<{
     [keyUserPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserPromptNames.keyUserSystemValidationCli]: CliValidationPromptOptions;
     [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
     [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
     [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+    [keyUserPromptNames.keyUserAdaptationValidationCli]: CliValidationPromptOptions;
+    [keyUserPromptNames.keyUserRestrictedViewsLabel]: KeyUserRestrictedViewsLabelPromptOptions;
 }>;
 
 export interface KeyUserImportAnswers {
@@ -289,14 +299,13 @@ export interface ExtensionProjectData {
 }
 
 /**
- * An interface representing the json input used to store the complete adaptation project
- * generator configurations. The json is passed as an CLI argument.
+ * CLI JSON for the adaptation project generator.
+ *
+ * When `id` is set, `{tmpdir}/{id}.txt` may also be loaded (see `readJsonInputFile`).
  */
 export interface JsonInput {
     /**
-     * Correlation key sent by the SAP Business Application Studio orchestrator. When present, the
-     * generation outcome (project path on success, `Failure: <message>` on error) is written back
-     * under this key so the orchestrator can poll the result of an async headless generation.
+     * Orchestrator correlation id. Keys the result file and `{tmpdir}/{id}.txt`.
      */
     id?: string;
     system: string;
@@ -309,6 +318,13 @@ export interface JsonInput {
     projectName?: string;
     namespace?: string;
     projectType?: AdaptationProjectType;
+}
+
+/**
+ * Extra JSON from `{tmpdir}/{id}.txt`. BAS writes a `.txt` file whose contents are JSON.
+ * Currently `keyUserChanges` only; extra fields are allowed.
+ */
+export interface JsonInputFile {
     keyUserChanges?: KeyUserChangeContent[];
 }
 

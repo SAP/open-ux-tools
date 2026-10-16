@@ -18,6 +18,6 @@
     "cds-plugin-ui5": "^0.17.0"
   },
   "scripts": {
-    "watch-lrop_v4_version_not_specified": "cds watch --open testNameSpace.lropv4versionnotspecified/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-lrop_v4_version_not_specified": "cds watch --open testnamespace.lropv4versionnotspecified/index.html?sap-ui-xx-viewCache=false --livereload false"
   }
 }

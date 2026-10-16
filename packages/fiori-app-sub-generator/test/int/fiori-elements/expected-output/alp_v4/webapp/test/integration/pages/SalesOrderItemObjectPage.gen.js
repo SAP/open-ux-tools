@@ -32,7 +32,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 
     return new ObjectPage(
         {
-            appId: 'testNameSpace.alpv4',
+            appId: 'testnamespace.alpv4',
             componentId: 'SalesOrderItemObjectPage',
             entitySet: 'SalesOrderItem'
         },

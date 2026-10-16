@@ -270,7 +270,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(passwordPrompt.validate).toBeDefined();
             expect(passwordPrompt).toMatchObject({
                 name: 'password',
-                type: 'invisible'
+                type: 'password'
             });
         });
 

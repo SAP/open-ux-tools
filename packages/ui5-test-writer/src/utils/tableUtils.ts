@@ -1,11 +1,24 @@
 import type { TreeAggregation, TreeAggregations } from '@sap/ux-specification/dist/types/src/parser/index.js';
-import { getAggregations } from './modelUtils.js';
-import type { TableColumn, TableColumnFeatureData } from '../types.js';
+import { getAggregations, parseDataFieldForAnnotationName } from './modelUtils.js';
+import type { ContactCardField, TableColumn, TableColumnFeatureData } from '../types.js';
 
 type ColumnModelItem = {
     custom?: boolean;
     description?: string;
     schema: { keys: { name: string; value: string }[] };
+    properties?: {
+        availability?: { value?: string };
+        text?: { value?: string; artifactType?: string };
+    };
+};
+
+/**
+ * A column carrying a `Common.Text` annotation. `columnProperty` is the column's own bound property;
+ * `textProperty` is the text target. A nav-path text target is valid; only a nav-path `columnProperty` is excluded.
+ */
+export type TextAnnotationColumnCandidate = {
+    columnProperty: string;
+    textProperty: string;
 };
 
 export type ColumnAggregations = TreeAggregations & {
@@ -13,28 +26,45 @@ export type ColumnAggregations = TreeAggregations & {
 };
 
 /**
- * Gets the identifier of a column for OPA5 tests.
- * Custom columns use the 'Key' entry; standard columns use the 'Value' entry from the schema keys.
+ * Returns true when the column is rendered in the table by default. Columns flagged as `Adaptation`
+ * (only reachable via end-user table settings) or `Hidden` are excluded from generated assertions.
  *
  * @param column - column item from ux specification
- * @returns identifier of the column for OPA5 tests; undefined if no matching key entry is found
+ * @returns true if the column is shown by default; false for Adaptation/Hidden columns
  */
-export function getColumnIdentifier(column: ColumnModelItem): string | undefined {
-    const key = column.custom ? 'Key' : 'Value';
-    return column.schema.keys.find((k) => k.name === key)?.value;
+function isDefaultAvailableColumn(column: ColumnModelItem): boolean {
+    const availability = column.properties?.availability?.value;
+    return availability === undefined || availability === 'Default';
+}
+
+/**
+ * Gets the identifier of a column for OPA5 tests, matching the rendered MDC column's `propertyKey`.
+ * Custom columns use the `Key` schema entry; standard columns use the `Value` schema entry; for
+ * annotation-driven entries that carry no `Value` (e.g. Contact-card columns), the column aggregation
+ * key is used.
+ *
+ * @param column - column item from ux specification
+ * @param columnKey - aggregation key of the column in its parent `columns` aggregation
+ * @returns identifier of the column for OPA5 tests; undefined if no identifier can be determined
+ */
+export function getColumnIdentifier(column: ColumnModelItem, columnKey?: string): string | undefined {
+    const schemaKeyName = column.custom ? 'Key' : 'Value';
+    return column.schema.keys.find((k) => k.name === schemaKeyName)?.value ?? (column.custom ? undefined : columnKey);
 }
 
 /**
  * Transforms column aggregations from the ux specification model into a map of columns for OPA5 tests.
- * Each column entry includes the column header label for display verification.
  *
  * @param columnAggregations - column aggregations from the ux specification model
  * @returns a map of column identifiers to column state objects for use with iCheckColumns()
  */
 export function transformTableColumns(columnAggregations: ColumnAggregations): TableColumnFeatureData {
     const columns: TableColumnFeatureData = {};
-    Object.values(columnAggregations).forEach((column, index) => {
-        const id = getColumnIdentifier(column) ?? String(index);
+    Object.entries(columnAggregations).forEach(([columnKey, column], index) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const id = getColumnIdentifier(column, columnKey) ?? String(index);
         const state: TableColumn = {};
         if (column.description) {
             state['header'] = column.description;
@@ -42,6 +72,92 @@ export function transformTableColumns(columnAggregations: ColumnAggregations): T
         columns[id] = state;
     });
     return columns;
+}
+
+/**
+ * Returns true when a candidate node is a usable table node, i.e. it directly exposes
+ * `columns` and/or `toolBar` aggregations.
+ *
+ * @param node - candidate tree aggregation node
+ * @returns true if the node carries column/toolbar aggregations
+ */
+function isTableNode(node: TreeAggregation): boolean {
+    const children = getAggregations(node);
+    return !!children['columns'] || !!children['toolBar'];
+}
+
+/**
+ * Resolves the table node that actually carries `columns`/`toolBar` aggregations.
+ * Single-table List Reports and Object Page sections expose these directly under `table`.
+ * Multi-view List Reports nest one table node per tab under `table.views[key]`; the first
+ * non-empty (non-custom) view node is returned, matching the default table tab.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns the table node holding column/toolbar aggregations, or undefined if none is found
+ */
+export function resolvePrimaryTableNode(node: TreeAggregation): TreeAggregation | undefined {
+    const tableAggregation = getAggregations(node)['table'];
+    if (!tableAggregation) {
+        return undefined;
+    }
+    if (isTableNode(tableAggregation)) {
+        return tableAggregation;
+    }
+    // Multi-view List Report: per-tab nodes live under `views`; return the first usable one, else undefined.
+    const views = getAggregations(tableAggregation)['views'];
+    if (!views) {
+        return undefined;
+    }
+    const viewNodes = getAggregations(views);
+    for (const key of Object.keys(viewNodes)) {
+        const viewNode = viewNodes[key] as TreeAggregation;
+        if (isTableNode(viewNode)) {
+            return viewNode;
+        }
+    }
+    return undefined;
+}
+
+/**
+ * Resolves the per-tab table nodes of a multi-view (Multiple Table Mode) List Report. Each entry pairs
+ * the spec-model view key with the table node carrying that tab's `columns`/`toolBar` aggregations.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns per-view `{ key, node }` entries in model order; empty for single-table List Reports
+ */
+export function resolveViewTableNodes(node: TreeAggregation): { key: string; node: TreeAggregation }[] {
+    const tableAggregation = getAggregations(node)['table'];
+    if (!tableAggregation) {
+        return [];
+    }
+    const views = getAggregations(tableAggregation)['views'];
+    if (!views) {
+        return [];
+    }
+    const viewNodes = getAggregations(views);
+    const result: { key: string; node: TreeAggregation }[] = [];
+    for (const key of Object.keys(viewNodes)) {
+        const viewNode = viewNodes[key] as TreeAggregation;
+        if (isTableNode(viewNode)) {
+            result.push({ key, node: viewNode });
+        }
+    }
+    return result;
+}
+
+/**
+ * Extracts table column data from a resolved table node (one carrying a `columns` aggregation).
+ *
+ * @param tableNode - the table node holding the `columns` aggregation
+ * @returns a map of column identifiers to column state objects for use with iCheckColumns()
+ */
+export function extractTableColumnsFromTableNode(tableNode: TreeAggregation): TableColumnFeatureData {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return {};
+    }
+    const columnItems = getAggregations(columnsAggregation);
+    return transformTableColumns(columnItems as ColumnAggregations);
 }
 
 /**
@@ -53,14 +169,129 @@ export function transformTableColumns(columnAggregations: ColumnAggregations): T
  * @returns a map of column identifiers to column state objects for use with iCheckColumns()
  */
 export function extractTableColumnsFromNode(node: TreeAggregation): TableColumnFeatureData {
-    const tableAggregation = getAggregations(node)['table'];
-    if (!tableAggregation) {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
         return {};
     }
-    const columnsAggregation = getAggregations(tableAggregation)['columns'];
+    return extractTableColumnsFromTableNode(tableNode);
+}
+
+/**
+ * Extracts Contact-card columns from a resolved table node (one carrying a `columns` aggregation).
+ *
+ * @param tableNode - the table node holding the `columns` aggregation
+ * @returns array of Contact-card field descriptors for use with iClickLink/iCheckLink
+ */
+export function extractContactCardColumnsFromTableNode(tableNode: TreeAggregation): ContactCardField[] {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
     if (!columnsAggregation) {
-        return {};
+        return [];
     }
-    const columnItems = getAggregations(columnsAggregation);
-    return transformTableColumns(columnItems as ColumnAggregations);
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const contactColumns: ContactCardField[] = [];
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        const parsed = parseDataFieldForAnnotationName(columnKey);
+        if (parsed?.targetAnnotation === 'Contact' && isDefaultAvailableColumn(column)) {
+            contactColumns.push({ property: columnKey });
+        }
+    });
+    return contactColumns;
+}
+
+/**
+ * Extracts Contact-card columns from a spec model node that contains a 'table' aggregation.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns array of Contact-card field descriptors for use with iClickLink/iCheckLink
+ */
+export function extractContactCardColumnsFromNode(node: TreeAggregation): ContactCardField[] {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
+        return [];
+    }
+    return extractContactCardColumnsFromTableNode(tableNode);
+}
+
+/**
+ * Extracts columns that carry a text annotation (`properties.text.artifactType === 'Annotation'`
+ * with a real value) from a spec model node that contains a 'table' aggregation. The
+ * `UI.TextArrangement` gate is applied later by the caller, as it requires OData metadata not
+ * present in the spec model.
+ *
+ * @param node - tree aggregation node that exposes a 'table' aggregation
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): TextAnnotationColumnCandidate[] {
+    const tableNode = resolvePrimaryTableNode(node);
+    if (!tableNode) {
+        return [];
+    }
+    return extractTextAnnotationColumnsFromTableNode(tableNode);
+}
+
+/**
+ * Returns the bound property names of a resolved table node's default-available columns, omitting
+ * nav-path and unidentifiable columns. Per-view column source for the metadata text-annotation fallback
+ * (only the primary view carries `properties.text`).
+ *
+ * @param tableNode - resolved 'table' aggregation node
+ * @returns ordered, de-duplicated list of bound column property names
+ */
+export function extractBoundColumnPropertiesFromTableNode(tableNode: TreeAggregation): string[] {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return [];
+    }
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const properties: string[] = [];
+    const seen = new Set<string>();
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (!columnProperty || columnProperty.includes('/') || seen.has(columnProperty)) {
+            return;
+        }
+        seen.add(columnProperty);
+        properties.push(columnProperty);
+    });
+    return properties;
+}
+
+/**
+ * Extracts text-annotation columns from a resolved 'table' node (a single table or one multi-tab view).
+ *
+ * @param tableNode - resolved 'table' aggregation node
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationColumnsFromTableNode(tableNode: TreeAggregation): TextAnnotationColumnCandidate[] {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return [];
+    }
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const candidates: TextAnnotationColumnCandidate[] = [];
+    const seenColumnProperties = new Set<string>();
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const text = column.properties?.text;
+        // Spec-model sentinel "None" (any casing) means no text annotation is maintained.
+        if (text?.artifactType !== 'Annotation' || !text.value || text.value.toLowerCase() === 'none') {
+            return;
+        }
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (columnProperty?.includes('/')) {
+            return;
+        }
+        // Distinct columns may share one text target; dedupe by code column.
+        if (!columnProperty || seenColumnProperties.has(columnProperty)) {
+            return;
+        }
+        seenColumnProperties.add(columnProperty);
+        candidates.push({ columnProperty, textProperty: text.value });
+    });
+    return candidates;
 }
