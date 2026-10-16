@@ -163,6 +163,20 @@ describe('executeFunctionality', () => {
         });
     });
 
+    test('executeFunctionality - omitting ui5Version excludes it from generator config', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
+        });
+        const { ui5Version: _, ...projectWithoutUi5Version } = paramTest.project;
+        await generateFioriAppCap({ ...paramTest, project: projectWithoutUi5Version });
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.project).not.toHaveProperty('ui5Version');
+    });
+
     test('executeFunctionality - success with floorplan="FF_SIMPLE"', async () => {
         let generatedConfigContent: string;
         mockExec.mockImplementation((_cmd, _opts, callback) => {

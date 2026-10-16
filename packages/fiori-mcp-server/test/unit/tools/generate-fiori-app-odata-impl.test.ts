@@ -483,6 +483,32 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         expect(result.appPath).toContain('default');
     });
 
+    test('should not include ui5Version in config when omitted', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: { name: 'testapp', targetFolder: mockAppPath },
+            service: { servicePath: '/sap/opu/odata4/service', url: 'https://test.example.com' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        expect(configContent.project).not.toHaveProperty('ui5Version');
+    });
+
+    test('should write ui5Version to generator config when provided', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: { name: 'testapp', targetFolder: mockAppPath, ui5Version: '1.120.0' },
+            service: { servicePath: '/sap/opu/odata4/service', url: 'https://test.example.com' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        expect(configContent.project.ui5Version).toBe('1.120.0');
+    });
+
     test('should write enableTypeScript to generator config when provided', async () => {
         const args = {
             floorplan: 'FE_LROP',
