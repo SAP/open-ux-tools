@@ -1691,6 +1691,12 @@ importers:
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-migration-writer':
+        specifier: workspace:*
+        version: link:../fiori-migration-writer
       '@sap-ux/flp-config-inquirer':
         specifier: workspace:*
         version: link:../flp-config-inquirer

@@ -1,10 +1,9 @@
 import type { Command } from 'commander';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { BackendSystem } from '@sap-ux/store';
-import { getService, BackendSystemKey } from '@sap-ux/store';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { BackendSystemKey } from '@sap-ux/store';
 import { getLogger } from '../../tracing/index.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
+import { getSystemService, toPublicView } from '../utils/system-store.js';
 
 /**
  * Add the "get system" subcommand to a passed command.
@@ -47,14 +46,7 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
             return;
         }
 
-        // When emitting JSON, pass a silent logger to getService so that
-        // @sap-ux/store diagnostic messages do not appear on stdout before the
-        // JSON payload and break piped consumers.
-        const storeLogger = asJson ? new ToolsLogger({ transports: [new NullTransport()] }) : logger;
-        const service = await getService<BackendSystem, BackendSystemKey>({
-            entityName: 'system',
-            logger: storeLogger
-        });
+        const service = await getSystemService(asJson);
 
         // Use smart lookup to handle client mismatch scenarios
         const system = await findSystemByUrl(url, client, service);
@@ -65,16 +57,7 @@ async function getSystem(url: string, client: string | undefined, asJson: boolea
             return;
         }
 
-        const publicView = {
-            name: system.name,
-            url: system.url,
-            client: system.client,
-            systemType: system.systemType,
-            authenticationType: system.authenticationType,
-            connectionType: system.connectionType,
-            userDisplayName: system.userDisplayName,
-            hasSensitiveData: system.hasSensitiveData
-        };
+        const publicView = toPublicView(system);
 
         if (asJson) {
             // Use process.stdout.write so the output is pure JSON with no logger
