@@ -52,6 +52,13 @@ class FakePage extends EventEmitter {
 class FakeContext {
     public readonly newPage: jest.Mock;
     public readonly close = jest.fn(async () => undefined);
+    public readonly request = {
+        get: jest.fn(async (_url: string, _opts?: unknown) => ({
+            status: () => 200,
+            headers: () => ({ 'content-type': 'application/xml' }),
+            text: async () => '<edmx:Edmx/>'
+        }))
+    };
     public readonly storageState = jest.fn(async (opts?: { path?: string }) => {
         if (opts?.path) {
             this.savedPaths.push(opts.path);
@@ -668,6 +675,37 @@ describe('browser/playwright-bridge', () => {
 
         await fs.callFrontendAction(CF_SITE, 'a');
         expect(newBrowser.contexts[0].options).not.toHaveProperty('storageState');
+
+        await fs.stopBrowser();
+    });
+
+    test('fetchViaContext returns status, content-type and body from the context request', async () => {
+        const page = new FakePage();
+        const { browser } = setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        // Register a session for SITE_A so the registry has a PageRPC with a context.
+        await fs.callFrontendAction(SITE_A, 'a');
+
+        const out = await fs.defaultTransport.fetchViaContext(SITE_A, `${SITE_A}/svc/$metadata`);
+
+        expect(out).toEqual({ status: 200, contentType: 'application/xml', body: '<edmx:Edmx/>' });
+        expect(browser.contexts[0].request.get).toHaveBeenCalledWith(
+            `${SITE_A}/svc/$metadata`,
+            expect.objectContaining({ maxRedirects: 5 })
+        );
+
+        await fs.stopBrowser();
+    });
+
+    test('fetchViaContext throws a run-start-first error on registry miss', async () => {
+        setupBrowser([]);
+        const fs = await loadPlaywrightBridge();
+
+        await expect(
+            fs.defaultTransport.fetchViaContext('http://localhost:9999/x', 'http://localhost:9999/y')
+        ).rejects.toThrow(/start.*step first/i);
 
         await fs.stopBrowser();
     });
