@@ -463,6 +463,91 @@ describe('flp-config generator', () => {
         expect(i18nContent).not.toContain('so1-action1.flpTitle');
     });
 
+    it('omits blank `title`/`subTitle` in headless (skipPrompt) flow', async () => {
+        const existingManifest = JSON.parse(testFixture.getContents('project/webapp/manifest.json'));
+        const existingi18n = testFixture.getContents('project/webapp/i18n/i18n.properties');
+
+        set(existingManifest, inboundsPropertyPath, {});
+        const appDir = makeTempDir(JSON.stringify(existingManifest), {
+            'webapp/i18n/i18n.properties': existingi18n
+        });
+
+        await expect(
+            yeomanTest
+                .create(
+                    FLPConfigGenerator,
+                    {
+                        resolved: flpConfigGeneratorPath
+                    },
+                    {
+                        cwd: appDir
+                    }
+                )
+                .withOptions({
+                    launchFlpConfigAsSubGenerator: true,
+                    skipPrompt: true,
+                    overwrite: true,
+                    inboundConfig: {
+                        semanticObject: 'so1',
+                        action: 'action1',
+                        title: '',
+                        subTitle: ''
+                    }
+                })
+                .run()
+        ).resolves.not.toThrow();
+
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
+        const inbound = get(changedManifest, crossNavigationPropertyPath).inbounds['so1-action1'];
+        expect(inbound).toBeDefined();
+        expect(inbound.semanticObject).toBe('so1');
+        expect(inbound.action).toBe('action1');
+        // blank title/subTitle must not be written so the FLP falls back to sap.app/title
+        expect(inbound).not.toHaveProperty('title');
+        expect(inbound).not.toHaveProperty('subTitle');
+    });
+
+    it('writes `title`/`subTitle` in headless (skipPrompt) flow when provided', async () => {
+        const existingManifest = JSON.parse(testFixture.getContents('project/webapp/manifest.json'));
+        const existingi18n = testFixture.getContents('project/webapp/i18n/i18n.properties');
+
+        set(existingManifest, inboundsPropertyPath, {});
+        const appDir = makeTempDir(JSON.stringify(existingManifest), {
+            'webapp/i18n/i18n.properties': existingi18n
+        });
+
+        await expect(
+            yeomanTest
+                .create(
+                    FLPConfigGenerator,
+                    {
+                        resolved: flpConfigGeneratorPath
+                    },
+                    {
+                        cwd: appDir
+                    }
+                )
+                .withOptions({
+                    launchFlpConfigAsSubGenerator: true,
+                    skipPrompt: true,
+                    overwrite: true,
+                    inboundConfig: {
+                        semanticObject: 'so1',
+                        action: 'action1',
+                        title: 'title1',
+                        subTitle: 'subtitle1'
+                    }
+                })
+                .run()
+        ).resolves.not.toThrow();
+
+        const changedManifest: Manifest = JSON.parse(fs.readFileSync(join(appDir, 'webapp/manifest.json')).toString());
+        const inbound = get(changedManifest, crossNavigationPropertyPath).inbounds['so1-action1'];
+        expect(inbound).toBeDefined();
+        expect(inbound.title).toBe('{{so1-action1.flpTitle}}');
+        expect(inbound.subTitle).toBe('{{so1-action1.flpSubtitle}}');
+    });
+
     it('adds flp-config, updates i18n file using bundle reference', async () => {
         const existingManifest = JSON.parse(testFixture.getContents('projectWithI18nBundle/app1/webapp/manifest.json'));
         const existingi18n = testFixture.getContents('project/webapp/i18n/i18n.properties');

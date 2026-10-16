@@ -135,8 +135,8 @@ export default class extends Generator {
                 semanticObject: this.options.inboundConfig.semanticObject,
                 action: this.options.inboundConfig.action,
                 // blank title/subTitle must be omitted so the manifest falls back to `sap.app/title`
-                title: this.options.inboundConfig.title || undefined,
-                subTitle: this.options.inboundConfig.subTitle || undefined
+                title: this.options.inboundConfig.title === '' ? undefined : this.options.inboundConfig.title,
+                subTitle: this.options.inboundConfig.subTitle === '' ? undefined : this.options.inboundConfig.subTitle
             };
             return;
         }
