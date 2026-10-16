@@ -79,6 +79,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@sap/ux-specification": "1.144.5",
         "@types/json-schema": "7.0.15",
