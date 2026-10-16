@@ -284,13 +284,21 @@ export async function pressInteractive(
  * to `<site-origin>/<uri>$metadata`; a URI that already ends in `$metadata` is
  * left as-is (no duplication).
  *
+ * Pins the host to the editor origin: an absolute or protocol-relative `uri`
+ * that resolves to a foreign origin is rejected, so the authenticated browser
+ * context can never be aimed at an off-origin host (SSRF guard).
+ *
  * @param site Editor URL (localhost); only its origin is used.
  * @param uri OData data-source URI from the manifest (usually relative).
  * @returns Absolute `$metadata` URL on the site origin.
+ * @throws Error when `uri` resolves to an origin other than the site origin.
  */
 function buildMetadataUrl(site: string, uri: string): string {
     const origin = new URL(site).origin;
-    const resolved = new URL(uri.replace(/^\/+/, ''), `${origin}/`);
+    const resolved = new URL(uri, `${origin}/`);
+    if (resolved.origin !== origin) {
+        throw new Error(`Refusing to fetch OData metadata from a foreign origin: ${resolved.origin}`);
+    }
     if (!resolved.pathname.endsWith('/$metadata')) {
         resolved.pathname = `${resolved.pathname.replace(/\/+$/, '')}/$metadata`;
     }

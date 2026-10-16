@@ -283,5 +283,19 @@ describe('rta/commands', () => {
             expect(out).toEqual({ entries: [] });
             expect(transport.fetchViaContext).not.toHaveBeenCalled();
         });
+
+        test('refuses an absolute URI that escapes the editor origin (SSRF guard)', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['http://evil.example.com/x/']);
+            expect(out.entries[0]).toHaveProperty('error');
+            expect(transport.fetchViaContext).not.toHaveBeenCalled();
+        });
+
+        test('refuses a protocol-relative URI that escapes the editor origin (SSRF guard)', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['//evil.example.com/x/']);
+            expect(out.entries[0]).toHaveProperty('error');
+            expect(transport.fetchViaContext).not.toHaveBeenCalled();
+        });
     });
 });
