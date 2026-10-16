@@ -20481,8 +20481,9 @@ server:
 
 sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+    \\"./pages/JourneyRunner\\",
+    \\"sap/ui/core/library\\"
+], function (opaTest, runner, coreLibrary) {
     \\"use strict\\";
 
     function journey() {
@@ -20532,6 +20533,10 @@ sap.ui.define([
         opaTest(\\"Check the delete button\\", function (Given, When, Then) {
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteDelete();
+        });
+
+        opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending);
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
@@ -22363,8 +22368,9 @@ server:
 
 sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+    \\"./pages/JourneyRunner\\",
+    \\"sap/ui/core/library\\"
+], function (opaTest, runner, coreLibrary) {
     \\"use strict\\";
 
     function journey() {
@@ -22403,6 +22409,10 @@ sap.ui.define([
         opaTest(\\"Check the delete button\\", function (Given, When, Then) {
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteDelete();
+        });
+
+        opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending);
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
@@ -24235,8 +24245,9 @@ server:
 
 sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\"
-], function (opaTest, runner) {
+    \\"./pages/JourneyRunner\\",
+    \\"sap/ui/core/library\\"
+], function (opaTest, runner, coreLibrary) {
     \\"use strict\\";
 
     function journey() {
@@ -24270,6 +24281,10 @@ sap.ui.define([
         opaTest(\\"Check the delete button\\", function (Given, When, Then) {
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckDelete({ visible: true });
             // When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteDelete();
+        });
+
+        opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending);
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {

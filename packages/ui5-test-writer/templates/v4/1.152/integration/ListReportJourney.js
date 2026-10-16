@@ -15,10 +15,12 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
+<%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (defaultSortOrder && defaultSortOrder.length > 0) || (tabs && tabs.some(function(tab) { return (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) || (tab.defaultSortOrder && tab.defaultSortOrder.length > 0); }))); -%>
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"
-], function (opaTest, runner) {
+    "./pages/JourneyRunner"<% if (needsSortOrder) { %>,
+    "sap/ui/core/library"<% } %>
+], function (opaTest, runner<% if (needsSortOrder) { %>, coreLibrary<% } %>) {
     "use strict";
 
     function journey() {
@@ -214,6 +216,15 @@ sap.ui.define([
 
 <%_ } -%>
 <%_ } -%>
+<%_ if (tab.defaultSortOrder && tab.defaultSortOrder.length > 0) { -%>
+        opaTest(<%- JSON.stringify("Check default sort order from PresentationVariant in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            <%_ tab.defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
         opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
             <%_ if (!hideFilterBar) { -%>
@@ -348,6 +359,22 @@ sap.ui.define([
 <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
         opaTest("Check table columns", function (Given, When, Then) {
             Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+        });
+
+<%_ } -%>
+<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
+        opaTest("Check default sort order from PresentationVariant", function (Given, When, Then) {
+            <%_ defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
+<%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
+        opaTest("Check default filter values from SelectionVariant", function (Given, When, Then) {
+            <%_ defaultFilterValues.forEach(function(filter) { _%>
+            Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: "<%- filter.property %>" }, "<%- filter.value %>"<%- filter.operator ? ', "' + filter.operator + '"' : '' %>);
+            <%_ }); -%>
         });
 
 <%_ } -%>
