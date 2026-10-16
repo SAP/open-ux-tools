@@ -267,7 +267,11 @@ describe('rta/commands', () => {
         });
 
         test('maps a text/html login response to a per-entry error', async () => {
-            transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'text/html', body: '<html>login</html>' });
+            transport.fetchViaContext.mockResolvedValue({
+                status: 200,
+                contentType: 'text/html',
+                body: '<html>login</html>'
+            });
             const out = await getODataMetadata(transport, SITE, ['api/svc/']);
             expect(out.entries[0]).toHaveProperty('error');
         });

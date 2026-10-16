@@ -277,9 +277,9 @@ describe('runRtaWorkflowStep dispatcher', () => {
         });
 
         test('rejects when payload.uris is missing', async () => {
-            await expect(
-                runRtaWorkflowStep({ step: 'get_odata_metadata', site: SITE, payload: {} })
-            ).rejects.toThrow(/uris/i);
+            await expect(runRtaWorkflowStep({ step: 'get_odata_metadata', site: SITE, payload: {} })).rejects.toThrow(
+                /uris/i
+            );
         });
 
         test('rejects when payload.uris is not a string array', async () => {

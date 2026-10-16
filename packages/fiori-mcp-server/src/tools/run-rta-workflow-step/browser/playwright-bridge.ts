@@ -10,7 +10,12 @@ import {
     probeBridge,
     recordBackendOrigin
 } from './session.js';
-import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport, NeedsUserActionPayload } from './types.js';
+import type {
+    FetchViaContextResult,
+    FrontendActionResult,
+    FrontendActionTransport,
+    NeedsUserActionPayload
+} from './types.js';
 
 // Module-scope singleton state.
 //   `browser` — launched once and reused for the lifetime of the Node process.
