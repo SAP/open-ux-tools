@@ -1,5 +1,17 @@
 # @sap-ux/i18n
 
+## 1.0.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-textdocument 1.0.12 → 1.0.15, vscode-languageserver-types 3.18.0 → 3.18.4, @vscode-logging/logger 2.0.9 → 2.0.10 [[35f731a](https://github.com/SAP/open-ux-tools/commit/35f731ae4482c014726fe6bbbfdcac497382715b)]
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.3 → 1.0.4
+
 ## 1.0.5
 
 ### Patch Changes
