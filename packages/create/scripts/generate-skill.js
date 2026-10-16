@@ -116,6 +116,25 @@ metadata:
     const commandSections = spec.commands
         .map((cmd) => {
             const cmdDesc = cmd.description.split('\n')[0].trim();
+
+            // Leaf command — render options summary instead of a subcommand table
+            if (!cmd.subcommands || cmd.subcommands.length === 0) {
+                const optionsSummary = (cmd.options || [])
+                    .map((opt) => `| \`${opt.name}\` | ${opt.description} |`)
+                    .join('\n');
+                return [
+                    `## \`${cmd.name}\``,
+                    '',
+                    cmdDesc,
+                    '',
+                    '| Option | Description |',
+                    '|---|---|',
+                    optionsSummary,
+                    '',
+                    `> Full options and flags: \`references/${cmd.name}.md\``,
+                ].join('\n');
+            }
+
             const tableRows = (cmd.subcommands || [])
                 .map((sub) => {
                     const desc = sub.description.replace(/ {2,}/g, '\n').trim().split('\n')[0];
@@ -147,6 +166,16 @@ metadata:
  * @param cmd - The top-level command object from the JSON spec.
  */
 function generateReferenceFile(cmd) {
+    // Leaf command (no subcommands) — render its options directly
+    if (!cmd.subcommands || cmd.subcommands.length === 0) {
+        let md = `# \`${cmd.name}\` — Full Options\n\n`;
+        md += `## [\`${cmd.name}\`](#${cmd.name})\n\n`;
+        md += `${cmd.description.replace(/ {2,}/g, '\n').trim()}\n\n`;
+        if (cmd.options && cmd.options.length > 0) {
+            md += `Options:\n${renderOptions(cmd.options)}\n\n`;
+        }
+        return md;
+    }
     return `# \`${cmd.name}\` — Full Options\n\n` + renderSubcommands(cmd);
 }
 

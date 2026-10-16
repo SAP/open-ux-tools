@@ -43,12 +43,11 @@ export {
 
 // Re-export from file-system-utils
 export {
+    normalizePath,
     stripSpaces,
     escapeSingleQuotes,
     escapeDoubleQuotes,
-    doesDirectoryExists,
-    doesPropertyExist,
-    createDirectory
+    doesDirectoryExists
 } from './file-system-utils.js';
 
 // Re-export from manifest-and-version-utils
