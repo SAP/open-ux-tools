@@ -293,7 +293,7 @@ export const tools = [
 
         3. Generate the application once the config is complete and valid.
 
-        Example of CORRECT input structure (ui5Version is optional — omit to use the generator's bundled default version):
+        Example of CORRECT input structure (ui5Version is optional — omit to let the MCP server resolve the latest stable version from ui5.sap.com):
         {
           "floorplan": "FE_LROP",
           "project": {

@@ -73,6 +73,11 @@ jest.unstable_mockModule('../../../src/tools/schemas/index', () => ({
     PREDEFINED_GENERATOR_VALUES: { version: '0.2', telemetryData: {}, project: { sapux: true } }
 }));
 
+const mockGetLatestUI5Version = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    getLatestUI5Version: mockGetLatestUI5Version
+}));
+
 const { generateFioriAppOData } = await import('../../../src/tools/generate-fiori-app-odata.js');
 
 describe('generate-fiori-ui-application execute-functionality', () => {
@@ -88,6 +93,7 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         mockMkdir.mockResolvedValue(undefined);
         mockWriteFile.mockResolvedValue(undefined);
         mockUnlink.mockResolvedValue(undefined);
+        mockGetLatestUI5Version.mockResolvedValue('1.153.0');
         // First call is the pre-flight app-folder check (must be false = folder does not exist yet).
         // Subsequent calls are the finally-block cleanup checks (must be true = temp files exist).
         mockExistsSync.mockReturnValueOnce(false).mockReturnValue(true);
@@ -483,7 +489,21 @@ describe('generate-fiori-ui-application execute-functionality', () => {
         expect(result.appPath).toContain('default');
     });
 
-    test('should not include ui5Version in config when omitted', async () => {
+    test('should resolve ui5Version from CDN when omitted', async () => {
+        const args = {
+            floorplan: 'FE_LROP',
+            project: { name: 'testapp', targetFolder: mockAppPath },
+            service: { servicePath: '/sap/opu/odata4/service', url: 'https://test.example.com' }
+        };
+
+        await generateFioriAppOData(args);
+
+        const configContent = JSON.parse((mockWriteFile.mock.calls[0] as string[])[1] as string);
+        expect(configContent.project.ui5Version).toBe('1.153.0');
+    });
+
+    test('should not set ui5Version when CDN returns undefined', async () => {
+        mockGetLatestUI5Version.mockResolvedValueOnce(undefined);
         const args = {
             floorplan: 'FE_LROP',
             project: { name: 'testapp', targetFolder: mockAppPath },

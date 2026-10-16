@@ -46,7 +46,7 @@ export const project = z.object({
         .string()
         .optional()
         .describe(
-            'UI5 version to use for the generated application. If omitted, the generator applies its own bundled default version.'
+            'UI5 version to use for the generated application. If omitted, the MCP server resolves the latest stable UI5 version from ui5.sap.com.'
         ),
     enableTypeScript: z
         .boolean()
