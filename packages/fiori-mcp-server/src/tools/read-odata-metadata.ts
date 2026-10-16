@@ -6,9 +6,8 @@ import type { IManifestService } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import prettifyXml from 'prettify-xml';
 
-import { logger } from '../utils/index.js';
+import { formatXml, logger } from '../utils/index.js';
 import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;
@@ -147,19 +146,4 @@ function writeLocalMetadata(appPath: string, name: string, metadata: string): vo
     const metadataPath = join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
     mkdirSync(dirname(metadataPath), { recursive: true });
     writeFileSync(metadataPath, metadata, 'utf-8');
-}
-
-/**
- * Pretty-prints an XML string using `prettify-xml`.
- *
- * @param xml Raw XML content.
- * @returns Indented XML; returns the input unchanged if formatting fails.
- */
-function formatXml(xml: string): string {
-    try {
-        return prettifyXml(xml, { indent: 4 });
-    } catch (error) {
-        logger.warn(`Failed to format XML: ${(error as Error).message}`);
-        return xml;
-    }
 }

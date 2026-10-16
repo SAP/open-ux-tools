@@ -3,10 +3,12 @@ import { join } from 'node:path';
 
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
+const mockFormatXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
 
 const actualUtils = await import('../../../src/utils/index.js');
 jest.unstable_mockModule('../../../src/utils', () => ({
     ...actualUtils,
+    formatXml: mockFormatXml,
     logger: {
         ...actualUtils.logger,
         warn: mockLoggerWarn,
@@ -36,11 +38,6 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 const mockCreateAbapServiceProvider = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: mockCreateAbapServiceProvider
-}));
-
-const mockPrettifyXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
-jest.unstable_mockModule('prettify-xml', () => ({
-    default: mockPrettifyXml
 }));
 
 const mockMkdirSync = jest.fn<any>();
@@ -80,7 +77,7 @@ describe('readODataMetadataAdp', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsCFEnvironment.mockResolvedValue(false);
-        mockPrettifyXml.mockImplementation((xml: string) => `<formatted>${xml}</formatted>`);
+        mockFormatXml.mockImplementation((xml: string) => `<formatted>${xml}</formatted>`);
         mockReadUi5Config.mockResolvedValue({
             findCustomMiddleware: jest.fn<any>().mockReturnValue({
                 configuration: { adp: { target: { url: 'http://host', client: '100' } } }
@@ -137,22 +134,6 @@ describe('readODataMetadataAdp', () => {
         await readODataMetadataAdp({ appPath: APP_PATH });
 
         expect(mockWriteFileSync).not.toHaveBeenCalled();
-    });
-
-    test('falls back to raw XML and warns when prettify-xml throws', async () => {
-        mockPrettifyXml.mockImplementation(() => {
-            throw new Error('bad xml');
-        });
-        const provider = makeAbapProvider(makeMetadata('<raw/>'));
-        mockCreateAbapServiceProvider.mockReturnValue(provider);
-        mockInitMergedManifest.mockResolvedValue(
-            makeManifestService({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } })
-        );
-
-        const result = await readODataMetadataAdp({ appPath: APP_PATH });
-
-        expect(result.entries[0].metadata).toEqual('<raw/>');
-        expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to format XML'));
     });
 
     test('passes url and client from ui5.yaml to createAbapServiceProvider', async () => {
