@@ -1,10 +1,13 @@
 import { isNeedsUserAction } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
+import { formatXml } from '../../../utils/index.js';
 import type {
     ActionsCatalog,
     EditorPage,
     ElementContext,
+    GetODataMetadataResult,
     InteractiveElement,
+    ODataMetadataEntry,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction
@@ -273,4 +276,67 @@ export async function pressInteractive(
         name,
         await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
     );
+}
+
+/**
+ * Builds the `$metadata` URL for an OData data-source `uri` against the editor
+ * `site` origin. Relative, leading-slash, and trailing-slash URIs all resolve
+ * to `<site-origin>/<uri>$metadata`; a URI that already ends in `$metadata` is
+ * left as-is (no duplication).
+ *
+ * @param site Editor URL (localhost); only its origin is used.
+ * @param uri OData data-source URI from the manifest (usually relative).
+ * @returns Absolute `$metadata` URL on the site origin.
+ */
+function buildMetadataUrl(site: string, uri: string): string {
+    const origin = new URL(site).origin;
+    const resolved = new URL(uri.replace(/^\/+/, ''), `${origin}/`);
+    if (!resolved.pathname.endsWith('/$metadata')) {
+        resolved.pathname = `${resolved.pathname.replace(/\/+$/, '')}/$metadata`;
+    }
+    return resolved.toString();
+}
+
+/**
+ * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the
+ * authenticated browser context registered for `site`. CF projects have no ABAP
+ * provider, so this is the way to obtain real EDMX — the fetch rides the
+ * approuter session held by the `start`ed editor.
+ *
+ * Each entry is independent: a login-page/non-XML response or a failed fetch
+ * becomes a per-entry `error` rather than failing the whole batch. A missing
+ * session (no `start`) surfaces as the transport's thrown error on the first URI.
+ *
+ * @param transport Transport whose `fetchViaContext` carries the auth cookies.
+ * @param site Editor URL returned by `start`; its origin is the fetch target.
+ * @param uris OData data-source URIs (the `entries[].url` from `read_odata_metadata_adp`).
+ * @returns One entry per URI: `{ url, metadata }` on success or `{ url, error }`.
+ */
+export async function getODataMetadata(
+    transport: FrontendActionTransport,
+    site: string,
+    uris: string[]
+): Promise<GetODataMetadataResult> {
+    const entries: ODataMetadataEntry[] = await Promise.all(
+        uris.map(async (uri): Promise<ODataMetadataEntry> => {
+            try {
+                const { status, contentType, body } = await transport.fetchViaContext(
+                    site,
+                    buildMetadataUrl(site, uri)
+                );
+                const isXml = contentType.toLowerCase().includes('xml');
+                const looksEdmx = /<edmx:|<\?xml/i.test(body);
+                if (isXml && looksEdmx) {
+                    return { url: uri, metadata: formatXml(body) };
+                }
+                return {
+                    url: uri,
+                    error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
+                };
+            } catch (error) {
+                return { url: uri, error: error instanceof Error ? error.message : String(error) };
+            }
+        })
+    );
+    return { entries };
 }
