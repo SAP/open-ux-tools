@@ -1,6 +1,7 @@
 import type {
     ActionsCatalog,
     ElementContext,
+    GetODataMetadataResult,
     InteractiveElement,
     Overlay,
     PageActionRunResult,
@@ -30,7 +31,8 @@ export const STEPS = [
     'restart',
     'get_page_actions',
     'call_page_action',
-    'press_interactive'
+    'press_interactive',
+    'get_odata_metadata'
 ] as const;
 
 export type Step = (typeof STEPS)[number];
@@ -61,6 +63,10 @@ export interface StartStepResult {
     /** Echo of the frameId — carry this forward to every subsequent step. */
     frameId: string;
     rtaStarted: boolean;
+    /** Set when the editor URL served a backend login page instead of the app. */
+    needsUserAction?: 'backend_login_required';
+    /** Human-readable guidance accompanying `needsUserAction`. */
+    message?: string;
 }
 
 export interface GetOverlaysStepResult {
@@ -88,6 +94,10 @@ export interface RestartStepResult {
     site: string;
     frameId: string;
     rtaStarted: boolean;
+    /** Set when the editor URL served a backend login page instead of the app. */
+    needsUserAction?: 'backend_login_required';
+    /** Human-readable guidance accompanying `needsUserAction`. */
+    message?: string;
 }
 
 export interface GetPageActionsStepResult {
@@ -105,6 +115,12 @@ export interface PressInteractiveStepResult {
     result: PageActionRunResult;
 }
 
+/**
+ * Result of the `get_odata_metadata` step: one entry per requested OData URI,
+ * each carrying formatted EDMX or a per-entry error.
+ */
+export type GetODataMetadataStepResult = GetODataMetadataResult;
+
 export type RunRtaWorkflowStepResult =
     | StartStepResult
     | GetOverlaysStepResult
@@ -115,4 +131,5 @@ export type RunRtaWorkflowStepResult =
     | RestartStepResult
     | GetPageActionsStepResult
     | CallPageActionStepResult
-    | PressInteractiveStepResult;
+    | PressInteractiveStepResult
+    | GetODataMetadataStepResult;

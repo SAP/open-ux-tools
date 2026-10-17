@@ -1,9 +1,13 @@
+import { isNeedsUserAction } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
+import { formatXml } from '../../../utils/index.js';
 import type {
     ActionsCatalog,
     EditorPage,
     ElementContext,
+    GetODataMetadataResult,
     InteractiveElement,
+    ODataMetadataEntry,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction
@@ -56,15 +60,31 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
 }
 
 /**
+ * Result of a `startRta` call. On the normal path `rtaStarted` is `true`. When
+ * the editor URL served a backend login page (CF XSUAA / ABAP reentrance),
+ * `rtaStarted` is `false` and `needsUserAction` carries the structured signal
+ * so the caller can prompt the human to log in and retry — instead of throwing.
+ */
+export interface StartRtaResult {
+    rtaStarted: boolean;
+    needsUserAction?: 'backend_login_required';
+    message?: string;
+}
+
+/**
  * Starts Runtime Authoring on the editor page.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns `{ rtaStarted: true }` once RTA has started.
+ * @returns `{ rtaStarted: true }` once RTA has started, or a `backend_login_required` signal.
  */
-export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<{ rtaStarted: boolean }> {
+export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<StartRtaResult> {
     const name = action('startRTA');
-    return unwrap(name, await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, {}, page.frameId));
+    const payload = unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId));
+    if (isNeedsUserAction(payload)) {
+        return { rtaStarted: false, needsUserAction: payload.__needsUserAction, message: payload.message };
+    }
+    return { rtaStarted: true };
 }
 
 /**
@@ -256,4 +276,75 @@ export async function pressInteractive(
         name,
         await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
     );
+}
+
+/**
+ * Builds the `$metadata` URL for an OData data-source `uri` against the editor
+ * `site` origin. Relative, leading-slash, and trailing-slash URIs all resolve
+ * to `<site-origin>/<uri>$metadata`; a URI that already ends in `$metadata` is
+ * left as-is (no duplication).
+ *
+ * Pins the host to the editor origin: an absolute or protocol-relative `uri`
+ * that resolves to a foreign origin is rejected, so the authenticated browser
+ * context can never be aimed at an off-origin host (SSRF guard).
+ *
+ * @param site Editor URL (localhost); only its origin is used.
+ * @param uri OData data-source URI from the manifest (usually relative).
+ * @returns Absolute `$metadata` URL on the site origin.
+ * @throws Error when `uri` resolves to an origin other than the site origin.
+ */
+function buildMetadataUrl(site: string, uri: string): string {
+    const origin = new URL(site).origin;
+    const resolved = new URL(uri, `${origin}/`);
+    if (resolved.origin !== origin) {
+        throw new Error(`Refusing to fetch OData metadata from a foreign origin: ${resolved.origin}`);
+    }
+    if (!resolved.pathname.endsWith('/$metadata')) {
+        resolved.pathname = `${resolved.pathname.replace(/\/+$/, '')}/$metadata`;
+    }
+    return resolved.toString();
+}
+
+/**
+ * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the
+ * authenticated browser context registered for `site`. CF projects have no ABAP
+ * provider, so this is the way to obtain real EDMX — the fetch rides the
+ * approuter session held by the `start`ed editor.
+ *
+ * Each entry is independent: a login-page/non-XML response or a failed fetch
+ * becomes a per-entry `error` rather than failing the whole batch. A missing
+ * session (no `start`) surfaces as the transport's thrown error on the first URI.
+ *
+ * @param transport Transport whose `fetchViaContext` carries the auth cookies.
+ * @param site Editor URL returned by `start`; its origin is the fetch target.
+ * @param uris OData data-source URIs (the `entries[].url` from `read_odata_metadata_adp`).
+ * @returns One entry per URI: `{ url, metadata }` on success or `{ url, error }`.
+ */
+export async function getODataMetadata(
+    transport: FrontendActionTransport,
+    site: string,
+    uris: string[]
+): Promise<GetODataMetadataResult> {
+    const entries: ODataMetadataEntry[] = await Promise.all(
+        uris.map(async (uri): Promise<ODataMetadataEntry> => {
+            try {
+                const { status, contentType, body } = await transport.fetchViaContext(
+                    site,
+                    buildMetadataUrl(site, uri)
+                );
+                const isXml = contentType.toLowerCase().includes('xml');
+                const looksEdmx = /<edmx:|<\?xml/i.test(body);
+                if (isXml && looksEdmx) {
+                    return { url: uri, metadata: formatXml(body) };
+                }
+                return {
+                    url: uri,
+                    error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
+                };
+            } catch (error) {
+                return { url: uri, error: error instanceof Error ? error.message : String(error) };
+            }
+        })
+    );
+    return { entries };
 }

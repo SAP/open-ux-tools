@@ -189,3 +189,17 @@ export interface PageActionRunResult {
     /** Set when `status === 'ok'`. PoC actions don't return data; reserved for future use. */
     data?: unknown;
 }
+
+/**
+ * One OData data source's metadata result. On success `metadata` holds the
+ * formatted EDMX; on failure `error` explains why (login page, non-XML, or a
+ * failed fetch) without sinking the rest of the batch.
+ */
+export type ODataMetadataEntry = { url: string; metadata: string } | { url: string; error: string };
+
+/**
+ * Result of {@link getODataMetadata}: one entry per requested OData URI.
+ */
+export interface GetODataMetadataResult {
+    entries: ODataMetadataEntry[];
+}

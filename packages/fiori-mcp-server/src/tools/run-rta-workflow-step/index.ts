@@ -3,6 +3,7 @@ import {
     executeAction,
     FrontendActionError,
     getElementContext,
+    getODataMetadata,
     getOverlays,
     getPageActions,
     pressInteractive,
@@ -43,6 +44,21 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
         throw new Error(`payload.${key} is required and must be an object`);
     }
     return value as Record<string, unknown>;
+}
+
+/**
+ * Reads `key` from `payload` and asserts it is an array of non-empty strings.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The string array value.
+ */
+function requireStringArray(payload: Record<string, unknown> | undefined, key: string): string[] {
+    const value = payload?.[key];
+    if (!Array.isArray(value) || value.some((item) => typeof item !== 'string' || item.length === 0)) {
+        throw new Error(`payload.${key} is required and must be an array of non-empty strings`);
+    }
+    return value as string[];
 }
 
 /**
@@ -151,6 +167,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const controlId = requireString(input.payload, 'controlId');
                 const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
                 return { result };
+            }
+            case 'get_odata_metadata': {
+                const uris = requireStringArray(input.payload, 'uris');
+                return getODataMetadata(defaultTransport, site, uris);
             }
             default:
                 throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);

@@ -1,12 +1,28 @@
 import { chromium, type Browser, type BrowserContext, type Frame, type Page } from 'playwright-core';
 import { logger } from '../../../utils/logger.js';
-import type { FrontendActionResult, FrontendActionTransport } from './types.js';
+import {
+    buildContextOptions,
+    clearSessions,
+    isBackendLoginPage,
+    isHeadless,
+    LOGIN_REQUIRED_MESSAGE,
+    persistSessionState,
+    probeBridge,
+    recordBackendOrigin
+} from './session.js';
+import type {
+    FetchViaContextResult,
+    FrontendActionResult,
+    FrontendActionTransport,
+    NeedsUserActionPayload
+} from './types.js';
 
 // Module-scope singleton state.
 //   `browser` — launched once and reused for the lifetime of the Node process.
 //   `browserStartPromise` — deduplicates concurrent launches so the first
 //      caller's `chromium.launch()` is awaited by everyone else.
 //   `connectionRegistry` — site URL → open page handle. One entry per editor URL.
+// Session reuse / backend-origin state lives in `./session.js`.
 let browser: Browser | undefined;
 let browserStartPromise: Promise<Browser> | undefined;
 const connectionRegistry: Map<string, PageRPC> = new Map();
@@ -15,6 +31,8 @@ const connectionRegistry: Map<string, PageRPC> = new Map();
  * Internal RPC handle for a single browser page.
  */
 interface PageRPC {
+    /** The context owning this page — used to snapshot session state before close. */
+    readonly context: BrowserContext;
     /** Invoke a frontend action on this page. */
     callFrontendAction<TReturn = unknown>(
         actionName: string,
@@ -112,7 +130,7 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
         await context.close().catch(() => undefined);
     };
 
-    return { callFrontendAction, close };
+    return { context, callFrontendAction, close };
 }
 
 const INSTALL_HINT =
@@ -145,7 +163,7 @@ async function startBrowser(): Promise<Browser> {
     browserStartPromise = (async (): Promise<Browser> => {
         try {
             return await chromium.launch({
-                headless: false,
+                headless: isHeadless(),
                 executablePath: executablePath ?? undefined,
                 channel,
                 args: launchArgs
@@ -157,7 +175,7 @@ async function startBrowser(): Promise<Browser> {
                 }); retrying with Playwright bundled Chromium.`
             );
             try {
-                return await chromium.launch({ headless: false, args: launchArgs });
+                return await chromium.launch({ headless: isHeadless(), args: launchArgs });
             } catch (fallbackError) {
                 throw new Error(INSTALL_HINT);
             }
@@ -170,6 +188,7 @@ async function startBrowser(): Promise<Browser> {
             browser = undefined;
             browserStartPromise = undefined;
             connectionRegistry.clear();
+            clearSessions();
         });
         return browser;
     } catch (error) {
@@ -200,7 +219,7 @@ export async function callFrontendAction<TReturn = unknown>(
     let rpc = connectionRegistry.get(site);
 
     if (!rpc) {
-        const context = await activeBrowser.newContext({ viewport: null });
+        const context = await activeBrowser.newContext(buildContextOptions(site));
         const page: Page = await context.newPage();
 
         page.on('pageerror', (err) => {
@@ -213,6 +232,35 @@ export async function callFrontendAction<TReturn = unknown>(
 
         try {
             await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
+
+            // Bounded probe for the webclient bridge. On success → app page.
+            // On timeout → distinguish a backend login page from a slow app.
+            const bridgeReady = await probeBridge(page);
+            if (!bridgeReady) {
+                const landedUrl = page.url();
+                recordBackendOrigin(site, landedUrl);
+                const [title, bodyText] = await Promise.all([
+                    page.title().catch(() => ''),
+                    page.evaluate(() => document.body?.innerText?.slice(0, 4000) ?? '').catch(() => '')
+                ]);
+                if (isBackendLoginPage(landedUrl, title, bodyText)) {
+                    // Not the app — a backend login page. Tear down and return the
+                    // structured signal (riding a success envelope so `unwrap` does
+                    // not throw). Do NOT register, so the next `start` reopens cleanly.
+                    await context.close().catch(() => undefined);
+                    const loginPayload: NeedsUserActionPayload = {
+                        __needsUserAction: 'backend_login_required',
+                        message: LOGIN_REQUIRED_MESSAGE
+                    };
+                    return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
+                }
+                // Ambiguous (slow/error page): fall through to the existing behaviour —
+                // register and let the per-action 60 s wait run as a backstop.
+            } else {
+                // Authenticated app reached — persist the session for reuse (gated).
+                await persistSessionState(site, context);
+            }
+
             rpc = await createPageRPC(page, context);
             connectionRegistry.set(site, rpc);
         } catch (err) {
@@ -232,6 +280,8 @@ export async function callFrontendAction<TReturn = unknown>(
 export async function disconnectSite(site: string): Promise<void> {
     const rpc = connectionRegistry.get(site);
     if (rpc) {
+        // Snapshot before closing to catch any mid-session token rotation (gated).
+        await persistSessionState(site, rpc.context);
         await rpc.close();
         connectionRegistry.delete(site);
     }
@@ -249,6 +299,7 @@ export async function stopBrowser(): Promise<void> {
     await Promise.all(
         [...connectionRegistry.entries()].map(async ([site, rpc]) => {
             try {
+                await persistSessionState(site, rpc.context);
                 await rpc.close();
             } catch {
                 // Ignore errors when closing pages.
@@ -265,6 +316,7 @@ export async function stopBrowser(): Promise<void> {
 
     browser = undefined;
     browserStartPromise = undefined;
+    clearSessions();
 }
 
 /**
@@ -278,12 +330,36 @@ export function isRegistryEmpty(): boolean {
 }
 
 /**
+ * Issues an authenticated GET through the browser context registered for
+ * `site`, reusing its approuter session cookies. Does not launch a browser or
+ * open a page — if no session is registered for `site`, throws so the caller
+ * can tell the agent to run the `start` step first.
+ *
+ * @param site URL whose registered context should issue the request.
+ * @param url Absolute URL to GET (resolved against the localhost `site` origin by the caller).
+ * @returns The response status, content-type, and body text.
+ */
+export async function fetchViaContext(site: string, url: string): Promise<FetchViaContextResult> {
+    const rpc = connectionRegistry.get(site);
+    if (!rpc) {
+        throw new Error('No active editor session for this site. Run the "start" step first.');
+    }
+    const response = await rpc.context.request.get(url, { maxRedirects: 5 });
+    return {
+        status: response.status(),
+        contentType: response.headers()['content-type'] ?? '',
+        body: await response.text()
+    };
+}
+
+/**
  * Default transport — the Playwright-backed implementation bound from this
  * module's exports. The `rta/` layer consumes this when no transport is
  * injected explicitly.
  */
 export const defaultTransport: FrontendActionTransport = {
     callFrontendAction,
+    fetchViaContext,
     disconnectSite,
     stopBrowser
 };

@@ -1,4 +1,7 @@
 import { EventEmitter } from 'node:events';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge.js';
 
 // --- playwright-core mock --------------------------------------------------
@@ -29,16 +32,44 @@ class FakePage extends EventEmitter {
     }));
     public readonly waitForFunction = jest.fn(async () => undefined);
     public readonly goto = jest.fn(async () => undefined);
+    public currentUrl: string;
+    public readonly url = jest.fn(() => this.currentUrl);
+    public readonly title = jest.fn(async () => '');
     public readonly close = jest.fn(async () => {
         this.emit('close');
     });
     private readonly frameList: FakeFrame[];
-    constructor(frames: FakeFrame[] = []) {
+    constructor(frames: FakeFrame[] = [], url = 'http://localhost:8080/a') {
         super();
         this.frameList = frames;
+        this.currentUrl = url;
     }
     frames(): FakeFrame[] {
         return this.frameList;
+    }
+}
+
+class FakeContext {
+    public readonly newPage: jest.Mock;
+    public readonly close = jest.fn(async () => undefined);
+    public readonly request = {
+        get: jest.fn(async (_url: string, _opts?: unknown) => ({
+            status: () => 200,
+            headers: () => ({ 'content-type': 'application/xml' }),
+            text: async () => '<edmx:Edmx/>'
+        }))
+    };
+    public readonly storageState = jest.fn(async (opts?: { path?: string }) => {
+        if (opts?.path) {
+            this.savedPaths.push(opts.path);
+        }
+        return { cookies: [], origins: [] };
+    });
+    public readonly savedPaths: string[] = [];
+    public options: unknown;
+    constructor(newPage: jest.Mock, options: unknown) {
+        this.newPage = newPage;
+        this.options = options;
     }
 }
 
@@ -48,8 +79,12 @@ class FakeBrowser extends EventEmitter {
         this.emit('disconnected');
     });
     public readonly newPage = jest.fn();
-    public readonly contextClose = jest.fn(async () => undefined);
-    public readonly newContext = jest.fn(async () => ({ newPage: this.newPage, close: this.contextClose }));
+    public readonly contexts: FakeContext[] = [];
+    public readonly newContext = jest.fn(async (options?: unknown) => {
+        const context = new FakeContext(this.newPage, options);
+        this.contexts.push(context);
+        return context;
+    });
     public connected = true;
     isConnected(): boolean {
         return this.connected;
@@ -90,6 +125,8 @@ async function loadPlaywrightBridge(): Promise<typeof PlaywrightBridgeModule> {
 beforeEach(() => {
     jest.resetModules();
     launchMock.mockReset();
+    delete process.env.PLAYWRIGHT_SESSION_STATE_PATH;
+    delete process.env.PLAYWRIGHT_HEADLESS;
 });
 
 describe('browser/playwright-bridge', () => {
@@ -194,7 +231,7 @@ describe('browser/playwright-bridge', () => {
         await fs.disconnectSite(SITE_A);
 
         expect(page.close).toHaveBeenCalledTimes(1);
-        expect(browser.contextClose).toHaveBeenCalledTimes(1);
+        expect(browser.contexts[0].close).toHaveBeenCalledTimes(1);
 
         await fs.callFrontendAction(SITE_A, 'b');
         expect(browser.newPage).toHaveBeenCalledTimes(2);
@@ -216,7 +253,8 @@ describe('browser/playwright-bridge', () => {
 
         expect(pageA.close).toHaveBeenCalled();
         expect(pageB.close).toHaveBeenCalled();
-        expect(browser.contextClose).toHaveBeenCalledTimes(2);
+        expect(browser.contexts[0].close).toHaveBeenCalledTimes(1);
+        expect(browser.contexts[1].close).toHaveBeenCalledTimes(1);
         expect(browser.close).toHaveBeenCalledTimes(1);
     });
 
@@ -402,5 +440,273 @@ describe('browser/playwright-bridge', () => {
         const fs = await loadPlaywrightBridge();
         await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/npx playwright install chromium/);
         expect(launchMock).toHaveBeenCalledTimes(2);
+    });
+
+    // --- B1 (persistent session) + B2 (login-aware start) --------------------
+
+    const CF_SITE = 'http://localhost:8083/local/editor.html';
+    const IDP_URL = 'https://tenant.authentication.eu10.hana.ondemand.com/oauth/authorize?x=1';
+
+    /**
+     * A page whose first `waitForFunction` (the bridge probe) times out, while
+     * subsequent waits (readyState / per-action bridge wait) resolve — i.e. the
+     * login/ambiguous path. `url` is where the page landed after redirects.
+     */
+    function loginProbePage(url: string): FakePage {
+        const page = new FakePage([], url);
+        page.waitForFunction.mockReset();
+        page.waitForFunction.mockRejectedValueOnce(new Error('probe timeout'));
+        page.waitForFunction.mockResolvedValue(undefined);
+        return page;
+    }
+
+    test('B2: backend login page returns needsUserAction signal without registering', async () => {
+        const page = loginProbePage(IDP_URL);
+        const { browser } = setupBrowser([page]);
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1', {});
+
+        expect(result).toEqual({
+            isSuccess: true,
+            payload: expect.objectContaining({ __needsUserAction: 'backend_login_required' }),
+            error: null
+        });
+        // Context torn down, nothing registered → next start reopens cleanly.
+        expect(browser.contexts[0].close).toHaveBeenCalled();
+        expect(fs.isRegistryEmpty()).toBe(true);
+
+        await fs.stopBrowser();
+    });
+
+    test('B2: ambiguous slow localhost app keeps the old behaviour (no login signal)', async () => {
+        const page = loginProbePage('http://localhost:8080/a'); // still loopback, no markers
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction('http://localhost:8080/a', 'a');
+
+        expect(result).toEqual({ isSuccess: true, payload: 'ok', error: null });
+        expect(fs.isRegistryEmpty()).toBe(false);
+
+        await fs.stopBrowser();
+    });
+
+    test('ABAP untouched: non-redirecting site is never seeded or snapshotted', async () => {
+        const page = new FakePage(); // default: bridge present (probe resolves), localhost
+        const { browser } = setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(SITE_A, 'a');
+
+        // newContext called WITHOUT storageState; storageState() never called.
+        expect(browser.newContext).toHaveBeenCalledWith(expect.objectContaining({ viewport: null }));
+        expect(browser.contexts[0].options).not.toHaveProperty('storageState');
+        expect(browser.contexts[0].storageState).not.toHaveBeenCalled();
+
+        await fs.stopBrowser();
+    });
+
+    test('B1: in-memory session reused across re-start for a redirecting backend', async () => {
+        // First start → login page (records backend origin, arms the gate).
+        const loginPage = loginProbePage(IDP_URL);
+        // Retry start → app loads (bridge present), snapshots session.
+        const appPage = new FakePage([], CF_SITE);
+        appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        // Third start (after disconnect) → app again, should be seeded from snapshot.
+        const appPage2 = new FakePage([], CF_SITE);
+        appPage2.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+
+        const { browser } = setupBrowser([loginPage, appPage, appPage2]);
+        const fs = await loadPlaywrightBridge();
+
+        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // login
+        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // app, snapshot
+        await fs.disconnectSite(CF_SITE);
+        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // app, seeded
+
+        // The third context (index 2) must be seeded from the in-memory snapshot.
+        expect(browser.contexts[2].options).toEqual(
+            expect.objectContaining({ storageState: { cookies: [], origins: [] } })
+        );
+        // The app context recorded a snapshot.
+        expect(appPage.evaluate).toHaveBeenCalled();
+
+        await fs.stopBrowser();
+    });
+
+    test('B1: per-backend isolation — site A snapshot never seeds site B', async () => {
+        const SITE_B_CF = 'http://localhost:9000/local/editor.html';
+        const IDP_B = 'https://other.authentication.eu10.hana.ondemand.com/oauth/authorize';
+
+        const loginA = loginProbePage(IDP_URL);
+        const appA = new FakePage([], CF_SITE);
+        appA.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+        const loginB = loginProbePage(IDP_B);
+
+        const { browser } = setupBrowser([loginA, appA, loginB]);
+        const fs = await loadPlaywrightBridge();
+
+        await fs.callFrontendAction(CF_SITE, 'a'); // A login
+        await fs.callFrontendAction(CF_SITE, 'a'); // A app, snapshot stored under backend A
+        await fs.callFrontendAction(SITE_B_CF, 'a'); // B first contact → login, not seeded from A
+
+        // B's context (index 2) must NOT carry A's storageState.
+        expect(browser.contexts[2].options).not.toHaveProperty('storageState');
+
+        await fs.stopBrowser();
+    });
+
+    test('B1 disk opt-in: PLAYWRIGHT_SESSION_STATE_PATH writes a per-backend file with 0600 perms', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-'));
+        process.env.PLAYWRIGHT_SESSION_STATE_PATH = dir;
+        try {
+            const loginPage = loginProbePage(IDP_URL);
+            const appPage = new FakePage([], CF_SITE);
+            appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+
+            setupBrowser([loginPage, appPage]);
+            const fs = await loadPlaywrightBridge();
+
+            await fs.callFrontendAction(CF_SITE, 'a'); // login
+            await fs.callFrontendAction(CF_SITE, 'a'); // app → persist to disk
+
+            const files = readdirSync(dir);
+            expect(files).toHaveLength(1);
+            const written = join(dir, files[0]);
+            // Owner-only file permissions (0o600) for credential material.
+            expect(statSync(written).mode & 0o777).toBe(0o600);
+            expect(JSON.parse(readFileSync(written, 'utf8'))).toEqual({ cookies: [], origins: [] });
+
+            await fs.stopBrowser();
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
+    });
+
+    test('B1 disk off by default: nothing is written to disk', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-off-'));
+        try {
+            const loginPage = loginProbePage(IDP_URL);
+            const appPage = new FakePage([], CF_SITE);
+            appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+
+            setupBrowser([loginPage, appPage]);
+            const fs = await loadPlaywrightBridge();
+
+            await fs.callFrontendAction(CF_SITE, 'a'); // login
+            await fs.callFrontendAction(CF_SITE, 'a'); // app → in-memory only
+
+            expect(readdirSync(dir)).toHaveLength(0);
+
+            await fs.stopBrowser();
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
+    });
+
+    test('B1: snapshot write failure is swallowed', async () => {
+        const loginPage = loginProbePage(IDP_URL);
+        const appPage = new FakePage([], CF_SITE);
+        appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+
+        const { browser } = setupBrowser([loginPage, appPage]);
+        browser.newContext.mockImplementation(async (options?: unknown) => {
+            const context = new FakeContext(browser.newPage, options);
+            context.storageState.mockRejectedValue(new Error('disk full'));
+            browser.contexts.push(context);
+            return context;
+        });
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(CF_SITE, 'a'); // login
+        // app start must still resolve even though snapshot throws.
+        const result = await fs.callFrontendAction(CF_SITE, 'a');
+        expect(result).toEqual({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+
+        await fs.stopBrowser();
+    });
+
+    test('PLAYWRIGHT_HEADLESS=1 launches headless; default is headed', async () => {
+        process.env.PLAYWRIGHT_HEADLESS = '1';
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(SITE_A, 'a');
+        expect(launchMock).toHaveBeenCalledWith(expect.objectContaining({ headless: true }));
+        await fs.stopBrowser();
+    });
+
+    test('default launch is headed when PLAYWRIGHT_HEADLESS unset', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(SITE_A, 'a');
+        expect(launchMock).toHaveBeenCalledWith(expect.objectContaining({ headless: false }));
+        await fs.stopBrowser();
+    });
+
+    test('disconnected event clears session maps (next redirect re-arms the gate)', async () => {
+        const loginPage = loginProbePage(IDP_URL);
+        const appPage = new FakePage([], CF_SITE);
+        appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        const { browser } = setupBrowser([loginPage, appPage]);
+
+        const fs = await loadPlaywrightBridge();
+        await fs.callFrontendAction(CF_SITE, 'a'); // login arms gate
+        await fs.callFrontendAction(CF_SITE, 'a'); // app
+
+        browser.connected = false;
+        browser.emit('disconnected');
+
+        // After disconnect, a fresh browser + a plain (unredirected) start must
+        // NOT be seeded (gate cleared).
+        const freshPage = new FakePage([], CF_SITE); // bridge present now
+        const newBrowser = new FakeBrowser();
+        newBrowser.newPage.mockResolvedValue(freshPage);
+        launchMock.mockResolvedValueOnce(newBrowser);
+        freshPage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        await fs.callFrontendAction(CF_SITE, 'a');
+        expect(newBrowser.contexts[0].options).not.toHaveProperty('storageState');
+
+        await fs.stopBrowser();
+    });
+
+    test('fetchViaContext returns status, content-type and body from the context request', async () => {
+        const page = new FakePage();
+        const { browser } = setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        // Register a session for SITE_A so the registry has a PageRPC with a context.
+        await fs.callFrontendAction(SITE_A, 'a');
+
+        const out = await fs.defaultTransport.fetchViaContext(SITE_A, `${SITE_A}/svc/$metadata`);
+
+        expect(out).toEqual({ status: 200, contentType: 'application/xml', body: '<edmx:Edmx/>' });
+        expect(browser.contexts[0].request.get).toHaveBeenCalledWith(
+            `${SITE_A}/svc/$metadata`,
+            expect.objectContaining({ maxRedirects: 5 })
+        );
+
+        await fs.stopBrowser();
+    });
+
+    test('fetchViaContext throws a run-start-first error on registry miss', async () => {
+        setupBrowser([]);
+        const fs = await loadPlaywrightBridge();
+
+        await expect(
+            fs.defaultTransport.fetchViaContext('http://localhost:9999/x', 'http://localhost:9999/y')
+        ).rejects.toThrow(/start.*step first/i);
+
+        await fs.stopBrowser();
     });
 });

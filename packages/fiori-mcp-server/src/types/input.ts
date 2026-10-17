@@ -185,9 +185,10 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .enum(STEPS)
         .describe(
             'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
-                'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
+                'actions. get_page_actions, call_page_action, press_interactive drive ' +
                 'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
-                'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
+                'restart is a mid-workflow step that reloads the editor to pick up files written to disk. ' +
+                'get_odata_metadata fetches real OData $metadata (EDMX) for CF projects via the authenticated session.'
         ),
     site: zod
         .string()
@@ -212,6 +213,7 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +
                 'press_interactive: { controlId: string }. ' +
+                'get_odata_metadata: { uris: string[] } (the entries[].url values from read_odata_metadata_adp). ' +
                 'get_overlays / save / stop / restart / get_page_actions: omit.'
         )
 });
