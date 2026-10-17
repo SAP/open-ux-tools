@@ -38,10 +38,11 @@ export class ContextMenuService {
         const resourceBundle = await getTextBundle();
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeContextMenuAction.match(action)) {
-                const { actionName, controlId } = action.payload;
-                await this.actionService.execute(controlId, actionName);
+                const { actionName, controlId, payload } = action.payload;
+                await this.actionService.execute(controlId, actionName, payload);
                 try {
-                    const controlName = getControlById(controlId)?.getMetadata().getName();
+                    const primaryId = Array.isArray(controlId) ? controlId[0] : controlId;
+                    const controlName = getControlById(primaryId)?.getMetadata().getName();
                     const versionInfo = await getUi5Version();
                     await reportTelemetry({
                         category: 'OutlineContextMenu',
@@ -66,7 +67,12 @@ export class ContextMenuService {
                             enabled = false;
                             tooltip = resourceBundle.getText('ADP_QUICK_ACTION_DIALOG_OPEN_MESSAGE');
                         }
-                        return { id: val.id, title: val.text, enabled, tooltip };
+                        const submenu = val.submenu?.map((entry) => ({
+                            id: entry.id,
+                            title: entry.text,
+                            enabled: entry.enabled
+                        }));
+                        return { id: val.id, title: val.text, enabled, tooltip, submenu };
                     })
                 };
                 const requestControlActions = requestControlContextMenu.fulfilled(responsePayload);
