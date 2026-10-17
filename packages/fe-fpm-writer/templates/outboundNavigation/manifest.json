@@ -1,0 +1,33 @@
+{
+    <% if (settings.crossNavigation) { %>
+    "sap.app": {
+        "crossNavigation": {
+            "outbounds": {
+                "<%- settings.outboundKey %>": {
+                    "semanticObject": "<%- settings.crossNavigation.semanticObject %>",
+                    "action": "<%- settings.crossNavigation.action %>"
+                }
+            }
+        }
+    },
+    <% } %>
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- navigation.sourcePage %>": {
+                    "options": {
+                        "settings": {
+                            "navigation": {
+                                "<%- entity %>": {
+                                    "detail": {
+                                        "outbound": "<%- settings.outboundKey%>"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
