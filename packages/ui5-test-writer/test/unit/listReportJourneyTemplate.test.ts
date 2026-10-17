@@ -27,6 +27,8 @@ function renderListReportJourney(bucket: string, tabs: unknown[], navigatedOPTab
         semanticKey: {},
         textAnnotationColumns: [],
         tableIdentifiers: ['1', '6'],
+        defaultSortOrder: [],
+        defaultFilterValues: [],
         tabs
     });
     return fs.read(out);

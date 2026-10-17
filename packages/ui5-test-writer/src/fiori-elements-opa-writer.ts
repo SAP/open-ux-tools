@@ -727,6 +727,8 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
             {
                 ...journeyParams,
                 ...appFeatures.listReport,
+                defaultSortOrder: appFeatures.listReport.defaultSortOrder ?? [],
+                defaultFilterValues: appFeatures.listReport.defaultFilterValues ?? [],
                 appPath: config.appPath
             },
             undefined,
