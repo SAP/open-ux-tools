@@ -59,9 +59,6 @@ builder:
           description: Testing headless ABAP deployment on BAS
           package: ZPKG123
           transport: $TMP
-        exclude:
-          - /test/
-          - /localService/
 "
 `;
 
@@ -125,9 +122,6 @@ builder:
           description: Headless ABAP deployment for S4HC
           package: ZPKG123
           transport: TEST_TR
-        exclude:
-          - /test/
-          - /localService/
 "
 `;
 
@@ -190,9 +184,6 @@ builder:
           description: Testing headless ABAP deployment
           package: ZPKG12
           transport: TR123
-        exclude:
-          - /test/
-          - /localService/
 "
 `;
 
@@ -255,8 +246,5 @@ builder:
           description: Testing headless ABAP deployment
           package: ZPKG12
           transport: TR123
-        exclude:
-          - /test/
-          - /localService/
 "
 `;

@@ -653,6 +653,23 @@ export class UI5Config {
     }
 
     /**
+     * Returns the current `builder.resources.excludes` sequence values.
+     * Returns an empty array if the path does not exist or is malformed.
+     *
+     * @returns string array of exclude patterns
+     * @memberof UI5Config
+     */
+    public getBuilderResourceExcludes(): string[] {
+        try {
+            return (this.document.getSequence({ path: 'builder.resources.excludes' }).toJSON() as unknown[]).filter(
+                (v): v is string => typeof v === 'string'
+            );
+        } catch {
+            return [];
+        }
+    }
+
+    /**
      * Adds the ABAP deployment task to the config.
      *
      * @param target system that this app is to be deployed to
@@ -675,14 +692,18 @@ export class UI5Config {
         comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.addBuilderResourceExcludes();
-        const deployExclude = Array.from(new Set([...(exclude ?? []), '/test/', '/localService/']));
         const configuration: {
             target: AbapTarget;
             app: BspApp | Adp;
-            exclude: string[];
+            exclude?: string[];
             index?: boolean;
             lrep?: string;
-        } = { target, app, exclude: deployExclude, lrep };
+        } = {
+            target,
+            app,
+            ...(exclude?.length ? { exclude } : {}),
+            lrep
+        };
 
         if (index) {
             configuration['index'] = true;
