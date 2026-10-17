@@ -17,6 +17,7 @@ const {
     showExtensionProjectQuestion,
     showInternalQuestions,
     showBusinessSolutionNameQuestion,
+    shouldShowBaseAppPrompt,
     showStoreCredentialsQuestion
 } = await import('../../../../src/app/questions/helper/conditions.js');
 
@@ -240,6 +241,38 @@ describe('showBusinessSolutionNameQuestion', () => {
             baseApp: undefined
         } as CfServicesAnswers;
         const result = showBusinessSolutionNameQuestion(answers, true, true, undefined);
+        expect(result).toBe(false);
+    });
+});
+
+describe('shouldShowBaseAppPrompt', () => {
+    const apps = [{ appId: 'a1' }] as unknown as Parameters<typeof shouldShowBaseAppPrompt>[2];
+
+    it('should return true when logged in, a business service is selected and apps exist', () => {
+        const result = shouldShowBaseAppPrompt({ businessService: 'test-service' } as CfServicesAnswers, true, apps);
+        expect(result).toBe(true);
+    });
+
+    it('should return true when logged in, a service instance is selected and apps exist', () => {
+        const answers = {
+            serviceInstance: { name: 'inst', service: 'hana', servicePlan: 'plan' }
+        } as CfServicesAnswers;
+        const result = shouldShowBaseAppPrompt(answers, true, apps);
+        expect(result).toBe(true);
+    });
+
+    it('should return false when neither a business service nor a service instance is selected', () => {
+        const result = shouldShowBaseAppPrompt({} as CfServicesAnswers, true, apps);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when not logged in to CF', () => {
+        const result = shouldShowBaseAppPrompt({ businessService: 'test-service' } as CfServicesAnswers, false, apps);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when no apps are available', () => {
+        const result = shouldShowBaseAppPrompt({ businessService: 'test-service' } as CfServicesAnswers, true, []);
         expect(result).toBe(false);
     });
 });

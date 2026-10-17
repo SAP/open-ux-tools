@@ -1,6 +1,9 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import yaml from 'js-yaml';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -55,10 +58,11 @@ const {
     getRouterType,
     getAppParamsFromUI5Yaml,
     adjustMtaYaml,
-    addConnectivityServiceToMta
+    addConnectivityServiceToMta,
+    addExistingServiceToMta
 } = await import('../../../../src/cf/project/yaml.js');
 const { AppRouterType } = await import('../../../../src/types.js');
-import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types.js';
+import type { MtaYaml, CfUI5Yaml, ServiceKeys, CfServiceInstanceChoice } from '../../../../src/types.js';
 
 describe('YAML Project Functions', () => {
     const mockLogger = {
@@ -80,6 +84,99 @@ describe('YAML Project Functions', () => {
 
             expect(mockExistsSync).toHaveBeenCalledWith(mtaYamlPath);
             expect(result).toBe(true);
+        });
+    });
+
+    describe('addExistingServiceToMta', () => {
+        const projectPath = '/test/project';
+        const mtaYamlPath = join(projectPath, 'mta.yaml');
+        const instance: CfServiceInstanceChoice = {
+            name: 'my-service',
+            service: 'abap',
+            servicePlan: 'standard'
+        };
+
+        const createMemFs = (content?: MtaYaml): Editor => {
+            const memFs = create(createStorage());
+            if (content) {
+                memFs.write(mtaYamlPath, yaml.dump(content));
+            }
+            return memFs;
+        };
+
+        const readResources = (memFs: Editor): MtaYaml['resources'] =>
+            (yaml.load(memFs.read(mtaYamlPath)) as MtaYaml).resources;
+
+        test('appends an existing-service resource for the selected instance', () => {
+            const memFs = createMemFs({ '_schema-version': '3.2', ID: 'proj', version: '0.0.1', resources: [] });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(readResources(memFs)).toEqual([
+                {
+                    name: 'my-service',
+                    type: 'org.cloudfoundry.existing-service',
+                    parameters: {
+                        service: 'abap',
+                        'service-plan': 'standard',
+                        'service-name': 'my-service'
+                    }
+                }
+            ]);
+        });
+
+        test('creates the resources array when the yaml has none', () => {
+            const memFs = createMemFs({ '_schema-version': '3.2', ID: 'proj', version: '0.0.1' });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(readResources(memFs)).toHaveLength(1);
+        });
+
+        test('is idempotent when the instance is already bound', () => {
+            const memFs = createMemFs({
+                '_schema-version': '3.2',
+                ID: 'proj',
+                version: '0.0.1',
+                resources: [
+                    {
+                        name: 'my-service',
+                        type: 'org.cloudfoundry.existing-service',
+                        parameters: { service: 'abap', 'service-plan': 'standard', 'service-name': 'my-service' }
+                    }
+                ]
+            });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(readResources(memFs)).toHaveLength(1);
+        });
+
+        test('appends a unique numeric suffix when the resource name collides', () => {
+            const memFs = createMemFs({
+                '_schema-version': '3.2',
+                ID: 'proj',
+                version: '0.0.1',
+                resources: [
+                    { name: 'my-service', type: 'org.cloudfoundry.managed-service', parameters: {} },
+                    { name: 'my-service-1', type: 'org.cloudfoundry.managed-service', parameters: {} }
+                ]
+            });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            const resources = readResources(memFs) ?? [];
+            const added = resources.find((resource) => resource.type === 'org.cloudfoundry.existing-service');
+            expect(added?.name).toBe('my-service-2');
+            expect(added?.parameters?.['service-name']).toBe('my-service');
+        });
+
+        test('does nothing when mta.yaml does not exist', () => {
+            const memFs = createMemFs();
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(memFs.exists(mtaYamlPath)).toBe(false);
         });
     });
 
@@ -302,8 +399,10 @@ describe('YAML Project Functions', () => {
         beforeEach(() => {
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
             mockMemFs = {
-                write: jest.fn()
-            } as jest.MockedObject<Editor>;
+                write: jest.fn(),
+                // adjustMtaYaml guards its disk read with memFs.exists; existing MTA projects have a yaml.
+                exists: jest.fn().mockReturnValue(true)
+            } as unknown as jest.MockedObject<Editor>;
         });
 
         afterEach(() => {
