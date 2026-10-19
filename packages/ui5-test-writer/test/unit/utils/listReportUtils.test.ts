@@ -3858,7 +3858,7 @@ describe('getDefaultSortOrder()', () => {
                                             <Collection>
                                                 <Record Type="com.sap.vocabularies.Common.v1.SortOrderType">
                                                     <PropertyValue Property="Property" PropertyPath="Name"/>
-                                                    <PropertyValue Property="Descending" Boolean="false"/>
+                                                    <PropertyValue Property="Descending" Bool="false"/>
                                                 </Record>
                                             </Collection>
                                         </PropertyValue>
@@ -4122,6 +4122,37 @@ describe('getDefaultFilterValues()', () => {
         expect(getDefaultFilterValues(meta, 'MySet')).toEqual([
             { property: 'Country', value: 'AA', value2: 'MZ', operator: 'BT' }
         ]);
+    });
+
+    test('skips BT range when Low or High is absent', () => {
+        const mkBT = (low?: string, high?: string) =>
+            buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/BT"/>
+                                                ${low !== undefined ? `<PropertyValue Property="Low" String="${low}"/>` : ''}
+                                                ${high !== undefined ? `<PropertyValue Property="High" String="${high}"/>` : ''}
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(mkBT('AA', undefined), 'MySet')).toEqual([]);
+        expect(getDefaultFilterValues(mkBT(undefined, 'MZ'), 'MySet')).toEqual([]);
+        expect(getDefaultFilterValues(mkBT(undefined, undefined), 'MySet')).toEqual([]);
     });
 
     test('zero-pads IsDigitSequence values to property maxLength', () => {

@@ -411,16 +411,14 @@ function extractFilterItem(selectOption: Record<string, unknown>, entityType: En
             continue;
         }
         const low = r.Low as string | undefined;
-        if (low === undefined) {
+        const high = r.High as string | undefined;
+        if (low === undefined || (operator === 'BT' && high === undefined)) {
             continue;
         }
         const value = normalizeFilterValue(low, propertyName, entityType);
         const item: FilterDefaultValue = { property: propertyName, value, ...(operator !== 'EQ' && { operator }) };
         if (operator === 'BT') {
-            const high = r.High as string | undefined;
-            if (high !== undefined) {
-                item.value2 = normalizeFilterValue(high, propertyName, entityType);
-            }
+            item.value2 = normalizeFilterValue(high!, propertyName, entityType);
         }
         result.push(item);
     }
