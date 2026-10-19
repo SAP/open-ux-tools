@@ -18,8 +18,10 @@ import { normalizePath } from './file-system-utils.js';
  */
 const editorContext = new AsyncLocalStorage<Editor>();
 
+type StoreFile = { path: string; state?: string; contents: Buffer | null };
+
 type EditorStore = {
-    each: (callback: (file: { path: string; state?: string }) => void) => void;
+    each: (callback: (file: StoreFile) => void) => void;
     get: (filepath: string) => { contents: Buffer | null };
 };
 
@@ -110,50 +112,102 @@ export function isMemFsEnabled(): boolean {
 }
 
 /**
- * Check whether an editor contains a file or a directory represented by staged files.
+ * Staging state of a path in a mem-fs editor, as seen by {@link getStagedState}.
+ *
+ * - `live`: the path (or a child, for directories) is staged with content
+ * - `deleted`: the path itself is staged as deleted
+ * - `unstaged`: the path is not present in the store at all
+ */
+const StagedState = { Live: 'live', Deleted: 'deleted', Unstaged: 'unstaged' } as const;
+type StagedState = (typeof StagedState)[keyof typeof StagedState];
+
+/**
+ * A store entry represents live content when it is not staged for deletion and actually holds
+ * bytes. A bare `store.get()` of a missing file leaves a content-less entry behind (state
+ * `undefined`, contents `null`); such phantoms must not count as present.
+ *
+ * @param file - Store entry to test
+ * @returns True when the entry has content and is not deleted
+ */
+function isLive(file: StoreFile): boolean {
+    return file.state !== 'deleted' && file.contents !== null;
+}
+
+/**
+ * Resolve how a path is staged in the editor's mem-fs store, without touching the real
+ * filesystem. An exact match is authoritative (its deleted/live state wins); otherwise a
+ * live child marks a directory as present.
  *
  * WARNING: Do NOT use editor.exists() as it has a side effect of staging the file!
  *
  * @param editor - Mem-fs editor to inspect
  * @param path - Absolute file or directory path
- * @returns True when the path or one of its children is staged in mem-fs
+ * @returns The staging state of the path
  */
-export function editorHasPath(editor: Editor, path: string): boolean {
+function getStagedState(editor: Editor, path: string): StagedState {
     // Normalize path separators to forward slashes for consistent comparison
     // mem-fs stores all paths with forward slashes regardless of OS
     const normalizedPath = normalizePath(path);
     const directoryPrefix = normalizedPath.endsWith('/') ? normalizedPath : normalizedPath + '/';
-    let found = false;
+    let exactMatch: StoreFile | undefined;
+    let hasLiveChild = false;
 
     (editor as EditorWithStore).store.each((file) => {
-        if (file.state === 'deleted') {
-            return;
-        }
         // Normalize file path as well for comparison
         const normalizedFilePath = normalizePath(file.path);
-        // Check exact match OR files under this directory
-        if (normalizedFilePath === normalizedPath || normalizedFilePath.startsWith(directoryPrefix)) {
-            found = true;
+        if (normalizedFilePath === normalizedPath) {
+            exactMatch = file;
+        } else if (normalizedFilePath.startsWith(directoryPrefix) && isLive(file)) {
+            hasLiveChild = true;
         }
     });
 
-    return found;
+    // A deleted entry is authoritative even though its contents are null.
+    if (exactMatch?.state === 'deleted') {
+        return StagedState.Deleted;
+    }
+    if (exactMatch && isLive(exactMatch)) {
+        return StagedState.Live;
+    }
+    // Either no entry, or a content-less entry from a bare store.get() of a missing file:
+    // treat as unstaged so callers fall back to the real filesystem.
+    return hasLiveChild ? StagedState.Live : StagedState.Unstaged;
+}
+
+/**
+ * Check whether an editor has a path staged with live content.
+ *
+ * This is a pure mem-fs store query: it does NOT consult the real filesystem, so a path that
+ * only exists on disk (never loaded into the editor) reports as absent. Callers that also want
+ * on-disk files to count (e.g. {@link exists}) must add their own filesystem fallback.
+ *
+ * @param editor - Mem-fs editor to inspect
+ * @param path - Absolute file or directory path
+ * @returns True when the path (or a child, for directories) is staged and not deleted
+ */
+export function editorHasPath(editor: Editor, path: string): boolean {
+    return getStagedState(editor, path) === StagedState.Live;
 }
 
 /**
  * Check if a file/directory exists (async).
  *
- * When an editor is in context, the migration tree is already loaded into mem-fs, so a staged
- * path is authoritative. A real-filesystem check is still used as a fallback so files that were
- * never loaded into mem-fs are not reported missing (and therefore not silently overwritten).
+ * When an editor is in context, its staging is authoritative: a staged write reports present and
+ * a staged deletion reports absent (even if the file still exists on disk, because mem-fs stages
+ * the delete until commit). Only when the path is not staged at all does this fall back to the
+ * real filesystem, so files never loaded into mem-fs are not reported missing (and therefore not
+ * silently overwritten).
  *
  * @param path - Path to check
- * @returns True if staged in mem-fs OR present on the real filesystem
+ * @returns True if staged-live in mem-fs, or unstaged but present on the real filesystem
  */
 export async function exists(path: string): Promise<boolean> {
     const editor = getCurrentEditor();
-    if (editor && editorHasPath(editor, path)) {
-        return true;
+    if (editor) {
+        const state = getStagedState(editor, path);
+        if (state !== StagedState.Unstaged) {
+            return state === StagedState.Live;
+        }
     }
     try {
         await access(path);

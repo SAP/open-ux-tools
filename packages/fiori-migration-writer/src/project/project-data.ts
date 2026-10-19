@@ -3,9 +3,10 @@
  */
 
 import { SapUiLibs } from '../index.js';
-import { defaultMinUi5Version, minUi5VersionV4Template } from '@sap-ux/ui5-info';
+import { defaultMinUi5Version, minUi5VersionV4Template, minUI5VersionForLocalDev } from '@sap-ux/ui5-info';
 import { getManifestVersion } from '@sap-ux/ui5-application-writer';
 import { getUI5Version, stripSpaces } from '../utils/index.js';
+import semver from 'semver';
 import type { ImportProjectInfo, ProjectMigrate, Service } from '../types.js';
 import { DatasourceType, ODataVersion } from '../types.js';
 
@@ -79,6 +80,25 @@ export interface CreateProjectDataConfig {
 }
 
 /**
+ * Returns the version to use as localUI5Version in ui5-local.yaml.
+ * projectUI5Version comes from manifest.json minUI5Version and takes precedence, but must be
+ * floored to minUI5VersionForLocalDev. resolvedVersion is already floored by
+ * resolveUI5VersionsForMigration and is used as fallback when projectUI5Version is empty.
+ */
+function effectiveLocalUI5Version(projectUI5Version: string, resolvedVersion: string | undefined): string {
+    if (!projectUI5Version) {
+        return resolvedVersion ?? '';
+    }
+    try {
+        return semver.lt(projectUI5Version, minUI5VersionForLocalDev.toString())
+            ? minUI5VersionForLocalDev.toString()
+            : projectUI5Version;
+    } catch {
+        return projectUI5Version;
+    }
+}
+
+/**
  * Create ProjectMigrate data structure
  *
  * @param config - Configuration object containing all required parameters
@@ -120,7 +140,7 @@ export function createProjectData(config: CreateProjectDataConfig): ProjectMigra
         ui5Theme: ui5Theme,
         ui5Version: projectUI5Version,
         minSupportedUI5Version: odataVersion === ODataVersion.v4 ? minUi5VersionV4Template : defaultMinUi5Version,
-        localUI5Version: projectUI5Version.length > 0 ? projectUI5Version : (localUI5Version as string),
+        localUI5Version: effectiveLocalUI5Version(projectUI5Version, localUI5Version as string | undefined),
         manifestUI5Version,
         neoAppUI5Version,
         sapux: !isSAPApp,

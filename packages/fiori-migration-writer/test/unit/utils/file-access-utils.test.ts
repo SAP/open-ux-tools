@@ -39,56 +39,39 @@ describe('File Access Utilities', () => {
             expect(exists).toBe(false);
         });
 
-        test('should return true for a file that exists on disk but is not staged in mem-fs', async () => {
-            // This is the mockserver.js overwrite bug: fileExists was only checking mem-fs,
-            // so a pre-existing file on disk was invisible and would be overwritten.
-            const testFile = join(testRoot, 'pre-existing.txt');
-            writeFileSync(testFile, 'original content');
+        // Regression: during migration an editor is active in context, but the source
+        // project's files live on disk and are not staged in mem-fs. fileExists must still
+        // see them, otherwise merge handlers (package.json, .gitignore) silently overwrite
+        // existing files with a scratch template.
+        test('should return true for an on-disk file not staged in the editor context', async () => {
+            const testFile = join(testRoot, 'on-disk-unstaged.txt');
+            writeFileSync(testFile, 'content');
 
             const fs = createMemFsEditor();
-            let existsInEditorContext: boolean | undefined;
-            await runWithEditor(fs, async () => {
-                existsInEditorContext = await fileExists(testFile);
-            });
-
-            expect(existsInEditorContext).toBe(true);
-        });
-
-        test('should return false for a file that does not exist on disk or in mem-fs', async () => {
-            const testFile = join(testRoot, 'never-created.txt');
-
-            const fs = createMemFsEditor();
-            let existsInEditorContext: boolean | undefined;
-            await runWithEditor(fs, async () => {
-                existsInEditorContext = await fileExists(testFile);
-            });
-
-            expect(existsInEditorContext).toBe(false);
-        });
-
-        test('should return true for a staged file when an explicit editor is passed', async () => {
-            const testFile = join(testRoot, 'staged-explicit.txt');
-            const fs = createMemFsEditor();
-            fs.write(testFile, 'staged');
-
-            const exists = await fileExists(fs, testFile);
+            const exists = await runWithEditor(fs, async () => fileExists(testFile));
             expect(exists).toBe(true);
         });
 
-        test('should fall back to disk for an unstaged file when an explicit editor is passed', async () => {
-            const testFile = join(testRoot, 'on-disk-explicit.txt');
-            writeFileSync(testFile, 'on disk');
+        test('should return true for a file staged (written) in the editor context', async () => {
+            const testFile = join(testRoot, 'staged-write.txt');
 
             const fs = createMemFsEditor();
-            const exists = await fileExists(fs, testFile);
+            const exists = await runWithEditor(fs, async () => {
+                writeFile(testFile, 'content');
+                return fileExists(testFile);
+            });
             expect(exists).toBe(true);
         });
 
-        test('should return false when an explicit editor has neither staged nor disk file', async () => {
-            const testFile = join(testRoot, 'missing-explicit.txt');
+        test('should return false for a file deleted in the editor context even if it exists on disk', async () => {
+            const testFile = join(testRoot, 'staged-delete.txt');
+            writeFileSync(testFile, 'content');
 
             const fs = createMemFsEditor();
-            const exists = await fileExists(fs, testFile);
+            const exists = await runWithEditor(fs, async () => {
+                deleteFile(testFile);
+                return fileExists(testFile);
+            });
             expect(exists).toBe(false);
         });
     });

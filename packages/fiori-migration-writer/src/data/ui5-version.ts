@@ -18,12 +18,15 @@ export async function resolveUI5VersionsForMigration(
     const ui5VersionWithoutSnapshot = projectInfo.ui5Version?.replace(/snapshot-untested|snapshot/gi, '');
     let ui5VersionMinForProject = getUI5Version(ui5VersionWithoutSnapshot);
 
-    // Ensure minimum UI5 version for local development
+    // Ensure minimum UI5 version for local development.
+    // When the project version is at or below the minimum, return it directly: the minimum
+    // version may no longer be listed on npm, so passing it to getUI5Versions would cause
+    // the "not found" branch to return the latest available version instead.
     if (ui5VersionMinForProject?.length > 0) {
         try {
-            ui5VersionMinForProject = semver.gt(ui5VersionMinForProject, minUI5VersionForLocalDev.toString())
-                ? ui5VersionMinForProject
-                : minUI5VersionForLocalDev.toString();
+            if (!semver.gt(ui5VersionMinForProject, minUI5VersionForLocalDev.toString())) {
+                return [{ version: minUI5VersionForLocalDev.toString() }];
+            }
         } catch (error: unknown) {
             // If semver comparison fails, continue with current version
         }
