@@ -3,6 +3,7 @@
  */
 
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { fileExists } from '../utils/index.js';
 import { TemplateFileName } from '../index.js';
 import { FioriElementsVersion } from '../project-spec-types.js';
@@ -37,10 +38,11 @@ const TEST_FILES: TestFile[] = [
 /**
  * Generate package.json configuration for migration
  *
+ * @param fs - mem-fs editor
  * @param context - Configuration context containing all necessary parameters
  * @returns Package.json configuration object
  */
-export async function generatePackageJsonConfig(context: PackageJsonContext): Promise<PackageJsonMigrate> {
+export async function generatePackageJsonConfig(fs: Editor, context: PackageJsonContext): Promise<PackageJsonMigrate> {
     const { projectInfo, moduleName, moduleDescription, sapClient, dependencies, flpConfig, flags } = context;
     const { devDependencies, ui5Dependencies, v4MockServerDep } = dependencies;
     const { semanticObject, appIntent, appMockIntent, testFlpSandboxHtml, urlParam } = flpConfig;
@@ -72,7 +74,7 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
     const testScriptResults = await Promise.all(
         TEST_FILES.map(async (testFile) => {
             const scriptName = `${testFile.type}-tests`;
-            const exists = await fileExists(join(projectInfo.rootPath, projectInfo.webappPath, testFile.path));
+            const exists = fileExists(fs, join(projectInfo.rootPath, projectInfo.webappPath, testFile.path));
 
             if (exists) {
                 return {

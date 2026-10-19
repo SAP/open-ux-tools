@@ -1,10 +1,10 @@
 import { basename, join } from 'node:path';
 import type { FioriElementsVersion } from '../project-spec-types.js';
+import type { Editor } from 'mem-fs-editor';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { trueCasePath } from 'true-case-path';
 import { getBaseTemplatesMap, isGenerateIndex } from '../utils/index.js';
-import { isMemFsEnabled } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo, TemplateData, TemplateMap } from '../types.js';
 import { applyTemplates } from './template-helpers.js';
 
@@ -12,6 +12,7 @@ import { applyTemplates } from './template-helpers.js';
  * Configuration for applying base templates
  */
 export interface ApplyBaseTemplatesConfig {
+    fs: Editor;
     projectInfo: ImportProjectInfo;
     templateData: TemplateData;
     rootPath: string;
@@ -28,7 +29,7 @@ export interface ApplyBaseTemplatesConfig {
  * @param config - Configuration object containing all required parameters
  */
 export async function applyBaseTemplates(config: ApplyBaseTemplatesConfig): Promise<void> {
-    const { projectInfo, templateData, rootPath, keepIndex, internalToggle, ui5Version, FioriElementsVersionEnum } =
+    const { fs, projectInfo, templateData, rootPath, keepIndex, internalToggle, ui5Version, FioriElementsVersionEnum } =
         config;
     // Step3. Apply base application templates
 
@@ -64,34 +65,5 @@ export async function applyBaseTemplates(config: ApplyBaseTemplatesConfig): Prom
         ].targetName = 'index_new.html';
     }
 
-    await applyTemplates(templates, templateData, rootPath, undefined, ui5Version);
-
-    // Step4a. Fix local service case (handle case-sensitive filesystems)
-    await fixLocalServiceCase(projectInfo);
-}
-
-/**
- * Fixes local service directory case on case-sensitive filesystems
- * Renames directory if case doesn't match expected case
- *
- * @param projectInfo - Project information
- */
-async function fixLocalServiceCase(projectInfo: ImportProjectInfo): Promise<void> {
-    // Skip in mem-fs mode - not supported
-    if (isMemFsEnabled()) {
-        return;
-    }
-
-    const localServicePath = join(projectInfo.rootPath, projectInfo.webappPath, DirName.LocalService);
-    try {
-        const localServiceRealPath = await trueCasePath(localServicePath);
-        // file exists. Check filename cases matches
-        if (basename(localServiceRealPath) !== basename(localServicePath)) {
-            // Use copy+delete pattern for mem-fs compatibility
-            const fs = await import('node:fs');
-            fs.renameSync(localServiceRealPath, localServicePath);
-        }
-    } catch (error: unknown) {
-        // do nothing - path doesn't exist or other error
-    }
+    await applyTemplates(fs, templates, templateData, rootPath, undefined, ui5Version);
 }

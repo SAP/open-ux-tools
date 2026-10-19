@@ -24,7 +24,7 @@ import { generateSapLibsStr, checkManifestUI5Version } from '../utils/common.js'
 export async function processRegularProject(
     context: RegularProjectContext
 ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
-    const { projectRoot, manifest, defaultProjectInfo, services } = context;
+    const { fs, projectRoot, manifest, defaultProjectInfo, services } = context;
     let projectInfo = context.projectInfo; // Use let since this is reassigned
     const { projectData, manifestAnalysis, backendConfig } = services;
 
@@ -79,6 +79,7 @@ export async function processRegularProject(
     // Step3. Get the template details
     try {
         const templateDetails = await extractTemplateDetails(
+            fs,
             manifest,
             projectRoot,
             mainService ?? '',
@@ -98,6 +99,7 @@ export async function processRegularProject(
 
         // Extract backend configuration and app title from i18n
         const backendConfig = await extractBackendAndI18nConfig(
+            fs,
             projectRoot,
             projectInfo.webappPath,
             getFirstBackend,
@@ -120,6 +122,7 @@ export async function processRegularProject(
 
         // Extract and filter SAP libraries from manifest
         const { manifestLibs, reuseManifestLibs } = await extractSapLibraries(
+            fs,
             manifestLibsTmp,
             projectRoot,
             projectInfo.webappPath
@@ -127,6 +130,7 @@ export async function processRegularProject(
 
         // Process FLP sandbox files to extract libs, intents, and root intent flags
         const flpResult = await processFlpSandboxFiles(
+            fs,
             projectRoot,
             projectInfo.webappPath,
             getFlpIntentFromHtml,

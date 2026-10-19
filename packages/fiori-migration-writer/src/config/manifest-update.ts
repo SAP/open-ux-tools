@@ -3,6 +3,7 @@
  */
 
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { readJSON, updateJSON, fileExists } from '../utils/index.js';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
@@ -16,6 +17,7 @@ import { getMessageType } from '../utils/validation-severity.js';
 /**
  * Update manifest.json file with migration-specific changes
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  * @param webappPath - Webapp path relative to root
  * @param templateData - Template data containing project configuration
@@ -25,6 +27,7 @@ import { getMessageType } from '../utils/validation-severity.js';
  * @param strict - Enable strict validation mode (WARNING becomes ERROR)
  */
 export async function updateManifestForMigration(
+    fs: Editor,
     rootPath: string,
     webappPath: string,
     templateData: TemplateData,
@@ -34,13 +37,13 @@ export async function updateManifestForMigration(
     strict: boolean = false
 ): Promise<void> {
     const manifestPath = join(webappPath, TemplateFileName.ManifestJson);
-    if (!(await fileExists(join(rootPath, manifestPath)))) {
+    if (!fileExists(fs, join(rootPath, manifestPath))) {
         return;
     }
 
     let manifestJson: Manifest;
     try {
-        manifestJson = await readJSON<Manifest>(join(rootPath, manifestPath));
+        manifestJson = await readJSON<Manifest>(fs, join(rootPath, manifestPath));
     } catch (e) {
         throw new MigrationError(e, TemplateFileName.ManifestJson);
     }
@@ -70,7 +73,7 @@ export async function updateManifestForMigration(
     }
 
     if (saveFile === true) {
-        await updateJSON(join(rootPath, manifestPath), manifestJson);
+        updateJSON(fs, join(rootPath, manifestPath), manifestJson);
     }
 }
 

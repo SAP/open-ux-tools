@@ -7,7 +7,6 @@ import { copyAdaptationFiles, copyLibraryFiles } from '../../../src/files/projec
 import type { ImportProjectInfo } from '../../../src/types.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';
 import { initI18n } from '../../../src/index.js';
-import { runWithEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -43,7 +42,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(fs, projectInfo, 'https://ui5.sap.com');
 
             expect(result.result).toBe(true);
             expect(result.messages).toHaveLength(0);
@@ -69,7 +68,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(fs, projectInfo, 'https://ui5.sap.com');
 
             // Should succeed with valid reference
             expect(result.result).toBe(true);
@@ -99,7 +98,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, snapshotUrl, fs);
+            const result = await copyAdaptationFiles(fs, projectInfo, snapshotUrl);
 
             expect(result.result).toBe(true);
             expect(result.messages).toHaveLength(0);
@@ -124,7 +123,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(fs, projectInfo, 'https://ui5.sap.com');
 
             expect(result.result).toBe(true);
         });
@@ -148,7 +147,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(fs, projectInfo, 'https://ui5.sap.com');
 
             expect(result.result).toBe(true);
         });
@@ -166,7 +165,7 @@ describe('project-files', () => {
                 ui5Version: '1.120.0'
             } as ImportProjectInfo;
 
-            const result = await copyLibraryFiles(projectInfo);
+            const result = await copyLibraryFiles(fs, projectInfo);
 
             expect(result.result).toBe(true);
             expect(result.messages).toHaveLength(0);
@@ -183,7 +182,7 @@ describe('project-files', () => {
                 ui5Version: '1.120.0'
             } as ImportProjectInfo;
 
-            const result = await copyLibraryFiles(projectInfo);
+            const result = await copyLibraryFiles(fs, projectInfo);
 
             // Package name should be lowercased
             expect(result.result).toBe(true);
@@ -201,7 +200,7 @@ describe('project-files', () => {
                 ui5Version: '1.120.0'
             } as ImportProjectInfo;
 
-            const result = await copyLibraryFiles(projectInfo);
+            const result = await copyLibraryFiles(fs, projectInfo);
 
             expect(result.result).toBe(true);
             // devDependencies should not contain rimraf (deleted in line 120)
@@ -220,7 +219,7 @@ describe('project-files', () => {
             } as ImportProjectInfo;
 
             const editor = createMemFsEditor(createMemFs());
-            const result = await runWithEditor(editor, () => copyLibraryFiles(projectInfo));
+            const result = await copyLibraryFiles(editor, projectInfo);
 
             // With mem-fs, this should succeed even with non-real paths
             expect(result.result).toBe(true);
@@ -238,7 +237,7 @@ describe('project-files', () => {
                 ui5Version: '1.120.0'
             } as ImportProjectInfo;
 
-            const result = await copyLibraryFiles(projectInfo);
+            const result = await copyLibraryFiles(fs, projectInfo);
 
             expect(result.result).toBe(true);
         });

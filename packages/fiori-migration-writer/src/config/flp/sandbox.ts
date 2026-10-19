@@ -2,6 +2,7 @@
  * Helper functions for processing FLP sandbox HTML files
  */
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { fileExists, readFile } from '../../utils/index.js';
 
 /**
@@ -22,6 +23,7 @@ export interface FlpSandboxProcessingResult {
  * Process FLP sandbox HTML files to extract libraries, intents, and root intent flags
  * Handles both flpSandbox.html and flpSandboxMockServer.html in parallel
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @param webappPath - Webapp path within the project
  * @param getFlpIntentFromHtml - Function to extract intent from HTML file
@@ -29,6 +31,7 @@ export interface FlpSandboxProcessingResult {
  * @returns FLP sandbox processing result
  */
 export async function processFlpSandboxFiles(
+    fs: Editor,
     projectRoot: string,
     webappPath: string,
     getFlpIntentFromHtml: (path: string) => Promise<string | undefined>,
@@ -39,8 +42,8 @@ export async function processFlpSandboxFiles(
 
     // Process both files in parallel for better performance
     const [sandboxResult, mockResult] = await Promise.all([
-        processSandboxFile(flpSandboxPath, getFlpIntentFromHtml, existingFlpIntent),
-        processMockSandboxFile(flpSandboxMockPath, getFlpIntentFromHtml)
+        processSandboxFile(fs, flpSandboxPath, getFlpIntentFromHtml, existingFlpIntent),
+        processMockSandboxFile(fs, flpSandboxMockPath, getFlpIntentFromHtml)
     ]);
 
     return {
@@ -58,22 +61,24 @@ export async function processFlpSandboxFiles(
 /**
  * Process main FLP sandbox file
  *
+ * @param fs - mem-fs editor
  * @param filePath - Path to flpSandbox.html
  * @param getFlpIntentFromHtml - Function to extract intent from HTML
  * @param existingFlpIntent - Existing FLP intent
  * @returns Sandbox processing result
  */
 async function processSandboxFile(
+    fs: Editor,
     filePath: string,
     getFlpIntentFromHtml: (path: string) => Promise<string | undefined>,
     existingFlpIntent?: string
 ): Promise<{ libs: string; intent?: string; hasRootIntent: boolean }> {
     try {
-        if (!(await fileExists(filePath))) {
+        if (!fileExists(fs, filePath)) {
             return { libs: '', hasRootIntent: false };
         }
 
-        const content = readFile(filePath);
+        const content = readFile(fs, filePath);
         const libs = extractDataSapUiLibs(content);
         const hasRootIntent = content.includes('rootIntent');
         const intent = await getFlpIntentFromHtml(filePath);
@@ -92,22 +97,25 @@ async function processSandboxFile(
 /**
  * Process mock FLP sandbox file
  *
+ * @param fs - mem-fs editor
  * @param filePath - Path to flpSandboxMockServer.html
  * @param getFlpIntentFromHtml - Function to extract intent from HTML
  * @returns Mock sandbox processing result
  */
 async function processMockSandboxFile(
+    fs: Editor,
     filePath: string,
     getFlpIntentFromHtml: (path: string) => Promise<string | undefined>
 ): Promise<{ intent?: string; hasRootIntent: boolean; targetFile?: string }> {
     try {
-        const [intent, exists] = await Promise.all([getFlpIntentFromHtml(filePath), fileExists(filePath)]);
+        const intent = await getFlpIntentFromHtml(filePath);
+        const exists = fileExists(fs, filePath);
 
         if (!exists) {
             return { hasRootIntent: false };
         }
 
-        const content = readFile(filePath);
+        const content = readFile(fs, filePath);
         const hasRootIntent = content.includes('rootIntent');
 
         return {

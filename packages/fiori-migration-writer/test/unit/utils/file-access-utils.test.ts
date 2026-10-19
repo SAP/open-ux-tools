@@ -11,7 +11,10 @@ import {
     deleteFile,
     initI18n
 } from '../../../src/index.js';
-import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
+
+const commit = (fs: ReturnType<typeof createMemFsEditor>): Promise<void> =>
+    new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
 
 describe('File Access Utilities', () => {
     const testRoot = join(tmpdir(), 'file-access-test-' + Date.now());
@@ -26,179 +29,90 @@ describe('File Access Utilities', () => {
     });
 
     describe('fileExists', () => {
-        test('should return true for existing file', async () => {
-            const testFile = join(testRoot, 'exists.txt');
-            writeFileSync(testFile, 'content');
-
-            const exists = await fileExists(testFile);
-            expect(exists).toBe(true);
-        });
-
-        test('should return false for non-existing file', async () => {
-            const exists = await fileExists(join(testRoot, 'does-not-exist.txt'));
-            expect(exists).toBe(false);
-        });
-
-        test('should return true for a file that exists on disk but is not staged in mem-fs', async () => {
-            // This is the mockserver.js overwrite bug: fileExists was only checking mem-fs,
-            // so a pre-existing file on disk was invisible and would be overwritten.
-            const testFile = join(testRoot, 'pre-existing.txt');
-            writeFileSync(testFile, 'original content');
-
-            const fs = createMemFsEditor();
-            let existsInEditorContext: boolean | undefined;
-            await runWithEditor(fs, async () => {
-                existsInEditorContext = await fileExists(testFile);
-            });
-
-            expect(existsInEditorContext).toBe(true);
-        });
-
-        test('should return false for a file that does not exist on disk or in mem-fs', async () => {
-            const testFile = join(testRoot, 'never-created.txt');
-
-            const fs = createMemFsEditor();
-            let existsInEditorContext: boolean | undefined;
-            await runWithEditor(fs, async () => {
-                existsInEditorContext = await fileExists(testFile);
-            });
-
-            expect(existsInEditorContext).toBe(false);
-        });
-
-        test('should return true for a staged file when an explicit editor is passed', async () => {
-            const testFile = join(testRoot, 'staged-explicit.txt');
+        test('should return true for a staged file', () => {
+            const testFile = join(testRoot, 'staged.txt');
             const fs = createMemFsEditor();
             fs.write(testFile, 'staged');
 
-            const exists = await fileExists(fs, testFile);
-            expect(exists).toBe(true);
+            expect(fileExists(fs, testFile)).toBe(true);
         });
 
-        test('should fall back to disk for an unstaged file when an explicit editor is passed', async () => {
-            const testFile = join(testRoot, 'on-disk-explicit.txt');
+        test('should fall back to disk for an unstaged file', () => {
+            const testFile = join(testRoot, 'on-disk.txt');
             writeFileSync(testFile, 'on disk');
 
             const fs = createMemFsEditor();
-            const exists = await fileExists(fs, testFile);
-            expect(exists).toBe(true);
+            expect(fileExists(fs, testFile)).toBe(true);
         });
 
-        test('should return false when an explicit editor has neither staged nor disk file', async () => {
-            const testFile = join(testRoot, 'missing-explicit.txt');
+        test('should return false when neither staged nor on disk', () => {
+            const testFile = join(testRoot, 'missing.txt');
 
             const fs = createMemFsEditor();
-            const exists = await fileExists(fs, testFile);
-            expect(exists).toBe(false);
+            expect(fileExists(fs, testFile)).toBe(false);
         });
     });
 
     describe('readFile', () => {
-        test('should read file content', async () => {
+        test('should read file content from disk', () => {
             const testFile = join(testRoot, 'read.txt');
-            const content = 'test content';
-            writeFileSync(testFile, content);
+            writeFileSync(testFile, 'test content');
 
-            const result = await readFile(testFile);
-            expect(result).toBe(content);
+            const fs = createMemFsEditor();
+            expect(readFile(fs, testFile)).toBe('test content');
         });
 
-        test('should read file content from an explicit editor', async () => {
-            const testFile = join(testRoot, 'read-explicit.txt');
+        test('should read staged file content', () => {
+            const testFile = join(testRoot, 'read-staged.txt');
             const fs = createMemFsEditor();
             fs.write(testFile, 'editor content');
 
-            const result = await readFile(fs, testFile);
-            expect(result).toBe('editor content');
+            expect(readFile(fs, testFile)).toBe('editor content');
         });
     });
 
     describe('writeFile', () => {
         test('should write file content', async () => {
             const testFile = join(testRoot, 'write.txt');
-            const content = 'new content';
-
-            const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                writeFile(testFile, content);
-
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
-            const result = readFileSync(testFile, 'utf-8');
-            expect(result).toBe(content);
-        });
-
-        test('should write file content via an explicit editor', async () => {
-            const testFile = join(testRoot, 'write-explicit.txt');
             const fs = createMemFsEditor();
 
-            writeFile(fs, testFile, 'explicit content');
+            writeFile(fs, testFile, 'new content');
+            await commit(fs);
 
-            await new Promise<void>((resolve, reject) => {
-                fs.commit((err) => (err ? reject(err) : resolve()));
-            });
-
-            expect(readFileSync(testFile, 'utf-8')).toBe('explicit content');
+            expect(readFileSync(testFile, 'utf-8')).toBe('new content');
         });
     });
 
     describe('readJSON', () => {
-        test('should read and parse JSON file', async () => {
+        test('should read and parse JSON file from disk', async () => {
             const testFile = join(testRoot, 'test.json');
             const data = { foo: 'bar', number: 42 };
             writeFileSync(testFile, JSON.stringify(data));
 
-            const result = await readJSON(testFile);
-            expect(result).toEqual(data);
+            const fs = createMemFsEditor();
+            expect(await readJSON(fs, testFile)).toEqual(data);
         });
 
-        test('should read JSON from the mem-fs editor when a context editor is active', async () => {
+        test('should read staged JSON content', async () => {
             const testFile = join(testRoot, 'context.json');
             const data = { staged: true };
-
             const fs = createMemFsEditor();
-            let result: typeof data | undefined;
-            await runWithEditor(fs, async () => {
-                fs.write(testFile, JSON.stringify(data));
-                result = await readJSON<typeof data>(testFile);
-            });
+            fs.write(testFile, JSON.stringify(data));
 
-            expect(result).toEqual(data);
+            expect(await readJSON<typeof data>(fs, testFile)).toEqual(data);
         });
     });
 
     describe('updateJSON', () => {
         test('should update JSON file preserving formatting', async () => {
             const testFile = join(testRoot, 'update.json');
-            const original = { foo: 'bar', nested: { value: 1 } };
-            writeFileSync(testFile, JSON.stringify(original, null, 2));
+            writeFileSync(testFile, JSON.stringify({ foo: 'bar', nested: { value: 1 } }, null, 2));
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                const updated = { foo: 'updated', nested: { value: 2 }, newField: 'added' };
-                updateJSON(testFile, updated);
+            updateJSON(fs, testFile, { foo: 'updated', nested: { value: 2 }, newField: 'added' });
+            await commit(fs);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
-            const result = await readJSON(testFile);
+            const result = await readJSON(fs, testFile);
             expect(result.foo).toBe('updated');
             expect(result.nested.value).toBe(2);
             expect(result.newField).toBe('added');
@@ -208,33 +122,12 @@ describe('File Access Utilities', () => {
             const testFile = join(testRoot, 'new.json');
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                // File does not exist yet, so updateJSON falls into the catch branch
-                // and writes with default 4-space indentation.
-                updateJSON(testFile, { created: true });
+            // File does not exist yet, so updateJSON falls into the catch branch
+            // and writes with default 4-space indentation.
+            updateJSON(fs, testFile, { created: true });
+            await commit(fs);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => (err ? reject(err) : resolve()));
-                });
-            });
-
-            const raw = readFileSync(testFile, 'utf-8');
-            expect(raw).toBe('{\n    "created": true\n}\n');
-        });
-
-        test('should update JSON via an explicit editor', async () => {
-            const testFile = join(testRoot, 'update-explicit.json');
-            const fs = createMemFsEditor();
-            fs.write(testFile, JSON.stringify({ value: 1 }, null, 2));
-
-            updateJSON(fs, testFile, { value: 2 });
-
-            await new Promise<void>((resolve, reject) => {
-                fs.commit((err) => (err ? reject(err) : resolve()));
-            });
-
-            const result = await readJSON(testFile);
-            expect(result.value).toBe(2);
+            expect(readFileSync(testFile, 'utf-8')).toBe('{\n    "created": true\n}\n');
         });
     });
 
@@ -244,97 +137,37 @@ describe('File Access Utilities', () => {
             writeFileSync(testFile, 'original content');
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                updateFile(testFile, 'modified content');
+            updateFile(fs, testFile, 'modified content');
+            await commit(fs);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
-            const result = await readFile(testFile);
-            expect(result).toBe('modified content');
-        });
-
-        test('should update text file content via an explicit editor', async () => {
-            const testFile = join(testRoot, 'update-explicit.txt');
-            const fs = createMemFsEditor();
-            fs.write(testFile, 'original');
-
-            updateFile(fs, testFile, 'updated via editor');
-
-            await new Promise<void>((resolve, reject) => {
-                fs.commit((err) => (err ? reject(err) : resolve()));
-            });
-
-            expect(readFileSync(testFile, 'utf-8')).toBe('updated via editor');
+            expect(readFile(fs, testFile)).toBe('modified content');
         });
     });
 
     describe('deleteFile', () => {
-        test('should delete a file via the mem-fs editor', async () => {
+        test('should delete a file', async () => {
             const testFile = join(testRoot, 'to-delete.txt');
             writeFileSync(testFile, 'delete me');
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                deleteFile(testFile);
-
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => (err ? reject(err) : resolve()));
-                });
-            });
-
-            const exists = await fileExists(testFile);
-            expect(exists).toBe(false);
-        });
-
-        test('should delete a file via an explicit editor', async () => {
-            const testFile = join(testRoot, 'to-delete-explicit.txt');
-            writeFileSync(testFile, 'delete me');
-
-            const fs = createMemFsEditor();
             deleteFile(fs, testFile);
+            await commit(fs);
 
-            await new Promise<void>((resolve, reject) => {
-                fs.commit((err) => (err ? reject(err) : resolve()));
-            });
-
-            expect(await fileExists(testFile)).toBe(false);
+            expect(fileExists(fs, testFile)).toBe(false);
         });
     });
 
     describe('mem-fs directory handling', () => {
         test('should create directory implicitly when writing file', async () => {
             const nestedDir = join(testRoot, 'nested', 'deep', 'directory');
+            const testFile = join(nestedDir, 'test.txt');
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                // mem-fs creates directories implicitly when files are written
-                // No explicit directory creation needed
-                const testFile = join(nestedDir, 'test.txt');
-                writeFile(testFile, 'test');
+            // mem-fs creates directories implicitly when files are written
+            writeFile(fs, testFile, 'test');
+            await commit(fs);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
-            const testFile = join(nestedDir, 'test.txt');
-            const exists = await fileExists(testFile);
-            expect(exists).toBe(true);
+            expect(fileExists(fs, testFile)).toBe(true);
         });
     });
 });

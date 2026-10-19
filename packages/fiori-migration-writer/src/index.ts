@@ -64,12 +64,8 @@ export * from './types.js';
 export * from './i18n.js';
 
 // Public API - Utilities (re-export selective functions for backward compatibility)
-// readFile is exported as async so callers outside migration context can use .resolves
-import { readFile as _readFileSync } from './utils/file-access.js';
-export async function readFile(pathOrFs: unknown, path?: string): Promise<string> {
-    return (_readFileSync as Function)(pathOrFs, path);
-}
 export {
+    readFile,
     findProjectRoot,
     getProjectType,
     getMainService,

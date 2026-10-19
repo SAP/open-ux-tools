@@ -1,11 +1,12 @@
 import { join, relative, sep } from 'node:path';
 import { access, readdir } from 'node:fs/promises';
+import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
-import { isMemFsEnabled, getCurrentEditor, exists } from '../utils/fs-adapter.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
 import { hasStore, type EditorWithStore } from '../types/mem-fs-types.js';
+import { editorHasPath } from '../utils/fs-adapter.js';
 
 // Re-export for backward compatibility with tests
 export { validateRootDirectory } from '../utils/path-validation.js';
@@ -74,24 +75,24 @@ function moveMemFsDirectory(fs: EditorWithStore, fromPath: string, toPath: strin
     }
 }
 
-async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
-    const editor = getCurrentEditor();
-    if (!editor || !hasStore(editor)) {
+async function memFsMove(fs: Editor, rootPath: string, paths: LegacyPaths): Promise<void> {
+    if (!hasStore(fs)) {
         return;
     }
+    const editor = fs;
 
     // Move webapp files from src/main/webapp to webapp
-    if (await exists(paths.ffLegacyWebappPath)) {
+    if (editorHasPath(fs, paths.ffLegacyWebappPath)) {
         moveMemFsDirectory(editor, paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
     }
 
     // Move test/qunit to webapp/test (replacing the test path, not nesting under qunit)
-    if (await exists(paths.ffLegacyTestQunitPath)) {
+    if (editorHasPath(fs, paths.ffLegacyTestQunitPath)) {
         moveMemFsDirectory(editor, paths.ffLegacyTestQunitPath, paths.ffNewTestPath);
     }
 
     // Move test/uiveri5 to webapp/test/uiveri5
-    if (await exists(paths.ffLegacyTestuiveri5Path)) {
+    if (editorHasPath(fs, paths.ffLegacyTestuiveri5Path)) {
         moveMemFsDirectory(editor, paths.ffLegacyTestuiveri5Path, join(paths.ffNewTestPath, 'uiveri5'));
     }
 }
@@ -114,14 +115,13 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
  * Try to move folders using git to preserve history
  * Uses relative paths from validated root directory to prevent command injection
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Project root path
  * @param _paths - Legacy paths object (unused, paths rebuilt internally for security)
  */
-export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise<void> {
-    // In mem-fs mode, also perform mem-fs operations to keep the in-memory store consistent
-    if (isMemFsEnabled()) {
-        await memFsMove(rootPath, _paths);
-    }
+export async function tryGitMove(fs: Editor, rootPath: string, _paths: LegacyPaths): Promise<void> {
+    // Keep the in-memory store consistent by moving the staged files first.
+    await memFsMove(fs, rootPath, _paths);
 
     const runner = new CommandRunner();
 

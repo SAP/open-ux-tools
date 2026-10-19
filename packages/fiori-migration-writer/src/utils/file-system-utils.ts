@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
-import { editorHasPath, getEditor, getCurrentEditor } from './fs-adapter.js';
+import { editorHasPath, createMemFsEditor } from './fs-adapter.js';
 
 /**
  * Normalize path separators to forward slashes for cross-platform compatibility
@@ -39,30 +39,32 @@ export function doesPropertyExist(obj: unknown, fieldName: string): boolean {
 }
 
 /**
- * Check if directory exists
- * Uses editorHasPath to avoid fs.exists() side effect of staging paths
+ * Check if directory exists.
+ * Uses editorHasPath to avoid fs.exists() side effect of staging paths, then falls back
+ * to the real filesystem for directories that are not yet staged in mem-fs.
  *
- * @param directoryOrFs - Directory path, or Editor instance
- * @param directory - Directory path (if first param is Editor)
+ * @param directory - Directory path
+ * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  */
-export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: string): boolean {
-    const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
-    const editor = typeof directoryOrFs === 'string' ? getCurrentEditor() : getEditor(directoryOrFs);
-    if (editor && editorHasPath(editor, dir)) {
+export function doesDirectoryExists(directory: string, fsEditor?: Editor): boolean {
+    const fs = fsEditor ?? createMemFsEditor();
+    if (editorHasPath(fs, directory)) {
         return true;
     }
-    return existsSync(dir);
+    return existsSync(directory);
 }
 
 /**
  * Create directory if it doesn't exist
  *
  * @param directory - Directory path to create
+ * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  * @returns True if directory was created, false if it already existed
  */
-export async function createDirectory(directory: string): Promise<boolean> {
+export async function createDirectory(directory: string, fsEditor?: Editor): Promise<boolean> {
+    const fs = fsEditor ?? createMemFsEditor();
     let isCreated = false;
-    if (!doesDirectoryExists(directory)) {
+    if (!doesDirectoryExists(directory, fs)) {
         await mkdir(directory, { recursive: true });
         isCreated = true;
     }

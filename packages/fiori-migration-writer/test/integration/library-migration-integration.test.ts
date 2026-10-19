@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { ProjectMigrator, MigrationTypes, initI18n, getReuseLibs, ReuseLibType } from '../../src/index.js';
+import { createMemFsEditor } from '../../src/utils/fs-adapter.js';
 import type { ProjectFolder } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -248,7 +249,7 @@ describe('Library Migration Integration Tests', () => {
             }
         ];
 
-        const libs = await getReuseLibs(workspaceFolders);
+        const libs = await getReuseLibs(createMemFsEditor(), workspaceFolders);
         expect(libs).toHaveLength(1);
 
         // Assert: Should find innermost package.json (packageRoot), not monorepo root

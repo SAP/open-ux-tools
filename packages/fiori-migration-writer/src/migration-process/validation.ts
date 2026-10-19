@@ -1,4 +1,5 @@
 import type { Message, ImportProjectInfo } from '../types.js';
+import type { Editor } from 'mem-fs-editor';
 import { validateMetadata, determineMessage } from '../utils/index.js';
 import { MigrationTypes, postMigrationAction } from '../utils/constants.js';
 import { updateExtConfigJson } from '../components/extension.js';
@@ -8,6 +9,7 @@ import { getMessageType } from '../utils/validation-severity.js';
 /**
  * Validates metadata configuration and adds warning/error message if missing
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  * @param projectInfo - Project information
  * @param manifestJSON - Manifest JSON object
@@ -15,6 +17,7 @@ import { getMessageType } from '../utils/validation-severity.js';
  * @param strict - Enable strict validation mode (WARNING becomes ERROR)
  */
 export async function validateAndReportMetadata(
+    fs: Editor,
     rootPath: string,
     projectInfo: ImportProjectInfo,
     manifestJSON: any,
@@ -25,7 +28,8 @@ export async function validateAndReportMetadata(
         rootPath,
         projectInfo.webappPath,
         projectInfo.isSAPApp,
-        manifestJSON
+        manifestJSON,
+        fs
     );
 
     if (
@@ -43,12 +47,17 @@ export async function validateAndReportMetadata(
 /**
  * Handles extension project configuration update
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  * @param projectInfo - Project information
  */
-export async function handleExtensionProjectConfig(rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
+export async function handleExtensionProjectConfig(
+    fs: Editor,
+    rootPath: string,
+    projectInfo: ImportProjectInfo
+): Promise<void> {
     if (projectInfo.type === MigrationTypes.projectExtension && projectInfo.extensionProjectSettings) {
-        await updateExtConfigJson(rootPath, projectInfo);
+        await updateExtConfigJson(fs, rootPath, projectInfo);
     }
 }
 

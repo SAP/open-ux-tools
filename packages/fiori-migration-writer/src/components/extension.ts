@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { updateJSON, fileExists, deleteFile } from '../utils/index.js';
 import { FileName } from '../project-spec-types.js';
 import type { ImportProjectInfo } from '../types.js';
@@ -7,10 +8,11 @@ import type { ImportProjectInfo } from '../types.js';
  * Updates the .extconfig.json file for extension projects
  * Handles WebIDE Personal Edition migration and destination updates
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  * @param projectInfo - Project information containing extension settings
  */
-export async function updateExtConfigJson(rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
+export async function updateExtConfigJson(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
     let extensionProjectSettingsJSON;
     let deleteProjectJson = false;
     try {
@@ -59,9 +61,9 @@ export async function updateExtConfigJson(rootPath: string, projectInfo: ImportP
         }
     }
     // write .extconfig.json for extension project
-    await updateJSON(join(rootPath, FileName.ExtConfigJson), extensionProjectSettingsJSON);
+    await updateJSON(fs, join(rootPath, FileName.ExtConfigJson), extensionProjectSettingsJSON);
     const projectJsonPath = join(rootPath, '.project.json');
-    if (deleteProjectJson && (await fileExists(projectJsonPath))) {
-        deleteFile(projectJsonPath);
+    if (deleteProjectJson && fileExists(fs, projectJsonPath)) {
+        deleteFile(fs, projectJsonPath);
     }
 }

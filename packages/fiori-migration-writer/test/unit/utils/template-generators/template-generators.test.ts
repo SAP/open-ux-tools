@@ -42,7 +42,9 @@ describe('Template Generators - File Handlers', () => {
                 scripts: { start: 'fiori run' }
             });
 
-            const result = await handlePackageJsonFile(testRoot, targetFile, templateContent, { project: {} });
+            const result = await handlePackageJsonFile(testRoot, targetFile, templateContent, {
+                project: {}
+            });
             const parsed: { dependencies?: Record<string, string>; devDependencies?: Record<string, string> } =
                 JSON.parse(result);
 

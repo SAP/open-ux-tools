@@ -8,6 +8,7 @@ import {
     findProjectsByManifest
 } from '../../../src/utils/project-discovery.js';
 import type { ProjectFolder } from '../../../src/types.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 describe('utils/project-discovery', () => {
     const testRoot = join(tmpdir(), 'project-discovery-test-' + Date.now());
@@ -38,7 +39,7 @@ describe('utils/project-discovery', () => {
 
     describe('findAllWebIDEProjectFolders', () => {
         it('should return empty array for empty workspace', async () => {
-            const result = await findAllWebIDEProjectFolders([]);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), []);
             expect(result).toEqual([]);
         });
 
@@ -48,7 +49,7 @@ describe('utils/project-discovery', () => {
             writeFileSync(join(projectPath, 'pom.xml'), '<project></project>');
 
             const folders = [createProjectFolder(testRoot)];
-            const result = await findAllWebIDEProjectFolders(folders);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), folders);
 
             // Result depends on whether it's detected as a Fiori Tools project
             expect(Array.isArray(result)).toBe(true);
@@ -60,13 +61,13 @@ describe('utils/project-discovery', () => {
             writeFileSync(join(projectPath, 'neo-app.json'), '{}');
 
             const folders = [createProjectFolder(testRoot)];
-            const result = await findAllWebIDEProjectFolders(folders);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), folders);
 
             expect(Array.isArray(result)).toBe(true);
         });
 
         it('should accept string array as input', async () => {
-            const result = await findAllWebIDEProjectFolders([testRoot]);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), [testRoot]);
             expect(Array.isArray(result)).toBe(true);
         });
 
@@ -86,7 +87,7 @@ describe('utils/project-discovery', () => {
                 } as ProjectFolder
             ];
 
-            const result = await findAllWebIDEProjectFolders(folders);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), folders);
             expect(result).toEqual([]);
         });
 
@@ -96,7 +97,7 @@ describe('utils/project-discovery', () => {
             writeFileSync(join(nodeModulesPath, 'pom.xml'), '<project></project>');
 
             const folders = [createProjectFolder(testRoot)];
-            const result = await findAllWebIDEProjectFolders(folders);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), folders);
 
             // Should not include paths under node_modules
             const hasNodeModules = result.some((p) => p.includes('node_modules'));
@@ -109,7 +110,7 @@ describe('utils/project-discovery', () => {
             writeFileSync(join(distPath, 'pom.xml'), '<project></project>');
 
             const folders = [createProjectFolder(testRoot)];
-            const result = await findAllWebIDEProjectFolders(folders);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), folders);
 
             const hasDist = result.some((p) => p.includes('/dist/'));
             expect(hasDist).toBe(false);
@@ -117,7 +118,7 @@ describe('utils/project-discovery', () => {
 
         it('should handle errors in workspace roots gracefully', async () => {
             const nonExistentFolder = createProjectFolder('/non/existent/path');
-            const result = await findAllWebIDEProjectFolders([nonExistentFolder]);
+            const result = await findAllWebIDEProjectFolders(createMemFsEditor(), [nonExistentFolder]);
             expect(Array.isArray(result)).toBe(true);
         });
     });

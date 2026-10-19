@@ -4,6 +4,7 @@
 
 import { fileExists } from '../../utils/index.js';
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../../project-spec-types.js';
 import type { ImportProjectInfo } from '../../types.js';
 import { MigrationTypes } from '../../utils/constants.js';
@@ -15,12 +16,14 @@ import { MigrationTypes } from '../../utils/constants.js';
  * - OR it's a Fiori Elements V2/V4 project (will be generated)
  * - OR it's a SAP app
  *
+ * @param fs
  * @param rootPath
  * @param webappPath
  * @param FEVersion
  * @param isSAPApp
  */
 export async function checkFlpSandboxAvailability(
+    fs: Editor,
     rootPath: string,
     webappPath: string,
     FEVersion: string | undefined,
@@ -30,7 +33,7 @@ export async function checkFlpSandboxAvailability(
     const flpSandboxPath = join(rootPath, webappPath, testFlpSandboxHtml);
 
     return (
-        (await fileExists(flpSandboxPath)) ||
+        fileExists(fs, flpSandboxPath) ||
         FEVersion === FioriElementsVersion.v2 ||
         FEVersion === FioriElementsVersion.v4 ||
         isSAPApp
@@ -92,10 +95,12 @@ export function generateAppMockIntent(
  * Generate all FLP-related intents and availability flags
  * Consolidates FLP sandbox checking and intent generation
  *
+ * @param fs
  * @param projectInfo
  * @param semanticObject
  */
 export async function prepareFlpConfiguration(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     semanticObject: string
 ): Promise<{
@@ -114,7 +119,7 @@ export async function prepareFlpConfiguration(
     } = projectInfo;
 
     // Check FLP sandbox availability
-    const flpSandboxAvailable = await checkFlpSandboxAvailability(rootPath, webappPath, FEVersion, isSAPApp);
+    const flpSandboxAvailable = await checkFlpSandboxAvailability(fs, rootPath, webappPath, FEVersion, isSAPApp);
 
     // Generate app intents
     const appIntent = generateAppIntent(projectInfo, semanticObject, flpSandboxAvailable, flpSandboxFlpIntent);

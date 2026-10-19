@@ -7,6 +7,7 @@
 
 import type { ImportProjectInfo, Message, TemplateData, NeoappDestination } from '../types.js';
 import type { SapAppSourceTemplate } from '../project-spec-types.js';
+import type { Editor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import { MigrationTypes, distVar } from '../utils/constants.js';
 
@@ -23,6 +24,7 @@ import { generateAllUI5YamlFiles, updateManifestForMigration, generateLaunchConf
  * Configuration for generating app settings phase
  */
 export interface GenerateAppSettingsConfig {
+    fs: Editor;
     rootPath: string;
     templateData: TemplateData;
     destination: string;
@@ -40,6 +42,7 @@ export interface GenerateAppSettingsConfig {
  * Configuration for applying all templates phase
  */
 export interface ApplyAllTemplatesConfig {
+    fs: Editor;
     projectInfo: ImportProjectInfo;
     rootPath: string;
     templateData: TemplateData;
@@ -56,6 +59,7 @@ export interface ApplyAllTemplatesConfig {
  * Configuration for post-processing migration phase
  */
 export interface PostProcessMigrationConfig {
+    fs: Editor;
     projectInfo: ImportProjectInfo;
     rootPath: string;
     manifestJSON: any;
@@ -73,16 +77,18 @@ export interface PostProcessMigrationConfig {
  * - Create extension project manifest
  * - Create webapp folder and migrate files
  *
+ * @param fs - mem-fs editor
  * @param projectInfo - Project information
  * @param rootPath - Project root path
  * @returns Updated webapp path and keepIndex flag
  */
 export async function setupProjectStructure(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     rootPath: string
 ): Promise<{ webappPath: string; keepIndex: boolean }> {
     // Migrate from FF legacy folder structure (/src/main) if applicable
-    const { keepIndex, webappPath: updatedWebappPath } = await migrateLegacyFolderStructure(projectInfo, rootPath);
+    const { keepIndex, webappPath: updatedWebappPath } = await migrateLegacyFolderStructure(fs, projectInfo, rootPath);
 
     // Update projectInfo with the new webapp path if it changed
     if (updatedWebappPath !== projectInfo.webappPath) {
@@ -90,10 +96,10 @@ export async function setupProjectStructure(
     }
 
     // Create extension project manifest if needed
-    await createExtensionProjectManifest(rootPath, projectInfo);
+    await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
     // Create webapp folder and migrate files if needed
-    await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+    await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
     // Return the final webapp path (which is now in projectInfo) and keepIndex
     return { webappPath: projectInfo.webappPath, keepIndex };
@@ -108,6 +114,7 @@ export async function setupProjectStructure(
  */
 export async function generateAppSettings(config: GenerateAppSettingsConfig): Promise<void> {
     const {
+        fs,
         rootPath,
         templateData,
         destination,
@@ -128,7 +135,7 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
         (!templateData.project.manifestUI5Version && templateData.project.ui5Version === '');
 
     // Generate all UI5 YAML files
-    await generateAllUI5YamlFiles({
+    await generateAllUI5YamlFiles(fs, {
         templateData,
         neoappDestinations,
         messages,
@@ -143,6 +150,7 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
 
     // Update manifest.json
     await updateManifestForMigration(
+        fs,
         rootPath,
         webappPath,
         templateData,
@@ -164,6 +172,7 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
  */
 export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promise<void> {
     const {
+        fs,
         projectInfo,
         rootPath,
         templateData,
@@ -176,10 +185,11 @@ export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promis
         appMockIntent
     } = config;
     // Setup env i.e. create necessary directories, if they don't already exist
-    await setupMigrationDirectories(projectInfo, rootPath, hasDataSource);
+    await setupMigrationDirectories(fs, projectInfo, rootPath, hasDataSource);
 
     // Apply base application templates
     await applyBaseTemplates({
+        fs,
         projectInfo,
         templateData,
         rootPath,
@@ -191,6 +201,7 @@ export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promis
 
     // Apply specific application templates
     await applyApplicationTemplates({
+        fs,
         projectInfo,
         templateData,
         rootPath,
@@ -204,7 +215,7 @@ export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promis
     });
 
     // Remove package-lock if exists
-    await removePackageLock(projectInfo.rootPath);
+    await removePackageLock(fs, projectInfo.rootPath);
 }
 
 /**
@@ -216,6 +227,7 @@ export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promis
  */
 export async function postProcessMigration(config: PostProcessMigrationConfig): Promise<void> {
     const {
+        fs,
         projectInfo,
         rootPath,
         manifestJSON,
@@ -227,13 +239,21 @@ export async function postProcessMigration(config: PostProcessMigrationConfig): 
         strict = false
     } = config;
     // Validate metadata and add warning if missing
-    await validateAndReportMetadata(rootPath, projectInfo, manifestJSON, messages, strict);
+    await validateAndReportMetadata(fs, rootPath, projectInfo, manifestJSON, messages, strict);
 
     if (projectInfo.type !== MigrationTypes.projectExtension) {
         // Generate Launch Config using @sap-ux/launch-config
-        await generateLaunchConfiguration(projectInfo, vscode, appIntent, appMockIntent, flpSandboxAvailable, messages);
+        await generateLaunchConfiguration(
+            fs,
+            projectInfo,
+            vscode,
+            appIntent,
+            appMockIntent,
+            flpSandboxAvailable,
+            messages
+        );
     } else {
         // Handle extension project configuration
-        await handleExtensionProjectConfig(rootPath, projectInfo);
+        await handleExtensionProjectConfig(fs, rootPath, projectInfo);
     }
 }

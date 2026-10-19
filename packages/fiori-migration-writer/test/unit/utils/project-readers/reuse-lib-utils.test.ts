@@ -4,6 +4,7 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+import { createMemFsEditor } from '../../../../src/utils/fs-adapter.js';
 const { findNestedReuseLibManifest, isSamePath } =
     await import('../../../../src/utils/project-readers/reuse-lib-utils.js');
 
@@ -57,7 +58,7 @@ describe('reuse-lib-utils - findNestedReuseLibManifest', () => {
         );
 
         // when
-        const result = await findNestedReuseLibManifest(projectRoot);
+        const result = await findNestedReuseLibManifest(createMemFsEditor(), projectRoot);
 
         // then
         expect(result).toBeDefined();
@@ -79,7 +80,7 @@ describe('reuse-lib-utils - findNestedReuseLibManifest', () => {
         );
 
         // when / then
-        expect(await findNestedReuseLibManifest(projectRoot)).toBeUndefined();
+        expect(await findNestedReuseLibManifest(createMemFsEditor(), projectRoot)).toBeUndefined();
     });
 
     test('returns undefined when the library root does not match the project root', async () => {
@@ -95,6 +96,6 @@ describe('reuse-lib-utils - findNestedReuseLibManifest', () => {
         );
 
         // when / then - libRoot resolves to innerRoot, not projectRoot
-        expect(await findNestedReuseLibManifest(projectRoot)).toBeUndefined();
+        expect(await findNestedReuseLibManifest(createMemFsEditor(), projectRoot)).toBeUndefined();
     });
 });

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { mkdirSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { updateExtConfigJson } from '../../../src/components/extension.js';
-import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../../../src/types.js';
 
 describe('components/extension', () => {
@@ -44,10 +44,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             expect(existsSync(extConfigPath)).toBe(true);
@@ -66,10 +64,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -94,10 +90,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -123,10 +117,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -139,10 +131,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             expect(existsSync(extConfigPath)).toBe(true);
@@ -160,10 +150,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -181,10 +169,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -204,10 +190,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
