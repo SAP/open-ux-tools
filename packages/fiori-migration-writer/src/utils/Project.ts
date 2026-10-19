@@ -325,14 +325,10 @@ export class ProjectAccess {
                 );
                 return {
                     // Preserve the webappPath resolved before processReuseLibrary (e.g. from .project.json)
-                    // and set the default targetMockHtmlFile for libraries.
                     projectInfo: {
                         ...reuseLibInfo,
                         webappPath:
-                            projectInfo.webappPath !== DirName.Webapp
-                                ? projectInfo.webappPath
-                                : reuseLibInfo.webappPath,
-                        targetMockHtmlFile: 'test/flpSandboxMockServer.html'
+                            projectInfo.webappPath !== DirName.Webapp ? projectInfo.webappPath : reuseLibInfo.webappPath
                     },
                     messages: []
                 };
