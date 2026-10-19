@@ -14,6 +14,7 @@ import { getConvertCommands } from './convert/index.js';
 import { getListCommands } from './list/index.js';
 import { getGetCommands } from './get/index.js';
 import { getUpdateCommands } from './update/index.js';
+import { getMigrateCommand } from './migrate/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -37,7 +38,7 @@ export async function handleCreateFioriCommand(argv: string[]): Promise<void> {
         // Initialize i18n before executing commands
         await initI18n();
         const program = getCommanderProgram();
-        program.parse(argv);
+        await program.parseAsync(argv);
     } catch (error) {
         // Commander report meaningful error messages, output only if log level is set to debug
         logger.debug(error as string | object);
@@ -144,6 +145,9 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(getCommands.commands)}\n`
     );
     program.addCommand(getCommands);
+
+    // Handler for create-fiori migrate ..
+    program.addCommand(getMigrateCommand());
 
     return program;
 }

@@ -1,5 +1,67 @@
 # @sap-ux/create
 
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Features
+
+- Add `migrate` CLI command for converting WebIDE projects to Fiori tools format
+
+    **New Command: `sap-ux migrate`**
+    Migrate legacy WebIDE Fiori projects (SAP Web IDE, Build Work Zone, etc.) to modern Fiori tools format with UI5 tooling support.
+    Features:
+    - Interactive migration prompts for missing configuration
+    - Path validation with security checks
+    - Support for destination, hostname, SAP client, UI5 version overrides
+    - Comprehensive error handling and user feedback
+    - Full test coverage (293 test cases)
+      Usage:
+
+    ```sh
+    npx @sap-ux/create@latest migrate /path/to/project --destination MY_SYSTEM
+    ```
+
+    Migration includes:
+    - neo-app.json → ui5.yaml conversion
+    - UI5 dependencies in package.json
+    - Backend proxy configuration
+    - Launch configuration for testing
+    - TypeScript setup (if applicable)
+      Depends on @sap-ux/fiori-migration-writer package. [[4576e3a](https://github.com/SAP/open-ux-tools/commit/4576e3a0ff7b421483ad004bd7556a75a1c9c3e3)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/fiori-migration-writer 0.0.2 → 0.0.3
+- @sap-ux/flp-config-inquirer 1.0.64 → 1.0.65
+- @sap-ux/preview-middleware 1.2.26 → 1.2.27
+- @sap-ux/abap-deploy-config-inquirer 2.0.52 → 2.0.53
+- @sap-ux/app-config-writer 1.1.27 → 1.1.28
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/abap-deploy-config-writer 1.0.31 → 1.0.32
+- @sap-ux/mockserver-config-writer 1.0.22 → 1.0.23
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/cap-config-writer 1.0.43 → 1.0.44
+- @sap-ux/ui5-test-writer 1.18.1 → 1.18.2
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
 ## 1.4.18
 
 ### Patch Changes

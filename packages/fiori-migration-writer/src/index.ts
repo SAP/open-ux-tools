@@ -81,8 +81,7 @@ export {
     findAllManifest,
     isFioriToolsProject,
     // Additional exports for test compatibility
-    determineMessage,
-    createDirectory
+    determineMessage
 } from './utils/index.js';
 
 // Additional exports from adapters for test compatibility
@@ -96,13 +95,7 @@ export type { UI5YamlOptions } from './adapters/ui5-config-adapter.js';
 
 // Additional exports from utils for test compatibility
 export { readManifest, getUI5Version } from './utils/manifest-and-version-utils.js';
-export {
-    doesPropertyExist,
-    stripSpaces,
-    escapeSingleQuotes,
-    escapeDoubleQuotes,
-    doesDirectoryExists
-} from './utils/file-system-utils.js';
+export { stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, doesDirectoryExists } from './utils/file-system-utils.js';
 export { generateSapLibsStr, getSourceTemplate } from './utils/migration-utils.js';
 export { getWebIDEProjectPathsAsLabels } from './utils/project-discovery.js';
 export {

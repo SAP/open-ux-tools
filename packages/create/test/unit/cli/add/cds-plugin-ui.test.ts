@@ -75,7 +75,7 @@ describe('Test command add cds-plugin-ui5', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(mockExecNpmCommand).toHaveBeenCalledWith(['install'], { cwd: __dirname, logger: undefined });
+        expect(mockExecNpmCommand).toHaveBeenCalledWith(['install'], { cwd: __dirname, logger: loggerMock });
     });
 
     test('Test create-fiori add cds-plugin-ui5 --simulate', async () => {

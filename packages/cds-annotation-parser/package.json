@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Annotation Parser for CDS",
     "type": "module",
     "repository": {
@@ -33,7 +33,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "9.0.2"
+        "npm-run-all2": "9.0.3"
     },
     "engines": {
         "node": ">=22.x"

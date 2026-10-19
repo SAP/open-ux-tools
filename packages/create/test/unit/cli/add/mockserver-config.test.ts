@@ -99,7 +99,7 @@ describe('Test command add mockserver-config', () => {
             ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'],
             {
                 cwd: appRoot,
-                logger: undefined
+                logger: loggerMock
             }
         );
     });

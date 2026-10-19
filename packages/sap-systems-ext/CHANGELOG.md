@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.41
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/ui5-config, @sap-ux/telemetry [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
 ## 1.0.40
 
 ### Patch Changes
