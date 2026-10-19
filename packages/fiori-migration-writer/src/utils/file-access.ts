@@ -9,7 +9,15 @@
 import parseJson from 'json-parse-even-better-errors';
 import type { Editor } from 'mem-fs-editor';
 import { readFile as fsReadFile, access } from 'node:fs/promises';
-import { editorHasPath, getCurrentEditor, exists as fsAdapterExists, getEditor } from './fs-adapter.js';
+import { unlinkSync } from 'node:fs';
+import {
+    editorHasPath,
+    getCurrentEditor,
+    exists as fsAdapterExists,
+    getEditor,
+    createMemFsEditor
+} from './fs-adapter.js';
+import { commitFileSystemChanges } from '../files/file-system.js';
 
 /**
  * Read a text file
@@ -44,7 +52,19 @@ export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string
         content = fs.read(filePath);
     }
 
-    return JSON.parse(content) as T;
+    const result = JSON.parse(content) as T;
+    // Also parse with parseJson to extract indentation metadata (Symbol(indent))
+    // needed for updateJSON to preserve formatting
+    try {
+        const resultWithIndent = parseJson(content);
+        const indent = Symbol.for('indent');
+        if ((resultWithIndent as any)[indent]) {
+            (result as any)[indent] = (resultWithIndent as any)[indent];
+        }
+    } catch {
+        // If parseJson fails, we still have the result from JSON.parse
+    }
+    return result;
 }
 
 /**
@@ -82,7 +102,7 @@ export async function fileExists(pathOrFs: string | Editor, path?: string): Prom
  * @param contentOrPath - Content to write, or path (if first param is Editor)
  * @param content - Content to write (if first param is Editor)
  */
-export function writeFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
+export async function writeFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): Promise<void> {
     const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : contentOrPath;
     const fileContent = typeof pathOrFs === 'string' ? contentOrPath : content!;
@@ -90,43 +110,60 @@ export function writeFile(pathOrFs: string | Editor, contentOrPath: string, cont
 }
 
 /**
- * Update a text file
- * Alias for writeFile for backward compatibility
+ * Update a text file.
+ * Uses the context editor (inside runWithEditor) or an explicit editor if provided.
+ * Outside any migration context, creates a temporary editor and commits immediately.
  *
  * @param pathOrFs - Path to file, or Editor instance
  * @param contentOrPath - Content to write, or path (if first param is Editor)
  * @param content - Content to write (if first param is Editor)
  */
-export function updateFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
-    writeFile(pathOrFs, contentOrPath, content);
+export async function updateFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): Promise<void> {
+    if (typeof pathOrFs === 'string' && !getCurrentEditor()) {
+        const editor = createMemFsEditor();
+        const filePath = pathOrFs;
+        editor.write(filePath, contentOrPath);
+        await commitFileSystemChanges(editor);
+        return;
+    }
+    await writeFile(pathOrFs, contentOrPath, content);
 }
 
 /**
- * Update a JSON file while preserving indentation
+ * Update a JSON file while preserving indentation.
+ * Uses the context editor (inside runWithEditor) or an explicit editor if provided.
+ * Outside any migration context, creates a temporary editor and commits immediately.
  *
  * @param pathOrFs - Path to file, or Editor instance
  * @param contentOrPath - Object to write, or path (if first param is Editor)
  * @param _content - Object to write (if first param is Editor)
  */
-export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | object, _content?: object): void {
-    const fs = getEditor(pathOrFs);
+export async function updateJSON(
+    pathOrFs: string | Editor,
+    contentOrPath: string | object,
+    _content?: object
+): Promise<void> {
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : (contentOrPath as string);
     const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : _content!;
 
+    const fs = typeof pathOrFs === 'string' && !getCurrentEditor() ? createMemFsEditor() : getEditor(pathOrFs);
+    const shouldCommit = typeof pathOrFs === 'string' && !getCurrentEditor();
+
     try {
-        // Read old contents and indentation of the JSON file
+        // mem-fs reads from real FS on cache miss, so fs.read() works for existing files
         const oldContentText = fs.read(filePath);
         const oldContentJson = parseJson(oldContentText);
         const indent = Symbol.for('indent');
-
-        // Prepare new JSON file content with previous indentation
         const result = JSON.stringify(fileContent, null, oldContentJson[indent]) + '\n';
         fs.write(filePath, result);
     } catch {
         // Expected: file may not exist yet or may contain invalid JSON (new file creation scenario).
-        // Safe to write with default 4-space indentation and trailing newline - this is the standard format.
         const newContent = JSON.stringify(fileContent, null, 4) + '\n';
         fs.write(filePath, newContent);
+    }
+
+    if (shouldCommit) {
+        await commitFileSystemChanges(fs);
     }
 }
 
@@ -137,7 +174,16 @@ export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | ob
  * @param path - Path to file (if first param is Editor)
  */
 export function deleteFile(pathOrFs: string | Editor, path?: string): void {
-    const fs = getEditor(pathOrFs);
+    const editor = typeof pathOrFs === 'string' ? getCurrentEditor() : getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
-    fs.delete(filePath);
+    if (editor) {
+        editor.delete(filePath);
+    } else {
+        // No mem-fs context: delete from real filesystem synchronously
+        try {
+            unlinkSync(filePath);
+        } catch {
+            /* ignore if already deleted */
+        }
+    }
 }

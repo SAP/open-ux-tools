@@ -114,7 +114,7 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
     } else {
         // It's a file - copy it
         const content = readFile(sourcePath);
-        writeFile(destPath, content);
+        await writeFile(destPath, content);
 
         // Delete source file after copying
         deleteFile(sourcePath);
@@ -177,9 +177,9 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
         const shouldWriteToWebapp = projectInfo.webappPath && (await exists(join(rootPath, projectInfo.webappPath)));
 
         if (shouldWriteToWebapp) {
-            updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
+            await updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
         } else {
-            updateJSON(join(rootPath, FileName.Manifest), manifestJson);
+            await updateJSON(join(rootPath, FileName.Manifest), manifestJson);
             projectInfo.webappPath = '';
         }
     }
@@ -255,7 +255,7 @@ export async function createWebappFolderAndMigrateFiles(
                 const relativePath = normalizedPath.substring(rootPathWithSep.length);
                 const destPath = join(rootPath, DirName.Webapp, relativePath);
                 const content = readFile(filePath);
-                writeFile(destPath, content);
+                await writeFile(destPath, content);
                 deleteFile(filePath);
             }
         } else {

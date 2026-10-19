@@ -64,6 +64,11 @@ export * from './types.js';
 export * from './i18n.js';
 
 // Public API - Utilities (re-export selective functions for backward compatibility)
+// readFile is exported as async so callers outside migration context can use .resolves
+import { readFile as _readFileSync } from './utils/file-access.js';
+export async function readFile(pathOrFs: unknown, path?: string): Promise<string> {
+    return (_readFileSync as Function)(pathOrFs, path);
+}
 export {
     findProjectRoot,
     getProjectType,
@@ -71,7 +76,6 @@ export {
     hasDependency,
     getMinUI5VersionAsArray,
     type CdsUi5PluginInfo,
-    readFile,
     readJSON,
     fileExists,
     writeFile,
@@ -95,7 +99,14 @@ export type { UI5YamlOptions } from './adapters/ui5-config-adapter.js';
 
 // Additional exports from utils for test compatibility
 export { readManifest, getUI5Version } from './utils/manifest-and-version-utils.js';
-export { stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, doesDirectoryExists } from './utils/file-system-utils.js';
+export {
+    stripSpaces,
+    escapeSingleQuotes,
+    escapeDoubleQuotes,
+    doesDirectoryExists,
+    createDirectory,
+    doesPropertyExist
+} from './utils/file-system-utils.js';
 export { generateSapLibsStr, getSourceTemplate } from './utils/migration-utils.js';
 export { getWebIDEProjectPathsAsLabels } from './utils/project-discovery.js';
 export {

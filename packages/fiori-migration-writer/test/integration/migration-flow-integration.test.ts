@@ -655,8 +655,28 @@ describe('Migration Integration Tests', () => {
     });
 
     describe('Legacy Folder Structure Migration', () => {
+        let tempDir: string;
+
+        beforeEach(async () => {
+            const { tmpdir } = await import('node:os');
+            const { mkdtemp, cp } = await import('node:fs/promises');
+            tempDir = await mkdtemp(join(tmpdir(), 'legacy-migration-test-'));
+            // Copy legacy fixtures to temp dir so fallbackFsMove doesn't corrupt source fixtures
+            await cp(join(TEST_INPUT, 'legacy_fin_ar_lineitems'), join(tempDir, 'legacy_fin_ar_lineitems'), {
+                recursive: true
+            });
+            await cp(join(TEST_INPUT, 'legacy_fin_co_costcenter'), join(tempDir, 'legacy_fin_co_costcenter'), {
+                recursive: true
+            });
+        });
+
+        afterEach(async () => {
+            const { rm } = await import('node:fs/promises');
+            await rm(tempDir, { recursive: true, force: true });
+        });
+
         test('should migrate project with src/main/webapp structure (AR)', async () => {
-            const projectPath = join(TEST_INPUT, 'legacy_fin_ar_lineitems');
+            const projectPath = join(tempDir, 'legacy_fin_ar_lineitems');
             const fs = loadProjectIntoMemFs(projectPath);
 
             const {
@@ -687,7 +707,7 @@ describe('Migration Integration Tests', () => {
         });
 
         test('should migrate project with src/main/webapp structure (CostCenter)', async () => {
-            const projectPath = join(TEST_INPUT, 'legacy_fin_co_costcenter');
+            const projectPath = join(tempDir, 'legacy_fin_co_costcenter');
             const fs = loadProjectIntoMemFs(projectPath);
 
             const {

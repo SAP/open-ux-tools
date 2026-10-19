@@ -10,13 +10,13 @@ import type { TemplateData } from '../types.js';
  * @returns Backend configuration or undefined if not configured
  */
 export function buildMainBackend(templateData: TemplateData): FioriToolsProxyConfigBackend | undefined {
-    if (!templateData.ui5Yaml?.proxyPath || !templateData.ui5Yaml?.proxyHost) {
+    if (!templateData.ui5Yaml?.proxyPath || (!templateData.ui5Yaml?.proxyHost && !templateData.ui5Yaml?.destination)) {
         return undefined;
     }
 
     const backend: FioriToolsProxyConfigBackend = {
         path: templateData.ui5Yaml.proxyPath,
-        url: templateData.ui5Yaml.proxyHost
+        url: templateData.ui5Yaml.proxyHost ?? ''
     };
 
     // Add optional properties
@@ -61,15 +61,9 @@ export function buildProxyConfig(
         }
     };
 
-    // Add UI5 version to proxy config when setUI5Version is true
-    // This matches the behavior in tools-suite master for ui5-mock.yaml
-    // Skip if version is a placeholder/fallback value like "snapshot-version"
-    if (setUI5Version && templateData.ui5Yaml?.ui5Version) {
-        const version = templateData.ui5Yaml.ui5Version;
-        // Only add real versions, not placeholder values
-        if (version && !version.includes('snapshot-version')) {
-            proxyConfig.ui5.version = version;
-        }
+    // Add UI5 version when setUI5Version is true and ui5Version is defined (even if empty string)
+    if (setUI5Version && templateData.ui5Yaml?.ui5Version !== undefined) {
+        proxyConfig.ui5.version = templateData.ui5Yaml.ui5Version;
     }
 
     return proxyConfig;

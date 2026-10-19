@@ -101,7 +101,7 @@ export async function generateAndWriteUI5Yaml(config: UI5YamlGenerationConfig): 
         strict
     });
 
-    updateFile(join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
+    await updateFile(join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
 }
 
 /**
@@ -135,7 +135,7 @@ export async function generateAndWriteUI5LocalYaml(config: UI5LocalYamlGeneratio
         strict
     });
 
-    updateFile(join(rootPath, TemplateFileName.UI5LocalYaml), ui5LocalYamlContent);
+    await updateFile(join(rootPath, TemplateFileName.UI5LocalYaml), ui5LocalYamlContent);
 }
 
 /**
@@ -156,7 +156,7 @@ export async function generateAndWriteUI5MockYaml(config: UI5MockYamlGenerationC
 
     const ui5MockYamlContent = await generateUI5MockYamlContent(templateData, webappPath, setUI5version);
 
-    updateFile(join(rootPath, TemplateFileName.UI5MockYaml), ui5MockYamlContent);
+    await updateFile(join(rootPath, TemplateFileName.UI5MockYaml), ui5MockYamlContent);
 }
 
 /**

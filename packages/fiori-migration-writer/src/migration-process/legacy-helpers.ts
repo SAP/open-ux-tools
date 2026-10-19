@@ -85,9 +85,9 @@ async function memFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
         moveMemFsDirectory(editor, paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
     }
 
-    // Move test/qunit to webapp/test/qunit
+    // Move test/qunit to webapp/test (replacing the test path, not nesting under qunit)
     if (await exists(paths.ffLegacyTestQunitPath)) {
-        moveMemFsDirectory(editor, paths.ffLegacyTestQunitPath, join(paths.ffNewTestPath, 'qunit'));
+        moveMemFsDirectory(editor, paths.ffLegacyTestQunitPath, paths.ffNewTestPath);
     }
 
     // Move test/uiveri5 to webapp/test/uiveri5
@@ -118,10 +118,9 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
  * @param _paths - Legacy paths object (unused, paths rebuilt internally for security)
  */
 export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise<void> {
-    // In mem-fs mode, use mem-fs operations instead of git
+    // In mem-fs mode, also perform mem-fs operations to keep the in-memory store consistent
     if (isMemFsEnabled()) {
         await memFsMove(rootPath, _paths);
-        return;
     }
 
     const runner = new CommandRunner();
@@ -173,25 +172,18 @@ export async function tryGitMove(rootPath: string, _paths: LegacyPaths): Promise
  * @param paths - Legacy paths object
  */
 export async function fallbackFsMove(rootPath: string, paths: LegacyPaths): Promise<void> {
-    // Note: In mem-fs mode, file moves are handled by git (preferred path)
-    // This fallback only works for real file system operations
-    // Mem-fs doesn't support atomic moves, so this is intentionally a no-op in mem-fs mode
-    if (isMemFsEnabled()) {
-        // Skip fallback in mem-fs mode - files should have been moved by git
-        return;
-    }
-
-    // Real file system fallback
-    // Use filesystem operations for cleanup
+    // Real file system fallback - always runs to clean up legacy structure from disk.
+    // In mem-fs mode the new files are already staged in the editor; the real moves here
+    // delete the old source directories so they are absent after editor.commit().
     const { default: fse } = await import('fs-extra');
     if (await pathExistsOnDisk(paths.ffLegacyWebappPath)) {
-        fse.moveSync(paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp));
+        fse.moveSync(paths.ffLegacyWebappPath, join(rootPath, DirName.Webapp), { overwrite: true });
     }
     if (await pathExistsOnDisk(paths.ffLegacyTestQunitPath)) {
-        fse.moveSync(paths.ffLegacyTestQunitPath, paths.ffNewTestPath);
+        fse.moveSync(paths.ffLegacyTestQunitPath, paths.ffNewTestPath, { overwrite: true });
     }
     if (await pathExistsOnDisk(paths.ffLegacyTestuiveri5Path)) {
-        fse.moveSync(paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath);
+        fse.moveSync(paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath, { overwrite: true });
     }
 }
 
@@ -203,12 +195,6 @@ export async function fallbackFsMove(rootPath: string, paths: LegacyPaths): Prom
  * @param paths - Legacy paths object
  */
 export async function cleanupEmptyDirs(rootPath: string, legacyPath: string, paths: LegacyPaths): Promise<void> {
-    // Note: In mem-fs mode, directory removal isn't needed
-    // Mem-fs only tracks files, not empty directories
-    if (isMemFsEnabled()) {
-        return;
-    }
-
     const fsextra = await import('fs-extra');
 
     const dirsToRemove = [join(rootPath, legacyPath), paths.ffLegacyTestPath, join(rootPath, 'src')];

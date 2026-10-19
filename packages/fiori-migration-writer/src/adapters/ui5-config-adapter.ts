@@ -65,15 +65,15 @@ function addMockserverMiddleware(orderedYaml: any, templateData: TemplateData): 
         }
     };
 
-    // Find index of fiori-tools-proxy and insert before it
+    // Find index of fiori-tools-proxy and insert after it
     const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
         (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
     );
     if (proxyIndex >= 0) {
-        orderedYaml.server.customMiddleware.splice(proxyIndex, 0, mockserverMiddleware);
+        orderedYaml.server.customMiddleware.splice(proxyIndex + 1, 0, mockserverMiddleware);
     } else {
-        // If proxy not found, add at beginning
-        orderedYaml.server.customMiddleware.unshift(mockserverMiddleware);
+        // If proxy not found, add at end
+        orderedYaml.server.customMiddleware.push(mockserverMiddleware);
     }
 }
 

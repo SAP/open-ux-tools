@@ -115,7 +115,7 @@ export async function generateTemplate(
 
     // 5. Write file (mem-fs handles directory creation implicitly)
     // Do not catch - let errors propagate to caller for proper handling
-    writeFile(targetFile, content);
+    await writeFile(targetFile, content);
 }
 
 /**

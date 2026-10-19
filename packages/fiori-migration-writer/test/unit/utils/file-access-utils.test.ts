@@ -94,21 +94,21 @@ describe('File Access Utilities', () => {
     });
 
     describe('readFile', () => {
-        test('should read file content', () => {
+        test('should read file content', async () => {
             const testFile = join(testRoot, 'read.txt');
             const content = 'test content';
             writeFileSync(testFile, content);
 
-            const result = readFile(testFile);
+            const result = await readFile(testFile);
             expect(result).toBe(content);
         });
 
-        test('should read file content from an explicit editor', () => {
+        test('should read file content from an explicit editor', async () => {
             const testFile = join(testRoot, 'read-explicit.txt');
             const fs = createMemFsEditor();
             fs.write(testFile, 'editor content');
 
-            const result = readFile(fs, testFile);
+            const result = await readFile(fs, testFile);
             expect(result).toBe('editor content');
         });
     });
@@ -258,7 +258,7 @@ describe('File Access Utilities', () => {
                 });
             });
 
-            const result = readFile(testFile);
+            const result = await readFile(testFile);
             expect(result).toBe('modified content');
         });
 

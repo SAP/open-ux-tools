@@ -154,9 +154,7 @@ export class ProjectMigrator {
                 // Resolve UI5 versions for migration
                 const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrlOpt);
                 projectInfo.localUI5Version = ui5Versions?.[0]?.version;
-                if (/^(snapshot(-untested)?)?$/i.test(projectInfo.ui5Version?.trim() ?? '')) {
-                    projectInfo.ui5Version = projectInfo.localUI5Version ?? '';
-                }
+                // ui5Version left as-is from project/neo-app data
 
                 // Validate project is suitable for migration (not a Fiori app in CAP project)
                 await validateProjectForMigration(projectRoot);
@@ -426,7 +424,7 @@ export class ProjectMigrator {
                 const yamlConfig = await UI5Config.newInstance(yamlContent); // NOSONAR - Sequential YAML parsing required
                 yamlConfig.addCustomMiddleware([ui5TSSupport.middleware]);
                 yamlConfig.addCustomTasks([ui5TSSupport.task]);
-                updateFile(yamlPath, yamlConfig.toString());
+                await updateFile(yamlPath, yamlConfig.toString());
             }
         }
         messages.push({

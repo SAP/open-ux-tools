@@ -1,5 +1,7 @@
+import { existsSync } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
-import { editorHasPath, getEditor } from './fs-adapter.js';
+import { editorHasPath, getEditor, getCurrentEditor } from './fs-adapter.js';
 
 /**
  * Normalize path separators to forward slashes for cross-platform compatibility
@@ -30,8 +32,11 @@ export const escapeSingleQuotes = (s: string): string =>
  *
  * @param s
  */
-export const escapeDoubleQuotes = (s: string): string =>
-    s.replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`);
+export const escapeDoubleQuotes = (s: string): string => s.replaceAll('"', String.raw`\"`);
+
+export function doesPropertyExist(obj: unknown, fieldName: string): boolean {
+    return Object.hasOwn(obj as object, fieldName);
+}
 
 /**
  * Check if directory exists
@@ -41,8 +46,25 @@ export const escapeDoubleQuotes = (s: string): string =>
  * @param directory - Directory path (if first param is Editor)
  */
 export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: string): boolean {
-    const fs = getEditor(directoryOrFs);
     const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
-    // Use editorHasPath instead of fs.exists() to avoid side effect of staging paths
-    return editorHasPath(fs, dir);
+    const editor = typeof directoryOrFs === 'string' ? getCurrentEditor() : getEditor(directoryOrFs);
+    if (editor && editorHasPath(editor, dir)) {
+        return true;
+    }
+    return existsSync(dir);
+}
+
+/**
+ * Create directory if it doesn't exist
+ *
+ * @param directory - Directory path to create
+ * @returns True if directory was created, false if it already existed
+ */
+export async function createDirectory(directory: string): Promise<boolean> {
+    let isCreated = false;
+    if (!doesDirectoryExists(directory)) {
+        await mkdir(directory, { recursive: true });
+        isCreated = true;
+    }
+    return isCreated;
 }

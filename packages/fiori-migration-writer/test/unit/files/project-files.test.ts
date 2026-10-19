@@ -7,6 +7,7 @@ import { copyAdaptationFiles, copyLibraryFiles } from '../../../src/files/projec
 import type { ImportProjectInfo } from '../../../src/types.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';
 import { initI18n } from '../../../src/index.js';
+import { runWithEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -218,7 +219,8 @@ describe('project-files', () => {
                 ui5Version: '1.120.0'
             } as ImportProjectInfo;
 
-            const result = await copyLibraryFiles(projectInfo);
+            const editor = createMemFsEditor(createMemFs());
+            const result = await runWithEditor(editor, () => copyLibraryFiles(projectInfo));
 
             // With mem-fs, this should succeed even with non-real paths
             expect(result.result).toBe(true);

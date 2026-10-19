@@ -138,9 +138,7 @@ export async function processRegularProject(
         flpSandboxMockFlpIntent = flpResult.flpSandboxMockFlpIntent;
         hasRootIntent.flpSandboxRootIntent = flpResult.hasRootIntent.flpSandboxRootIntent;
         hasRootIntent.flpSandboxMockRootIntent = flpResult.hasRootIntent.flpSandboxMockRootIntent;
-        if (flpResult.targetMockHtmlFile) {
-            projectInfo.targetMockHtmlFile = flpResult.targetMockHtmlFile;
-        }
+        const targetMockHtmlFile = flpResult.targetMockHtmlFile;
 
         // Process neo-app configuration and determine OData version
         const neoAppResult = await processNeoAppAndODataVersion(
@@ -214,7 +212,8 @@ export async function processRegularProject(
             neoappDestinations,
             firstNeoAppDestination,
             hasRootIntent,
-            reuseLibs: Object.keys(reuseManifestLibs || {}).join(',')
+            reuseLibs: Object.keys(reuseManifestLibs || {}).join(','),
+            ...(targetMockHtmlFile ? { targetMockHtmlFile } : {})
         };
     } catch (error) {
         messages.push({

@@ -155,7 +155,7 @@ export async function copyLibraryFiles(
         const ui5YamlContent = render(ui5YamlTemplate, templateData.ui5Yaml, { escape: escapeXML });
         const ui5YamlJson = parse(ui5YamlContent);
 
-        updateFile(join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
+        await updateFile(join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
         result = messages.length === 0;
     } catch (e) {
         messages.length = 0; // Reset

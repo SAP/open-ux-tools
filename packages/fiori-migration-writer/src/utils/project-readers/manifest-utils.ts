@@ -5,7 +5,8 @@
 
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import { fileExists, readFile } from '../../index.js';
+import { fileExists } from '../../index.js';
+import { readFile } from '../../utils/file-access.js';
 import type { Manifest, SapUi5RoutingTarget } from '../../project-spec-types.js';
 import { FioriElementsVersion } from '../../project-spec-types.js';
 import { FLOOR_PLAN } from '../../types.js';

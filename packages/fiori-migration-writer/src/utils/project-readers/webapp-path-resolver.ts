@@ -4,7 +4,8 @@
 import { join } from 'node:path';
 import { parse } from 'yaml';
 import { DirName, FileName } from '../../project-spec-types.js';
-import { fileExists, readJSON, readFile } from '../../index.js';
+import { fileExists, readJSON } from '../../index.js';
+import { readFile } from '../../utils/file-access.js';
 import { sapWattCommonSetting } from '../../types.js';
 import { MigrationTypes } from '../constants.js';
 

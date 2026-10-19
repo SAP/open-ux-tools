@@ -79,7 +79,7 @@ describe('webapp', () => {
                 await createExtensionProjectManifest(rootPath, projectInfo);
 
                 // Existing manifest should remain unchanged
-                const content = readFile(join(rootPath, 'webapp', 'manifest.json'));
+                const content = await readFile(join(rootPath, 'webapp', 'manifest.json'));
                 const parsed = JSON.parse(content);
                 expect(parsed['sap.app'].id).toBe('existing');
             });

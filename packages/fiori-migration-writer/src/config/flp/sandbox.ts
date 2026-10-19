@@ -104,7 +104,7 @@ async function processMockSandboxFile(
         const [intent, exists] = await Promise.all([getFlpIntentFromHtml(filePath), fileExists(filePath)]);
 
         if (!exists) {
-            return { hasRootIntent: false };
+            return { hasRootIntent: false, targetFile: 'test/flpSandboxMockServer.html' };
         }
 
         const content = readFile(filePath);
@@ -117,8 +117,7 @@ async function processMockSandboxFile(
         };
     } catch {
         // Expected: flpSandboxMockServer.html may not exist or may be unreadable in legacy projects.
-        // Safe to return empty defaults - mock server configuration is optional.
-        return { hasRootIntent: false };
+        return { hasRootIntent: false, targetFile: 'test/flpSandboxMockServer.html' };
     }
 }
 

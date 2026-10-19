@@ -142,7 +142,9 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
         neoappDestinations,
         extensionProjectSettings,
         ui5Version,
-        appVersion
+        appVersion,
+        targetMockHtmlFile: 'test/flpSandboxMockServer.html',
+        ...(projectInfo.flpSandboxFlpIntent ? { flpSandboxFlpIntent: projectInfo.flpSandboxFlpIntent } : {})
     };
     if (manifest) {
         result.manifestUI5Version = getMinUI5VersionAsArray(manifest, true)[0] || '';

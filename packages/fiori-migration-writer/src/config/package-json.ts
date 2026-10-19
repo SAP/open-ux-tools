@@ -15,8 +15,7 @@ import type {
     ImportProjectInfo,
     PackageJsonContext,
     FLPConfiguration,
-    PackageJsonFeatureFlags,
-    Script
+    PackageJsonFeatureFlags
 } from '../types.js';
 
 interface TestFile {
@@ -74,9 +73,8 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
         TEST_FILES.map(async (testFile) => {
             const scriptName = `${testFile.type}-tests`;
             const exists = await fileExists(join(projectInfo.rootPath, projectInfo.webappPath, testFile.path));
-            const alreadyExists = runTasks.some((runTask) => runTask.name === scriptName);
 
-            if (exists && !alreadyExists) {
+            if (exists) {
                 return {
                     name: scriptName,
                     command: String.raw`fiori run --open \"${testFile.path}\"`
@@ -86,8 +84,14 @@ export async function generatePackageJsonConfig(context: PackageJsonContext): Pr
         })
     );
 
-    // Add non-null test scripts to runTasks
-    runTasks.push(...testScriptResults.filter((script): script is Script => script !== null));
+    // Add non-null test scripts to runTasks, deduplicating by script name (first match wins)
+    const seenScriptNames = new Set(runTasks.map((t) => t.name));
+    for (const script of testScriptResults) {
+        if (script !== null && !seenScriptNames.has(script.name)) {
+            runTasks.push(script);
+            seenScriptNames.add(script.name);
+        }
+    }
 
     // Clone UI5 dependencies and add V4 mock server if needed
     const ui5DepsCloned = [...ui5Dependencies];

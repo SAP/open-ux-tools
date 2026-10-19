@@ -125,7 +125,7 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
     // Handle testsuite.qunit.html file
     const testSuiteRunner = join(ffNewTestPath, TemplateFileName.TestsuiteQunitHtml);
     if (!(await fileExists(testSuiteRunner))) {
-        updateFile(testSuiteRunner, legacyRunnerContent);
+        await updateFile(testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     } else {
         // Rename using copy+delete pattern (mem-fs compatible)
@@ -137,7 +137,7 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
         if (legacyRunnerContent.includes('testsuite.qunit.html')) {
             legacyRunnerContent = legacyRunnerContent.replaceAll('testsuite.qunit.html', 'testsuite_old.qunit.html');
         }
-        updateFile(testSuiteRunner, legacyRunnerContent);
+        await updateFile(testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     }
 }
@@ -172,7 +172,7 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
                     0,
                     functionStart + funcBracket.length
                 )}${replaceContent}${moduleFileContent.slice(posReturn)}`;
-                updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
+                await updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
             }
         }
     }
@@ -221,7 +221,7 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
                 '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
                 ''
             );
-            updateFile(filePath, content);
+            await updateFile(filePath, content);
         }
         return;
     }
@@ -245,7 +245,7 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
             '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
             ''
         );
-        updateFile(filePath, content);
+        await updateFile(filePath, content);
     }
 }
 
@@ -263,7 +263,7 @@ async function updateGitignore(rootPath: string): Promise<void> {
     try {
         let gitignoreContent = readFile(gitignore);
         gitignoreContent = gitignoreContent.replaceAll('/src/main', '');
-        updateFile(gitignore, gitignoreContent);
+        await updateFile(gitignore, gitignoreContent);
     } catch (e) {
         throw new MigrationError(e, '.gitignore');
     }
@@ -299,7 +299,7 @@ async function updateNeoApp(rootPath: string): Promise<void> {
                     : route.target
             }));
         }
-        updateJSON(neoapp, neoappContent);
+        await updateJSON(neoapp, neoappContent);
     } catch (e) {
         throw new MigrationError(e, FileName.NeoApp);
     }
@@ -325,7 +325,7 @@ async function updateProjectJson(rootPath: string): Promise<void> {
         if (projectJsonContent.path) {
             projectJsonContent.path = projectJsonContent.path.replace('src/main', '');
         }
-        updateJSON(projectJson, projectJsonContent);
+        await updateJSON(projectJson, projectJsonContent);
     } catch (e) {
         throw new MigrationError(e, 'project.json');
     }
