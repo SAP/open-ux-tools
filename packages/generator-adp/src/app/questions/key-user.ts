@@ -7,7 +7,12 @@ import type {
 import type { ToolsLogger } from '@sap-ux/logger';
 import { isAxiosError } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { type SystemLookup, getConfiguredProvider, isAuthRequired, isViewRestrictionOnlyChange } from '@sap-ux/adp-tooling';
+import {
+    type SystemLookup,
+    getConfiguredProvider,
+    isAuthRequired,
+    isViewRestrictionOnlyChange
+} from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
 import type {
