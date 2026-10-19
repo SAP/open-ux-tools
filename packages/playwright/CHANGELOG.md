@@ -1,5 +1,13 @@
 # @sap-ux-private/playwright
 
+## 1.0.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fs-extra 11.3.6 → 11.4.1 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
 ## 1.0.6
 
 ### Patch Changes
