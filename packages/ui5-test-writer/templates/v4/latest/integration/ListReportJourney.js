@@ -200,6 +200,15 @@ sap.ui.define([
         });
 
 <%_ } -%>
+<%_ if (tab.defaultSortOrder && tab.defaultSortOrder.length > 0) { -%>
+        opaTest(<%- JSON.stringify("Check default sort order from PresentationVariant in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            <%_ tab.defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
 <%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
         opaTest(<%- JSON.stringify("Check the Sort options for columns with a Text annotation in view " + tab.key) %>, function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
@@ -231,15 +240,6 @@ sap.ui.define([
         });
 
 <%_ } -%>
-<%_ } -%>
-<%_ if (tab.defaultSortOrder && tab.defaultSortOrder.length > 0) { -%>
-        opaTest(<%- JSON.stringify("Check default sort order from PresentationVariant in view " + tab.key) %>, function (Given, When, Then) {
-            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
-            <%_ tab.defaultSortOrder.forEach(function(sort) { _%>
-            Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>);
-            <%_ }); -%>
-        });
-
 <%_ } -%>
         opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
