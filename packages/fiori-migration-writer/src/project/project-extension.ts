@@ -143,6 +143,7 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
         extensionProjectSettings,
         ui5Version,
         appVersion,
+        targetMockHtmlFile: 'test/flpSandboxMockServer.html',
         ...(projectInfo.flpSandboxFlpIntent ? { flpSandboxFlpIntent: projectInfo.flpSandboxFlpIntent } : {})
     };
     if (manifest) {
