@@ -2,6 +2,15 @@ import type { Editor } from 'mem-fs-editor';
 import { editorHasPath, getEditor } from './fs-adapter.js';
 
 /**
+ * Normalize path separators to forward slashes for cross-platform compatibility
+ * mem-fs and many tools expect forward slashes regardless of OS
+ *
+ * @param path - Path to normalize
+ * @returns Path with forward slashes
+ */
+export const normalizePath = (path: string): string => path.replaceAll('\\', '/');
+
+/**
  * stripSpaces
  *
  * @param val
@@ -36,28 +45,4 @@ export function doesDirectoryExists(directoryOrFs: string | Editor, directory?: 
     const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
     // Use editorHasPath instead of fs.exists() to avoid side effect of staging paths
     return editorHasPath(fs, dir);
-}
-
-/**
- * Check if property exists on object
- *
- * @param obj
- * @param fieldName
- */
-export function doesPropertyExist(obj: unknown, fieldName: string): boolean {
-    return Object.hasOwn(obj as object, fieldName);
-}
-
-/**
- * Create directory if it doesn't exist
- * Note: mem-fs handles directories implicitly, so this is a no-op
- *
- * @param directoryOrFs - Directory path or Editor instance
- * @param directory - Directory path (if first param is Editor)
- */
-export function createDirectory(directoryOrFs: string | Editor, directory?: string): boolean {
-    // mem-fs handles directories implicitly when writing files
-    // Check if it exists for consistency
-    const exists = doesDirectoryExists(directoryOrFs, directory);
-    return !exists; // Return true if it didn't exist (was "created")
 }
