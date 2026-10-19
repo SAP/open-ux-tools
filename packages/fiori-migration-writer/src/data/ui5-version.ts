@@ -16,7 +16,7 @@ export async function resolveUI5VersionsForMigration(
 ): Promise<any> {
     // Remove snapshot suffixes from UI5 version
     const ui5VersionWithoutSnapshot = projectInfo.ui5Version?.replace(/snapshot-untested|snapshot/gi, '');
-    let ui5VersionMinForProject = getUI5Version(ui5VersionWithoutSnapshot);
+    const ui5VersionMinForProject = getUI5Version(ui5VersionWithoutSnapshot);
 
     // Ensure minimum UI5 version for local development.
     // When the project version is at or below the minimum, return it directly: the minimum

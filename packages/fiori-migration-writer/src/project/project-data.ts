@@ -84,6 +84,9 @@ export interface CreateProjectDataConfig {
  * projectUI5Version comes from manifest.json minUI5Version and takes precedence, but must be
  * floored to minUI5VersionForLocalDev. resolvedVersion is already floored by
  * resolveUI5VersionsForMigration and is used as fallback when projectUI5Version is empty.
+ *
+ * @param projectUI5Version
+ * @param resolvedVersion
  */
 function effectiveLocalUI5Version(projectUI5Version: string, resolvedVersion: string | undefined): string {
     if (!projectUI5Version) {
