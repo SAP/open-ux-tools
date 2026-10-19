@@ -75,6 +75,7 @@ export type FEV4ManifestTarget = {
             entitySet?: string;
             contextPath?: string;
             hideFilterBar?: boolean;
+            defaultTemplateAnnotationPath?: string;
             navigation?: {
                 [id: string]: {
                     detail?: {

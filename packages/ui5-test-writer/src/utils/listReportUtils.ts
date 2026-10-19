@@ -157,6 +157,24 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
 }
 
 /**
+ * Returns the `defaultTemplateAnnotationPath` from the manifest target's settings, if present.
+ *
+ * @param manifest - the application manifest
+ * @param targetKey - the routing target key for the List Report page
+ * @returns the annotation path string, or undefined if not configured
+ */
+function getDefaultTemplateAnnotationPath(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined
+): string | undefined {
+    if (!manifest || !targetKey) {
+        return undefined;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as FEV4ManifestTarget | undefined;
+    return target?.options?.settings?.defaultTemplateAnnotationPath;
+}
+
+/**
  * Resolves raw text-annotation candidates into the template shape, deduplicating the text-property test
  * per text target. Each candidate asserts its own code column and text target independently; when columns
  * share a text target, only the first emits the text-property test (the rest set `skipTextPropertyTest`).
@@ -277,7 +295,11 @@ function resolveVariantFromPath(
         return { presentationVariant: entry, selectionVariant: undefined };
     }
     if (term === 'SelectionVariant') {
-        return { presentationVariant: undefined, selectionVariant: entry };
+        // A bare SV has no PV of its own; fall back to the unqualified PV for sort assertions.
+        const fallbackPV =
+            (ui.SelectionPresentationVariant as Record<string, unknown> | undefined)?.PresentationVariant ??
+            ui.PresentationVariant;
+        return { presentationVariant: fallbackPV, selectionVariant: entry };
     }
     return { presentationVariant: undefined, selectionVariant: undefined };
 }
@@ -324,18 +346,20 @@ export function getDefaultSortOrder(
  *
  * @param convertedMetadata - converted OData metadata
  * @param entitySetName - the entity set name
+ * @param annotationPath
  * @returns array of filter default values, empty if no SV or no applicable ranges
  */
 export function getDefaultFilterValues(
     convertedMetadata: ConvertedMetadata,
-    entitySetName: string
+    entitySetName: string,
+    annotationPath?: string
 ): FilterDefaultValue[] {
     const entitySet = convertedMetadata.entitySets.find((es) => es.name === entitySetName);
     const entityType = entitySet?.entityType as EntityType | undefined;
     if (!entityType) {
         return [];
     }
-    const { selectionVariant } = resolveVariantAnnotation(entityType);
+    const { selectionVariant } = resolveVariantAnnotation(entityType, annotationPath);
     const selectOptions = (selectionVariant as Record<string, unknown> | undefined)?.SelectOptions as
         unknown[] | undefined;
     if (!selectOptions?.length) {
@@ -357,7 +381,9 @@ const SUPPORTED_OPERATORS = new Set(['EQ', 'BT', 'LE', 'GE', 'LT', 'GT', 'NE']);
 function normalizeFilterValue(val: string, propertyName: string, entityType: EntityType): string {
     const prop = entityType.entityProperties.find((p) => p.name === propertyName);
     const isDigitSeq =
-        ((prop?.annotations as Record<string, unknown>)?.Common as Record<string, unknown>)?.IsDigitSequence === true;
+        (
+            (prop?.annotations as Record<string, unknown>)?.Common as Record<string, unknown>
+        )?.IsDigitSequence?.valueOf() === true;
     const maxLength = prop?.maxLength as number | undefined;
     return isDigitSeq && maxLength ? val.padStart(maxLength, '0') : val;
 }
@@ -376,6 +402,7 @@ function extractFilterItem(selectOption: Record<string, unknown>, entityType: En
         return [];
     }
     const ranges = selectOption.Ranges as unknown[] | undefined;
+    const result: FilterDefaultValue[] = [];
     for (const range of ranges ?? []) {
         const r = range as Record<string, unknown>;
         const sign = (r.Sign as string | undefined)?.split('/').pop();
@@ -395,9 +422,9 @@ function extractFilterItem(selectOption: Record<string, unknown>, entityType: En
                 item.value2 = normalizeFilterValue(high, propertyName, entityType);
             }
         }
-        return [item];
+        result.push(item);
     }
-    return [];
+    return result;
 }
 
 /**
@@ -560,9 +587,17 @@ export function getListReportFeatures(
 
     const tabs = getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log);
     const entitySet = listReportPage.entitySet ?? '';
-    const defaultSortOrder = convertedMetadata && !tabs.length ? getDefaultSortOrder(convertedMetadata, entitySet) : [];
+    const singleTableAnnotationPath = !tabs.length
+        ? getDefaultTemplateAnnotationPath(manifest, listReportPage.name)
+        : undefined;
+    const defaultSortOrder =
+        convertedMetadata && !tabs.length
+            ? getDefaultSortOrder(convertedMetadata, entitySet, singleTableAnnotationPath)
+            : [];
     const defaultFilterValues =
-        convertedMetadata && !tabs.length ? getDefaultFilterValues(convertedMetadata, entitySet) : [];
+        convertedMetadata && !tabs.length
+            ? getDefaultFilterValues(convertedMetadata, entitySet, singleTableAnnotationPath)
+            : [];
 
     return {
         name: listReportPage.name,

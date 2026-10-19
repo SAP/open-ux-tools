@@ -389,7 +389,7 @@ sap.ui.define([
 <%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
         opaTest("Check default filter values from SelectionVariant", function (Given, When, Then) {
             <%_ defaultFilterValues.forEach(function(filter) { _%>
-            Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: "<%- filter.property %>" }, "<%- filter.value %>"<%- filter.operator ? ', "' + filter.operator + '"' : '' %>);
+            Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: <%- JSON.stringify(filter.property) %> }, <%- filter.value2 !== undefined ? JSON.stringify([filter.value, filter.value2]) : JSON.stringify(filter.value) %><%- filter.operator ? ', ' + JSON.stringify(filter.operator) : '' %>);
             <%_ }); -%>
         });
 

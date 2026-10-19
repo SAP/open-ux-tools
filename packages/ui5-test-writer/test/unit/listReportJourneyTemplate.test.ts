@@ -126,3 +126,54 @@ describe('ListReportJourney template (latest) - multi-tab tab-specific checks', 
         );
     });
 });
+
+describe.each(['latest', '1.148', '1.152', '1.84'])(
+    'ListReportJourney template (%s) - defaultFilterValues output',
+    (bucket) => {
+        function renderWithFilters(defaultFilterValues: unknown[]): string {
+            const templatePath = join(__dirname, `../../templates/v4/${bucket}/integration/ListReportJourney.js`);
+            const fs = create(createStorage());
+            const out = join(__dirname, `lr.${bucket}.filters.gen.js`);
+            fs.copyTpl(templatePath, out, {
+                name: 'Travel',
+                startPages: ['TravelList'],
+                startLR: 'TravelList',
+                navigatedOP: 'TravelObjectPage',
+                hideFilterBar: false,
+                serviceUri: '/odata/v4/TestService/',
+                filterBarItems: [],
+                tableColumns: {},
+                contactCardColumns: [],
+                toolBarActions: [],
+                createButton: { visible: false },
+                deleteButton: { visible: false },
+                isALP: false,
+                semanticKey: {},
+                textAnnotationColumns: [],
+                tableIdentifiers: ['defaultTableId'],
+                defaultSortOrder: [],
+                defaultFilterValues,
+                tabs: []
+            });
+            return fs.read(out);
+        }
+
+        test('emits iCheckFilterField with JSON.stringify-safe values for EQ', () => {
+            const content = renderWithFilters([{ property: 'Status', value: 'O' }]);
+            expect(content).toContain('iCheckFilterField({ property: "Status" }, "O")');
+        });
+
+        test('emits both boundaries as an array for BT ranges', () => {
+            const content = renderWithFilters([
+                { property: 'Date', value: '2024-01-01', value2: '2024-12-31', operator: 'BT' }
+            ]);
+            expect(content).toContain('iCheckFilterField({ property: "Date" }, ["2024-01-01","2024-12-31"], "BT")');
+        });
+
+        test('safely escapes values that contain double quotes', () => {
+            const content = renderWithFilters([{ property: 'Name', value: "O'Brien" }]);
+            // JSON.stringify wraps in double quotes; single quotes inside are safe
+            expect(content).toContain(`iCheckFilterField({ property: "Name" }, "O'Brien")`);
+        });
+    }
+);

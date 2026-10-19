@@ -4058,4 +4058,149 @@ describe('getDefaultFilterValues()', () => {
         const meta = buildMetadata('');
         expect(getDefaultFilterValues(meta, 'Unknown')).toEqual([]);
     });
+
+    test('collects all matching ranges for a property (multiple Sign=I ranges)', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="FR"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([
+            { property: 'Country', value: 'DE' },
+            { property: 'Country', value: 'FR' }
+        ]);
+    });
+
+    test('returns both boundaries for BT range', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/BT"/>
+                                                <PropertyValue Property="Low" String="AA"/>
+                                                <PropertyValue Property="High" String="MZ"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([
+            { property: 'Country', value: 'AA', value2: 'MZ', operator: 'BT' }
+        ]);
+    });
+
+    test('zero-pads IsDigitSequence values to property maxLength', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="ID"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="12"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ns.MyType/ID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.IsDigitSequence"/>
+            </Annotations>`);
+        // ID: MaxLength=8, IsDigitSequence — "12" must be padded to "00000012"
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([{ property: 'ID', value: '00000012' }]);
+    });
+
+    test('resolves SV and falls back to unqualified PV sort order when annotationPath points to bare SelectionVariant', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.PresentationVariant">
+                    <Record>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="ID"/>
+                                    <PropertyValue Property="Descending" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection><AnnotationPath>@com.sap.vocabularies.UI.v1.LineItem</AnnotationPath></Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant" Qualifier="SV1">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        // SV has no PV — sort order must fall back to the unqualified PV
+        expect(getDefaultSortOrder(meta, 'MySet', 'com.sap.vocabularies.UI.v1.SelectionVariant#SV1')).toEqual([
+            { property: 'ID', descending: true }
+        ]);
+        // SV filter values must still be resolved from the qualified SV
+        expect(getDefaultFilterValues(meta, 'MySet', 'com.sap.vocabularies.UI.v1.SelectionVariant#SV1')).toEqual([
+            { property: 'Country', value: 'DE' }
+        ]);
+    });
 });
