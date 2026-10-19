@@ -178,6 +178,24 @@ describe('utils/project-discovery', () => {
                 expect(typeof item.description).toBe('string');
             }
         });
+
+        it('should sort multiple detected projects alphabetically by label', async () => {
+            // Three distinct WebIDE projects guarantee the comparator hits both the
+            // greater-than (line 137) and less-than (line 141) branches.
+            for (const name of ['charlie', 'alpha', 'bravo']) {
+                const dir = join(testRoot, name);
+                mkdirSync(dir, { recursive: true });
+                writeFileSync(join(dir, 'neo-app.json'), '{}');
+            }
+
+            const folders = [createProjectFolder(testRoot)];
+            const result = await getWebIDEProjectPathsAsLabels(folders);
+            const labels = result.map((r) => r.label);
+            expect(labels.length).toBeGreaterThanOrEqual(3);
+
+            const sorted = [...labels].sort((a, b) => a.localeCompare(b));
+            expect(labels).toEqual(sorted);
+        });
     });
 
     describe('findProjectsByManifest', () => {
