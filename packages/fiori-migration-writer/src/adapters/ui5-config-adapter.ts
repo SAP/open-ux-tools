@@ -78,6 +78,42 @@ function addMockserverMiddleware(orderedYaml: any, templateData: TemplateData): 
 }
 
 /**
+ * Create a new UI5Config instance with metadata and type pre-configured.
+ *
+ * @param templateData - Template data providing the config name
+ * @returns Configured UI5Config instance
+ */
+async function createBaseConfig(templateData: TemplateData): Promise<InstanceType<typeof UI5Config>> {
+    const config = await UI5Config.newInstance('', { validateSchema: false });
+    config.setMetadata({
+        name: templateData.ui5Yaml?.name?.toLowerCase() || templateData.project.name?.toLowerCase() || 'app'
+    });
+    config.setType('application');
+    return config;
+}
+
+/**
+ * Post-process a UI5Config YAML string: add specVersion 4.0 at the top and
+ * optionally set webapp and appreload paths.
+ *
+ * @param yamlContent - Raw YAML string from UI5Config.toString()
+ * @param webappPath - Optional webapp path to inject
+ * @returns Final YAML string with specVersion and optional paths applied
+ */
+function postProcessYaml(yamlContent: string, webappPath?: string): string {
+    const yamlJson = parse(yamlContent);
+    const orderedYaml: any = { specVersion: '4.0' };
+    Object.keys(yamlJson).forEach((key) => {
+        orderedYaml[key] = yamlJson[key];
+    });
+    if (webappPath) {
+        setWebappPath(orderedYaml, webappPath);
+        setAppreloadPath(orderedYaml, webappPath);
+    }
+    return stringify(orderedYaml);
+}
+
+/**
  * Build backend configuration from template data and neo-app destinations
  *
  * @param templateData - Template data with backend configuration
@@ -146,13 +182,7 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
         strict = false
     } = options;
 
-    const config = await UI5Config.newInstance('', { validateSchema: false });
-
-    // Set metadata and type
-    config.setMetadata({
-        name: templateData.ui5Yaml?.name?.toLowerCase() || templateData.project.name?.toLowerCase() || 'app'
-    });
-    config.setType('application');
+    const config = await createBaseConfig(templateData);
 
     // Build backend configuration using helpers
     const backends = buildBackendConfigs(
@@ -177,24 +207,7 @@ export async function generateUI5YamlContent(options: UI5YamlOptions): Promise<s
         config.addCustomMiddleware(previewMiddleware);
     }
 
-    const yamlContent = config.toString();
-
-    // Post-process: Add specVersion 4.0 (UI5Config doesn't set this)
-    const yamlJson = parse(yamlContent);
-
-    // Add specVersion at the top
-    const orderedYaml: any = { specVersion: '4.0' };
-    Object.keys(yamlJson).forEach((key) => {
-        orderedYaml[key] = yamlJson[key];
-    });
-
-    // Apply webappPath if provided
-    if (webappPath) {
-        setWebappPath(orderedYaml, webappPath);
-        setAppreloadPath(orderedYaml, webappPath);
-    }
-
-    return stringify(orderedYaml);
+    return postProcessYaml(config.toString(), webappPath);
 }
 
 /**
@@ -222,13 +235,7 @@ export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Prom
         strict = false
     } = options;
 
-    const config = await UI5Config.newInstance('', { validateSchema: false });
-
-    // Set metadata and type
-    config.setMetadata({
-        name: templateData.ui5Yaml?.name?.toLowerCase() || templateData.project.name?.toLowerCase() || 'app'
-    });
-    config.setType('application');
+    const config = await createBaseConfig(templateData);
 
     // Add framework section with SAPUI5 libraries (ui5-local.yaml specific)
     if (templateData.project.localUI5Version && templateData.ui5Yaml?.sapUiLibs) {
@@ -267,11 +274,7 @@ export async function generateUI5LocalYamlContent(options: UI5YamlOptions): Prom
     }
 
     const yamlContent = config.toString();
-
-    // Parse and post-process
     const yamlJson = parse(yamlContent);
-
-    // Add specVersion at the top
     const orderedYaml: any = { specVersion: '4.0' };
     Object.keys(yamlJson).forEach((key) => {
         orderedYaml[key] = yamlJson[key];
@@ -304,13 +307,7 @@ export async function generateUI5MockYamlContent(
     webappPath?: string,
     setUI5Version?: boolean
 ): Promise<string> {
-    const config = await UI5Config.newInstance('', { validateSchema: false });
-
-    // Set metadata and type
-    config.setMetadata({
-        name: templateData.ui5Yaml?.name?.toLowerCase() || templateData.project.name?.toLowerCase() || 'app'
-    });
-    config.setType('application');
+    const config = await createBaseConfig(templateData);
 
     // Add fiori-tools-proxy middleware with UI5 version if provided
     const proxyConfig: FioriToolsProxyConfig = {
@@ -332,22 +329,5 @@ export async function generateUI5MockYamlContent(
     // Add fiori-tools-appreload middleware
     config.addFioriToolsAppReloadMiddleware();
 
-    const yamlContent = config.toString();
-
-    // Post-process: Add specVersion and webappPath
-    const yamlJson = parse(yamlContent);
-
-    // Add specVersion at the top
-    const orderedYaml: any = { specVersion: '4.0' };
-    Object.keys(yamlJson).forEach((key) => {
-        orderedYaml[key] = yamlJson[key];
-    });
-
-    // Apply webappPath if provided
-    if (webappPath) {
-        setWebappPath(orderedYaml, webappPath);
-        setAppreloadPath(orderedYaml, webappPath);
-    }
-
-    return stringify(orderedYaml);
+    return postProcessYaml(config.toString(), webappPath);
 }

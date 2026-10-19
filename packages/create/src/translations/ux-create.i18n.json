@@ -64,5 +64,65 @@
         "systemAdded": "System '{{name}}' added",
         "systemUpdated": "System '{{name}}' updated",
         "systemRemoved": "System '{{name}}' removed"
+    },
+    "migrate": {
+        "command": {
+            "description": "Migrate legacy WebIDE Fiori project to modern Fiori tools format. In BAS, a destination is required. Outside BAS, hostname and client are required; destination is optional.",
+            "options": {
+                "destination": "SAP System destination name (required in BAS)",
+                "sapSystemName": "SAP System name (alias for destination)",
+                "hostname": "Backend hostname (required outside BAS unless resolved from a saved system)",
+                "client": "SAP Client (required outside BAS unless resolved from destination or saved system)",
+                "ui5Version": "UI5 version (defaults to source project version)",
+                "force": "Force migration even if project is already a Fiori tools project",
+                "skipInstall": "Skip the `npm install` step after migration"
+            }
+        },
+        "validation": {
+            "pathUnsafe": "Path contains unsafe characters",
+            "pathNotExists": "Path does not exist: {{path}}",
+            "destinationInvalid": "Destination name must contain only letters, numbers, hyphens, and underscores",
+            "hostnameInvalid": "Invalid hostname format",
+            "clientInvalid": "SAP client must be a 3-digit number (e.g., 100)",
+            "ui5VersionInvalid": "UI5 version must follow semantic versioning format (e.g., 1.120.0)",
+            "fieldRequired": "{{fieldName}} is required",
+            "operationCancelled": "Operation cancelled by user"
+        },
+        "prompts": {
+            "confirmCurrentDir": "Migrate project at current directory: {{path}}?",
+            "enterPath": "Enter project path:",
+            "enterPathField": "Project path",
+            "alreadyMigrated": "Project appears to be already migrated to Fiori tools.",
+            "forceConfirm": "Force migration anyway?",
+            "cancelled": "Migration cancelled.",
+            "enterBASDestination": "Enter SAP Business Application Studio destination:",
+            "destinationField": "Destination",
+            "useDestination": "Use SAP System destination?",
+            "enterBTPDestination": "Enter BTP destination or SAP system name (letters, numbers, hyphens, underscores only):",
+            "enterHostname": "Enter hostname:",
+            "hostnameField": "Hostname",
+            "enterClient": "SAP Client:",
+            "clientField": "SAP Client",
+            "enterClientOptional": "SAP Client (optional, press Enter to skip):",
+            "enterUI5Version": "UI5 Version (optional, press Enter to use project default):",
+            "selectBASDestination": "Select the SAP Business Application Studio destination:",
+            "destinationChoice": "{{name}} ({{client}})",
+            "defaultClient": "default client"
+        },
+        "status": {
+            "migratingAt": "Migrating project at: {{path}}",
+            "starting": "Starting migration...",
+            "success": "✓ Migration completed successfully!",
+            "messages": "\nMessages:",
+            "skipInstallWarning": "`npm install` was skipped. Install project dependencies before running the application.",
+            "installing": "Installing project dependencies...",
+            "installFailed": "Migration completed, but dependency installation failed. Resolve the npm error above before running the project.",
+            "failed": "✗ Migration failed",
+            "failedError": "Migration failed"
+        }
+    },
+    "npm": {
+        "installSuccess": "npm install completed successfully.",
+        "installFailed": "npm install failed. '{{error}}'"
     }
 }
