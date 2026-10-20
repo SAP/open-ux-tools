@@ -9,6 +9,7 @@ import fastGlob from 'fast-glob';
 import { dirname, basename, join, normalize } from 'node:path';
 import { access } from 'node:fs/promises';
 import { readJSON } from './file-access.js';
+import { normalizePath } from './file-system-utils.js';
 import type { ProjectFolder } from '../types.js';
 
 /**
@@ -124,8 +125,8 @@ export interface ReuseLibResult {
 async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: string): Promise<string> {
     let current = dirname(manifestPath);
     // Normalize paths for comparison
-    const normalizedBoundary = workspaceBoundary.replaceAll('\\', '/');
-    const normalizedCurrent = (path: string) => path.replaceAll('\\', '/');
+    const normalizedBoundary = normalizePath(workspaceBoundary);
+    const normalizedCurrent = (path: string) => normalizePath(path);
 
     // Helper to check if a file/directory exists using Node.js fs API
     // (not mem-fs, since project markers are real filesystem entries)

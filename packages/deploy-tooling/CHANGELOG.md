@@ -1,5 +1,22 @@
 # @sap-ux/deploy-tooling
 
+## 1.0.52
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
 ## 1.0.51
 
 ### Patch Changes

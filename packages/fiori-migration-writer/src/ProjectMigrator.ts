@@ -1,6 +1,12 @@
 import { FioriElementsVersion, FileName } from './project-spec-types.js';
 import { determineMessage, readFile, updateFile } from './utils/index.js';
-import { createMemFsEditor, getCurrentEditor, runWithEditor, exists } from './utils/fs-adapter.js';
+import {
+    createMemFsEditor,
+    getCurrentEditor,
+    runWithEditor,
+    exists,
+    loadProjectIntoEditor
+} from './utils/fs-adapter.js';
 import { commitFileSystemChanges } from './files/file-system.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
@@ -132,6 +138,10 @@ export class ProjectMigrator {
             let result = false;
 
             try {
+                // Load the project tree into mem-fs so existence checks see untracked files
+                // on disk and migration writes never silently overwrite them.
+                await loadProjectIntoEditor(editor, projectRoot);
+
                 // Load or fetch project information
                 const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
                     projectRoot,
