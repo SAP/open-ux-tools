@@ -213,7 +213,7 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +
                 'press_interactive: { controlId: string }. ' +
-                'get_odata_metadata: { uris: string[] } (the entries[].url values from read_odata_metadata_adp). ' +
+                'get_odata_metadata: { uris: string[], appPath?: string } (the entries[].url values from read_odata_metadata_adp; pass appPath so large metadata can be saved to disk instead of overflowing the response). ' +
                 'get_overlays / save / stop / restart / get_page_actions: omit.'
         )
 });

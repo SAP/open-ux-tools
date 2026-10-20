@@ -170,7 +170,8 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'get_odata_metadata': {
                 const uris = requireStringArray(input.payload, 'uris');
-                return getODataMetadata(defaultTransport, site, uris);
+                const appPath = typeof input.payload?.appPath === 'string' ? input.payload.appPath : undefined;
+                return getODataMetadata(defaultTransport, site, uris, appPath);
             }
             default:
                 throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);

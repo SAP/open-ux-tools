@@ -317,7 +317,11 @@ describe('rta/commands', () => {
         test('writes to a file and returns metadataFile + sizeBytes when over the threshold', async () => {
             const dir = mkdtempSync(join(tmpdir(), 'md-'));
             try {
-                transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'application/xml', body: bigEdmx });
+                transport.fetchViaContext.mockResolvedValue({
+                    status: 200,
+                    contentType: 'application/xml',
+                    body: bigEdmx
+                });
                 const out = await getODataMetadata(
                     transport,
                     SITE,
@@ -345,7 +349,11 @@ describe('rta/commands', () => {
         test('sanitises the URI into a safe filename under .context (no path escape)', async () => {
             const dir = mkdtempSync(join(tmpdir(), 'md-'));
             try {
-                transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'application/xml', body: bigEdmx });
+                transport.fetchViaContext.mockResolvedValue({
+                    status: 200,
+                    contentType: 'application/xml',
+                    body: bigEdmx
+                });
                 const out = await getODataMetadata(transport, SITE, ['/api/svc/$metadata'], dir);
                 const entry = out.entries[0] as { metadataFile: string };
                 expect(entry.metadataFile).not.toMatch(/[$]/);

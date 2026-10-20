@@ -272,8 +272,18 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 site: SITE,
                 payload: { uris: ['api/svc/'] }
             })) as any;
-            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/']);
+            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/'], undefined);
             expect(result).toEqual({ entries: [{ url: 'api/svc/', metadata: '<edmx/>' }] });
+        });
+
+        test('passes optional appPath from payload to getODataMetadata', async () => {
+            mockGetODataMetadata.mockResolvedValue({ entries: [] });
+            await runRtaWorkflowStep({
+                step: 'get_odata_metadata',
+                site: SITE,
+                payload: { uris: ['api/svc/'], appPath: '/tmp/app' }
+            });
+            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/'], '/tmp/app');
         });
 
         test('rejects when payload.uris is missing', async () => {
