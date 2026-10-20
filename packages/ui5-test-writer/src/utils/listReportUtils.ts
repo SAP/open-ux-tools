@@ -50,11 +50,19 @@ import {
 } from './actionUtils.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type { Manifest } from '@sap-ux/project-access';
-import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
+import type {
+    DataFieldForAction,
+    PresentationVariantType,
+    SelectionVariantType,
+    SelectOptionType
+} from '@sap-ux/vocabularies-types/vocabularies/UI.js';
+import type { EntityTypeAnnotations_UI as EntityTypeAnnotationsUI } from '@sap-ux/vocabularies-types/vocabularies/UI_Edm.js';
 import { t } from '../i18n.js';
 
 export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 export { safeCheckButtonVisibility };
+
+const SUPPORTED_OPERATORS = new Set(['EQ', 'BT', 'LE', 'GE', 'LT', 'GT', 'NE']);
 
 /**
  * Builds a button state object from button visibility result.
@@ -254,15 +262,15 @@ export function extractTextAnnotationCandidatesFromMetadata(
 function resolveVariantAnnotation(
     entityType: EntityType,
     annotationPath?: string
-): { presentationVariant: unknown; selectionVariant: unknown } {
-    const ui = (entityType.annotations as Record<string, unknown>)?.UI as Record<string, unknown> | undefined;
+): { presentationVariant: PresentationVariantType | undefined; selectionVariant: SelectionVariantType | undefined } {
+    const ui = entityType.annotations.UI;
     if (!ui) {
         return { presentationVariant: undefined, selectionVariant: undefined };
     }
     if (annotationPath) {
         return resolveVariantFromPath(ui, annotationPath);
     }
-    const spv = ui.SelectionPresentationVariant as Record<string, unknown> | undefined;
+    const spv = ui.SelectionPresentationVariant;
     if (spv) {
         return { presentationVariant: spv.PresentationVariant, selectionVariant: spv.SelectionVariant };
     }
@@ -277,31 +285,28 @@ function resolveVariantAnnotation(
  * @returns the resolved presentationVariant and selectionVariant objects
  */
 function resolveVariantFromPath(
-    ui: Record<string, unknown>,
+    ui: EntityTypeAnnotationsUI,
     annotationPath: string
-): { presentationVariant: unknown; selectionVariant: unknown } {
+): { presentationVariant: PresentationVariantType | undefined; selectionVariant: SelectionVariantType | undefined } {
     const hashIndex = annotationPath.indexOf('#');
     const qualifier = hashIndex >= 0 ? annotationPath.slice(hashIndex + 1) : undefined;
     const term = annotationPath.slice(annotationPath.lastIndexOf('.') + 1, hashIndex >= 0 ? hashIndex : undefined);
     const key = qualifier ? `${term}#${qualifier}` : term;
-    const entry = ui[key] as Record<string, unknown> | undefined;
-    if (!entry) {
-        return { presentationVariant: undefined, selectionVariant: undefined };
+    switch (term) {
+        case 'SelectionPresentationVariant': {
+            const spv = ui[key as 'SelectionPresentationVariant'];
+            return { presentationVariant: spv?.PresentationVariant, selectionVariant: spv?.SelectionVariant };
+        }
+        case 'PresentationVariant':
+            return { presentationVariant: ui[key as 'PresentationVariant'], selectionVariant: undefined };
+        case 'SelectionVariant': {
+            // A bare SV has no PV of its own; fall back to the unqualified PV for sort assertions.
+            const fallbackPV = ui.SelectionPresentationVariant?.PresentationVariant ?? ui.PresentationVariant;
+            return { presentationVariant: fallbackPV, selectionVariant: ui[key as 'SelectionVariant'] };
+        }
+        default:
+            return { presentationVariant: undefined, selectionVariant: undefined };
     }
-    if (term === 'SelectionPresentationVariant') {
-        return { presentationVariant: entry.PresentationVariant, selectionVariant: entry.SelectionVariant };
-    }
-    if (term === 'PresentationVariant') {
-        return { presentationVariant: entry, selectionVariant: undefined };
-    }
-    if (term === 'SelectionVariant') {
-        // A bare SV has no PV of its own; fall back to the unqualified PV for sort assertions.
-        const fallbackPV =
-            (ui.SelectionPresentationVariant as Record<string, unknown> | undefined)?.PresentationVariant ??
-            ui.PresentationVariant;
-        return { presentationVariant: fallbackPV, selectionVariant: entry };
-    }
-    return { presentationVariant: undefined, selectionVariant: undefined };
 }
 
 /**
@@ -323,17 +328,16 @@ export function getDefaultSortOrder(
         return [];
     }
     const { presentationVariant } = resolveVariantAnnotation(entityType, annotationPath);
-    const sortOrder = (presentationVariant as Record<string, unknown> | undefined)?.SortOrder as unknown[] | undefined;
+    const sortOrder = presentationVariant?.SortOrder;
     if (!sortOrder?.length) {
         return [];
     }
     return sortOrder.flatMap((entry) => {
-        const sortEntry = entry as Record<string, unknown>;
-        const property = (sortEntry.Property as Record<string, unknown> | undefined)?.value as string | undefined;
+        const property = entry.Property?.value;
         if (!property) {
             return [];
         }
-        const desc = sortEntry.Descending as Record<string, unknown> | boolean | undefined;
+        const desc = entry.Descending;
         const descending = typeof desc === 'boolean' ? desc : desc?.valueOf?.() === true;
         return [{ property, descending: !!descending }];
     });
@@ -346,7 +350,7 @@ export function getDefaultSortOrder(
  *
  * @param convertedMetadata - converted OData metadata
  * @param entitySetName - the entity set name
- * @param annotationPath
+ * @param annotationPath - optional annotationPath from the tab's view config (multi-tab)
  * @returns array of filter default values, empty if no SV or no applicable ranges
  */
 export function getDefaultFilterValues(
@@ -360,15 +364,12 @@ export function getDefaultFilterValues(
         return [];
     }
     const { selectionVariant } = resolveVariantAnnotation(entityType, annotationPath);
-    const selectOptions = (selectionVariant as Record<string, unknown> | undefined)?.SelectOptions as
-        unknown[] | undefined;
+    const selectOptions = selectionVariant?.SelectOptions;
     if (!selectOptions?.length) {
         return [];
     }
-    return selectOptions.flatMap((option) => extractFilterItem(option as Record<string, unknown>, entityType));
+    return selectOptions.flatMap((option) => extractFilterItem(option, entityType));
 }
-
-const SUPPORTED_OPERATORS = new Set(['EQ', 'BT', 'LE', 'GE', 'LT', 'GT', 'NE']);
 
 /**
  * Zero-pads a filter value to the property's maxLength when the property has Common.IsDigitSequence.
@@ -380,45 +381,39 @@ const SUPPORTED_OPERATORS = new Set(['EQ', 'BT', 'LE', 'GE', 'LT', 'GT', 'NE']);
  */
 function normalizeFilterValue(val: string, propertyName: string, entityType: EntityType): string {
     const prop = entityType.entityProperties.find((p) => p.name === propertyName);
-    const isDigitSeq =
-        (
-            (prop?.annotations as Record<string, unknown>)?.Common as Record<string, unknown>
-        )?.IsDigitSequence?.valueOf() === true;
-    const maxLength = prop?.maxLength as number | undefined;
+    const isDigitSeq = prop?.annotations.Common?.IsDigitSequence?.valueOf() === true;
+    const maxLength = prop?.maxLength;
     return isDigitSeq && maxLength ? val.padStart(maxLength, '0') : val;
 }
 
 /**
  * Extracts a single FilterDefaultValue from one SelectOptionType entry, or empty if no applicable range.
  *
- * @param selectOption - a raw SelectOptionType record from the converted metadata
+ * @param selectOption - a SelectOptionType entry from the converted metadata
  * @param entityType - the entity type to look up property metadata for normalization
  * @returns array with one FilterDefaultValue if an applicable range is found, empty otherwise
  */
-function extractFilterItem(selectOption: Record<string, unknown>, entityType: EntityType): FilterDefaultValue[] {
-    const propertyName = (selectOption.PropertyName as Record<string, unknown> | undefined)?.value as
-        string | undefined;
+function extractFilterItem(selectOption: SelectOptionType, entityType: EntityType): FilterDefaultValue[] {
+    const propertyName = selectOption.PropertyName?.value;
     if (!propertyName) {
         return [];
     }
-    const ranges = selectOption.Ranges as unknown[] | undefined;
     const result: FilterDefaultValue[] = [];
-    for (const range of ranges ?? []) {
-        const r = range as Record<string, unknown>;
-        const sign = (r.Sign as string | undefined)?.split('/').pop();
-        const operator = (r.Option as string | undefined)?.split('/').pop();
+    for (const range of selectOption.Ranges ?? []) {
+        const sign = range.Sign?.split('/').pop();
+        const operator = range.Option?.split('/').pop();
         if (sign !== 'I' || !operator || !SUPPORTED_OPERATORS.has(operator)) {
             continue;
         }
-        const low = r.Low as string | undefined;
-        const high = r.High as string | undefined;
+        const low = range.Low != null ? String(range.Low) : undefined;
+        const high = range.High != null ? String(range.High) : undefined;
         if (low === undefined || (operator === 'BT' && high === undefined)) {
             continue;
         }
         const value = normalizeFilterValue(low, propertyName, entityType);
         const item: FilterDefaultValue = { property: propertyName, value, ...(operator !== 'EQ' && { operator }) };
         if (operator === 'BT') {
-            item.value2 = normalizeFilterValue(high!, propertyName, entityType);
+            item.value2 = normalizeFilterValue(high ?? '', propertyName, entityType);
         }
         result.push(item);
     }
