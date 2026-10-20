@@ -185,6 +185,15 @@ export class ProjectMigrator {
 
     /**
      * Normalize the backward-compatible positional arguments into a MigrateOptions object.
+     *
+     * @param projectRootOrOptions
+     * @param baseUri
+     * @param ui5SnapshotUrl
+     * @param importProjectInfo
+     * @param vscode
+     * @param internalToggle
+     * @param fs
+     * @param strict
      */
     private static normalizeMigrateOptions(
         projectRootOrOptions: string | MigrateOptions,
@@ -213,6 +222,15 @@ export class ProjectMigrator {
 
     /**
      * Run the migration for the resolved project info, dispatching by project type.
+     *
+     * @param editor
+     * @param projectInfo
+     * @param messages
+     * @param opts
+     * @param opts.vscode
+     * @param opts.ui5SnapshotUrl
+     * @param opts.internalToggle
+     * @param opts.strict
      */
     private static async runMigrationForProjectInfo(
         editor: Editor,
