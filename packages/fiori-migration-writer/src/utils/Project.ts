@@ -471,10 +471,15 @@ export class ProjectAccess {
         const pomRoots = await findAllWebIDEProjectFolders(workspaceRoots);
         // find projects by manifest.json in the root
         let manifestRoots = await findProjectsByManifest(workspaceRoots as ProjectFolder[]);
-        const roots = [...packageRoots, ...pomRoots];
-        // filter projects with manifest.json at root, when the project is nested in another migratble project
+        // A root can be discovered by more than one strategy (e.g. a project with both package.json
+        // and pom.xml), so deduplicate before building folders — otherwise getReuseLibs scans the
+        // same folder twice and returns duplicate library entries.
+        const roots = [...new Set([...packageRoots, ...pomRoots])];
+        // filter projects with manifest.json at root, when the project is nested in another migratble project.
+        // Reject exact matches too: a package/pom root that also has a root-level manifest.json would
+        // otherwise be re-appended here, defeating the dedup above and getting scanned twice again.
         manifestRoots = manifestRoots.filter(
-            (manifestRoot) => !roots.some((root) => manifestRoot.startsWith(root + sep))
+            (manifestRoot) => !roots.some((root) => manifestRoot === root || manifestRoot.startsWith(root + sep))
         );
         roots.push(...manifestRoots);
 
@@ -488,38 +493,68 @@ export class ProjectAccess {
 
         // find reuse libs
         let reuseLibsRoots = (await getReuseLibs(rootFolders)).filter((lib) => lib.value.type === ReuseLibType.LIBRARY);
+        // Roots that are themselves reuse libraries must be emitted only as libraries, never also as
+        // plain projects. getReuseLibs assigns a nested library to its nearest package/pom root, so a
+        // freestyle app that merely embeds a library shares that libRoot — suppressing by libRoot alone
+        // would wrongly drop the app. A root is library-only when it is itself a discovered library root
+        // AND getProjectInfo does not classify it as an application (no FE version, not an SAP app).
+        // getProjectInfo's own type is not sufficient on its own: a library whose manifest.json lives in
+        // a non-standard nested source path (e.g. src/.../lib/manifest.json) is not resolved as a library
+        // by the default webapp lookup, so the libRoot signal is needed to catch it.
+        const libraryOnlyRoots = new Set<string>();
         if (reuseLibsRoots.length) {
-            // Process all roots in parallel
-            const results = await Promise.all(roots.map((root) => this.getProjectInfo(root)));
-
-            // Collect project roots
-            const temp: any[] = [];
-            results.forEach((result, index) => {
-                if (result.projectInfo.FEVersion || result.projectInfo.isSAPApp) {
-                    temp.push(roots[index]);
+            const reuseLibRootPaths = new Set(reuseLibsRoots.map((lib) => lib.value.libRoot));
+            const appRoots: string[] = [];
+            // Fetch all project info in parallel for performance
+            const projectInfoResults = await Promise.all(roots.map((root) => this.getProjectInfo(root)));
+            for (let i = 0; i < roots.length; i++) {
+                const root = roots[i];
+                const result = projectInfoResults[i];
+                const isApp = !!(result.projectInfo.FEVersion || result.projectInfo.isSAPApp);
+                if (isApp) {
+                    appRoots.push(root);
+                } else if (
+                    [...reuseLibRootPaths].some((libRoot) => isSamePath(libRoot, root)) ||
+                    result.projectInfo.type === MigrationTypes.library
+                ) {
+                    libraryOnlyRoots.add(root);
                 }
-            });
-
-            // Remove reuse libs that are within project roots
+            }
+            // After classifying all roots, filter out reuse libs detected in application projects
             reuseLibsRoots = reuseLibsRoots.filter(
-                (lib) => !temp.some((tempRoot) => isSamePath(lib.value.libRoot, tempRoot))
+                (lib) => !appRoots.some((appRoot) => isSamePath(lib.value.libRoot, appRoot))
             );
         }
-        // if workspace has multiple roots then make sure there are no similar projects
-        const projectsUnique: MigratableFolder[] = [...new Set(roots)].map((root) => {
-            return {
-                root: root,
-                type: MigrationTypes.project
-            };
-        });
 
-        const reuseLibsUnique: MigratableFolder[] = reuseLibsRoots.map((lib) => {
-            return {
-                root: lib.value.libRoot,
-                type: MigrationTypes.library,
-                libPath: dirname(lib.value.path)
-            };
-        });
+        // if workspace has multiple roots then make sure there are no similar projects
+        const projectsUnique: MigratableFolder[] = [...new Set(roots)]
+            .filter((root) => !libraryOnlyRoots.has(root))
+            .map((root) => {
+                return {
+                    root: root,
+                    type: MigrationTypes.project
+                };
+            });
+
+        // A single library root can contain several nested manifest.json files (the library manifest
+        // plus per-component manifests), each of which getReuseLibs resolves back to the same libRoot.
+        // Emit one entry per library root so the webview does not list the same library multiple times.
+        const seenLibPaths: string[] = [];
+        const reuseLibsUnique: MigratableFolder[] = reuseLibsRoots
+            .filter((lib) => {
+                if (seenLibPaths.some((path) => isSamePath(path, lib.value.path))) {
+                    return false;
+                }
+                seenLibPaths.push(lib.value.path);
+                return true;
+            })
+            .map((lib) => {
+                return {
+                    root: lib.value.libRoot,
+                    type: MigrationTypes.library,
+                    libPath: dirname(lib.value.path)
+                };
+            });
 
         const rootsUniqueSorted = [...reuseLibsUnique, ...projectsUnique].sort((a, b) => a.root.localeCompare(b.root));
 

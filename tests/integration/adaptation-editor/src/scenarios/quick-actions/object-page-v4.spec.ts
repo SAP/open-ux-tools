@@ -241,7 +241,7 @@ test.describe(`@quick-actions @fe-v4 @object-page`, () => {
                             },
                             targetPage: {
                                 type: 'Component',
-                                id: 'FirstAssociatedEntityObjectPage',
+                                id: 'toFirstAssociatedEntity--FirstAssociatedEntityObjectPage',
                                 name: 'sap.fe.templates.ObjectPage',
                                 routePattern:
                                     'RootEntity({key})/toFirstAssociatedEntity({FirstAssociatedEntityKey}):?query:',

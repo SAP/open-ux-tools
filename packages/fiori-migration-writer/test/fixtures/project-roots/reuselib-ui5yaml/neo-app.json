@@ -1,0 +1,10 @@
+{
+  "welcomeFile": "index.html",
+  "routes": [
+    {
+      "path": "/resources/sap/nw/core/om/lib/printreuse",
+      "target": { "type": "application", "name": "sapnwcoreomlibprintreuse" },
+      "description": ""
+    }
+  ]
+}
