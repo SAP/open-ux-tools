@@ -1,13 +1,10 @@
-import { join, dirname } from 'node:path';
-import { mkdirSync, writeFileSync } from 'node:fs';
-
 import { readUi5Config, getVariant, ManifestService, ManifestServiceCF, isCFEnvironment } from '@sap-ux/adp-tooling';
 import type { IManifestService } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { formatXml, logger } from '../utils/index.js';
+import { formatXml, logger, writeContextMetadata } from '../utils/index.js';
 import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
 type Ui5Model = { dataSource?: string } & Record<string, unknown>;
@@ -104,7 +101,7 @@ async function readAbapODataMetadata(appPath: string, saveLocal: boolean): Promi
                 const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
                 const formattedMetadata = formatXml(rawMetadata);
                 if (saveLocal) {
-                    writeLocalMetadata(appPath, name, formattedMetadata);
+                    writeContextMetadata(appPath, name, formattedMetadata);
                 }
                 return {
                     id: name,
@@ -132,18 +129,4 @@ function getModelsByDataSource(manifestService: IManifestService): Map<string, U
             .filter((model): model is Ui5Model & { dataSource: string } => Boolean(model.dataSource))
             .map((model) => [model.dataSource, model])
     );
-}
-
-/**
- * Writes formatted OData metadata to `webapp/.context/<name>-metadata.xml` so agents can read
- * it as context without fetching from the ABAP system on every invocation.
- *
- * @param appPath Adaptation project root directory.
- * @param name Data source name; used as the file basename.
- * @param metadata Formatted XML content to persist.
- */
-function writeLocalMetadata(appPath: string, name: string, metadata: string): void {
-    const metadataPath = join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
-    mkdirSync(dirname(metadataPath), { recursive: true });
-    writeFileSync(metadataPath, metadata, 'utf-8');
 }

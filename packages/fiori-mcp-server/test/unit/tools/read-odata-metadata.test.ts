@@ -1,14 +1,17 @@
 import { jest } from '@jest/globals';
-import { join } from 'node:path';
 
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockFormatXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
+const mockWriteContextMetadata = jest.fn<any>(
+    (appPath: string, name: string) => `${appPath}/webapp/.context/${name}-metadata.xml`
+);
 
 const actualUtils = await import('../../../src/utils/index.js');
 jest.unstable_mockModule('../../../src/utils', () => ({
     ...actualUtils,
     formatXml: mockFormatXml,
+    writeContextMetadata: mockWriteContextMetadata,
     logger: {
         ...actualUtils.logger,
         warn: mockLoggerWarn,
@@ -38,15 +41,6 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
 const mockCreateAbapServiceProvider = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: mockCreateAbapServiceProvider
-}));
-
-const mockMkdirSync = jest.fn<any>();
-const mockWriteFileSync = jest.fn<any>();
-const actualFs = await import('node:fs');
-jest.unstable_mockModule('node:fs', () => ({
-    ...actualFs,
-    mkdirSync: mockMkdirSync,
-    writeFileSync: mockWriteFileSync
 }));
 
 const { readODataMetadataAdp } = await import('../../../src/tools/read-odata-metadata.js');
@@ -123,9 +117,7 @@ describe('readODataMetadataAdp', () => {
 
         await readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true });
 
-        const expectedPath = join(APP_PATH, 'webapp', '.context', 'mainService-metadata.xml');
-        expect(mockMkdirSync).toHaveBeenCalledWith(expect.stringContaining('.context'), { recursive: true });
-        expect(mockWriteFileSync).toHaveBeenCalledWith(expectedPath, expect.any(String), 'utf-8');
+        expect(mockWriteContextMetadata).toHaveBeenCalledWith(APP_PATH, 'mainService', expect.any(String));
     });
 
     test('does not write file when saveLocal is false (default)', async () => {
@@ -133,7 +125,7 @@ describe('readODataMetadataAdp', () => {
 
         await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(mockWriteFileSync).not.toHaveBeenCalled();
+        expect(mockWriteContextMetadata).not.toHaveBeenCalled();
     });
 
     test('passes url and client from ui5.yaml to createAbapServiceProvider', async () => {
@@ -217,7 +209,7 @@ describe('readODataMetadataAdp', () => {
 
             await readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true });
 
-            expect(mockWriteFileSync).not.toHaveBeenCalled();
+            expect(mockWriteContextMetadata).not.toHaveBeenCalled();
         });
     });
 });
