@@ -5,6 +5,7 @@ import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { generatorConfigCAP, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
+import { getLatestUI5Version } from '@sap-ux/ui5-info';
 
 type CapResult = GenerateAppOutput;
 
@@ -55,6 +56,13 @@ async function executeCap(validated: GeneratorConfigCAP, appPath: string): Promi
     await checkIfGeneratorInstalled();
 
     try {
+        if (!generatorConfig.project.ui5Version) {
+            const latestVersion = await getLatestUI5Version();
+            if (latestVersion) {
+                generatorConfig.project.ui5Version = latestVersion;
+            }
+        }
+
         const content = JSON.stringify(generatorConfig, null, 4);
 
         await FSpromises.mkdir(dirname(outputPath), { recursive: true });
