@@ -52,12 +52,12 @@ export async function validateMetadata(
  * @param rootPath
  * @param webappPath
  */
-async function validateDataSources(
+function validateDataSources(
     fs: Editor,
     dataSources: Record<string, any>,
     rootPath: string,
     webappPath: string
-): Promise<{ config: boolean; fileExists: boolean }> {
+): { config: boolean; fileExists: boolean } {
     const datasourceKeys = Object.keys(dataSources);
     let metadataValidation = { config: false, fileExists: false };
 
@@ -67,7 +67,7 @@ async function validateDataSources(
 
         // Check OData datasources or datasources without explicit type
         if (datasource.type === 'OData' || datasource.type === undefined) {
-            const result = await checkLocalMetadata(fs, datasource, rootPath, webappPath); // NOSONAR: Last-wins pattern for datasource validation
+            const result = checkLocalMetadata(fs, datasource, rootPath, webappPath);
             if (result.config) {
                 metadataValidation = result;
             }
@@ -85,12 +85,12 @@ async function validateDataSources(
  * @param rootPath
  * @param webappPath
  */
-async function checkLocalMetadata(
+function checkLocalMetadata(
     fs: Editor,
     datasource: any,
     rootPath: string,
     webappPath: string
-): Promise<{ config: boolean; fileExists: boolean }> {
+): { config: boolean; fileExists: boolean } {
     if (!datasource.settings?.localUri) {
         return { config: false, fileExists: false };
     }

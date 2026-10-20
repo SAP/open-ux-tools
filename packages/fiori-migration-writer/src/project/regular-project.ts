@@ -78,7 +78,7 @@ export async function processRegularProject(
 
     // Step3. Get the template details
     try {
-        const templateDetails = await extractTemplateDetails(
+        const templateDetails = extractTemplateDetails(
             fs,
             manifest,
             projectRoot,
@@ -98,16 +98,16 @@ export async function processRegularProject(
         namespace = namespace || '';
 
         // Extract backend configuration and app title from i18n
-        const backendConfig = await extractBackendAndI18nConfig(
+        const backendConfig = await extractBackendAndI18nConfig({
             fs,
             projectRoot,
-            projectInfo.webappPath,
+            webappPath: projectInfo.webappPath,
             getFirstBackend,
-            destination,
-            scp,
-            hostname,
-            sapClient
-        );
+            existingDestination: destination,
+            existingScp: scp,
+            existingHostname: hostname,
+            existingSapClient: sapClient
+        });
         // Note: destination will be set from neoAppResult later (line 192)
         scp = backendConfig.scp;
         hostname = backendConfig.hostname;
@@ -121,7 +121,7 @@ export async function processRegularProject(
         const manifestLibsTmp = manifest['sap.ui5']?.dependencies?.libs || {};
 
         // Extract and filter SAP libraries from manifest
-        const { manifestLibs, reuseManifestLibs } = await extractSapLibraries(
+        const { manifestLibs, reuseManifestLibs } = extractSapLibraries(
             fs,
             manifestLibsTmp,
             projectRoot,

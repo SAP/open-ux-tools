@@ -75,7 +75,7 @@ function moveMemFsDirectory(fs: EditorWithStore, fromPath: string, toPath: strin
     }
 }
 
-async function memFsMove(fs: Editor, rootPath: string, paths: LegacyPaths): Promise<void> {
+function memFsMove(fs: Editor, rootPath: string, paths: LegacyPaths): void {
     if (!hasStore(fs)) {
         return;
     }
@@ -121,7 +121,7 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
  */
 export async function tryGitMove(fs: Editor, rootPath: string, _paths: LegacyPaths): Promise<void> {
     // Keep the in-memory store consistent by moving the staged files first.
-    await memFsMove(fs, rootPath, _paths);
+    memFsMove(fs, rootPath, _paths);
 
     const runner = new CommandRunner();
 

@@ -141,6 +141,7 @@ function extractFlpIntentFromConfig(htmlContent: string): string | undefined {
  * @returns FLP intent string or undefined
  */
 export async function getFlpIntentFromHtml(fs: Editor, htmlFilePath: string): Promise<string | undefined> {
+    // NOSONAR - intentionally async: wired as a Promise-returning callback in several configs.
     try {
         if (!fileExists(fs, htmlFilePath)) {
             return undefined;

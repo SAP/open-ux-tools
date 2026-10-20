@@ -26,16 +26,27 @@ import { getMessageType } from '../utils/validation-severity.js';
  * @param sourceTemplateTest - Test-only source template values
  * @param strict - Enable strict validation mode (WARNING becomes ERROR)
  */
-export async function updateManifestForMigration(
-    fs: Editor,
-    rootPath: string,
-    webappPath: string,
-    templateData: TemplateData,
-    floorplan: string,
-    messages: Message[],
-    sourceTemplateTest?: SapAppSourceTemplate,
-    strict: boolean = false
-): Promise<void> {
+/**
+ * Options for updateManifestForMigration
+ */
+export interface UpdateManifestForMigrationOptions {
+    fs: Editor;
+    rootPath: string;
+    webappPath: string;
+    templateData: TemplateData;
+    floorplan: string;
+    messages: Message[];
+    sourceTemplateTest?: SapAppSourceTemplate;
+    strict?: boolean;
+}
+
+/**
+ * Update manifest.json for migration.
+ *
+ * @param options - Manifest update options
+ */
+export async function updateManifestForMigration(options: UpdateManifestForMigrationOptions): Promise<void> {
+    const { fs, rootPath, webappPath, templateData, floorplan, messages, sourceTemplateTest, strict = false } = options;
     const manifestPath = join(webappPath, TemplateFileName.ManifestJson);
     if (!fileExists(fs, join(rootPath, manifestPath))) {
         return;

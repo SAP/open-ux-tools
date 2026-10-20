@@ -16,11 +16,7 @@ import { MigrationTypes } from '../constants.js';
  * @param templateContent
  * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  */
-export async function handleGitIgnoreFile(
-    targetFile: string,
-    templateContent: string,
-    fsEditor?: Editor
-): Promise<string> {
+export function handleGitIgnoreFile(targetFile: string, templateContent: string, fsEditor?: Editor): string {
     const fs = fsEditor ?? createMemFsEditor();
     if (!fileExists(fs, targetFile)) {
         return templateContent;
@@ -33,6 +29,43 @@ export async function handleGitIgnoreFile(
     mergedContent = mergedContent.replaceAll(`/changes_preview.js`, '').replaceAll(`changes_preview.js`, '');
 
     return mergedContent;
+}
+
+/**
+ * Rename scripts in the existing package.json that collide with template script names,
+ * preserving the originals under a `<name>_old` key.
+ *
+ * @param currentFileContent - Parsed existing package.json (mutated in place)
+ * @param templateContentJSON - Parsed template package.json
+ */
+function renameConflictingScripts(currentFileContent: any, templateContentJSON: any): void {
+    const oldScripts: any = {};
+    for (const script in templateContentJSON?.scripts) {
+        if (currentFileContent?.scripts?.[script] && !currentFileContent.scripts[`${script}_old`]) {
+            oldScripts[`${script}_old`] = currentFileContent.scripts[script];
+            delete currentFileContent.scripts[script];
+        } else if (currentFileContent?.scripts?.[script]) {
+            delete currentFileContent.scripts[script];
+        }
+    }
+    for (const oldScript in oldScripts) {
+        currentFileContent.scripts[oldScript] = oldScripts[oldScript];
+    }
+}
+
+/**
+ * Add the extension-project `start-ui5-flp` script to the template package.json.
+ *
+ * @param templateContentJSON - Parsed template package.json (mutated in place)
+ * @param templateData - Template data with project/service configuration
+ */
+function addExtensionStartScript(templateContentJSON: any, templateData: any): void {
+    let queryStr = templateData.project.ui5Theme ? `sap-theme=${templateData.project.ui5Theme}&` : '';
+    queryStr = templateData.service.client ? `${queryStr}sap-client=${templateData.service.client}&` : queryStr;
+
+    templateContentJSON.scripts ??= {};
+    templateContentJSON.scripts['start-ui5-flp'] =
+        `fiori run --open "/test-resources/sap/ushell/shells/sandbox/fioriSandbox.html?${queryStr}sap-ushell-test-url-url=..%2F..%2F..%2F..%2F..%2F..&sap-ushell-test-url-additionalInformation=SAPUI5.Component%3D${templateData.fullyQualifiedProjectName}#Test-url"`;
 }
 
 /**
@@ -67,39 +100,18 @@ export async function handlePackageJsonFile(
     }
     const templateContentJSON = JSON.parse(templateContent);
 
-    // Rename old scripts that have same name as new ones
-    const oldScripts: any = {};
-    for (const script in templateContentJSON?.scripts) {
-        if (currentFileContent?.scripts?.[script] && !currentFileContent.scripts[`${script}_old`]) {
-            oldScripts[`${script}_old`] = currentFileContent.scripts[script];
-            delete currentFileContent.scripts[script];
-        } else if (currentFileContent?.scripts?.[script]) {
-            delete currentFileContent.scripts[script];
-        }
-    }
-
-    // Add renamed old scripts back
-    for (const oldScript in oldScripts) {
-        currentFileContent.scripts[oldScript] = oldScripts[oldScript];
-    }
+    renameConflictingScripts(currentFileContent, templateContentJSON);
 
     // Handle extension project special script
     if (templateData.project.type === MigrationTypes.projectExtension) {
-        let queryStr = templateData.project.ui5Theme ? `sap-theme=${templateData.project.ui5Theme}&` : '';
-        queryStr = templateData.service.client ? `${queryStr}sap-client=${templateData.service.client}&` : queryStr;
-
-        if (!templateContentJSON.scripts) {
-            templateContentJSON.scripts = {};
-        }
-        templateContentJSON.scripts['start-ui5-flp'] =
-            `fiori run --open "/test-resources/sap/ushell/shells/sandbox/fioriSandbox.html?${queryStr}sap-ushell-test-url-url=..%2F..%2F..%2F..%2F..%2F..&sap-ushell-test-url-additionalInformation=SAPUI5.Component%3D${templateData.fullyQualifiedProjectName}#Test-url"`;
+        addExtensionStartScript(templateContentJSON, templateData);
     }
 
     // Remove conflicting dependencies
     removeLegacyDependencies(currentFileContent, templateContentJSON);
 
     // Remove legacy Grunt module and file
-    await removeLegacyGruntModule(fs, projectRoot, currentFileContent);
+    removeLegacyGruntModule(fs, projectRoot, currentFileContent);
 
     // Remove old beta ui5-tooling module
     removeBetaUi5ToolingModule(currentFileContent);
@@ -162,7 +174,7 @@ function removeLegacyDependencies(currentFileContent: any, templateContentJSON: 
  * @param projectRoot
  * @param currentFileContent
  */
-async function removeLegacyGruntModule(fs: Editor, projectRoot: string, currentFileContent: any): Promise<void> {
+function removeLegacyGruntModule(fs: Editor, projectRoot: string, currentFileContent: any): void {
     const gruntModule = '@sap/grunt-sapui5-bestpractice-build';
     let deleteGruntFile = false;
 

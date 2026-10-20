@@ -33,7 +33,7 @@ export interface TemplateDetailsExtractionResult {
  * @param getFloorPlan - Function to get floor plan from manifest
  * @returns Template details extraction result
  */
-export async function extractTemplateDetails(
+export function extractTemplateDetails(
     fs: Editor,
     manifest: Manifest,
     projectRoot: string,
@@ -41,13 +41,13 @@ export async function extractTemplateDetails(
     existingAppVersion: string,
     getVersionFromManifest: (manifest: Manifest) => FioriElementsVersion | undefined,
     getFloorPlan: (manifest: Manifest, feVersion: FioriElementsVersion | undefined) => string
-): Promise<TemplateDetailsExtractionResult> {
+): TemplateDetailsExtractionResult {
     const feVersion = getVersionFromManifest(manifest);
     const isSAPApp = !feVersion ? isAppFreestyle(manifest, feVersion) : false;
     const floorPlan = !isSAPApp ? getFloorPlan(manifest, feVersion) : undefined;
 
     const mainServiceDatasource = extractMainServiceDatasource(manifest, mainService);
-    const { sapAppId, appVersion } = await extractPomDetails(fs, manifest, projectRoot, existingAppVersion);
+    const { sapAppId, appVersion } = extractPomDetails(fs, manifest, projectRoot, existingAppVersion);
 
     return {
         feVersion,
@@ -83,12 +83,12 @@ function extractMainServiceDatasource(manifest: Manifest, mainService: string): 
  * @param projectRoot
  * @param existingAppVersion
  */
-async function extractPomDetails(
+function extractPomDetails(
     fs: Editor,
     manifest: Manifest,
     projectRoot: string,
     existingAppVersion: string
-): Promise<{ sapAppId: string; appVersion: string }> {
+): { sapAppId: string; appVersion: string } {
     let sapAppId = manifest['sap.app']?.id || '';
     let appVersion = existingAppVersion;
 

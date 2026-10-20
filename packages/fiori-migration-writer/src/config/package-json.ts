@@ -42,7 +42,7 @@ const TEST_FILES: TestFile[] = [
  * @param context - Configuration context containing all necessary parameters
  * @returns Package.json configuration object
  */
-export async function generatePackageJsonConfig(fs: Editor, context: PackageJsonContext): Promise<PackageJsonMigrate> {
+export function generatePackageJsonConfig(fs: Editor, context: PackageJsonContext): PackageJsonMigrate {
     const { projectInfo, moduleName, moduleDescription, sapClient, dependencies, flpConfig, flags } = context;
     const { devDependencies, ui5Dependencies, v4MockServerDep } = dependencies;
     const { semanticObject, appIntent, appMockIntent, testFlpSandboxHtml, urlParam } = flpConfig;
@@ -70,21 +70,19 @@ export async function generatePackageJsonConfig(fs: Editor, context: PackageJson
         });
     }
 
-    // Check for test files and add corresponding scripts in parallel
-    const testScriptResults = await Promise.all(
-        TEST_FILES.map(async (testFile) => {
-            const scriptName = `${testFile.type}-tests`;
-            const exists = fileExists(fs, join(projectInfo.rootPath, projectInfo.webappPath, testFile.path));
+    // Check for test files and add corresponding scripts
+    const testScriptResults = TEST_FILES.map((testFile) => {
+        const scriptName = `${testFile.type}-tests`;
+        const exists = fileExists(fs, join(projectInfo.rootPath, projectInfo.webappPath, testFile.path));
 
-            if (exists) {
-                return {
-                    name: scriptName,
-                    command: String.raw`fiori run --open \"${testFile.path}\"`
-                };
-            }
-            return null;
-        })
-    );
+        if (exists) {
+            return {
+                name: scriptName,
+                command: String.raw`fiori run --open \"${testFile.path}\"`
+            };
+        }
+        return null;
+    });
 
     // Add non-null test scripts to runTasks, deduplicating by script name (first match wins)
     const seenScriptNames = new Set(runTasks.map((t) => t.name));

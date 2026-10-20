@@ -124,11 +124,7 @@ async function recursiveMove(fs: Editor, sourcePath: string, destPath: string): 
  * @param rootPath
  * @param projectInfo
  */
-export async function createExtensionProjectManifest(
-    fs: Editor,
-    rootPath: string,
-    projectInfo: ImportProjectInfo
-): Promise<void> {
+export function createExtensionProjectManifest(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): void {
     // Only create if manifest doesn't exist and it's an extension project
     if (
         !fileExists(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest)) &&

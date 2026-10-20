@@ -546,19 +546,23 @@ export class ProjectAccess {
         if (reuseLibsRoots.length) {
             const reuseLibRootPaths = new Set(reuseLibsRoots.map((lib) => lib.value.libRoot));
             const appRoots: string[] = [];
-            for (const root of roots) {
-                const result = await this.getProjectInfo(root, undefined, undefined, undefined, fs);
-                const isApp = !!(result.projectInfo.FEVersion || result.projectInfo.isSAPApp);
+            // Resolve project info for all roots in parallel (independent lookups).
+            const rootInfos = await Promise.all(
+                roots.map(async (root) => ({
+                    root,
+                    info: (await this.getProjectInfo(root, undefined, undefined, undefined, fs)).projectInfo
+                }))
+            );
+            for (const { root, info } of rootInfos) {
+                const isApp = !!(info.FEVersion || info.isSAPApp);
                 if (isApp) {
                     appRoots.push(root);
-                } else if (reuseLibRootPaths.has(root) || result.projectInfo.type === MigrationTypes.library) {
+                } else if (reuseLibRootPaths.has(root) || info.type === MigrationTypes.library) {
                     libraryOnlyRoots.add(root);
                 }
-                // in case reuse libs were detected in an application project, remove them
-                reuseLibsRoots = reuseLibsRoots.filter(
-                    (lib) => !appRoots.some((appRoot) => lib.value.libRoot === appRoot)
-                );
             }
+            // In case reuse libs were detected in an application project, remove them.
+            reuseLibsRoots = reuseLibsRoots.filter((lib) => !appRoots.includes(lib.value.libRoot));
         }
         // if workspace has multiple roots then make sure there are no similar projects
         const projectsUnique: MigratableFolder[] = [...new Set(roots)]

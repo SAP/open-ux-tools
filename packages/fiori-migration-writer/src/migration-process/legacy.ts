@@ -54,21 +54,22 @@ export async function migrateLegacyFolderStructure(
     const ffTestMap = getFFTestSuiteMap(updatedWebappPath);
 
     // Process legacy qunit runner file
-    await processLegacyQunitRunner(fs, paths.ffNewTestPath, ffTestMap);
+    processLegacyQunitRunner(fs, paths.ffNewTestPath, ffTestMap);
 
     // Update ModulePathForTests.js files
     await updateModulePathForTests(fs, paths.ffNewTestPath);
 
     // Update paths in test files
     if (editorHasPath(fs, paths.ffNewTestPath)) {
-        await updateTestFilePaths(fs, paths.ffNewTestPath);
+        updateTestFilePaths(fs, paths.ffNewTestPath);
     }
 
     // Update various config files
-    await Promise.all([updateGitignore(fs, rootPath), updateNeoApp(fs, rootPath), updateProjectJson(fs, rootPath)]);
+    updateGitignore(fs, rootPath);
+    await Promise.all([updateNeoApp(fs, rootPath), updateProjectJson(fs, rootPath)]);
 
     // Check for mockserver in index.html
-    keepIndex = await checkForMockserver(fs, rootPath, updatedWebappPath);
+    keepIndex = checkForMockserver(fs, rootPath, updatedWebappPath);
 
     return { keepIndex, webappPath: updatedWebappPath };
 }
@@ -80,7 +81,7 @@ export async function migrateLegacyFolderStructure(
  * @param ffNewTestPath
  * @param ffTestMap
  */
-async function processLegacyQunitRunner(fs: Editor, ffNewTestPath: string, ffTestMap: any): Promise<void> {
+function processLegacyQunitRunner(fs: Editor, ffNewTestPath: string, ffTestMap: any): void {
     const qunitRunner = 'qunit.runner.testsuite.html';
     const legacyRunner = join(ffNewTestPath, qunitRunner);
 
@@ -190,7 +191,7 @@ async function updateModulePathForTests(fs: Editor, ffNewTestPath: string): Prom
  * @param fs
  * @param ffNewTestPath
  */
-async function updateTestFilePaths(fs: Editor, ffNewTestPath: string): Promise<void> {
+function updateTestFilePaths(fs: Editor, ffNewTestPath: string): void {
     if (!hasStore(fs)) {
         return;
     }
@@ -232,7 +233,7 @@ async function updateTestFilePaths(fs: Editor, ffNewTestPath: string): Promise<v
  * @param fs
  * @param rootPath
  */
-async function updateGitignore(fs: Editor, rootPath: string): Promise<void> {
+function updateGitignore(fs: Editor, rootPath: string): void {
     const gitignore = join(rootPath, '.gitignore');
     if (!fileExists(fs, gitignore)) {
         return;
@@ -322,7 +323,7 @@ async function updateProjectJson(fs: Editor, rootPath: string): Promise<void> {
  * @param webappPath - Updated webapp path
  * @returns true if mockserver found and index.html should be preserved
  */
-async function checkForMockserver(fs: Editor, rootPath: string, webappPath: string): Promise<boolean> {
+function checkForMockserver(fs: Editor, rootPath: string, webappPath: string): boolean {
     const indexPath = join(rootPath, webappPath, TemplateFileName.IndexHtml);
     if (!fileExists(fs, indexPath)) {
         return false;

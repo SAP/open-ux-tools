@@ -51,13 +51,9 @@ export async function validateAndReportMetadata(
  * @param rootPath - Root path of the project
  * @param projectInfo - Project information
  */
-export async function handleExtensionProjectConfig(
-    fs: Editor,
-    rootPath: string,
-    projectInfo: ImportProjectInfo
-): Promise<void> {
+export function handleExtensionProjectConfig(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): void {
     if (projectInfo.type === MigrationTypes.projectExtension && projectInfo.extensionProjectSettings) {
-        await updateExtConfigJson(fs, rootPath, projectInfo);
+        updateExtConfigJson(fs, rootPath, projectInfo);
     }
 }
 

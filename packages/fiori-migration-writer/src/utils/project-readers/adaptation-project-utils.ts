@@ -85,7 +85,7 @@ async function checkCheProjectSettings(fs: Editor, projectRoot: string): Promise
  */
 async function checkFioriToolsAdaptation(fs: Editor, projectRoot: string): Promise<any> {
     try {
-        if (await isFioriToolsAdaptationProject(fs, projectRoot)) {
+        if (isFioriToolsAdaptationProject(fs, projectRoot)) {
             const config = await readJSON(fs, join(projectRoot, '.adp', 'config.json'));
             if (config) {
                 config.isAdp = true;
@@ -125,7 +125,7 @@ async function readManifestReference(fs: Editor, projectRoot: string): Promise<s
  * @param projectRoot - Root path of the project
  * @returns True if .adp/config.json exists
  */
-export async function isFioriToolsAdaptationProject(fs: Editor, projectRoot: string): Promise<boolean> {
+export function isFioriToolsAdaptationProject(fs: Editor, projectRoot: string): boolean {
     const adpConfigJsonPath = join(projectRoot, '.adp', 'config.json');
     return fileExists(fs, adpConfigJsonPath);
 }

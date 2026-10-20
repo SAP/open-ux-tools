@@ -93,20 +93,16 @@ export class ProjectMigrator {
         fs?: Editor,
         strict?: boolean
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
-        // Convert old signature to options object if called with positional parameters
-        const options: MigrateOptions =
-            typeof projectRootOrOptions === 'string'
-                ? {
-                      projectRoot: projectRootOrOptions,
-                      baseUri: baseUri ?? '',
-                      ui5SnapshotUrl: ui5SnapshotUrl ?? '',
-                      importProjectInfo,
-                      vscode,
-                      internalToggle,
-                      fs,
-                      strict
-                  }
-                : projectRootOrOptions;
+        const options = ProjectMigrator.normalizeMigrateOptions(
+            projectRootOrOptions,
+            baseUri,
+            ui5SnapshotUrl,
+            importProjectInfo,
+            vscode,
+            internalToggle,
+            fs,
+            strict
+        );
         const {
             projectRoot,
             baseUri: baseUriOpt,
@@ -150,40 +146,14 @@ export class ProjectMigrator {
             // Validate project is suitable for migration (not a Fiori app in CAP project)
             await validateProjectForMigration(editor, projectRoot);
 
-            if (
-                projectInfo &&
-                (projectInfo.isSAPApp ||
-                    projectInfo.FEVersion === FioriElementsVersion.v2 ||
-                    projectInfo.FEVersion === FioriElementsVersion.v4 ||
-                    projectInfo.type === MigrationTypes.projectExtension) &&
-                checkForErrors(messages)
-            ) {
-                // V2 is supported (checkForErrors returns true if no ERROR-level messages)
-                const { messages: copyMessages, result: isSuccess } = await this.copyCommonFiles(
-                    editor,
-                    projectInfo,
-                    vscodeOpt,
-                    ui5SnapshotUrlOpt,
-                    internalToggleOpt,
-                    strictOpt
-                );
-                messages = messages.concat(copyMessages);
-                result = isSuccess;
-            } else if (projectInfo.type === MigrationTypes.library) {
-                const { messages: copyMessages, result: isSuccess } = await this.copyLibraryFiles(editor, projectInfo);
-                messages = messages.concat(copyMessages);
-                result = isSuccess;
-            } else if (projectInfo.uiAdaptation) {
-                const { messages: copyMessages, result: isSuccess } = await this.copyAdaptationFiles(
-                    editor,
-                    projectInfo,
-                    ui5SnapshotUrlOpt
-                );
-                messages = messages.concat(copyMessages);
-                result = isSuccess;
-            } else {
-                messages.push({ type: 'ERROR', description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO') });
-            }
+            const dispatch = await this.runMigrationForProjectInfo(editor, projectInfo, messages, {
+                vscode: vscodeOpt,
+                ui5SnapshotUrl: ui5SnapshotUrlOpt,
+                internalToggle: internalToggleOpt,
+                strict: strictOpt
+            });
+            messages = dispatch.messages;
+            result = dispatch.result;
         } catch (e) {
             const error = e instanceof Error ? e : new Error(String(e));
             const useMessage = typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
@@ -211,6 +181,78 @@ export class ProjectMigrator {
         }
 
         return migrationResult;
+    }
+
+    /**
+     * Normalize the backward-compatible positional arguments into a MigrateOptions object.
+     */
+    private static normalizeMigrateOptions(
+        projectRootOrOptions: string | MigrateOptions,
+        baseUri?: string,
+        ui5SnapshotUrl?: string,
+        importProjectInfo?: ImportProjectInfo,
+        vscode?: any,
+        internalToggle?: boolean,
+        fs?: Editor,
+        strict?: boolean
+    ): MigrateOptions {
+        if (typeof projectRootOrOptions !== 'string') {
+            return projectRootOrOptions;
+        }
+        return {
+            projectRoot: projectRootOrOptions,
+            baseUri: baseUri ?? '',
+            ui5SnapshotUrl: ui5SnapshotUrl ?? '',
+            importProjectInfo,
+            vscode,
+            internalToggle,
+            fs,
+            strict
+        };
+    }
+
+    /**
+     * Run the migration for the resolved project info, dispatching by project type.
+     */
+    private static async runMigrationForProjectInfo(
+        editor: Editor,
+        projectInfo: ImportProjectInfo,
+        messages: Message[],
+        opts: { vscode: any; ui5SnapshotUrl: string; internalToggle: boolean; strict: boolean }
+    ): Promise<{ result: boolean; messages: Message[] }> {
+        const isSupportedApp =
+            projectInfo.isSAPApp ||
+            projectInfo.FEVersion === FioriElementsVersion.v2 ||
+            projectInfo.FEVersion === FioriElementsVersion.v4 ||
+            projectInfo.type === MigrationTypes.projectExtension;
+
+        if (isSupportedApp && checkForErrors(messages)) {
+            const { messages: copyMessages, result } = await this.copyCommonFiles(
+                editor,
+                projectInfo,
+                opts.vscode,
+                opts.ui5SnapshotUrl,
+                opts.internalToggle,
+                opts.strict
+            );
+            return { result, messages: messages.concat(copyMessages) };
+        }
+        if (projectInfo.type === MigrationTypes.library) {
+            const { messages: copyMessages, result } = await this.copyLibraryFiles(editor, projectInfo);
+            return { result, messages: messages.concat(copyMessages) };
+        }
+        if (projectInfo.uiAdaptation) {
+            const { messages: copyMessages, result } = await this.copyAdaptationFiles(
+                editor,
+                projectInfo,
+                opts.ui5SnapshotUrl
+            );
+            return { result, messages: messages.concat(copyMessages) };
+        }
+        return {
+            result: false,
+            messages: messages.concat({ type: 'ERROR', description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO') })
+        };
     }
 
     /**

@@ -31,21 +31,44 @@ export interface BackendAndI18nConfigResult {
  * @param existingSapClient - Existing sapClient value
  * @returns Backend and i18n configuration result
  */
-export async function extractBackendAndI18nConfig(
-    fs: Editor,
-    projectRoot: string,
-    webappPath: string,
+/**
+ * Options for extractBackendAndI18nConfig
+ */
+export interface ExtractBackendAndI18nConfigOptions {
+    fs: Editor;
+    projectRoot: string;
+    webappPath: string;
     getFirstBackend: (projectRoot: string) => {
         destination?: string;
         scp?: boolean;
         url?: string;
         sapClient?: string;
-    },
-    existingDestination: string,
-    existingScp: boolean | undefined,
-    existingHostname: string,
-    existingSapClient: string
+    };
+    existingDestination: string;
+    existingScp: boolean | undefined;
+    existingHostname: string;
+    existingSapClient: string;
+}
+
+/**
+ * Extract backend configuration and app title from i18n.
+ *
+ * @param options - Backend/i18n extraction options
+ * @returns Backend and i18n configuration result
+ */
+export async function extractBackendAndI18nConfig(
+    options: ExtractBackendAndI18nConfigOptions
 ): Promise<BackendAndI18nConfigResult> {
+    const {
+        fs,
+        projectRoot,
+        webappPath,
+        getFirstBackend,
+        existingDestination,
+        existingScp,
+        existingHostname,
+        existingSapClient
+    } = options;
     // Get backend configuration
     const ui5Backend = getFirstBackend(projectRoot);
     const destination = ui5Backend?.destination ?? existingDestination;

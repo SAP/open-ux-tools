@@ -24,12 +24,12 @@ export interface SapLibrariesExtractionResult {
  * @param webappPath - Webapp path within the project
  * @returns SAP libraries extraction result
  */
-export async function extractSapLibraries(
+export function extractSapLibraries(
     fs: Editor,
     manifestLibsTmp: Record<string, any>,
     projectRoot: string,
     webappPath: string
-): Promise<SapLibrariesExtractionResult> {
+): SapLibrariesExtractionResult {
     const manifestLibs: any = {};
     const reuseManifestLibs: any = {};
 

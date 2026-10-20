@@ -36,7 +36,7 @@ export async function setupMigrationDirectories(
  * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  */
-export async function removePackageLock(fs: Editor, rootPath: string): Promise<void> {
+export function removePackageLock(fs: Editor, rootPath: string): void {
     try {
         const packageLockPath = join(rootPath, 'package-lock.json');
         if (fileExists(fs, packageLockPath)) {

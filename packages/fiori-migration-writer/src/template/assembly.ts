@@ -96,7 +96,7 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
         ...devDependencies
     };
 
-    const packageJson: PackageJsonMigrate = await generatePackageJsonConfig(fs, {
+    const packageJson: PackageJsonMigrate = generatePackageJsonConfig(fs, {
         projectInfo,
         moduleName,
         moduleDescription,

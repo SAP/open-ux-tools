@@ -12,7 +12,7 @@ import type { ImportProjectInfo } from '../types.js';
  * @param rootPath - Root path of the project
  * @param projectInfo - Project information containing extension settings
  */
-export async function updateExtConfigJson(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
+export function updateExtConfigJson(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): void {
     let extensionProjectSettingsJSON;
     let deleteProjectJson = false;
     try {
@@ -61,7 +61,7 @@ export async function updateExtConfigJson(fs: Editor, rootPath: string, projectI
         }
     }
     // write .extconfig.json for extension project
-    await updateJSON(fs, join(rootPath, FileName.ExtConfigJson), extensionProjectSettingsJSON);
+    updateJSON(fs, join(rootPath, FileName.ExtConfigJson), extensionProjectSettingsJSON);
     const projectJsonPath = join(rootPath, '.project.json');
     if (deleteProjectJson && fileExists(fs, projectJsonPath)) {
         deleteFile(fs, projectJsonPath);

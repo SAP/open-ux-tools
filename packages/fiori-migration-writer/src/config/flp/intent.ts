@@ -22,13 +22,13 @@ import { MigrationTypes } from '../../utils/constants.js';
  * @param FEVersion
  * @param isSAPApp
  */
-export async function checkFlpSandboxAvailability(
+export function checkFlpSandboxAvailability(
     fs: Editor,
     rootPath: string,
     webappPath: string,
     FEVersion: string | undefined,
     isSAPApp: boolean
-): Promise<boolean> {
+): boolean {
     const testFlpSandboxHtml = 'test/flpSandbox.html';
     const flpSandboxPath = join(rootPath, webappPath, testFlpSandboxHtml);
 
@@ -119,7 +119,7 @@ export async function prepareFlpConfiguration(
     } = projectInfo;
 
     // Check FLP sandbox availability
-    const flpSandboxAvailable = await checkFlpSandboxAvailability(fs, rootPath, webappPath, FEVersion, isSAPApp);
+    const flpSandboxAvailable = checkFlpSandboxAvailability(fs, rootPath, webappPath, FEVersion, isSAPApp);
 
     // Generate app intents
     const appIntent = generateAppIntent(projectInfo, semanticObject, flpSandboxAvailable, flpSandboxFlpIntent);

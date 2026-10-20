@@ -96,7 +96,7 @@ export async function setupProjectStructure(
     }
 
     // Create extension project manifest if needed
-    await createExtensionProjectManifest(fs, rootPath, projectInfo);
+    createExtensionProjectManifest(fs, rootPath, projectInfo);
 
     // Create webapp folder and migrate files if needed
     await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
@@ -149,16 +149,16 @@ export async function generateAppSettings(config: GenerateAppSettingsConfig): Pr
     });
 
     // Update manifest.json
-    await updateManifestForMigration(
+    await updateManifestForMigration({
         fs,
         rootPath,
         webappPath,
         templateData,
-        sourceTemplateType,
+        floorplan: sourceTemplateType,
         messages,
         sourceTemplateTest,
         strict
-    );
+    });
 }
 
 /**
@@ -215,7 +215,7 @@ export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promis
     });
 
     // Remove package-lock if exists
-    await removePackageLock(fs, projectInfo.rootPath);
+    removePackageLock(fs, projectInfo.rootPath);
 }
 
 /**
@@ -254,6 +254,6 @@ export async function postProcessMigration(config: PostProcessMigrationConfig): 
         );
     } else {
         // Handle extension project configuration
-        await handleExtensionProjectConfig(fs, rootPath, projectInfo);
+        handleExtensionProjectConfig(fs, rootPath, projectInfo);
     }
 }
