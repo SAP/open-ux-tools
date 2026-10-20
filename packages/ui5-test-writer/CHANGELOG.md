@@ -1,5 +1,28 @@
 # @sap-ux/ui5-test-writer
 
+## 1.18.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- Resolve JourneyRunner launchUrl from test/flpSandbox.html instead of defaulting to index.html [[665fd4b](https://github.com/SAP/open-ux-tools/commit/665fd4b6e6ea3ccd22234ddda547f02781a96fc2)]
+
+## 1.18.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/preview-middleware 1.2.26 → 1.2.27
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.6
+
 ## 1.18.1
 
 ### Patch Changes

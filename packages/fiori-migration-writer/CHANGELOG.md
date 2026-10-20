@@ -1,5 +1,49 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- Deduplicate project roots to prevent duplicate reuse library detection. Projects with both package.json and pom.xml markers, and libraries with nested manifest.json files, now appear exactly once in migration view. [[4a5825d](https://github.com/SAP/open-ux-tools/commit/4a5825d83dcd3f172e7575864d262e8a5df5fa80)]
+
+## 0.0.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Bug Fixes
+
+- Resolve pom.xml artifactId placeholder when manifest app ID contains ${project.artifactId},
+
+       Prevent overwriting existing mockserver.js during migration when mem-fs editor context is active
+       Load the project folder into mem-fs at migration start so existence checks see untracked files on disk and are not silently overwritten; unify the existence check and simplify readJSON [[4576e3a](https://github.com/SAP/open-ux-tools/commit/4576e3a0ff7b421483ad004bd7556a75a1c9c3e3)]
+
+#### Dependency Updates
+
+- Upgrade fs-extra 11.3.6 → 11.4.1 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/launch-config 1.0.24 → 1.0.25
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.6
+
 ## 0.0.2
 
 ### Patch Changes

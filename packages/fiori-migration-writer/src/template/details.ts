@@ -3,7 +3,7 @@
  */
 import { join } from 'node:path';
 import { TemplateFileName } from '../index.js';
-import { fileExists, readFile } from '../utils/index.js';
+import { readFile, fileExists } from '../utils/index.js';
 import type { Manifest, ManifestNamespace, FioriElementsVersion } from '../project-spec-types.js';
 import { xmlToJson } from '../utils/service.js';
 import { isAppFreestyle } from '../utils/common.js';
