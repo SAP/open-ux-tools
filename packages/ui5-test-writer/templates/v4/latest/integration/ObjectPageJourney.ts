@@ -18,19 +18,6 @@
 import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
 <%_
-const usesFieldIdentifier = (headerSections || []).some(function(section) {
-    return section.form && section.fields && section.fields.length > 0;
-});
-const usesFormIdentifier = (bodySections || []).some(function(section) {
-    const subSectionsHaveForm = (section.subSections || []).some(function(sub) {
-        return sub.fields && sub.fields.some(function(field) { return !field.checkBoxGroup; });
-    });
-    const sectionHasFormFields = !(section.subSections && section.subSections.length > 0) && section.fields && section.fields.some(function(field) { return !field.checkBoxGroup; });
-    const hasFormAction = (section.actions || []).some(function(action) {
-        return action.visible && !(section.isTable && section.navigationProperty);
-    });
-    return subSectionsHaveForm || sectionHasFormFields || hasFormAction;
-});
 const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).some(function(section) {
     return (section.subSections && section.subSections.length > 1)
         || (section.contactCardFields && section.contactCardFields.length > 0)
@@ -41,12 +28,6 @@ const usesWhenInBody = (bodySections || []).length > 1 || (bodySections || []).s
 });
 const headerHasMenu = (headerActions || []).some(function(action) { return action.visible && action.menuActions && !action.splitButton; });
 -%>
-<% if (usesFieldIdentifier) { -%>
-import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI";
-<% } -%>
-<% if (usesFormIdentifier) { -%>
-import type { FormIdentifier } from "sap/fe/test/api/FormAPI";
-<% } -%>
 import runner from "./pages/JourneyRunner";
 
 function journey() {
@@ -137,7 +118,7 @@ function journey() {
     opaTest("Check header facets of the Object Page", function (_Given: Given, <% if (headerSections.some(function(section) { return section.contactCardFields?.length > 0; })) { %>When: When<% } else { %>_When: When<% } %>, Then: Then) {
 <% headerSections.forEach(function(section) { -%>
 <% if (section.microChart) { -%>
-        Then.onThe<%- name%>Generated.onHeader().iCheckMicroChart("<%- section.title %>", "");
+        Then.onThe<%- name%>Generated.onHeader().iCheckMicroChart("<%- section.title %>");
 <% } else { -%>
         Then.onThe<%- name%>Generated.onHeader().iCheckHeaderFacet({ facetId: "<%- section.facetId %>"<% if (section.custom) { %>, custom: true<% } %> });
 <% if (section.form) { -%>
@@ -146,10 +127,10 @@ function journey() {
             fieldGroup: "<%- field.fieldGroupQualifier %>",
             field: "<%- field.field %>",
             targetAnnotation: "<%- field.targetAnnotation %>"
-        } as unknown as FieldIdentifier);
+        });
 <% }) -%>
 <% section.contactCardFields.forEach(function(field) { -%>
-        When.onThe<%- name%>Generated.onHeader().iClickLink({ property: "<%- field.property %>" } as unknown as FieldIdentifier);
+        When.onThe<%- name%>Generated.onHeader().iClickLink({ property: "<%- field.property %>" });
         Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
 <% }) -%>
 <% } -%>
@@ -170,7 +151,7 @@ function journey() {
 <% if (bodySections.length > 1) { -%>
         When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>" });
 <% } -%>
-        Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" }, {});
+        Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" });
 <%  if (section.actions && section.actions.length > 0) { -%>
 <%      section.actions.forEach(function(action) { -%>
 <%      if (action.visible) { -%>
@@ -222,15 +203,15 @@ function journey() {
 <%              if (action.menuActions) { -%>
 <%                  if (action.splitButton) { -%>
         // <%- JSON.stringify(action.label) %> is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>);
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%                  } else { -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>);
-        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>);
+        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%                  action.menuActions.forEach(function(menuAction) { -%>
 <%                      if (menuAction.visible) { -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckMenuAction(<%- JSON.stringify(menuAction.label) %>);
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteMenuAction(<%- JSON.stringify(menuAction.label) %>);
 <%                      } -%>
 <%                  }); -%>
 <%                  } -%>
@@ -238,25 +219,25 @@ function journey() {
 <%                  if (action.labelUnresolved) { -%>
         // TODO: label is an unresolved i18n key; replace with the rendered action text
 <%                  } -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction(<%- JSON.stringify(action.label) %>);
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction(<%- JSON.stringify(action.label) %>, { visible: true });
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction(<%- JSON.stringify(action.label) %>);
 <%              } else if (action.enabled === 'dynamic') { -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> } /* , { enabled: true } */);
 <%              } else { -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> }, { enabled: <%- action.enabled === true %> });
 <%              } -%>
 <%              if (action.isCritical && action.enabled === 'dynamic') { -%>
         // "<%- action.label || action.action %>" is critical but conditionally enabled (Core.OperationAvailable path); it may be disabled for the opened entity. Uncomment when the entity state enables it to test the confirmation dialog.
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
         // Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
         // When.onThe<%- name%>Generated.onMessageDialog().iCancel();
 <%              } else if (action.isCritical) { -%>
         // Critical action (Common.IsActionCritical): press it, assert the confirmation dialog opens, then cancel so it is not executed.
-        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iExecuteAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
         Then.onThe<%- name%>Generated.onMessageDialog().iCheckState();
         When.onThe<%- name%>Generated.onMessageDialog().iCancel();
 <%              } else if (!action.custom && !action.menuActions) { -%>
-        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
+        // When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iPressAction({ service: "<%- action.service %>", action: "<%- action.action %>", unbound: <%- action.unbound === true %> });
 <%              } -%>
 <%          } -%>
 <%      } -%>
@@ -280,22 +261,15 @@ function journey() {
 <% section.subSections.forEach(function(subSection) { -%>
 <% if (section.subSections.length > 1) { -%>
         When.onThe<%- name%>Generated.iGoToSection({ section: "<%- section.id %>", subSection: "<%- subSection.id %>" });
-        Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" }, {});
+        Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% } -%>
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
-<% subSection.fields.forEach(function(field, fieldIndex) { -%>
-<% if (field.checkBoxGroup) { -%>
-<% if (fieldIndex === 0 || !subSection.fields[fieldIndex - 1].checkBoxGroup) { -%>
-        // Checkbox-group members cannot be addressed by sap.fe.test.api
-<% } -%>
-        // Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>", fieldGroup: "<%- field.fieldGroup %>" });
-<% } else { -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
-<% } -%>
+<% subSection.fields.forEach(function(field) { -%>
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
 <% subSection.contactCardFields.forEach(function(field) { -%>
-        When.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iClickLink({ property: "<%- field.property %>" });
+        When.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iClickLink({ property: "<%- field.property %>" });
         Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
 <% }) -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
@@ -310,19 +284,12 @@ function journey() {
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
-<% section.fields.forEach(function(field, fieldIndex) { -%>
-<% if (field.checkBoxGroup) { -%>
-<% if (fieldIndex === 0 || !section.fields[fieldIndex - 1].checkBoxGroup) { -%>
-        // Checkbox-group members cannot be addressed by sap.fe.test.api
-<% } -%>
-        // Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>", fieldGroup: "<%- field.fieldGroup %>" });
-<% } else { -%>
-        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
-<% } -%>
+<% section.fields.forEach(function(field) { -%>
+        Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
 <% }) -%>
 <% } -%>
 <% section.contactCardFields.forEach(function(field) { -%>
-        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iClickLink({ property: "<%- field.property %>" });
+        When.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iClickLink({ property: "<%- field.property %>" });
         Then.onThe<%- name%>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
 <% }) -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
