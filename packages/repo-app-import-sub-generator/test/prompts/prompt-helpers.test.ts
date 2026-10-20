@@ -135,7 +135,14 @@ describe('fetchAppListForSelectedSystem', () => {
     it('should retry without sourceTemplate/id and search params for ADTQuickDeploy download type on older systems (HTTP 400)', async () => {
         const regularApp = { 'sap.app/id': 'adt-app', repoName: 'repo1', url: 'http://url' };
         const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
-        const mockSearch = jest.fn().mockRejectedValueOnce(columnUnknownError).mockResolvedValueOnce([regularApp]);
+        // ADTQuickDeploy fires 2 parallel searches (legacy + corrected template IDs) via Promise.all.
+        // Both start before the first rejection is caught, so the mock records 2 initial calls.
+        // The catch block then issues a 3rd retry call without sourceTemplateIdField.
+        const mockSearch = jest
+            .fn()
+            .mockRejectedValueOnce(columnUnknownError) // call 1: legacy template ID search (throws)
+            .mockResolvedValueOnce([]) // call 2: corrected template ID search (ignored, Promise.all rejects)
+            .mockResolvedValueOnce([regularApp]); // call 3: retry without sourceTemplate fields
         const provider = {
             getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
         } as unknown as AbapServiceProvider;
@@ -146,9 +153,10 @@ describe('fetchAppListForSelectedSystem', () => {
             AppDownloadType.ADTQuickDeploy
         );
 
-        expect(mockSearch).toHaveBeenCalledTimes(2);
+        expect(mockSearch).toHaveBeenCalledTimes(3);
         expect(mockSearch).toHaveBeenNthCalledWith(1, expect.anything(), appListResultFields);
-        expect(mockSearch).toHaveBeenNthCalledWith(2, {}, appListFieldsWithoutSourceTemplate);
+        expect(mockSearch).toHaveBeenNthCalledWith(2, expect.anything(), appListResultFields);
+        expect(mockSearch).toHaveBeenNthCalledWith(3, {}, appListFieldsWithoutSourceTemplate);
         expect(result).toEqual([regularApp]);
     });
 

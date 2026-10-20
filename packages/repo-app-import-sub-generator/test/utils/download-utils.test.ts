@@ -126,7 +126,7 @@ describe('App Download Utils', () => {
             };
 
             const result = await downloadApp('Z_LEGACY_APP');
-            expect(result).toBe(true);
+            expect(result).toEqual({ success: true });
             expect(RepoAppDownloadLogger.logger.debug).toHaveBeenCalledWith(t('error.adtFallbackDownload'));
             expect(mockDownloadViaAdt).toHaveBeenCalledWith('Z_LEGACY_APP', mockFileStoreService);
             expect(PromptState.admZip).toBeInstanceOf(AdmZip);
@@ -146,7 +146,7 @@ describe('App Download Utils', () => {
                 connectedSystem: { serviceProvider: mockServiceProvider as unknown as AbapServiceProvider }
             };
 
-            await expect(downloadApp('Z_NO_ZIP')).resolves.toBe(false);
+            await expect(downloadApp('Z_NO_ZIP')).resolves.toEqual({ success: false, errorMessage: expect.any(String) });
             expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.appDownloadFailed'));
             expect(PromptState.admZip).toBeUndefined();
         });
@@ -165,7 +165,7 @@ describe('App Download Utils', () => {
                 connectedSystem: { serviceProvider: mockServiceProvider as unknown as AbapServiceProvider }
             };
 
-            await expect(downloadApp('Z_ADT_FAIL')).resolves.toBe(false);
+            await expect(downloadApp('Z_ADT_FAIL')).resolves.toEqual({ success: false, errorMessage: expect.any(String) });
             expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
                 t('error.adtFallbackDownloadFailed', { error: 'ADT unavailable' })
             );

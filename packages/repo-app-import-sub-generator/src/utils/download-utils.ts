@@ -72,7 +72,7 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
  * Falls back to ADT FileStoreService on older systems.
  *
  * @param {string} repoName - The repository name of the application.
- * @returns {Promise<boolean>} - Resolves to false if no data was returned, true otherwise.
+ * @returns `{ success: true }` on success, or `{ success: false, errorMessage }` if no content was returned.
  */
 export async function downloadApp(repoName: string): Promise<{ success: boolean; errorMessage?: string }> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
