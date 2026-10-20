@@ -37,3 +37,23 @@ export function readHashFromFlpSandbox(htmlRelativePath: string, webappPath: str
         return undefined;
     }
 }
+
+/**
+ * Resolves the JourneyRunner launchUrl html target from the app's FLP sandbox.
+ *
+ * @param testOutDirPath - path to the test output directory (`.../webapp/test`)
+ * @param webappPath - path to the webapp directory
+ * @param fs - mem-fs-editor instance (works against both disk and in-memory files)
+ * @returns the html target, or undefined if flpSandbox.html is missing or has no app key
+ */
+export function resolveFlpSandboxHtmlTarget(
+    testOutDirPath: string,
+    webappPath: string,
+    fs: Editor
+): string | undefined {
+    if (!fs.exists(join(testOutDirPath, 'flpSandbox.html'))) {
+        return undefined;
+    }
+    const appKey = readHashFromFlpSandbox(join('test', 'flpSandbox.html'), webappPath, fs);
+    return appKey ? `test/flpSandbox.html#${appKey}` : undefined;
+}
