@@ -170,17 +170,8 @@ async function getAppList(
         if (status === 400 || /column.*unknown|unknown.*column/i.test(message)) {
             // Older systems (e.g. ABAP 731) reject sap.app/sourceTemplate/id as an unknown column.
             // Both flows send it — ADTQuickDeploy as a search param, AbapRepository as a result field.
-            // Retry with no search params and without sourceTemplateIdField so the call succeeds.
             RepoAppDownloadLogger.logger?.debug(`Retrying without ${sourceTemplateIdField} and search params (original error: ${message})`);
-            try {
-                const retryResults = await provider.getAppIndex().search({}, appListFieldsWithoutSourceTemplate);
-                RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${retryResults.length} results`);
-                return retryResults;
-            } catch (retryError) {
-                const retryMessage = retryError instanceof Error ? retryError.message : String(retryError);
-                RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: retryMessage }));
-                return [];
-            }
+            return retryAbapAppListFetch(appIndex);
         }
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
