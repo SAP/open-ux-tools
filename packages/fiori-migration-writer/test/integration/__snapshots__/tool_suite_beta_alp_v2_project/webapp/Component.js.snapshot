@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests ALP v2 Migration should migrate tool_suite_beta_alp_v2_project 1`] = `
+"sap.ui.define(['sap/suite/ui/generic/template/lib/AppComponent'], function (AppComponent) {
+    return AppComponent.extend('namespace1.alp.Component', {
+        metadata: {
+            manifest: 'json'
+        }
+    });
+});
+"
+`;

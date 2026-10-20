@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop_custom_webapp 1`] = `
+"specVersion: \\"4.0\\"
+metadata:
+  name: namespace3.v4catalog
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp_custom
+        delay: 300
+resources:
+  configuration:
+    paths:
+      webapp: webapp_custom
+"
+`;

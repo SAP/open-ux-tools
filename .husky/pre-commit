@@ -1,3 +1,5 @@
 #!/bin/sh
 pnpm run:pretty-quick
-pnpm audit --audit-level=high
+# GHSA-vv9j-gjw2-j8wp: yeoman-environment >=2.9.0 <6.0.1 - unfixable without breaking
+# yeoman-generator@5 (which requires ^3.2.0). Patched v6 is a major breaking change.
+pnpm audit --audit-level=high --ignore GHSA-vv9j-gjw2-j8wp
