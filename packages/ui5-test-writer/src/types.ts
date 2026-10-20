@@ -143,6 +143,7 @@ export type SectionFormField = {
     connectedFields?: string;
     fieldGroup?: string;
     targetAnnotation?: string;
+    checkBoxGroup?: boolean;
 };
 
 export type TableColumn = {

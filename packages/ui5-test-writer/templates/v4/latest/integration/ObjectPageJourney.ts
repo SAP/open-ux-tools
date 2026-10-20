@@ -283,8 +283,15 @@ function journey() {
         Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" }, {});
 <% } -%>
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
-<% subSection.fields.forEach(function(field) { -%>
+<% subSection.fields.forEach(function(field, fieldIndex) { -%>
+<% if (field.checkBoxGroup) { -%>
+<% if (fieldIndex === 0 || !subSection.fields[fieldIndex - 1].checkBoxGroup) { -%>
+        // Checkbox-group members cannot be addressed by sap.fe.test.api
+<% } -%>
+        // Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>", fieldGroup: "<%- field.fieldGroup %>" });
+<% } else { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
+<% } -%>
 <% }) -%>
 <% } -%>
 <% subSection.contactCardFields.forEach(function(field) { -%>
@@ -303,8 +310,15 @@ function journey() {
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
-<% section.fields.forEach(function(field) { -%>
+<% section.fields.forEach(function(field, fieldIndex) { -%>
+<% if (field.checkBoxGroup) { -%>
+<% if (fieldIndex === 0 || !section.fields[fieldIndex - 1].checkBoxGroup) { -%>
+        // Checkbox-group members cannot be addressed by sap.fe.test.api
+<% } -%>
+        // Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>", fieldGroup: "<%- field.fieldGroup %>" });
+<% } else { -%>
         Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" } as unknown as FormIdentifier).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
+<% } -%>
 <% }) -%>
 <% } -%>
 <% section.contactCardFields.forEach(function(field) { -%>
