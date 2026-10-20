@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- make ui5Version optional in app generation tools — omitting it lets the MCP server resolve the latest stable UI5 version from ui5.sap.com instead of using a hardcoded value in the MCP schema [[1e9c957](https://github.com/SAP/open-ux-tools/commit/1e9c957b1ee7253c9ec7f6e85f5509dfc9dd501d)]
+
 ## 1.15.13
 
 ### Patch Changes
