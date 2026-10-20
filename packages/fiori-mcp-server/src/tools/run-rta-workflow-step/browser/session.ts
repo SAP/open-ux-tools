@@ -3,20 +3,30 @@ import { join } from 'node:path';
 import { type BrowserContext, type Page } from 'playwright-core';
 import { logger } from '../../../utils/logger.js';
 
-// Session state shared across the browser bridge.
-//   `sessionStateByKey` — resolved session key → in-memory Playwright storage
-//      state (cookies/localStorage). Survives `disconnectSite` so an
-//      authenticated login is reused across re-`start` within the process.
-//   `backendBySiteOrigin` — site origin → backend origin, learned the first
-//      time a `start` observes an off-loopback (IdP/approuter) redirect.
-//      Membership also gates session reuse: only sites that redirect (CF
-//      XSUAA / ABAP reentrance) are ever snapshotted — a plain localhost ABAP
-//      app never is, so its behaviour is unchanged.
-const sessionStateByKey: Map<string, StorageState> = new Map();
-const backendBySiteOrigin: Map<string, string> = new Map();
+// Session state shared across the browser bridge, keyed by site origin.
+//   `sessionByOrigin` — site origin → { authOrigin?, storageState? }.
+//      `storageState` is the in-memory Playwright storage state (cookies/
+//      localStorage); it survives `disconnectSite` so an authenticated login is
+//      reused across re-`start` within the process. `authOrigin` is the first
+//      off-loopback origin the editor redirects to for authentication, learned
+//      the first time a `start` observes a redirect. Its presence also gates
+//      session reuse: only sites that redirect (CF XSUAA / ABAP reentrance) are
+//      ever snapshotted — a plain localhost ABAP app never is, so its behaviour
+//      is unchanged.
+const sessionByOrigin: Map<string, SessionState> = new Map();
 
 /** In-memory Playwright storage state (shape returned by `context.storageState()`). */
 export type StorageState = Awaited<ReturnType<BrowserContext['storageState']>>;
+
+/**
+ * Per-origin session state. Both fields are optional and populated independently
+ * as facts are learned: `authOrigin` on the first off-loopback redirect,
+ * `storageState` when an authenticated context is snapshotted.
+ */
+interface SessionState {
+    authOrigin?: string;
+    storageState?: StorageState;
+}
 
 /** Bounded probe for the webclient bridge: generous for a valid app, far below the 60 s action timeout. */
 const BRIDGE_PROBE_MS = 8000;
@@ -36,8 +46,7 @@ export const LOGIN_REQUIRED_MESSAGE =
  * is stopped, so a fresh process state is rebuilt on the next launch.
  */
 export function clearSessions(): void {
-    sessionStateByKey.clear();
-    backendBySiteOrigin.clear();
+    sessionByOrigin.clear();
 }
 
 /**
@@ -62,7 +71,7 @@ export function isHeadless(): boolean {
 
 /**
  * Optional directory for cross-restart session persistence. When set, each
- * backend's storage state is also written to / read from a file in this
+ * origin's storage state is also written to / read from a file in this
  * directory. Unset ⇒ in-memory only (no disk footprint).
  *
  * @returns The configured directory, or `undefined`.
@@ -79,7 +88,7 @@ function sessionDir(): string | undefined {
  * @param url URL or origin string.
  * @returns The origin, or the input unchanged if unparseable.
  */
-function originKey(url: string): string {
+export function originKey(url: string): string {
     try {
         return new URL(url).origin;
     } catch {
@@ -88,25 +97,14 @@ function originKey(url: string): string {
 }
 
 /**
- * Resolves the session key for a site: the learned backend origin when a
- * redirect has been observed, otherwise the site's own origin.
+ * Whether the site has been observed to redirect to an auth login page.
+ * True once a redirect has recorded an `authOrigin` for the site's origin.
  *
  * @param site Editor URL.
- * @returns The session key under which storage state is stored/looked up.
- */
-function resolveSessionKey(site: string): string {
-    const siteOrigin = originKey(site);
-    return backendBySiteOrigin.get(siteOrigin) ?? siteOrigin;
-}
-
-/**
- * Whether the site has been observed to redirect to a backend.
- *
- * @param site Editor URL.
- * @returns `true` when the site has been observed to redirect to a backend.
+ * @returns `true` when the site has been observed to redirect for authentication.
  */
 function isRedirectingSite(site: string): boolean {
-    return backendBySiteOrigin.has(originKey(site));
+    return sessionByOrigin.get(originKey(site))?.authOrigin !== undefined;
 }
 
 /**
@@ -132,8 +130,8 @@ export function buildContextOptions(site: string): { viewport: null; storageStat
     if (!isRedirectingSite(site)) {
         return { viewport: null };
     }
-    const key = resolveSessionKey(site);
-    const inMemory = sessionStateByKey.get(key);
+    const key = originKey(site);
+    const inMemory = sessionByOrigin.get(key)?.storageState;
     if (inMemory) {
         return { viewport: null, storageState: inMemory };
     }
@@ -160,10 +158,11 @@ export async function persistSessionState(site: string, context: BrowserContext)
     if (!isRedirectingSite(site)) {
         return;
     }
-    const key = resolveSessionKey(site);
+    const key = originKey(site);
     try {
         const state = await context.storageState();
-        sessionStateByKey.set(key, state);
+        const existing = sessionByOrigin.get(key) ?? {};
+        sessionByOrigin.set(key, { ...existing, storageState: state });
         const dir = sessionDir();
         if (dir) {
             // The state holds live session cookies (credential material). Write it
@@ -231,13 +230,13 @@ export function isBackendLoginPage(url: string, title: string, bodyText: string)
 }
 
 /**
- * Records a `siteOrigin → backendOrigin` mapping when the page landed on an
+ * Records the `authOrigin` for a site's origin when the page landed on an
  * off-loopback origin, arming session reuse for that site on the next `start`.
  *
  * @param site Original editor URL requested.
  * @param landedUrl The URL the page actually landed on after redirects.
  */
-export function recordBackendOrigin(site: string, landedUrl: string): void {
+export function recordAuthOrigin(site: string, landedUrl: string): void {
     const siteOrigin = originKey(site);
     const landedOrigin = originKey(landedUrl);
     let landedHost: string;
@@ -247,10 +246,11 @@ export function recordBackendOrigin(site: string, landedUrl: string): void {
         return;
     }
     const offLoopback = landedHost !== 'localhost' && landedHost !== '127.0.0.1';
-    // Prefer the first off-loopback origin seen (approuter/backend host) and do
-    // not overwrite it with a later hop (e.g. the final IdP), to avoid merging
-    // two different backends that share one IdP tenant.
-    if (offLoopback && !backendBySiteOrigin.has(siteOrigin)) {
-        backendBySiteOrigin.set(siteOrigin, landedOrigin);
+    // Prefer the first off-loopback origin seen (the approuter's XSUAA / IdP auth
+    // entry point) and do not overwrite it with a later hop (e.g. the final IdP),
+    // to avoid merging two different sites that share one IdP tenant.
+    const existing = sessionByOrigin.get(siteOrigin) ?? {};
+    if (offLoopback && existing.authOrigin === undefined) {
+        sessionByOrigin.set(siteOrigin, { ...existing, authOrigin: landedOrigin });
     }
 }

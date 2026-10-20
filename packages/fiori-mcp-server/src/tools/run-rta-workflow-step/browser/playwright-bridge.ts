@@ -6,9 +6,10 @@ import {
     isBackendLoginPage,
     isHeadless,
     LOGIN_REQUIRED_MESSAGE,
+    originKey,
     persistSessionState,
     probeBridge,
-    recordBackendOrigin
+    recordAuthOrigin
 } from './session.js';
 import type {
     FetchViaContextResult,
@@ -21,8 +22,11 @@ import type {
 //   `browser` — launched once and reused for the lifetime of the Node process.
 //   `browserStartPromise` — deduplicates concurrent launches so the first
 //      caller's `chromium.launch()` is awaited by everyone else.
-//   `connectionRegistry` — site URL → open page handle. One entry per editor URL.
-// Session reuse / backend-origin state lives in `./session.js`.
+//   `connectionRegistry` — site ORIGIN → open page handle. One editor per origin
+//      (the editor path is a constant, so the port/origin is the identity); the
+//      full URL is kept on the handle for `page.goto`. Keyed by origin to match
+//      the per-origin session state in `./session.js`, but kept a separate map
+//      because a page is torn down on disconnect while the session survives it.
 let browser: Browser | undefined;
 let browserStartPromise: Promise<Browser> | undefined;
 const connectionRegistry: Map<string, PageRPC> = new Map();
@@ -31,6 +35,8 @@ const connectionRegistry: Map<string, PageRPC> = new Map();
  * Internal RPC handle for a single browser page.
  */
 interface PageRPC {
+    /** The full editor URL this page was opened with — used for `page.goto` / diagnostics. */
+    readonly fullUrl: string;
     /** The context owning this page — used to snapshot session state before close. */
     readonly context: BrowserContext;
     /** Invoke a frontend action on this page. */
@@ -64,9 +70,10 @@ interface WebclientBridgeWindow {
  *
  * @param page The Playwright page to wrap.
  * @param context The BrowserContext that owns the page; closed together with the page on `rpc.close()`.
+ * @param fullUrl The full editor URL this page was opened with.
  * @returns An RPC handle for the page.
  */
-async function createPageRPC(page: Page, context: BrowserContext): Promise<PageRPC> {
+async function createPageRPC(page: Page, context: BrowserContext, fullUrl: string): Promise<PageRPC> {
     await page.waitForFunction(() => document.readyState === 'complete', undefined, { timeout: 30000 });
 
     const callFrontendAction: PageRPC['callFrontendAction'] = async <TReturn = unknown>(
@@ -130,7 +137,7 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
         await context.close().catch(() => undefined);
     };
 
-    return { context, callFrontendAction, close };
+    return { fullUrl, context, callFrontendAction, close };
 }
 
 const INSTALL_HINT =
@@ -216,7 +223,8 @@ export async function callFrontendAction<TReturn = unknown>(
     frameId?: string
 ): Promise<FrontendActionResult<TReturn>> {
     const activeBrowser = await startBrowser();
-    let rpc = connectionRegistry.get(site);
+    const key = originKey(site);
+    let rpc = connectionRegistry.get(key);
 
     if (!rpc) {
         const context = await activeBrowser.newContext(buildContextOptions(site));
@@ -227,7 +235,7 @@ export async function callFrontendAction<TReturn = unknown>(
         });
 
         page.on('close', () => {
-            connectionRegistry.delete(site);
+            connectionRegistry.delete(key);
         });
 
         try {
@@ -238,7 +246,7 @@ export async function callFrontendAction<TReturn = unknown>(
             const bridgeReady = await probeBridge(page);
             if (!bridgeReady) {
                 const landedUrl = page.url();
-                recordBackendOrigin(site, landedUrl);
+                recordAuthOrigin(site, landedUrl);
                 const [title, bodyText] = await Promise.all([
                     page.title().catch(() => ''),
                     page.evaluate(() => document.body?.innerText?.slice(0, 4000) ?? '').catch(() => '')
@@ -261,8 +269,8 @@ export async function callFrontendAction<TReturn = unknown>(
                 await persistSessionState(site, context);
             }
 
-            rpc = await createPageRPC(page, context);
-            connectionRegistry.set(site, rpc);
+            rpc = await createPageRPC(page, context, site);
+            connectionRegistry.set(key, rpc);
         } catch (err) {
             await context.close().catch(() => undefined);
             throw err;
@@ -278,12 +286,13 @@ export async function callFrontendAction<TReturn = unknown>(
  * @param site URL whose page should be closed.
  */
 export async function disconnectSite(site: string): Promise<void> {
-    const rpc = connectionRegistry.get(site);
+    const key = originKey(site);
+    const rpc = connectionRegistry.get(key);
     if (rpc) {
         // Snapshot before closing to catch any mid-session token rotation (gated).
         await persistSessionState(site, rpc.context);
         await rpc.close();
-        connectionRegistry.delete(site);
+        connectionRegistry.delete(key);
     }
 }
 
@@ -297,14 +306,14 @@ export async function stopBrowser(): Promise<void> {
     }
 
     await Promise.all(
-        [...connectionRegistry.entries()].map(async ([site, rpc]) => {
+        [...connectionRegistry.entries()].map(async ([key, rpc]) => {
             try {
-                await persistSessionState(site, rpc.context);
+                await persistSessionState(rpc.fullUrl, rpc.context);
                 await rpc.close();
             } catch {
                 // Ignore errors when closing pages.
             }
-            connectionRegistry.delete(site);
+            connectionRegistry.delete(key);
         })
     );
 
@@ -340,7 +349,7 @@ export function isRegistryEmpty(): boolean {
  * @returns The response status, content-type, and body text.
  */
 export async function fetchViaContext(site: string, url: string): Promise<FetchViaContextResult> {
-    const rpc = connectionRegistry.get(site);
+    const rpc = connectionRegistry.get(originKey(site));
     if (!rpc) {
         throw new Error('No active editor session for this site. Run the "start" step first.');
     }

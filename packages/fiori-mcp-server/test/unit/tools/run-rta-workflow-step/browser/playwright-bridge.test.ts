@@ -102,7 +102,10 @@ jest.unstable_mockModule('playwright-core', () => ({
 // --- helpers ---------------------------------------------------------------
 
 const SITE_A = 'http://localhost:8080/a';
-const SITE_B = 'http://localhost:8080/b';
+// A second editor on a DIFFERENT origin (port). connectionRegistry keys by
+// origin — one editor per origin — so a distinct second page needs a distinct
+// port, not just a different path on the same port.
+const SITE_B = 'http://localhost:8082/b';
 
 function setupBrowser(pages: FakePage[]): { browser: FakeBrowser; pages: FakePage[] } {
     const browser = new FakeBrowser();
@@ -160,6 +163,26 @@ describe('browser/playwright-bridge', () => {
         const r2 = await fs.callFrontendAction(SITE_A, 'b');
 
         expect(launchMock).toHaveBeenCalledTimes(1);
+        expect(browser.newPage).toHaveBeenCalledTimes(1);
+        expect(page.goto).toHaveBeenCalledTimes(1);
+        expect(r1.payload).toBe('first');
+        expect(r2.payload).toBe('second');
+
+        await fs.stopBrowser();
+    });
+
+    test('same origin, different path reuses the one page (one editor per origin)', async () => {
+        const page = new FakePage();
+        const { browser } = setupBrowser([page]);
+        page.evaluate
+            .mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null })
+            .mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        const r1 = await fs.callFrontendAction('http://localhost:8080/a', 'x');
+        const r2 = await fs.callFrontendAction('http://localhost:8080/different-path', 'y');
+
+        // Keyed by origin → both calls hit the SAME registered page; no second page opened.
         expect(browser.newPage).toHaveBeenCalledTimes(1);
         expect(page.goto).toHaveBeenCalledTimes(1);
         expect(r1.payload).toBe('first');
