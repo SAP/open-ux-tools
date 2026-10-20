@@ -589,14 +589,16 @@ export class ProjectAccess {
 
         // A single library root can contain several nested manifest.json files (the library manifest
         // plus per-component manifests), each of which getReuseLibs resolves back to the same libRoot.
-        // Emit one entry per library root so the webview does not list the same library multiple times.
-        const seenLibPaths: string[] = [];
+        // The emitted entry is keyed on libRoot (root: lib.value.libRoot), so deduplicate on libRoot —
+        // not on lib.value.path, which is distinct per nested manifest and would let the same library
+        // through multiple times. Keep the first occurrence so libRoot/libPath stay paired (PR #39527).
+        const seenLibRoots: string[] = [];
         const reuseLibsUnique: MigratableFolder[] = reuseLibsRoots
             .filter((lib) => {
-                if (seenLibPaths.some((path) => isSamePath(path, lib.value.path))) {
+                if (seenLibRoots.some((libRoot) => isSamePath(libRoot, lib.value.libRoot))) {
                     return false;
                 }
-                seenLibPaths.push(lib.value.path);
+                seenLibRoots.push(lib.value.libRoot);
                 return true;
             })
             .map((lib) => {
