@@ -184,7 +184,7 @@
     },
     "targetPage": {
       "type": "Component",
-      "id": "FirstAssociatedEntityObjectPage",
+      "id": "toFirstAssociatedEntity--FirstAssociatedEntityObjectPage",
       "name": "sap.fe.templates.ObjectPage",
       "routePattern": "RootEntity({key})/toFirstAssociatedEntity({FirstAssociatedEntityKey}):?query:",
       "settings": {
