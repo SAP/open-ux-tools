@@ -744,6 +744,11 @@ describe('ui5-test-writer', () => {
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('TravelList.gen.js'))).toBe(true);
                     // JourneyRunner.js written without .gen suffix (user-extendable)
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('JourneyRunner.js'))).toBe(true);
+                    // launchUrl points at the FLP sandbox entry (from flpSandbox.html), not index.html
+                    const journeyRunnerPath = paths.find((p) => p.includes('pages') && p.endsWith('JourneyRunner.js'));
+                    const journeyRunner = dumped[journeyRunnerPath!].contents as string;
+                    expect(journeyRunner).toContain("'/test/flpSandbox.html#C_Arbankstatement-display'");
+                    expect(journeyRunner).not.toContain("'/index.html'");
                     // qunit harness + testsuite are produced
                     expect(paths.some((p) => p.endsWith('opaTests.qunit.js'))).toBe(true);
                     expect(paths.some((p) => p.endsWith('opaTests.qunit.html'))).toBe(true);

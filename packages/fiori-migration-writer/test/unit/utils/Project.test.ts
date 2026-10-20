@@ -8,6 +8,7 @@ import { loadProjectIntoMemFs } from '../../helpers/mem-fs-helper.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixturesInput = join(__dirname, '../../fixtures/input');
+const fixturesProjectRoots = join(__dirname, '../../fixtures/project-roots');
 
 /**
  * Build a ProjectFolder for the given absolute path.
@@ -225,6 +226,89 @@ describe('ProjectAccess', () => {
             const fs = createMemFsEditor();
             const result = await ProjectAccess.getProjectRoots([], false, fs);
             expect(result).toEqual([]);
+        });
+
+        test('deduplicates a project with both package.json and pom.xml (exact match)', async () => {
+            // Regression: A package/POM project with a root-level manifest.json passes the later
+            // descendant-only filter because manifestRoot === root, then gets appended and scanned
+            // twice again. The fix rejects exact matches (manifestRoot === root || manifestRoot.startsWith(root + sep)).
+            const WSUri = URI.file(join(fixturesProjectRoots, 'app-with-package-and-pom'));
+            const result = await ProjectAccess.getProjectRoots([projectFolder(WSUri.fsPath)], false);
+            expect(result).toHaveLength(1);
+            expect(result[0].type).toEqual(MigrationTypes.project);
+            expect(result[0].root.endsWith(join('fixtures', 'project-roots', 'app-with-package-and-pom'))).toEqual(
+                true
+            );
+        });
+
+        test('includes a regular app with an embedded library (not filtered out)', async () => {
+            // Regression: A shared root is not necessarily itself a reuse-library project.
+            // getReuseLibs assigns a nested library to the nearest package/POM root, so a normal
+            // freestyle app containing an embedded library can have the same libRoot. Only suppress
+            // the project entry when getProjectInfo classifies that root as MigrationTypes.library.
+            const WSUri = URI.file(join(fixturesProjectRoots, 'app-with-nested-lib'));
+            const result = await ProjectAccess.getProjectRoots([projectFolder(WSUri.fsPath)], false);
+            // Should have 2 entries: one for the app (project type) and one for the nested lib (library type)
+            expect(result).toHaveLength(2);
+            const appEntry = result.find(
+                (p) =>
+                    p.type === MigrationTypes.project &&
+                    p.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib'))
+            );
+            const libEntry = result.find((p) => p.type === MigrationTypes.library);
+            expect(appEntry).toBeDefined();
+            expect(libEntry).toBeDefined();
+            expect(appEntry?.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib'))).toEqual(true);
+            expect(
+                libEntry?.root.endsWith(join('fixtures', 'project-roots', 'app-with-nested-lib', 'libs', 'test-lib'))
+            ).toEqual(true);
+        });
+
+        test('returns a single entry for a reuse library that also has a ui5.yaml and .che entryPath', async () => {
+            // Regression: a legacy WebIDE UI5 library whose manifest.json is nested in the source tree
+            // (src/sap/.../manifest.json) is discovered both as a plain project (via pom.xml/neo-app.json)
+            // and as a reuse library (via getReuseLibs). Its .che/project.json points hcpdeploy.entryPath
+            // at the nested manifest, so project-type resolution also finds the library manifest. The root
+            // must be reported exactly once, as a library — not twice.
+            const WSUri = URI.file(join(fixturesProjectRoots, 'reuselib-ui5yaml'));
+            const result = await ProjectAccess.getProjectRoots([projectFolder(WSUri.fsPath)], false);
+            expect(result).toHaveLength(1);
+            expect(result[0].type).toEqual(MigrationTypes.library);
+            expect(result[0].root.endsWith(join('fixtures', 'project-roots', 'reuselib-ui5yaml'))).toEqual(true);
+        });
+
+        test('preserves correct libRoot and libPath for nested library structure', async () => {
+            // Regression: Verify that deduplication logic preserves the correct
+            // distinction between libRoot (project root) and libPath (manifest directory).
+            const WSUri = URI.file(join(fixturesProjectRoots, 'reuselib-ui5yaml'));
+            const result = await ProjectAccess.getProjectRoots([projectFolder(WSUri.fsPath)], false);
+            expect(result).toHaveLength(1);
+            const libEntry = result[0];
+            expect(libEntry.type).toEqual(MigrationTypes.library);
+
+            // libRoot should be the project root (where package.json/ui5.yaml go)
+            expect(libEntry.root.endsWith(join('fixtures', 'project-roots', 'reuselib-ui5yaml'))).toEqual(true);
+            expect(libEntry.root).not.toContain('src');
+
+            // libPath should be the manifest directory (nested in src/)
+            expect(libEntry.libPath).toBeDefined();
+            expect(libEntry.libPath).toContain('src');
+            expect(
+                libEntry.libPath?.endsWith(
+                    join(
+                        'fixtures',
+                        'project-roots',
+                        'reuselib-ui5yaml',
+                        'src',
+                        'sap',
+                        'nw',
+                        'core',
+                        'om',
+                        'lib',
+                        'printreuse'
+                    )
+                )
+            ).toEqual(true);
         });
     });
 });

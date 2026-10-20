@@ -37,7 +37,8 @@ import {
     getReuseLibModuleName,
     getClientFromDestinationName,
     getNeoAppData,
-    getDestinationFromNeoApp
+    getDestinationFromNeoApp,
+    isSamePath
 } from './project-readers/index.js';
 
 /**
@@ -541,7 +542,13 @@ export class ProjectAccess {
             (lib) => lib.value.type === ReuseLibType.LIBRARY
         );
         // Roots that are themselves reuse libraries must be emitted only as libraries, never also as
-        // plain projects.
+        // plain projects. getReuseLibs assigns a nested library to its nearest package/pom root, so a
+        // freestyle app that merely embeds a library shares that libRoot — suppressing by libRoot alone
+        // would wrongly drop the app. A root is library-only when it is itself a discovered library root
+        // AND getProjectInfo does not classify it as an application (no FE version, not an SAP app).
+        // getProjectInfo's own type is not sufficient on its own: a library whose manifest.json lives in
+        // a non-standard nested source path (e.g. src/.../lib/manifest.json) is not resolved as a library
+        // by the default webapp lookup, so the libRoot signal is needed to catch it.
         const libraryOnlyRoots = new Set<string>();
         if (reuseLibsRoots.length) {
             const reuseLibRootPaths = new Set(reuseLibsRoots.map((lib) => lib.value.libRoot));
@@ -557,13 +564,19 @@ export class ProjectAccess {
                 const isApp = !!(info.FEVersion || info.isSAPApp);
                 if (isApp) {
                     appRoots.push(root);
-                } else if (reuseLibRootPaths.has(root) || info.type === MigrationTypes.library) {
+                } else if (
+                    [...reuseLibRootPaths].some((libRoot) => isSamePath(libRoot, root)) ||
+                    info.type === MigrationTypes.library
+                ) {
                     libraryOnlyRoots.add(root);
                 }
             }
-            // In case reuse libs were detected in an application project, remove them.
-            reuseLibsRoots = reuseLibsRoots.filter((lib) => !appRoots.includes(lib.value.libRoot));
+            // After classifying all roots, filter out reuse libs detected in application projects
+            reuseLibsRoots = reuseLibsRoots.filter(
+                (lib) => !appRoots.some((appRoot) => isSamePath(lib.value.libRoot, appRoot))
+            );
         }
+
         // if workspace has multiple roots then make sure there are no similar projects
         const projectsUnique: MigratableFolder[] = [...new Set(roots)]
             .filter((root) => !libraryOnlyRoots.has(root))
@@ -577,13 +590,13 @@ export class ProjectAccess {
         // A single library root can contain several nested manifest.json files (the library manifest
         // plus per-component manifests), each of which getReuseLibs resolves back to the same libRoot.
         // Emit one entry per library root so the webview does not list the same library multiple times.
-        const seenLibRoots = new Set<string>();
+        const seenLibPaths: string[] = [];
         const reuseLibsUnique: MigratableFolder[] = reuseLibsRoots
             .filter((lib) => {
-                if (seenLibRoots.has(lib.value.libRoot)) {
+                if (seenLibPaths.some((path) => isSamePath(path, lib.value.path))) {
                     return false;
                 }
-                seenLibRoots.add(lib.value.libRoot);
+                seenLibPaths.push(lib.value.path);
                 return true;
             })
             .map((lib) => {
