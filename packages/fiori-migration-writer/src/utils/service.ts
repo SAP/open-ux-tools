@@ -17,13 +17,13 @@ export function xmlToJson(metadata: any): JSON | undefined {
     return XMLValidator.validate(metadata) ? new XMLParser(options).parse(metadata, true) : undefined;
 }
 
-export async function validateMetadata(
+export function validateMetadata(
     rootPath: string,
     webappPath: string,
     isSAPApp?: boolean,
     manifestJSON?: Manifest | undefined,
     fsEditor?: Editor
-): Promise<{ config: boolean; fileExists: boolean }> {
+): { config: boolean; fileExists: boolean } {
     const fs = fsEditor ?? createMemFsEditor();
     if (!manifestJSON) {
         return { config: false, fileExists: false };

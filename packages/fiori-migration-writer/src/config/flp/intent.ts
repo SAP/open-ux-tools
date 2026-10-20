@@ -99,15 +99,15 @@ export function generateAppMockIntent(
  * @param projectInfo
  * @param semanticObject
  */
-export async function prepareFlpConfiguration(
+export function prepareFlpConfiguration(
     fs: Editor,
     projectInfo: ImportProjectInfo,
     semanticObject: string
-): Promise<{
+): {
     flpSandboxAvailable: boolean;
     appIntent: string;
     appMockIntent: string;
-}> {
+} {
     const {
         rootPath,
         webappPath,

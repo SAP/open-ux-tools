@@ -473,7 +473,7 @@ export class ProjectAccess {
         return checkIfProjectExtension(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async isFioriToolsAdaptationProject(projectRoot: string, fsEditor?: Editor) {
+    public static isFioriToolsAdaptationProject(projectRoot: string, fsEditor?: Editor) {
         return isFioriToolsAdaptationProject(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 

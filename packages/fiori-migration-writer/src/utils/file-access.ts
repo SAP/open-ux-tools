@@ -30,8 +30,7 @@ export function readFile(fs: Editor, path: string): string {
  * @param path - Path to file
  * @returns Parsed JSON object
  */
-export async function readJSON<T = any>(fs: Editor, path: string): Promise<T> {
-    // NOSONAR - intentionally async: public API whose callers await it and whose contract is a Promise.
+export function readJSON<T = any>(fs: Editor, path: string): T {
     const content = fs.read(path);
     const result = JSON.parse(content) as T;
     try {
