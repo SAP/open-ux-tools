@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="../../../sap/mm_pur_suplrconf_mntr_srv/$metadata">
+        <edmx:Include Namespace="MM_PUR_SUPLRCONF_MNTR_SRV" Alias="SAP"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="mm_pur_suplrconf_mntr_anno_mdl.v1" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_MaterialValueHelpType/MaterialBaseUnit">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/SortField">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/FirstName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/LastName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/OrganizationBPName1">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/OrganizationBPName2">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/OrganizationBPName3">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/OrganizationBPName4">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/AuthorizationGroup">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType/SupplierAccountGroup">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_MM_SupplierValueHelpType">
+                <Annotation Term="Communication.Contact">
+                    <Record>
+                        <PropertyValue Property="adr">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred"/>
+                                    <PropertyValue Property="country" Path="Country"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Communication.Address">
+                    <Record>
+                        <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred"/>
+                        <PropertyValue Property="country" Path="Country"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingCategoryValueHelpType/PurgCatUUID">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingGroupValueHelpType/EmailAddress">
+                <Annotation Term="Communication.IsEmailAddress"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurchasingGroupValueHelpType">
+                <Annotation Term="Communication.Contact">
+                    <Record>
+                        <PropertyValue Property="email">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="address" Path="EmailAddress"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurDocItemCategoryValueHelpType/PurchasingDocumentItemCategory">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchaseOrderItem">
+                <Annotation Term="UI.HiddenFilter"/>
+            </Annotations>
+            <Annotations/>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ScheduleLineCommittedAmount">
+                <Annotation Term="UI.HiddenFilter"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ScheduleLinePndgAmtInTransCrcy">
+                <Annotation Term="UI.HiddenFilter"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/NumberOfPurchaseOrderItems">
+                <Annotation Term="UI.HiddenFilter"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/AcctAssignmentCategoryName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/SupplierConfCategoryName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentCategoryName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentTypeName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ServicePerformerName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/SupplierConfControlKeyName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/CompanyCodeName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurgDocItemCategoryName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentItemCategory">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingDocumentStatusName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PlantName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingOrganizationName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingGroupName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/MaterialGroupName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/DomainText">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurgCatName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/StatusDescription">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/StorageLocationName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchaseOrderStatusName">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ProcessingStatusDesc">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/P_DisplayCurrency">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ID">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingGroup">
+                <Annotation Term="Common.SemanticObject" String="PurchasingGroup"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Supplier">
+                <Annotation Term="Common.SemanticObject" String="Supplier"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Plant">
+                <Annotation Term="Common.SemanticObject" String="Plant"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingOrganization">
+                <Annotation Term="Common.SemanticObject" String="PurchasingOrganization"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/Material">
+                <Annotation Term="Common.SemanticObject" String="Material"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/CompanyCode">
+                <Annotation Term="Common.SemanticObject" String="CompanyCode"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/MaterialGroup">
+                <Annotation Term="Common.SemanticObject" String="MaterialGroup"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/PurchasingCategory">
+                <Annotation Term="Common.SemanticObject" String="PurchasingCategory"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/StorageLocation">
+                <Annotation Term="Common.SemanticObject" String="StorageLocation"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/SupplierConfirmationCategory">
+                <Annotation Term="Common.Text" Path="SupplierConfCategoryName">
+                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/DurationToNextStatusInDays">
+                <Annotation Term="Common.Text" Path="DomainText">
+                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult/ScheduleLineAmountInTransCrcy"/>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_PurgDocSuplrConfMainResult">
+                <Annotation Term="UI.Chart">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="By Supplier"/>
+                        <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>Supplier</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Supplier"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>ScheduleLineAmountInTransCrcy</PropertyPath>
+                                <PropertyPath>ScheduleLinePndgAmtInTransCrcy</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="ScheduleLinePndgAmtInTransCrcy"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                                </Record>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="ScheduleLineAmountInTransCrcy"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.DataPoint" Qualifier="StillToBeDeliveredQuantity">
+                    <Record>
+                        <PropertyValue Property="Value" Path="StillToBeDeliveredQuantity"/>
+                        <PropertyValue Property="Title" String="Quantity to be Delivered"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.DataPoint" Qualifier="StillToInvoiceValue">
+                    <Record>
+                        <PropertyValue Property="Value" Path="StillToInvoiceValue"/>
+                        <PropertyValue Property="Title" String="Value to be Invoiced"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="ObjPageHeaderInfo">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Supplier"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="Material"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Label" String="Material"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.HeaderInfo">
+                    <Record>
+                        <PropertyValue Property="TypeName" String="Purchasing Document Item"/>
+                        <PropertyValue Property="TypeNamePlural" String="Purchasing Document Items"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="PurchasingDocument"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="PurchasingDocumentItem"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="StillToInvoiceValue"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="StillToBeDeliveredQuantity"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Plant"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="StillToBeDeliveredValue"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PurchasingDocumentStatus"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PurchasingGroup"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="StillToInvoiceQuantity"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="OrderQuantity"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NetAmount"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PurgDocExternalItemCategory"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="AccountAssignmentCategory"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="SupplierConfirmationControlKey"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PurchasingDocument"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="PurchasingDocumentItem"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Supplier"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Material"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ScheduleLineDeliveryDate"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ScheduledQuantity"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ScheduleLinePndgQtyInStkUnit"/>
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>SupplierConfirmationCategory</PropertyPath>
+                        <PropertyPath>PurchasingDocument</PropertyPath>
+                        <PropertyPath>Supplier</PropertyPath>
+                        <PropertyPath>Material</PropertyPath>
+                        <PropertyPath>DurationToNextStatusInDays</PropertyPath>
+                        <PropertyPath>ScheduleLineDeliveryDate</PropertyPath>
+                        <PropertyPath>PurchasingDocumentStatus</PropertyPath>
+                        <PropertyPath>PurchasingDocumentCategory</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.C_SubcontrgShipgStsVHType">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ShippingStatus"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ShippingStatusText"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDateDeadlineWkType/DurationToNextStatusInDays">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDateDeadlineWkType">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DurationToNextStatusInDays_Text"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDeadlineWkTxtType/Language">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDeadlineWkTxtType/DurationToNextStatusInDays">
+                <Annotation Term="UI.Hidden"/>
+            </Annotations>
+            <Annotations Target="MM_PUR_SUPLRCONF_MNTR_SRV.I_SuplrConfDelivDeadlineWkTxtType">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DomainText"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

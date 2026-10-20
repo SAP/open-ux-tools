@@ -1,5 +1,18 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.13
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.15 → 3.0.16
+- @sap-ux/ui-prompting 1.0.16 → 1.0.17
+
 ## 1.1.12
 
 ### Patch Changes

@@ -28,9 +28,12 @@ import {
     extractContactCardColumnsFromTableNode,
     extractTableColumnsFromTableNode,
     extractTextAnnotationColumnsFromNode,
+    extractTextAnnotationColumnsFromTableNode,
+    extractBoundColumnPropertiesFromTableNode,
     resolvePrimaryTableNode,
     resolveViewTableNodes
 } from './tableUtils.js';
+import type { TextAnnotationColumnCandidate } from './tableUtils.js';
 import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
 import { parse, merge } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -152,6 +155,75 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
 }
 
 /**
+ * Resolves raw text-annotation candidates into the template shape, deduplicating the text-property test
+ * per text target. Each candidate asserts its own code column and text target independently; when columns
+ * share a text target, only the first emits the text-property test (the rest set `skipTextPropertyTest`).
+ *
+ * @param candidates - raw candidates (one table or one tab)
+ * @param isAnalyticalTable - true when the view renders an AnalyticalTable, which cannot sort nav-path targets
+ * @returns the text-annotation columns to emit tests for
+ */
+function buildTextAnnotationColumns(
+    candidates: TextAnnotationColumnCandidate[],
+    isAnalyticalTable = false
+): TextAnnotationColumn[] {
+    const seenTextProperties = new Set<string>();
+    return candidates.map((candidate) => {
+        const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
+        seenTextProperties.add(candidate.textProperty);
+        // An AnalyticalTable can only sort properties of the aggregated entity, not a nav-path target.
+        const textPropertyNotSortable = isAnalyticalTable && candidate.textProperty.includes('/');
+        return {
+            columnProperty: candidate.columnProperty,
+            textProperty: candidate.textProperty,
+            skipTextPropertyTest,
+            textPropertyNotSortable
+        };
+    });
+}
+
+/**
+ * Derives text-annotation candidates for a view by reading each bound column's `Common.Text` target off
+ * the shared entity type. Fallback for secondary multi-tab views, where `@sap/ux-specification` resolves
+ * `properties.text` only on the primary view but the annotation is in metadata for every view.
+ *
+ * @param columnProperties - the view's bound column property names (in column order)
+ * @param convertedMetadata - converted OData metadata, source of the `Common.Text` target
+ * @param entitySet - entity set backing the view (undefined yields no candidates)
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationCandidatesFromMetadata(
+    columnProperties: string[],
+    convertedMetadata: ConvertedMetadata,
+    entitySet: string | undefined
+): TextAnnotationColumnCandidate[] {
+    if (!entitySet) {
+        return [];
+    }
+    const resolvedEntitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySet);
+    const entityProperties = resolvedEntitySet?.entityType?.entityProperties;
+    if (!entityProperties) {
+        return [];
+    }
+    const candidates: TextAnnotationColumnCandidate[] = [];
+    for (const columnProperty of columnProperties) {
+        const property = entityProperties.find((p) => p.name === columnProperty);
+        const text = property?.annotations?.Common?.Text;
+        // `Common.Text` is a path expression at runtime; vocabularies-types widens it, so narrow via a guard.
+        const textPath =
+            text && typeof text === 'object' && 'type' in text && text.type === 'Path' && typeof text.path === 'string'
+                ? text.path
+                : undefined;
+        // "None" (any casing) is the spec-model sentinel for "no text annotation".
+        if (!textPath || textPath.toLowerCase() === 'none') {
+            continue;
+        }
+        candidates.push({ columnProperty, textProperty: textPath });
+    }
+    return candidates;
+}
+
+/**
  * Gets List Report features from the page model using ux-specification.
  *
  * @param listReportPage - the List Report page containing the tree model with feature definitions
@@ -247,23 +319,11 @@ export function getListReportFeatures(
                   )
             : undefined;
 
-    // A maintained text annotation emits a sort test for the text target property (no TextArrangement
-    // required). The code column is also sorted, except under TextOnly where it is not sortable.
+    // A maintained text annotation emits sort tests for both the code column and its text target.
     const meta = convertedMetadata;
-    const seenTextProperties = new Set<string>();
+    const isAnalyticalTable = getViewTableType(manifest, listReportPage.name) === 'AnalyticalTable';
     const textAnnotationColumns: TextAnnotationColumn[] = meta
-        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root).map((candidate) => {
-              // Dedupe the text-property sort test per text target; each code column keeps its own.
-              const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
-              seenTextProperties.add(candidate.textProperty);
-              return {
-                  columnProperty: isTextOnlyArrangement(meta, listReportPage.entitySet, candidate.columnProperty)
-                      ? undefined
-                      : candidate.columnProperty,
-                  textProperty: candidate.textProperty,
-                  skipTextPropertyTest
-              };
-          })
+        ? buildTextAnnotationColumns(extractTextAnnotationColumnsFromNode(listReportPage.model.root), isAnalyticalTable)
         : [];
 
     return {
@@ -447,6 +507,22 @@ export function getListReportTabs(
         toolBarActions = toolBarActions.concat(
             extractCustomToolBarActionsFromTableNode(tableNode, resolveLabel, convertedMetadata)
         );
+        // Secondary tabs yield no spec-model candidates (only the primary view resolves `properties.text`),
+        // so fall back to the shared entity type's `Common.Text` metadata.
+        let textAnnotationColumns: TextAnnotationColumn[] = [];
+        if (convertedMetadata) {
+            let candidates = extractTextAnnotationColumnsFromTableNode(tableNode);
+            if (candidates.length === 0) {
+                candidates = extractTextAnnotationCandidatesFromMetadata(
+                    extractBoundColumnPropertiesFromTableNode(tableNode),
+                    convertedMetadata,
+                    entitySet
+                );
+            }
+            const isAnalyticalTable =
+                getViewTableType(manifest, listReportPage.name, view.annotationPath) === 'AnalyticalTable';
+            textAnnotationColumns = buildTextAnnotationColumns(candidates, isAnalyticalTable);
+        }
         tabs.push({
             key: view.key,
             entitySet,
@@ -454,7 +530,13 @@ export function getListReportTabs(
             contactCardColumns: extractContactCardColumnsFromTableNode(tableNode),
             toolBarActions,
             createButton,
-            deleteButton
+            deleteButton,
+            textAnnotationColumns,
+            columnPersonalizationSupported: isViewColumnPersonalizationEnabled(
+                manifest,
+                listReportPage.name,
+                view.annotationPath
+            )
         });
     });
     return tabs;
@@ -623,10 +705,17 @@ export function isColumnPersonalizationEnabled(
         return true;
     }
     const lineItemConfig = findDefaultTableLineItemConfig(controlConfiguration, contextPath);
-    const personalization = lineItemConfig?.tableSettings?.personalization;
-    if (personalization === undefined) {
-        return true;
-    }
+    return interpretColumnPersonalization(lineItemConfig?.tableSettings?.personalization);
+}
+
+/**
+ * Interprets a `tableSettings.personalization` manifest value: a boolean is used directly; an object
+ * enables personalization only when `column === true`; `null`/`undefined` is the Fiori elements default (enabled).
+ *
+ * @param personalization - the raw `tableSettings.personalization` value
+ * @returns true if column personalization is enabled
+ */
+function interpretColumnPersonalization(personalization: boolean | Record<string, unknown> | undefined): boolean {
     if (typeof personalization === 'boolean') {
         return personalization;
     }
@@ -634,6 +723,71 @@ export function isColumnPersonalizationEnabled(
         return personalization.column === true;
     }
     return true;
+}
+
+/**
+ * Resolves column personalization for a single multi-tab view, selecting the LineItem entry by the
+ * view's `annotationPath` qualifier and falling back to the unqualified `@…UI.v1.LineItem`.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param annotationPath - the view's `annotationPath` (its SV/SPV qualifier source)
+ * @returns true if the column-adaptation dialog is available for that view's table
+ */
+export function isViewColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    annotationPath?: string
+): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        { options?: { settings?: { controlConfiguration?: Record<string, unknown> } } } | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const hashIndex = annotationPath?.indexOf('#') ?? -1;
+    const qualifier = hashIndex >= 0 ? annotationPath?.slice(hashIndex + 1) : undefined;
+    const entry =
+        (qualifier && controlConfiguration[`${lineItemTerm}#${qualifier}`]) || controlConfiguration[lineItemTerm];
+    const tableSettings = (entry as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        ?.tableSettings;
+    return interpretColumnPersonalization(tableSettings?.personalization);
+}
+
+/**
+ * Resolves a view's MDC table type (e.g. `GridTable`, `AnalyticalTable`, `ResponsiveTable`) from the
+ * manifest, using the same qualifier matching as {@link isViewColumnPersonalizationEnabled}.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param annotationPath - the view's `annotationPath` (its SV/SPV qualifier source)
+ * @returns the configured table type, or undefined when none is set (MDC default is ResponsiveTable)
+ */
+export function getViewTableType(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    annotationPath?: string
+): string | undefined {
+    if (!manifest || !targetKey) {
+        return undefined;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        { options?: { settings?: { controlConfiguration?: Record<string, unknown> } } } | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return undefined;
+    }
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const hashIndex = annotationPath?.indexOf('#') ?? -1;
+    const qualifier = hashIndex >= 0 ? annotationPath?.slice(hashIndex + 1) : undefined;
+    const entry =
+        (qualifier && controlConfiguration[`${lineItemTerm}#${qualifier}`]) || controlConfiguration[lineItemTerm];
+    const type = (entry as { tableSettings?: { type?: unknown } })?.tableSettings?.type;
+    return typeof type === 'string' ? type : undefined;
 }
 
 /**
@@ -697,7 +851,7 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
 export function getListReportViews(
     manifest: Manifest | undefined,
     targetKey: string | undefined
-): { key: string; entitySet?: string }[] {
+): { key: string; entitySet?: string; annotationPath?: string }[] {
     if (!manifest || !targetKey) {
         return [];
     }
@@ -706,7 +860,7 @@ export function getListReportViews(
     if (!Array.isArray(paths)) {
         return [];
     }
-    const views: { key: string; entitySet?: string }[] = [];
+    const views: { key: string; entitySet?: string; annotationPath?: string }[] = [];
     for (const path of paths) {
         if (
             path &&
@@ -714,7 +868,7 @@ export function getListReportViews(
             path.key.length > 0 &&
             !(typeof path.template === 'string' && path.template.length > 0)
         ) {
-            views.push({ key: path.key, entitySet: path.entitySet });
+            views.push({ key: path.key, entitySet: path.entitySet, annotationPath: path.annotationPath });
         }
     }
     return views;
@@ -770,34 +924,6 @@ export function isHiddenFilter(
     // metadata), so it is always truthy — `Boolean(x)` / `!== undefined` would treat an explicit
     // `HiddenFilter: false` as hidden. Coerce via `valueOf()` to read the underlying boolean.
     return property?.annotations?.UI?.HiddenFilter?.valueOf() === true;
-}
-
-/**
- * Returns true if the property's `UI.TextArrangement` is `TextOnly`, checking both the nested
- * (`Common.Text`) and sibling (property-level) locations. Under `TextOnly` the code property is not
- * sortable, so its sort test must be skipped.
- *
- * @param convertedMetadata - converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - entity set owning the property (undefined → false)
- * @param propertyName - property to inspect
- * @returns true if the text arrangement is TextOnly
- */
-export function isTextOnlyArrangement(
-    convertedMetadata: ConvertedMetadata,
-    entitySetName: string | undefined,
-    propertyName: string
-): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // The converter also populates TextArrangement as a property-level sibling of Common.Text, a
-    // shape vocabularies-types does not declare — hence the indexed access.
-    const siblingArrangement = (property?.annotations?.UI as Record<string, unknown> | undefined)?.['TextArrangement'];
-    const textArrangement = property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement ?? siblingArrangement;
-    // The converted enum value stringifies to e.g. "UI.TextArrangementType/TextOnly".
-    return textArrangement !== undefined && String(textArrangement).endsWith('/TextOnly');
 }
 
 /**

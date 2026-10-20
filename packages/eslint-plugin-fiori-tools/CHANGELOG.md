@@ -1,5 +1,33 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.17.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n, @sap-ux/text-document-utils, @sap-ux/fiori-annotation-api [[35f731a](https://github.com/SAP/open-ux-tools/commit/35f731ae4482c014726fe6bbbfdcac497382715b)]
+
+## 10.17.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-annotation-api [[c22d46a](https://github.com/SAP/open-ux-tools/commit/c22d46a0f58a03ae21947c6d3e66261ce8e07dc5)]
+
 ## 10.17.0
 
 ### Minor Changes
