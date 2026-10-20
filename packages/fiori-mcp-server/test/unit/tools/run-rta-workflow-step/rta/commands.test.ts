@@ -16,6 +16,9 @@ import {
     startVisualization,
     stopRta
 } from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const SITE = 'http://localhost:8080/test/adaptation-editor.html';
 const FRAME = 'preview';
@@ -300,6 +303,56 @@ describe('rta/commands', () => {
             const out = await getODataMetadata(transport, SITE, ['//evil.example.com/x/']);
             expect(out.entries[0]).toHaveProperty('error');
             expect(transport.fetchViaContext).not.toHaveBeenCalled();
+        });
+
+        const bigEdmx = `<edmx:Edmx>${'x'.repeat(100_000)}</edmx:Edmx>`;
+
+        test('returns metadata inline when under the threshold', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], '/tmp/doesnotmatter');
+            expect(out.entries[0]).toHaveProperty('metadata');
+            expect(out.entries[0]).not.toHaveProperty('metadataFile');
+        });
+
+        test('writes to a file and returns metadataFile + sizeBytes when over the threshold', async () => {
+            const dir = mkdtempSync(join(tmpdir(), 'md-'));
+            try {
+                transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'application/xml', body: bigEdmx });
+                const out = await getODataMetadata(
+                    transport,
+                    SITE,
+                    ['api/recommendation/v1/RecommendationService/'],
+                    dir
+                );
+                const entry = out.entries[0] as { url: string; metadataFile: string; sizeBytes: number };
+                expect(entry.metadataFile).toContain(join('webapp', '.context'));
+                expect(entry.sizeBytes).toBeGreaterThan(100_000);
+                expect(readFileSync(entry.metadataFile, 'utf-8')).toContain('edmx:Edmx');
+                expect(entry).not.toHaveProperty('metadata');
+            } finally {
+                rmSync(dir, { recursive: true, force: true });
+            }
+        });
+
+        test('errors (no inline) when metadata is large but appPath is absent', async () => {
+            transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'application/xml', body: bigEdmx });
+            const out = await getODataMetadata(transport, SITE, ['api/svc/']);
+            expect(out.entries[0]).toHaveProperty('error');
+            expect((out.entries[0] as { error: string }).error).toMatch(/appPath/i);
+            expect(out.entries[0]).not.toHaveProperty('metadata');
+        });
+
+        test('sanitises the URI into a safe filename under .context (no path escape)', async () => {
+            const dir = mkdtempSync(join(tmpdir(), 'md-'));
+            try {
+                transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'application/xml', body: bigEdmx });
+                const out = await getODataMetadata(transport, SITE, ['/api/svc/$metadata'], dir);
+                const entry = out.entries[0] as { metadataFile: string };
+                expect(entry.metadataFile).not.toMatch(/[$]/);
+                expect(entry.metadataFile.startsWith(join(dir, 'webapp', '.context'))).toBe(true);
+            } finally {
+                rmSync(dir, { recursive: true, force: true });
+            }
         });
     });
 });
