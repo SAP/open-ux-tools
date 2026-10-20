@@ -23,9 +23,9 @@ const usesFieldIdentifier = (headerSections || []).some(function(section) {
 });
 const usesFormIdentifier = (bodySections || []).some(function(section) {
     const subSectionsHaveForm = (section.subSections || []).some(function(sub) {
-        return sub.fields && sub.fields.length > 0;
+        return sub.fields && sub.fields.some(function(field) { return !field.checkBoxGroup; });
     });
-    const sectionHasFormFields = !(section.subSections && section.subSections.length > 0) && section.fields && section.fields.length > 0;
+    const sectionHasFormFields = !(section.subSections && section.subSections.length > 0) && section.fields && section.fields.some(function(field) { return !field.checkBoxGroup; });
     const hasFormAction = (section.actions || []).some(function(action) {
         return action.visible && !(section.isTable && section.navigationProperty);
     });

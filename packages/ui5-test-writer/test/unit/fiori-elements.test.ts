@@ -2543,6 +2543,86 @@ export type Then = Opa5 & BaseArrangements & {
     });
 });
 
+describe('checkbox-group fields (FXUBRQ34-12809)', () => {
+    const buckets = ['1.84', '1.148', '1.152', 'latest'] as const;
+
+    const renderObjectPageJourney = (
+        bucket: string,
+        extension: 'js' | 'ts',
+        fields: Record<string, unknown>[]
+    ): string => {
+        const templatePath = join(__dirname, `../../templates/v4/${bucket}/integration/ObjectPageJourney.${extension}`);
+        const outPath = join(__dirname, `../test-output/checkbox/${bucket}/ObjectPageJourney.gen.${extension}`);
+        const editor = create(createStorage());
+        editor.copyTpl(templatePath, outPath, {
+            name: 'CustomerObjectPage',
+            hideFilterBar: false,
+            serviceUri: '/odata/v4/TestService/',
+            navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
+            headerTitle: undefined,
+            headerSections: [],
+            headerActions: [],
+            editButton: undefined,
+            bodySections: [
+                {
+                    id: 'GeneralInformation2',
+                    isTable: false,
+                    subSections: [],
+                    fields,
+                    contactCardFields: [],
+                    contactCardColumns: [],
+                    actions: [],
+                    tableColumns: {}
+                }
+            ]
+        });
+        return editor.read(outPath);
+    };
+
+    const liveField = { property: 'AddressTimeZone' };
+    const checkBoxFields = [
+        { property: 'PostingIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true },
+        { property: 'BusinessPartnerIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true }
+    ];
+
+    it.each(buckets)('comments out checkbox-group members in every bucket (%s, JS)', (bucket) => {
+        const journey = renderObjectPageJourney(bucket, 'js', [liveField, ...checkBoxFields]);
+        const lines = journey.split('\n').map((line) => line.trim());
+        // The note is emitted exactly once for the consecutive checkbox-group block.
+        expect(
+            lines.filter((line) => line === '// Checkbox-group members cannot be addressed by sap.fe.test.api')
+        ).toHaveLength(1);
+        // Both checkbox members are present but commented out — never emitted as live steps.
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "BusinessPartnerIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+        const active = lines.filter((line) => !line.startsWith('//'));
+        expect(active.some((line) => line.includes('PostingIsBlocked'))).toBe(false);
+        // The non-checkbox field stays a live assertion.
+        expect(active.some((line) => line.includes('iCheckField({ property: "AddressTimeZone" })'))).toBe(true);
+    });
+
+    it('omits the unused FormIdentifier import when a section has only checkbox-group fields (TS)', () => {
+        const journey = renderObjectPageJourney('latest', 'ts', [...checkBoxFields]);
+        // All field assertions are commented out, so the FormIdentifier type is never used.
+        expect(journey).not.toContain('import type { FormIdentifier }');
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+    });
+
+    it('keeps the FormIdentifier import when a checkbox-group section also has a live field (TS)', () => {
+        const journey = renderObjectPageJourney('latest', 'ts', [liveField, ...checkBoxFields]);
+        expect(journey).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+        expect(journey).toContain(
+            'onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "AddressTimeZone" })'
+        );
+    });
+});
+
 describe('removeUnsupportedActions()', () => {
     type Action = { label: string; custom?: boolean; menuType?: string };
     const odata = (label: string): Action => ({ label });
