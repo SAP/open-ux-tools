@@ -235,12 +235,19 @@ export class ProjectMigrator {
      * @param opts.ui5SnapshotUrl
      * @param opts.internalToggle
      * @param opts.strict
+     * @param opts.workspaceFolders
      */
     private static async runMigrationForProjectInfo(
         editor: Editor,
         projectInfo: ImportProjectInfo,
         messages: Message[],
-        opts: { vscode: any; ui5SnapshotUrl: string; internalToggle: boolean; strict: boolean; workspaceFolders?: readonly ProjectFolder[] }
+        opts: {
+            vscode: any;
+            ui5SnapshotUrl: string;
+            internalToggle: boolean;
+            strict: boolean;
+            workspaceFolders?: readonly ProjectFolder[];
+        }
     ): Promise<{ result: boolean; messages: Message[] }> {
         const isSupportedApp =
             projectInfo.isSAPApp ||
@@ -293,6 +300,7 @@ export class ProjectMigrator {
     /**
      * Copy common files and apply migration transformations
      *
+     * @param fs
      * @param projectInfo - Project information
      * @param vscode - VS Code context
      * @param ui5SnapshotUrl - UI5 snapshot URL
