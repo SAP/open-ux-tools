@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+
+<html>
+	<!-- Copyright (c) 2014 SAP AG, All Rights Reserved -->
+<head>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Extension Project in UShell Sandbox</title>
+
+<!-- Bootstrap the Unified Shell in sandbox mode with a minimal shell renderer for standalone usage.
+    The renderer is specified in the global Unified Shell configuration object "sap-ushell-config".
+    The renderer used, "fiorisandbox", is a minimal implementation without visible UI elements, but
+    which supports cross-application navigation. It also serves as an example of a custom shell
+    renderer implementation.
+    The navigation target resolution service is configured so that the empty URL hash is
+    resolved to our own application.
+    This example uses relative path references for the SAPUI5 resources and test-resources;
+    it might be necessary to adapt them depending on the target runtime platform.
+    The sandbox platform is restricted to development or demo use cases and must NOT be used
+    for production scenarios.
+-->
+
+<script type="text/javascript">
+    window["sap-ushell-config"] = {
+        defaultRenderer : "fiori2",
+        renderers: {
+			fiori2: {
+				componentData: {
+					config: {
+						search: "hidden"
+					}
+				}
+			}
+		},
+		applications: {
+			"title-display": {
+				additionalInformation: "SAPUI5.Component=cross.fnd.fiori.inbox.CA_FIORI_INBOXExtension",
+				applicationType: "URL",
+				url: "./"
+			}
+		}
+    };
+</script>
+
+<script src="test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+<!--  Bootstrap the UI5 core library -->
+
+<script id="sap-ui-bootstrap" 
+		src="resources/sap-ui-core.js"
+		data-sap-ui-libs="sap.ushell, sap.collaboration, sap.m, sap.ui.layout"
+		data-sap-ui-theme="sap_bluecrystal"
+		data-sap-ui-xx-bindingSyntax="complex"
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-resourceroots='{"cross.fnd.fiori.inbox.CA_FIORI_INBOXExtension": "./"}'
+		data-sap-ui-frameOptions='allow'> // NON-SECURE setting for testing environment
+</script>
+
+<!-- Create the unified shell default renderer control and add it to the page -->
+<script type="text/javascript">
+    sap.ui.getCore().attachInitEvent(function() {
+        sap.ushell.Container.createRenderer().placeAt("content");
+    });
+</script>
+</head>
+
+<!-- UI Content -->
+<body class="sapUiBody" id="content">
+</body>
+</html>

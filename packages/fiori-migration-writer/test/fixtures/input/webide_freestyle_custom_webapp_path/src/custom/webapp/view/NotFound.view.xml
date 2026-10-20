@@ -1,0 +1,15 @@
+<mvc:View
+	controllerName="fin.central.listreport.reuse.controller.NotFound"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+	<MessagePage
+		title="{i18n>FULLSCREEN_TITLE}"
+		text="{i18n>NOT_FOUND_TEXT}"
+		description=""
+		icon="{sap-icon://document}"
+		id="fin.central.listreport.reuse.notFoundPage">
+			<customDescription>
+				<Link id="link" text="{i18n>FULLSCREEN_TITLE}" press="onBackNav" />
+			</customDescription>
+	</MessagePage>
+</mvc:View>

@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate webide_v2_lrop_reuselib_ui5_tooling_routing_project 1`] = `
+"specVersion: \\"4.0\\"
+metadata:
+  name: demo.qm.defect.records
+type: application
+framework:
+  name: SAPUI5
+  version: 1.153.0
+  libraries:
+    - name: sap.collaboration
+    - name: sap.f
+    - name: sap.m
+    - name: sap.suite.ui.generic.template
+    - name: sap.ui.comp
+    - name: sap.ui.core
+    - name: sap.ui.generic.app
+    - name: sap.ui.layout
+    - name: sap.ushell
+    - name: sap.ui.table
+    - name: themelib_sap_bluecrystal
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        backend:
+          - path: /sap
+            url: https://backend.example.com:44300
+            destination: BACKEND_SYSTEM
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: demo.qm.defect.records
+        ui5Theme: sap_horizon
+"
+`;
