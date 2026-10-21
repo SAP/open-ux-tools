@@ -342,14 +342,14 @@ function safeName(uri: string): string {
  * @param transport Transport whose `fetchViaContext` carries the auth cookies.
  * @param site Editor URL returned by `start`; its origin is the fetch target.
  * @param uris OData data-source URIs (the `entries[].url` from `read_odata_metadata_adp`).
- * @param appPath Adaptation project root; required to save large metadata to disk.
+ * @param appPath Adaptation project root; large metadata is saved under its `webapp/.context`.
  * @returns One entry per URI: inline `metadata`, a `metadataFile` reference, or an `error`.
  */
 export async function getODataMetadata(
     transport: FrontendActionTransport,
     site: string,
     uris: string[],
-    appPath?: string
+    appPath: string
 ): Promise<GetODataMetadataResult> {
     const entries: ODataMetadataEntry[] = await Promise.all(
         uris.map(async (uri): Promise<ODataMetadataEntry> => {
@@ -369,12 +369,6 @@ export async function getODataMetadata(
                 const formatted = formatXml(body);
                 if (formatted.length < INLINE_METADATA_MAX_CHARS) {
                     return { url: uri, metadata: formatted };
-                }
-                if (!appPath) {
-                    return {
-                        url: uri,
-                        error: 'Metadata is too large to return inline; re-call get_odata_metadata with appPath set to save it under webapp/.context.'
-                    };
                 }
                 const metadataFile = writeContextMetadata(appPath, safeName(uri), formatted);
                 return { url: uri, metadataFile, sizeBytes: Buffer.byteLength(formatted) };

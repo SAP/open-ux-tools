@@ -49,6 +49,12 @@ export interface RunRtaWorkflowStepInput {
     site: string;
     /** Optional iframe element id (e.g. `"preview"`). Required when the editor renders inside an iframe. */
     frameId?: string;
+    /**
+     * Adaptation project root. Required for `start`/`restart` (project identity +
+     * CF session keying); optional for `get_odata_metadata` (large-metadata spill);
+     * ignored by other steps.
+     */
+    appPath?: string;
     payload?: Record<string, unknown>;
 }
 

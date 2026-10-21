@@ -7,6 +7,7 @@ const mockDisconnectSite = jest.fn<() => Promise<void>>().mockResolvedValue(unde
 const mockStopBrowser = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 const mockCallFrontendAction = jest.fn<FrontendActionTransport['callFrontendAction']>();
 const mockFetchViaContext = jest.fn<FrontendActionTransport['fetchViaContext']>();
+const mockRegisterSite = jest.fn<(site: string, appPath: string) => Promise<void>>().mockResolvedValue(undefined);
 let registryEmpty = true;
 
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/index.js', () => ({
@@ -17,6 +18,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/in
         stopBrowser: mockStopBrowser
     },
     isRegistryEmpty: () => registryEmpty,
+    registerSite: mockRegisterSite,
     stopBrowser: mockStopBrowser
 }));
 
@@ -73,11 +75,24 @@ describe('runRtaWorkflowStep dispatcher', () => {
             const result = await runRtaWorkflowStep({
                 step: 'start',
                 site: SITE,
-                frameId: FRAME
+                frameId: FRAME,
+                appPath: '/tmp/app'
             });
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
             expect(mockStartRta).toHaveBeenCalled();
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
+        });
+
+        test('registers the site with appPath before starting', async () => {
+            mockStartRta.mockResolvedValue({ rtaStarted: true });
+            await runRtaWorkflowStep({ step: 'start', site: SITE, appPath: '/tmp/app' });
+            expect(mockRegisterSite).toHaveBeenCalledWith(SITE, '/tmp/app');
+        });
+
+        test('throws when appPath is omitted', async () => {
+            mockStartRta.mockResolvedValue({ rtaStarted: true });
+            await expect(runRtaWorkflowStep({ step: 'start', site: SITE })).rejects.toThrow(/appPath/i);
+            expect(mockRegisterSite).not.toHaveBeenCalled();
         });
 
         test('throws when site is missing', async () => {
@@ -100,7 +115,8 @@ describe('runRtaWorkflowStep dispatcher', () => {
             mockStartRta.mockResolvedValue({ rtaStarted: true });
             const result = await runRtaWorkflowStep({
                 step: 'start',
-                site: 'http://127.0.0.1:8080/test/adaptation-editor.html'
+                site: 'http://127.0.0.1:8080/test/adaptation-editor.html',
+                appPath: '/tmp/app'
             });
             expect(result).toMatchObject({ rtaStarted: true });
         });
@@ -111,7 +127,12 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 needsUserAction: 'backend_login_required',
                 message: 'log in'
             });
-            const result = await runRtaWorkflowStep({ step: 'start', site: SITE, frameId: FRAME });
+            const result = await runRtaWorkflowStep({
+                step: 'start',
+                site: SITE,
+                frameId: FRAME,
+                appPath: '/tmp/app'
+            });
             expect(result).toMatchObject({
                 site: SITE,
                 frameId: FRAME,
@@ -138,7 +159,12 @@ describe('runRtaWorkflowStep dispatcher', () => {
     describe('restart step', () => {
         test('disconnects site, starts RTA, echoes site and frameId', async () => {
             mockStartRta.mockResolvedValue({ rtaStarted: true });
-            const result = await runRtaWorkflowStep({ step: 'restart', site: SITE, frameId: FRAME });
+            const result = await runRtaWorkflowStep({
+                step: 'restart',
+                site: SITE,
+                frameId: FRAME,
+                appPath: '/tmp/app'
+            });
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
             expect(mockStartRta).toHaveBeenCalled();
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
@@ -150,7 +176,12 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 needsUserAction: 'backend_login_required',
                 message: 'log in'
             });
-            const result = await runRtaWorkflowStep({ step: 'restart', site: SITE, frameId: FRAME });
+            const result = await runRtaWorkflowStep({
+                step: 'restart',
+                site: SITE,
+                frameId: FRAME,
+                appPath: '/tmp/app'
+            });
             expect(result).toMatchObject({
                 rtaStarted: false,
                 needsUserAction: 'backend_login_required'
@@ -265,25 +296,22 @@ describe('runRtaWorkflowStep dispatcher', () => {
     });
 
     describe('get_odata_metadata step', () => {
-        test('passes uris to getODataMetadata and returns its entries', async () => {
+        test('passes uris and appPath to getODataMetadata and returns its entries', async () => {
             mockGetODataMetadata.mockResolvedValue({ entries: [{ url: 'api/svc/', metadata: '<edmx/>' }] });
             const result = (await runRtaWorkflowStep({
                 step: 'get_odata_metadata',
                 site: SITE,
+                appPath: '/tmp/app',
                 payload: { uris: ['api/svc/'] }
             })) as any;
-            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/'], undefined);
+            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/'], '/tmp/app');
             expect(result).toEqual({ entries: [{ url: 'api/svc/', metadata: '<edmx/>' }] });
         });
 
-        test('passes optional appPath from payload to getODataMetadata', async () => {
-            mockGetODataMetadata.mockResolvedValue({ entries: [] });
-            await runRtaWorkflowStep({
-                step: 'get_odata_metadata',
-                site: SITE,
-                payload: { uris: ['api/svc/'], appPath: '/tmp/app' }
-            });
-            expect(mockGetODataMetadata).toHaveBeenCalledWith(expect.anything(), SITE, ['api/svc/'], '/tmp/app');
+        test('throws when appPath is omitted', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'get_odata_metadata', site: SITE, payload: { uris: ['api/svc/'] } })
+            ).rejects.toThrow(/appPath/i);
         });
 
         test('rejects when payload.uris is missing', async () => {

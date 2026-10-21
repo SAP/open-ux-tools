@@ -3,13 +3,13 @@ import { logger } from '../../../utils/logger.js';
 import {
     buildContextOptions,
     clearSessions,
+    forgetSite,
     isBackendLoginPage,
     isHeadless,
     LOGIN_REQUIRED_MESSAGE,
     originKey,
     persistSessionState,
-    probeBridge,
-    recordAuthOrigin
+    probeBridge
 } from './session.js';
 import type {
     FetchViaContextResult,
@@ -246,7 +246,6 @@ export async function callFrontendAction<TReturn = unknown>(
             const bridgeReady = await probeBridge(page);
             if (!bridgeReady) {
                 const landedUrl = page.url();
-                recordAuthOrigin(site, landedUrl);
                 const [title, bodyText] = await Promise.all([
                     page.title().catch(() => ''),
                     page.evaluate(() => document.body?.innerText?.slice(0, 4000) ?? '').catch(() => '')
@@ -289,11 +288,15 @@ export async function disconnectSite(site: string): Promise<void> {
     const key = originKey(site);
     const rpc = connectionRegistry.get(key);
     if (rpc) {
-        // Snapshot before closing to catch any mid-session token rotation (gated).
+        // Snapshot before closing to catch any mid-session token rotation (CF only).
         await persistSessionState(site, rpc.context);
         await rpc.close();
         connectionRegistry.delete(key);
     }
+    // Drop the site→project metadata so a different project started on this port
+    // next is not treated as the one that just stopped. The project's saved
+    // session (keyed by project) is kept for a same-project re-start.
+    forgetSite(site);
 }
 
 /**

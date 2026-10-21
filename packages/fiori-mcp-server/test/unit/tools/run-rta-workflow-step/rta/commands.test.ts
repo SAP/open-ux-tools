@@ -238,11 +238,12 @@ describe('rta/commands', () => {
 
     describe('getODataMetadata', () => {
         const siteOrigin = 'http://localhost:8080';
+        const APP = '/tmp/app';
         const xmlResp = { status: 200, contentType: 'application/xml', body: '<edmx:Edmx><a/></edmx:Edmx>' };
 
         test('joins a relative trailing-slash URI to <origin>/<uri>$metadata', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            await getODataMetadata(transport, SITE, ['api/recommendation/v1/RecommendationService/']);
+            await getODataMetadata(transport, SITE, ['api/recommendation/v1/RecommendationService/'], APP);
             expect(transport.fetchViaContext).toHaveBeenCalledWith(
                 SITE,
                 `${siteOrigin}/api/recommendation/v1/RecommendationService/$metadata`
@@ -251,19 +252,19 @@ describe('rta/commands', () => {
 
         test('does not double-up a leading slash', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            await getODataMetadata(transport, SITE, ['/api/svc/']);
+            await getODataMetadata(transport, SITE, ['/api/svc/'], APP);
             expect(transport.fetchViaContext).toHaveBeenCalledWith(SITE, `${siteOrigin}/api/svc/$metadata`);
         });
 
         test('does not append $metadata twice when the URI already ends in it', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            await getODataMetadata(transport, SITE, ['api/svc/$metadata']);
+            await getODataMetadata(transport, SITE, ['api/svc/$metadata'], APP);
             expect(transport.fetchViaContext).toHaveBeenCalledWith(SITE, `${siteOrigin}/api/svc/$metadata`);
         });
 
         test('returns formatted EDMX on an xml response', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            const out = await getODataMetadata(transport, SITE, ['api/svc/']);
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
             expect(out.entries[0]).toMatchObject({ url: 'api/svc/' });
             const entry = out.entries[0];
             expect('metadata' in entry && entry.metadata).toContain('edmx:Edmx');
@@ -275,32 +276,32 @@ describe('rta/commands', () => {
                 contentType: 'text/html',
                 body: '<html>login</html>'
             });
-            const out = await getODataMetadata(transport, SITE, ['api/svc/']);
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
             expect(out.entries[0]).toHaveProperty('error');
         });
 
         test('maps a fetch rejection to a per-entry error', async () => {
             transport.fetchViaContext.mockRejectedValue(new Error('No active editor session for this site.'));
-            const out = await getODataMetadata(transport, SITE, ['api/svc/']);
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
             expect(out.entries[0]).toHaveProperty('error');
         });
 
         test('returns an empty entries array for an empty uris list', async () => {
-            const out = await getODataMetadata(transport, SITE, []);
+            const out = await getODataMetadata(transport, SITE, [], APP);
             expect(out).toEqual({ entries: [] });
             expect(transport.fetchViaContext).not.toHaveBeenCalled();
         });
 
         test('refuses an absolute URI that escapes the editor origin (SSRF guard)', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            const out = await getODataMetadata(transport, SITE, ['http://evil.example.com/x/']);
+            const out = await getODataMetadata(transport, SITE, ['http://evil.example.com/x/'], APP);
             expect(out.entries[0]).toHaveProperty('error');
             expect(transport.fetchViaContext).not.toHaveBeenCalled();
         });
 
         test('refuses a protocol-relative URI that escapes the editor origin (SSRF guard)', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            const out = await getODataMetadata(transport, SITE, ['//evil.example.com/x/']);
+            const out = await getODataMetadata(transport, SITE, ['//evil.example.com/x/'], APP);
             expect(out.entries[0]).toHaveProperty('error');
             expect(transport.fetchViaContext).not.toHaveBeenCalled();
         });
@@ -336,14 +337,6 @@ describe('rta/commands', () => {
             } finally {
                 rmSync(dir, { recursive: true, force: true });
             }
-        });
-
-        test('errors (no inline) when metadata is large but appPath is absent', async () => {
-            transport.fetchViaContext.mockResolvedValue({ status: 200, contentType: 'application/xml', body: bigEdmx });
-            const out = await getODataMetadata(transport, SITE, ['api/svc/']);
-            expect(out.entries[0]).toHaveProperty('error');
-            expect((out.entries[0] as { error: string }).error).toMatch(/appPath/i);
-            expect(out.entries[0]).not.toHaveProperty('metadata');
         });
 
         test('sanitises the URI into a safe filename under .context (no path escape)', async () => {

@@ -204,6 +204,16 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'an iframe with id "preview". Defaults to "preview" if omitted — always pass the value ' +
                 'echoed back by the "start" step to every subsequent step.'
         ),
+    appPath: zod
+        .string()
+        .optional()
+        .describe(
+            'Absolute path to the adaptation project root (the same appPath used to open the editor). ' +
+                'Required for the "start", "restart" and "get_odata_metadata" steps — it identifies the project ' +
+                'so an authenticated Cloud Foundry session is reused per project (ABAP projects skip session ' +
+                'handling), and large OData metadata is saved under <appPath>/webapp/.context instead of overflowing ' +
+                'the response. Ignored by the other steps.'
+        ),
     payload: zod
         .record(zod.string(), zod.unknown())
         .optional()
@@ -213,8 +223,8 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +
                 'press_interactive: { controlId: string }. ' +
-                'get_odata_metadata: { uris: string[], appPath?: string } (the entries[].url values from read_odata_metadata_adp; pass appPath so large metadata can be saved to disk instead of overflowing the response). ' +
-                'get_overlays / save / stop / restart / get_page_actions: omit.'
+                'get_odata_metadata: { uris: string[] } (the entries[].url values from read_odata_metadata_adp). ' +
+                'start / restart / get_overlays / save / stop / get_page_actions: omit.'
         )
 });
 

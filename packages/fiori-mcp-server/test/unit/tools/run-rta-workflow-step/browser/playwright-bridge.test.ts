@@ -3,6 +3,7 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge.js';
+import type * as SessionModule from '../../../../../src/tools/run-rta-workflow-step/browser/session.js';
 
 // --- playwright-core mock --------------------------------------------------
 
@@ -99,6 +100,13 @@ jest.unstable_mockModule('playwright-core', () => ({
     }
 }));
 
+// registerSite calls isCFEnvironment(appPath); mock it so tests choose CF vs ABAP
+// by the appPath they register, without touching the filesystem.
+const mockIsCFEnvironment = jest.fn<(appPath: string) => Promise<boolean>>();
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment
+}));
+
 // --- helpers ---------------------------------------------------------------
 
 const SITE_A = 'http://localhost:8080/a';
@@ -125,9 +133,16 @@ async function loadPlaywrightBridge(): Promise<typeof PlaywrightBridgeModule> {
     return import('../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge');
 }
 
+/** Loads the session module (same graph as the bridge) to drive registerSite in tests. */
+async function loadSession(): Promise<typeof SessionModule> {
+    return import('../../../../../src/tools/run-rta-workflow-step/browser/session');
+}
+
 beforeEach(() => {
     jest.resetModules();
     launchMock.mockReset();
+    mockIsCFEnvironment.mockReset();
+    mockIsCFEnvironment.mockResolvedValue(true); // default: treat registered sites as CF
     delete process.env.PLAYWRIGHT_SESSION_STATE_PATH;
     delete process.env.PLAYWRIGHT_HEADLESS;
 });
@@ -516,11 +531,14 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
-    test('ABAP untouched: non-redirecting site is never seeded or snapshotted', async () => {
+    test('ABAP untouched: a site registered as non-CF is never seeded or snapshotted', async () => {
         const page = new FakePage(); // default: bridge present (probe resolves), localhost
         const { browser } = setupBrowser([page]);
         page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
 
+        mockIsCFEnvironment.mockResolvedValue(false); // ABAP
+        const session = await loadSession();
+        await session.registerSite(SITE_A, '/path/to/abap-project');
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
 
@@ -532,69 +550,82 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
-    test('B1: in-memory session reused across re-start for a redirecting backend', async () => {
-        // First start → login page (records backend origin, arms the gate).
-        const loginPage = loginProbePage(IDP_URL);
-        // Retry start → app loads (bridge present), snapshots session.
+    test('a site never registered gets a plain context (no seeding)', async () => {
+        const page = new FakePage();
+        const { browser } = setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge(); // no registerSite call
+        await fs.callFrontendAction(SITE_A, 'a');
+
+        expect(browser.contexts[0].options).not.toHaveProperty('storageState');
+        expect(browser.contexts[0].storageState).not.toHaveBeenCalled();
+
+        await fs.stopBrowser();
+    });
+
+    test('B1: in-memory session reused across re-start for the same CF project', async () => {
         const appPage = new FakePage([], CF_SITE);
         appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
-        // Third start (after disconnect) → app again, should be seeded from snapshot.
         const appPage2 = new FakePage([], CF_SITE);
         appPage2.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
 
-        const { browser } = setupBrowser([loginPage, appPage, appPage2]);
+        const { browser } = setupBrowser([appPage, appPage2]);
+        const session = await loadSession();
+        await session.registerSite(CF_SITE, '/path/to/cf-project'); // CF (default mock)
         const fs = await loadPlaywrightBridge();
 
-        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // login
-        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // app, snapshot
+        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // app, snapshot on disconnect
         await fs.disconnectSite(CF_SITE);
-        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // app, seeded
+        await session.registerSite(CF_SITE, '/path/to/cf-project'); // re-start same project
+        await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1'); // app, seeded from snapshot
 
-        // The third context (index 2) must be seeded from the in-memory snapshot.
-        expect(browser.contexts[2].options).toEqual(
+        // The second context must be seeded from the in-memory snapshot of the first.
+        expect(browser.contexts[1].options).toEqual(
             expect.objectContaining({ storageState: { cookies: [], origins: [] } })
         );
-        // The app context recorded a snapshot.
-        expect(appPage.evaluate).toHaveBeenCalled();
 
         await fs.stopBrowser();
     });
 
-    test('B1: per-backend isolation — site A snapshot never seeds site B', async () => {
-        const SITE_B_CF = 'http://localhost:9000/local/editor.html';
-        const IDP_B = 'https://other.authentication.eu10.hana.ondemand.com/oauth/authorize';
-
-        const loginA = loginProbePage(IDP_URL);
+    test('B1: per-project isolation — project A snapshot never seeds project B on the same port', async () => {
         const appA = new FakePage([], CF_SITE);
         appA.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
-        const loginB = loginProbePage(IDP_B);
+        const appB = new FakePage([], CF_SITE);
+        appB.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
 
-        const { browser } = setupBrowser([loginA, appA, loginB]);
+        const { browser } = setupBrowser([appA, appB]);
+        const session = await loadSession();
         const fs = await loadPlaywrightBridge();
 
-        await fs.callFrontendAction(CF_SITE, 'a'); // A login
-        await fs.callFrontendAction(CF_SITE, 'a'); // A app, snapshot stored under backend A
-        await fs.callFrontendAction(SITE_B_CF, 'a'); // B first contact → login, not seeded from A
+        // Project A on the port: snapshot stored under project A.
+        await session.registerSite(CF_SITE, '/path/to/project-A');
+        await fs.callFrontendAction(CF_SITE, 'a');
+        await fs.disconnectSite(CF_SITE);
 
-        // B's context (index 2) must NOT carry A's storageState.
-        expect(browser.contexts[2].options).not.toHaveProperty('storageState');
+        // Project B reuses the SAME port: must NOT be seeded from A's snapshot.
+        await session.registerSite(CF_SITE, '/path/to/project-B');
+        await fs.callFrontendAction(CF_SITE, 'a');
+
+        expect(browser.contexts[1].options).not.toHaveProperty('storageState');
 
         await fs.stopBrowser();
     });
 
-    test('B1 disk opt-in: PLAYWRIGHT_SESSION_STATE_PATH writes a per-backend file with 0600 perms', async () => {
+    test('B1 disk opt-in: PLAYWRIGHT_SESSION_STATE_PATH writes a per-project file with 0600 perms', async () => {
         const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-'));
         process.env.PLAYWRIGHT_SESSION_STATE_PATH = dir;
         try {
-            const loginPage = loginProbePage(IDP_URL);
             const appPage = new FakePage([], CF_SITE);
             appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
 
-            setupBrowser([loginPage, appPage]);
+            setupBrowser([appPage]);
+            const session = await loadSession();
+            await session.registerSite(CF_SITE, '/path/to/cf-project');
             const fs = await loadPlaywrightBridge();
 
-            await fs.callFrontendAction(CF_SITE, 'a'); // login
-            await fs.callFrontendAction(CF_SITE, 'a'); // app → persist to disk
+            await fs.callFrontendAction(CF_SITE, 'a'); // app
+            await fs.disconnectSite(CF_SITE); // snapshot → disk
 
             const files = readdirSync(dir);
             expect(files).toHaveLength(1);
@@ -612,15 +643,16 @@ describe('browser/playwright-bridge', () => {
     test('B1 disk off by default: nothing is written to disk', async () => {
         const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-off-'));
         try {
-            const loginPage = loginProbePage(IDP_URL);
             const appPage = new FakePage([], CF_SITE);
             appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
 
-            setupBrowser([loginPage, appPage]);
+            setupBrowser([appPage]);
+            const session = await loadSession();
+            await session.registerSite(CF_SITE, '/path/to/cf-project');
             const fs = await loadPlaywrightBridge();
 
-            await fs.callFrontendAction(CF_SITE, 'a'); // login
             await fs.callFrontendAction(CF_SITE, 'a'); // app → in-memory only
+            await fs.disconnectSite(CF_SITE);
 
             expect(readdirSync(dir)).toHaveLength(0);
 
@@ -631,11 +663,10 @@ describe('browser/playwright-bridge', () => {
     });
 
     test('B1: snapshot write failure is swallowed', async () => {
-        const loginPage = loginProbePage(IDP_URL);
         const appPage = new FakePage([], CF_SITE);
         appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
 
-        const { browser } = setupBrowser([loginPage, appPage]);
+        const { browser } = setupBrowser([appPage]);
         browser.newContext.mockImplementation(async (options?: unknown) => {
             const context = new FakeContext(browser.newPage, options);
             context.storageState.mockRejectedValue(new Error('disk full'));
@@ -643,11 +674,13 @@ describe('browser/playwright-bridge', () => {
             return context;
         });
 
+        const session = await loadSession();
+        await session.registerSite(CF_SITE, '/path/to/cf-project');
         const fs = await loadPlaywrightBridge();
-        await fs.callFrontendAction(CF_SITE, 'a'); // login
-        // app start must still resolve even though snapshot throws.
         const result = await fs.callFrontendAction(CF_SITE, 'a');
         expect(result).toEqual({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        // disconnect triggers the snapshot, which throws internally but must not propagate.
+        await fs.disconnectSite(CF_SITE);
 
         await fs.stopBrowser();
     });

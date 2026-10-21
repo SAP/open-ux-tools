@@ -1,31 +1,76 @@
 import { chmod, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { type BrowserContext, type Page } from 'playwright-core';
+import { isCFEnvironment } from '@sap-ux/adp-tooling';
 import { logger } from '../../../utils/logger.js';
 
-// Session state shared across the browser bridge, keyed by site origin.
-//   `sessionByOrigin` — site origin → { authOrigin?, storageState? }.
-//      `storageState` is the in-memory Playwright storage state (cookies/
-//      localStorage); it survives `disconnectSite` so an authenticated login is
-//      reused across re-`start` within the process. `authOrigin` is the first
-//      off-loopback origin the editor redirects to for authentication, learned
-//      the first time a `start` observes a redirect. Its presence also gates
-//      session reuse: only sites that redirect (CF XSUAA / ABAP reentrance) are
-//      ever snapshotted — a plain localhost ABAP app never is, so its behaviour
-//      is unchanged.
-const sessionByOrigin: Map<string, SessionState> = new Map();
+// Session state shared across the browser bridge.
+//   `siteMeta` — site origin → { projectKey, isCf }. Rewritten by every `start`
+//      (via registerSite), so the project currently running on a reused port
+//      always wins; a previous project's metadata can never be served to a new
+//      one. It is the bridge from "I only have `site` here" (deeper context-build
+//      code) to "which project is this, and is it CF".
+//   `sessionByProject` — projectKey (the adaptation project's appPath) → saved
+//      login state { authOrigin?, storageState? }. Keyed by PROJECT, not by port,
+//      so two projects sharing a port (one stopped, the next started) never
+//      cross-contaminate cookies. `storageState` survives `disconnectSite` so an
+//      authenticated login is reused across re-`start` of the SAME project.
+//      ABAP projects are never stored here (see the isCf hard-skip below).
+const siteMeta: Map<string, SiteMeta> = new Map();
+const sessionByProject: Map<string, SessionState> = new Map();
 
 /** In-memory Playwright storage state (shape returned by `context.storageState()`). */
 export type StorageState = Awaited<ReturnType<BrowserContext['storageState']>>;
 
 /**
- * Per-origin session state. Both fields are optional and populated independently
- * as facts are learned: `authOrigin` on the first off-loopback redirect,
- * `storageState` when an authenticated context is snapshotted.
+ * Per-origin metadata recorded by `start`: which project owns the current page
+ * on this site, and whether it is a Cloud Foundry project (ABAP projects skip
+ * all session seeding/snapshotting).
+ */
+interface SiteMeta {
+    projectKey: string;
+    isCf: boolean;
+}
+
+/**
+ * Per-project session state. Populated when an authenticated context is
+ * snapshotted for a CF project.
  */
 interface SessionState {
-    authOrigin?: string;
     storageState?: StorageState;
+}
+
+/**
+ * Records, for a site, which adaptation project is being started on it and
+ * whether that project is Cloud Foundry. Called by `start` before the first
+ * context is built. Overwrites any metadata a previous project left on this
+ * site (e.g. after stop→start on a reused port), so the current project always
+ * wins. `appPath` is the project's root; it doubles as the session key.
+ *
+ * @param site Editor URL being started.
+ * @param appPath Adaptation project root (identity + session key).
+ */
+export async function registerSite(site: string, appPath: string): Promise<void> {
+    let isCf = false;
+    try {
+        isCf = await isCFEnvironment(appPath);
+    } catch (error) {
+        logger.warn(
+            `Could not determine CF environment for '${appPath}': ${error instanceof Error ? error.message : String(error)}`
+        );
+    }
+    siteMeta.set(originKey(site), { projectKey: appPath, isCf });
+}
+
+/**
+ * Removes the recorded metadata for a site (on disconnect). The project's saved
+ * session in `sessionByProject` is intentionally kept so a later re-`start` of
+ * the same project can reuse its login.
+ *
+ * @param site Editor URL being disconnected.
+ */
+export function forgetSite(site: string): void {
+    siteMeta.delete(originKey(site));
 }
 
 /** Bounded probe for the webclient bridge: generous for a valid app, far below the 60 s action timeout. */
@@ -46,7 +91,8 @@ export const LOGIN_REQUIRED_MESSAGE =
  * is stopped, so a fresh process state is rebuilt on the next launch.
  */
 export function clearSessions(): void {
-    sessionByOrigin.clear();
+    siteMeta.clear();
+    sessionByProject.clear();
 }
 
 /**
@@ -97,20 +143,23 @@ export function originKey(url: string): string {
 }
 
 /**
- * Whether the site has been observed to redirect to an auth login page.
- * True once a redirect has recorded an `authOrigin` for the site's origin.
+ * Resolves the session key (project identity) for a site from the metadata
+ * `start` recorded, or `undefined` when the site is unknown or not a CF project.
+ * Session seeding/snapshotting only applies to CF projects, so a missing or
+ * non-CF entry means "no session handling" (the ABAP hard-skip).
  *
  * @param site Editor URL.
- * @returns `true` when the site has been observed to redirect for authentication.
+ * @returns The project key for a CF site, else `undefined`.
  */
-function isRedirectingSite(site: string): boolean {
-    return sessionByOrigin.get(originKey(site))?.authOrigin !== undefined;
+function cfProjectKey(site: string): string | undefined {
+    const meta = siteMeta.get(originKey(site));
+    return meta?.isCf ? meta.projectKey : undefined;
 }
 
 /**
  * Maps a session key to a filesystem-safe file name for on-disk persistence.
  *
- * @param key Session key (an origin).
+ * @param key Session key (a project path).
  * @returns A sanitised `<key>.json` file name.
  */
 function sessionFileName(key: string): string {
@@ -118,20 +167,21 @@ function sessionFileName(key: string): string {
 }
 
 /**
- * Builds the `newContext` options for a site, seeding storage state from a
- * prior authenticated session when one is armed and available. Seeding is
- * gated on {@link isRedirectingSite}, so non-redirecting (ABAP) sites always
- * get a plain context — unchanged behaviour.
+ * Builds the `newContext` options for a site, seeding storage state from the
+ * project's prior authenticated session when available. Only CF projects are
+ * ever seeded: an ABAP project (or an unregistered site) always gets a plain
+ * context. The session is keyed by project, so a different project reusing the
+ * same port is never seeded from the previous project's cookies.
  *
  * @param site Editor URL.
  * @returns Context options with an optional `storageState` seed.
  */
 export function buildContextOptions(site: string): { viewport: null; storageState?: StorageState | string } {
-    if (!isRedirectingSite(site)) {
+    const projectKey = cfProjectKey(site);
+    if (!projectKey) {
         return { viewport: null };
     }
-    const key = originKey(site);
-    const inMemory = sessionByOrigin.get(key)?.storageState;
+    const inMemory = sessionByProject.get(projectKey)?.storageState;
     if (inMemory) {
         return { viewport: null, storageState: inMemory };
     }
@@ -139,30 +189,30 @@ export function buildContextOptions(site: string): { viewport: null; storageStat
     if (dir) {
         // Playwright accepts a path and silently starts fresh if it is unreadable,
         // but guard the join so a bad key can never seed from an unexpected path.
-        return { viewport: null, storageState: join(dir, sessionFileName(key)) };
+        return { viewport: null, storageState: join(dir, sessionFileName(projectKey)) };
     }
     return { viewport: null };
 }
 
 /**
- * Snapshots an authenticated context's storage state under its session key —
+ * Snapshots an authenticated context's storage state under its project key —
  * always in memory, and additionally to disk when `PLAYWRIGHT_SESSION_STATE_PATH`
- * is set. Gated on {@link isRedirectingSite}: a non-redirecting site is never
- * snapshotted. All failures are logged and swallowed so a `start` never fails
- * because of persistence.
+ * is set. Only CF projects are snapshotted; an ABAP (or unregistered) site is a
+ * no-op. All failures are logged and swallowed so a `start` never fails because
+ * of persistence.
  *
- * @param site Editor URL (used to resolve the session key and the gate).
+ * @param site Editor URL (used to resolve the project key and the CF gate).
  * @param context The live, authenticated browser context.
  */
 export async function persistSessionState(site: string, context: BrowserContext): Promise<void> {
-    if (!isRedirectingSite(site)) {
+    const projectKey = cfProjectKey(site);
+    if (!projectKey) {
         return;
     }
-    const key = originKey(site);
     try {
         const state = await context.storageState();
-        const existing = sessionByOrigin.get(key) ?? {};
-        sessionByOrigin.set(key, { ...existing, storageState: state });
+        const existing = sessionByProject.get(projectKey) ?? {};
+        sessionByProject.set(projectKey, { ...existing, storageState: state });
         const dir = sessionDir();
         if (dir) {
             // The state holds live session cookies (credential material). Write it
@@ -171,7 +221,7 @@ export async function persistSessionState(site: string, context: BrowserContext)
             // explicit chmod also tightens an already-existing file (writeFile's
             // mode only applies on create).
             await mkdir(dir, { recursive: true, mode: 0o700 });
-            const file = join(dir, sessionFileName(key));
+            const file = join(dir, sessionFileName(projectKey));
             await writeFile(file, JSON.stringify(state), { mode: 0o600 });
             await chmod(file, 0o600);
         }
@@ -227,30 +277,4 @@ export function isBackendLoginPage(url: string, title: string, bodyText: string)
     const markerHit =
         LOGIN_PAGE_MARKERS.test(url) || LOGIN_PAGE_MARKERS.test(title) || LOGIN_PAGE_MARKERS.test(bodyText);
     return offLoopback || markerHit;
-}
-
-/**
- * Records the `authOrigin` for a site's origin when the page landed on an
- * off-loopback origin, arming session reuse for that site on the next `start`.
- *
- * @param site Original editor URL requested.
- * @param landedUrl The URL the page actually landed on after redirects.
- */
-export function recordAuthOrigin(site: string, landedUrl: string): void {
-    const siteOrigin = originKey(site);
-    const landedOrigin = originKey(landedUrl);
-    let landedHost: string;
-    try {
-        landedHost = new URL(landedUrl).hostname;
-    } catch {
-        return;
-    }
-    const offLoopback = landedHost !== 'localhost' && landedHost !== '127.0.0.1';
-    // Prefer the first off-loopback origin seen (the approuter's XSUAA / IdP auth
-    // entry point) and do not overwrite it with a later hop (e.g. the final IdP),
-    // to avoid merging two different sites that share one IdP tenant.
-    const existing = sessionByOrigin.get(siteOrigin) ?? {};
-    if (offLoopback && existing.authOrigin === undefined) {
-        sessionByOrigin.set(siteOrigin, { ...existing, authOrigin: landedOrigin });
-    }
 }
