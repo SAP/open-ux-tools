@@ -43,7 +43,7 @@ overrides:
     'sharp@<0.35.0': '>=0.33.5'
     '@huggingface/transformers>sharp': '>=0.35.5'
     'promptfoo>sharp': '>=0.35.5'
-    fast-xml-parser: '5.8.0'
+    fast-xml-parser: '5.11.2'
     fast-uri: '>=4.2.1'
     '@babel/core@>=7.0.0 <8.0.0': '7.29.7'
     'yeoman-test>yeoman-environment': '3.19.3'

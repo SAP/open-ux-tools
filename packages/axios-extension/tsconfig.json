@@ -18,9 +18,6 @@
       "path": "../feature-toggle"
     },
     {
-      "path": "../logger"
-    },
-    {
       "path": "../project-access"
     }
   ]

@@ -16,7 +16,7 @@ overrides:
   sharp@<0.35.0: '>=0.33.5'
   '@huggingface/transformers>sharp': '>=0.35.5'
   promptfoo>sharp: '>=0.35.5'
-  fast-xml-parser: 5.8.0
+  fast-xml-parser: 5.11.2
   fast-uri: '>=4.2.1'
   '@babel/core@>=7.0.0 <8.0.0': 7.29.7
   yeoman-test>yeoman-environment: 3.19.3
@@ -323,8 +323,8 @@ importers:
         specifier: 17.4.2
         version: 17.4.2
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
 
   examples/simple-generator:
     dependencies:
@@ -1027,12 +1027,6 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
-      '@xmldom/xmldom':
-        specifier: ~0.9.12
-        version: 0.9.12
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -1040,8 +1034,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
       http-proxy-agent:
         specifier: 7.0.2
         version: 7.0.2(supports-color@8.1.1)
@@ -2490,8 +2484,8 @@ importers:
         specifier: 22.20.1
         version: 22.20.1
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -2922,8 +2916,8 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
       fs-extra:
         specifier: 11.4.1
         version: 11.4.1
@@ -3728,12 +3722,6 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
-      '@sap-ux/telemetry':
-        specifier: workspace:*
-        version: link:../telemetry
-      '@sap/cf-tools':
-        specifier: 3.3.1
-        version: 3.3.1
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -3744,8 +3732,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
@@ -3811,8 +3799,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
       i18next:
         specifier: 26.3.6
         version: 26.3.6(typescript@5.9.3)
@@ -4074,8 +4062,8 @@ importers:
         specifier: 1.89.0
         version: 1.89.0
       fast-xml-parser:
-        specifier: 5.8.0
-        version: 5.8.0
+        specifier: 5.11.2
+        version: 5.11.2
       findit2:
         specifier: 2.2.3
         version: 2.2.3
@@ -7928,11 +7916,11 @@ packages:
   '@nodable/compact-builder@2.0.0':
     resolution: {integrity: sha512-TLyrdyV+KIh9n7waO45m9LsbxpoNXkHfXmQ4tWgXJynsJwCCZm2qT5NFvcjzWq3AN+tsA7XpmQOwAC5vbqzjkg==}
 
-  '@nodable/entities@2.1.0':
-    resolution: {integrity: sha512-nyT7T3nbMyBI/lvr6L5TyWbFJAI9FTgVRakNoBqCD+PmID8DzFrrNdLLtHMwMszOtqZa8PAOV24ZqDnQrhQINA==}
-
   '@nodable/entities@2.2.0':
     resolution: {integrity: sha512-9uGyhaQavEUMC8AIddIjau4NsnsXhou+j5sBAGojCM1oxmQpVKTWR/9JxABD6UAv12vpIms55fPZKFQEhG6uBg==}
+
+  '@nodable/entities@3.1.0':
+    resolution: {integrity: sha512-LsS/DjHr+uDM647Gru/cA8+J3a3HfhttwCKLyuoyN7yXTFCxKBtSgMQBvrW9yNPa2/zDRUNuGPaH5QUFoa4arQ==}
 
   '@nodable/flexible-xml-parser@1.11.3':
     resolution: {integrity: sha512-fNX6VI3qlgTogvjnE80OWoGrFJ05oeq3lTr13mCtl64zbOEW+cqAKnxTxE+n6S4dGXcBzDVuCK9K7UvcWZPniA==}
@@ -8405,6 +8393,7 @@ packages:
   '@opentelemetry/propagator-jaeger@2.9.0':
     resolution: {integrity: sha512-4mYGty27rYvSM0jtp1ZUOqd3LfVRCYg9H5G9OFzSx5HViYToU21MFhWfco7x1HwXr7ER8yGOiCIHZUwjPksc0Q==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7077
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -8475,42 +8464,49 @@ packages:
   '@opentelemetry/sdk-trace-base@2.10.0':
     resolution: {integrity: sha512-GuYQQT7QD2EeO8lcZLRQzcbOyhqAzL+6WWTKTU9mSUBYBazkEDl+VrQcXQhbB08OWM9anD1aHleVadzulpOaUQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.5.0':
     resolution: {integrity: sha512-VzRf8LzotASEyNDUxTdaJ9IRJ1/h692WyArDBInf5puLCjxbICD6XkHgpuudis56EndyS7LYFmtTMny6UABNdQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.8.0':
     resolution: {integrity: sha512-mhU4jp+vW0mGbFRd+GeXHvmfA4aDqWjBjLC3pE5XMpLs0IE2ryYb019Ts2AQrOq67gaTF25D91+fgvEHDZEnuQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.9.0':
     resolution: {integrity: sha512-cp9zmTl62R8PJrpvFcmc8N2JQU/xfa0S+61q511Nji+QxCfZ8Ifvg7H27G8cANe4crg4RTrWsVvanHiXjSp6ag==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.10.0':
     resolution: {integrity: sha512-GZK/G6oZyBLGlH1pUgeDch7D91KoHd2uotUGIkWCPi9GI5T9X0p4L7nNAMDR1BQjkRYoDqo+ddfVx9t5Uhys+Q==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.9.0':
     resolution: {integrity: sha512-ec9a7ps37huy5itYk0MalaZdSLlM6AXWp/FhtEjgMpp5leEGojBDvAl/UWttQnkMZOvFHKzRESn8TD3yKTF5nQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-web@2.5.0':
     resolution: {integrity: sha512-xWibakHs+xbx6vxH7Q8TbFS6zjf812o/kIS4xBDB32qSL9wF+Z5IZl2ZAGu4rtmPBQ7coZcOd684DobMhf8dKw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -12757,8 +12753,8 @@ packages:
   fast-xml-builder@1.2.0:
     resolution: {integrity: sha512-00aAWieqff+ZJhsXA4g1g7M8k+7AYoMUUHF+/zFb5U6Uv/P0Vl4QZo84/IcufzYalLuEj9928bXN9PbbFzMF0Q==}
 
-  fast-xml-parser@5.8.0:
-    resolution: {integrity: sha512-6bIM7fsJxeo3uXv7OncQYsBAMPJ7V16Slahl/6M98C/i2q+vB1+4a0MtrvYwDFEUrwDSbAmeLDRXsOBwrL7yAg==}
+  fast-xml-parser@5.11.2:
+    resolution: {integrity: sha512-R9iDuNrQYeQut46cn2r2wHKn4HYzVDvDm5J1wW+koZewykv0yuO2HChTYeZtrULyHIDM9cj9TUXloCsueCQUog==}
     hasBin: true
 
   fast-xml-validator@1.4.2:
@@ -13814,6 +13810,9 @@ packages:
 
   is-unsafe@1.0.1:
     resolution: {integrity: sha512-CLK2+VdgERgD96EYm5lUQssZYlRg2tkZnbsxZoacmSiRxiFJ4Nk4SzjCl+Ur+v3kXIY9dTIdb3IH22y1mZ56LA==}
+
+  is-unsafe@2.0.2:
+    resolution: {integrity: sha512-HgbIHPBH0KHHCcjLfGsCvhtPTVxjaAZlXjwdz7/GQC40SjSe4sfQsar8J5VFo8JOSbarkpV0OLG95bbaNd9aAQ==}
 
   is-utf8@0.2.1:
     resolution: {integrity: sha512-rMYPYvCzsXywIsldgLaSoPlw5PfoB/ssr7hY4pLfcodrA5M/eArza1a9VmTiNIBNMjOGr1Ow9mTyU2o69U6U9Q==}
@@ -15536,10 +15535,6 @@ packages:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
 
-  path-expression-matcher@1.5.0:
-    resolution: {integrity: sha512-cbrerZV+6rvdQrrD+iGMcZFEiiSrbv9Tfdkvnusy6y0x0GKBXREFg/Y65GhIfm0tnLntThhzCnfKwp1WRjeCyQ==}
-    engines: {node: '>=14.0.0'}
-
   path-expression-matcher@1.6.2:
     resolution: {integrity: sha512-enSlaiat05iasnzmgNxRj8reFdj3puY2QpNgP1aPIaVfT6nn9ICuPoFlKHk8EN22HcwewshO+mN2DGbkCEOtqQ==}
     engines: {node: '>=14.0.0'}
@@ -17120,9 +17115,6 @@ packages:
   strip-outer@1.0.1:
     resolution: {integrity: sha512-k55yxKHwaXnpYGsOzg4Vl8+tDrWylxDEpknGjhTiZB8dFRU5rTo9CAzeycivxV3s+zlTKwrs6WxMxR95n26kwg==}
     engines: {node: '>=0.10.0'}
-
-  strnum@2.3.0:
-    resolution: {integrity: sha512-ums3KNd42PGyx5xaoVTO1mjU1bH3NpY4vsrVlnv9PNGqQj8wd7rJ6nEypLrJ7z5vxK5RP0yMLo6J/Gsm62DI5Q==}
 
   strnum@2.4.2:
     resolution: {integrity: sha512-rDG3Ah4TV0k1hWvLSzkZtMmLN9+eS+h3knq4MP6A42Y3Yh5qGNnOUs1jJkoSr8FG5dsL28c7KgkIBzSEykqtuw==}
@@ -21334,9 +21326,9 @@ snapshots:
       '@nodable/base-output-builder': 2.0.0
       path-expression-matcher: 1.6.2
 
-  '@nodable/entities@2.1.0': {}
-
   '@nodable/entities@2.2.0': {}
+
+  '@nodable/entities@3.1.0': {}
 
   '@nodable/flexible-xml-parser@1.11.3':
     dependencies:
@@ -22673,7 +22665,7 @@ snapshots:
       '@xmldom/xmldom': 0.9.12
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       detect-content-type: 1.2.0
-      fast-xml-parser: 5.8.0
+      fast-xml-parser: 5.11.2
       http-proxy-agent: 7.0.2(supports-color@8.1.1)
       https-proxy-agent: 7.0.6(supports-color@8.1.1)
       lodash: 4.18.1
@@ -22831,7 +22823,7 @@ snapshots:
     dependencies:
       '@sap-ux/i18n': 0.3.11
       '@sap-ux/ui5-config': 0.30.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      fast-xml-parser: 5.8.0
+      fast-xml-parser: 5.11.2
       findit2: 2.2.3
       json-parse-even-better-errors: 5.0.0
       mem-fs: 2.1.0
@@ -27387,16 +27379,17 @@ snapshots:
 
   fast-xml-builder@1.2.0:
     dependencies:
-      path-expression-matcher: 1.5.0
+      path-expression-matcher: 1.6.2
       xml-naming: 0.1.0
 
-  fast-xml-parser@5.8.0:
+  fast-xml-parser@5.11.2:
     dependencies:
-      '@nodable/entities': 2.1.0
+      '@nodable/entities': 3.1.0
       fast-xml-builder: 1.2.0
-      path-expression-matcher: 1.5.0
-      strnum: 2.3.0
-      xml-naming: 0.1.0
+      is-unsafe: 2.0.2
+      path-expression-matcher: 1.6.2
+      strnum: 2.4.2
+      xml-naming: 0.3.0
 
   fast-xml-validator@1.4.2:
     dependencies:
@@ -28524,6 +28517,8 @@ snapshots:
   is-unicode-supported@2.1.0: {}
 
   is-unsafe@1.0.1: {}
+
+  is-unsafe@2.0.2: {}
 
   is-utf8@0.2.1: {}
 
@@ -30971,8 +30966,6 @@ snapshots:
 
   path-exists@4.0.0: {}
 
-  path-expression-matcher@1.5.0: {}
-
   path-expression-matcher@1.6.2: {}
 
   path-is-absolute@1.0.1: {}
@@ -32833,8 +32826,6 @@ snapshots:
     dependencies:
       escape-string-regexp: 1.0.5
 
-  strnum@2.3.0: {}
-
   strnum@2.4.2:
     dependencies:
       anynum: 1.0.1
@@ -33345,7 +33336,7 @@ snapshots:
       chokidar: 5.0.0
       comment-json: 4.6.2
       estree-walker: 3.0.3
-      fast-xml-parser: 5.8.0
+      fast-xml-parser: 5.11.2
       handlebars: 4.7.9
       ignore-walk: 8.0.0
       js-yaml: 4.3.2
