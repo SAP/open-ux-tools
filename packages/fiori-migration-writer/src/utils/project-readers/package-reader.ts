@@ -22,5 +22,6 @@ export function getPackageJsonPath(projectRoot: string): string {
  * @param filePath
  */
 export async function getPackageJson(fs: Editor, filePath: string): Promise<any> {
+    // NOSONAR - async by contract: Promise<Package> signature shared with the injected reader and Project.getPackageJson
     return readJSON(fs, getPackageJsonPath(filePath));
 }

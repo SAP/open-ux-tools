@@ -24,7 +24,7 @@ export async function validateAndReportMetadata(
     messages: Message[],
     strict: boolean = false
 ): Promise<void> {
-    const metadataValidation = await validateMetadata(
+    const metadataValidation = validateMetadata(
         rootPath,
         projectInfo.webappPath,
         projectInfo.isSAPApp,

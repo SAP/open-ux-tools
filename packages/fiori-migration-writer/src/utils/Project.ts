@@ -437,6 +437,7 @@ export class ProjectAccess {
     }
 
     public static async getFlpIntentFromHtml(htmlFilePath: string, fsEditor?: Editor) {
+        // NOSONAR - async by contract: Promise-typed wrapper matching the injected getFlpIntentFromHtml dependency
         return getFlpIntentFromHtml(fsEditor ?? createMemFsEditor(), htmlFilePath);
     }
 

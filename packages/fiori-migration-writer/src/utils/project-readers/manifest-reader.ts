@@ -25,6 +25,7 @@ export function getManifestPath(projectRoot: string, webappPath: string): string
  * @param webappPath
  */
 export async function getManifestJson(fs: Editor, projectRoot: string, webappPath: string): Promise<Manifest> {
+    // NOSONAR - async by contract: Promise<Manifest> signature shared with the injected reader and Project.getManifestJson
     const manifestPath = getManifestPath(projectRoot, webappPath);
     return readJSON(fs, manifestPath);
 }
