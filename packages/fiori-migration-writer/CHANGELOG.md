@@ -1,5 +1,17 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- Deduplicate project roots to prevent duplicate reuse library detection. Projects with both package.json and pom.xml markers, and libraries with nested manifest.json files, now appear exactly once in migration view. [[4a5825d](https://github.com/SAP/open-ux-tools/commit/4a5825d83dcd3f172e7575864d262e8a5df5fa80)]
+
 ## 0.0.3
 
 ### Patch Changes
