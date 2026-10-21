@@ -36,7 +36,7 @@ export async function resolveUI5VersionsForMigration(
     const TIMEOUT_MS = 10000; // 10 second timeout
     let timeoutId: NodeJS.Timeout | undefined;
 
-    const timeoutPromise = new Promise<never>((_, reject) => {
+    const timeoutPromise = new Promise<never>((_resolve, reject) => {
         timeoutId = setTimeout(() => reject(new Error('UI5 version fetch timeout')), TIMEOUT_MS);
     });
 
