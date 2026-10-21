@@ -116,7 +116,7 @@ function journey() {
 <%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
     opaTest("Check default sort order from PresentationVariant", function (_Given: Given, _When: When, Then: Then) {
         <%_ defaultSortOrder.forEach(function(sort) { _%>
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>);
+        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
         <%_ }); -%>
     });
 

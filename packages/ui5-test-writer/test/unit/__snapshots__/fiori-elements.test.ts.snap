@@ -20536,7 +20536,7 @@ sap.ui.define([
         });
 
         opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending, true);
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
@@ -22412,7 +22412,7 @@ sap.ui.define([
         });
 
         opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending, true);
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
@@ -24284,7 +24284,7 @@ sap.ui.define([
         });
 
         opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending);
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending, true);
         });
 
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
