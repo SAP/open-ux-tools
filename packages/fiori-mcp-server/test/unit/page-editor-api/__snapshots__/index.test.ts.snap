@@ -1043,110 +1043,6 @@ Object {
         },
         Object {
           "artifactType": undefined,
-          "description": "Define the default creation mode that is used for all tables, unless a specific creation mode has been set.",
-          "displayName": "Default Creation Mode",
-          "name": "defaultCreationMode",
-          "options": Array [
-            Object {
-              "key": "",
-              "text": "",
-            },
-            Object {
-              "key": "InlineCreationRows",
-              "text": "InlineCreationRows",
-            },
-          ],
-          "schemaPath": Array [
-            "settings",
-            "defaultCreationMode",
-          ],
-          "type": "string",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": undefined,
-          "description": "Defines the default layout options of the table popins. A separate layout options of the table popins can be set for each responsive table in the application.",
-          "displayName": "Default Popin Layout",
-          "name": "defaultPopinLayout",
-          "options": Array [
-            Object {
-              "key": "",
-              "text": "",
-            },
-            Object {
-              "key": "Block",
-              "text": "Block",
-            },
-            Object {
-              "key": "GridLarge",
-              "text": "GridLarge",
-            },
-            Object {
-              "key": "GridSmall",
-              "text": "GridSmall",
-            },
-          ],
-          "schemaPath": Array [
-            "settings",
-            "defaultPopinLayout",
-          ],
-          "type": "string",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": undefined,
-          "description": "Enables lazy loading for sections in object pages. If a specific object page defines its own \`enableLazyLoading\` property, that page-level setting overrides this application-level setting.",
-          "displayName": "Enable Lazy Loading",
-          "name": "enableLazyLoading",
-          "options": Array [
-            Object {
-              "key": undefined,
-              "text": "",
-            },
-            Object {
-              "key": true,
-              "text": "True",
-            },
-            Object {
-              "key": false,
-              "text": "False",
-            },
-          ],
-          "schemaPath": Array [
-            "settings",
-            "enableLazyLoading",
-          ],
-          "type": "boolean",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": undefined,
-          "description": "Disables strict filtering. Strict filtering requires users to enter a single value in the unit of measure field when filtering for measure field values.",
-          "displayName": "Disable Strict Uom Filtering",
-          "name": "disableStrictUomFiltering",
-          "options": Array [
-            Object {
-              "key": undefined,
-              "text": "",
-            },
-            Object {
-              "key": true,
-              "text": "True",
-            },
-            Object {
-              "key": false,
-              "text": "False",
-            },
-          ],
-          "schemaPath": Array [
-            "settings",
-            "disableStrictUomFiltering",
-          ],
-          "type": "boolean",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": undefined,
           "description": "Defines the title for the application.",
           "displayName": "Title",
           "name": "title",
@@ -1590,130 +1486,6 @@ via the \`patternProperty\` \\"^([a-z][a-z0-9]{0,39})(\\\\.[a-z][a-z0-9]{0,39})*
             },
             "minUI5Version": "1.108.0",
           },
-        },
-        Object {
-          "artifactType": undefined,
-          "description": "Hidden draft features.",
-          "displayName": "hideDraft",
-          "name": "hideDraft",
-          "properties": Array [
-            Object {
-              "artifactType": undefined,
-              "description": "All features related to draft handling can be hidden from the UI while the draft functionality remains active in the background. To achieve this, enable the 'Hide Draft' property.",
-              "displayName": "Enabled",
-              "name": "enabled",
-              "options": Array [
-                Object {
-                  "key": undefined,
-                  "text": "",
-                },
-                Object {
-                  "key": true,
-                  "text": "True",
-                },
-                Object {
-                  "key": false,
-                  "text": "False",
-                },
-              ],
-              "schemaPath": Array [
-                "settings",
-                "hideDraft",
-                "enabled",
-              ],
-              "type": "boolean",
-              "value": undefined,
-            },
-            Object {
-              "artifactType": undefined,
-              "description": "Determines whether to stay on the current page after saving an object.
-To ensure a consistent experience, set this and 'Stay On Current Page After Cancel' to the same value.",
-              "displayName": "Stay On Current Page After Save",
-              "name": "stayOnCurrentPageAfterSave",
-              "options": Array [
-                Object {
-                  "key": undefined,
-                  "text": "",
-                },
-                Object {
-                  "key": true,
-                  "text": "True",
-                },
-                Object {
-                  "key": false,
-                  "text": "False",
-                },
-              ],
-              "schemaPath": Array [
-                "settings",
-                "hideDraft",
-                "stayOnCurrentPageAfterSave",
-              ],
-              "type": "boolean",
-              "value": undefined,
-            },
-            Object {
-              "artifactType": undefined,
-              "description": "Determines whether to stay on the current page after canceling an object.
-To ensure a consistent experience, set this and 'Stay On Current Page After Save' to the same value.",
-              "displayName": "Stay On Current Page After Cancel",
-              "name": "stayOnCurrentPageAfterCancel",
-              "options": Array [
-                Object {
-                  "key": undefined,
-                  "text": "",
-                },
-                Object {
-                  "key": true,
-                  "text": "True",
-                },
-                Object {
-                  "key": false,
-                  "text": "False",
-                },
-              ],
-              "schemaPath": Array [
-                "settings",
-                "hideDraft",
-                "stayOnCurrentPageAfterCancel",
-              ],
-              "type": "boolean",
-              "value": undefined,
-            },
-            Object {
-              "artifactType": undefined,
-              "description": "Controls the visibility of the 'Create Next' button.",
-              "displayName": "Hide Create Next",
-              "name": "hideCreateNext",
-              "options": Array [
-                Object {
-                  "key": undefined,
-                  "text": "",
-                },
-                Object {
-                  "key": true,
-                  "text": "True",
-                },
-                Object {
-                  "key": false,
-                  "text": "False",
-                },
-              ],
-              "schemaPath": Array [
-                "settings",
-                "hideDraft",
-                "hideCreateNext",
-              ],
-              "type": "boolean",
-              "value": undefined,
-            },
-          ],
-          "schemaPath": Array [
-            "settings",
-            "hideDraft",
-          ],
-          "type": "object",
-          "value": undefined,
         },
       ],
       "schemaPath": Array [
@@ -5128,58 +4900,6 @@ Object {
                     },
                     Object {
                       "artifactType": "Manifest",
-                      "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Overflow Group",
-                      "name": "overflowGroup",
-                      "schemaPath": Array [
-                        "table",
-                        "toolBar",
-                        "actions",
-                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "overflowGroup",
-                      ],
-                      "type": "string",
-                      "value": undefined,
-                    },
-                    Object {
-                      "artifactType": "Manifest",
-                      "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
-                      "displayName": "Priority",
-                      "name": "priority",
-                      "options": Array [
-                        Object {
-                          "key": "",
-                          "text": "",
-                        },
-                        Object {
-                          "key": "AlwaysOverflow",
-                          "text": "AlwaysOverflow",
-                        },
-                        Object {
-                          "key": "High",
-                          "text": "High",
-                        },
-                        Object {
-                          "key": "Low",
-                          "text": "Low",
-                        },
-                        Object {
-                          "key": "NeverOverflow",
-                          "text": "NeverOverflow",
-                        },
-                      ],
-                      "schemaPath": Array [
-                        "table",
-                        "toolBar",
-                        "actions",
-                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "priority",
-                      ],
-                      "type": "string",
-                      "value": undefined,
-                    },
-                    Object {
-                      "artifactType": "Manifest",
                       "description": "Settings that control the behavior after creating a new entry.",
                       "displayName": "afterExecution",
                       "name": "afterExecution",
@@ -5309,58 +5029,6 @@ Object {
                     },
                     Object {
                       "artifactType": "Manifest",
-                      "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Overflow Group",
-                      "name": "overflowGroup",
-                      "schemaPath": Array [
-                        "table",
-                        "toolBar",
-                        "actions",
-                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "overflowGroup",
-                      ],
-                      "type": "string",
-                      "value": undefined,
-                    },
-                    Object {
-                      "artifactType": "Manifest",
-                      "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
-                      "displayName": "Priority",
-                      "name": "priority",
-                      "options": Array [
-                        Object {
-                          "key": "",
-                          "text": "",
-                        },
-                        Object {
-                          "key": "AlwaysOverflow",
-                          "text": "AlwaysOverflow",
-                        },
-                        Object {
-                          "key": "High",
-                          "text": "High",
-                        },
-                        Object {
-                          "key": "Low",
-                          "text": "Low",
-                        },
-                        Object {
-                          "key": "NeverOverflow",
-                          "text": "NeverOverflow",
-                        },
-                      ],
-                      "schemaPath": Array [
-                        "table",
-                        "toolBar",
-                        "actions",
-                        "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
-                        "priority",
-                      ],
-                      "type": "string",
-                      "value": undefined,
-                    },
-                    Object {
-                      "artifactType": "Manifest",
                       "description": "Settings that control the behavior after creating a new entry.",
                       "displayName": "afterExecution",
                       "name": "afterExecution",
@@ -5484,58 +5152,6 @@ Object {
                         "actions",
                         "DataFieldForAction",
                         "enableOnSelect",
-                      ],
-                      "type": "string",
-                      "value": undefined,
-                    },
-                    Object {
-                      "artifactType": "Manifest",
-                      "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                      "displayName": "Overflow Group",
-                      "name": "overflowGroup",
-                      "schemaPath": Array [
-                        "table",
-                        "toolBar",
-                        "actions",
-                        "DataFieldForAction",
-                        "overflowGroup",
-                      ],
-                      "type": "string",
-                      "value": undefined,
-                    },
-                    Object {
-                      "artifactType": "Manifest",
-                      "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
-                      "displayName": "Priority",
-                      "name": "priority",
-                      "options": Array [
-                        Object {
-                          "key": "",
-                          "text": "",
-                        },
-                        Object {
-                          "key": "AlwaysOverflow",
-                          "text": "AlwaysOverflow",
-                        },
-                        Object {
-                          "key": "High",
-                          "text": "High",
-                        },
-                        Object {
-                          "key": "Low",
-                          "text": "Low",
-                        },
-                        Object {
-                          "key": "NeverOverflow",
-                          "text": "NeverOverflow",
-                        },
-                      ],
-                      "schemaPath": Array [
-                        "table",
-                        "toolBar",
-                        "actions",
-                        "DataFieldForAction",
-                        "priority",
                       ],
                       "type": "string",
                       "value": undefined,
@@ -5730,34 +5346,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                   "type": "string",
                   "value": undefined,
                 },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::TravelID",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
-                  "value": undefined,
-                },
               ],
               "text": "Travel ID",
               "title": "TravelID",
@@ -5828,34 +5416,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                     "availability",
                   ],
                   "type": "string",
-                  "value": undefined,
-                },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::AgencyID",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
                   "value": undefined,
                 },
               ],
@@ -5930,34 +5490,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                   "type": "string",
                   "value": undefined,
                 },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::CustomerID",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
-                  "value": undefined,
-                },
               ],
               "text": "Customer ID",
               "title": "CustomerID",
@@ -6028,34 +5560,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                     "availability",
                   ],
                   "type": "string",
-                  "value": undefined,
-                },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::BeginDate",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
                   "value": undefined,
                 },
               ],
@@ -6130,34 +5634,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                   "type": "string",
                   "value": undefined,
                 },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::EndDate",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
-                  "value": undefined,
-                },
               ],
               "text": "End Date",
               "title": "EndDate",
@@ -6230,34 +5706,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                   "type": "string",
                   "value": undefined,
                 },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::TotalPrice",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
-                  "value": undefined,
-                },
               ],
               "text": "Total Price",
               "title": "TotalPrice",
@@ -6328,34 +5776,6 @@ Hidden: the column is neither available in the table nor in adaptation.",
                     "availability",
                   ],
                   "type": "string",
-                  "value": undefined,
-                },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
-                  "displayName": "Width Including Column Header",
-                  "name": "widthIncludingColumnHeader",
-                  "options": Array [
-                    Object {
-                      "key": undefined,
-                      "text": "",
-                    },
-                    Object {
-                      "key": true,
-                      "text": "True",
-                    },
-                    Object {
-                      "key": false,
-                      "text": "False",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "table",
-                    "columns",
-                    "DataField::TravelStatus",
-                    "widthIncludingColumnHeader",
-                  ],
-                  "type": "boolean",
                   "value": undefined,
                 },
               ],
@@ -6457,36 +5877,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
         },
         Object {
           "artifactType": "Manifest",
-          "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
-          "displayName": "Popin Layout",
-          "name": "popinLayout",
-          "options": Array [
-            Object {
-              "key": "",
-              "text": "",
-            },
-            Object {
-              "key": "Block",
-              "text": "Block",
-            },
-            Object {
-              "key": "GridLarge",
-              "text": "GridLarge",
-            },
-            Object {
-              "key": "GridSmall",
-              "text": "GridSmall",
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "popinLayout",
-          ],
-          "type": "string",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
           "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
           "displayName": "Type",
           "name": "type",
@@ -6496,16 +5886,16 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
               "text": "",
             },
             Object {
-              "key": "AnalyticalTable",
-              "text": "AnalyticalTable",
+              "key": "ResponsiveTable",
+              "text": "ResponsiveTable",
             },
             Object {
               "key": "GridTable",
               "text": "GridTable",
             },
             Object {
-              "key": "ResponsiveTable",
-              "text": "ResponsiveTable",
+              "key": "AnalyticalTable",
+              "text": "AnalyticalTable",
             },
             Object {
               "key": "TreeTable",
@@ -6648,96 +6038,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
           "value": undefined,
         },
         Object {
-          "artifactType": "Manifest",
-          "description": "Leading property that decides between either a recursive hierarchy or data aggregation.",
-          "displayName": "Hierarchy Qualifier",
-          "name": "hierarchyQualifier",
-          "schemaPath": Array [
-            "table",
-            "hierarchyQualifier",
-          ],
-          "type": "string",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
-          "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
-          "displayName": "Width Including Column Header",
-          "name": "widthIncludingColumnHeader",
-          "options": Array [
-            Object {
-              "key": undefined,
-              "text": "",
-            },
-            Object {
-              "key": true,
-              "text": "True",
-            },
-            Object {
-              "key": false,
-              "text": "False",
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "widthIncludingColumnHeader",
-          ],
-          "type": "boolean",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
-          "description": "Determines the visibility of the Copy to Clipboard button. By default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured.",
-          "displayName": "Disable Copy To Clipboard",
-          "name": "disableCopyToClipboard",
-          "options": Array [
-            Object {
-              "key": undefined,
-              "text": "",
-            },
-            Object {
-              "key": true,
-              "text": "True",
-            },
-            Object {
-              "key": false,
-              "text": "False",
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "disableCopyToClipboard",
-          ],
-          "type": "boolean",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
-          "description": "Mass edit allows users to simultaneously change multiple objects that share the same editable properties.",
-          "displayName": "Enable Mass Edit",
-          "name": "enableMassEdit",
-          "options": Array [
-            Object {
-              "key": undefined,
-              "text": "",
-            },
-            Object {
-              "key": true,
-              "text": "True",
-            },
-            Object {
-              "key": false,
-              "text": "False",
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "enableMassEdit",
-          ],
-          "type": "boolean",
-          "value": undefined,
-        },
-        Object {
           "artifactType": undefined,
           "description": "",
           "displayName": "personalization",
@@ -6820,6 +6120,33 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
                 "table",
                 "personalization",
                 "filter",
+              ],
+              "type": "boolean",
+              "value": undefined,
+            },
+            Object {
+              "artifactType": "Manifest",
+              "description": "Defines whether the user can group data of a given table.",
+              "displayName": "Group",
+              "name": "group",
+              "options": Array [
+                Object {
+                  "key": undefined,
+                  "text": "",
+                },
+                Object {
+                  "key": true,
+                  "text": "True",
+                },
+                Object {
+                  "key": false,
+                  "text": "False",
+                },
+              ],
+              "schemaPath": Array [
+                "table",
+                "personalization",
+                "group",
               ],
               "type": "boolean",
               "value": undefined,
@@ -6913,123 +6240,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
           "type": "object",
           "value": undefined,
         },
-        Object {
-          "artifactType": undefined,
-          "description": "",
-          "displayName": "enableMassEdit",
-          "name": "enableMassEdit",
-          "properties": Array [
-            Object {
-              "artifactType": "Manifest",
-              "description": "Define how changes using mass edit are applied. The default mode for mass edit is 'ChangeSet' on object pages and 'Isolated' on list report pages.
-
-- ChangeSet: Grouped for all objects within the same request.
-- Isolated: Separately for each object (as an individual OData change set in the same request).",
-              "displayName": "Operation Grouping Mode",
-              "name": "operationGroupingMode",
-              "options": Array [
-                Object {
-                  "key": "",
-                  "text": "",
-                },
-                Object {
-                  "key": "ChangeSet",
-                  "text": "ChangeSet",
-                },
-                Object {
-                  "key": "Isolated",
-                  "text": "Isolated",
-                },
-              ],
-              "schemaPath": Array [
-                "table",
-                "enableMassEdit",
-                "operationGroupingMode",
-              ],
-              "type": "string",
-              "value": undefined,
-            },
-            Object {
-              "artifactType": "Manifest",
-              "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog. If empty or undefined, all fields within the page appear in the edit dialog except for read-only fields and fields specified in 'Disabled Fields'.",
-              "displayName": "visibleFields",
-              "name": "visibleFields",
-              "schemaPath": Array [
-                "table",
-                "enableMassEdit",
-                "visibleFields",
-              ],
-              "type": "object",
-              "value": undefined,
-            },
-            Object {
-              "artifactType": "Manifest",
-              "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table. If empty or undefined, all fields within the page appear in the edit dialog except for fields specified in 'Visible Fields'. If 'Visible Fields' are defined, this field is ignored.",
-              "displayName": "ignoredFields",
-              "name": "ignoredFields",
-              "schemaPath": Array [
-                "table",
-                "enableMassEdit",
-                "ignoredFields",
-              ],
-              "type": "object",
-              "value": undefined,
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "enableMassEdit",
-          ],
-          "type": "object",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
-          "description": "Defines the page behavior when a new record is created.",
-          "displayName": "creationMode",
-          "name": "creationMode",
-          "properties": Array [
-            Object {
-              "artifactType": "Manifest",
-              "description": "Defines the creation mode to be used by the List Report table.
-The allowed values are \`NewPage\` or \`CreationDialog\`.
-
-- NewPage: The created document is shown in a new page, depending on whether 'Sync', 'Async' or 'Deferred' metadata is used.
-- CreationDialog: The creation is performed in the table, with a dialog which allows you to specify initial property values that are are listed in \`creationFields\`.
-
-If this is not set with a value, the default value is 'NewPage'.",
-              "displayName": "Name",
-              "name": "name",
-              "options": Array [
-                Object {
-                  "key": "",
-                  "text": "",
-                },
-                Object {
-                  "key": "CreationDialog",
-                  "text": "CreationDialog",
-                },
-                Object {
-                  "key": "NewPage",
-                  "text": "NewPage",
-                },
-              ],
-              "schemaPath": Array [
-                "table",
-                "creationMode",
-                "name",
-              ],
-              "type": "string",
-              "value": undefined,
-            },
-          ],
-          "schemaPath": Array [
-            "table",
-            "creationMode",
-          ],
-          "type": "object",
-          "value": undefined,
-        },
       ],
       "text": "Table",
       "title": undefined,
@@ -7070,86 +6280,6 @@ If this is not set with a value, the default value is 'NewPage'.",
       ],
       "type": "string",
       "value": undefined,
-    },
-    Object {
-      "artifactType": "Manifest",
-      "description": "Inline edit allows users to directly edit a field or a group of fields in the active version without switching the entire object to draft. Inline edit supports the same features as the regular edit mode.",
-      "displayName": "Inline Edit",
-      "name": "inlineEdit",
-      "options": Array [
-        Object {
-          "key": undefined,
-          "text": "",
-        },
-        Object {
-          "key": true,
-          "text": "True",
-        },
-        Object {
-          "key": false,
-          "text": "False",
-        },
-      ],
-      "schemaPath": Array [
-        "inlineEdit",
-      ],
-      "type": "boolean",
-      "value": false,
-    },
-    Object {
-      "artifactType": undefined,
-      "description": "",
-      "displayName": "inlineEdit",
-      "name": "inlineEdit",
-      "properties": Array [
-        Object {
-          "artifactType": "Manifest",
-          "description": "Array of fields which are inline editable.
-If empty or undefined, all fields within the page are inline editable except for fields specified in 'Disabled Fields'.
-Each string may be a direct property, a navigation property, or a field group.",
-          "displayName": "enabledFields",
-          "name": "enabledFields",
-          "schemaPath": Array [
-            "inlineEdit",
-            "enabledFields",
-          ],
-          "type": "object",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
-          "description": "Array of fields which are not inline editable.
-If empty or undefined, all fields within the page are not inline editable except for those specified in 'Enabled Fields'.
-Each string may be a direct property, a navigation property, or a field group.",
-          "displayName": "disabledFields",
-          "name": "disabledFields",
-          "schemaPath": Array [
-            "inlineEdit",
-            "disabledFields",
-          ],
-          "type": "object",
-          "value": undefined,
-        },
-        Object {
-          "artifactType": "Manifest",
-          "description": "Array of arrays of fields which are edited inline together.
-Fields specified in 'Connected Fields' must not be included in 'Enabled Fields' or 'Disabled Fields'.
-May contain direct properties, navigation properties, or a field group.",
-          "displayName": "connectedFields",
-          "name": "connectedFields",
-          "schemaPath": Array [
-            "inlineEdit",
-            "connectedFields",
-          ],
-          "type": "object",
-          "value": undefined,
-        },
-      ],
-      "schemaPath": Array [
-        "inlineEdit",
-      ],
-      "type": "object",
-      "value": false,
     },
   ],
   "root": true,
@@ -9912,58 +9042,7 @@ Object {
                 "actions",
                 "EditAction",
               ],
-              "properties": Array [
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                  "displayName": "Overflow Group",
-                  "name": "overflowGroup",
-                  "schemaPath": Array [
-                    "header",
-                    "actions",
-                    "EditAction",
-                    "overflowGroup",
-                  ],
-                  "type": "string",
-                  "value": undefined,
-                },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
-                  "displayName": "Priority",
-                  "name": "priority",
-                  "options": Array [
-                    Object {
-                      "key": "",
-                      "text": "",
-                    },
-                    Object {
-                      "key": "AlwaysOverflow",
-                      "text": "AlwaysOverflow",
-                    },
-                    Object {
-                      "key": "High",
-                      "text": "High",
-                    },
-                    Object {
-                      "key": "Low",
-                      "text": "Low",
-                    },
-                    Object {
-                      "key": "NeverOverflow",
-                      "text": "NeverOverflow",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "header",
-                    "actions",
-                    "EditAction",
-                    "priority",
-                  ],
-                  "type": "string",
-                  "value": undefined,
-                },
-              ],
+              "properties": Array [],
               "text": "Edit",
               "title": "EditAction",
               "value": undefined,
@@ -9984,58 +9063,7 @@ Object {
                 "actions",
                 "DeleteAction",
               ],
-              "properties": Array [
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
-                  "displayName": "Overflow Group",
-                  "name": "overflowGroup",
-                  "schemaPath": Array [
-                    "header",
-                    "actions",
-                    "DeleteAction",
-                    "overflowGroup",
-                  ],
-                  "type": "string",
-                  "value": undefined,
-                },
-                Object {
-                  "artifactType": "Manifest",
-                  "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
-                  "displayName": "Priority",
-                  "name": "priority",
-                  "options": Array [
-                    Object {
-                      "key": "",
-                      "text": "",
-                    },
-                    Object {
-                      "key": "AlwaysOverflow",
-                      "text": "AlwaysOverflow",
-                    },
-                    Object {
-                      "key": "High",
-                      "text": "High",
-                    },
-                    Object {
-                      "key": "Low",
-                      "text": "Low",
-                    },
-                    Object {
-                      "key": "NeverOverflow",
-                      "text": "NeverOverflow",
-                    },
-                  ],
-                  "schemaPath": Array [
-                    "header",
-                    "actions",
-                    "DeleteAction",
-                    "priority",
-                  ],
-                  "type": "string",
-                  "value": undefined,
-                },
-              ],
+              "properties": Array [],
               "text": "Delete",
               "title": "DeleteAction",
               "value": undefined,
@@ -10416,31 +9444,6 @@ Object {
         "variantManagement",
       ],
       "type": "string",
-      "value": undefined,
-    },
-    Object {
-      "artifactType": "Manifest",
-      "description": "Enable lazy loading for sections in an object page.",
-      "displayName": "Enable Lazy Loading",
-      "name": "enableLazyLoading",
-      "options": Array [
-        Object {
-          "key": undefined,
-          "text": "",
-        },
-        Object {
-          "key": true,
-          "text": "True",
-        },
-        Object {
-          "key": false,
-          "text": "False",
-        },
-      ],
-      "schemaPath": Array [
-        "enableLazyLoading",
-      ],
-      "type": "boolean",
       "value": undefined,
     },
   ],
