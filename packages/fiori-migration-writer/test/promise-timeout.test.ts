@@ -33,17 +33,19 @@ describe('promise-timeout utility', () => {
 
         it('should clear timeout on successful completion', async () => {
             const promiseFactory = () => Promise.resolve('quick');
-            await withTimeoutAndFallback(promiseFactory, 1000, 'fallback');
+            const result = await withTimeoutAndFallback(promiseFactory, 1000, 'fallback');
 
-            // Wait to ensure no timeout fires
+            expect(result).toBe('quick');
+            // Wait to ensure no timeout fires after cleanup
             await new Promise((resolve) => setTimeout(resolve, 100));
         });
 
         it('should clear timeout on error', async () => {
             const promiseFactory = () => Promise.reject(new Error('fail'));
-            await withTimeoutAndFallback(promiseFactory, 1000, 'fallback');
+            const result = await withTimeoutAndFallback(promiseFactory, 1000, 'fallback');
 
-            // Wait to ensure no timeout fires
+            expect(result).toBe('fallback');
+            // Wait to ensure no timeout fires after cleanup
             await new Promise((resolve) => setTimeout(resolve, 100));
         });
 

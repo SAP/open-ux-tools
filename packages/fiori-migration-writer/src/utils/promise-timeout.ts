@@ -33,7 +33,9 @@ export async function withTimeoutAndFallback<T>(
             clearTimeout(timeoutId);
         }
 
-        // Return fallback value on any error (timeout or promise rejection)
+        // Catch both timeout rejection and any promise errors to return a safe fallback.
+        // This prevents the timeout from hanging indefinitely and allows callers to proceed
+        // with a default value when network/CDN requests fail or timeout expires.
         return fallbackValue;
     }
 }
