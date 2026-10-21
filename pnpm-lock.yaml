@@ -4645,8 +4645,8 @@ importers:
         specifier: 8.125.6
         version: 8.125.6(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       react-movable:
-        specifier: 2.5.4
-        version: 2.5.4(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        specifier: 3.4.1
+        version: 3.4.1(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
       react-select:
         specifier: 5.10.2
         version: 5.10.2(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(supports-color@8.1.1)
@@ -16043,11 +16043,11 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  react-movable@2.5.4:
-    resolution: {integrity: sha512-F+Ml4Il9S7uyY2Nr/UzwnXxWewwsHdQkmwgzAjk+Dsz73sy2yCJk7GkQkdqmh8W6XXTlviepz1VA0eHUWh9MZQ==}
+  react-movable@3.4.1:
+    resolution: {integrity: sha512-VTrBKjRWV4yVUDGj5dIZIhf07fyoFDXzIV6xs3KNNHpgPbkPT7FNu/Vbe11ZjHmT48uOykCmRMpS66DrzRbZZg==}
     peerDependencies:
-      react: ^16.3.0-0 || ^17.0.0-0
-      react-dom: ^16.3.0-0 || ^17.0.0-0
+      react: '*'
+      react-dom: '*'
 
   react-redux@7.2.9:
     resolution: {integrity: sha512-Gx4L3uM182jEEayZfRbI/G11ZpYdNAnBs70lFVMNdHJI76XYtR+7m0MN+eAs7UHBPhWXcnFPaS+9owSCJQHNpQ==}
@@ -31476,7 +31476,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-movable@2.5.4(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  react-movable@3.4.1(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
     dependencies:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
