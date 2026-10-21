@@ -29,10 +29,12 @@ export async function resolveUI5VersionsForMigration(
         }
     }
 
-    // Fetch available UI5 versions with timeout
+    // Fetch available UI5 versions with timeout to prevent indefinite hang
     const TIMEOUT_MS = 10000; // 10 second timeout
-    const timeoutPromise = new Promise((resolve, reject) => {
-        setTimeout(() => reject(new Error('UI5 version fetch timeout')), TIMEOUT_MS);
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('UI5 version fetch timeout')), TIMEOUT_MS);
     });
 
     try {
@@ -45,8 +47,19 @@ export async function resolveUI5VersionsForMigration(
             }),
             timeoutPromise
         ]);
+
+        // Clear timeout on success
+        if (timeoutId !== undefined) {
+            clearTimeout(timeoutId);
+        }
+
         return ui5Versions;
     } catch (error: unknown) {
+        // Clear timeout on error
+        if (timeoutId !== undefined) {
+            clearTimeout(timeoutId);
+        }
+
         // If fetching UI5 versions fails or times out, return a fallback
         // Using fallback version to prevent migration hang
         return [
