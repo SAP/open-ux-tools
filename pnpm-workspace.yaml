@@ -30,6 +30,7 @@ auditConfig: { ignoreGhsas: [GHSA-vv9j-gjw2-j8wp] }
 
 minimumReleaseAgeExclude:
     - promptfoo@0.124.0
+    - ts-jest@29.4.15
 
 overrides:
     '@sap-ux/vocabularies-types': '0.16.0'
