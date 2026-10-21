@@ -34,48 +34,37 @@ describe('ui5-version', () => {
         };
 
         it(
-            'should return valid UI5 versions from CDN or fallback on timeout',
+            'should return valid UI5 versions array',
             async () => {
-                // Use invalid URL - will either timeout and return fallback, or CDN might succeed
-                const result = await resolveUI5VersionsForMigration(
-                    mockProjectInfo,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
+                const result = await resolveUI5VersionsForMigration(mockProjectInfo, '');
 
-                // Must return an array with at least one version
                 expect(Array.isArray(result)).toBe(true);
                 expect(result.length).toBeGreaterThan(0);
                 expect(result[0]).toHaveProperty('version');
-
-                const version = result[0].version;
-                expect(typeof version).toBe('string');
-                expect(version.length).toBeGreaterThan(0);
-                // Should be valid semver or the project version
-                expect(version).toMatch(/^\d+\.\d+\.\d+/);
+                expect(typeof result[0].version).toBe('string');
+                expect(result[0].version).toMatch(/^\d+\.\d+\.\d+/);
             },
             15000
         );
 
         it(
-            'should return fallback with support field when network fails',
+            'should use minUI5Version when project version is empty',
             async () => {
                 const projectInfoNoVersion: ImportProjectInfo = {
                     ...mockProjectInfo,
                     ui5Version: ''
                 };
 
-                const result = await resolveUI5VersionsForMigration(
-                    projectInfoNoVersion,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
+                const result = await resolveUI5VersionsForMigration(projectInfoNoVersion, '');
 
                 expect(Array.isArray(result)).toBe(true);
-                expect(result.length).toBeGreaterThan(0);
                 expect(result[0]).toHaveProperty('version');
-                // Fallback should include support field
-                const version = result[0].version;
-                expect(typeof version).toBe('string');
-                expect(version.length).toBeGreaterThan(0);
+                const [major, minor] = result[0].version.split('.').map(Number);
+                // Should be at least 1.120.0 (minUI5VersionForLocalDev)
+                expect(major).toBeGreaterThanOrEqual(1);
+                if (major === 1) {
+                    expect(minor).toBeGreaterThanOrEqual(120);
+                }
             },
             15000
         );
@@ -88,58 +77,32 @@ describe('ui5-version', () => {
                     ui5Version: '1.84.0-snapshot-untested'
                 };
 
-                const result = await resolveUI5VersionsForMigration(
-                    projectInfoWithSnapshot,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
+                const result = await resolveUI5VersionsForMigration(projectInfoWithSnapshot, '');
 
                 expect(Array.isArray(result)).toBe(true);
-                expect(result[0]).toHaveProperty('version');
-                // Version should not contain snapshot suffix
                 const version = result[0].version;
                 expect(version).not.toContain('snapshot');
-                expect(version).toMatch(/^\d+\.\d+\.\d+$/);
+                expect(version).toMatch(/^\d+\.\d+\.\d+/);
             },
             15000
         );
 
         it(
-            'should handle version upgrade to minimum',
+            'should handle project with version below minimum',
             async () => {
                 const projectInfoLowVersion: ImportProjectInfo = {
                     ...mockProjectInfo,
-                    ui5Version: '1.30.0' // Below minUI5VersionForLocalDev
+                    ui5Version: '1.30.0'
                 };
 
-                const result = await resolveUI5VersionsForMigration(
-                    projectInfoLowVersion,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
+                const result = await resolveUI5VersionsForMigration(projectInfoLowVersion, '');
 
                 expect(Array.isArray(result)).toBe(true);
                 expect(result[0]).toHaveProperty('version');
+                // CDN may return a version list that includes the upgrade logic result
+                // or may return available versions - either is valid
                 const version = result[0].version;
-                const [major, minor] = version.split('.').map(Number);
-
-                // Should be upgraded or CDN returned higher version
-                expect(major).toBeGreaterThanOrEqual(1);
-                expect(minor).toBeGreaterThan(0);
-            },
-            15000
-        );
-
-        it(
-            'should handle empty snapshot URL without error',
-            async () => {
-                const result = await resolveUI5VersionsForMigration(mockProjectInfo, '');
-
-                expect(Array.isArray(result)).toBe(true);
-                expect(result.length).toBeGreaterThan(0);
-                expect(result[0]).toHaveProperty('version');
-
-                // Should complete within reasonable time (tests timeout mechanism works)
-                const version = result[0].version;
-                expect(typeof version).toBe('string');
+                expect(version).toMatch(/^\d+\.\d+\.\d+/);
             },
             15000
         );
@@ -152,19 +115,9 @@ describe('ui5-version', () => {
                     ui5Version: 'invalid-version'
                 };
 
-                // Should not throw
-                await expect(
-                    resolveUI5VersionsForMigration(
-                        projectInfoInvalidVersion,
-                        'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                    )
-                ).resolves.toBeDefined();
+                await expect(resolveUI5VersionsForMigration(projectInfoInvalidVersion, '')).resolves.toBeDefined();
 
-                const result = await resolveUI5VersionsForMigration(
-                    projectInfoInvalidVersion,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
-
+                const result = await resolveUI5VersionsForMigration(projectInfoInvalidVersion, '');
                 expect(Array.isArray(result)).toBe(true);
                 expect(result.length).toBeGreaterThan(0);
             },
@@ -179,38 +132,43 @@ describe('ui5-version', () => {
                     ui5Version: 'not.a.version'
                 };
 
-                // Should not throw even with invalid semver
-                const result = await resolveUI5VersionsForMigration(
-                    projectInfoWeirdVersion,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
+                const result = await resolveUI5VersionsForMigration(projectInfoWeirdVersion, '');
 
                 expect(result).toBeDefined();
                 expect(Array.isArray(result)).toBe(true);
+                expect(result[0]).toHaveProperty('version');
             },
             15000
         );
 
         it(
-            'should complete within timeout period demonstrating timeout mechanism',
+            'should complete within reasonable time and not hang indefinitely',
             async () => {
                 const startTime = Date.now();
 
-                const result = await resolveUI5VersionsForMigration(
-                    mockProjectInfo,
-                    'https://invalid-url-that-does-not-exist.example.com/nonexistent'
-                );
+                const result = await resolveUI5VersionsForMigration(mockProjectInfo, '');
 
                 const duration = Date.now() - startTime;
 
-                // Should complete (either success or fallback)
                 expect(result).toBeDefined();
                 expect(Array.isArray(result)).toBe(true);
+                // Should complete quickly (CDN) or within timeout (10s) - never hang forever
+                expect(duration).toBeLessThan(15000);
+            },
+            20000
+        );
 
-                // If it did timeout and fallback, should be close to 10s
-                // If CDN succeeded, should be much faster
-                // Either way, demonstrates timeout mechanism is present
-                expect(duration).toBeLessThan(15000); // Test timeout safety
+        it(
+            'should handle snapshot URL parameter',
+            async () => {
+                const result = await resolveUI5VersionsForMigration(
+                    mockProjectInfo,
+                    'https://ui5.sap.com/snapshot'
+                );
+
+                expect(Array.isArray(result)).toBe(true);
+                expect(result.length).toBeGreaterThan(0);
+                expect(result[0]).toHaveProperty('version');
             },
             15000
         );

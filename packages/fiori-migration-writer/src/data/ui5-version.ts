@@ -25,7 +25,10 @@ export async function resolveUI5VersionsForMigration(
                 ? ui5VersionMinForProject
                 : minUI5VersionForLocalDev.toString();
         } catch (error: unknown) {
-            // If semver comparison fails, continue with current version
+            // Intentionally ignore semver comparison errors for invalid version formats.
+            // If the project version string is not valid semver (e.g., "latest", "snapshot", custom tags),
+            // we proceed with the original value rather than failing the migration.
+            // The subsequent getUI5Versions() call will either succeed or trigger the timeout fallback.
         }
     }
 
