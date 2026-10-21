@@ -169,8 +169,8 @@ export function createExtensionProjectManifest(fs: Editor, rootPath: string, pro
         };
 
         // Write manifest to appropriate location
-        // Check if webapp directory exists (staged in mem-fs or on disk)
-        const shouldWriteToWebapp = projectInfo.webappPath && editorHasPath(fs, join(rootPath, projectInfo.webappPath));
+        // Check if webapp directory exists (staged in mem-fs or on disk, including an empty real dir)
+        const shouldWriteToWebapp = projectInfo.webappPath && fileExists(fs, join(rootPath, projectInfo.webappPath));
 
         if (shouldWriteToWebapp) {
             updateJSON(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
