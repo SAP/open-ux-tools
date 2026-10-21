@@ -1027,6 +1027,12 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@xmldom/xmldom':
+        specifier: ~0.9.12
+        version: 0.9.12
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -3722,6 +3728,12 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
+      '@sap/cf-tools':
+        specifier: 3.3.1
+        version: 3.3.1
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
