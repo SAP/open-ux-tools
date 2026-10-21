@@ -379,13 +379,16 @@ export const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content?.find((c) => c.type === 'text')?.text;
 
 /**
- * Searches a `UI.PresentationVariant` annotation's `Visualizations` collection for the first
- * annotation path that resolves to `UI.LineItem`.
+ * Checks whether the first entry in a `UI.PresentationVariant` annotation's `Visualizations`
+ * collection resolves to `UI.LineItem`.
+ *
+ * Only the first visualization is checked because Fiori Elements renders according to the first
+ * entry in the list. A chart-first variant renders a chart section, not a table section.
  *
  * @param pvAnnotation - The indexed `UI.PresentationVariant` annotation to inspect.
  * @param pvAliasInfo - Alias information for the file that contains the PresentationVariant.
- * @returns The raw annotation path string (e.g. `@UI.LineItem` or `@UI.LineItem#myQualifier`)
- *   and an optional qualifier extracted from it, or `undefined` if no LineItem is found.
+ * @returns The fully-qualified annotation path (e.g. `@com.sap.vocabularies.UI.v1.LineItem`) and
+ *   an optional qualifier, or `undefined` if the first visualization is not a `UI.LineItem`.
  */
 function findLineItemInVisualization(
     pvAnnotation: IndexedAnnotation,
@@ -403,26 +406,31 @@ function findLineItemInVisualization(
     if (!vizCollection) {
         return undefined;
     }
-    for (const vizElement of elementsWithName(Edm.AnnotationPath, vizCollection)) {
-        const vizPath = getElementText(vizElement);
-        if (!vizPath) {
-            continue;
-        }
-        const atIdx = vizPath.indexOf('@');
-        if (atIdx === -1) {
-            continue;
-        }
-        const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
-        const fullyQualifiedTerm = toFullyQualifiedName(
-            pvAliasInfo.aliasMap,
-            pvAliasInfo.currentFileNamespace,
-            parseIdentifier(termAlias)
-        );
-        if (fullyQualifiedTerm === UI_LINE_ITEM) {
-            return { path: vizPath, qualifier };
-        }
+    const [vizElement] = elementsWithName(Edm.AnnotationPath, vizCollection);
+    if (!vizElement) {
+        return undefined;
     }
-    return undefined;
+    const vizPath = getElementText(vizElement);
+    if (!vizPath) {
+        return undefined;
+    }
+    const atIdx = vizPath.indexOf('@');
+    if (atIdx === -1) {
+        return undefined;
+    }
+    const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
+    const fullyQualifiedTerm = toFullyQualifiedName(
+        pvAliasInfo.aliasMap,
+        pvAliasInfo.currentFileNamespace,
+        parseIdentifier(termAlias)
+    );
+    if (fullyQualifiedTerm !== UI_LINE_ITEM) {
+        return undefined;
+    }
+    return {
+        path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifier ? `#${qualifier}` : ''}`,
+        qualifier
+    };
 }
 
 /**
