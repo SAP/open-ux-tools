@@ -1,6 +1,7 @@
 import type { ImportProjectInfo } from '../types.js';
 import { getUI5Versions, minUI5VersionForLocalDev } from '@sap-ux/ui5-info';
 import { getUI5Version } from '../utils/index.js';
+import { withTimeoutAndFallback } from '../utils/promise-timeout.js';
 import semver from 'semver';
 
 /**
@@ -34,42 +35,22 @@ export async function resolveUI5VersionsForMigration(
 
     // Fetch available UI5 versions with timeout to prevent indefinite hang
     const TIMEOUT_MS = 10000; // 10 second timeout
-    let timeoutId: NodeJS.Timeout | undefined;
+    const fallbackVersions = [
+        {
+            version: ui5VersionMinForProject || minUI5VersionForLocalDev.toString(),
+            support: 'Maintenance'
+        }
+    ];
 
-    const timeoutPromise = new Promise<never>((_resolve, reject) => {
-        timeoutId = setTimeout(() => reject(new Error('UI5 version fetch timeout')), TIMEOUT_MS);
-    });
-
-    try {
-        const ui5Versions = await Promise.race([
+    return withTimeoutAndFallback(
+        () =>
             getUI5Versions({
                 onlyVersionNumbers: true,
                 onlyNpmVersion: true,
                 ui5SelectedVersion: ui5VersionMinForProject,
                 ...(ui5SnapshotUrl && { url: ui5SnapshotUrl })
             }),
-            timeoutPromise
-        ]);
-
-        // Clear timeout on success
-        if (timeoutId !== undefined) {
-            clearTimeout(timeoutId);
-        }
-
-        return ui5Versions;
-    } catch (error: unknown) {
-        // Clear timeout on error
-        if (timeoutId !== undefined) {
-            clearTimeout(timeoutId);
-        }
-
-        // If fetching UI5 versions fails or times out, return a fallback
-        // Using fallback version to prevent migration hang
-        return [
-            {
-                version: ui5VersionMinForProject || minUI5VersionForLocalDev.toString(),
-                support: 'Maintenance'
-            }
-        ];
-    }
+        TIMEOUT_MS,
+        fallbackVersions
+    );
 }
