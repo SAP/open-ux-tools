@@ -29,13 +29,31 @@ export async function resolveUI5VersionsForMigration(
         }
     }
 
-    // Fetch available UI5 versions
-    const ui5Versions = await getUI5Versions({
-        onlyVersionNumbers: true,
-        onlyNpmVersion: true,
-        ui5SelectedVersion: ui5VersionMinForProject,
-        ...(ui5SnapshotUrl && { url: ui5SnapshotUrl })
+    // Fetch available UI5 versions with timeout
+    const TIMEOUT_MS = 10000; // 10 second timeout
+    const timeoutPromise = new Promise((resolve, reject) => {
+        setTimeout(() => reject(new Error('UI5 version fetch timeout')), TIMEOUT_MS);
     });
 
-    return ui5Versions;
+    try {
+        const ui5Versions = await Promise.race([
+            getUI5Versions({
+                onlyVersionNumbers: true,
+                onlyNpmVersion: true,
+                ui5SelectedVersion: ui5VersionMinForProject,
+                ...(ui5SnapshotUrl && { url: ui5SnapshotUrl })
+            }),
+            timeoutPromise
+        ]);
+        return ui5Versions;
+    } catch (error: unknown) {
+        // If fetching UI5 versions fails or times out, return a fallback
+        // Using fallback version to prevent migration hang
+        return [
+            {
+                version: ui5VersionMinForProject || minUI5VersionForLocalDev.toString(),
+                support: 'Maintenance'
+            }
+        ];
+    }
 }
