@@ -33,20 +33,19 @@ describe('ui5-version', () => {
             hasRootIntent: { flpSandboxRootIntent: false, flpSandboxMockRootIntent: false }
         };
 
-        it(
-            'should return a fallback result within timeout period when network is unavailable',
-            async () => {
-                // Use an unreachable URL to trigger timeout
-                const result = await resolveUI5VersionsForMigration(mockProjectInfo, 'https://invalid-url-that-does-not-exist.example.com/nonexistent');
+        it('should return a fallback result within timeout period when network is unavailable', async () => {
+            // Use an unreachable URL to trigger timeout
+            const result = await resolveUI5VersionsForMigration(
+                mockProjectInfo,
+                'https://invalid-url-that-does-not-exist.example.com/nonexistent'
+            );
 
-                // Should return fallback version
-                expect(Array.isArray(result)).toBe(true);
-                expect(result.length).toBeGreaterThan(0);
-                expect(result[0]).toHaveProperty('version');
-                expect(result[0].version).toBe('1.84.0');
-            },
-            15000 // 15 second timeout for the test itself
-        );
+            // Should return fallback version
+            expect(Array.isArray(result)).toBe(true);
+            expect(result.length).toBeGreaterThan(0);
+            expect(result[0]).toHaveProperty('version');
+            expect(result[0].version).toBe('1.84.0');
+        }, 15000); // 15 second timeout for the test itself
 
         it('should handle project without UI5 version', async () => {
             const projectInfoNoVersion: ImportProjectInfo = {
@@ -54,7 +53,10 @@ describe('ui5-version', () => {
                 ui5Version: ''
             };
 
-            const result = await resolveUI5VersionsForMigration(projectInfoNoVersion, 'https://invalid-url-that-does-not-exist.example.com/nonexistent');
+            const result = await resolveUI5VersionsForMigration(
+                projectInfoNoVersion,
+                'https://invalid-url-that-does-not-exist.example.com/nonexistent'
+            );
 
             expect(Array.isArray(result)).toBe(true);
             expect(result.length).toBeGreaterThan(0);
@@ -68,7 +70,10 @@ describe('ui5-version', () => {
                 ui5Version: '1.84.0-snapshot-untested'
             };
 
-            const result = await resolveUI5VersionsForMigration(projectInfoWithSnapshot, 'https://invalid-url-that-does-not-exist.example.com/nonexistent');
+            const result = await resolveUI5VersionsForMigration(
+                projectInfoWithSnapshot,
+                'https://invalid-url-that-does-not-exist.example.com/nonexistent'
+            );
 
             expect(Array.isArray(result)).toBe(true);
             // Snapshot suffix should be removed and may be upgraded to minimum version
