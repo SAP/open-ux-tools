@@ -1,5 +1,4 @@
 import * as z from 'zod';
-import { LATEST_UI5_VERSION } from '../../constant.js';
 import { PACKAGE_NAME, PACKAGE_VERSION } from '../../package-info.js';
 import { VIEW_NAME_REGEX, VIEW_NAME_MAX_LENGTH } from '@sap-ux/project-input-validator';
 
@@ -43,7 +42,12 @@ export const project = z.object({
                 'the generator will refuse to run if it does. ' +
                 'Do NOT pre-create that subfolder; only the parent targetFolder may exist.'
         ),
-    ui5Version: z.string().default(LATEST_UI5_VERSION),
+    ui5Version: z
+        .string()
+        .optional()
+        .describe(
+            'UI5 version to use for the generated application. If omitted, the MCP server resolves the latest stable UI5 version from ui5.sap.com.'
+        ),
     enableTypeScript: z
         .boolean()
         .default(false)
