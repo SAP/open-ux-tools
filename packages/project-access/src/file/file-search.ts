@@ -203,19 +203,12 @@ export function findFilesByExtension(
 export async function findFileUp(fileName: string, startPath: string, fs?: Editor): Promise<string | undefined> {
     const filePath = join(startPath, fileName);
 
-    // Debug logging for performance tracking
-    const depth = startPath.split(/[/\\]/).length;
-    if (depth < 3) {
-        console.log(`[findFileUp] Reached near-root: ${startPath} (depth: ${depth})`);
-    }
-
     if (await fileExists(filePath, fs)) {
         return filePath;
     } else {
         const parentPath = dirname(startPath);
         if (parentPath === startPath) {
             // Reached filesystem root
-            console.log(`[findFileUp] Reached filesystem root, file not found: ${fileName}`);
             return undefined;
         }
         return findFileUp(fileName, parentPath, fs);
