@@ -160,6 +160,51 @@ describe('fetchAppListForSelectedSystem', () => {
         expect(result).toEqual([regularApp]);
     });
 
+    it('should filter retry results by appId when appId is provided and the app exists (tools bridge on older systems)', async () => {
+        const targetApp = { 'sap.app/id': 'target-app', repoName: 'target-repo', url: 'http://url' };
+        const otherApp = { 'sap.app/id': 'other-app', repoName: 'other-repo', url: 'http://url2' };
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
+        // ADTQuickDeploy fires 2 parallel searches — both reject/resolve before the catch triggers the retry.
+        const mockSearch = jest
+            .fn()
+            .mockRejectedValueOnce(columnUnknownError) // call 1: legacy template ID search (throws)
+            .mockResolvedValueOnce([]) // call 2: corrected template ID search (ignored)
+            .mockResolvedValueOnce([targetApp, otherApp]); // call 3: retry — full list, filtered client-side
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            'target-app',
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(result).toEqual([targetApp]);
+    });
+
+    it('should return empty array when appId is provided but not found in retry results (tools bridge on older systems)', async () => {
+        const otherApp = { 'sap.app/id': 'other-app', repoName: 'other-repo', url: 'http://url' };
+        const columnUnknownError = createAxiosError(400, 'Request failed with status code 400');
+        // ADTQuickDeploy fires 2 parallel searches — both reject/resolve before the catch triggers the retry.
+        const mockSearch = jest
+            .fn()
+            .mockRejectedValueOnce(columnUnknownError) // call 1: legacy template ID search (throws)
+            .mockResolvedValueOnce([]) // call 2: corrected template ID search (ignored)
+            .mockResolvedValueOnce([otherApp]); // call 3: retry — full list, target app absent
+        const provider = {
+            getAppIndex: jest.fn().mockReturnValue({ search: mockSearch })
+        } as unknown as AbapServiceProvider;
+
+        const result = await fetchAppListForSelectedSystem(
+            { serviceProvider: provider } as ConnectedSystem,
+            'target-app',
+            AppDownloadType.ADTQuickDeploy
+        );
+
+        expect(result).toEqual([]);
+    });
+
     it('should not retry when the error is not HTTP 400', async () => {
         const unrelatedError = createAxiosError(500, 'Internal Server Error');
         const mockSearch = jest.fn().mockRejectedValueOnce(unrelatedError);

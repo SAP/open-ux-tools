@@ -160,12 +160,12 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
+        // hasQfaJson() is the authoritative signal: qfa.json is only present in ADT Quick Deploy apps.
+        // When downloadType was not explicitly set (CLI invocation defaults to ADTQuickDeploy),
+        // use qfa.json presence to decide which flow to run.
+        const isAdtQuickDeploy =
+            this.downloadType === AppDownloadType.ADTQuickDeploy && (this.downloadTypeExplicit || hasQfaJson());
         try {
-            // hasQfaJson() is the authoritative signal: qfa.json is only present in ADT Quick Deploy apps.
-            // When downloadType was not explicitly set (CLI invocation defaults to ADTQuickDeploy),
-            // use qfa.json presence to decide which flow to run.
-            const isAdtQuickDeploy =
-                this.downloadType === AppDownloadType.ADTQuickDeploy && (this.downloadTypeExplicit || hasQfaJson());
             if (!isAdtQuickDeploy) {
                 await this._generateAbapRepositoryApp();
             } else {
@@ -175,10 +175,9 @@ export default class extends Generator {
             RepoAppDownloadLogger.logger?.error(
                 t('error.writingPhase', { error: error instanceof Error ? error.message : String(error) })
             );
-            const failEvent =
-                this.downloadType === AppDownloadType.AbapRepository
-                    ? EventName.ABAP_REPO_APP_WRITING_FAILED
-                    : EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED;
+            const failEvent = isAdtQuickDeploy
+                ? EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED
+                : EventName.ABAP_REPO_APP_WRITING_FAILED;
             // Fires when the writing phase throws — includes the caught error message for diagnosis.
             await sendTelemetry(
                 failEvent,
