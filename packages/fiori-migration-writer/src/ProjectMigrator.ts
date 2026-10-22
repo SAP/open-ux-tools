@@ -78,7 +78,7 @@ export class ProjectMigrator {
         options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
         const {
-            projectRoot,
+            projectRoot: projectRootInput,
             baseUri: baseUriOpt,
             ui5SnapshotUrl: ui5SnapshotUrlOpt,
             importProjectInfo: importProjectInfoOpt,
@@ -87,6 +87,10 @@ export class ProjectMigrator {
             fs: fsOpt,
             strict: strictOpt = false
         } = options;
+
+        // Resolve relative paths to absolute to avoid issues with path traversal
+        const { resolve } = await import('node:path');
+        const projectRoot = resolve(projectRootInput);
 
         // Create a new isolated editor instance for this migration if not provided
         // This enables concurrent migrations without shared state corruption
