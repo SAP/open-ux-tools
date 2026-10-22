@@ -143,8 +143,8 @@ describe('Ui5AbapRepositoryService', () => {
                         { path: '/Component.js', type: 'file' }
                     ])
                     .mockResolvedValueOnce([{ path: '/webapp/index.html', type: 'file' }])
-                    .mockResolvedValueOnce('<html/>')
-                    .mockResolvedValueOnce('Component content')
+                    .mockResolvedValueOnce(Buffer.from('<html/>'))
+                    .mockResolvedValueOnce(Buffer.from('Component content'))
             } as unknown as FileStoreService;
 
             const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);

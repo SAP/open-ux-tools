@@ -228,9 +228,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 await this.collectFilesIntoZip(fileStoreService, zip, appName, entry.path, onFileAdded); // NOSONAR
             } else {
                 const content = await fileStoreService.getAppArchiveContent('file', appName, entry.path); // NOSONAR
-                // getAppArchiveContent is generic: returns ArchiveFileNode[] for 'folder', string for 'file'.
-                // TypeScript cannot narrow this at the call site, so we cast — e.g. getAppArchiveContent('file', ...) always returns string.
-                zip.addFile(entry.path.replace(/^\//, ''), Buffer.from(content as string));
+                zip.addFile(entry.path.replace(/^\//, ''), content);
                 onFileAdded();
             }
         }

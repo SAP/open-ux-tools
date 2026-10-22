@@ -132,7 +132,7 @@ export interface ArchiveFileNode {
 
 export type ArchiveFileNodeType = 'file' | 'folder';
 
-export type ArchiveFileContentType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;
+export type ArchiveFileContentType<T> = T extends 'file' ? Buffer : T extends 'folder' ? ArchiveFileNode[] : never;
 
 export type BusinessObject = {
     name: string;
