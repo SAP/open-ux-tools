@@ -28,16 +28,17 @@ import { ProjectMigrator, createMemFsEditor } from '@sap-ux/fiori-migration-writ
 // Create a mem-fs editor instance
 const fs = createMemFsEditor();
 
-// Migrate a project
-const { fs: updatedFs, result, messages } = await ProjectMigrator.migrate(
-    '/path/to/project',
-    'https://backend.example.com',
-    'https://ui5.sap.com',
-    undefined, // optional project info
-    undefined, // optional vscode context
-    false,     // internal toggle
-    fs         // optional fs editor
-);
+// Migrate a project using the options object
+const { fs: updatedFs, result, messages } = await ProjectMigrator.migrate({
+    projectRoot: '/path/to/project',
+    baseUri: 'https://backend.example.com',
+    ui5SnapshotUrl: 'https://ui5.sap.com/snapshots/1.130.0', // optional
+    importProjectInfo: undefined, // optional - partial project information
+    vscode: undefined,            // optional - VS Code context
+    internalToggle: false,        // optional - enable internal features
+    fs: fs,                       // optional - mem-fs editor instance
+    strict: false                 // optional - strict validation mode
+});
 
 // Commit changes to disk
 await new Promise((resolve, reject) => {
@@ -50,6 +51,7 @@ await new Promise((resolve, reject) => {
 // Check results
 if (result) {
     console.log('Migration successful!');
+    console.log('Messages:', messages);
 } else {
     console.error('Migration failed:', messages);
 }
@@ -66,8 +68,16 @@ const results = await migrator.migrate(
         { rootPath: '/path/to/project1', hostname: 'https://backend.example.com' },
         { rootPath: '/path/to/project2', hostname: 'https://backend.example.com' }
     ],
-    'https://ui5.sap.com'
+    'https://ui5.sap.com/snapshots/1.130.0' // optional - UI5 snapshot URL
 );
+
+// Check individual project results
+results.forEach((project, index) => {
+    console.log(`Project ${index + 1}:`, project.status);
+    if (project.messages?.length > 0) {
+        console.log('Messages:', project.messages);
+    }
+});
 ```
 
 ## API
