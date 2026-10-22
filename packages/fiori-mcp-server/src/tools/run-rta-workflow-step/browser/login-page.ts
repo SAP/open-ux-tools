@@ -52,8 +52,8 @@ export function isNeedsUserAction(value: unknown): value is NeedsUserActionPaylo
  * @returns `true` if the webclient bridge is present.
  */
 export async function probeBridge(page: Page): Promise<boolean> {
-    return page
-        .waitForFunction(
+    try {
+        await page.waitForFunction(
             () =>
                 !!(
                     window as unknown as {
@@ -62,9 +62,11 @@ export async function probeBridge(page: Page): Promise<boolean> {
                 ).sapdas?.webclientBridge?.getFrontendActions,
             undefined,
             { timeout: BRIDGE_PROBE_MS }
-        )
-        .then(() => true)
-        .catch(() => false);
+        );
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 /**
