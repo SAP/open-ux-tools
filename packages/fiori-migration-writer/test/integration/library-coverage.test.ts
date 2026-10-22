@@ -27,13 +27,13 @@ describe('Library Project - Coverage Tests', () => {
             messages,
             fs: updatedFs
         } = await ProjectMigrator.migrate({
-                projectRoot: testInputBase,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         // Library migration should succeed
         expect(['SUCCESS', 'WARNING'].some((status) => result === true || messages.length > 0)).toBe(true);

@@ -27,13 +27,13 @@ describe('Reuse Libraries - Coverage Tests', () => {
             messages,
             fs: updatedFs
         } = await ProjectMigrator.migrate({
-                projectRoot: testInputBase,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBe(true);
 
@@ -59,13 +59,13 @@ describe('Service Detection Edge Cases - Coverage Tests', () => {
         const fs = loadProjectIntoMemFs(testInputBase);
 
         const { result, messages } = await ProjectMigrator.migrate({
-                projectRoot: testInputBase,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         // Should handle multiple dataSources without critical errors
         expect(result).toBe(true);
@@ -94,13 +94,13 @@ describe('Backend Configuration Variants - Coverage Tests', () => {
             messages,
             fs: updatedFs
         } = await ProjectMigrator.migrate({
-                projectRoot: testInputBase,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBe(true);
 

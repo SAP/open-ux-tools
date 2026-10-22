@@ -392,13 +392,13 @@ describe('Migration Integration Tests', () => {
                     result,
                     messages
                 } = await ProjectMigrator.migrate({
-                projectRoot: projectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+                    projectRoot: projectPath,
+                    baseUri: DUMMY_BACKEND_URL,
+                    ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                    vscode: undefined,
+                    internalToggle: false,
+                    fs
+                });
 
                 expect(result).toBe(true);
                 expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);

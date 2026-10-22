@@ -87,13 +87,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -115,13 +115,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -155,13 +155,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -190,13 +190,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result, messages } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
         const errors = messages.filter((m) => m.type === 'ERROR');
@@ -227,13 +227,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -254,13 +254,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -292,13 +292,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -355,13 +355,13 @@ describe('Extension Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -410,13 +410,13 @@ describe('Extension Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
@@ -461,13 +461,13 @@ describe('Extension Project - Enhanced Coverage', () => {
 
         const fs = loadProjectIntoMemFs(testProjectPath);
         const { result } = await ProjectMigrator.migrate({
-                projectRoot: testProjectPath,
-                baseUri: DUMMY_BACKEND_URL,
-                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
-                vscode: undefined,
-                internalToggle: false,
-                fs
-            });
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
 
         expect(result).toBeDefined();
     });
