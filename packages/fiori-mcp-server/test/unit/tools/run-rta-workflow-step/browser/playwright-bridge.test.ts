@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { chmodSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge.js';
@@ -136,6 +136,29 @@ async function loadPlaywrightBridge(): Promise<typeof PlaywrightBridgeModule> {
 /** Loads the session module (same graph as the bridge) to drive registerSite in tests. */
 async function loadSession(): Promise<typeof SessionModule> {
     return import('../../../../../src/tools/run-rta-workflow-step/browser/session');
+}
+
+/**
+ * Whether `dir`'s filesystem actually enforces POSIX file permissions. Some
+ * filesystems (certain Docker/overlay/network mounts, non-POSIX temp dirs)
+ * silently ignore `chmod`, leaving the creation-default mode (`0o666`). On those
+ * the production `chmod(0o600)` is a no-op through no fault of the code, so the
+ * on-disk-mode assertion would spuriously fail there. Probe once per call.
+ *
+ * @param dir Directory to probe (the test's own temp dir).
+ * @returns `true` when a 0o600 chmod is reflected back by statSync.
+ */
+function fsHonorsChmod(dir: string): boolean {
+    const probe = join(dir, '.chmod-probe');
+    try {
+        writeFileSync(probe, '', { mode: 0o600 });
+        chmodSync(probe, 0o600);
+        return (statSync(probe).mode & 0o777) === 0o600;
+    } catch {
+        return false;
+    } finally {
+        rmSync(probe, { force: true });
+    }
 }
 
 beforeEach(() => {
@@ -630,8 +653,12 @@ describe('browser/playwright-bridge', () => {
             const files = readdirSync(dir);
             expect(files).toHaveLength(1);
             const written = join(dir, files[0]);
-            // Owner-only file permissions (0o600) for credential material.
-            expect(statSync(written).mode & 0o777).toBe(0o600);
+            // Owner-only file permissions (0o600) for credential material — asserted
+            // only where the filesystem honours chmod (some mounts silently ignore it,
+            // leaving the 0o666 creation default despite the code requesting 0o600).
+            if (fsHonorsChmod(dir)) {
+                expect(statSync(written).mode & 0o777).toBe(0o600);
+            }
             expect(JSON.parse(readFileSync(written, 'utf8'))).toEqual({ cookies: [], origins: [] });
 
             await fs.stopBrowser();
