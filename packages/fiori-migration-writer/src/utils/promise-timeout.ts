@@ -33,9 +33,12 @@ export async function withTimeoutAndFallback<T>(
             clearTimeout(timeoutId);
         }
 
-        // Catch both timeout rejection and any promise errors to return a safe fallback.
-        // This prevents the timeout from hanging indefinitely and allows callers to proceed
-        // with a default value when network/CDN requests fail or timeout expires.
+        // Exception is intentionally caught and suppressed to return fallback value.
+        // This utility's purpose is to provide graceful degradation when operations fail:
+        // - Timeout rejection: CDN/network requests taking too long
+        // - Promise rejection: Network errors, invalid URLs, service unavailable
+        // Callers expect a fallback value in all error scenarios, not exceptions to handle.
+        // See ui5-version.ts for usage - migration continues with sensible defaults.
         return fallbackValue;
     }
 }
