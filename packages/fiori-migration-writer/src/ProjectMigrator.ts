@@ -53,8 +53,8 @@ export interface MigrateOptions {
     projectRoot: string;
     /** Base URI for backend services */
     baseUri: string;
-    /** URL for UI5 snapshot version */
-    ui5SnapshotUrl: string;
+    /** Optional URL for UI5 snapshot version */
+    ui5SnapshotUrl?: string;
     /** Optional partial project information */
     importProjectInfo?: Partial<ImportProjectInfo>;
     /** Optional VS Code context */
@@ -69,52 +69,14 @@ export interface MigrateOptions {
 
 export class ProjectMigrator {
     /**
-     * migrate project
+     * Migrate a project.
      *
      * @param options - Migration options object
      * @returns Promise with fs editor, migration result, and messages
      */
-    // Backward-compatible overload with positional parameters
-    public static async migrate( // NOSONAR - Overload for backward compatibility; use options object signature instead
-        projectRoot: string,
-        baseUri?: string,
-        ui5SnapshotUrl?: string,
-        importProjectInfo?: ImportProjectInfo,
-        vscode?: any,
-        internalToggle?: boolean,
-        fs?: Editor,
-        strict?: boolean
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
-
-    // New preferred signature with options object
-    public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
-
-    // Implementation
     public static async migrate(
-        // NOSONAR - Implementation must support both overload signatures
-        projectRootOrOptions: string | MigrateOptions,
-        baseUri?: string,
-        ui5SnapshotUrl?: string,
-        importProjectInfo?: ImportProjectInfo,
-        vscode?: any,
-        internalToggle?: boolean,
-        fs?: Editor,
-        strict?: boolean
+        options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
-        // Convert old signature to options object if called with positional parameters
-        const options: MigrateOptions =
-            typeof projectRootOrOptions === 'string'
-                ? {
-                      projectRoot: projectRootOrOptions,
-                      baseUri: baseUri ?? '',
-                      ui5SnapshotUrl: ui5SnapshotUrl ?? '',
-                      importProjectInfo,
-                      vscode,
-                      internalToggle,
-                      fs,
-                      strict
-                  }
-                : projectRootOrOptions;
         const {
             projectRoot,
             baseUri: baseUriOpt,
@@ -246,7 +208,7 @@ export class ProjectMigrator {
     private static async copyCommonFiles(
         projectInfo: ImportProjectInfo,
         vscode: any,
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl?: string,
         internalToggle: boolean = false,
         strict: boolean = false
     ): Promise<{ result: boolean; messages: Message[] }> {
@@ -379,7 +341,7 @@ export class ProjectMigrator {
      */
     private static async copyAdaptationFiles(
         projectInfo: ImportProjectInfo,
-        snapshotUrl: string
+        snapshotUrl?: string
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
         return copyAdaptationFiles(projectInfo, snapshotUrl, undefined);
     }
