@@ -66,43 +66,9 @@ export class ProjectMigrator {
      * @param options - Migration options object
      * @returns Promise with fs editor, migration result, and messages
      */
-    // Backward-compatible overload with positional parameters
-    public static async migrate( // NOSONAR - Overload for backward compatibility; use options object signature instead
-        projectRoot: string,
-        baseUri?: string,
-        ui5SnapshotUrl?: string,
-        importProjectInfo?: ImportProjectInfo,
-        vscode?: any,
-        internalToggle?: boolean,
-        fs?: Editor,
-        strict?: boolean
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
-
-    // New preferred signature with options object
-    public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
-
-    // Implementation
     public static async migrate(
-        // NOSONAR - Implementation must support both overload signatures
-        projectRootOrOptions: string | MigrateOptions,
-        baseUri?: string,
-        ui5SnapshotUrl?: string,
-        importProjectInfo?: ImportProjectInfo,
-        vscode?: any,
-        internalToggle?: boolean,
-        fs?: Editor,
-        strict?: boolean
+        options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
-        const options = ProjectMigrator.normalizeMigrateOptions(
-            projectRootOrOptions,
-            baseUri,
-            ui5SnapshotUrl,
-            importProjectInfo,
-            vscode,
-            internalToggle,
-            fs,
-            strict
-        );
         const {
             projectRoot,
             baseUri: baseUriOpt,
@@ -181,43 +147,6 @@ export class ProjectMigrator {
         }
 
         return migrationResult;
-    }
-
-    /**
-     * Normalize the backward-compatible positional arguments into a MigrateOptions object.
-     *
-     * @param projectRootOrOptions
-     * @param baseUri
-     * @param ui5SnapshotUrl
-     * @param importProjectInfo
-     * @param vscode
-     * @param internalToggle
-     * @param fs
-     * @param strict
-     */
-    private static normalizeMigrateOptions(
-        projectRootOrOptions: string | MigrateOptions,
-        baseUri?: string,
-        ui5SnapshotUrl?: string,
-        importProjectInfo?: ImportProjectInfo,
-        vscode?: any,
-        internalToggle?: boolean,
-        fs?: Editor,
-        strict?: boolean
-    ): MigrateOptions {
-        if (typeof projectRootOrOptions !== 'string') {
-            return projectRootOrOptions;
-        }
-        return {
-            projectRoot: projectRootOrOptions,
-            baseUri: baseUri ?? '',
-            ui5SnapshotUrl: ui5SnapshotUrl ?? '',
-            importProjectInfo,
-            vscode,
-            internalToggle,
-            fs,
-            strict
-        };
     }
 
     /**

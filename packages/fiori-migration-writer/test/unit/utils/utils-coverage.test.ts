@@ -72,15 +72,13 @@ describe('Backend Utils - Coverage Tests', () => {
             writeFileSync(join(projectPath, 'webapp', 'manifest.json'), JSON.stringify(manifest, null, 2));
 
             const fs = loadProjectIntoMemFs(projectPath);
-            const { result } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            const { result } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBeDefined();
         }, 60000);
