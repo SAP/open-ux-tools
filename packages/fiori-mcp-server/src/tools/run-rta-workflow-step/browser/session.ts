@@ -1,8 +1,10 @@
 import { chmod, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { type BrowserContext, type Page } from 'playwright-core';
+import { type BrowserContext } from 'playwright-core';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
 import { logger } from '../../../utils/logger.js';
+import { sessionDir } from './env.js';
+import { originKey } from './origin.js';
 
 // Session state shared across the browser bridge.
 //   `siteMeta` — site origin → { projectKey, isCf }. Rewritten by every `start`
@@ -73,19 +75,6 @@ export function forgetSite(site: string): void {
     siteMeta.delete(originKey(site));
 }
 
-/** Bounded probe for the webclient bridge: generous for a valid app, far below the 60 s action timeout. */
-const BRIDGE_PROBE_MS = 8000;
-
-/** Markers that positively identify a backend login / IdP page (CF XSUAA, SAML reentrance, generic logon). */
-const LOGIN_PAGE_MARKERS =
-    /saml2|oauth\/authorize|xsuaa|\/login|sap-ui-login|j_security_check|identity provider|sign in|logon/i;
-
-/** Guidance returned to the AI/skill when a backend login page is detected. */
-export const LOGIN_REQUIRED_MESSAGE =
-    'The editor URL redirected to a backend login page (e.g. Cloud Foundry XSUAA or ABAP reentrance). ' +
-    'Complete the login once in the opened (headed) browser, then call the "start" step again. ' +
-    'Set PLAYWRIGHT_SESSION_STATE_PATH to a directory to reuse the session across restarts (incl. headless).';
-
 /**
  * Clears all in-memory session state. Called when the browser disconnects or
  * is stopped, so a fresh process state is rebuilt on the next launch.
@@ -93,53 +82,6 @@ export const LOGIN_REQUIRED_MESSAGE =
 export function clearSessions(): void {
     siteMeta.clear();
     sessionByProject.clear();
-}
-
-/**
- * Reads a boolean-ish environment value. Treats `"true"`/`"1"` as true.
- *
- * @param value Raw environment variable value.
- * @returns `true` when the value opts in.
- */
-function truthyEnv(value: string | undefined): boolean {
-    return value === 'true' || value === '1';
-}
-
-/**
- * Whether the browser should launch headless. Default is headed (`false`),
- * matching the pre-existing behaviour; `PLAYWRIGHT_HEADLESS=true|1` opts in.
- *
- * @returns `true` when headless mode is requested.
- */
-export function isHeadless(): boolean {
-    return truthyEnv(process.env.PLAYWRIGHT_HEADLESS);
-}
-
-/**
- * Optional directory for cross-restart session persistence. When set, each
- * origin's storage state is also written to / read from a file in this
- * directory. Unset ⇒ in-memory only (no disk footprint).
- *
- * @returns The configured directory, or `undefined`.
- */
-function sessionDir(): string | undefined {
-    const dir = process.env.PLAYWRIGHT_SESSION_STATE_PATH;
-    return dir && dir.length > 0 ? dir : undefined;
-}
-
-/**
- * Normalises a URL to its origin (scheme + host + port). Returns the raw input
- * when it cannot be parsed, so callers always get a usable map key.
- *
- * @param url URL or origin string.
- * @returns The origin, or the input unchanged if unparseable.
- */
-export function originKey(url: string): string {
-    try {
-        return new URL(url).origin;
-    } catch {
-        return url;
-    }
 }
 
 /**
@@ -228,53 +170,4 @@ export async function persistSessionState(site: string, context: BrowserContext)
     } catch (error) {
         logger.warn(`Failed to persist RTA session state: ${error instanceof Error ? error.message : String(error)}`);
     }
-}
-
-/**
- * Probes once (bounded) for the Joule webclient bridge on the page. Resolves
- * `true` when the bridge appears within {@link BRIDGE_PROBE_MS}, `false` on
- * timeout — without throwing.
- *
- * @param page The page just navigated to the editor URL.
- * @returns `true` if the webclient bridge is present.
- */
-export async function probeBridge(page: Page): Promise<boolean> {
-    return page
-        .waitForFunction(
-            () =>
-                !!(
-                    window as unknown as {
-                        sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } };
-                    }
-                ).sapdas?.webclientBridge?.getFrontendActions,
-            undefined,
-            { timeout: BRIDGE_PROBE_MS }
-        )
-        .then(() => true)
-        .catch(() => false);
-}
-
-/**
- * Positively identifies a backend login / IdP page. Returns `true` only on a
- * concrete signal — the page navigated off the loopback interface (the editor
- * binds to localhost, so an off-loopback origin is an IdP redirect), or a known
- * login/SAML/OAuth marker appears in the URL, title, or body. Never classifies
- * on bridge-absence alone, so a slow-but-valid app is not mislabelled.
- *
- * @param url Current page URL (post-redirect).
- * @param title Current page title.
- * @param bodyText A bounded slice of the page body text.
- * @returns `true` when the page is a backend login page.
- */
-export function isBackendLoginPage(url: string, title: string, bodyText: string): boolean {
-    let host: string;
-    try {
-        host = new URL(url).hostname;
-    } catch {
-        return false;
-    }
-    const offLoopback = host !== 'localhost' && host !== '127.0.0.1';
-    const markerHit =
-        LOGIN_PAGE_MARKERS.test(url) || LOGIN_PAGE_MARKERS.test(title) || LOGIN_PAGE_MARKERS.test(bodyText);
-    return offLoopback || markerHit;
 }

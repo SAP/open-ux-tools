@@ -1,22 +1,10 @@
 import { chromium, type Browser, type BrowserContext, type Frame, type Page } from 'playwright-core';
 import { logger } from '../../../utils/logger.js';
-import {
-    buildContextOptions,
-    clearSessions,
-    forgetSite,
-    isBackendLoginPage,
-    isHeadless,
-    LOGIN_REQUIRED_MESSAGE,
-    originKey,
-    persistSessionState,
-    probeBridge
-} from './session.js';
-import type {
-    FetchViaContextResult,
-    FrontendActionResult,
-    FrontendActionTransport,
-    NeedsUserActionPayload
-} from './types.js';
+import { isHeadless } from './env.js';
+import { isBackendLoginPage, LOGIN_REQUIRED_MESSAGE, probeBridge, type NeedsUserActionPayload } from './login-page.js';
+import { originKey } from './origin.js';
+import { buildContextOptions, clearSessions, forgetSite, persistSessionState } from './session.js';
+import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
 
 // Module-scope singleton state.
 //   `browser` — launched once and reused for the lifetime of the Node process.

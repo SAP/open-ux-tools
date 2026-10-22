@@ -1,4 +1,4 @@
-import { isNeedsUserAction } from '../../../../../src/tools/run-rta-workflow-step/browser/types.js';
+import { isNeedsUserAction } from '../../../../../src/tools/run-rta-workflow-step/browser/login-page.js';
 
 describe('isNeedsUserAction', () => {
     test('returns true for the reserved backend-login payload', () => {

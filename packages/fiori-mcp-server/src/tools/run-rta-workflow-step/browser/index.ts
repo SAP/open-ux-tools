@@ -7,10 +7,6 @@ export {
     stopBrowser
 } from './playwright-bridge.js';
 export { registerSite } from './session.js';
-export { isNeedsUserAction } from './types.js';
-export type {
-    FetchViaContextResult,
-    FrontendActionResult,
-    FrontendActionTransport,
-    NeedsUserActionPayload
-} from './types.js';
+export { isNeedsUserAction } from './login-page.js';
+export type { NeedsUserActionPayload } from './login-page.js';
+export type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
