@@ -427,8 +427,9 @@ function findLineItemInVisualization(
     if (fullyQualifiedTerm !== UI_LINE_ITEM) {
         return undefined;
     }
+    const qualifierSuffix = qualifier ? `#${qualifier}` : '';
     return {
-        path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifier ? `#${qualifier}` : ''}`,
+        path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
         qualifier
     };
 }
