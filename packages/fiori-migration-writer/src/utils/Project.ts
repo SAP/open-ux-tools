@@ -436,8 +436,8 @@ export class ProjectAccess {
         return getSemanticObjectAction(manifest);
     }
 
-    public static async getFlpIntentFromHtml(htmlFilePath: string, fsEditor?: Editor) {
-        // NOSONAR - async by contract: Promise-typed wrapper matching the injected getFlpIntentFromHtml dependency
+    // prettier-ignore
+    public static async getFlpIntentFromHtml(htmlFilePath: string, fsEditor?: Editor) { // NOSONAR - async by contract
         return getFlpIntentFromHtml(fsEditor ?? createMemFsEditor(), htmlFilePath);
     }
 
