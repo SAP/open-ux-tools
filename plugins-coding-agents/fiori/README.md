@@ -54,4 +54,4 @@ Plugin versions in `.claude-plugin/plugin.json` and `.github/plugin/plugin.json`
 - `packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs` — updates `server.json` and the pinned server version in `.mcp.json`
 - `plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs` — patch-bumps the plugin `version` in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.github/plugin/plugin.json`
 
-**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in **both** `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` by hand as part of the same commit.
+**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.github/plugin/plugin.json` by hand as part of the same commit.
