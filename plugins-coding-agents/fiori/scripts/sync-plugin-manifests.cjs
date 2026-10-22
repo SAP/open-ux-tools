@@ -74,12 +74,13 @@ try {
     console.log(`Updated .claude-plugin/plugin.json to version ${pluginVersion}`);
 
     if (claudeMarketplaceJson) {
-        const entry = claudeMarketplaceJson.plugins?.[0];
-        if (entry) {
-            entry.version = pluginVersion;
-            fs.writeFileSync(claudeMarketplaceJsonPath, JSON.stringify(claudeMarketplaceJson, null, 2) + '\n');
-            console.log(`Updated .claude-plugin/marketplace.json to version ${pluginVersion}`);
+        const entry = claudeMarketplaceJson.plugins?.find(p => p.name === 'sap-ux-fiori-tools');
+        if (!entry) {
+            throw new Error('marketplace.json has no entry named "sap-ux-fiori-tools"');
         }
+        entry.version = pluginVersion;
+        fs.writeFileSync(claudeMarketplaceJsonPath, JSON.stringify(claudeMarketplaceJson, null, 2) + '\n');
+        console.log(`Updated .claude-plugin/marketplace.json entry "sap-ux-fiori-tools" to version ${pluginVersion}`);
     }
 
     fs.writeFileSync(awesomeCopilotPluginJsonPath, JSON.stringify(awesomeCopilotPluginJson, null, 4) + '\n');
