@@ -65,7 +65,7 @@ export default class extends Generator {
     private readonly vscode?: any;
     private readonly appRootPath: string;
     private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
-    private readonly downloadType: AppDownloadType;
+    private downloadType: AppDownloadType;
     private readonly downloadTypeExplicit: boolean;
     private readonly prompts: Prompts;
     public options: RepoAppDownloadOptions;
@@ -165,6 +165,8 @@ export default class extends Generator {
         // use qfa.json presence to decide which flow to run.
         const isAdtQuickDeploy =
             this.downloadType === AppDownloadType.ADTQuickDeploy && (this.downloadTypeExplicit || hasQfaJson());
+        // Resolve the effective type so all post-writing phases (README, telemetry, success msg) are consistent.
+        this.downloadType = isAdtQuickDeploy ? AppDownloadType.ADTQuickDeploy : AppDownloadType.AbapRepository;
         try {
             if (!isAdtQuickDeploy) {
                 await this._generateAbapRepositoryApp();
@@ -175,9 +177,10 @@ export default class extends Generator {
             RepoAppDownloadLogger.logger?.error(
                 t('error.writingPhase', { error: error instanceof Error ? error.message : String(error) })
             );
-            const failEvent = isAdtQuickDeploy
-                ? EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED
-                : EventName.ABAP_REPO_APP_WRITING_FAILED;
+            const failEvent =
+                this.downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_APP_WRITING_FAILED
+                    : EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED;
             // Fires when the writing phase throws — includes the caught error message for diagnosis.
             await sendTelemetry(
                 failEvent,

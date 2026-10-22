@@ -7,7 +7,7 @@
  */
 export interface AdtSchemaData {
     service: {
-        workspace: AdtWorkspace[];
+        workspace: AdtWorkspace | AdtWorkspace[];
     };
 }
 
