@@ -74,7 +74,11 @@ describe('App Download Utils', () => {
         });
 
         it('should log error on exception', async () => {
-            const erroringZip = { getEntries: jest.fn(() => { throw new Error('zip failed'); }) };
+            const erroringZip = {
+                getEntries: jest.fn(() => {
+                    throw new Error('zip failed');
+                })
+            };
             PromptState.admZip = Buffer.from('dummy');
             (PromptState.admZip as any).getEntries = erroringZip.getEntries;
 

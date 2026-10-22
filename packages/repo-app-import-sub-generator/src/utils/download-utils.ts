@@ -1,5 +1,4 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { FileStoreService } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { PromptState } from '../prompts/prompt-state.js';
@@ -7,7 +6,7 @@ import { t } from './i18n.js';
 import RepoAppDownloadLogger from '../utils/logger.js';
 import { qfaJsonFileName } from './constants.js';
 import { type Logger } from '@sap-ux/logger';
-import { TransportChecksService } from '@sap-ux/axios-extension';
+import { TransportChecksService, FileStoreService } from '@sap-ux/axios-extension';
 import { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
 
 /**
@@ -86,7 +85,9 @@ export async function downloadApp(repoName: string): Promise<{ success: boolean;
     } catch (error) {
         // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
         // Fall through to the ADT FileStoreService fallback below.
-        RepoAppDownloadLogger.logger?.debug(`ABAP_REPOSITORY_SRV unavailable, falling back to ADT: ${(error as Error).message}`);
+        RepoAppDownloadLogger.logger?.debug(
+            `ABAP_REPOSITORY_SRV unavailable, falling back to ADT: ${(error as Error).message}`
+        );
     }
     if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
         RepoAppDownloadLogger.logger?.debug(t('error.adtFallbackDownload'));
@@ -96,7 +97,9 @@ export async function downloadApp(repoName: string): Promise<{ success: boolean;
                 downloadedAppPackage = await ui5AbapRepository.downloadFilesViaAdt(repoName, fileStoreService);
             }
         } catch (error) {
-            RepoAppDownloadLogger.logger?.error(t('error.adtFallbackDownloadFailed', { error: (error as Error).message }));
+            RepoAppDownloadLogger.logger?.error(
+                t('error.adtFallbackDownloadFailed', { error: (error as Error).message })
+            );
         }
     }
     if (!downloadedAppPackage || downloadedAppPackage.length === 0) {

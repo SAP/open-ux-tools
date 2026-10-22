@@ -34,8 +34,10 @@ export class AdtSchemaStore {
     public updateSchemaData(schemaData: AdtSchemaData): void {
         if (schemaData) {
             this.adtSchema = {};
+            // Older ABAP systems return a single workspace object instead of an array
             const raw = schemaData.service.workspace;
-            const workspaces = Array.isArray(raw) ? raw : raw ? [raw] : [];
+            const rawAsArray = Array.isArray(raw) ? raw : [raw];
+            const workspaces = raw ? rawAsArray : [];
             for (const workspace of workspaces) {
                 const collections = workspace.collection;
                 if (!collections) {

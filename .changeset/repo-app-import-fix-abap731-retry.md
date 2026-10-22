@@ -2,4 +2,4 @@
 "@sap-ux/repo-app-import-sub-generator": patch
 ---
 
-FIX: Retry app list fetch without sap.app/sourceTemplate/id for both AbapRepository and ADTQuickDeploy flows on older ABAP systems (e.g. ABAP 731)
+FIX: Support app download on older ABAP systems — retry app list fetch without sap.app/sourceTemplate/id for both flows, and fall back to ADT FileStoreService when ABAP_REPOSITORY_SRV is unavailable

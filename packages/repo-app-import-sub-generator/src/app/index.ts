@@ -165,8 +165,7 @@ export default class extends Generator {
             // When downloadType was not explicitly set (CLI invocation defaults to ADTQuickDeploy),
             // use qfa.json presence to decide which flow to run.
             const isAdtQuickDeploy =
-                this.downloadType === AppDownloadType.ADTQuickDeploy &&
-                (this.downloadTypeExplicit || hasQfaJson());
+                this.downloadType === AppDownloadType.ADTQuickDeploy && (this.downloadTypeExplicit || hasQfaJson());
             if (!isAdtQuickDeploy) {
                 await this._generateAbapRepositoryApp();
             } else {

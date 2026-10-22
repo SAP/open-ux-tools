@@ -204,6 +204,16 @@ export class Ui5AbapRepositoryService extends ODataService {
         return fileCount > 0 ? zip.toBuffer() : undefined;
     }
 
+    /**
+     * Recursively walks the ADT file store tree and adds every file to `zip`.
+     * Sequential awaits are intentional — child entries are only known after the parent folder response.
+     *
+     * @param fileStoreService ADT FileStoreService for listing folders and fetching file content
+     * @param zip AdmZip instance to append files to
+     * @param appName BSP application name
+     * @param path Current folder path relative to the app root (empty string for root)
+     * @param onFileAdded Callback invoked for each file added to the ZIP
+     */
     private async collectFilesIntoZip(
         fileStoreService: FileStoreService,
         zip: AdmZip,
@@ -212,11 +222,12 @@ export class Ui5AbapRepositoryService extends ODataService {
         onFileAdded: () => void
     ): Promise<void> {
         const entries = await fileStoreService.getAppArchiveContent('folder', appName, path);
+        // Sequential iteration is intentional: each folder must be fetched before its children are known.
         for (const entry of entries) {
             if (entry.type === 'folder') {
-                await this.collectFilesIntoZip(fileStoreService, zip, appName, entry.path, onFileAdded);
+                await this.collectFilesIntoZip(fileStoreService, zip, appName, entry.path, onFileAdded); // NOSONAR
             } else {
-                const content = await fileStoreService.getAppArchiveContent('file', appName, entry.path);
+                const content = await fileStoreService.getAppArchiveContent('file', appName, entry.path); // NOSONAR
                 // getAppArchiveContent is generic: returns ArchiveFileNode[] for 'folder', string for 'file'.
                 // TypeScript cannot narrow this at the call site, so we cast — e.g. getAppArchiveContent('file', ...) always returns string.
                 zip.addFile(entry.path.replace(/^\//, ''), Buffer.from(content as string));

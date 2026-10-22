@@ -921,8 +921,12 @@ describe('Repo App Download', () => {
             // no data.appDownloadType → downloadTypeExplicit = false, downloadType = ADTQuickDeploy
         });
 
-        const generateAbapRepo = jest.spyOn(generator as any, '_generateAbapRepositoryApp').mockResolvedValue(undefined);
-        const generateAdtQuickDeploy = jest.spyOn(generator as any, '_generateAdtQuickDeployApp').mockResolvedValue(undefined);
+        const generateAbapRepo = jest
+            .spyOn(generator as any, '_generateAbapRepositoryApp')
+            .mockResolvedValue(undefined);
+        const generateAdtQuickDeploy = jest
+            .spyOn(generator as any, '_generateAdtQuickDeployApp')
+            .mockResolvedValue(undefined);
 
         await generator.writing();
 
