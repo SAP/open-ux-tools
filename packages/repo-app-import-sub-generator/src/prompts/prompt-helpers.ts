@@ -167,6 +167,7 @@ async function getAppList(
     } catch (error) {
         const status = (error as { response?: { status?: number } })?.response?.status;
         const message = error instanceof Error ? error.message : String(error);
+        // Older systems rejects unknown fields either as HTTP 400 or with an "unknown column" error message
         const isOlderSystemError = status === 400 || /column.*unknown|unknown.*column/i.test(message);
         if (isOlderSystemError) {
             // Older systems reject sap.app/sourceTemplate/id as an unknown column.
