@@ -15,16 +15,16 @@ const uxTelemetryPerf = {
 
 export class BulkProjectMigrator {
     /**
-     * Migrate projects
+     * Migrate projects.
      *
-     * @param projects
-     * @param ui5SnapshotUrl
-     * @param vscode
-     * @param internalToggle
+     * @param projects - Projects to migrate
+     * @param ui5SnapshotUrl - Optional UI5 snapshot URL
+     * @param vscode - Optional VS Code context
+     * @param internalToggle - Enable internal features
      */
     public async migrate(
         projects: MigrationUIProjectInfo[],
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl?: string,
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<MigrationUIProjectInfo[]> {
@@ -47,20 +47,20 @@ export class BulkProjectMigrator {
     }
 
     /**
-     * Migrate a single project
+     * Migrate a single project.
      *
-     * @param project
-     * @param index
-     * @param ui5SnapshotUrl
-     * @param vscode
-     * @param internalToggle
+     * @param project - Project to migrate
+     * @param index - Project index
+     * @param ui5SnapshotUrl - Optional UI5 snapshot URL
+     * @param vscode - Optional VS Code context
+     * @param internalToggle - Enable internal features
      */
     private async migrateProject(
         project: MigrationUIProjectInfo,
         index: number,
-        ui5SnapshotUrl: string,
-        vscode: any,
-        internalToggle: boolean
+        ui5SnapshotUrl?: string,
+        vscode?: any,
+        internalToggle?: boolean
     ): Promise<MigrationUIProjectInfo> {
         const markName = uxTelemetryPerf.startMark('project' + index);
 
