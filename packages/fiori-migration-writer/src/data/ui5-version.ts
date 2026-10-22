@@ -34,7 +34,7 @@ export async function resolveUI5VersionsForMigration(
         onlyVersionNumbers: true,
         onlyNpmVersion: true,
         ui5SelectedVersion: ui5VersionMinForProject,
-        ...(ui5SnapshotUrl && { url: ui5SnapshotUrl })
+        ...(ui5SnapshotUrl && { snapshotVersionsHost: ui5SnapshotUrl })
     });
 
     return ui5Versions;
