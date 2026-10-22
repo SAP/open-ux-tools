@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Dependency Updates
+
+- Upgrade react-movable 2.5.4 → 3.4.1 [[5545002](https://github.com/SAP/open-ux-tools/commit/5545002e520272845923f57b7ae9a53f77acd9f3)]
+
 ## 3.0.16
 
 ### Patch Changes
