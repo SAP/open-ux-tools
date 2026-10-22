@@ -32,7 +32,7 @@ const fs = createMemFsEditor();
 const { fs: updatedFs, result, messages } = await ProjectMigrator.migrate({
     projectRoot: '/path/to/project',
     baseUri: 'https://backend.example.com',
-    ui5SnapshotUrl: 'https://ui5.sap.com/snapshots/1.130.0', // optional
+    ui5SnapshotUrl: 'https://ui5-snapshots.example.com', // optional snapshot host
     importProjectInfo: undefined, // optional - partial project information
     vscode: undefined,            // optional - VS Code context
     internalToggle: false,        // optional - enable internal features
@@ -68,7 +68,7 @@ const results = await migrator.migrate(
         { rootPath: '/path/to/project1', hostname: 'https://backend.example.com' },
         { rootPath: '/path/to/project2', hostname: 'https://backend.example.com' }
     ],
-    'https://ui5.sap.com/snapshots/1.130.0' // optional - UI5 snapshot URL
+    'https://ui5-snapshots.example.com' // optional - UI5 snapshot host
 );
 
 // Check individual project results

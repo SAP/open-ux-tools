@@ -86,15 +86,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -115,15 +114,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         // No package.json created intentionally
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -156,15 +154,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'neo-app.json'), JSON.stringify(neoapp, null, 2));
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -192,15 +189,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result, messages } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result, messages } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
         const errors = messages.filter((m) => m.type === 'ERROR');
@@ -230,15 +226,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -258,15 +253,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -297,15 +291,14 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -361,15 +354,14 @@ describe('Extension Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'webapp', 'Component.js'), component);
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -417,15 +409,14 @@ describe('Extension Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });
@@ -469,15 +460,14 @@ describe('Extension Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'webapp', 'view', 'MainExtension.fragment.xml'), viewExtension);
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
-            fs
-        );
+        const { result } = await ProjectMigrator.migrate({
+                projectRoot: testProjectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                vscode: undefined,
+                internalToggle: false,
+                fs
+            });
 
         expect(result).toBeDefined();
     });

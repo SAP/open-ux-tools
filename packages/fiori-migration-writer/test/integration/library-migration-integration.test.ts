@@ -131,11 +131,11 @@ describe('Library Migration Integration Tests', () => {
 
         // Act: Run migration directly (this is what the user does via BAS/VS Code UI)
         // Pass type: library to help migration detect the project type correctly
-        const { fs, result, messages } = await ProjectMigrator.migrate(
+        const { fs, result, messages } = await ProjectMigrator.migrate({
             projectRoot,
-            libNamespacePath, // Pass libPath as baseUri
+            baseUri: libNamespacePath, // Pass libPath as baseUri
             ui5SnapshotUrl,
-            {
+            importProjectInfo: {
                 moduleName: 'sap.company.lib.testlib',
                 type: MigrationTypes.library,
                 rootPath: projectRoot,
@@ -151,9 +151,9 @@ describe('Library Migration Integration Tests', () => {
                 flpDatasource: {},
                 uiAdaptation: { reference: '', layer: '' }
             },
-            undefined,
-            false
-        );
+            vscode: undefined,
+            internalToggle: false
+        });
 
         // Commit changes to disk
         await new Promise<void>((resolve, reject) => {
@@ -257,11 +257,11 @@ describe('Library Migration Integration Tests', () => {
         expect(libs[0].value.type).toBe(ReuseLibType.LIBRARY);
 
         // Run migration using the discovered libRoot
-        const { fs, result, messages } = await ProjectMigrator.migrate(
-            libs[0].value.libRoot,
-            libPath,
+        const { fs, result, messages } = await ProjectMigrator.migrate({
+            projectRoot: libs[0].value.libRoot,
+            baseUri: libPath,
             ui5SnapshotUrl,
-            {
+            importProjectInfo: {
                 moduleName: 'company.lib',
                 type: MigrationTypes.library,
                 rootPath: libs[0].value.libRoot,
@@ -277,9 +277,9 @@ describe('Library Migration Integration Tests', () => {
                 flpDatasource: {},
                 uiAdaptation: { reference: '', layer: '' }
             },
-            undefined,
-            false
-        );
+            vscode: undefined,
+            internalToggle: false
+        });
 
         // Commit changes to disk
         await new Promise<void>((resolve, reject) => {
