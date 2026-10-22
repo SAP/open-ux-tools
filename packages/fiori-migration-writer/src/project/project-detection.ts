@@ -1,7 +1,6 @@
 import { findProjectRoot, getProjectType, fileExists } from '../utils/index.js';
 import { MigrationError } from '../utils/common.js';
 import { i18nText } from '../i18n.js';
-import { withTimeoutAndFallback } from '../utils/promise-timeout.js';
 
 /**
  * Validates that the project is suitable for migration.
@@ -11,7 +10,7 @@ import { withTimeoutAndFallback } from '../utils/promise-timeout.js';
  * @throws {MigrationError} If project is a Fiori app within a CAP project
  */
 export async function validateProjectForMigration(projectRoot: string): Promise<void> {
-    // Quick existence check to avoid hanging on non-existent paths
+    // Quick existence check to avoid issues with non-existent paths
     if (!(await fileExists(projectRoot))) {
         // Path doesn't exist - skip validation (will fail later with appropriate error)
         return;
@@ -22,22 +21,7 @@ export async function validateProjectForMigration(projectRoot: string): Promise<
     let sapUXProjectRoot = projectRoot;
 
     try {
-        // Wrap findProjectRoot with timeout to prevent indefinite hang
-        const FIND_ROOT_TIMEOUT = 5000; // 5 second timeout
-        const startTime = Date.now();
-
-        sapUXProjectRoot = await withTimeoutAndFallback(
-            () => findProjectRoot(projectRoot, true),
-            FIND_ROOT_TIMEOUT,
-            projectRoot // On timeout, use provided root as fallback
-        );
-
-        const duration = Date.now() - startTime;
-        if (duration >= FIND_ROOT_TIMEOUT - 100) {
-            console.log(`[Project Validation] findProjectRoot timeout triggered after ${duration}ms, using provided root as fallback`);
-        } else if (duration > 2000) {
-            console.log(`[Project Validation] findProjectRoot slow response: ${duration}ms`);
-        }
+        sapUXProjectRoot = await findProjectRoot(projectRoot, true);
     } catch (error: unknown) {
         // In case of error, use project root as-is
         sapUXProjectRoot = projectRoot;

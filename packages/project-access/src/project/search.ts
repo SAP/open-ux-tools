@@ -94,7 +94,20 @@ export async function findProjectRoot(
     silent = false,
     memFs?: Editor
 ): Promise<string> {
-    const packageJson = await findFileUp(FileName.Package, path, memFs);
+    console.log(`[findProjectRoot] Starting search from: ${path}, sapuxRequired: ${sapuxRequired}`);
+    const startTime = Date.now();
+
+    // Convert to absolute path to prevent infinite loops with relative paths like "."
+    const absolutePath = isAbsolute(path) ? path : join(process.cwd(), path);
+    console.log(`[findProjectRoot] Absolute path: ${absolutePath}`);
+
+    const packageJson = await findFileUp(FileName.Package, absolutePath, memFs);
+
+    const findDuration = Date.now() - startTime;
+    if (findDuration > 1000) {
+        console.log(`[findProjectRoot] findFileUp took ${findDuration}ms to find package.json`);
+    }
+
     if (!packageJson) {
         if (silent) {
             return '';
@@ -106,12 +119,25 @@ export async function findProjectRoot(
         );
     }
     let root = dirname(packageJson);
+    console.log(`[findProjectRoot] Found package.json at: ${packageJson}, root: ${root}`);
+
     if (sapuxRequired) {
         const sapux = (await readJSON<Package>(packageJson, memFs)).sapux;
+        console.log(`[findProjectRoot] sapux field value: ${JSON.stringify(sapux)}`);
         if (!sapux) {
-            root = await findProjectRoot(dirname(root), sapuxRequired, silent, memFs);
+            const parentPath = dirname(root);
+            // Prevent infinite loop: if parent is same as current, we're at filesystem root
+            if (parentPath === root) {
+                console.log(`[findProjectRoot] Reached filesystem root without finding sapux, returning current root`);
+            } else {
+                console.log(`[findProjectRoot] No sapux field, recursing up from ${parentPath}`);
+                root = await findProjectRoot(parentPath, sapuxRequired, silent, memFs);
+            }
         }
     }
+
+    const totalDuration = Date.now() - startTime;
+    console.log(`[findProjectRoot] Completed in ${totalDuration}ms, returning root: ${root}`);
     return root;
 }
 
