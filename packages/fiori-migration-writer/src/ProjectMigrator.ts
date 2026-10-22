@@ -88,6 +88,14 @@ export class ProjectMigrator {
             strict: strictOpt = false
         } = options;
 
+        // Validate required parameters
+        if (!projectRoot || typeof projectRoot !== 'string') {
+            throw new Error('projectRoot is required and must be a non-empty string');
+        }
+        if (!baseUriOpt || typeof baseUriOpt !== 'string') {
+            throw new Error('baseUri is required and must be a non-empty string');
+        }
+
         // Create a new isolated editor instance for this migration if not provided
         // This enables concurrent migrations without shared state corruption
         const ownsEditor = !fsOpt;
