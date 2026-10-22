@@ -22,9 +22,10 @@ export async function resolveUI5VersionsForMigration(
     // Ensure minimum UI5 version for local development
     if (ui5VersionMinForProject?.length > 0) {
         try {
-            ui5VersionMinForProject = semver.gt(ui5VersionMinForProject, minUI5VersionForLocalDev.toString())
+            const compared = semver.gt(ui5VersionMinForProject, minUI5VersionForLocalDev.toString())
                 ? ui5VersionMinForProject
                 : minUI5VersionForLocalDev.toString();
+            ui5VersionMinForProject = compared;
         } catch (error: unknown) {
             // Intentionally ignore semver comparison errors for invalid version formats.
             // If the project version string is not valid semver (e.g., "latest", "snapshot", custom tags),
@@ -42,7 +43,8 @@ export async function resolveUI5VersionsForMigration(
         }
     ];
 
-    return withTimeoutAndFallback(
+    const startTime = Date.now();
+    const result = await withTimeoutAndFallback(
         () =>
             getUI5Versions({
                 onlyVersionNumbers: true,
@@ -53,4 +55,14 @@ export async function resolveUI5VersionsForMigration(
         TIMEOUT_MS,
         fallbackVersions
     );
+    const duration = Date.now() - startTime;
+
+    // Log if timeout was triggered or if it took longer than expected
+    if (duration >= TIMEOUT_MS - 100) {
+        console.log(`[UI5 Version Resolution] Timeout triggered after ${duration}ms, using fallback versions`);
+    } else if (duration > 3000) {
+        console.log(`[UI5 Version Resolution] Slow response from CDN: ${duration}ms`);
+    }
+
+    return result;
 }

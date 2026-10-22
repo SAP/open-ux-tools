@@ -15,7 +15,9 @@ export async function withTimeoutAndFallback<T>(
     let timeoutId: NodeJS.Timeout | undefined;
 
     const timeoutPromise = new Promise<never>((_resolve, reject) => {
-        timeoutId = setTimeout(() => reject(new Error(`Operation timeout after ${timeoutMs}ms`)), timeoutMs);
+        timeoutId = setTimeout(() => {
+            reject(new Error(`Operation timeout after ${timeoutMs}ms`));
+        }, timeoutMs);
     });
 
     try {
