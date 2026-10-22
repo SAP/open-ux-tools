@@ -72,7 +72,7 @@
         "@types/supertest": "7.2.1",
         "connect": "^3.7.0",
         "copyfiles": "2.4.1",
-        "dotenv": "17.4.2",
+        "dotenv": "18.0.8",
         "express": "4.22.1",
         "nock": "14.0.16",
         "npm-run-all2": "9.0.3",
