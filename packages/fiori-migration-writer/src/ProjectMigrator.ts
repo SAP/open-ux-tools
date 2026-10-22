@@ -75,8 +75,22 @@ export class ProjectMigrator {
      * @returns Promise with fs editor, migration result, and messages
      */
     public static async migrate(
-        options: MigrateOptions
+        options: MigrateOptions | string  // Accept string to detect old API usage
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+        // Detect and reject old positional parameter API with helpful migration message
+        if (typeof options === 'string') {
+            throw new Error(
+                'The positional parameter API has been removed in v0.0.4.\n' +
+                'Please use the options object instead:\n\n' +
+                'ProjectMigrator.migrate({\n' +
+                `  projectRoot: "${options}",\n` +
+                '  baseUri: "YOUR_BACKEND_URL",\n' +
+                '  ui5SnapshotUrl: "YOUR_UI5_URL"  // optional\n' +
+                '})\n\n' +
+                'See README.md for updated examples.'
+            );
+        }
+
         const {
             projectRoot,
             baseUri: baseUriOpt,
