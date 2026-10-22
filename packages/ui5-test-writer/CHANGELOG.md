@@ -1,5 +1,27 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Features
+
+- Generate iCheckSortOrder and iCheckFilterField assertions from PresentationVariant and SelectionVariant annotations [[e84f46e](https://github.com/SAP/open-ux-tools/commit/e84f46ea75f7de5ce45f3e67939ede5ca36ecaba)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+
 ## 1.18.3
 
 ### Patch Changes
