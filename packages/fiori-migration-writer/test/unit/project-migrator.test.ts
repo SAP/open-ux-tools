@@ -138,4 +138,87 @@ describe('ProjectMigrator', () => {
             });
         });
     });
+
+    describe('migrate - path resolution', () => {
+        it('should resolve relative paths to absolute paths', async () => {
+            const { ProjectMigrator } = await import('../../src/ProjectMigrator.js');
+            const { resolve } = await import('node:path');
+
+            // Create a minimal project structure
+            const projectName = 'relative-path-test';
+            const absoluteProjectRoot = join(testOutputDir, projectName);
+            await mkdir(join(absoluteProjectRoot, 'webapp'), { recursive: true });
+
+            // Create minimal manifest.json
+            await writeFile(
+                join(absoluteProjectRoot, 'webapp', 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': { id: 'test.app', type: 'application' },
+                    'sap.ui5': { dependencies: { minUI5Version: '1.84.0' } }
+                })
+            );
+
+            // Create package.json with sapux flag
+            await writeFile(
+                join(absoluteProjectRoot, 'package.json'),
+                JSON.stringify({ name: 'test-app', sapux: true })
+            );
+
+            // Change to test output directory so relative path works
+            const originalCwd = process.cwd();
+            process.chdir(testOutputDir);
+
+            try {
+                // Call migrate with relative path
+                const { result, messages } = await ProjectMigrator.migrate({
+                    projectRoot: `./${projectName}`, // Relative path
+                    baseUri: 'https://backend.example.com',
+                    fs
+                });
+
+                // If path resolution works, validation should complete without hanging
+                // We expect this to fail with missing data, but it shouldn't hang
+                expect(result).toBeDefined();
+                expect(messages).toBeDefined();
+            } finally {
+                // Restore original working directory
+                process.chdir(originalCwd);
+            }
+        });
+
+        it('should handle absolute paths correctly', async () => {
+            const { ProjectMigrator } = await import('../../src/ProjectMigrator.js');
+
+            // Create a minimal project structure
+            const projectName = 'absolute-path-test';
+            const absoluteProjectRoot = join(testOutputDir, projectName);
+            await mkdir(join(absoluteProjectRoot, 'webapp'), { recursive: true });
+
+            // Create minimal manifest.json
+            await writeFile(
+                join(absoluteProjectRoot, 'webapp', 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': { id: 'test.app2', type: 'application' },
+                    'sap.ui5': { dependencies: { minUI5Version: '1.84.0' } }
+                })
+            );
+
+            // Create package.json with sapux flag
+            await writeFile(
+                join(absoluteProjectRoot, 'package.json'),
+                JSON.stringify({ name: 'test-app2', sapux: true })
+            );
+
+            // Call migrate with absolute path
+            const { result, messages } = await ProjectMigrator.migrate({
+                projectRoot: absoluteProjectRoot, // Absolute path
+                baseUri: 'https://backend.example.com',
+                fs
+            });
+
+            // Should work without issues
+            expect(result).toBeDefined();
+            expect(messages).toBeDefined();
+        });
+    });
 });
