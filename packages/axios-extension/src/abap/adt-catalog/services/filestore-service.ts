@@ -26,7 +26,7 @@ export class FileStoreService extends AdtService {
     }
 
     /**
-     * If target `path` is a file, the file content is returned as string type.
+     * If target `path` is a file, the file content is returned as Buffer type.
      * If target `path` is a folder, files and folders in this folder are returned as an array
      * of ArchiveFileNode objects.
      *
@@ -60,30 +60,31 @@ export class FileStoreService extends AdtService {
         }
         const encodedFullPath = encodeURIComponent(`${appName}${path}`);
         const response = await this.get(`/${encodedFullPath}/content`, config);
-        if (isFile) {
-            return Buffer.from(response.data as ArrayBuffer) as ArchiveFileContentType<T>;
-        }
         return this.parseArchiveContentResponse(appName, response.data, type);
     }
 
     /**
-     * Parse response data from ADT service. If the content is XML document of
-     * folder structure, this method returns a list of `ArchiveFileNode` object. If the content
-     * is text string, this method returns the text cotent.
+     * Parse response data from ADT service. If the content is a file, returns a Buffer.
+     * If the content is XML folder structure, returns a list of ArchiveFileNode objects.
      *
      * @see ArchiveFileNode
      * @param appName Deployed Fiori app name
      * @param responseData Response from ADT service
-     * @param type Reponse data is the file content or folder content.
+     * @param type Whether response data is file content or folder content.
      * @returns Folder content (ArchiveFileNode[]) | file content (Buffer)
      */
     private parseArchiveContentResponse<T extends ArchiveFileNodeType>(
         appName: string,
-        responseData: string,
+        responseData: string | ArrayBuffer,
         type: T
     ): ArchiveFileContentType<T> {
+        // File content is received as arraybuffer to preserve binary data (images, fonts, etc.).
+        if (type === 'file') {
+            return Buffer.from(responseData as ArrayBuffer) as ArchiveFileContentType<T>;
+        }
         // A list of file/folder items in the response data as xml string.
-        if (XMLValidator.validate(responseData) !== true) {
+        const xmlData = responseData as string;
+        if (XMLValidator.validate(xmlData) !== true) {
             throw new Error('Invalid XML content');
         }
         const options = {
@@ -94,7 +95,7 @@ export class FileStoreService extends AdtService {
             removeNSPrefix: true
         };
         const parser: XMLParser = new XMLParser(options);
-        const parsed = parser.parse(responseData, true);
+        const parsed = parser.parse(xmlData, true);
 
         let fileNodeArray: AdtFileNode[] = [];
 
