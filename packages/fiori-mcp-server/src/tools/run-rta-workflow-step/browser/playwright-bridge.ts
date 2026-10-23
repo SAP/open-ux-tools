@@ -193,6 +193,34 @@ async function startBrowser(): Promise<Browser> {
 }
 
 /**
+ * Whether a navigation response status means the editor failed to load. A
+ * missing status (`undefined` — e.g. `goto` returned no response) is treated as
+ * "not a hard error" so only a concrete HTTP error (>= 400) fast-fails.
+ *
+ * @param status HTTP status from the navigation response, or `undefined`.
+ * @returns `true` when the status is a client/server error (>= 400).
+ */
+function isEditorErrorStatus(status: number | undefined): boolean {
+    return status !== undefined && status >= 400;
+}
+
+/**
+ * Builds the actionable error thrown when the editor URL served an HTTP error
+ * page instead of the app, so `start` fails fast with a clear cause rather than
+ * exhausting the 30 s readyState wait and 60 s per-action backstop on a dead page.
+ *
+ * @param status HTTP status the editor returned.
+ * @param site Editor URL that was navigated to.
+ * @returns The error to throw.
+ */
+function editorNotLoadedError(status: number | undefined, site: string): Error {
+    return new Error(
+        `The editor URL returned HTTP ${status} and the adaptation editor did not load. ` +
+            `Check that the editor server is running at ${site} and, for a Cloud Foundry project, that its 'dist' has been built.`
+    );
+}
+
+/**
  * Invokes a Joule frontend action on the page hosting `site`. Reuses an
  * existing page if one is registered for the site; otherwise opens a new
  * one. Throws on transport / lookup failures; returns the frontend action
@@ -227,7 +255,7 @@ export async function callFrontendAction<TReturn = unknown>(
         });
 
         try {
-            await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
+            const response = await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
 
             // Bounded probe for the webclient bridge. On success → app page.
             // On timeout → distinguish a backend login page from a slow app.
@@ -249,8 +277,12 @@ export async function callFrontendAction<TReturn = unknown>(
                     };
                     return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
                 }
-                // Ambiguous (slow/error page): fall through to the existing behaviour —
-                // register and let the per-action 60 s wait run as a backstop.
+                // Bridge absent, not a login page: fail fast on an HTTP-error page,
+                // else fall through to the slow-but-valid backstop.
+                if (isEditorErrorStatus(response?.status())) {
+                    await context.close().catch(() => undefined);
+                    throw editorNotLoadedError(response?.status(), site);
+                }
             } else {
                 // Authenticated app reached — persist the session for reuse (gated).
                 await persistSessionState(site, context);

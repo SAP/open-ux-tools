@@ -32,18 +32,21 @@ class FakePage extends EventEmitter {
         error: null
     }));
     public readonly waitForFunction = jest.fn(async () => undefined);
-    public readonly goto = jest.fn(async () => undefined);
+    public readonly goto = jest.fn(async () => this.gotoResponse);
     public currentUrl: string;
+    /** Response returned by `goto`. `null` mimics a navigation with no response (Playwright's Response | null). */
+    public gotoResponse: { status: () => number } | null;
     public readonly url = jest.fn(() => this.currentUrl);
     public readonly title = jest.fn(async () => '');
     public readonly close = jest.fn(async () => {
         this.emit('close');
     });
     private readonly frameList: FakeFrame[];
-    constructor(frames: FakeFrame[] = [], url = 'http://localhost:8080/a') {
+    constructor(frames: FakeFrame[] = [], url = 'http://localhost:8080/a', gotoStatus = 200) {
         super();
         this.frameList = frames;
         this.currentUrl = url;
+        this.gotoResponse = Number.isFinite(gotoStatus) ? { status: () => gotoStatus } : null;
     }
     frames(): FakeFrame[] {
         return this.frameList;
@@ -513,8 +516,8 @@ describe('browser/playwright-bridge', () => {
      * subsequent waits (readyState / per-action bridge wait) resolve — i.e. the
      * login/ambiguous path. `url` is where the page landed after redirects.
      */
-    function loginProbePage(url: string): FakePage {
-        const page = new FakePage([], url);
+    function loginProbePage(url: string, gotoStatus = 200): FakePage {
+        const page = new FakePage([], url, gotoStatus);
         page.waitForFunction.mockReset();
         page.waitForFunction.mockRejectedValueOnce(new Error('probe timeout'));
         page.waitForFunction.mockResolvedValue(undefined);
@@ -542,6 +545,37 @@ describe('browser/playwright-bridge', () => {
 
     test('B2: ambiguous slow localhost app keeps the old behaviour (no login signal)', async () => {
         const page = loginProbePage('http://localhost:8080/a'); // still loopback, no markers
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction('http://localhost:8080/a', 'a');
+
+        expect(result).toEqual({ isSuccess: true, payload: 'ok', error: null });
+        expect(fs.isRegistryEmpty()).toBe(false);
+
+        await fs.stopBrowser();
+    });
+
+    test('B2: ambiguous page with an HTTP error status (>=400) fails fast without registering', async () => {
+        const page = loginProbePage('http://localhost:8080/a', 503); // loopback, no markers, server error
+        const { browser } = setupBrowser([page]);
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction('http://localhost:8080/a', 'a')).rejects.toThrow(/503/);
+
+        // Torn down, nothing registered → no 30 s readyState wait, no stale entry.
+        expect(browser.contexts[0].close).toHaveBeenCalled();
+        expect(fs.isRegistryEmpty()).toBe(true);
+        // evaluate is called once to read body text for login-page classification,
+        // but never a second time for a frontend action on the dead page.
+        expect(page.evaluate).toHaveBeenCalledTimes(1);
+
+        await fs.stopBrowser();
+    });
+
+    test('B2: ambiguous page with a 2xx status keeps the slow-but-valid backstop', async () => {
+        const page = loginProbePage('http://localhost:8080/a', 200);
         setupBrowser([page]);
         page.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
 
