@@ -3,6 +3,7 @@
  */
 
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { readJSON, updateJSON, fileExists } from '../utils/index.js';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
@@ -16,6 +17,7 @@ import { getMessageType } from '../utils/validation-severity.js';
 /**
  * Update manifest.json file with migration-specific changes
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  * @param webappPath - Webapp path relative to root
  * @param templateData - Template data containing project configuration
@@ -24,23 +26,35 @@ import { getMessageType } from '../utils/validation-severity.js';
  * @param sourceTemplateTest - Test-only source template values
  * @param strict - Enable strict validation mode (WARNING becomes ERROR)
  */
-export async function updateManifestForMigration(
-    rootPath: string,
-    webappPath: string,
-    templateData: TemplateData,
-    floorplan: string,
-    messages: Message[],
-    sourceTemplateTest?: SapAppSourceTemplate,
-    strict: boolean = false
-): Promise<void> {
+/**
+ * Options for updateManifestForMigration
+ */
+export interface UpdateManifestForMigrationOptions {
+    fs: Editor;
+    rootPath: string;
+    webappPath: string;
+    templateData: TemplateData;
+    floorplan: string;
+    messages: Message[];
+    sourceTemplateTest?: SapAppSourceTemplate;
+    strict?: boolean;
+}
+
+/**
+ * Update manifest.json for migration.
+ *
+ * @param options - Manifest update options
+ */
+export async function updateManifestForMigration(options: UpdateManifestForMigrationOptions): Promise<void> {
+    const { fs, rootPath, webappPath, templateData, floorplan, messages, sourceTemplateTest, strict = false } = options;
     const manifestPath = join(webappPath, TemplateFileName.ManifestJson);
-    if (!(await fileExists(join(rootPath, manifestPath)))) {
+    if (!fileExists(fs, join(rootPath, manifestPath))) {
         return;
     }
 
     let manifestJson: Manifest;
     try {
-        manifestJson = await readJSON<Manifest>(join(rootPath, manifestPath));
+        manifestJson = await readJSON<Manifest>(fs, join(rootPath, manifestPath));
     } catch (e) {
         throw new MigrationError(e, TemplateFileName.ManifestJson);
     }
@@ -70,7 +84,7 @@ export async function updateManifestForMigration(
     }
 
     if (saveFile === true) {
-        updateJSON(join(rootPath, manifestPath), manifestJson);
+        updateJSON(fs, join(rootPath, manifestPath), manifestJson);
     }
 }
 

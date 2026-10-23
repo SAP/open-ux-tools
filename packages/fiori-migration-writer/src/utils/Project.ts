@@ -1,4 +1,6 @@
 import { dirname, join, relative, sep } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
+import { createMemFsEditor } from './fs-adapter.js';
 import { getReuseLibs, findAllProjectRoots, ReuseLibType } from './file-discovery.js';
 import type { Manifest, Package } from '../project-spec-types.js';
 import { DirName } from '../project-spec-types.js';
@@ -33,26 +35,28 @@ import {
     checkIfReuseLib,
     findNestedReuseLibManifest,
     getReuseLibModuleName,
-    isSamePath,
     getClientFromDestinationName,
     getNeoAppData,
-    getDestinationFromNeoApp
+    getDestinationFromNeoApp,
+    isSamePath
 } from './project-readers/index.js';
 
 /**
  * Try to load manifest from standard or legacy paths
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Project root path
  * @param webappPath - Webapp path
  * @returns Manifest and updated webapp path, or undefined if not found
  */
 async function tryLoadManifest(
+    fs: Editor,
     projectRoot: string,
     webappPath: string
 ): Promise<{ manifest: Manifest; updatedWebappPath: string } | undefined> {
     // Try standard location first
     try {
-        const manifest = await getManifestJson(projectRoot, webappPath);
+        const manifest = await getManifestJson(fs, projectRoot, webappPath);
         return { manifest, updatedWebappPath: webappPath };
     } catch {
         // Expected: manifest.json may not exist in standard location
@@ -60,7 +64,7 @@ async function tryLoadManifest(
 
     // Try legacy path
     try {
-        const manifest = await getManifestJson(join(projectRoot, legacyPath), webappPath);
+        const manifest = await getManifestJson(fs, join(projectRoot, legacyPath), webappPath);
         return { manifest, updatedWebappPath: join(legacyPath, webappPath) };
     } catch {
         // Expected: manifest.json not found in either path
@@ -72,13 +76,15 @@ async function tryLoadManifest(
 /**
  * Try to find manifest in nested reuse lib structure
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Project root path
  * @returns Manifest and webapp path if found
  */
 async function tryFindNestedLibManifest(
+    fs: Editor,
     projectRoot: string
 ): Promise<{ manifest: Manifest; webappPath: string } | undefined> {
-    const nestedLib = await findNestedReuseLibManifest(projectRoot);
+    const nestedLib = await findNestedReuseLibManifest(fs, projectRoot);
     if (nestedLib) {
         return {
             manifest: nestedLib.manifest,
@@ -91,6 +97,7 @@ async function tryFindNestedLibManifest(
 /**
  * Handle manifest resolution when no manifest was found in standard locations
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Project root path
  * @param migrationType - Migration type
  * @param isProjectExtension - Whether project is an extension
@@ -99,6 +106,7 @@ async function tryFindNestedLibManifest(
  * @returns Resolution result with manifest, webappPath, isReuseLib flag, and messages
  */
 async function resolveManifestForUnknownProject(
+    fs: Editor,
     projectRoot: string,
     migrationType: MigrationTypes | undefined,
     isProjectExtension: boolean,
@@ -116,7 +124,7 @@ async function resolveManifestForUnknownProject(
     let webappPath: string | undefined;
 
     if (!isReuseLib && !isProjectExtension) {
-        const nestedLib = await tryFindNestedLibManifest(projectRoot);
+        const nestedLib = await tryFindNestedLibManifest(fs, projectRoot);
         if (nestedLib) {
             manifest = nestedLib.manifest;
             webappPath = nestedLib.webappPath;
@@ -202,13 +210,16 @@ export class ProjectAccess {
      * @param migrationType
      * @param workspaceFolders
      * @param libPath
+     * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted (standalone discovery)
      */
     public static async getProjectInfo(
         projectRoot: string,
         migrationType?: MigrationTypes,
         workspaceFolders?: readonly ProjectFolder[],
-        libPath?: string
+        libPath?: string,
+        fsEditor?: Editor
     ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
+        const fs = fsEditor ?? createMemFsEditor();
         let manifest: Manifest | undefined;
         let messages: Message[] = [];
         let isReuseLib: boolean | undefined;
@@ -219,26 +230,27 @@ export class ProjectAccess {
         };
 
         // Get initial webapp path
-        projectInfo.webappPath = await this.getWebappPath(projectRoot, migrationType, libPath);
+        projectInfo.webappPath = await this.getWebappPath(projectRoot, migrationType, libPath, fs);
 
         // Try to load manifest from standard or legacy paths
-        const manifestResult = await tryLoadManifest(projectRoot, projectInfo.webappPath);
+        const manifestResult = await tryLoadManifest(fs, projectRoot, projectInfo.webappPath);
         if (manifestResult) {
             manifest = manifestResult.manifest;
             projectInfo.webappPath = manifestResult.updatedWebappPath;
         }
 
         // Check project type flags
-        const isProjectExtension = await this.checkIfProjectExtension(projectRoot);
+        const isProjectExtension = await this.checkIfProjectExtension(projectRoot, fs);
 
         // If no manifest found, resolve from unknown project structure
         if (!manifest) {
             const resolution = await resolveManifestForUnknownProject(
+                fs,
                 projectRoot,
                 migrationType,
                 isProjectExtension,
-                this.checkMigratableAdaptationProject.bind(this),
-                this.checkIfReuseLib.bind(this)
+                (root: string) => this.checkMigratableAdaptationProject(root, fs),
+                (root: string, type?: MigrationTypes) => this.checkIfReuseLib(root, type, undefined, fs)
             );
             manifest = resolution.manifest;
             if (resolution.webappPath) {
@@ -249,15 +261,16 @@ export class ProjectAccess {
         }
 
         // Determine reuse lib status if not yet known
-        isReuseLib ??= await this.checkIfReuseLib(projectRoot, migrationType, manifest);
+        isReuseLib ??= await this.checkIfReuseLib(projectRoot, migrationType, manifest, fs);
 
         // Check adaptation project status
-        const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot);
+        const adaptationCheck = await this.checkMigratableAdaptationProject(projectRoot, fs);
         const isAdaptationProject = adaptationCheck?.reference !== undefined;
 
         // Process based on project type
         const projectType = determineProjectType(isReuseLib, isProjectExtension, isAdaptationProject, manifest);
         const result = await this.processProjectByType(
+            fs,
             projectType,
             projectRoot,
             manifest,
@@ -273,6 +286,7 @@ export class ProjectAccess {
     /**
      * Process project based on its type
      *
+     * @param fs - mem-fs editor
      * @param projectType - Type of project to process
      * @param projectRoot - Project root path
      * @param manifest - Project manifest
@@ -281,6 +295,7 @@ export class ProjectAccess {
      * @returns Processed project info and messages
      */
     private static async processProjectByType(
+        fs: Editor,
         projectType: ProjectType,
         projectRoot: string,
         manifest: Manifest | undefined,
@@ -290,13 +305,14 @@ export class ProjectAccess {
         switch (projectType) {
             case 'regular':
                 return processRegularProject({
+                    fs,
                     projectRoot,
                     manifest: manifest!,
                     defaultProjectInfo,
                     projectInfo,
                     services: {
                         projectData: {
-                            getPackageJson: this.getPackageJson.bind(this),
+                            getPackageJson: (filePath: string) => this.getPackageJson(filePath, fs),
                             getMainEntity: this.getMainEntity.bind(this),
                             hasUI5Tooling: this.hasUI5Tooling.bind(this)
                         },
@@ -306,27 +322,40 @@ export class ProjectAccess {
                             getFloorPlan: this.getFloorPlan.bind(this)
                         },
                         backendConfig: {
-                            getFirstBackend: this.getFirstBackend.bind(this),
-                            getFlpIntentFromHtml: this.getFlpIntentFromHtml.bind(this),
-                            getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
+                            getFirstBackend: (root: string) => this.getFirstBackend(root, fs),
+                            getFlpIntentFromHtml: (htmlFilePath: string) => this.getFlpIntentFromHtml(htmlFilePath, fs),
+                            getDestinationFromNeoApp: (root: string, destinationIn: string) =>
+                                this.getDestinationFromNeoApp(root, destinationIn, fs),
                             getClientFromDestinationName: this.getClientFromDestinationName.bind(this)
                         }
                     }
                 });
 
-            case 'reuseLib':
+            case 'reuseLib': {
+                const reuseLibInfo = await processReuseLibrary(
+                    projectRoot,
+                    defaultProjectInfo,
+                    workspaceFolders,
+                    manifest,
+                    (filePath: string) => this.getPackageJson(filePath, fs),
+                    this.hasUI5Tooling.bind(this),
+                    (root: string, folders?: readonly ProjectFolder[], mf?: Manifest) =>
+                        this.getReuseLibModuleName(root, folders, mf, fs)
+                );
                 return {
-                    projectInfo: await processReuseLibrary(
-                        projectRoot,
-                        defaultProjectInfo,
-                        workspaceFolders,
-                        manifest,
-                        this.getPackageJson.bind(this),
-                        this.hasUI5Tooling.bind(this),
-                        this.getReuseLibModuleName.bind(this)
-                    ),
+                    // Preserve the webappPath resolved before processReuseLibrary (e.g. from .project.json)
+                    // and set the default targetMockHtmlFile for libraries.
+                    projectInfo: {
+                        ...reuseLibInfo,
+                        webappPath:
+                            projectInfo.webappPath !== DirName.Webapp
+                                ? projectInfo.webappPath
+                                : reuseLibInfo.webappPath,
+                        targetMockHtmlFile: 'test/flpSandboxMockServer.html'
+                    },
                     messages: []
                 };
+            }
 
             case 'extension':
                 return {
@@ -335,15 +364,17 @@ export class ProjectAccess {
                         defaultProjectInfo,
                         projectInfo,
                         manifest,
-                        getPackageJson: this.getPackageJson.bind(this),
+                        getPackageJson: (filePath: string) => this.getPackageJson(filePath, fs),
                         hasUI5Tooling: this.hasUI5Tooling.bind(this),
-                        readProjectExtensionSettings: this.readProjectExtensionSettings.bind(this),
+                        readProjectExtensionSettings: (root: string) => this.readProjectExtensionSettings(root, fs),
                         getExtensionProjectModuleName: this.getExtensionProjectModuleName.bind(this),
-                        getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
-                        getFirstBackend: this.getFirstBackend.bind(this),
+                        getDestinationFromNeoApp: (root: string, destinationIn: string) =>
+                            this.getDestinationFromNeoApp(root, destinationIn, fs),
+                        getFirstBackend: (root: string) => this.getFirstBackend(root, fs),
                         getClientFromDestinationName: this.getClientFromDestinationName.bind(this),
-                        getFlpIntentFromHtml: this.getFlpIntentFromHtml.bind(this),
-                        getManifestJson: this.getManifestJson.bind(this)
+                        getFlpIntentFromHtml: (htmlFilePath: string) => this.getFlpIntentFromHtml(htmlFilePath, fs),
+                        getManifestJson: (root: string, webappPath: string) =>
+                            this.getManifestJson(root, webappPath, fs)
                     }),
                     messages: []
                 };
@@ -355,12 +386,14 @@ export class ProjectAccess {
                         projectRoot,
                         defaultProjectInfo,
                         projectInfo,
-                        checkMigratableAdaptationProject: this.checkMigratableAdaptationProject.bind(this),
-                        getPackageJson: this.getPackageJson.bind(this),
+                        checkMigratableAdaptationProject: (root: string) =>
+                            this.checkMigratableAdaptationProject(root, fs),
+                        getPackageJson: (filePath: string) => this.getPackageJson(filePath, fs),
                         hasUI5Tooling: this.hasUI5Tooling.bind(this),
-                        getDestinationFromNeoApp: this.getDestinationFromNeoApp.bind(this),
+                        getDestinationFromNeoApp: (root: string, destinationIn: string) =>
+                            this.getDestinationFromNeoApp(root, destinationIn, fs),
                         getClientFromDestinationName: this.getClientFromDestinationName.bind(this),
-                        getFirstBackend: this.getFirstBackend.bind(this)
+                        getFirstBackend: (root: string) => this.getFirstBackend(root, fs)
                     }),
                     messages: []
                 };
@@ -370,8 +403,13 @@ export class ProjectAccess {
     // ========== Delegated Methods to Utilities ==========
     // These methods delegate to extracted utility modules for better organization
 
-    public static async getWebappPath(projectRoot: string, type?: MigrationTypes, libPath?: string): Promise<string> {
-        return getWebappPath(projectRoot, type, libPath);
+    public static async getWebappPath(
+        projectRoot: string,
+        type?: MigrationTypes,
+        libPath?: string,
+        fsEditor?: Editor
+    ): Promise<string> {
+        return getWebappPath(fsEditor ?? createMemFsEditor(), projectRoot, type, libPath);
     }
 
     public static getManifestPath(projectRoot: string, webappPath: string): string {
@@ -382,12 +420,12 @@ export class ProjectAccess {
         return getPackageJsonPath(projectRoot);
     }
 
-    public static getPackageJson(filePath: string): Promise<any> {
-        return getPackageJson(filePath);
+    public static getPackageJson(filePath: string, fsEditor?: Editor): Promise<any> {
+        return getPackageJson(fsEditor ?? createMemFsEditor(), filePath);
     }
 
-    public static async getManifestJson(projectRoot: string, webappPath: string): Promise<Manifest> {
-        return getManifestJson(projectRoot, webappPath);
+    public static async getManifestJson(projectRoot: string, webappPath: string, fsEditor?: Editor): Promise<Manifest> {
+        return getManifestJson(fsEditor ?? createMemFsEditor(), projectRoot, webappPath);
     }
 
     public static getVersionFromManifest(manifest: Manifest) {
@@ -398,8 +436,8 @@ export class ProjectAccess {
         return getSemanticObjectAction(manifest);
     }
 
-    public static async getFlpIntentFromHtml(htmlFilePath: string) {
-        return getFlpIntentFromHtml(htmlFilePath);
+    public static getFlpIntentFromHtml(htmlFilePath: string, fsEditor?: Editor) {
+        return getFlpIntentFromHtml(fsEditor ?? createMemFsEditor(), htmlFilePath);
     }
 
     public static getFloorPlan(manifest: Manifest, feVersion: any) {
@@ -410,36 +448,42 @@ export class ProjectAccess {
         return getMainEntity(manifest);
     }
 
-    public static getFirstBackend(projectRoot: string): ReturnType<typeof getFirstBackend> {
-        return getFirstBackend(projectRoot);
+    public static getFirstBackend(projectRoot: string, fsEditor?: Editor): ReturnType<typeof getFirstBackend> {
+        return getFirstBackend(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async checkMigratableAdaptationProject(projectRoot: string) {
-        return checkMigratableAdaptationProject(projectRoot);
+    public static async checkMigratableAdaptationProject(projectRoot: string, fsEditor?: Editor) {
+        return checkMigratableAdaptationProject(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async checkIfReuseLib(projectRoot: string, type?: MigrationTypes, manifest?: Manifest) {
-        return checkIfReuseLib(projectRoot, type, manifest);
+    public static async checkIfReuseLib(
+        projectRoot: string,
+        type?: MigrationTypes,
+        manifest?: Manifest,
+        fsEditor?: Editor
+    ) {
+        return checkIfReuseLib(projectRoot, type, manifest, fsEditor ?? createMemFsEditor());
     }
 
-    public static async readProjectExtensionSettings(projectRoot: string) {
-        return readProjectExtensionSettings(projectRoot);
+    public static async readProjectExtensionSettings(projectRoot: string, fsEditor?: Editor) {
+        return readProjectExtensionSettings(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async checkIfProjectExtension(projectRoot: string) {
-        return checkIfProjectExtension(projectRoot);
+    public static async checkIfProjectExtension(projectRoot: string, fsEditor?: Editor) {
+        return checkIfProjectExtension(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async isFioriToolsAdaptationProject(projectRoot: string) {
-        return isFioriToolsAdaptationProject(projectRoot);
+    public static isFioriToolsAdaptationProject(projectRoot: string, fsEditor?: Editor) {
+        return isFioriToolsAdaptationProject(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
     public static async getReuseLibModuleName(
         projectRoot: string,
         workspaceFolders?: readonly ProjectFolder[],
-        manifest?: Manifest
+        manifest?: Manifest,
+        fsEditor?: Editor
     ) {
-        return getReuseLibModuleName(projectRoot, workspaceFolders, manifest);
+        return getReuseLibModuleName(projectRoot, workspaceFolders, manifest, fsEditor ?? createMemFsEditor());
     }
 
     public static getExtensionProjectModuleName(projectRoot: string, projectSettings: any, manifest?: Manifest) {
@@ -450,8 +494,8 @@ export class ProjectAccess {
         return getNeoAppData(neoAppJson, destination, isUiAdaptation);
     }
 
-    public static async getDestinationFromNeoApp(projectRoot: string, destinationIn: string) {
-        return getDestinationFromNeoApp(projectRoot, destinationIn);
+    public static async getDestinationFromNeoApp(projectRoot: string, destinationIn: string, fsEditor?: Editor) {
+        return getDestinationFromNeoApp(fsEditor ?? createMemFsEditor(), projectRoot, destinationIn);
     }
 
     public static getClientFromDestinationName(destination: string) {
@@ -462,13 +506,15 @@ export class ProjectAccess {
 
     public static async getProjectRoots(
         workspaceRoots: readonly ProjectFolder[],
-        sapuxRequired = false
+        sapuxRequired = false,
+        fsEditor?: Editor
     ): Promise<MigratableFolder[]> {
+        const fs = fsEditor ?? createMemFsEditor();
         // find projects by package.json and pom.xml
         // Convert ProjectFolder[] to string[] for project-access functions
         const workspaceRootPaths = workspaceRoots.map((folder) => folder.uri.fsPath);
-        const packageRoots = await findAllProjectRoots(workspaceRootPaths, sapuxRequired);
-        const pomRoots = await findAllWebIDEProjectFolders(workspaceRoots);
+        const packageRoots = await findAllProjectRoots(fs, workspaceRootPaths, sapuxRequired);
+        const pomRoots = await findAllWebIDEProjectFolders(fs, workspaceRoots);
         // find projects by manifest.json in the root
         let manifestRoots = await findProjectsByManifest(workspaceRoots as ProjectFolder[]);
         // A root can be discovered by more than one strategy (e.g. a project with both package.json
@@ -492,7 +538,9 @@ export class ProjectAccess {
         });
 
         // find reuse libs
-        let reuseLibsRoots = (await getReuseLibs(rootFolders)).filter((lib) => lib.value.type === ReuseLibType.LIBRARY);
+        let reuseLibsRoots = (await getReuseLibs(fs, rootFolders)).filter(
+            (lib) => lib.value.type === ReuseLibType.LIBRARY
+        );
         // Roots that are themselves reuse libraries must be emitted only as libraries, never also as
         // plain projects. getReuseLibs assigns a nested library to its nearest package/pom root, so a
         // freestyle app that merely embeds a library shares that libRoot — suppressing by libRoot alone
@@ -505,17 +553,20 @@ export class ProjectAccess {
         if (reuseLibsRoots.length) {
             const reuseLibRootPaths = new Set(reuseLibsRoots.map((lib) => lib.value.libRoot));
             const appRoots: string[] = [];
-            // Fetch all project info in parallel for performance
-            const projectInfoResults = await Promise.all(roots.map((root) => this.getProjectInfo(root)));
-            for (let i = 0; i < roots.length; i++) {
-                const root = roots[i];
-                const result = projectInfoResults[i];
-                const isApp = !!(result.projectInfo.FEVersion || result.projectInfo.isSAPApp);
+            // Resolve project info for all roots in parallel (independent lookups).
+            const rootInfos = await Promise.all(
+                roots.map(async (root) => ({
+                    root,
+                    info: (await this.getProjectInfo(root, undefined, undefined, undefined, fs)).projectInfo
+                }))
+            );
+            for (const { root, info } of rootInfos) {
+                const isApp = !!(info.FEVersion || info.isSAPApp);
                 if (isApp) {
                     appRoots.push(root);
                 } else if (
                     [...reuseLibRootPaths].some((libRoot) => isSamePath(libRoot, root)) ||
-                    result.projectInfo.type === MigrationTypes.library
+                    info.type === MigrationTypes.library
                 ) {
                     libraryOnlyRoots.add(root);
                 }
@@ -538,14 +589,16 @@ export class ProjectAccess {
 
         // A single library root can contain several nested manifest.json files (the library manifest
         // plus per-component manifests), each of which getReuseLibs resolves back to the same libRoot.
-        // Emit one entry per library root so the webview does not list the same library multiple times.
-        const seenLibPaths: string[] = [];
+        // The emitted entry is keyed on libRoot (root: lib.value.libRoot), so deduplicate on libRoot —
+        // not on lib.value.path, which is distinct per nested manifest and would let the same library
+        // through multiple times. Keep the first occurrence so libRoot/libPath stay paired (PR #39527).
+        const seenLibRoots: string[] = [];
         const reuseLibsUnique: MigratableFolder[] = reuseLibsRoots
             .filter((lib) => {
-                if (seenLibPaths.some((path) => isSamePath(path, lib.value.path))) {
+                if (seenLibRoots.some((libRoot) => isSamePath(libRoot, lib.value.libRoot))) {
                     return false;
                 }
-                seenLibPaths.push(lib.value.path);
+                seenLibRoots.push(lib.value.libRoot);
                 return true;
             })
             .map((lib) => {

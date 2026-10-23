@@ -1,4 +1,5 @@
 import type { Data } from 'ejs';
+import type { Editor } from 'mem-fs-editor';
 import { TemplateFileName } from '../../index.js';
 import { FileName } from '../../project-spec-types.js';
 import { handleGitIgnoreFile, handlePackageJsonFile, handleLocateReuseLibsFile } from '../template-generators/index.js';
@@ -17,6 +18,7 @@ const packageJsonTmplName = `${FileName.Package}.tmpl`;
  * - GitIgnore: Merges with existing .gitignore if present
  * - package.json: Merges with existing package.json if present
  *
+ * @param fs - mem-fs editor
  * @param templateName - Name of the template being processed
  * @param templateContent - Rendered template content
  * @param projectRoot - Root directory of the project
@@ -25,6 +27,7 @@ const packageJsonTmplName = `${FileName.Package}.tmpl`;
  * @returns Post-processed template content
  */
 export async function applyFileSpecificHandlers(
+    fs: Editor,
     templateName: string,
     templateContent: string,
     projectRoot: string,
@@ -38,12 +41,12 @@ export async function applyFileSpecificHandlers(
 
     // Handle .gitignore template
     if (templateName === TemplateFileName.GitIgnoreTmpl) {
-        return handleGitIgnoreFile(targetFile, templateContent);
+        return handleGitIgnoreFile(targetFile, templateContent, fs);
     }
 
     // Handle package.json template
     if (templateName === packageJsonTmplName) {
-        return handlePackageJsonFile(projectRoot, targetFile, templateContent, templateData);
+        return handlePackageJsonFile(projectRoot, targetFile, templateContent, templateData, fs);
     }
 
     // No special handling needed

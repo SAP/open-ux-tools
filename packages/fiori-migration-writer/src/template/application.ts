@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import {
     getSapTemplatesMap,
     getFeTemplatesMap,
@@ -19,6 +20,7 @@ import { applyTemplates } from './template-helpers.js';
  * Configuration for applying application templates
  */
 export interface ApplyApplicationTemplatesConfig {
+    fs: Editor;
     projectInfo: ImportProjectInfo;
     templateData: TemplateData;
     rootPath: string;
@@ -38,6 +40,7 @@ export interface ApplyApplicationTemplatesConfig {
  */
 export async function applyApplicationTemplates(config: ApplyApplicationTemplatesConfig): Promise<void> {
     const {
+        fs,
         projectInfo,
         templateData,
         rootPath,
@@ -51,7 +54,7 @@ export async function applyApplicationTemplates(config: ApplyApplicationTemplate
     } = config;
     // Step4b. Apply specific application templates
     if (isSAPApp || projectInfo.FEVersion === fioriElementsVersionEnum.v2) {
-        await applyV2OrSapAppTemplates(projectInfo, templateData, rootPath, {
+        await applyV2OrSapAppTemplates(fs, projectInfo, templateData, rootPath, {
             appIntent,
             appMockIntent,
             hasDataSource,
@@ -60,7 +63,7 @@ export async function applyApplicationTemplates(config: ApplyApplicationTemplate
             migrationTypesEnum
         });
     } else if (projectInfo.FEVersion === fioriElementsVersionEnum.v4) {
-        await applyV4Templates(projectInfo, templateData, rootPath, appIntent, ui5Version);
+        await applyV4Templates(fs, projectInfo, templateData, rootPath, appIntent, ui5Version);
     }
 }
 
@@ -79,12 +82,14 @@ interface V2AppTemplateConfig {
 /**
  * Applies templates for V2 Fiori Elements or SAP apps
  *
+ * @param fs
  * @param projectInfo
  * @param templateData
  * @param rootPath
  * @param config
  */
 async function applyV2OrSapAppTemplates(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     templateData: TemplateData,
     rootPath: string,
@@ -118,6 +123,7 @@ async function applyV2OrSapAppTemplates(
     // Apply FLP sandbox templates (unless extension project)
     if (projectInfo.type !== migrationTypesEnum.projectExtension) {
         await applyTemplates(
+            fs,
             { ...getFLPSandboxTemplatesMap(projectInfo.webappPath), ...appTemplates },
             templateDataFlp,
             rootPath,
@@ -139,7 +145,7 @@ async function applyV2OrSapAppTemplates(
         );
 
         // Create mockserver.js if it doesn't exist
-        if (!(await fileExists(mockServerJsPath))) {
+        if (!fileExists(fs, mockServerJsPath)) {
             mockServerFiles[TemplateFileName.MockServer] = {
                 path: join(DirName.Webapp, DirName.LocalService),
                 targetPath: join(projectInfo.webappPath, DirName.LocalService),
@@ -149,6 +155,7 @@ async function applyV2OrSapAppTemplates(
     }
 
     await applyTemplates(
+        fs,
         { ...mockServerFiles, ...appTemplates },
         templateDataFlpMock,
         rootPath,
@@ -160,6 +167,7 @@ async function applyV2OrSapAppTemplates(
 /**
  * Applies templates for V4 Fiori Elements apps
  *
+ * @param fs
  * @param projectInfo
  * @param templateData
  * @param rootPath
@@ -167,6 +175,7 @@ async function applyV2OrSapAppTemplates(
  * @param ui5Version
  */
 async function applyV4Templates(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     templateData: TemplateData,
     rootPath: string,
@@ -179,6 +188,7 @@ async function applyV4Templates(
     templateDataFlp.project.flpAppId = appIntent.replace('#', '');
 
     await applyTemplates(
+        fs,
         { ...getCommonV4TemplatesMap(projectInfo.webappPath) },
         templateDataFlp,
         rootPath,
