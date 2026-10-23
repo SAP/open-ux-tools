@@ -35,14 +35,14 @@ import type {
  * Copy adaptation (extension) project files from templates
  *
  * @param projectInfo - Project import information
- * @param snapshotUrl - URL for UI5 snapshot version (defaults to official UI5 URL if not provided)
  * @param fs - mem-fs-editor instance for file operations
+ * @param snapshotUrl - URL for UI5 snapshot version (defaults to official UI5 URL if not provided)
  * @returns Result object with fs editor, success status and messages
  */
 export async function copyAdaptationFiles(
     projectInfo: ImportProjectInfo,
-    snapshotUrl: string | undefined = ui5VersionRequestInfo.OfficialUrl,
-    fs: Editor | undefined
+    fs: Editor | undefined,
+    snapshotUrl: string | undefined = ui5VersionRequestInfo.OfficialUrl
 ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
     const messages: Message[] = [];
     const { moduleName, moduleDescription, ui5Version, appTitle, rootPath, destination } = projectInfo;

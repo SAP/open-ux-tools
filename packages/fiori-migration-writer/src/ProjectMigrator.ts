@@ -351,7 +351,7 @@ export class ProjectMigrator {
         projectInfo: ImportProjectInfo,
         snapshotUrl?: string
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
-        return copyAdaptationFiles(projectInfo, snapshotUrl, undefined);
+        return copyAdaptationFiles(projectInfo, undefined, snapshotUrl);
     }
 
     /**

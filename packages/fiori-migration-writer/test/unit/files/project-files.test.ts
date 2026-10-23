@@ -42,7 +42,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(projectInfo, fs, 'https://ui5.sap.com');
 
             expect(result.result).toBe(true);
             expect(result.messages).toHaveLength(0);
@@ -68,7 +68,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(projectInfo, fs, 'https://ui5.sap.com');
 
             // Should succeed with valid reference
             expect(result.result).toBe(true);
@@ -98,7 +98,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, snapshotUrl, fs);
+            const result = await copyAdaptationFiles(projectInfo, fs, snapshotUrl);
 
             expect(result.result).toBe(true);
             expect(result.messages).toHaveLength(0);
@@ -123,7 +123,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(projectInfo, fs, 'https://ui5.sap.com');
 
             expect(result.result).toBe(true);
         });
@@ -147,7 +147,7 @@ describe('project-files', () => {
                 }
             } as ImportProjectInfo;
 
-            const result = await copyAdaptationFiles(projectInfo, 'https://ui5.sap.com', fs);
+            const result = await copyAdaptationFiles(projectInfo, fs, 'https://ui5.sap.com');
 
             expect(result.result).toBe(true);
         });
