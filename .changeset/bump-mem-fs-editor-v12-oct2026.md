@@ -1,6 +1,8 @@
 ---
 "@sap-ux/generator-odata-downloader": patch
 "@sap-ux/fiori-tools-plugin": patch
+"sap-ux-sap-systems-ext": patch
+"@sap-ux/eslint-plugin-fiori-tools": patch
 "@sap-ux/abap-deploy-config-sub-generator": patch
 "@sap-ux/abap-deploy-config-writer": patch
 "@sap-ux/adp-tooling": patch
