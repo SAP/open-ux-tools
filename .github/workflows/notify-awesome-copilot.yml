@@ -94,10 +94,18 @@ jobs:
                   ISSUE_URL: ${{ steps.issue_url.outputs.url }}
                   ACTOR: ${{ github.actor }}
               run: |
+                  USER_TYPE=$(gh api users/${ACTOR} --jq '.type' 2>/dev/null)
+                  if [[ "$USER_TYPE" == "User" ]]; then
+                    ASSIGN="--assignee ${ACTOR}"
+                  else
+                    PARENT_SHA=$(git log HEAD~1 --pretty='%H' -1)
+                    PARENT_LOGIN=$(gh api repos/SAP/open-ux-tools/commits/${PARENT_SHA} --jq '.author.login // empty' 2>/dev/null)
+                    [[ -n "$PARENT_LOGIN" ]] && ASSIGN="--assignee ${PARENT_LOGIN}" || ASSIGN=""
+                  fi
                   gh issue create \
                     --repo SAP/open-ux-tools \
                     --title "chore: submit sap-ux-fiori-tools ${NEW_VERSION} to Awesome Copilot" \
-                    --assignee "${ACTOR}" \
+                    $ASSIGN \
                     --label "plugins-coding-agents" \
                     --body "Plugin \`sap-ux-fiori-tools\` was bumped from \`${OLD_VERSION}\` to \`${NEW_VERSION}\`.
 
