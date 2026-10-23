@@ -39,7 +39,7 @@
         "react-virtualized": "9.22.6",
         "rimraf": "6.1.3",
         "ts-jest": "29.4.11",
-        "typescript": "5.9.3",
+        "typescript": "6.0.3",
         "typescript-eslint": "8.64.0",
         "update-ts-references": "4.0.0",
         "yaml": "2.9.0",
