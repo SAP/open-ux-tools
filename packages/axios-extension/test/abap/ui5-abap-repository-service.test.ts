@@ -130,7 +130,7 @@ describe('Ui5AbapRepositoryService', () => {
         });
 
         test('Server error (500) logs the response body at debug level and re-throws', async () => {
-            await expect(service.getInfo(serverErrorApp)).rejects.toThrow('Internal Server Error (500)');
+            await expect(service.getInfo(serverErrorApp)).rejects.toThrow('Request failed with status code 500');
             expect(loggerMock.debug).toHaveBeenCalledWith(serverErrorBody);
         });
     });
@@ -145,6 +145,11 @@ describe('Ui5AbapRepositoryService', () => {
         test('Non-existing app returning 404', async () => {
             const data = await service.downloadFiles(notExistingApp);
             expect(data).toBeUndefined();
+        });
+
+        test('Server error (500) logs the response body at debug level and re-throws', async () => {
+            await expect(service.downloadFiles(serverErrorApp)).rejects.toThrow('Request failed with status code 500');
+            expect(loggerMock.debug).toHaveBeenCalledWith(serverErrorBody);
         });
     });
 
