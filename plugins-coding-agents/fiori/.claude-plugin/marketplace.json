@@ -6,7 +6,11 @@
   "plugins": [
     {
       "name": "sap-ux-fiori-tools",
-      "source": "./",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "path": "plugins-coding-agents/fiori"
+      },
       "description": "MCP server and skills for SAP Fiori development. Build, modify, and test SAP Fiori Elements applications with AI assistance.",
       "version": "1.16.2",
       "author": {
