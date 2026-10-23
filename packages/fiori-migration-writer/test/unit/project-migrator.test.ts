@@ -221,35 +221,31 @@ describe('ProjectMigrator', () => {
             expect(messages).toBeDefined();
         });
 
-        it(
-            'should handle migration errors with proper fallback message',
-            async () => {
-                const { ProjectMigrator } = await import('../../src/ProjectMigrator.js');
+        it('should handle migration errors with proper fallback message', async () => {
+            const { ProjectMigrator } = await import('../../src/ProjectMigrator.js');
 
-                // Create invalid project structure (no manifest.json)
-                const projectName = 'error-test';
-                const absoluteProjectRoot = join(testOutputDir, projectName);
-                await mkdir(absoluteProjectRoot, { recursive: true });
+            // Create invalid project structure (no manifest.json)
+            const projectName = 'error-test';
+            const absoluteProjectRoot = join(testOutputDir, projectName);
+            await mkdir(absoluteProjectRoot, { recursive: true });
 
-                // Call migrate with invalid project
-                const { result, messages } = await ProjectMigrator.migrate({
-                    projectRoot: absoluteProjectRoot,
-                    baseUri: 'https://backend.example.com',
-                    fs
-                });
+            // Call migrate with invalid project
+            const { result, messages } = await ProjectMigrator.migrate({
+                projectRoot: absoluteProjectRoot,
+                baseUri: 'https://backend.example.com',
+                fs
+            });
 
-                // Should fail but have error messages
-                expect(result).toBe(false);
-                expect(messages.length).toBeGreaterThan(0);
+            // Should fail but have error messages
+            expect(result).toBe(false);
+            expect(messages.length).toBeGreaterThan(0);
 
-                // All error messages should be non-empty (testing the fallback chain)
-                messages.forEach((msg) => {
-                    expect(msg.type).toBe('ERROR');
-                    expect(msg.description).toBeTruthy();
-                    expect(msg.description.length).toBeGreaterThan(0);
-                });
-            },
-            10000
-        ); // 10s timeout for migration
+            // All error messages should be non-empty (testing the fallback chain)
+            messages.forEach((msg) => {
+                expect(msg.type).toBe('ERROR');
+                expect(msg.description).toBeTruthy();
+                expect(msg.description.length).toBeGreaterThan(0);
+            });
+        }, 10000); // 10s timeout for migration
     });
 });
