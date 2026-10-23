@@ -32,7 +32,7 @@ The MCP server binary is published as [@sap-ux/fiori-mcp-server](https://www.npm
 > Once listed in the [Claude Code public marketplace](https://github.com/anthropics/claude-plugins-official), this can be simplified to `claude plugin install sap-ux-fiori-tools`.
 
 ```bash
-claude plugin marketplace add https://github.com/SAP/open-ux-tools --sparse plugins-coding-agents/fiori
+claude plugin marketplace add https://raw.githubusercontent.com/SAP/open-ux-tools/main/plugins-coding-agents/fiori/.claude-plugin/marketplace.json
 claude plugin install sap-ux-fiori-tools
 ```
 
