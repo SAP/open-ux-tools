@@ -12,7 +12,8 @@ config.transform = {
     '^.+\\.ts$': ['ts-jest', {
         tsconfig: {
             module: 'CommonJS',
-            moduleResolution: 'node'
+            moduleResolution: 'node',
+            types: ['jest', 'node']
         }
     }]
 };
