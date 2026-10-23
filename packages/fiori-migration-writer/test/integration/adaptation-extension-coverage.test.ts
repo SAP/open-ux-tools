@@ -302,6 +302,33 @@ describe('Adaptation Project - Enhanced Coverage', () => {
 
         expect(result).toBeDefined();
     });
+
+    it('should handle adaptation project without explicit ui5SnapshotUrl (use default)', async () => {
+        const testProjectPath = join(testOutputDir, 'adaptation-default-snapshot');
+        mkdirSync(join(testProjectPath, 'webapp'), { recursive: true });
+
+        const variantManifest = {
+            id: 'customer.extension',
+            reference: 'base.app.id',
+            layer: 'CUSTOMER_BASE'
+        };
+        writeFileSync(
+            join(testProjectPath, 'webapp', 'manifest.appdescr_variant'),
+            JSON.stringify(variantManifest, null, 2)
+        );
+
+        const fs = loadProjectIntoMemFs(testProjectPath);
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            // ui5SnapshotUrl intentionally omitted to test default parameter
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
+
+        expect(result).toBeDefined();
+    });
 });
 
 describe('Extension Project - Enhanced Coverage', () => {
@@ -471,4 +498,58 @@ describe('Extension Project - Enhanced Coverage', () => {
 
         expect(result).toBeDefined();
     });
+
+    it('should handle adaptation project without explicit ui5SnapshotUrl (use default)', async () => {
+        const testProjectPath = join(testOutputDir, 'adaptation-default-snapshot');
+        mkdirSync(join(testProjectPath, 'webapp'), { recursive: true });
+
+        const variantManifest = {
+            id: 'customer.extension',
+            reference: 'base.app.id',
+            layer: 'CUSTOMER_BASE'
+        };
+        writeFileSync(
+            join(testProjectPath, 'webapp', 'manifest.appdescr_variant'),
+            JSON.stringify(variantManifest, null, 2)
+        );
+
+        const fs = loadProjectIntoMemFs(testProjectPath);
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            // ui5SnapshotUrl intentionally omitted to test default parameter
+            vscode: undefined,
+            internalToggle: false,
+            fs
+        });
+
+        expect(result).toBeDefined();
+    });
+});
+
+it('should handle adaptation project without explicit ui5SnapshotUrl (use default)', async () => {
+    const testProjectPath = join(testOutputDir, 'adaptation-default-snapshot');
+    mkdirSync(join(testProjectPath, 'webapp'), { recursive: true });
+
+    const variantManifest = {
+        id: 'customer.extension',
+        reference: 'base.app.id',
+        layer: 'CUSTOMER_BASE'
+    };
+    writeFileSync(
+        join(testProjectPath, 'webapp', 'manifest.appdescr_variant'),
+        JSON.stringify(variantManifest, null, 2)
+    );
+
+    const fs = loadProjectIntoMemFs(testProjectPath);
+    const { result } = await ProjectMigrator.migrate({
+        projectRoot: testProjectPath,
+        baseUri: DUMMY_BACKEND_URL,
+        // ui5SnapshotUrl intentionally omitted to test default parameter
+        vscode: undefined,
+        internalToggle: false,
+        fs
+    });
+
+    expect(result).toBeDefined();
 });
