@@ -1,5 +1,14 @@
 # @sap-ux/app-config-writer
 
+## 1.1.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+
 ## 1.1.28
 
 ### Patch Changes

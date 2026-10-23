@@ -1,5 +1,22 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Stop emitting unpassable `iCheckField` steps for ObjectPage checkbox-group fields. A nested all-boolean `UI.FieldGroup` renders as a group of checkboxes whose members are not addressable by the sap.fe.test.api form API; such fields are now emitted commented out with an explanatory note instead of as live assertions. [[9a4ce7f](https://github.com/SAP/open-ux-tools/commit/9a4ce7fbcb9d778fcba88b840f13cda2303ac3d9)]
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.27 → 1.2.28
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+
 ## 1.19.0
 
 ### Minor Changes
