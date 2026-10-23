@@ -89,7 +89,8 @@
         "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project."
     },
     "warnings": {
-        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
+        "authenticationFailedUpdateCredentialsMessage": "Authentication failed. Please try updating the credentials."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",
