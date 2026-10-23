@@ -1064,6 +1064,57 @@ describe('FE V4 Linker - XML', () => {
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
     });
+
+    describe('collectSections', () => {
+        const spvFacetAnnotation = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="SpvSection" />
+                            <PropertyValue Property="Label" String="SPV Section" />
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.SelectionPresentationVariant" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="UI.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="id" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>`;
+
+        test('SelectionPresentationVariant facet creates table section via LineItem visualization', async () => {
+            const context = await setup({ annotationsChange: spvFacetAnnotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(1);
+            expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
+        });
+    });
 });
 
 const CAP_FACET_NO_ID = `
@@ -1091,28 +1142,34 @@ describe('FE V4 Linker - CAP', () => {
     let artifacts: FoundFioriArtifacts;
     const fileCache = new Map<string, string>();
 
-    beforeAll(async () => {
-        npmInstall(CAP_PROJECT_PATH);
-        artifacts = await findFioriArtifacts({
-            wsFolders: [CAP_PROJECT_PATH],
-            artifacts: ['applications', 'adaptations']
-        });
-        const files = [
-            join('app', 'incidents', 'annotations.cds'),
-            join('srv', 'incidentservice.cds'),
-            join('app', 'incidents', 'webapp', 'manifest.json')
-        ];
-        for (const file of files) {
-            const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
-            let content = await readFile(absolutePath, 'utf-8');
-            if (file.endsWith('annotations.cds')) {
-                content +=
-                    CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION + CAP_SECOND_TABLE_ANNOTATION;
+    beforeAll(
+        async () => {
+            npmInstall(CAP_PROJECT_PATH);
+            artifacts = await findFioriArtifacts({
+                wsFolders: [CAP_PROJECT_PATH],
+                artifacts: ['applications', 'adaptations']
+            });
+            const files = [
+                join('app', 'incidents', 'annotations.cds'),
+                join('srv', 'incidentservice.cds'),
+                join('app', 'incidents', 'webapp', 'manifest.json')
+            ];
+            for (const file of files) {
+                const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
+                let content = await readFile(absolutePath, 'utf-8');
+                if (file.endsWith('annotations.cds')) {
+                    content +=
+                        CAP_FACETS_ANNOTATIONS +
+                        CAP_FACET_NO_ID +
+                        CAP_FACET_NO_ANNOTATION +
+                        CAP_SECOND_TABLE_ANNOTATION;
+                }
+                const uri = pathToFileURL(absolutePath).toString();
+                fileCache.set(uri, content);
             }
-            const uri = pathToFileURL(absolutePath).toString();
-            fileCache.set(uri, content);
-        }
-    });
+        },
+        5 * 60 * 1000
+    );
 
     async function setup(options?: TestOptions): Promise<LinkerContext> {
         const testCache = new Map<string, string>(fileCache);

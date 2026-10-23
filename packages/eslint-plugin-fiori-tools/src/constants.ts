@@ -13,3 +13,4 @@ export const UI_COLLECTION_FACET = 'com.sap.vocabularies.UI.v1.CollectionFacet';
 export const UI_FACETS = 'com.sap.vocabularies.UI.v1.Facets';
 export const UI_REFERENCE_FACET = 'com.sap.vocabularies.UI.v1.ReferenceFacet';
 export const UI_PRESENTATION_VARIANT = 'com.sap.vocabularies.UI.v1.PresentationVariant';
+export const UI_SELECTION_PRESENTATION_VARIANT = 'com.sap.vocabularies.UI.v1.SelectionPresentationVariant';
