@@ -5,4 +5,4 @@
 '@sap-ux/fiori-tools-plugin': patch
 ---
 
-fix: [ADP][Auth] Remove redundant check for destination configuration.
+fix: [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined.
