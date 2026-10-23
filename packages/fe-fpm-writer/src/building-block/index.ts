@@ -12,7 +12,7 @@ import {
 } from '@xmldom/xmldom';
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
@@ -77,17 +77,17 @@ function isFullPageTemplate(data: BuildingBlock): boolean {
  *
  * @param {string} basePath - the base path
  * @param {BuildingBlockConfig} config - the building block configuration parameters
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Editor} the updated memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
+ * @returns {MemFsEditor} the updated memfs editor instance
  */
 export async function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     await validateBasePath(basePath, fs, []);
     const fnGenerateId = config.buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
 
@@ -260,7 +260,7 @@ function getMetaPath(
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
  * @param {Manifest} manifest - the manifest content
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {string} the template xml file content
@@ -269,7 +269,7 @@ function getTemplateContent<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: XmldomDocument | undefined,
     manifest: Manifest | undefined,
-    fs: Editor,
+    fs: MemFsEditor,
     usePlaceholders?: boolean,
     templateConfig?: TemplateConfig
 ): string {
@@ -323,11 +323,11 @@ function getTemplateContent<T extends BuildingBlock>(
 /**
  * Method returns the manifest content for the required dependency library.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string} library - the dependency library
  * @returns {Promise<string>} Manifest content for the required dependency library.
  */
-export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'): Promise<string> {
+export async function getManifestContent(fs: MemFsEditor, library = 'sap.fe.macros'): Promise<string> {
     // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
     const templatePath = getTemplatePath('/building-block/common/manifest.json');
     return render(fs.read(templatePath), { libraries: { [library]: {} } });
@@ -338,7 +338,7 @@ export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'):
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param  {Manifest} manifest - the manifest content
  * @param {Record<string, unknown>} templateConfig - additional template configuration
  * @returns {Document} the template xml file document
@@ -346,7 +346,7 @@ export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'):
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: XmldomDocument | undefined,
-    fs: Editor,
+    fs: MemFsEditor,
     manifest: Manifest | undefined,
     templateConfig: TemplateConfig
 ): XmldomDocument {
@@ -381,10 +381,10 @@ function getTemplateDocument<T extends BuildingBlock>(
  * @param {string} aggregationPath - the aggregation xpath
  * @param {Document} viewDocument - the view xml document
  * @param {Document} templateDocument - the template xml document
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
  * @param {boolean} [replace] - If true, replaces the target element with the template xml document;
  * if false, appends the source node.
- * @returns {Editor} the updated memfs editor instance
+ * @returns {MemFsEditor} the updated memfs editor instance
  */
 function updateViewFile(
     basePath: string,
@@ -392,9 +392,9 @@ function updateViewFile(
     aggregationPath: string,
     viewDocument: XmldomDocument,
     templateDocument: XmldomDocument,
-    fs: Editor,
+    fs: MemFsEditor,
     replace: boolean = false
-): Editor {
+): MemFsEditor {
     const root = viewDocument.documentElement ?? viewDocument.firstChild;
     if (!root) {
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
@@ -452,13 +452,13 @@ function getFilePathProps(basePath: string, relativePath?: string): FilePathProp
  *
  * @param {string} basePath - The base path
  * @param {BuildingBlockConfig} config - The building block configuration
- * @param {Editor} [fs] - The memfs editor instance
+ * @param {MemFsEditor} [fs] - The memfs editor instance
  * @returns {{ [questionName: string]: CodeSnippet }} An object with serialized code snippet content and file props
  */
 export async function getSerializedFileContent<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<{ [questionName: string]: CodeSnippet }> {
     const snippets: { [questionName: string]: CodeSnippet } = {};
     const { buildingBlockData, viewOrFragmentPath, allowAutoAddDependencyLib = true } = config;
@@ -466,7 +466,7 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         return {};
     }
     // Validate the base and view paths
-    fs = fs ?? create(createStorage());
+    fs = fs ?? create(createStorage<VinylMemFsEditorFile>());
     // Read the view xml and template files and get content of the view xml file
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);

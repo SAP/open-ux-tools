@@ -49,7 +49,7 @@ describe('Test command add smartlinks-config', () => {
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockGenerateSmartLinksConfig.mockResolvedValue(fsMock);
         // 1. prompt: target, 2. prompt: user

@@ -2,13 +2,13 @@ import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types.
 import { updateRootPackageJson, updateAppPackageJson } from './package-json.js';
 import { updateTsConfig } from './tsconfig-and-yaml.js';
 import { enableCdsUi5Plugin as writeCdsUi5Plugin } from '../cap-config/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Applies updates to a CAP project based on the provided options.
  *
  * @async
- * @param {Editor} fs - The file system editor object.
+ * @param {MemFsEditor} fs - The file system editor object.
  * @param {CapServiceCdsInfo} capService - The CAP service information.
  * @param {CapProjectSettings} capProjectSettings - Settings related to the CAP project.
  * @param {string} capProjectSettings.appRoot - The application's root path.
@@ -21,7 +21,7 @@ import type { Editor } from 'mem-fs-editor';
  * @returns {Promise<void>} A promise that resolves when the updates are applied.
  */
 export async function applyCAPUpdates(
-    fs: Editor,
+    fs: MemFsEditor,
     capService: CapServiceCdsInfo,
     capProjectSettings: CapProjectSettings
 ): Promise<void> {

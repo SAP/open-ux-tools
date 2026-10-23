@@ -7,7 +7,7 @@ import {
     type AnnotationServiceParameters,
     type GenerateAnnotationsOptions
 } from '@sap-ux/annotation-generator';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { TemplateTypeAttributes } from './data/templateAttributes.js';
 import type { Logger } from '@sap-ux/logger';
 import { t } from './i18n.js';
@@ -38,7 +38,7 @@ function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo)
 export async function writeAnnotations<T extends {}>(
     basePath: string,
     feApp: FioriElementsApp<T>,
-    fs: Editor,
+    fs: MemFsEditor,
     log?: Logger
 ): Promise<void> {
     if (TemplateTypeAttributes[feApp.template.type]?.annotationGenerationSupport?.[feApp.service.version]) {

@@ -3,7 +3,7 @@ import { dirname, isAbsolute, join, parse } from 'node:path';
 import { FileName } from '../constants.js';
 import { readJSON, updatePackageJSON } from '../file/index.js';
 import type { Package } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Helper to check for dependency/devDependency.
@@ -57,7 +57,7 @@ export async function addPackageDevDependency(
     basePath: string,
     depName: string,
     depVersion: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<void> {
     const filePath = join(basePath, FileName.Package);
     const packageJson = await readJSON<Package>(filePath, fs);

@@ -2,7 +2,7 @@ import type { CdsEnvironment, NewI18nEntry } from '../../types.js';
 import { printPropertiesI18nEntry, capPropertiesPath, doesExist, writeFile } from '../../utils/index.js';
 import { tryAddCsvTexts } from './csv.js';
 import { writeToExistingI18nPropertiesFile } from '../utils/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Add i18n entries to respective i18n file.
@@ -19,7 +19,7 @@ export async function tryAddPropertiesTexts(
     env: CdsEnvironment,
     path: string,
     newI18nEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const newContent = newI18nEntries
         .map((entry) => printPropertiesI18nEntry(entry.key, entry.value, entry.annotation))

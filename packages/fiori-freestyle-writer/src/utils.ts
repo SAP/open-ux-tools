@@ -1,6 +1,5 @@
 import { sep } from 'node:path';
 import type { FreestyleApp } from './types.js';
-import { TemplateType } from './types.js';
 import { gte } from 'semver';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
@@ -29,17 +28,11 @@ export function compareUI5VersionGte(ui5VersionA: string, ui5VersionB: string): 
  * @returns {string} - The template version path.
  */
 export function getTemplateVersionPath(ffApp: FreestyleApp<unknown>): string {
-    let templateVersionPath = '';
     const ui5Version = ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '';
-    if (ffApp.template.type === TemplateType.Basic) {
-        if (compareUI5VersionGte(ui5Version, ui5LtsVersion_1_120)) {
-            templateVersionPath = ui5LtsVersion_1_120;
-        } else {
-            templateVersionPath = ui5LtsVersion_1_71;
-        }
+    if (compareUI5VersionGte(ui5Version, ui5LtsVersion_1_120)) {
+        return ui5LtsVersion_1_120;
     }
-
-    return templateVersionPath;
+    return ui5LtsVersion_1_71;
 }
 
 /**

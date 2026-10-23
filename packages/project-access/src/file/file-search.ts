@@ -1,5 +1,5 @@
-import type { Editor, FileMap } from 'mem-fs-editor';
-import { basename, dirname, extname, join, sep, posix } from 'node:path';
+import type { MemFsEditor } from 'mem-fs-editor';
+import { basename, dirname, extname, join, resolve, sep, posix } from 'node:path';
 import type { FindError } from 'findit2';
 import find from 'findit2';
 import { fileExists } from './file-access.js';
@@ -23,7 +23,7 @@ import { promises as fs } from 'node:fs';
  * @returns - array of deleted and modified files filtered by query
  */
 function getMemFsChanges(
-    changes: FileMap,
+    changes: ReturnType<MemFsEditor['dump']>,
     fileNames: string[],
     extensionNames: string[],
     root: string
@@ -66,13 +66,15 @@ function getFindResultOnEnd(
     extensionNames: string[],
     root: string,
     errors: FindError[],
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): { searchResult: string[]; fatalErrors: FindError[] } {
     let searchResult = results;
     let fatalErrors = errors;
 
     if (memFs) {
-        const { modified, deleted } = getMemFsChanges(memFs.dump(''), fileNames, extensionNames, root);
+        const rawDump = memFs.dump();
+        const absDump = Object.fromEntries(Object.entries(rawDump).map(([relPath, val]) => [resolve(relPath), val]));
+        const { modified, deleted } = getMemFsChanges(absDump, fileNames, extensionNames, root);
         const merged = Array.from(new Set([...results, ...modified]));
         searchResult = merged.filter((f) => !deleted.includes(f));
         // Filter out errors that are of type ENOENT and path is part of memfs changes, which can happen for folders that contain memfs files only.
@@ -105,7 +107,7 @@ export function findBy(options: {
     root: string;
     excludeFolders?: string[];
     noTraversal?: boolean;
-    memFs?: Editor;
+    memFs?: MemFsEditor;
 }): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const results: string[] = [];
@@ -166,7 +168,7 @@ export async function findFiles(
     filename: string,
     root: string,
     excludeFolders: string[],
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<string[]> {
     const results = await findBy({ fileNames: [filename], root, excludeFolders, memFs });
     return results.map((f) => dirname(f));
@@ -186,7 +188,7 @@ export function findFilesByExtension(
     extension: string,
     root: string,
     excludeFolders: string[],
-    memFs?: Editor,
+    memFs?: MemFsEditor,
     noTraversal?: boolean
 ): Promise<string[]> {
     return findBy({ extensionNames: [extension], root, excludeFolders, noTraversal, memFs });
@@ -200,7 +202,7 @@ export function findFilesByExtension(
  * @param fs - optional mem-fs-editor instance
  * @returns - path to file name if found, otherwise undefined
  */
-export async function findFileUp(fileName: string, startPath: string, fs?: Editor): Promise<string | undefined> {
+export async function findFileUp(fileName: string, startPath: string, fs?: MemFsEditor): Promise<string | undefined> {
     const filePath = join(startPath, fileName);
     if (await fileExists(filePath, fs)) {
         return filePath;

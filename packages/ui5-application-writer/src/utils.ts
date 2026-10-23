@@ -1,8 +1,10 @@
 import { gte, coerce } from 'semver';
 import { type UI5, type TemplateOptions } from './types.js';
 import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import ejs from 'ejs';
 import { FileName } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
 export const ui5LtsVersion_1_120 = '1.120.0';
@@ -70,7 +72,7 @@ export function processDestinationPath(filePath: string): string {
  * @param options.ui5Version - Optional UI5 version to determine template version
  */
 export function copyTemplates(options: {
-    fs: Editor;
+    fs: MemFsEditor;
     basePath: string;
     tmplPath: string;
     templateOptions: TemplateOptions;
@@ -79,7 +81,10 @@ export function copyTemplates(options: {
 }): void {
     const { fs, basePath, tmplPath, templateOptions, ignore, ui5Version } = options;
 
-    const remainingCoreFiles = ['gitignore.tmpl', FileName.Package, FileName.Ui5LocalYaml, FileName.Ui5Yaml];
+    const skipUi5Local = ignore.some((p) => p.includes('ui5-local.yaml'));
+    const remainingCoreFiles = skipUi5Local
+        ? [FileName.Package, FileName.Ui5Yaml]
+        : [FileName.Package, FileName.Ui5LocalYaml, FileName.Ui5Yaml];
 
     const resolvedUi5Version = ui5Version ?? ui5LtsVersion_1_120;
     const templateUi5Version = compareUI5VersionGte(resolvedUi5Version, ui5LtsVersion_1_120)
@@ -87,19 +92,28 @@ export function copyTemplates(options: {
         : ui5LtsVersion_1_71;
 
     // Copy version-specific template files
+
     fs.copyTpl(join(tmplPath, 'core', templateUi5Version, '**/*.*'), join(basePath), templateOptions, undefined, {
-        globOptions: { dot: true, ignore }
+        globOptions: { dot: true, ignore } as any
     });
 
     // Copy remaining common files
+
     fs.copyTpl(
         remainingCoreFiles.map((fileName) => join(tmplPath, 'core', fileName)),
         join(basePath),
         templateOptions,
         undefined,
         {
-            globOptions: { dot: true, ignore },
-            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+            globOptions: { dot: true, ignore } as any
         }
     );
+    // Copy gitignore template directly to .gitignore — avoid using noGlob which has the side effect
+    // of loading the source file into the store, causing it to be re-copied on subsequent calls.
+    const gitignoreTmpl = join(tmplPath, 'core', 'gitignore.tmpl');
+    const skipGitignore = ignore.some((p) => p.includes('gitignore.tmpl'));
+    if (!skipGitignore) {
+        const rendered = ejs.render(readFileSync(gitignoreTmpl, 'utf-8'), templateOptions, { filename: gitignoreTmpl });
+        fs.write(join(basePath, '.gitignore'), rendered);
+    }
 }

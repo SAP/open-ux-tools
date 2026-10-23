@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { getTemplatePath } from '../templates.js';
 import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types.js';
@@ -99,7 +99,7 @@ function getFileName(fileName: string, controllerPrefix?: string): string {
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
-    fs: Editor,
+    fs: MemFsEditor,
     config: Partial<InternalCustomElement>,
     eventHandler: EventHandlerConfiguration | true | string,
     eventHandlerOptions: EventHandlerConfigurationOptions,

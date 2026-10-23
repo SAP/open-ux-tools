@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ReuseLibConfig } from './types.js';
 import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
@@ -12,7 +12,7 @@ import { yamlFiles, ManifestReuseType } from './constants.js';
  * @param reuseLibs reuse libraries for referencing
  * @param fs mem-fs editor instance
  */
-export async function updateManifest(projectPath: string, reuseLibs: ReuseLibConfig[], fs: Editor) {
+export async function updateManifest(projectPath: string, reuseLibs: ReuseLibConfig[], fs: MemFsEditor) {
     const webapp = await getWebappPath(projectPath);
     const manifestPath = join(webapp, 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as any as Manifest;
@@ -37,7 +37,7 @@ export async function updateManifest(projectPath: string, reuseLibs: ReuseLibCon
  * @param reuseLibs reuse libraries for referencing
  * @param fs mem-fs editor instance
  */
-export function updateYaml(projectPath: string, reuseLibs: ReuseLibConfig[], fs: Editor) {
+export function updateYaml(projectPath: string, reuseLibs: ReuseLibConfig[], fs: MemFsEditor) {
     yamlFiles.forEach(async (yaml) => {
         const yamlPath = join(projectPath, yaml);
         if (fs.exists(yamlPath)) {

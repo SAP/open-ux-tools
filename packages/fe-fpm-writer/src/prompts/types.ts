@@ -1,5 +1,5 @@
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Project } from '@sap-ux/project-access';
 import type {
     PromptQuestion,
@@ -37,7 +37,7 @@ export interface PromptContextOptions {
 }
 
 export interface PromptContext {
-    fs: Editor;
+    fs: MemFsEditor;
     project?: Project;
     appPath: string;
     appId: string;

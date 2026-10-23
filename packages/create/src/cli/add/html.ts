@@ -5,6 +5,7 @@ import { generatePreviewFiles } from '@sap-ux/preview-middleware';
 import { isAbsolute, join } from 'node:path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
+import type { VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { FileName } from '@sap-ux/project-access';
@@ -46,7 +47,7 @@ async function addHtmlFiles(basePath: string, simulate: boolean, yamlPath: strin
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         await validateBasePath(basePath, ui5ConfigPath);
 
-        const fs = create(createStorage());
+        const fs = create(createStorage<VinylMemFsEditorFile>());
         const ui5Conf = await UI5Config.newInstance(fs.read(ui5ConfigPath));
         const preview =
             ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
@@ -54,7 +55,7 @@ async function addHtmlFiles(basePath: string, simulate: boolean, yamlPath: strin
 
         await generatePreviewFiles(basePath, preview?.configuration ?? {}, fs, logger);
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
+            await fs.commit();
         } else {
             await traceChanges(fs);
         }

@@ -10,7 +10,7 @@ import {
     DESTINATION_CHOICE_DIRECT_SERVICE_BINDING
 } from '../utils/index.js';
 import type { Manifest } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { CfSystemChoice } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**
@@ -155,7 +155,7 @@ export function destinationQuestionDefaultOption(
  * @param appPath - path to the project
  * @returns manifest object
  */
-export async function loadManifest(fs: Editor, appPath: string): Promise<Manifest | undefined> {
+export async function loadManifest(fs: MemFsEditor, appPath: string): Promise<Manifest | undefined> {
     const manifestPath = join(await getWebappPath(appPath), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 

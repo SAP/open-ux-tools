@@ -1,7 +1,7 @@
 import { homedir } from 'node:os';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { join } from 'node:path';
 
 export const appInfoFilePath = join(homedir(), '.fioritools', 'appInfo.json');
@@ -16,11 +16,11 @@ interface AppInfoSettings {
 /**
  * Returns a mem-fs editor instance. If an instance is not provided, a new one is created.
  *
- * @param {Editor} [fs] - An optional mem-fs editor instance.
- * @returns {Editor} - The mem-fs editor instance.
+ * @param {MemFsEditor} [fs] - An optional mem-fs editor instance.
+ * @returns {MemFsEditor} - The mem-fs editor instance.
  */
-function getFsInstance(fs?: Editor): Editor {
-    return fs ?? create(createStorage());
+function getFsInstance(fs?: MemFsEditor): MemFsEditor {
+    return fs ?? create(createStorage<VinylMemFsEditorFile>());
 }
 
 /**
@@ -29,10 +29,10 @@ function getFsInstance(fs?: Editor): Editor {
  * If the file does not exist, it returns the default application information settings.
  *
  * @param {string} filePath - The path to the JSON file.
- * @param {Editor} fs - The mem-fs editor instance used for file system operations.
+ * @param {MemFsEditor} fs - The mem-fs editor instance used for file system operations.
  * @returns {AppInfoSettings} - The parsed JSON object, or the default settings if the file does not exist.
  */
-function readJSONFile(filePath: string, fs: Editor): AppInfoSettings {
+function readJSONFile(filePath: string, fs: MemFsEditor): AppInfoSettings {
     return fs.exists(filePath) ? JSON.parse(fs.read(filePath)) : defaultAppInfoContents;
 }
 
@@ -42,14 +42,14 @@ function readJSONFile(filePath: string, fs: Editor): AppInfoSettings {
  * in the list of generated files for future reference.
  *
  * @param {string} path - The file path to add to the `latestGeneratedFiles` array.
- * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
+ * @param {MemFsEditor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
  */
-export function writeApplicationInfoSettings(path: string, fs?: Editor) {
+export function writeApplicationInfoSettings(path: string, fs?: MemFsEditor) {
     fs = getFsInstance(fs);
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     appInfoContents.latestGeneratedFiles.push(path);
     fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
-    fs.commit((err) => {
+    fs.commit().catch((err) => {
         console.log('Error in writting to AppInfo.json file', err);
     });
 }
@@ -59,17 +59,15 @@ export function writeApplicationInfoSettings(path: string, fs?: Editor) {
  * This function checks if the file exists and attempts to delete it. If an error occurs during deletion,
  * it throws a new error with a descriptive message.
  *
- * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
+ * @param {MemFsEditor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
  * @throws {Error} Throws an error if there is a problem deleting the file.
  */
-export function deleteAppInfoSettings(fs?: Editor) {
+export function deleteAppInfoSettings(fs?: MemFsEditor) {
     fs = getFsInstance(fs);
     if (fs.exists(appInfoFilePath)) {
         try {
-            // suppressErrors prevents globby from throwing ENOTDIR when the parent
-            // directory doesn't exist on disk (file exists only in-memory store).
-            fs.delete(appInfoFilePath, { globOptions: { suppressErrors: true } });
-            fs.commit((err) => {
+            fs.delete(appInfoFilePath);
+            fs.commit().catch((err) => {
                 console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
             });
         } catch (err) {
@@ -90,7 +88,7 @@ export function deleteAppInfoSettings(fs?: Editor) {
  * @param {Function} [executeCommand] - An optional callback function to execute a VS Code command.
  * The function will be called with the file path from the `latestGeneratedFiles` array.
  * If not provided, the command execution step will be skipped.
- * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
+ * @param {MemFsEditor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
  * @param {boolean} [autoOpen] - Whether to automatically open the Application Info Page.
  * Defaults to true if not provided.
  * @example
@@ -102,7 +100,7 @@ export function deleteAppInfoSettings(fs?: Editor) {
  */
 export function loadApplicationInfoFromSettings(
     executeCommand?: (filePath: string) => void,
-    fs?: Editor,
+    fs?: MemFsEditor,
     autoOpen: boolean = true
 ): void {
     fs = getFsInstance(fs);

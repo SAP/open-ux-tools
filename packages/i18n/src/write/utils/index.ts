@@ -1,6 +1,6 @@
 import type { NewI18nEntry } from '../../types.js';
 import { printPropertiesI18nEntry, readFile, writeFile } from '../../utils/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { Range, TextEdit } from '@sap-ux/text-document-utils';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { parseProperties } from '../../parser/properties/parser/index.js';
@@ -19,7 +19,7 @@ export async function writeToExistingI18nPropertiesFile(
     i18nFilePath: string,
     newI18nEntries: NewI18nEntry[],
     keysToRemove: string[] = [],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     let newContent = newI18nEntries
         .map((entry) => printPropertiesI18nEntry(entry.key, entry.value, entry.annotation))

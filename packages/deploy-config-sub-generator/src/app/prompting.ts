@@ -4,7 +4,7 @@ import type { ApiHubConfig, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-conf
 import type { Answers } from 'inquirer';
 import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types/index.js';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { GeneratorOptions } from 'yeoman-generator';
 
 /**
@@ -27,7 +27,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
  * @returns - target deployment CF | ABAP and answers
  */
 export async function promptDeployConfigQuestions(
-    fs: Editor,
+    fs: MemFsEditor,
     options: DeployConfigOptions,
     prompt: GeneratorOptions['prompt'],
     {

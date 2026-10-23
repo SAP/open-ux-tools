@@ -1,5 +1,5 @@
 import { existsSync, promises } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { extname } from 'node:path';
 import { compareStrings, compareJson } from './compare.js';
 import { getLogger } from './logger.js';
@@ -9,7 +9,7 @@ import { getLogger } from './logger.js';
  *
  * @param fs - mem-fs-editor
  */
-export async function traceChanges(fs: Editor): Promise<void> {
+export async function traceChanges(fs: MemFsEditor): Promise<void> {
     const changedFiles = fs.dump() || {};
     const logger = getLogger();
 
@@ -35,11 +35,11 @@ export async function traceChanges(fs: Editor): Promise<void> {
         const fileExtension: string = extname(changedFile).toLowerCase();
         switch (fileExtension) {
             case '.json': {
-                compareJson(JSON.parse(discContent), JSON.parse(memContent));
+                compareJson(JSON.parse(discContent), JSON.parse(memContent ?? ''));
                 break;
             }
             case '.yaml': {
-                compareStrings(discContent, memContent);
+                compareStrings(discContent, memContent ?? '');
                 break;
             }
             default:

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { EdmxAnnotationsInfo, OdataService, ProjectPaths } from './types.js';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { deleteServiceFromManifest } from './data/manifest.js';
@@ -40,7 +40,7 @@ export async function deleteServiceData(
     basePath: string,
     paths: ProjectPaths,
     service: OdataService,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     deleteServiceFromManifest(basePath, service, fs);
     if (service.path && service.name) {

@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { isCapProject, FileName, readUi5Yaml } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { FioriToolsServeStaticPath } from '@sap-ux/ui5-config';
@@ -27,9 +27,9 @@ export async function generateFlpEmbeddedConfig(
     bspApplication: string,
     flpPath: string = DEFAULT_FLP_PATH,
     yamlPath: string = FileName.Ui5Yaml,
-    fs: Editor = create(createStorage()),
+    fs: MemFsEditor = create(createStorage<VinylMemFsEditorFile>()),
     logger?: ToolsLogger
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     const bspApp = bspApplication.trim().toLowerCase();
     if (!bspApp) {
         throw new Error('Mandatory parameter bspApplication is missing.');
@@ -60,7 +60,7 @@ export async function generateFlpEmbeddedConfig(
  * @param flpPath - FLP URL path
  * @param logger - optional logger
  */
-function addStartEmbeddedScript(fs: Editor, basePath: string, flpPath: string, logger?: ToolsLogger): void {
+function addStartEmbeddedScript(fs: MemFsEditor, basePath: string, flpPath: string, logger?: ToolsLogger): void {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
 
@@ -87,7 +87,7 @@ function addStartEmbeddedScript(fs: Editor, basePath: string, flpPath: string, l
  * @param logger - optional logger
  */
 async function addFlpYaml(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     yamlFileName: string,
     bspApplication: string,

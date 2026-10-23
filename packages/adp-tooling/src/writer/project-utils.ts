@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { readFileSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import { readFileSync, existsSync } from 'node:fs';
+import ejs from 'ejs';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { getTemplatePath } from '../templates.js';
 import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
@@ -106,14 +107,14 @@ export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
  * @param {string} baseTmplPath - The root path of the templates folder.
  * @param {string} projectPath - The root path of the project.
  * @param {AdpWriterConfig} data - The data to be populated in the template file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
 export function writeTemplateToFolder(
     baseTmplPath: string,
     projectPath: string,
     data: AdpWriterConfig,
-    fs: Editor
+    fs: MemFsEditor
 ): void {
     const ui5Version = data.ui5?.version;
     const tmplPath = join(baseTmplPath, 'project', '**/*.*');
@@ -123,9 +124,17 @@ export function writeTemplateToFolder(
 
     try {
         fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
-            globOptions: { dot: true },
-            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+            globOptions: { dot: true, ignore: ['**/gitignore.tmpl'] } as any
         });
+        const gitignoreTmplSrc = join(baseTmplPath, 'project', 'gitignore.tmpl');
+        if (existsSync(gitignoreTmplSrc)) {
+            const rendered = ejs.render(
+                readFileSync(gitignoreTmplSrc, 'utf-8'),
+                { ...data, typesPackage, typesVersion },
+                { filename: gitignoreTmplSrc }
+            );
+            fs.write(join(projectPath, '.gitignore'), rendered);
+        }
 
         if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');
@@ -143,10 +152,10 @@ export function writeTemplateToFolder(
  *
  * @param {string} projectPath - The root path of the project.
  * @param {AdpWriterConfig} data - The data to be populated in the template file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
-export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, fs: Editor): Promise<void> {
+export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, fs: MemFsEditor): Promise<void> {
     try {
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
@@ -169,10 +178,10 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
  *
  * @param {string} projectPath - The root path of the project.
  * @param {CfAdpWriterConfig} data - The data to be populated in the template file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
-export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfig, fs: Editor): Promise<void> {
+export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfig, fs: MemFsEditor): Promise<void> {
     try {
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
@@ -196,10 +205,10 @@ export async function writeCfUI5Yaml(projectPath: string, data: CfAdpWriterConfi
  *
  * @param {string} projectPath - The root path of the project.
  * @param {AdpWriterConfig} data - The data to be populated in the template file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
-export async function writeUI5DeployYaml(projectPath: string, data: AdpWriterConfig, fs: Editor): Promise<void> {
+export async function writeUI5DeployYaml(projectPath: string, data: AdpWriterConfig, fs: MemFsEditor): Promise<void> {
     try {
         if (hasDeployConfig(data)) {
             const ui5ConfigPath = join(projectPath, 'ui5.yaml');
@@ -220,13 +229,13 @@ export async function writeUI5DeployYaml(projectPath: string, data: AdpWriterCon
  * @param {string} basePath - The base path.
  * @param {DescriptorVariant} variant - The descriptor variant.
  * @param {CfAdpWriterConfig} config - The CF configuration.
- * @param {Editor} fs - The memfs editor instance.
+ * @param {MemFsEditor} fs - The memfs editor instance.
  */
 export async function writeCfTemplates(
     basePath: string,
     variant: DescriptorVariant,
     config: CfAdpWriterConfig,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const templatePath = config.options?.templatePathOverwrite ?? getTemplatePath();
     const { app, project, options } = config;

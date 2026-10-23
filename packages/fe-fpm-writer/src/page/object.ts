@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import {
     getFclConfig,
     extendPageJSON,
@@ -48,6 +48,6 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export async function generate(basePath: string, data: ObjectPage, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, data: ObjectPage, fs?: MemFsEditor): Promise<MemFsEditor> {
     return extendPageJSON(basePath, data, enhanceData, '/page/object/manifest.json', fs);
 }

@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -109,9 +109,9 @@ function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): bool
 async function generate<T extends {}>(
     basePath: string,
     data: FioriElementsApp<T>,
-    fs?: Editor,
+    fs?: MemFsEditor,
     log?: Logger
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -177,7 +177,7 @@ async function generate<T extends {}>(
         },
         undefined,
         {
-            globOptions: { ignore, dot: true }
+            globOptions: { ignore, dot: true } as any
         }
     );
 
@@ -191,7 +191,7 @@ async function generate<T extends {}>(
         },
         undefined,
         {
-            globOptions: { ignore, dot: true }
+            globOptions: { ignore, dot: true } as any
         }
     );
 
@@ -217,7 +217,7 @@ async function generate<T extends {}>(
                     basePath,
                     feApp,
                     {},
-                    { ignoreNoMatch: true, globOptions: { ignore, dot: true } }
+                    { ignoreNoMatch: true, globOptions: { ignore, dot: true } as any }
                 );
             }
         );

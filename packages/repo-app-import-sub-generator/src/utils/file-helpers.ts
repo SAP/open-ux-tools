@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { t } from './i18n.js';
 import RepoAppDownloadLogger from './logger.js';
 import type { QfaJsonConfig, AbapRepoAppConfig } from '../app/types.js';
@@ -15,7 +15,7 @@ import type { Floorplan } from '@sap-ux/fiori-generator-shared';
  * @param fs - File system editor instance
  * @returns - Parsed JSON object
  */
-export function makeValidJson(filePath: string, fs: Editor): QfaJsonConfig {
+export function makeValidJson(filePath: string, fs: MemFsEditor): QfaJsonConfig {
     try {
         // Read the file contents
         const fileContents = fs.read(filePath);
@@ -30,10 +30,10 @@ export function makeValidJson(filePath: string, fs: Editor): QfaJsonConfig {
  * Reads and validates the `manifest.json` file.
  *
  * @param {string} manifestFilePath - Manifest file path.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @returns {Manifest} The validated manifest object.
  */
-export function readManifest(manifestFilePath: string, fs: Editor): Manifest {
+export function readManifest(manifestFilePath: string, fs: MemFsEditor): Manifest {
     if (!fs.exists(manifestFilePath)) {
         RepoAppDownloadLogger.logger?.error(t('error.readManifestErrors.manifestFileNotFound'));
     }
@@ -53,9 +53,9 @@ export function readManifest(manifestFilePath: string, fs: Editor): Manifest {
  * For -dbg.js files, copies the unminified content to the corresponding .js file first.
  *
  * @param {string} extractedProjectPath - The path where the app files are extracted.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  */
-export function cleanupArtifacts(extractedProjectPath: string, fs: Editor): void {
+export function cleanupArtifacts(extractedProjectPath: string, fs: MemFsEditor): void {
     const dbgSuffix = '-dbg.';
     const entries = PromptState.admZip?.getEntries() ?? [];
     const tsEntryNames = new Set(
@@ -103,9 +103,9 @@ export function cleanupArtifacts(extractedProjectPath: string, fs: Editor): void
  *
  * @param {string} projectPath - The project root path.
  * @param {AbapRepoAppConfig} appConfig - The app configuration.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  */
-export function addPackageJsonIfNotFound(projectPath: string, appConfig: AbapRepoAppConfig, fs: Editor): void {
+export function addPackageJsonIfNotFound(projectPath: string, appConfig: AbapRepoAppConfig, fs: MemFsEditor): void {
     const packageJsonPath = join(projectPath, FileName.Package);
     if (!fs.exists(packageJsonPath)) {
         const packageJson: { name: string } = { name: appConfig.app.id };

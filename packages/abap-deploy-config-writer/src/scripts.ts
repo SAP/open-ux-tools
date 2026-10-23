@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { addPackageDevDependency, updatePackageScript } from '@sap-ux/project-access';
 
@@ -10,13 +10,13 @@ import { BUILD_SCRIPT, DEPLOY_SCRIPT, RIMRAF, RIMRAF_VERSION, UNDEPLOY_SCRIPT } 
  *
  * @param {string} basePath - The path to the base directory.
  * @param {string} deployConfigFile - The path to the deploy config file.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @param {DeployConfigOptions} options - The deploy config options.
  */
 export async function updateScripts(
     basePath: string,
     deployConfigFile: string,
-    fs: Editor,
+    fs: MemFsEditor,
     options?: DeployConfigOptions
 ): Promise<void> {
     const buildPrefix = (options?.addBuildToUndeployScript ?? true) ? `${BUILD_SCRIPT} && ` : '';

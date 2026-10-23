@@ -19,7 +19,7 @@ import {
 } from '../common/package-json.js';
 import { renameSandbox } from './preview-files.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -63,7 +63,7 @@ function isUi5YamlToBeConverted(
  * @returns indicator if the UI5 yaml configuration file has already been converted
  */
 async function isUi5YamlFlpPathAlreadyConverted(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     ui5Yaml: string,
     script: Script,
@@ -108,7 +108,7 @@ async function isUi5YamlFlpPathAlreadyConverted(
  * @param skipPreviewMiddlewareCreation - (default: false) indicator if the preview middleware creation should be skipped if no preview middleware is configured.
  */
 export async function processUi5YamlConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     ui5Yaml: string,
     script: Script,
@@ -144,7 +144,7 @@ export async function processUi5YamlConfig(
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-export async function updateDefaultTestConfig(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function updateDefaultTestConfig(fs: MemFsEditor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
     for (const ui5Yaml of ui5YamlFileNames.filter((ui5Yaml) => ui5Yaml !== FileName.Ui5Yaml)) {
         const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
@@ -204,7 +204,7 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
  * @param logger logger to report info to the user
  */
 export async function updatePreviewMiddlewareConfigs(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     convertTests: boolean,
     logger?: ToolsLogger

@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { basename, dirname, join, normalize, relative, sep } from 'node:path';
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { FileName, MinCdsVersion } from '../constants.js';
 import type {
     CapCustomPaths,
@@ -75,7 +75,7 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
 export async function isCapJavaProject(
     projectRoot: string,
     capCustomPaths?: CapCustomPaths,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<boolean> {
     const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
     return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml), memFs);
@@ -85,10 +85,10 @@ export async function isCapJavaProject(
  * Checks if there are files in the `srv` folder, using node fs or mem-fs.
  *
  * @param {string} srvFolderPath - The path to the `srv` folder to check for files.
- * @param {Editor} [memFs] - An optional `mem-fs-editor` instance. If provided, the function checks files within the in-memory file system.
+ * @param {MemFsEditor} [memFs] - An optional `mem-fs-editor` instance. If provided, the function checks files within the in-memory file system.
  * @returns {Promise<boolean>} - Resolves to `true` if files are found in the `srv` folder; otherwise, `false`.
  */
-async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Promise<boolean> {
+async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: MemFsEditor): Promise<boolean> {
     try {
         return (await findBy({ root: srvFolderPath, memFs })).length > 0;
     } catch (error) {
@@ -103,7 +103,7 @@ async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Pro
  * @param memFs - optional mem-fs-editor instance
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
-export async function getCapProjectType(projectRoot: string, memFs?: Editor): Promise<CapProjectType | undefined> {
+export async function getCapProjectType(projectRoot: string, memFs?: MemFsEditor): Promise<CapProjectType | undefined> {
     const capCustomPaths = await getCapCustomPaths(projectRoot);
     if (!(await checkFilesInSrvFolder(join(projectRoot, capCustomPaths.srv), memFs))) {
         return undefined;
@@ -821,7 +821,7 @@ export async function getCapServiceName(projectRoot: string, datasourceUri: stri
 async function cleanupCdsFiles(
     cdsFilePaths: string[],
     appName: string,
-    memFs?: Editor,
+    memFs?: MemFsEditor,
     logger?: Logger
 ): Promise<void> {
     const usingEntry = `using from './${appName}/annotations';`;
@@ -853,7 +853,7 @@ async function cleanupCdsFiles(
  * @param [memFs] - optional mem-fs-editor instance
  * @param [logger] - function to log messages (optional)
  */
-export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Logger): Promise<void> {
+export async function deleteCapApp(appPath: string, memFs?: MemFsEditor, logger?: Logger): Promise<void> {
     const appName = basename(appPath);
     const projectRoot = await findCapProjectRoot(appPath);
     if (!projectRoot) {
@@ -902,7 +902,7 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
  * @param [fs] - optional: the memfs editor instance
  * @returns true: cds-plugin-ui5 and all prerequisites are fulfilled; false: cds-plugin-ui5 is not enabled or not all prerequisites are fulfilled
  */
-export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor): Promise<boolean>;
+export async function checkCdsUi5PluginEnabled(basePath: string, fs?: MemFsEditor): Promise<boolean>;
 
 /**
  * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
@@ -914,7 +914,7 @@ export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor): P
  */
 export async function checkCdsUi5PluginEnabled(
     basePath: string,
-    fs?: Editor,
+    fs?: MemFsEditor,
     moreInfo?: boolean
 ): Promise<boolean | CdsUi5PluginInfo>;
 
@@ -929,7 +929,7 @@ export async function checkCdsUi5PluginEnabled(
  */
 export async function checkCdsUi5PluginEnabled(
     basePath: string,
-    fs?: Editor,
+    fs?: MemFsEditor,
     moreInfo?: boolean,
     cdsVersionInfo?: CdsVersionInfo
 ): Promise<boolean | CdsUi5PluginInfo>;
@@ -947,12 +947,12 @@ export async function checkCdsUi5PluginEnabled(
  */
 export async function checkCdsUi5PluginEnabled(
     basePath: string,
-    fs?: Editor,
+    fs?: MemFsEditor,
     moreInfo?: boolean,
     cdsVersionInfo?: CdsVersionInfo
 ): Promise<boolean | CdsUi5PluginInfo> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {

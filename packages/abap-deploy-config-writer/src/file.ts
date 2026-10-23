@@ -4,7 +4,7 @@ import { platform } from 'node:os';
 import { FileName, type Package, getReuseLibs } from '@sap-ux/project-access';
 import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_IGNORE, UI5_REPO_TEXT_FILES } from './constants.js';
 import { coerce, satisfies } from 'semver';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Adds a new UI5 dependency to the package.json.
@@ -14,7 +14,7 @@ import type { Editor } from 'mem-fs-editor';
  * @param basePath - the base path
  * @param depName - the dependency name
  */
-export function addUi5Dependency(fs: Editor, basePath: string, depName: string): void {
+export function addUi5Dependency(fs: MemFsEditor, basePath: string, depName: string): void {
     const filePath = join(basePath, FileName.Package);
     const packageJson = (fs.readJSON(filePath) ?? {}) as Package;
 
@@ -58,7 +58,7 @@ export async function getLibraryPath(basePath: string): Promise<string> {
  * @param addContent - the content to be added
  */
 export const writeUi5RepositoryFile = (
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     ui5RepositoryFile: string,
     addContent: string
@@ -94,7 +94,7 @@ async function getTypescriptFilePaths(typescriptPattern: string): Promise<string
  * @param fs - the memfs editor instance
  * @param path - the path where the file will be written
  */
-export async function writeUi5RepositoryFiles(fs: Editor, path?: string): Promise<void> {
+export async function writeUi5RepositoryFiles(fs: MemFsEditor, path?: string): Promise<void> {
     if (path) {
         const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
         if (typeScriptFilesPaths?.length > 0) {
@@ -109,7 +109,7 @@ export async function writeUi5RepositoryFiles(fs: Editor, path?: string): Promis
  * @param fs - the memfs editor instance
  * @param path - the path where the file will be written
  */
-export async function writeUi5RepositoryIgnore(fs: Editor, path?: string): Promise<void> {
+export async function writeUi5RepositoryIgnore(fs: MemFsEditor, path?: string): Promise<void> {
     if (path) {
         const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
         if (typeScriptFilesPaths?.length > 0) {

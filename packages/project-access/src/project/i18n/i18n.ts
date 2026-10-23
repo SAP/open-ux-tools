@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import type { I18nPropertiesPaths, Manifest } from '../../types/index.js';
 import { readJSON } from '../../file/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Return absolute paths to i18n.properties files from manifest.
@@ -14,7 +14,7 @@ import type { Editor } from 'mem-fs-editor';
 export async function getI18nPropertiesPaths(
     manifestPath: string,
     manifest?: Manifest,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<I18nPropertiesPaths> {
     const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath, memFs));
     const manifestFolder = dirname(manifestPath);

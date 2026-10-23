@@ -192,7 +192,7 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
     site: zod
         .string()
         .describe(
-            'Editor URL from the open_adaptation_editor result (e.g. "http://localhost:8081/test/adaptation-editor.html"). ' +
+            'MemFsEditor URL from the open_adaptation_editor result (e.g. "http://localhost:8081/test/adaptation-editor.html"). ' +
                 'Required for every step. Pass on every call so the server can locate the browser page.'
         ),
     frameId: zod

@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { AbapCSN, AppGenInfo, ExternalParameters } from './types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -46,10 +46,10 @@ export function transformAbapCSNForAppGenInfo(
  *
  * @param {string} destPath - the desitination path where the info fileswill be created.
  * @param {AppGenInfo} appGenInfo - the configuration object containing the details to be included in the info files.
- * @param {Editor} fs - the file system editor instance used to write the info files.
- * @returns {Editor} the file system editor instance used to write the info files.
+ * @param {MemFsEditor} fs - the file system editor instance used to write the info files.
+ * @returns {MemFsEditor} the file system editor instance used to write the info files.
  */
-export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs: Editor): Editor {
+export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs: MemFsEditor): MemFsEditor {
     // N.B. This function must stay at this level in the directory structure, i.e one level below 'templates'
     // Apply the configuration to generate the README file
     const templateSourcePath = join(__dirname, '../templates/README.md');

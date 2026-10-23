@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { findFileUp } from '../file/file-search.js';
 import { FileName } from '../constants.js';
 import { dirname } from 'node:path';
@@ -15,7 +15,7 @@ import type { MtaPath } from '../types/mta/index.js';
  * @param fs - optional mem-fs-editor instance
  * @returns - MtaPath
  */
-export async function getMtaPath(projectPath: string, fs?: Editor): Promise<MtaPath | undefined> {
+export async function getMtaPath(projectPath: string, fs?: MemFsEditor): Promise<MtaPath | undefined> {
     const mtaPath = await findFileUp(FileName.MtaYaml, projectPath, fs);
     if (!mtaPath) {
         return undefined;

@@ -54,7 +54,7 @@ const ui5YamlContent = readFileSync(join(appRoot, 'ui5.yaml'), 'utf-8');
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create(_store: Store) {
         return {
-            commit: jest.fn().mockImplementation((cb) => cb()),
+            commit: jest.fn().mockResolvedValue(undefined),
             dump: jest.fn(),
             read: jest.fn().mockReturnValue(ui5YamlContent),
             readJSON: jest.fn(),

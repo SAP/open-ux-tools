@@ -3,7 +3,7 @@
  * Passed directly on every tool call — no server-side session state is maintained.
  */
 export interface EditorPage {
-    /** Editor URL returned by `open_adaptation_editor`. */
+    /** MemFsEditor URL returned by `open_adaptation_editor`. */
     site: string;
     /** Optional iframe element id (e.g. `"preview"`) to scope the call to. */
     frameId?: string;

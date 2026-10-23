@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { Choice, PromptObject } from 'prompts';
 import type { Manifest } from '@sap-ux/project-access';
 import { getODataSources, getMainServiceDataSource } from '../app-info.js';
@@ -19,7 +19,7 @@ import { t } from '../index.js';
 export function getMockserverConfigQuestions(params?: {
     webappPath?: string;
     askForOverwrite?: boolean;
-    fs?: Editor;
+    fs?: MemFsEditor;
 }): PromptObject[] {
     const prompts: PromptObject[] = [];
     const questionPath: Partial<PromptObject> = {
@@ -27,7 +27,7 @@ export function getMockserverConfigQuestions(params?: {
         message: t('questions.pathToMock')
     };
     if (params?.webappPath) {
-        const fs = params.fs ?? create(createStorage());
+        const fs = params.fs ?? create(createStorage<VinylMemFsEditorFile>());
         const manifest: Manifest = JSON.parse(fs.read(join(params.webappPath, 'manifest.json')));
         const mainDataSourceUri = getMainServiceDataSource(manifest)?.uri ?? '';
         const oDataSources = getODataSources(manifest);

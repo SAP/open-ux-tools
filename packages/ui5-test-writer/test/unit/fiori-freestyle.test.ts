@@ -2,19 +2,18 @@ import { generateFreestyleOPAFiles } from '../../src/index.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n.js';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import * as fileSystem from 'node:fs';
 import { rimraf } from 'rimraf';
-import { promisify } from 'node:util';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 expect.extend({ toMatchFolder });
 
 describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
-    let fs: Editor | undefined;
+    let fs: MemFsEditor | undefined;
     const testOutputDir = join(__dirname, '../test-output');
     const expectedOutputPath = join(__dirname, './expected-output');
 
@@ -656,8 +655,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         };
 
         fs = await generateFreestyleOPAFiles(testOutputDir, opaConfig, fs);
-        const commitAsync = promisify(fs.commit.bind(fs));
-        await commitAsync();
+        await fs!.commit();
 
         const testOutPutPath = join(testOutputDir, 'webapp', 'test');
         const expectedTestOutputPath = join(expectedOutputPath, 'freestyle', projectName, 'webapp', 'test');
@@ -686,7 +684,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 });
 
 describe('writeOPATsconfigJsonUpdates', () => {
-    let fs: Editor;
+    let fs: MemFsEditor;
     let log: Logger;
 
     const opaConfig = {
@@ -702,7 +700,7 @@ describe('writeOPATsconfigJsonUpdates', () => {
             readJSON: jest.fn(),
             writeJSON: jest.fn(),
             copyTpl: jest.fn()
-        } as unknown as Editor;
+        } as unknown as MemFsEditor;
 
         log = {
             error: jest.fn()

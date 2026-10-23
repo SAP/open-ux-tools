@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { addVariantsManagementScript } from './package-json.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getProjectType, findCapProjectRoot } from '@sap-ux/project-access';
 import { readManifest } from '../common/utils.js';
@@ -16,16 +16,16 @@ import { updateCapRootPackageJsonForVariants } from './cap.js';
  * @param yamlPath - path to the ui5*.yaml file passed by cli
  * @param logger - logger
  * @param fs - the memfs editor instance
- * @returns Promise<Editor> - memfs editor instance with updated files
+ * @returns Promise<MemFsEditor> - memfs editor instance with updated files
  */
 export async function generateVariantsConfig(
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const capRoot = await findCapProjectRoot(basePath, false, fs);

@@ -10,7 +10,7 @@ import type {
     DebugOptions,
     LaunchConfig
 } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils.js';
 import { updateLaunchJSON } from './writer.js';
 import { parse } from 'jsonc-parser';
@@ -22,12 +22,12 @@ import { t } from '../i18n.js';
 /**
  * Writes the `launch.json` file with the specified configurations. If the file already exists, it will be overwritten.
  *
- * @param {Editor} fs - The file system editor used to write the `launch.json` file.
+ * @param {MemFsEditor} fs - The file system editor used to write the `launch.json` file.
  * @param {string} launchJSONPath - The full path to the `launch.json` file.
  * @param {LaunchConfig[]} configurations - An array of launch configurations to be included in the `launch.json` file.
  * @returns {void}
  */
-function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations: LaunchConfig[]): void {
+function writeLaunchJsonFile(fs: MemFsEditor, launchJSONPath: string, configurations: LaunchConfig[]): void {
     const newLaunchJSONContent = { version: '0.2.0', configurations };
     fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
 }
@@ -38,11 +38,15 @@ function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations:
  *
  * @param {string} rootFolder - The root directory where the `launch.json` file is located or will be created.
  * @param {FioriOptions} fioriOptions - The options used to generate the new launch configuration for the `launch.json` file.
- * @param {Editor} fs - The file system editor used to read and write the `launch.json` file.
- * @returns {Promise<Editor>} - A promise that resolves with the file system editor after the `launch.json` file has been
+ * @param {MemFsEditor} fs - The file system editor used to read and write the `launch.json` file.
+ * @returns {Promise<MemFsEditor>} - A promise that resolves with the file system editor after the `launch.json` file has been
  *     updated or created.
  */
-async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptions, fs: Editor): Promise<Editor> {
+async function handleNoDebugOptions(
+    rootFolder: string,
+    fioriOptions: FioriOptions,
+    fs: MemFsEditor
+): Promise<MemFsEditor> {
     const launchJsonWritePath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJsonWritePath)) {
         // launch.json exists, enhance existing file with new config
@@ -72,7 +76,7 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
  * content is replaced with the new configurations. Otherwise, the configurations are added
  * to the existing `launch.json`.
  *
- * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
+ * @param {MemFsEditor} fs - The file system editor to read and write the `launch.json` file.
  * @param {string} launchJSONPath - The path to the existing `launch.json` file.
  * @param {LaunchConfig[]} configurations - An array of new launch configurations to be added or replaced.
  * @param {boolean} replaceWithNew - A flag indicating whether to replace the existing `launch.json`
@@ -80,7 +84,7 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
  * @returns {Promise<void>} - A promise that resolves once the `launch.json` file has been updated or replaced.
  */
 async function handleExistingLaunchJson(
-    fs: Editor,
+    fs: MemFsEditor,
     launchJSONPath: string,
     configurations: LaunchConfig[],
     replaceWithNew: boolean = false
@@ -137,21 +141,21 @@ export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWo
  * and creates it if it does not. Additionally, it updates workspace folders if applicable.
  *
  * @param rootFolder - root folder.
- * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
+ * @param {MemFsEditor} fs - The file system editor to read and write the `launch.json` file.
  * @param {DebugOptions} debugOptions - Debug configuration options that dictate how the `launch.json`
  *     should be generated and what commands should be logged.
  * @param {FioriOptions} fioriOptions - Options for the Fiori application - the html file for start commands and whether to enable reload.
  * @param {Logger} logger - Logger instance for logging information or warnings.
- * @returns {Promise<Editor>} - Returns the file system editor after potentially modifying the workspace
+ * @returns {Promise<MemFsEditor>} - Returns the file system editor after potentially modifying the workspace
  *     and updating or creating the `launch.json` file.
  */
 async function handleDebugOptions(
     rootFolder: string,
-    fs: Editor,
+    fs: MemFsEditor,
     debugOptions: DebugOptions,
     { startFile, enableVSCodeReload = true }: FioriOptions,
     logger?: Logger
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(
         rootFolder,
         debugOptions
@@ -202,10 +206,10 @@ async function handleDebugOptions(
 export async function createLaunchConfig(
     rootFolder: string,
     fioriOptions: FioriOptions,
-    fs?: Editor,
+    fs?: MemFsEditor,
     logger?: Logger
-): Promise<Editor> {
-    fs = fs ?? create(createStorage());
+): Promise<MemFsEditor> {
+    fs = fs ?? create(createStorage<VinylMemFsEditorFile>());
     const debugOptions = fioriOptions.debugOptions;
     if (!debugOptions) {
         return await handleNoDebugOptions(rootFolder, fioriOptions, fs);

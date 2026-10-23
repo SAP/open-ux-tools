@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { FileName, DirName } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import { t } from './i18n.js';
@@ -17,11 +17,11 @@ import { fioriAppSourcetemplateId } from './constants.js';
  * - If internal features are enabled, it sets the minUI5Version to '${sap.ui5.dist.version}'.
  *
  * @param {string} manifestFilePath - The manifest file path.
- * @param {Editor} fs - The file system editor instance.
+ * @param {MemFsEditor} fs - The file system editor instance.
  * @returns {Promise<Manifest>} - The updated manifest object.
  * @throws {Error} - Throws an error if the manifest structure is invalid or no fallback version is available.
  */
-export async function validateAndUpdateManifestUI5Version(manifestFilePath: string, fs: Editor): Promise<void> {
+export async function validateAndUpdateManifestUI5Version(manifestFilePath: string, fs: MemFsEditor): Promise<void> {
     const manifestJson = readManifest(manifestFilePath, fs);
     if (!manifestJson?.['sap.ui5']?.dependencies || !manifestJson?.['sap.app']?.sourceTemplate) {
         // Check if the manifest structure is valid) {
@@ -57,9 +57,9 @@ export async function validateAndUpdateManifestUI5Version(manifestFilePath: stri
  *
  * @param {string} projectPath - The path to the downloaded App.
  * @param {string} extractedPath - The path from which files will be copied.
- * @param {Editor} fs - The file system editor instance to modify files in memory.
+ * @param {MemFsEditor} fs - The file system editor instance to modify files in memory.
  */
-export async function replaceWebappFiles(projectPath: string, extractedPath: string, fs: Editor): Promise<void> {
+export async function replaceWebappFiles(projectPath: string, extractedPath: string, fs: MemFsEditor): Promise<void> {
     try {
         const webappPath = join(projectPath, DirName.Webapp);
         // Define the paths of the files to be replaced

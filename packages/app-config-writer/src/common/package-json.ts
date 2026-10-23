@@ -1,6 +1,6 @@
 import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { type Package, FileName } from '@sap-ux/project-access';
 import { satisfies, valid, validRange, outside } from 'semver';
 
@@ -19,7 +19,7 @@ const scriptsFromPackageJson = new Map<string, string>();
  * @param basePath - base path to be used for the conversion
  * @returns the scripts from the package.json file
  */
-export function getScriptsFromPackageJson(fs: Editor, basePath: string): Map<string, string> {
+export function getScriptsFromPackageJson(fs: MemFsEditor, basePath: string): Map<string, string> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     scriptsFromPackageJson.clear();
@@ -103,7 +103,11 @@ export function isValidPreviewScript(script: Script, convertTests: boolean = fal
  * @param basePath - path to project root, where package.json is
  * @returns the run script or undefined
  */
-export function getRunScriptForYamlConfig(yamlConfigName: string, fs: Editor, basePath: string): Script | undefined {
+export function getRunScriptForYamlConfig(
+    yamlConfigName: string,
+    fs: MemFsEditor,
+    basePath: string
+): Script | undefined {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     if (!packageJson) {

@@ -9,9 +9,8 @@ import type {
     RichTextEditorButtonGroupsPromptsAnswer,
     FormPromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
-import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
@@ -57,26 +56,26 @@ import { getI18nBundle, createI18nEntry } from './i18nBundle.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
-let fsEditor: Editor | undefined;
+let fsEditor: MemFsEditor | undefined;
 const connections: WebSocket[] = [];
 
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
  *
  * @param forceUpdate Overwrite cached editor
- * @returns {Promise<Editor>} the memfs editor object.
+ * @returns {Promise<MemFsEditor>} the memfs editor object.
  */
-export async function getEditor(forceUpdate = false): Promise<Editor> {
+export async function getEditor(forceUpdate = false): Promise<MemFsEditor> {
     if (fsEditor && !forceUpdate) {
         return fsEditor;
     }
-    fsEditor = create(createStorage());
+    fsEditor = create(createStorage<VinylMemFsEditorFile>());
 
     if (testAppPath === getApplication()?.projectPath) {
         fsEditor.copy([join(sampleAppPath)], join(testAppPath));
     }
 
-    await promisify(fsEditor.commit).call(fsEditor);
+    await fsEditor.commit();
     return fsEditor;
 }
 
@@ -228,7 +227,7 @@ async function handleAction(action: Actions): Promise<void> {
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
                 const _fs = await promptsAPI.submitAnswers(buildingBlockType, answers);
-                await promisify(_fs.commit).call(_fs);
+                await _fs.commit();
                 const responseAction: ResetAnswers = {
                     type: RESET_ANSWERS,
                     buildingBlockType

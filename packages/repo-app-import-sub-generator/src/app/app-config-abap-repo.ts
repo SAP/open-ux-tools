@@ -1,6 +1,6 @@
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { AppInfo, AbapRepositoryContext, AbapRepoAppConfig } from '../app/types.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
@@ -18,12 +18,12 @@ import { join } from 'node:path';
  *
  * @param {AbapServiceProvider} provider - The connected ABAP service provider.
  * @param {string} webappPath - Absolute path to the webapp folder.
- * @param {Editor} fs - The mem-fs editor.
+ * @param {MemFsEditor} fs - The mem-fs editor.
  */
 export async function writeServiceMetadata(
     provider: AbapServiceProvider,
     webappPath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     const serviceName = getMainService(manifest);
@@ -46,10 +46,10 @@ export async function writeServiceMetadata(
  *
  * @param {string} webappPath - Path to the webapp folder.
  * @param {AppInfo} appInfo - The selected app info from prompts.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @returns {AbapRepoAppConfig} Derived app configuration.
  */
-export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: Editor): AbapRepoAppConfig {
+export function getAbapRepoAppConfig(webappPath: string, appInfo: AppInfo, fs: MemFsEditor): AbapRepoAppConfig {
     const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     const appId = manifest?.['sap.app']?.id ?? appInfo.appId;
     const appTitle = manifest?.['sap.app']?.title ?? appInfo.title ?? '';

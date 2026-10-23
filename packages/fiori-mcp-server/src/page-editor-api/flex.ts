@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { readdir, mkdir } from 'node:fs/promises';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { logger } from '../utils/logger.js';
 
 /**
@@ -38,11 +38,11 @@ interface ParsedFlexChangeFile {
 /**
  * Returns a mem-fs editor instance. If an instance is not provided, a new one is created.
  *
- * @param {Editor} [fs] - An optional mem-fs editor instance.
- * @returns {Editor} - The mem-fs editor instance.
+ * @param {MemFsEditor} [fs] - An optional mem-fs editor instance.
+ * @returns {MemFsEditor} - The mem-fs editor instance.
  */
-function getFsInstance(fs?: Editor): Editor {
-    return fs ?? create(createStorage());
+function getFsInstance(fs?: MemFsEditor): MemFsEditor {
+    return fs ?? create(createStorage<VinylMemFsEditorFile>());
 }
 
 /**
@@ -95,8 +95,8 @@ export function mergeChanges(
 export async function writeFlexChanges(
     changesPath: string,
     changeFiles: FlexChangeFiles,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     fs = getFsInstance(fs);
     // Remove deleted flex change FileSystem
     await removeDeprecateFlexFiles(changesPath, changeFiles, fs);
@@ -127,7 +127,7 @@ export async function writeFlexChanges(
  * @param fs - The mem-fs editor instance.
  * @returns A promise that resolves when cleanup is complete.
  */
-async function removeDeprecateFlexFiles(changesPath: string, files: FlexChangeFiles, fs: Editor): Promise<void> {
+async function removeDeprecateFlexFiles(changesPath: string, files: FlexChangeFiles, fs: MemFsEditor): Promise<void> {
     const latestFiles = Object.keys(files);
     // Read directory files and prepare array of files
     try {

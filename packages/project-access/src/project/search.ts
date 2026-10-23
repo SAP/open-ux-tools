@@ -1,5 +1,5 @@
 import { basename, dirname, isAbsolute, join, parse, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type {
     AdaptationResults,
     AllAppResults,
@@ -92,7 +92,7 @@ export async function findProjectRoot(
     path: string,
     sapuxRequired = true,
     silent = false,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<string> {
     const packageJson = await findFileUp(FileName.Package, path, memFs);
     if (!packageJson) {
@@ -170,13 +170,13 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
 }
 
 /**
- * Type guard for Editor or Editor and FileMapAndCache.
+ * Type guard for MemFsEditor or MemFsEditor and FileMapAndCache.
  *
  * @param argument - argument to check
- * @returns true if argument is Editor, false if it is FileMapAndCache
+ * @returns true if argument is MemFsEditor, false if it is FileMapAndCache
  */
-function isEditor(argument: Editor | { memFs?: Editor; cache?: FileMapAndCache }): argument is Editor {
-    return (argument as Editor).commit !== undefined;
+function isEditor(argument: MemFsEditor | { memFs?: MemFsEditor; cache?: FileMapAndCache }): argument is MemFsEditor {
+    return (argument as MemFsEditor).commit !== undefined;
 }
 
 /**
@@ -185,15 +185,15 @@ function isEditor(argument: Editor | { memFs?: Editor; cache?: FileMapAndCache }
  * @param options - optional mem-fs-editor instance or options object with optional memFs and cache
  * @returns memFs and cache
  */
-function getFindOptions(options?: Editor | { memFs?: Editor; cache?: FileMapAndCache }): {
-    memFs: Editor | undefined;
+function getFindOptions(options?: MemFsEditor | { memFs?: MemFsEditor; cache?: FileMapAndCache }): {
+    memFs: MemFsEditor | undefined;
     cache: FileMapAndCache;
 } {
-    let memFs: Editor | undefined;
+    let memFs: MemFsEditor | undefined;
     let cache: FileMapAndCache = { files: {}, capProjectType: new Map<string, CapProjectType | undefined>() };
 
     if (options) {
-        // Check if options is Editor or { memFs?: Editor; cache?: FileMapAndCache }
+        // Check if options is MemFsEditor or { memFs?: MemFsEditor; cache?: FileMapAndCache }
         if (isEditor(options)) {
             memFs = options;
         } else {
@@ -222,7 +222,7 @@ function getFindOptions(options?: Editor | { memFs?: Editor; cache?: FileMapAndC
  */
 export async function findRootsForPath(
     path: string,
-    options?: Editor | { memFs?: Editor; cache?: FileMapAndCache }
+    options?: MemFsEditor | { memFs?: MemFsEditor; cache?: FileMapAndCache }
 ): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
         const { memFs, cache } = getFindOptions(options);
@@ -277,7 +277,7 @@ export async function findRootsForPath(
 export async function findCapProjectRoot(
     path: string,
     checkForAppRouter = true,
-    options?: Editor | { memFs?: Editor; cache?: FileMapAndCache }
+    options?: MemFsEditor | { memFs?: MemFsEditor; cache?: FileMapAndCache }
 ): Promise<string | null> {
     try {
         if (!isAbsolute(path)) {
@@ -318,7 +318,7 @@ export async function findCapProjectRoot(
  */
 export async function findAllApps(
     wsFolders: readonly WorkspaceFolder[] | string[] | undefined,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<AllAppResults[]> {
     const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'], memFs });
     return findResults.applications ?? [];
@@ -331,7 +331,7 @@ export async function findAllApps(
  * @param memFs - optional mem-fs-editor instance
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-async function filterApplications(pathMap: FileMapAndCache, memFs?: Editor): Promise<AllAppResults[]> {
+async function filterApplications(pathMap: FileMapAndCache, memFs?: MemFsEditor): Promise<AllAppResults[]> {
     const result: AllAppResults[] = [];
     const manifestPaths = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
@@ -360,7 +360,7 @@ async function filterApplications(pathMap: FileMapAndCache, memFs?: Editor): Pro
  * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found adaptation projects.
  */
-async function filterAdaptations(pathMap: FileMapAndCache, memFs?: Editor): Promise<AdaptationResults[]> {
+async function filterAdaptations(pathMap: FileMapAndCache, memFs?: MemFsEditor): Promise<AdaptationResults[]> {
     const results: AdaptationResults[] = [];
     const manifestAppDescrVars = Object.keys(pathMap.files).filter((path) =>
         path.endsWith(FileName.ManifestAppDescrVar)
@@ -383,7 +383,7 @@ async function filterAdaptations(pathMap: FileMapAndCache, memFs?: Editor): Prom
  * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found extension projects.
  */
-async function filterExtensions(pathMap: FileMapAndCache, memFs?: Editor): Promise<ExtensionResults[]> {
+async function filterExtensions(pathMap: FileMapAndCache, memFs?: MemFsEditor): Promise<ExtensionResults[]> {
     const results: ExtensionResults[] = [];
     const extensionConfigs = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.ExtConfigJson);
     for (const extensionConfig of extensionConfigs) {
@@ -428,7 +428,7 @@ async function filterExtensions(pathMap: FileMapAndCache, memFs?: Editor): Promi
 async function filterDotLibraries(
     pathMap: FileMapAndCache,
     manifestPaths: string[],
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<LibraryResults[]> {
     const dotLibraries: LibraryResults[] = [];
     const dotLibraryPaths = Object.keys(pathMap.files)
@@ -453,7 +453,7 @@ async function filterDotLibraries(
  * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found library projects.
  */
-async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promise<LibraryResults[]> {
+async function filterLibraries(pathMap: FileMapAndCache, memFs?: MemFsEditor): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.Manifest);
     results.push(...(await filterDotLibraries(pathMap, manifestPaths, memFs)));
@@ -482,7 +482,7 @@ async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promis
  * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found components.
  */
-async function filterComponents(pathMap: FileMapAndCache, memFs?: Editor): Promise<ComponentResults[]> {
+async function filterComponents(pathMap: FileMapAndCache, memFs?: MemFsEditor): Promise<ComponentResults[]> {
     const results: ComponentResults[] = [];
     const manifestPaths = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
@@ -530,7 +530,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
 export async function findFioriArtifacts(options: {
     wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
-    memFs?: Editor;
+    memFs?: MemFsEditor;
 }): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);

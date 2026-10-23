@@ -1,6 +1,6 @@
 import { dirname, join, relative } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
 import {
     type FioriToolsProxyConfig,
@@ -69,8 +69,12 @@ import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type M
  * @throws {Error} If MTA binary is not found in the system path
  * @throws {Error} If required files (manifest.json, ui5.yaml) are missing or invalid
  */
-export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    fs ??= create(createStorage());
+export async function generateAppConfig(
+    cfAppConfig: CFAppConfig,
+    fs?: MemFsEditor,
+    logger?: Logger
+): Promise<MemFsEditor> {
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     if (logger) {
         LoggerHelper.logger = logger;
     }
@@ -87,7 +91,7 @@ export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, l
  * @returns Updated writer configuration
  * @throws {Error} If no SAP Fiori UI5 application is found (missing app ID)
  */
-async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<CFConfig> {
+async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: MemFsEditor): Promise<CFConfig> {
     const isLCAP = cfAppConfig.lcapMode ?? false;
     const { rootPath, isCap, mtaId, mtaPath, hasRoot, capRoot } = await getProjectProperties(cfAppConfig);
     const { serviceHost, destination, firstServicePathSegmentUI5Config } = await processUI5Config(
@@ -176,7 +180,7 @@ async function getProjectProperties(config: CFAppConfig): Promise<{
  */
 async function processUI5Config(
     appPath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<{
     serviceHost: string | undefined;
     destination: string | undefined;
@@ -208,7 +212,7 @@ async function processUI5Config(
  */
 async function processManifest(
     appPath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<{
     servicePath: string | undefined;
     firstServicePathSegment: string | undefined;
@@ -229,7 +233,7 @@ async function processManifest(
  * @param fs Reference to a mem-fs editor
  * @throws {Error} If MTA generation or configuration update fails
  */
-async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
+async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: MemFsEditor): Promise<void> {
     LoggerHelper?.logger?.debug(`Generate HTML5 app deployment configuration with: \n ${JSON.stringify(cfAppConfig)}`);
 
     const config = await getUpdatedConfig(cfAppConfig, fs);
@@ -255,7 +259,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
  * @param fs Reference to a mem-fs editor
  * @throws {Error} If MTA file creation or CAP MTA generation fails
  */
-export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
+export async function generateMTAFile(cfConfig: CFConfig, fs: MemFsEditor): Promise<void> {
     // Step1. Create mta.yaml
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
@@ -279,7 +283,7 @@ export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<v
  * @param fs Reference to a mem-fs editor
  * @throws {Error} If MTA configuration update or save fails
  */
-async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
+async function appendAppRouter(cfConfig: CFConfig, fs: MemFsEditor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (!mtaInstance) {
         return;
@@ -329,7 +333,7 @@ async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
  * @param fs The file system editor for performing cleanup operations
  * @throws {Error} If xs-app.json cannot be read or updated
  */
-function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: Editor): void {
+function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: MemFsEditor): void {
     // Cleanup standalone xs-app.json to reflect new application
     const appRouterPath = mtaInstance.standaloneRouterPath;
     if (appRouterPath) {
@@ -381,7 +385,7 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void
  * @param cfConfig Writer configuration
  * @param fs Reference to a mem-fs editor
  */
-async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor): Promise<void> {
+async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: MemFsEditor): Promise<void> {
     // When data source is none in app generator, it is not required to provide destination
     const authenticationType = cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa';
     const defaultProperties = {
@@ -417,7 +421,7 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
  * @param cfConfig Writer configuration
  * @param fs Reference to a mem-fs editor
  */
-async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
+async function updateManifest(cfConfig: CFConfig, fs: MemFsEditor): Promise<void> {
     const webappPath = await getWebappPath(cfConfig.appPath, fs);
     const manifest = readManifest(join(webappPath, FileName.Manifest), fs);
     if (manifest && cfConfig.cloudServiceName) {
@@ -439,7 +443,7 @@ async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
  * @param cfConfig Writer configuration
  * @param fs Reference to a mem-fs editor
  */
-async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<void> {
+async function updateHTML5AppPackage(cfConfig: CFConfig, fs: MemFsEditor): Promise<void> {
     let deployArgs: string[] = [];
     if (fileExists(fs, join(cfConfig.appPath, FileName.MtaExtYaml))) {
         deployArgs = ['-e', FileName.MtaExtYaml];
@@ -474,7 +478,7 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
  * @param cfConfig The deployment configuration
  * @param fs Reference to a mem-fs editor
  */
-export async function generateUI5DeployConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
+export async function generateUI5DeployConfig(cfConfig: CFConfig, fs: MemFsEditor): Promise<void> {
     const ui5BaseConfig = await readUi5Yaml(cfConfig.appPath, FileName.Ui5Yaml, fs);
     const addTranspileTask = !!ui5BaseConfig.findCustomMiddleware('ui5-tooling-transpile-task');
     const addModulesTask = !!ui5BaseConfig.findCustomMiddleware('ui5-tooling-modules-task');

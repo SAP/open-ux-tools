@@ -55,7 +55,7 @@ async function addEslintConfig(
         const fs = await generateEslintConfig(basePath, { logger, config });
         await traceChanges(fs);
         if (!simulate) {
-            await new Promise<void>((resolve) => fs.commit(resolve));
+            await fs.commit();
             logger.info(
                 `ESlint configuration written. Ensure you install the new dependency by executing 'npm install'.`
             );

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml.js';
 import { deleteFiles } from '../common/utils.js';
@@ -21,7 +21,12 @@ const renameMessage = (filePath: string): string =>
  * @param path - file path to be used for the renaming
  * @param logger logger to report info to the user
  */
-export async function renameSandbox(fs: Editor, basePath: string, path: string, logger?: ToolsLogger): Promise<void> {
+export async function renameSandbox(
+    fs: MemFsEditor,
+    basePath: string,
+    path: string,
+    logger?: ToolsLogger
+): Promise<void> {
     const filePath = join(await getWebappPath(basePath), path);
     if (fs.exists(filePath)) {
         if (path.endsWith('unitTests.qunit.html')) {
@@ -33,11 +38,8 @@ export async function renameSandbox(fs: Editor, basePath: string, path: string, 
         logger?.info(renameMessage(path));
     } else if (
         //checks if there is a file with the same name which has already been deleted/renamed to _old.html
-        Object.keys(
-            fs.dump(undefined, (file) => {
-                return file.history.includes(filePath) && file.state !== 'deleted';
-            })
-        ).length === 0
+        fs.store.existsInMemory(filePath) &&
+        fs.store.get(filePath).state === 'deleted'
     ) {
         logger?.debug(`The file '${path}', has already been renamed. Skipping renaming.`);
     } else {
@@ -55,7 +57,7 @@ export async function renameSandbox(fs: Editor, basePath: string, path: string, 
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function renameDefaultSandboxes(fs: MemFsEditor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
     for (const path of defaultSandboxPaths) {
         await renameSandbox(fs, basePath, path, logger);
@@ -71,7 +73,7 @@ export async function renameDefaultSandboxes(fs: Editor, basePath: string, logge
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-export async function renameDefaultTestFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function renameDefaultTestFiles(fs: MemFsEditor, basePath: string, logger?: ToolsLogger): Promise<void> {
     for (const path of Object.values(TEST_CONFIG_DEFAULTS).map((config) => config.path)) {
         await renameSandbox(fs, basePath, path, logger);
     }
@@ -86,7 +88,7 @@ export async function renameDefaultTestFiles(fs: Editor, basePath: string, logge
  * @param logger logger to report info to the user
  */
 export async function deleteNoLongerUsedFiles(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     convertTests: boolean,
     logger?: ToolsLogger

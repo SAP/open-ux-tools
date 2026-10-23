@@ -3,7 +3,7 @@ import type { Package } from '@sap-ux/ui5-application-writer';
 import type { FreestyleApp, BasicAppSettings } from './types.js';
 import { TemplateType } from './types.js';
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { t } from './i18n.js';
 
 /**
@@ -29,16 +29,16 @@ function addTestScripts(packageJson: Package, addMock: boolean): void {
  * @param {FreestyleApp} ffApp - The freestyle application configuration.
  * @param {boolean} addMock - Whether to include the UI5 mock YAML configuration.
  * @param {Package} packageJson - The package.json object to update.
- * @param {Editor} [fs] - Optional file system editor instance.
+ * @param {MemFsEditor} [fs] - Optional file system editor instance.
  * @param {Logger} [log] - Optional logger instance.
- * @returns {Promise<Editor>} - The modified file system editor.
+ * @returns {Promise<MemFsEditor>} - The modified file system editor.
  */
 export async function generateOPATests<T>(
     basePath: string,
     ffApp: FreestyleApp<T>,
     addMock: boolean,
     packageJson: Package,
-    fs?: Editor,
+    fs?: MemFsEditor,
     log?: Logger
 ): Promise<void> {
     if (ffApp.template.type === TemplateType.Basic) {

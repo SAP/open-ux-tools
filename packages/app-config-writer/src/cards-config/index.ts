@@ -1,5 +1,5 @@
 import { join, basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview, readManifest } from '../common/utils.js';
@@ -17,14 +17,14 @@ const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
  * Updates the `ui5.yaml` file to add card generator path to preview middleware configuration.
  * Removes the `sap-cards-generator` middleware if it exists.
  *
- * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} basePath - The path to the project root where the `ui5.yaml` file is located.
  * @param {string} [yamlPath] - Path to the `ui5.yaml` configuration file. Defaults to `ui5.yaml` in the project root.
  * @param {ToolsLogger} [logger] - logger instance for logging debug information.
  * @returns {Promise<void>} A promise that resolves when the `ui5.yaml` file has been successfully updated.
  */
 async function updateMiddlewareConfigWithGeneratorPath(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger
@@ -67,12 +67,17 @@ async function updateMiddlewareConfigWithGeneratorPath(
  * Removes the `@sap-ux/cards-editor-middleware` dependency if it exists in `devDependencies`.
  *
  * @param {string} basePath - The path to the project root where the `package.json` file is located.
- * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file for retrieving middleware configurations.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
  * @returns {Promise<void>} A promise that resolves when the `package.json` file has been successfully updated.
  */
-async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string, logger?: ToolsLogger): Promise<void> {
+async function updatePackageJson(
+    basePath: string,
+    fs: MemFsEditor,
+    yamlPath?: string,
+    logger?: ToolsLogger
+): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
@@ -111,19 +116,19 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
  * @param {string} basePath - The path to the project root.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file.
  * @param {ToolsLogger} [logger] - Optional logger instance for logging messages.
- * @param {Editor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
+ * @param {MemFsEditor} [fs] - Optional `mem-fs-editor` instance for file system operations. If not provided, a new instance will be created.
  * @param {boolean} [updatePackage] - Optional flag to update the `package.json` file. Defaults to true.
- * @returns {Promise<Editor>} A promise that resolves to the updated `mem-fs-editor` instance.
+ * @returns {Promise<MemFsEditor>} A promise that resolves to the updated `mem-fs-editor` instance.
  * @throws {Error} If minimum UI5 version requirement is not met (EDMX: ≥1.121.0, CAP: ≥1.149.0).
  */
 export async function enableCardGeneratorConfig(
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger,
-    fs?: Editor,
+    fs?: MemFsEditor,
     updatePackage = true
-): Promise<Editor> {
-    fs = fs ?? create(createStorage());
+): Promise<MemFsEditor> {
+    fs = fs ?? create(createStorage<VinylMemFsEditorFile>());
 
     // asserts minimum UI5 version requirement before proceeding
     await ensureMinUI5Version(basePath, fs);

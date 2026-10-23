@@ -11,7 +11,7 @@ import {
 import { jsonToI18nBundle } from '../../transformer/json/index.js';
 import { propertiesToI18nEntry } from '../../transformer/properties/index.js';
 import { csvToI18nBundle } from '../../transformer/csv/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Try to convert text to i18n bundle.
@@ -24,7 +24,7 @@ import type { Editor } from 'mem-fs-editor';
 async function tryTransformTexts(
     path: string,
     toI18nBundle: (content: string, path?: string) => I18nBundle,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<I18nBundle | undefined> {
     if (!(await doesExist(path))) {
         return undefined;
@@ -63,7 +63,7 @@ export async function getCapI18nBundle(
     root: string,
     env: CdsEnvironment,
     filePaths: string[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<I18nBundle> {
     const bundle: I18nBundle = {};
     const { defaultLanguage, fallbackLanguage } = getI18nConfiguration(env);

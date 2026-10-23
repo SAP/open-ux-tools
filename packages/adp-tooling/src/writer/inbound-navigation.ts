@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { type Editor, create } from 'mem-fs-editor';
+import { type MemFsEditor, type VinylMemFsEditorFile, create } from 'mem-fs-editor';
 
 import { type NewI18nEntry, SapShortTextType, removeAndCreateI18nEntries } from '@sap-ux/i18n';
 
@@ -26,12 +26,12 @@ import {
 export async function generateInboundConfig(
     basePath: string,
     configs: InternalInboundNavigation[],
-    fs?: Editor,
+    fs?: MemFsEditor,
     systemUI5Version?: string,
     isCfProject = false
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const variant = await getVariant(basePath, fs);
@@ -87,14 +87,14 @@ export function getFlpI18nKeys(config: InternalInboundNavigation, appId: string)
  * @param {string} basePath - The base path of the project.
  * @param {string} appId - The application ID used to generate i18n keys.
  * @param {InternalInboundNavigation[]} configs - The inbound configuration properties.
- * @param {Editor} fs - The mem-fs editor instance for file operations.
+ * @param {MemFsEditor} fs - The mem-fs editor instance for file operations.
  * @returns {Promise<void>} A promise that resolves when the i18n file is updated.
  */
 export async function updateI18n(
     basePath: string,
     appId: string,
     configs: InternalInboundNavigation[],
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     let newEntries: NewI18nEntry[] = [];
     for (const config of configs) {

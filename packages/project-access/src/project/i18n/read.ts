@@ -2,7 +2,7 @@ import type { I18nBundle } from '@sap-ux/i18n';
 import { getCapI18nBundle, getI18nFolderNames, getPropertiesI18nBundle } from '@sap-ux/i18n';
 import { getCapEnvironment, getCdsFiles } from '../index.js';
 import type { I18nBundles, I18nPropertiesPaths, ProjectType } from '../../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Add error to optional errors object.
@@ -34,7 +34,7 @@ async function mergeWithFallback(
     primaryKey: string,
     current: I18nBundle,
     fallbackPath: string,
-    fs: Editor | undefined
+    fs: MemFsEditor | undefined
 ): Promise<I18nBundle> {
     const primaryError = result.errors?.[primaryKey] as NodeJS.ErrnoException | undefined;
     if (primaryError && primaryError.code !== 'ENOENT') {
@@ -76,7 +76,7 @@ export async function getI18nBundles(
     root: string,
     i18nPropertiesPaths: I18nPropertiesPaths,
     projectType?: ProjectType,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<I18nBundles> {
     const result: I18nBundles = {
         'sap.app': {},

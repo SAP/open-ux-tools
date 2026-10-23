@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 // xml-formatter types are not callable under NodeNext; cast to function type once so call sites are clean
 import _fmt from 'xml-formatter';
 const xmlFormatter = _fmt as unknown as (xml: string, options?: object) => string;
@@ -35,7 +35,7 @@ const INDENT_SIZE = 4;
  * @param servicePath - Service path of the service
  */
 export function writeExternalServiceMetadata(
-    fs: Editor,
+    fs: MemFsEditor,
     webappPath: string,
     externalServices: ExternalService[],
     serviceName = DEFAULT_DATASOURCE_NAME,

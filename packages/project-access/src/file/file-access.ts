@@ -1,5 +1,5 @@
 import { promises as fs } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Manifest, Package } from '../types/index.js';
 import parseJsonError from 'json-parse-even-better-errors';
 
@@ -10,7 +10,7 @@ import parseJsonError from 'json-parse-even-better-errors';
  * @param memFs - optional mem-fs-editor instance
  * @returns - file content as string
  */
-export async function readFile(path: string, memFs?: Editor): Promise<string> {
+export async function readFile(path: string, memFs?: MemFsEditor): Promise<string> {
     if (memFs) {
         return memFs.read(path);
     } else {
@@ -25,7 +25,7 @@ export async function readFile(path: string, memFs?: Editor): Promise<string> {
  * @param memFs - optional mem-fs-editor instance
  * @returns - file content as object of type T
  */
-export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
+export async function readJSON<T>(path: string, memFs?: MemFsEditor): Promise<T> {
     if (memFs) {
         return memFs.readJSON(path) as unknown as T;
     } else {
@@ -41,7 +41,7 @@ export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
  * @param memFs - optional mem-fs-editor instance
  * @returns - file content as string
  */
-export async function writeFile(path: string, content: string, memFs?: Editor): Promise<string | void> {
+export async function writeFile(path: string, content: string, memFs?: MemFsEditor): Promise<string | void> {
     if (memFs) {
         return memFs.write(path, content);
     }
@@ -56,7 +56,7 @@ export async function writeFile(path: string, content: string, memFs?: Editor): 
  * @param memFs - optional mem-fs-editor instance
  * @returns - true if the file exists; false otherwise.
  */
-export async function fileExists(path: string, memFs?: Editor): Promise<boolean> {
+export async function fileExists(path: string, memFs?: MemFsEditor): Promise<boolean> {
     try {
         if (memFs) {
             return memFs.exists(path);
@@ -76,7 +76,7 @@ export async function fileExists(path: string, memFs?: Editor): Promise<boolean>
  * @param packageJson - updated package.json file content
  * @param memFs - optional mem-fs-editor instance
  */
-export async function updatePackageJSON(path: string, packageJson: Package, memFs?: Editor): Promise<void> {
+export async function updatePackageJSON(path: string, packageJson: Package, memFs?: MemFsEditor): Promise<void> {
     await updateJSON(path, packageJson, memFs);
 }
 
@@ -87,7 +87,7 @@ export async function updatePackageJSON(path: string, packageJson: Package, memF
  * @param manifest - updated manifest.json file content
  * @param memFs - optional mem-fs-editor instance
  */
-export async function updateManifestJSON(path: string, manifest: Manifest, memFs?: Editor): Promise<void> {
+export async function updateManifestJSON(path: string, manifest: Manifest, memFs?: MemFsEditor): Promise<void> {
     await updateJSON(path, manifest, memFs);
 }
 
@@ -98,7 +98,7 @@ export async function updateManifestJSON(path: string, manifest: Manifest, memFs
  * @param content - updated JSON file content
  * @param memFs - optional mem-fs-editor instance
  */
-async function updateJSON(path: string, content: object, memFs?: Editor): Promise<void> {
+async function updateJSON(path: string, content: object, memFs?: MemFsEditor): Promise<void> {
     // read old contents and indentation of the JSON file
     const oldContentText = await readFile(path, memFs);
     const oldContentJson = parseJsonError(oldContentText);
@@ -115,7 +115,7 @@ async function updateJSON(path: string, content: object, memFs?: Editor): Promis
  * @param memFs - optional mem-fs-editor instance
  * @returns Promise to void.
  */
-export async function deleteFile(path: string, memFs?: Editor): Promise<void> {
+export async function deleteFile(path: string, memFs?: MemFsEditor): Promise<void> {
     if (memFs) {
         return memFs.delete(path);
     }
@@ -139,7 +139,7 @@ export async function readDirectory(path: string): Promise<string[]> {
  * @param memFs - optional mem-fs-editor instance
  * @returns Promise to void.
  */
-export async function deleteDirectory(path: string, memFs?: Editor): Promise<void> {
+export async function deleteDirectory(path: string, memFs?: MemFsEditor): Promise<void> {
     if (memFs) {
         return memFs.delete(path);
     }

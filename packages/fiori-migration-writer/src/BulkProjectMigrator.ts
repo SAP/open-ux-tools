@@ -80,15 +80,7 @@ export class BulkProjectMigrator {
         // Commit changes to disk for this project
         if (result) {
             try {
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
+                await fs.commit();
             } catch (error) {
                 // Handle both callback errors and synchronous throws from fs.commit
                 throw new Error(

@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
-import memFs from 'mem-fs';
+import { create as memFsCreate } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import editor, { type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 const mockYamlNewInstance = jest.fn() as jest.Mock;
 const mockYamlDocumentToYamlString = jest.fn((doc: Record<string, Record<string, string>>) => {
@@ -46,9 +46,9 @@ describe('Writing tsConfig and yaml files', () => {
 
     // beforeEach function to reset fs before each test
     beforeEach(() => {
-        const store = memFs.create();
+        const store = memFsCreate();
         // Create a new instance of the Editor class before each test
-        fs = editor.create(store);
+        fs = create(store);
         jest.clearAllMocks();
     });
 

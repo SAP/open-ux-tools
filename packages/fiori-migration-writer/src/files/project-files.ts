@@ -6,7 +6,7 @@
 import { join } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import { parse, stringify } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile, updateFile } from '../utils/index.js';
 import { migrate, type AdpWriterConfig } from '@sap-ux/adp-tooling';
 import { TemplateFileName, templatesDirPath } from '../index.js';
@@ -20,6 +20,7 @@ import {
 } from '../utils/common.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { applyTemplates } from '../template/template-helpers.js';
+import { getCurrentEditor, createMemFsEditor } from '../utils/fs-adapter.js';
 import type {
     ImportProjectInfo,
     Message,
@@ -33,19 +34,20 @@ import type {
 /**
  * Copy adaptation (extension) project files from templates
  *
- * @param fs - mem-fs-editor instance for file operations
  * @param projectInfo - Project import information
  * @param snapshotUrl - URL for UI5 snapshot version
+ * @param fs - mem-fs-editor instance for file operations
  * @returns Result object with fs editor, success status and messages
  */
 export async function copyAdaptationFiles(
-    fs: Editor,
     projectInfo: ImportProjectInfo,
-    snapshotUrl: string
-): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+    snapshotUrl: string,
+    fs: MemFsEditor | undefined
+): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
     const messages: Message[] = [];
     const { moduleName, moduleDescription, ui5Version, appTitle, rootPath, destination } = projectInfo;
     let result: boolean;
+    let updatedFs: MemFsEditor;
 
     try {
         const projectUI5Version = getUI5Version(ui5Version || ''); // Defaults to '' if latest
@@ -87,8 +89,8 @@ export async function copyAdaptationFiles(
             }
         };
 
-        // Write into the shared editor; caller commits the changes.
-        await migrate(rootPath, adpConfig, fs);
+        updatedFs = await migrate(rootPath, adpConfig);
+        // NOTE: Caller is responsible for committing changes
         result = messages.length === 0;
     } catch (e) {
         messages.length = 0; // Reset
@@ -97,26 +99,29 @@ export async function copyAdaptationFiles(
             description: `Error copying adaptation files: ${determineMessage(e)}`
         });
         result = false;
+        updatedFs = fs || (await import('../utils/fs-adapter.js')).createMemFsEditor();
     }
-    return { fs, result, messages };
+    return { fs: updatedFs, result, messages };
 }
 
 /**
  * Copy library project files from templates
  *
- * @param fs - mem-fs editor
  * @param projectInfo - Project import information
  * @returns Result object with fs editor, success status and messages
  */
 export async function copyLibraryFiles(
-    fs: Editor,
     projectInfo: ImportProjectInfo
-): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
     const messages: Message[] = [];
     const { moduleName, rootPath } = projectInfo;
     let result: boolean;
+    let fs: MemFsEditor;
 
     try {
+        // Get fs from context or create new one
+        fs = getCurrentEditor() || createMemFsEditor();
+
         const deps = { ...devDependencies };
         delete deps.rimraf;
         const packageJson: Partial<PackageJsonMigrate> = {
@@ -140,18 +145,17 @@ export async function copyLibraryFiles(
         };
         // Perform migration for Reuse Library
         // 1. Create app settings (package.json)
-        await applyTemplates(fs, getLibraryTemplatesMap(), templateData, rootPath, TemplateFileName.LibrarySettings);
+        await applyTemplates(getLibraryTemplatesMap(), templateData, rootPath, TemplateFileName.LibrarySettings);
 
         //2. Create ui5.yaml
         const ui5YamlTemplate = readFile(
-            fs,
             join(templatesDirPath, TemplateFileName.LibrarySettings, TemplateFileName.UI5Yaml)
         );
 
         const ui5YamlContent = render(ui5YamlTemplate, templateData.ui5Yaml, { escape: escapeXML });
         const ui5YamlJson = parse(ui5YamlContent);
 
-        updateFile(fs, join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
+        updateFile(join(rootPath, TemplateFileName.UI5Yaml), stringify(ui5YamlJson));
         result = messages.length === 0;
     } catch (e) {
         messages.length = 0; // Reset
@@ -163,6 +167,7 @@ export async function copyLibraryFiles(
             description: `Error copying library files: ${errorDetail}`
         });
         result = false;
+        fs = createMemFsEditor();
     }
     return { fs, result, messages };
 }
