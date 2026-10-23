@@ -1,0 +1,18 @@
+[
+      {
+        "DefectLifecycleStatus" : "00",
+        "DefectLifecycleStatus_Text" : "Created"
+      },
+      {
+        "DefectLifecycleStatus" : "10",
+        "DefectLifecycleStatus_Text" : "Not Relevant"
+      },
+      {
+        "DefectLifecycleStatus" : "12",
+        "DefectLifecycleStatus_Text" : "In Process"
+      },
+      {
+        "DefectLifecycleStatus" : "20",
+        "DefectLifecycleStatus_Text" : "Completed"
+      }
+    ]

@@ -1,5 +1,41 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[1e9c957](https://github.com/SAP/open-ux-tools/commit/1e9c957b1ee7253c9ec7f6e85f5509dfc9dd501d)]
+
+## 1.16.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+## 1.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Split sap-fiori-create-cli into a thin root routing skill + 8 per-command-group sub-skills; add @microsoft/vally lint script to validate all skills on skill-size and valid-refs graders [[359bca8](https://github.com/SAP/open-ux-tools/commit/359bca80fa1f67d4be5a8475177802288eea1122)]
+
 ## 1.15.13
 
 ### Patch Changes

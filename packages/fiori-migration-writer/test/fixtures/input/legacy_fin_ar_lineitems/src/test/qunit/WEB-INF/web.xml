@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+  <display-name>jsunit-tests</display-name>
+
+
+  <!-- ============================================================== -->
+  <!-- Code Coverage (enable this to instrument JS files on the fly)  -->
+  <!-- ============================================================== -->
+
+	<filter>
+		<display-name>InstrumentationFilter</display-name>
+		<filter-name>InstrumentationFilter</filter-name>
+		<filter-class>com.sap.ui5.jscoverage.InstrumentationFilter</filter-class>
+		<init-param>
+			<param-name>EXCLUDES</param-name>
+			<param-value>/resources/*, /test-resources/*</param-value>
+		</init-param>
+<!-- 		<init-param> -->
+<!-- 			<param-name>INCLUDES</param-name> -->
+<!-- 			<param-value> -->
+<!-- 				/resources/sap/wbs/* -->
+<!-- 			</param-value> -->
+<!-- 		</init-param> -->
+	</filter>
+	<filter-mapping>
+		<filter-name>InstrumentationFilter</filter-name>
+		<url-pattern>*.js</url-pattern>
+	</filter-mapping>
+
+
+  <!-- ============================================================== -->
+  <!-- Phoenix resource servlet used to handle application resources  -->
+  <!-- ============================================================== -->
+
+  <servlet>
+    <display-name>ResourceServlet</display-name>
+    <servlet-name>ResourceServlet</servlet-name>
+    <servlet-class>com.sap.ui5.resource.ResourceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResourceServlet</servlet-name>
+    <url-pattern>/resources/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ResourceServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <!-- BEGIN: DEV MODE -->
+  <context-param>
+    <param-name>com.sap.ui5.resource.DEV_MODE</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <!-- END: DEV MODE -->
+  <!--
+  <context-param>
+    <param-name>com.sap.ui5.resource.USE_CACHE</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.sap.ui5.resource.VERBOSE</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  -->
+
+
+  <!-- ============================================================== -->
+  <!-- Cache Control Filter to prevent caching of any resource        -->
+  <!-- ============================================================== -->
+
+  <filter>
+    <display-name>CacheControlFilter</display-name>
+    <filter-name>CacheControlFilter</filter-name>
+    <filter-class>com.sap.ui5.resource.CacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CacheControlFilter</filter-name>
+    <url-pattern>*.html</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheControlFilter</filter-name>
+    <url-pattern>*.js</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CacheControlFilter</filter-name>
+    <url-pattern>*.css</url-pattern>
+  </filter-mapping>
+
+
+  <!-- ============================================================== -->
+  <!-- Phoenix discovery servlet used to find available UI test cases -->
+  <!-- ============================================================== -->
+
+  <servlet>
+    <display-name>DiscoveryServlet</display-name>
+    <servlet-name>DiscoveryServlet</servlet-name>
+    <servlet-class>com.sap.ui5.discovery.DiscoveryServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DiscoveryServlet</servlet-name>
+    <url-pattern>/discovery/*</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- ============================================================== -->
+  <!-- Phoenix file upload servlet                                    -->
+  <!-- ============================================================== -->
+
+  <servlet>
+    <display-name>FileUploadServlet</display-name>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>com.sap.ui5.fileupload.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/upload/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- ============================================================== -->
+  <!-- Welcome file list                                              -->
+  <!-- ============================================================== -->
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+
+</web-app>

@@ -1,5 +1,22 @@
 # @sap-ux/generator-adp
 
+## 1.0.71
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/telemetry 2.0.10 → 2.0.11
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
 ## 1.0.70
 
 ### Patch Changes

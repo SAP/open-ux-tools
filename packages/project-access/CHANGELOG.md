@@ -1,5 +1,14 @@
 # @sap-ux/project-access
 
+## 2.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/i18n 1.0.5 → 1.0.6
+
 ## 2.3.0
 
 ### Minor Changes

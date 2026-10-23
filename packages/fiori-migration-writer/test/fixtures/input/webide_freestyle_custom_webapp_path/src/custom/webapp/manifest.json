@@ -1,0 +1,180 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "demo.central.listreport.reuse",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"title": "{{FULLSCREEN_TITLE}}",
+		"applicationVersion": {
+			"version": "${project.version}"
+		},
+		"ach": "FI-FIO-GL",
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/opu/odata/SAP/FAR_CUSTOMER_LINE_ITEMS/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"annotations": [
+						"annotations"
+					],
+					"localUri": "localService/metadata.xml"
+				}
+			},
+			"annotations": {
+				"type": "ODataAnnotation",
+				"uri": "annotations/annotations.xml",
+				"settings": {
+					"localUri": "annotations/annotations.xml"
+				}
+			}
+		},
+		"resources": "resources.json",
+		"sourceTemplate": {
+			"id": "@sap/ux-app-migrator:freestyle",
+			"version": "1.0.1",
+			"toolsId": "ee3e8072-7ff4-46eb-8aff-1de8e6de9fbd"
+		}
+	},
+	"sap.ui": {
+		"_version": "1.1.0",
+		"technology": "UI5",
+		"icons": {
+			"icon": "sap-icon://Fiori5/F0707",
+			"favIcon": "./resources/sap/ca/ui/themes/base/img/favicon/F0707_Dsp_GL_Acc_Balances.ico"
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": false
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_bluecrystal"
+		]
+	},
+	"sap.ui5": {
+		"rootView": "demo.central.listreport.reuse.view.App",
+		"resources": {},
+		"dependencies": {
+			"minUI5Version": "${sap.ui5.dist.version}",
+			"libs": {
+				"sap.ui.core": {
+					"lazy": false
+				},
+				"sap.m": {
+					"lazy": false
+				},
+				"sap.f": {
+					"lazy": false
+				},
+				"sap.ui.table": {
+					"lazy": false
+				},
+				"sap.ui.unified": {
+					"lazy": false
+				},
+				"sap.ushell": {
+					"lazy": false
+				},
+				"sap.ui.comp": {
+					"lazy": false
+				},
+				"sap.fe.navigation": {
+					"lazy": false
+				}
+			},
+			"components": {}
+		},
+		"commands": {
+			"Share": {
+				"shortcut": "Shift+Ctrl+S"
+			},
+			"Enter": {
+				"shortcut": "Enter"
+			}
+		},
+		"config": {
+			"fullWidth": "true"
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "demo.central.listreport.reuse.i18n.i18n"
+				}
+			},
+			"": {
+				"preload": true,
+				"dataSource": "mainService",
+				"settings": {
+					"metadataUrlParams": {
+						"sap-documentation": "heading,quickinfo",
+						"sap-value-list": "none"
+					}
+				}
+			},
+			"@i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"uri": "i18n/i18n.properties"
+			}
+		},
+		"routing": {
+			"config": {
+				"async": true,
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "demo.central.listreport.reuse.view",
+				"controlId": "fioriContent",
+				"controlAggregation": "pages",
+				"bypassed": {
+					"target": "notFound"
+				}
+			},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "fullscreen",
+					"target": "fullscreen"
+				},
+				{
+					"pattern": "sap-iapp-state={id}",
+					"name": "localstate-old",
+					"target": "fullscreen"
+				},
+				{
+					"pattern": "{?query}",
+					"name": "localstate-new",
+					"target": "fullscreen"
+				}
+			],
+			"targets": {
+				"fullscreen": {
+					"viewName": "List",
+					"viewId": "fullscreen",
+					"viewLevel": 1
+				},
+				"notFound": {
+					"viewName": "NotFound",
+					"viewId": "notFound"
+				}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		}
+	},
+	"sap.platform.abap": {
+		"_version": "1.1.0",
+		"uri": "/sap/bc/ui5_ui5/sap/zsfin_listrep"
+	},
+	"sap.fiori": {
+		"_version": "1.1.0",
+		"registrationIds": [
+			"F0711"
+		],
+		"archeType": "transactional"
+	}
+}

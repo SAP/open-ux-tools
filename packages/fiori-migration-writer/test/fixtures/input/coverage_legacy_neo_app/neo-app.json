@@ -1,0 +1,53 @@
+{
+  "welcomeFile": "/webapp/index.html",
+  "authenticationMethod": "route",
+  "logout": {
+    "logoutEndpoint": "/sap/public/bc/icf/logoff",
+    "logoutPage": "/webapp/index.html"
+  },
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/sap/opu/odata/sap/LEGACY_SRV",
+      "target": {
+        "type": "destination",
+        "name": "LEGACY_BACKEND",
+        "entryPath": "/sap/opu/odata/sap/LEGACY_SRV"
+      },
+      "description": "Legacy Backend Service"
+    },
+    {
+      "path": "/sap/opu/odata/sap/ANOTHER_SRV",
+      "target": {
+        "type": "destination",
+        "name": "LEGACY_BACKEND",
+        "entryPath": "/sap/opu/odata/sap/ANOTHER_SRV"
+      },
+      "description": "Another service on same backend"
+    }
+  ],
+  "sendWelcomeFileRedirect": true,
+  "destination": {
+    "name": "LEGACY_BACKEND",
+    "url": "https://legacy.dummy.example.com:443",
+    "host": "legacy.dummy.example.com",
+    "client": "100"
+  }
+}
