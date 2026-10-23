@@ -278,6 +278,5 @@ describe('ProjectMigrator', () => {
             },
             10000
         );
->>>>>>> 824021f1f4 (test(fiori-migration-writer): add exception handling test)
     });
 });
