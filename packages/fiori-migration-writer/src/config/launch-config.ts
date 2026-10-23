@@ -9,7 +9,7 @@ import { FioriElementsVersion } from '../project-spec-types.js';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import { ODataVersion } from '../types.js';
-import type { ImportProjectInfo, Message } from '../types.js';
+import type { ImportProjectInfo } from '../types.js';
 
 /**
  * Generate and write VS Code launch configuration for the migrated project
@@ -20,7 +20,6 @@ import type { ImportProjectInfo, Message } from '../types.js';
  * @param appIntent - FLP app intent string (e.g., "#SemanticObject-Action")
  * @param appMockIntent - Mock intent string for FLP sandbox
  * @param flpSandboxAvailable - Whether FLP sandbox is available
- * @param _messages - Array to collect warning/error messages (currently unused)
  */
 export async function generateLaunchConfiguration(
     fs: Editor,
@@ -28,8 +27,7 @@ export async function generateLaunchConfiguration(
     vscode: any,
     appIntent: string | undefined,
     appMockIntent: string | undefined,
-    flpSandboxAvailable: boolean,
-    _messages: Message[]
+    flpSandboxAvailable: boolean
 ): Promise<void> {
     const projectName = projectInfo.rootPath.split(pathSep).pop() as string;
     const targetFolder = join(projectInfo.rootPath, '..');

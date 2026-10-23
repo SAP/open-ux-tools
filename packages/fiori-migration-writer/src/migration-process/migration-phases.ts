@@ -249,8 +249,7 @@ export async function postProcessMigration(config: PostProcessMigrationConfig): 
             vscode,
             appIntent,
             appMockIntent,
-            flpSandboxAvailable,
-            messages
+            flpSandboxAvailable
         );
     } else {
         // Handle extension project configuration
