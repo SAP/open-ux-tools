@@ -18,6 +18,22 @@ jest.unstable_mockModule('../../../src/abap/provider.js', () => ({
     getConfiguredProvider: mockGetConfiguredProvider
 }));
 
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const mockIsBasicAuthConfigured = jest.fn<() => Promise<boolean>>();
+const realSystems = await import('../../../src/source/systems.js');
+jest.unstable_mockModule('../../../src/source/systems.js', () => ({
+    ...realSystems,
+    SystemLookup: jest.fn().mockImplementation(() => ({
+        isBasicAuthConfigured: mockIsBasicAuthConfigured
+    }))
+}));
+
 const { SystemNotFoundError } = await import('../../../src/abap/config.js');
 const { isAuthRequired } = await import('../../../src/abap/auth.js');
 
@@ -33,6 +49,8 @@ describe('isAuthRequired', () => {
         jest.clearAllMocks();
         mockGetLayeredRepository.mockReturnValue({ getCsrfToken: mockGetCsrfToken });
         mockGetConfiguredProvider.mockResolvedValue({ getLayeredRepository: mockGetLayeredRepository });
+        mockIsAppStudio.mockReturnValue(false);
+        mockIsBasicAuthConfigured.mockResolvedValue(false);
     });
 
     it('should return false when getCsrfToken succeeds', async () => {
@@ -44,14 +62,39 @@ describe('isAuthRequired', () => {
         expect(mockGetConfiguredProvider).toHaveBeenCalledWith({ system: 'SYS010' }, logger);
     });
 
-    it('should return true when getCsrfToken returns 401', async () => {
+    it('should return true when getCsrfToken returns 401 and not in BAS', async () => {
         const axiosError = { response: { status: 401 } } as AxiosError;
         mockGetCsrfToken.mockRejectedValue(axiosError);
         mockIsAxiosError.mockReturnValue(true);
+        mockIsAppStudio.mockReturnValue(false);
 
         const result = await isAuthRequired('SYS010', logger);
 
         expect(result).toBe(true);
+    });
+
+    it('should return true when getCsrfToken returns 401 in BAS and destination does not have Basic auth configured', async () => {
+        const axiosError = { message: 'Unauthorized', response: { status: 401 } } as AxiosError;
+        mockGetCsrfToken.mockRejectedValue(axiosError);
+        mockIsAxiosError.mockReturnValue(true);
+        mockIsAppStudio.mockReturnValue(true);
+        mockIsBasicAuthConfigured.mockResolvedValue(false);
+
+        const result = await isAuthRequired('SYS010', logger);
+
+        expect(result).toBe(true);
+    });
+
+    it('should throw when getCsrfToken returns 401 in BAS and destination has Basic auth configured', async () => {
+        const axiosError = { message: 'Unauthorized', response: { status: 401 } } as AxiosError;
+        mockGetCsrfToken.mockRejectedValue(axiosError);
+        mockIsAxiosError.mockReturnValue(true);
+        mockIsAppStudio.mockReturnValue(true);
+        mockIsBasicAuthConfigured.mockResolvedValue(true);
+
+        await expect(isAuthRequired('SYS010', logger)).rejects.toThrow(
+            'Please check the SAP BTP destination authentication configuration.'
+        );
     });
 
     it('should return true when system is not found in the store', async () => {

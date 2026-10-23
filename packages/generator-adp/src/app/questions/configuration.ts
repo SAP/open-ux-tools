@@ -1,8 +1,5 @@
 import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import {
-    getFlexUICapability,
-    getSupportedProject,
-    SupportedProject,
     checkSystemVersionPattern,
     fetchPublicVersions,
     FlexLayer,
@@ -11,15 +8,18 @@ import {
     getConfiguredProvider,
     getEndpointNames,
     getFioriId,
+    getFlexUICapability,
     getRelevantVersions,
+    getSupportedProject,
     getSystemUI5Version,
     isAppSupported,
+    isAuthRequired,
     isFeatureSupportedVersion,
     isSyncLoadedView,
     isV4Application,
     loadApps,
     SourceManifest,
-    isAuthRequired
+    SupportedProject
 } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -34,8 +34,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { t } from '../../utils/i18n.js';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { Answers } from 'inquirer';
 import type { TelemetryCollector } from '../../telemetry/index.js';
+import { t } from '../../utils/i18n.js';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -61,10 +65,6 @@ import {
 } from './helper/conditions.js';
 import { getExtProjectMessage } from './helper/message.js';
 import { validateExtensibilityExtension } from './helper/validators.js';
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { Answers } from 'inquirer';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -318,7 +318,7 @@ export class ConfigPrompter {
             default: '',
             validate: (value: string) => this.validateSystem(value),
             additionalMessages: () => {
-                this.systemAdditionalMessage = getSystemAdditionalMessages(
+                this.systemAdditionalMessage ??= getSystemAdditionalMessages(
                     this.flexUICapability,
                     this.selectedProjectType
                 );
@@ -800,12 +800,25 @@ export class ConfigPrompter {
             this.selectedProjectType = undefined;
             this.selectedSystemType = undefined;
             this.supportedProject = undefined;
+            this.systemAdditionalMessage = undefined;
             const options = {
                 system,
                 client: undefined
             };
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await isAuthRequired(system, this.logger);
+
+            if (this.isAuthRequired && !isAppStudio() && (await this.systemLookup.isBasicAuthConfigured(system))) {
+                // In VSCode we display the credentials prompts in case the system is configured with
+                // invalid credentials + a warning suggesting the user to check the credentials. In BAS
+                // we do to show the prompts for credentials, the generator stop with a validation error
+                // suggesting to check the destination configuration in BTP. This will make the ADP generator
+                // consistent with the Fiori generator in this use case.
+                this.systemAdditionalMessage = {
+                    message: t('warnings.authenticationFailedUpdateCredentialsMessage'),
+                    severity: Severity.information
+                };
+            }
 
             if (this.isAuthRequired) {
                 return true;

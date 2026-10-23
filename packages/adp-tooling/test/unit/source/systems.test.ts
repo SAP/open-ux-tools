@@ -289,4 +289,109 @@ describe('SystemLookup', () => {
             });
         });
     });
+
+    describe('isBasicAuthConfigured', () => {
+        describe('in BAS', () => {
+            beforeEach(() => {
+                mockIsAppStudio.mockReturnValue(true);
+                mockListDestinations.mockResolvedValue(destinations);
+            });
+
+            test('should return true when destination Authentication is BasicAuthentication', async () => {
+                const basicAuthDestinations = {
+                    SystemC: {
+                        Name: 'SystemC',
+                        Host: 'urlC',
+                        Authentication: 'BasicAuthentication',
+                        WebIDEUsage: 'dev_abap'
+                    }
+                } as unknown as { [name: string]: Destination };
+                mockListDestinations.mockResolvedValue(basicAuthDestinations);
+
+                const result = await sourceSystems.isBasicAuthConfigured('SystemC');
+
+                expect(result).toBe(true);
+            });
+
+            test('should return false when destination Authentication is not BasicAuthentication', async () => {
+                const result = await sourceSystems.isBasicAuthConfigured('SystemA');
+
+                expect(result).toBe(false);
+            });
+
+            test('should return false when the system is not found', async () => {
+                const result = await sourceSystems.isBasicAuthConfigured('UnknownSystem');
+
+                expect(result).toBe(false);
+            });
+        });
+
+        describe('outside BAS (VSCode)', () => {
+            const onPremSystemWithCreds: BackendSystem = {
+                client: '010',
+                name: 'OnPremSys',
+                username: 'user',
+                password: 'pass',
+                url: 'url-onprem',
+                systemType: 'OnPrem',
+                connectionType: 'abap_catalog'
+            } as unknown as BackendSystem;
+
+            const onPremSystemNoCreds: BackendSystem = {
+                client: '010',
+                name: 'OnPremNoCreds',
+                username: '',
+                password: '',
+                url: 'url-onprem-nocreds',
+                systemType: 'OnPrem',
+                connectionType: 'abap_catalog'
+            } as unknown as BackendSystem;
+
+            const cloudSystem: BackendSystem = {
+                client: '001',
+                name: 'CloudSys',
+                username: 'user',
+                password: 'pass',
+                url: 'url-cloud',
+                systemType: 'SapCloud',
+                connectionType: 'abap_catalog'
+            } as unknown as BackendSystem;
+
+            beforeEach(() => {
+                mockIsAppStudio.mockReturnValue(false);
+            });
+
+            test('should return true for AbapOnPrem system with stored credentials', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([onPremSystemWithCreds]) });
+
+                const result = await sourceSystems.isBasicAuthConfigured('OnPremSys');
+
+                expect(result).toBe(true);
+            });
+
+            test('should return false for AbapOnPrem system without stored credentials', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([onPremSystemNoCreds]) });
+
+                const result = await sourceSystems.isBasicAuthConfigured('OnPremNoCreds');
+
+                expect(result).toBe(false);
+            });
+
+            test('should return false for a non-OnPrem system even with credentials', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([cloudSystem]) });
+
+                const result = await sourceSystems.isBasicAuthConfigured('CloudSys');
+
+                expect(result).toBe(false);
+            });
+
+            test('should return false when the system is not found', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([onPremSystemWithCreds]) });
+
+                const result = await sourceSystems.isBasicAuthConfigured('UnknownSystem');
+
+                expect(result).toBe(false);
+            });
+        });
+    });
 });

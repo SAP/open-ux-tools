@@ -1,11 +1,11 @@
-import { getService } from '@sap-ux/store';
-import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { getService, SystemType } from '@sap-ux/store';
 
-import type { Endpoint } from '../types.js';
 import { type AbapServiceProvider, AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 import { t } from '../i18n.js';
+import type { Endpoint } from '../types.js';
 
 export enum SupportedProject {
     ON_PREM = 'onPremise',
@@ -82,6 +82,8 @@ export const transformBackendSystem = (system: BackendSystem): Endpoint => ({
  * including their names, authentication requirements, and specific details.
  */
 export class SystemLookup {
+    private readonly BASIC_AUTH_TYPE = 'BasicAuthentication';
+
     private systems: Endpoint[];
 
     /**
@@ -147,5 +149,25 @@ export class SystemLookup {
         }
 
         return system;
+    }
+
+    /**
+     * Checks whether the given system is configured for Basic authentication.
+     *
+     * In BAS this checks that the destination's `Authentication` field is `'BasicAuthentication'`.
+     * Outside BAS (VSCode on-prem) this checks that the system type is `AbapOnPrem` and that
+     * non-empty username and password credentials are stored.
+     *
+     * @param {string} system - The system name or URL to look up.
+     * @returns {Promise<boolean>} `true` if Basic auth is configured for the system.
+     */
+    async isBasicAuthConfigured(system: string): Promise<boolean> {
+        const systemEndpoint = await this.getSystemByName(system);
+        if (isAppStudio()) {
+            return systemEndpoint?.Authentication === this.BASIC_AUTH_TYPE;
+        }
+        const { username, password } = systemEndpoint?.Credentials ?? {};
+        const hasCredentials = !!username && !!password;
+        return systemEndpoint?.SystemType === SystemType.AbapOnPrem && hasCredentials;
     }
 }

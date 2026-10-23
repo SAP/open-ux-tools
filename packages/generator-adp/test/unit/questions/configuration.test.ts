@@ -117,7 +117,8 @@ const sourceSystems: SystemLookup = {
     getSystems: jest.fn().mockResolvedValue([
         { Name: 'SystemB', Client: '200', Url: 'urlB' },
         { Name: 'systemA', Client: '010', Url: 'urlA' }
-    ])
+    ]),
+    isBasicAuthConfigured: jest.fn().mockResolvedValue(false)
 } as unknown as SystemLookup;
 
 const dummyApps = [
@@ -470,6 +471,97 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
             expect(result).toEqual(axiosError.message);
+        });
+
+        it('system prompt validate should set systemAdditionalMessage when in VSCode, auth is required, and Basic auth is stored', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockIsAuthRequired.mockResolvedValue(true);
+            const systemLookupWithBasicAuth: SystemLookup = {
+                ...sourceSystems,
+                isBasicAuthConfigured: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            configPrompter = new ConfigPrompter(systemLookupWithBasicAuth, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toBe(true);
+            expect(configPrompter['isAuthRequired']).toBe(true);
+            expect(configPrompter['systemAdditionalMessage']).toEqual({
+                message: t('warnings.authenticationFailedUpdateCredentialsMessage'),
+                severity: Severity.information
+            });
+        });
+
+        it('system prompt validate should not set systemAdditionalMessage when in VSCode, auth is required, but no Basic auth is stored', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockIsAuthRequired.mockResolvedValue(true);
+            const systemLookupNoBasicAuth: SystemLookup = {
+                ...sourceSystems,
+                isBasicAuthConfigured: jest.fn().mockResolvedValue(false)
+            } as unknown as SystemLookup;
+            configPrompter = new ConfigPrompter(systemLookupNoBasicAuth, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(configPrompter['systemAdditionalMessage']).toBeUndefined();
+        });
+
+        it('system prompt validate should not set systemAdditionalMessage when in BAS, auth is required, and Basic auth is configured (isAuthRequired throws instead)', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockIsAuthRequired.mockRejectedValue(
+                new Error('Unauthorized. Please check the SAP BTP destination authentication configuration.')
+            );
+            configPrompter = new ConfigPrompter(sourceSystems, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(typeof result).toBe('string');
+            expect(configPrompter['systemAdditionalMessage']).toBeUndefined();
+        });
+
+        it('system prompt validate should reset systemAdditionalMessage when switching to a different system', async () => {
+            const systemLookupWithBasicAuth: SystemLookup = {
+                ...sourceSystems,
+                isBasicAuthConfigured: jest.fn().mockResolvedValue(true)
+            } as unknown as SystemLookup;
+            mockIsAppStudio.mockReturnValue(false);
+            mockIsAuthRequired.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+            isAbapCloudMock.mockResolvedValue(false);
+            mockGetSupportedProject.mockResolvedValue(SupportedProject.ON_PREM);
+            mockGetSystemUI5Version.mockResolvedValue('1.135.0');
+            configPrompter = new ConfigPrompter(systemLookupWithBasicAuth, layer, logger, telemetryCollector);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+
+            await systemPrompt?.validate?.('SYS010', dummyAnswers);
+            expect(configPrompter['systemAdditionalMessage']).toBeDefined();
+
+            await systemPrompt?.validate?.('SYS020', dummyAnswers);
+            expect(configPrompter['systemAdditionalMessage']).toBeUndefined();
+        });
+
+        it('system prompt additionalMessages should use cached systemAdditionalMessage and not recompute (??= behaviour)', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            const presetMessage: IMessageSeverity = { message: 'Pre-set message', severity: Severity.warning };
+            const newMessage: IMessageSeverity = { message: 'New message', severity: Severity.information };
+            configPrompter['systemAdditionalMessage'] = presetMessage;
+            mockGetSystemAdditionalMessages.mockReturnValue(newMessage);
+
+            const result = await systemPrompt?.additionalMessages?.();
+
+            expect(result).toEqual(presetMessage);
+            expect(mockGetSystemAdditionalMessages).not.toHaveBeenCalled();
         });
     });
 
