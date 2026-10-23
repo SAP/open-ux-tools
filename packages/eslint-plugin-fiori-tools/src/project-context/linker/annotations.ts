@@ -28,7 +28,7 @@ import {
 type SectionConfig = {
     index: number;
     referencedEntityType: string;
-    id: string;
+    id?: string;
     qualifier?: string;
     sectionLabel?: string;
 };
@@ -403,7 +403,7 @@ function processReferenceFacetRecord(
     const id = getId(record);
     const annotationPath = getTargetAnnotationPath(record);
 
-    if (!id || !annotationPath) {
+    if (!annotationPath) {
         return undefined;
     }
 
