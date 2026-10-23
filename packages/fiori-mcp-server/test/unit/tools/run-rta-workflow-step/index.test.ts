@@ -14,6 +14,11 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/in
         disconnectSite: mockDisconnectSite,
         stopBrowser: mockStopBrowser
     },
+    firefoxWdTransport: {
+        callFrontendAction: mockCallFrontendAction,
+        disconnectSite: mockDisconnectSite,
+        stopBrowser: mockStopBrowser
+    },
     isRegistryEmpty: () => registryEmpty,
     stopBrowser: mockStopBrowser
 }));

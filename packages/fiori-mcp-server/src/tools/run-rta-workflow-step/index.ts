@@ -10,8 +10,20 @@ import {
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
-import { defaultTransport, isRegistryEmpty } from './browser/index.js';
+import { defaultTransport, firefoxWdTransport, isRegistryEmpty } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
+
+/**
+ * Selects the FrontendActionTransport implementation.
+ *
+ * Priority order (first matching env var wins):
+ * 1. SAP_FIORI_MCP_ADP_FIREFOX_WD=true — headless Firefox driven via geckodriver
+ *    (WebDriver protocol). geckodriver is downloaded automatically on first use.
+ *    Works without a display server. Recommended for BAS.
+ * 2. Default — Playwright launches Chromium/Chrome (requires a display server).
+ */
+const activeTransport =
+    process.env.SAP_FIORI_MCP_ADP_FIREFOX_WD === 'true' ? firefoxWdTransport : defaultTransport;
 
 /**
  * Reads `key` from `payload` and asserts it is a non-empty string. The Zod
@@ -90,12 +102,12 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'start': {
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
-                await defaultTransport.disconnectSite(site);
-                const result = await startRta(defaultTransport, { site, frameId });
+                await activeTransport.disconnectSite(site);
+                const result = await startRta(activeTransport, { site, frameId });
                 return { site, frameId, ...result };
             }
             case 'get_overlays': {
-                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, {
+                const { overlays, actionsCatalog } = await getOverlays(activeTransport, {
                     site,
                     frameId
                 });
@@ -104,35 +116,35 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'get_context': {
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
-                const context = await getElementContext(defaultTransport, { site, frameId }, controlId, actionId);
+                const context = await getElementContext(activeTransport, { site, frameId }, controlId, actionId);
                 return { context };
             }
             case 'call_action': {
                 const controlId = requireString(input.payload, 'controlId');
                 const actionId = requireString(input.payload, 'actionId');
                 const actionPayload = requireObject(input.payload, 'actionPayload');
-                const ok = await executeAction(defaultTransport, { site, frameId }, controlId, actionId, actionPayload);
+                const ok = await executeAction(activeTransport, { site, frameId }, controlId, actionId, actionPayload);
                 return { success: ok };
             }
             case 'save': {
-                const ok = await saveChanges(defaultTransport, { site, frameId });
+                const ok = await saveChanges(activeTransport, { site, frameId });
                 return { saved: ok };
             }
             case 'stop': {
-                await defaultTransport.disconnectSite(site);
+                await activeTransport.disconnectSite(site);
                 if (isRegistryEmpty()) {
-                    await defaultTransport.stopBrowser();
+                    await activeTransport.stopBrowser();
                 }
                 return { stopped: true };
             }
             case 'restart': {
                 const page = { site, frameId };
-                await defaultTransport.disconnectSite(site);
-                const result = await startRta(defaultTransport, page);
+                await activeTransport.disconnectSite(site);
+                const result = await startRta(activeTransport, page);
                 return { site, frameId, ...result };
             }
             case 'get_page_actions': {
-                const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
+                const { registered, interactive, interactiveTruncated } = await getPageActions(activeTransport, {
                     site,
                     frameId
                 });
@@ -144,12 +156,12 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'call_page_action': {
                 const id = requireString(input.payload, 'id');
-                const result = await callPageAction(defaultTransport, { site, frameId }, id);
+                const result = await callPageAction(activeTransport, { site, frameId }, id);
                 return { result };
             }
             case 'press_interactive': {
                 const controlId = requireString(input.payload, 'controlId');
-                const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
+                const result = await pressInteractive(activeTransport, { site, frameId }, controlId);
                 return { result };
             }
             default:

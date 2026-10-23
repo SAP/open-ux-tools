@@ -14,7 +14,9 @@ allowBuilds:
     '@vscode/vsce-sign': true
     '@zowe/secrets-for-zowe-sdk': true
     better-sqlite3: true
+    edgedriver: false
     esbuild: true
+    geckodriver: true
     keytar: true
     koffi: true # native addon required transitively by @microsoft/vally (plugins-coding-agents/fiori)
     mta: true

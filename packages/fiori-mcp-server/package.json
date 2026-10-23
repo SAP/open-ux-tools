@@ -105,5 +105,9 @@
     },
     "engines": {
         "node": ">=22.x"
+    },
+    "dependencies": {
+        "geckodriver": "^8.0.0",
+        "webdriver": "^10.1.0"
     }
 }
