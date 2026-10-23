@@ -1,11 +1,11 @@
 /**
  * Mem-fs editor utilities with context-based management
  *
- * Provides thread-safe, per-invocation Editor instances for the migration writer.
+ * Provides thread-safe, per-invocation MemFsEditor instances for the migration writer.
  * Uses AsyncLocalStorage to track the current migration's editor without requiring
  * it to be passed through every function call.
  */
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import { access } from 'node:fs/promises';
@@ -16,22 +16,22 @@ import { normalizePath } from './file-system-utils.js';
 /**
  * AsyncLocalStorage for tracking the current migration's editor
  */
-const editorContext = new AsyncLocalStorage<Editor>();
+const editorContext = new AsyncLocalStorage<MemFsEditor>();
 
 type EditorStore = {
     each: (callback: (file: { path: string; state?: string }) => void) => void;
     get: (filepath: string) => { contents: Buffer | null };
 };
 
-type EditorWithStore = Editor & { store: EditorStore };
+type EditorWithStore = MemFsEditor & { store: EditorStore };
 
 /**
  * Get editor from context, parameter, or create a new one.
  * Priority: explicit parameter > context > new instance
  *
- * @param editorOrPath - Editor instance or a path string
+ * @param editorOrPath - MemFsEditor instance or a path string
  */
-export function getEditor(editorOrPath: string | Editor): Editor {
+export function getEditor(editorOrPath: string | MemFsEditor): MemFsEditor {
     if (typeof editorOrPath !== 'string') {
         return editorOrPath;
     }
@@ -47,8 +47,8 @@ export function getEditor(editorOrPath: string | Editor): Editor {
  *
  * @returns New mem-fs editor instance
  */
-export function createMemFsEditor(): Editor {
-    const store = createMemFs();
+export function createMemFsEditor(): MemFsEditor {
+    const store = createMemFs<VinylMemFsEditorFile>();
     return createEditor(store);
 }
 
@@ -56,11 +56,11 @@ export function createMemFsEditor(): Editor {
  * Run a function with an editor in context
  * The editor will be available to all functions called within the callback
  *
- * @param editor - Editor instance to use
+ * @param editor - MemFsEditor instance to use
  * @param callback - Function to run with the editor in context
  * @returns Result of the callback
  */
-export function runWithEditor<T>(editor: Editor, callback: () => T | Promise<T>): T | Promise<T> {
+export function runWithEditor<T>(editor: MemFsEditor, callback: () => T | Promise<T>): T | Promise<T> {
     return editorContext.run(editor, callback);
 }
 
@@ -74,7 +74,7 @@ export function runWithEditor<T>(editor: Editor, callback: () => T | Promise<T>)
  * @param editor - Mem-fs editor whose store should be populated
  * @param projectRoot - Absolute path to the project folder to load
  */
-export async function loadProjectIntoEditor(editor: Editor, projectRoot: string): Promise<void> {
+export async function loadProjectIntoEditor(editor: MemFsEditor, projectRoot: string): Promise<void> {
     const files = await fastGlob('**/*', {
         cwd: projectRoot,
         ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
@@ -96,7 +96,7 @@ export async function loadProjectIntoEditor(editor: Editor, projectRoot: string)
  *
  * @returns Current editor or undefined if not in a migration context
  */
-export function getCurrentEditor(): Editor | undefined {
+export function getCurrentEditor(): MemFsEditor | undefined {
     return editorContext.getStore();
 }
 
@@ -118,7 +118,7 @@ export function isMemFsEnabled(): boolean {
  * @param path - Absolute file or directory path
  * @returns True when the path or one of its children is staged in mem-fs
  */
-export function editorHasPath(editor: Editor, path: string): boolean {
+export function editorHasPath(editor: MemFsEditor, path: string): boolean {
     // Normalize path separators to forward slashes for consistent comparison
     // mem-fs stores all paths with forward slashes regardless of OS
     const normalizedPath = normalizePath(path);
@@ -174,7 +174,7 @@ export function copyFile(src: string, dest: string): void {
     if (editor) {
         editor.copy(src, dest);
     } else {
-        throw new Error('Editor not available. Call runWithEditor() to set up the migration context.');
+        throw new Error('MemFsEditor not available. Call runWithEditor() to set up the migration context.');
     }
 }
 
@@ -188,7 +188,7 @@ export function deleteFile(path: string): void {
     if (editor) {
         editor.delete(path);
     } else {
-        throw new Error('Editor not available. Call runWithEditor() to set up the migration context.');
+        throw new Error('MemFsEditor not available. Call runWithEditor() to set up the migration context.');
     }
 }
 

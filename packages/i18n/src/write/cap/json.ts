@@ -14,7 +14,7 @@ import {
 import { Range } from '@sap-ux/text-document-utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Create full bundle.
@@ -156,7 +156,7 @@ export async function tryAddJsonTexts(
     env: CdsEnvironment,
     path: string,
     newI18nEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const i18nFilePath = jsonPath(path);
     if (!(await doesExist(i18nFilePath))) {

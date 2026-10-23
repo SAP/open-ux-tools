@@ -15,7 +15,7 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Check if the MTA is installed.
@@ -65,7 +65,7 @@ export function getEnvApiHubConfig(): ApiHubConfig | undefined {
  * @returns - destination name
  */
 export async function getApiHubOptions(
-    memFs: Editor,
+    memFs: MemFsEditor,
     { appPath, servicePath }: { appPath: string; servicePath: string | undefined },
     apiHubConfig?: ApiHubConfig
 ): Promise<{ destinationName: string | undefined; servicePath: string | undefined }> {

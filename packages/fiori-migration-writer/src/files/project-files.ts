@@ -6,7 +6,7 @@
 import { join } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import { parse, stringify } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile, updateFile } from '../utils/index.js';
 import { migrate, type AdpWriterConfig } from '@sap-ux/adp-tooling';
 import { TemplateFileName, templatesDirPath } from '../index.js';
@@ -42,12 +42,12 @@ import type {
 export async function copyAdaptationFiles(
     projectInfo: ImportProjectInfo,
     snapshotUrl: string,
-    fs: Editor | undefined
-): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+    fs: MemFsEditor | undefined
+): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
     const messages: Message[] = [];
     const { moduleName, moduleDescription, ui5Version, appTitle, rootPath, destination } = projectInfo;
     let result: boolean;
-    let updatedFs: Editor;
+    let updatedFs: MemFsEditor;
 
     try {
         const projectUI5Version = getUI5Version(ui5Version || ''); // Defaults to '' if latest
@@ -112,11 +112,11 @@ export async function copyAdaptationFiles(
  */
 export async function copyLibraryFiles(
     projectInfo: ImportProjectInfo
-): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
     const messages: Message[] = [];
     const { moduleName, rootPath } = projectInfo;
     let result: boolean;
-    let fs: Editor;
+    let fs: MemFsEditor;
 
     try {
         // Get fs from context or create new one

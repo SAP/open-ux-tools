@@ -1,4 +1,4 @@
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'node:path';
@@ -71,9 +71,9 @@ const MIGRATION_ERROR_TEXT = `Migration to eslint version 9 failed. Check if the
  */
 export async function convertEslintConfig(
     basePath: string,
-    options: { logger?: ToolsLogger; fs?: Editor; config?: string }
-): Promise<Editor> {
-    const fs = options.fs ?? create(createStorage());
+    options: { logger?: ToolsLogger; fs?: MemFsEditor; config?: string }
+): Promise<MemFsEditor> {
+    const fs = options.fs ?? create(createStorage<VinylMemFsEditorFile>());
     const logger = options.logger;
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
@@ -96,7 +96,7 @@ export async function convertEslintConfig(
  * @param logger - logger to report info to the user
  * @returns true if the prerequisites are met, false otherwise
  */
-async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
+async function checkPrerequisites(basePath: string, fs: MemFsEditor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     if (!packageJson) {
@@ -221,7 +221,11 @@ function warnIfFileScopeDropped(
  * @returns the stripped config serialized as a JSON string, ready to be passed to the migration command
  * @throws {Error} if the existing .eslintrc.json file is not a valid JSON object
  */
-async function removeFioriToolsFromExistingConfig(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<string> {
+async function removeFioriToolsFromExistingConfig(
+    basePath: string,
+    fs: MemFsEditor,
+    logger?: ToolsLogger
+): Promise<string> {
     const eslintrcJsonPath = join(basePath, '.eslintrc.json');
     const eslintrcPath = join(basePath, '.eslintrc');
     const configPath = fs.exists(eslintrcJsonPath) ? eslintrcJsonPath : eslintrcPath;
@@ -286,7 +290,7 @@ function findMatchingOpenBracket(content: string, closingIndex: number): number 
  */
 async function injectFioriToolsIntoMigratedConfig(
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     config = 'recommended',
     logger?: ToolsLogger
 ): Promise<void> {
@@ -325,7 +329,7 @@ async function injectFioriToolsIntoMigratedConfig(
  * @param strippedConfigContent - the stripped legacy eslint config content as a JSON string
  * @returns a promise that resolves when the migration command finishes successfully, or rejects if the command fails
  */
-async function runMigrationCommand(basePath: string, fs: Editor, strippedConfigContent: string): Promise<void> {
+async function runMigrationCommand(basePath: string, fs: MemFsEditor, strippedConfigContent: string): Promise<void> {
     const tempDir = mkdtempSync(join(tmpdir(), 'eslint-migration-'));
 
     try {
@@ -391,7 +395,7 @@ async function spawnMigrationCommand(basePath: string, configFileName: string): 
  * @param fs - file system reference
  * @param logger - logger to report info to the user
  */
-async function updatePackageJson(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
+async function updatePackageJson(basePath: string, fs: MemFsEditor, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     packageJson.devDependencies ??= {};

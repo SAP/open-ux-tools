@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join, normalize, posix } from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n.js';
@@ -16,14 +16,14 @@ import { getWebappPath, DirName } from '@sap-ux/project-access';
 
 /**
  * Updates the cds index or service file with the provided annotations.
- * This function takes an Editor instance and cds annotations
+ * This function takes an MemFsEditor instance and cds annotations
  * and updates either the index file or the service file with the given annotations.
  *
- * @param {Editor} fs - The memfs editor instance
+ * @param {MemFsEditor} fs - The memfs editor instance
  * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
-async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
+async function updateCdsIndexOrServiceFile(fs: MemFsEditor, annotations: CdsAnnotationsInfo): Promise<void> {
     const dirPath = join(annotations.projectName, DirName.Annotations);
     const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
     const annotationConfig = `\nusing from './${annotationPath}';`;
@@ -42,16 +42,16 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
 
 /**
  * Updates cds files with the provided annotations.
- * This function takes cds annotations and an Editor instance,
+ * This function takes cds annotations and an MemFsEditor instance,
  * then updates the relevant cds files with the given annotations.
  *
  * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
- * @param {Editor} fs - The memfs editor instance
+ * @param {MemFsEditor} fs - The memfs editor instance
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
 export async function updateCdsFilesWithAnnotations(
     annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     if (Array.isArray(annotations)) {
         for (const annotationName in annotations) {
@@ -85,14 +85,14 @@ export async function updateCdsFilesWithAnnotations(
 
 /**
  * Removes the cds index or service file with the provided annotations.
- * This function takes an Editor instance and cds annotations
+ * This function takes an MemFsEditor instance and cds annotations
  * and deletes either from the index file or the service file with the given annotations.
  *
- * @param {Editor} fs - The memfs editor instance
+ * @param {MemFsEditor} fs - The memfs editor instance
  * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
-async function removeCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
+async function removeCdsIndexOrServiceFile(fs: MemFsEditor, annotations: CdsAnnotationsInfo): Promise<void> {
     const dirPath = join(annotations.projectName, DirName.Annotations);
     const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
     const annotationConfig = `\nusing from './${annotationPath}';`;
@@ -115,16 +115,16 @@ async function removeCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
 
 /**
  * Removes annotations from CDS files.
- * This function takes cds annotations and an Editor instance,
+ * This function takes cds annotations and an MemFsEditor instance,
  * then updates the relevant cds files with the given annotations.
  *
  * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
- * @param {Editor} fs - The memfs editor instance
+ * @param {MemFsEditor} fs - The memfs editor instance
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
 export async function removeAnnotationsFromCDSFiles(
     annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     if (Array.isArray(annotations)) {
         for (const annotationName in annotations) {
@@ -165,13 +165,13 @@ export async function removeAnnotationsFromCDSFiles(
 /**
  * Writes local copies of metadata.xml and local annotations.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {string} templateRoot - path to the file templates
  * @param {OdataService} service - the OData service instance with EDMX type
  */
 export async function writeLocalServiceAnnotationXMLFiles(
-    fs: Editor,
+    fs: MemFsEditor,
     webappPath: string,
     templateRoot: string,
     service: EdmxOdataService
@@ -193,11 +193,11 @@ export async function writeLocalServiceAnnotationXMLFiles(
 /**
  * Writes local copy of metadata.xml.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {OdataService} service - the OData service instance with EDMX type
  */
-export async function writeMetadata(fs: Editor, webappPath: string, service: EdmxOdataService): Promise<void> {
+export async function writeMetadata(fs: MemFsEditor, webappPath: string, service: EdmxOdataService): Promise<void> {
     if (service.metadata) {
         // mainService should be used in case there is no name defined for service
         fs.write(
@@ -215,13 +215,13 @@ export async function writeMetadata(fs: Editor, webappPath: string, service: Edm
 /**
  * Removes annotation XML files for EDMX annotations.
  *
- * @param {Editor} fs - The memfs editor instance.
+ * @param {MemFsEditor} fs - The memfs editor instance.
  * @param {string} basePath - The base path of the project.
  * @param {string} serviceName - Name of The OData service.
  * @param {OdataService} edmxAnnotations - The OData service annotations.
  */
 export async function removeRemoteServiceAnnotationXmlFiles(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     serviceName: string,
     edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
@@ -257,13 +257,13 @@ export async function removeRemoteServiceAnnotationXmlFiles(
 /**
  * Writes annotation XML files for EDMX service annotations.
  *
- * @param {Editor} fs - The memfs editor instance.
+ * @param {MemFsEditor} fs - The memfs editor instance.
  * @param {string} basePath - The base path of the project.
  * @param {string} serviceName - Name of The OData service.
  * @param {OdataService} edmxAnnotations - The OData service annotations.
  */
 export async function writeRemoteServiceAnnotationXmlFiles(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     serviceName: string,
     edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]

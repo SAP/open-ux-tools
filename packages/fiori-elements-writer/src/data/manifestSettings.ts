@@ -2,7 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../types.js';
 import { TemplateType } from '../types.js';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import semVer from 'semver';
@@ -19,7 +19,7 @@ import type { ManifestEntitySettings } from './types.js';
  * @param feApp - The application config to be used by the manifest templates
  */
 export function extendManifestJson<T>(
-    fs: Editor,
+    fs: MemFsEditor,
     targetPath: string,
     rootTemplatesPath: string,
     feApp: FioriElementsApp<T>

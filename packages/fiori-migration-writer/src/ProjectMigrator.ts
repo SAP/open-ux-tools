@@ -41,7 +41,7 @@ import { resolveUI5VersionsForMigration } from './data/index.js';
 
 import type { ImportProjectInfo, Message } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
 import { i18nText, initI18n } from './i18n.js';
 
@@ -62,7 +62,7 @@ export interface MigrateOptions {
     /** Enable internal features (default: false) */
     internalToggle?: boolean;
     /** Optional mem-fs editor instance. If not provided, a new one will be created */
-    fs?: Editor;
+    fs?: MemFsEditor;
     /** Enable strict validation mode - WARNINGs become ERRORs for critical issues (default: false) */
     strict?: boolean;
 }
@@ -82,12 +82,14 @@ export class ProjectMigrator {
         importProjectInfo?: ImportProjectInfo,
         vscode?: any,
         internalToggle?: boolean,
-        fs?: Editor,
+        fs?: MemFsEditor,
         strict?: boolean
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
+    ): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }>;
 
     // New preferred signature with options object
-    public static async migrate(options: MigrateOptions): Promise<{ fs: Editor; result: boolean; messages: Message[] }>;
+    public static async migrate(
+        options: MigrateOptions
+    ): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }>;
 
     // Implementation
     public static async migrate(
@@ -98,9 +100,9 @@ export class ProjectMigrator {
         importProjectInfo?: ImportProjectInfo,
         vscode?: any,
         internalToggle?: boolean,
-        fs?: Editor,
+        fs?: MemFsEditor,
         strict?: boolean
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+    ): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
         // Convert old signature to options object if called with positional parameters
         const options: MigrateOptions =
             typeof projectRootOrOptions === 'string'
@@ -380,7 +382,7 @@ export class ProjectMigrator {
     private static async copyAdaptationFiles(
         projectInfo: ImportProjectInfo,
         snapshotUrl: string
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+    ): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
         return copyAdaptationFiles(projectInfo, snapshotUrl, undefined);
     }
 
@@ -391,7 +393,7 @@ export class ProjectMigrator {
      */
     private static async copyLibraryFiles(
         projectInfo: ImportProjectInfo
-    ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+    ): Promise<{ fs: MemFsEditor; result: boolean; messages: Message[] }> {
         return copyLibraryFiles(projectInfo);
     }
 

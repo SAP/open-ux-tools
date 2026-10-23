@@ -28,7 +28,7 @@ import {
 import { getProject } from './info.js';
 import { findAllApps } from './search.js';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file/index.js';
 import { FileName } from '../constants.js';
 import { getSpecification } from './specification.js';
@@ -208,7 +208,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param packageJson - updated package.json file content
      * @param memFs - optional mem-fs-editor instance
      */
-    async updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void> {
+    async updatePackageJSON(packageJson: Package, memFs?: MemFsEditor): Promise<void> {
         await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs ?? this.options?.fs);
     }
 
@@ -218,7 +218,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param manifest - updated manifest.json file content
      * @param memFs - optional mem-fs-editor instance
      */
-    async updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void> {
+    async updateManifestJSON(manifest: Manifest, memFs?: MemFsEditor): Promise<void> {
         await updateManifestJSON(this.app.manifest, manifest, memFs ?? this.options?.fs);
     }
 
@@ -228,7 +228,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      * @returns A promise resolving to the parsed `manifest.json` content.
      */
-    async readManifest(memFs?: Editor): Promise<Manifest> {
+    async readManifest(memFs?: MemFsEditor): Promise<Manifest> {
         return readJSON<Manifest>(this.app.manifest, memFs ?? this.options?.fs);
     }
 
@@ -238,7 +238,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      * @returns A promise that resolves to an array of flex change files.
      */
-    async readFlexChanges(memFs?: Editor): Promise<{
+    async readFlexChanges(memFs?: MemFsEditor): Promise<{
         [key: string]: string;
     }> {
         return readFlexChanges(this.app.changes, memFs ?? this.options?.fs);
@@ -250,7 +250,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      * @returns A promise resolving to an array of annotation file descriptors.
      */
-    async readAnnotationFiles(memFs?: Editor): Promise<AnnotationFile[]> {
+    async readAnnotationFiles(memFs?: MemFsEditor): Promise<AnnotationFile[]> {
         const annotationData: AnnotationFile[] = [];
         const mainServiceName = this.app.mainService ?? 'mainService';
         const mainService = this.app?.services?.[mainServiceName];
@@ -400,13 +400,13 @@ class ProjectAccessImp implements ProjectAccess {
 }
 
 /**
- * Type guard for Editor or ApplicationAccessOptions.
+ * Type guard for MemFsEditor or ApplicationAccessOptions.
  *
  * @param argument - argument to check
- * @returns true if argument is Editor, false if it is ApplicationAccessOptions
+ * @returns true if argument is MemFsEditor, false if it is ApplicationAccessOptions
  */
-function isEditor(argument: Editor | ApplicationAccessOptions): argument is Editor {
-    return (argument as Editor).commit !== undefined;
+function isEditor(argument: MemFsEditor | ApplicationAccessOptions): argument is MemFsEditor {
+    return (argument as MemFsEditor).commit !== undefined;
 }
 
 /**
@@ -420,7 +420,7 @@ function isEditor(argument: Editor | ApplicationAccessOptions): argument is Edit
  */
 export async function createApplicationAccess(
     appRoot: string,
-    fs?: Editor | ApplicationAccessOptions
+    fs?: MemFsEditor | ApplicationAccessOptions
 ): Promise<ApplicationAccess> {
     try {
         let options: ApplicationAccessOptions | undefined;

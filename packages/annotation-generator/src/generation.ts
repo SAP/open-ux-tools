@@ -8,7 +8,7 @@ import {
 } from '@sap-ux/fiori-annotation-api';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { convert } from '@sap-ux/annotation-converter';
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
@@ -106,7 +106,7 @@ export type GenerateAnnotationsOptions = {
  * @returns true if annotations were generated.
  */
 export async function generateAnnotations(
-    fs: Editor,
+    fs: MemFsEditor,
     annotationServiceParams: AnnotationServiceParameters,
     options: GenerateAnnotationsOptions
 ): Promise<boolean> {
@@ -141,7 +141,7 @@ interface Context {
     ignoreChangedFileInitialContent: boolean;
 }
 
-async function adaptProject(projectOrRoot: string | Project, fs?: Editor): Promise<Project> {
+async function adaptProject(projectOrRoot: string | Project, fs?: MemFsEditor): Promise<Project> {
     if (typeof projectOrRoot === 'string') {
         // On Windows platform when called from the Application Wizard the root path may contain lowercase drive letter
         // This causes annotation generation error in Fiori annotation API, thus needs adaptation
@@ -153,7 +153,7 @@ async function adaptProject(projectOrRoot: string | Project, fs?: Editor): Promi
 }
 
 async function getContext(
-    fs: Editor,
+    fs: MemFsEditor,
     entitySetName: string,
     annotationFilePath: string,
     annotationServiceParams: AnnotationServiceParameters

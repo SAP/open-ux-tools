@@ -2,7 +2,7 @@ import { FileName, readUi5Yaml, type Manifest, getWebappPath } from '@sap-ux/pro
 import { MiddlewareConfigs } from '../types/index.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 /**
@@ -32,7 +32,7 @@ export async function getPreviewMiddleware(
     yamlConfig?: UI5Config,
     basePath?: string,
     filename: string = FileName.Ui5Yaml,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
     if (!basePath && !yamlConfig) {
         throw new Error('Either base path or yaml config must be provided.');
@@ -73,7 +73,7 @@ export function getIntentFromPreviewConfig(
 export async function getCLIForPreview(
     basePath: string,
     yamlFileName: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<string | undefined> {
     const previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlFileName, fs);
     return previewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware ? 'ui5 serve' : 'fiori run';
@@ -86,7 +86,7 @@ export async function getCLIForPreview(
  * @param files - files to be deleted
  * @param logger logger to report info to the user
  */
-export async function deleteFiles(fs: Editor, files: string[], logger?: ToolsLogger): Promise<void> {
+export async function deleteFiles(fs: MemFsEditor, files: string[], logger?: ToolsLogger): Promise<void> {
     files.forEach((path: string): void => {
         if (fs.exists(path)) {
             fs.delete(path);
@@ -105,7 +105,10 @@ export async function deleteFiles(fs: Editor, files: string[], logger?: ToolsLog
  * @returns object containing the parsed manifest and its file path
  * @throws {Error} if manifest.json is not found or sap.app section is missing
  */
-export async function readManifest(appPath: string, fs: Editor): Promise<{ manifest: Manifest; manifestPath: string }> {
+export async function readManifest(
+    appPath: string,
+    fs: MemFsEditor
+): Promise<{ manifest: Manifest; manifestPath: string }> {
     const manifestPath = join(await getWebappPath(appPath, fs), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 

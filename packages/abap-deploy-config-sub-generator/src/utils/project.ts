@@ -1,6 +1,6 @@
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { t } from './i18n.js';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 
@@ -11,7 +11,7 @@ import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
  * @param path - the project path
  * @returns true if index.html exists
  */
-export async function indexHtmlExists(fs: Editor, path: string): Promise<boolean> {
+export async function indexHtmlExists(fs: MemFsEditor, path: string): Promise<boolean> {
     const customWebappPath = await getWebappPath(path);
     const indexHtmlPath = join(customWebappPath, 'index.html');
     return fs.exists(indexHtmlPath);
@@ -26,7 +26,7 @@ export async function indexHtmlExists(fs: Editor, path: string): Promise<boolean
  * @param fs - The file system editor.
  * @returns The variant namespace.
  */
-export async function getVariantNamespace(path: string, isS4HC: boolean, fs: Editor): Promise<string | undefined> {
+export async function getVariantNamespace(path: string, isS4HC: boolean, fs: MemFsEditor): Promise<string | undefined> {
     if (isS4HC) {
         return undefined;
     }

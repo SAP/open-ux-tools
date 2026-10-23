@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import 'jest-extended';
 import { rimraf } from 'rimraf';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 const testDir = dirname(fileURLToPath(import.meta.url));
 
@@ -176,7 +176,7 @@ describe('Test generator methods', () => {
     });
 
     it('should call getDefaultTargetFolder', async () => {
-        mockGenerate.mockResolvedValueOnce({} as Editor);
+        mockGenerate.mockResolvedValueOnce({} as MemFsEditor);
         mockGetDefaultTargetFolder.mockReturnValue('/some/path');
         // Mock the prompt function to avoid network calls during tests
         mockPrompt.mockResolvedValue({
@@ -233,7 +233,7 @@ describe('Test generator methods', () => {
     });
 
     it('should resolve despite error in install phase', async () => {
-        mockGenerate.mockResolvedValueOnce({} as Editor);
+        mockGenerate.mockResolvedValueOnce({} as MemFsEditor);
         const commandRunSpy = (CommandRunner.prototype.run = jest
             .fn()
             .mockRejectedValueOnce('Error installing dependencies'));
@@ -272,7 +272,7 @@ describe('Test generator methods', () => {
             ui5Version: '1.108.0',
             enableTypescript: true
         };
-        mockGenerate.mockResolvedValueOnce({} as Editor);
+        mockGenerate.mockResolvedValueOnce({} as MemFsEditor);
         mockPrompt.mockResolvedValue(promptAnswers);
         // Use the mocked adapter representing yeoman-environment@4
         yoEnv4 = true;

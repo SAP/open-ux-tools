@@ -1,6 +1,6 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { PromptState } from '../prompts/prompt-state.js';
 import { t } from './i18n.js';
 import RepoAppDownloadLogger from '../utils/logger.js';
@@ -44,9 +44,9 @@ export function hasQfaJson(): boolean {
  * Extracts a ZIP archive to a temporary directory.
  *
  * @param {string} extractedProjectPath - The path where the archive should be extracted.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  */
-export async function extractZip(extractedProjectPath: string, fs: Editor): Promise<void> {
+export async function extractZip(extractedProjectPath: string, fs: MemFsEditor): Promise<void> {
     try {
         PromptState.admZip?.getEntries().forEach(function (zipEntry) {
             if (!zipEntry.isDirectory) {

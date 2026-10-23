@@ -1,7 +1,7 @@
 import type { AxiosBasicCredentials, AxiosResponse } from 'axios';
 import chalk from 'chalk';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
@@ -193,7 +193,7 @@ export async function getTargetMappingsConfig(
 function mergeTargetMappings(
     appConfigPath: string,
     inboundTargets: InboundTargetsConfig,
-    fs: Editor
+    fs: MemFsEditor
 ): InboundTargetsConfig {
     const existingConfig = fs.readJSON(appConfigPath) as SmartLinksSandboxConfig;
     const existingTargets = existingConfig.services?.ClientSideTargetResolution?.adapter?.config?.inbounds;
@@ -217,7 +217,7 @@ function mergeTargetMappings(
 export async function writeSmartLinksConfig(
     basePath: string,
     config: TargetConfig,
-    fs: Editor,
+    fs: MemFsEditor,
     logger?: ToolsLogger
 ): Promise<void> {
     let inboundTargets = await getTargetMappingsConfig(config, logger);

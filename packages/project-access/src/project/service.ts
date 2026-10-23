@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types/index.js';
 import { readJSON } from '../file/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 export interface UsedEntity {
     service: string;
@@ -35,7 +35,7 @@ export function getMainService(manifest: Manifest): string | undefined {
 export async function getServicesAndAnnotations(
     manifestPath: string,
     manifest: Manifest,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<{ [index: string]: ServiceSpecification }> {
     const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath, memFs));
     const manifestFolder = dirname(manifestPath);

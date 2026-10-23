@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type {
     AddXMLChange,
     CommonChangeProperties,
@@ -239,14 +239,14 @@ export function isV4DescriptorChange(change: CommonChangeProperties): change is 
  *
  * @param {string} basePath - The base path of the project.
  * @param {AddXMLChange} change - The change data, including the fragment path.
- * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {MemFsEditor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  * @param {CommonAdditionalChangeInfoProperties} additionalChangeInfo - Optional extended change properties.
  */
 export function addXmlFragment(
     basePath: string,
     change: AddXMLChange,
-    fs: Editor,
+    fs: MemFsEditor,
     logger: Logger,
     additionalChangeInfo?: CommonAdditionalChangeInfoProperties
 ): void {
@@ -289,14 +289,14 @@ export function addXmlFragment(
  * @param {string} rootPath - The root path of the project.
  * @param {string} basePath - The base path of the project.
  * @param {CodeExtChange} change - The change data, including the fragment path.
- * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {MemFsEditor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  */
 export async function addControllerExtension(
     rootPath: string,
     basePath: string,
     change: CodeExtChange,
-    fs: Editor,
+    fs: MemFsEditor,
     logger: Logger
 ): Promise<void> {
     const { codeRef } = change.content;
@@ -325,7 +325,7 @@ export async function addControllerExtension(
  * @param {string} webappPath - The path to the webapp of the project.
  * @param {string} projectRoot - The root path of the project.
  * @param {AnnotationFileChange} change - The change data, including the fragment path.
- * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {MemFsEditor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  *@param {AbapServiceProvider} provider - abap provider.
  */
@@ -333,7 +333,7 @@ export async function addAnnotationFile(
     webappPath: string,
     projectRoot: string,
     change: AnnotationFileChange,
-    fs: Editor,
+    fs: MemFsEditor,
     logger: Logger,
     provider: AbapServiceProvider
 ): Promise<void> {

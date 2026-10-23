@@ -1,5 +1,5 @@
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { UI5LibInput, UI5LibInputTS } from '../types.js';
 import { getFilePaths } from '@sap-ux/project-access';
 import { mergeObjects, UI5Config } from '@sap-ux/ui5-config';
@@ -14,7 +14,7 @@ import { gte } from 'semver';
  * @param tmplPath - the template path
  * @param fs - the memfs editor instance
  */
-export async function enableTypescript(libInput: UI5LibInput, basePath: string, tmplPath: string, fs: Editor) {
+export async function enableTypescript(libInput: UI5LibInput, basePath: string, tmplPath: string, fs: MemFsEditor) {
     const tsTmplDirPath = join(tmplPath, 'optional', 'typescript');
     const tsTmplFilePaths = await getFilePaths(tsTmplDirPath);
 

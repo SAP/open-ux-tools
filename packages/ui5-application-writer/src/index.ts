@@ -8,7 +8,7 @@ import { mergeWithDefaults } from './data/index.js';
 import { ui5TSSupport } from './data/ui5Libs.js';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options.js';
 import type { Ui5App, App, AppOptions, UI5 } from './types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { copyTemplates } from './utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -21,9 +21,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Promise<Editor> {
+async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const ui5App: { app: App; appOptions: Partial<AppOptions>; ui5: UI5; package: Package } =
         mergeWithDefaults(ui5AppConfig);
@@ -138,9 +138,9 @@ function getPreviewMiddlewareOpts(app: App, ui5Theme?: string, useVirtualPreview
  * @param fs - the memfs editor instance
  * @returns true is the project is ready for typescript code
  */
-async function isTypescriptEnabled(basePath: string, fs?: Editor): Promise<boolean> {
+async function isTypescriptEnabled(basePath: string, fs?: MemFsEditor): Promise<boolean> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     // check middlewares and tasks
@@ -162,9 +162,9 @@ async function isTypescriptEnabled(basePath: string, fs?: Editor): Promise<boole
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> {
+async function enableTypescript(basePath: string, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const ui5ConfigPath = join(basePath, 'ui5.yaml');

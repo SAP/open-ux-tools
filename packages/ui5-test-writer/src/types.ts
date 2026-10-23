@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 
 export const DotFileExtension = {
@@ -408,7 +408,7 @@ export type WriteContext = {
     rootCommonTemplateDirPath: string;
     rootV4TemplateDirPath: string;
     testOutDirPath: string;
-    editor: Editor;
+    editor: MemFsEditor;
     log?: Logger;
     journeyParams: JourneyParams;
     hasPreexistingTests?: boolean;

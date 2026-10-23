@@ -7,10 +7,9 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { promisify } from 'node:util';
 
 const sampleAppPath = join(__dirname, '../sample/fe-app');
 const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
@@ -18,24 +17,24 @@ const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
  *
- * @returns {Promise<Editor>} the memfs editor object
+ * @returns {Promise<MemFsEditor>} the memfs editor object
  */
-async function initialize(): Promise<Editor> {
-    const fs = create(createStorage());
+async function initialize(): Promise<MemFsEditor> {
+    const fs = create(createStorage<VinylMemFsEditorFile>());
 
     fs.copy([join(sampleAppPath)], join(testAppPath));
 
-    await promisify(fs.commit).call(fs);
+    await fs.commit();
     return fs;
 }
 
 /**
  * Generates a filter bar building block by prompting the user for the required information.
  *
- * @param {Editor} fs the memfs editor object
- * @returns {Promise<Editor>} the updated memfs editor object
+ * @param {MemFsEditor} fs the memfs editor object
+ * @returns {Promise<MemFsEditor>} the updated memfs editor object
  */
-export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
+export async function generateFilterBarBuildingBlock(fs: MemFsEditor): Promise<MemFsEditor> {
     const basePath = testAppPath;
     const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.FilterBar);
@@ -50,10 +49,10 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
 /**
  * Generates a chart building block by prompting the user for the required information.
  *
- * @param {Editor} fs the memfs editor object
- * @returns {Promise<Editor>} the updated memfs editor object
+ * @param {MemFsEditor} fs the memfs editor object
+ * @returns {Promise<MemFsEditor>} the updated memfs editor object
  */
-export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
+export async function generateChartBuildingBlock(fs: MemFsEditor): Promise<MemFsEditor> {
     const basePath = testAppPath;
     const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.Chart);
@@ -67,10 +66,10 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
 /**
  * Generates a table building block by prompting the user for the required information.
  *
- * @param {Editor} fs the memfs editor object
- * @returns {Promise<Editor>} the updated memfs editor object
+ * @param {MemFsEditor} fs the memfs editor object
+ * @returns {Promise<MemFsEditor>} the updated memfs editor object
  */
-export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
+export async function generateTableBuildingBlock(fs: MemFsEditor): Promise<MemFsEditor> {
     const basePath = testAppPath;
     const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.Table);
@@ -103,7 +102,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
             default:
                 break;
         }
-        await promisify(fs.commit).call(fs);
+        await fs.commit();
     } catch (error) {
         console.error(error.message);
     }

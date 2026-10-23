@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import { type ToolsLogger } from '@sap-ux/logger';
 import { readUi5Yaml } from '@sap-ux/project-access';
@@ -27,17 +27,17 @@ import { getAppHostIds } from '../cf/app/discovery.js';
  * @param {string} basePath - The base path.
  * @param {CfAdpWriterConfig} config - The CF writer configuration.
  * @param {ToolsLogger} logger - The logger.
- * @param {Editor} fs - The memfs editor instance.
- * @returns {Promise<Editor>} The updated memfs editor instance.
+ * @param {MemFsEditor} fs - The memfs editor instance.
+ * @returns {Promise<MemFsEditor>} The updated memfs editor instance.
  */
 export async function generateCf(
     basePath: string,
     config: CfAdpWriterConfig,
     logger?: ToolsLogger,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const timestamp = Date.now().toString();

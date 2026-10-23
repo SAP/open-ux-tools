@@ -107,7 +107,7 @@ const { addChangeDataSourceCommand } = await import('../../../../src/cli/change/
 describe('change/data-source', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
-        commit: jest.fn().mockImplementation((cb) => cb())
+        commit: jest.fn().mockResolvedValue(undefined)
     };
     const getArgv = (...arg: string[]) => ['', '', 'data-source', ...arg];
     const mockAnswers = {

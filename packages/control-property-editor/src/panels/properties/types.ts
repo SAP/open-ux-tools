@@ -42,7 +42,7 @@ export type InputTypeToggleProps = InputTypeWrapperProps & {
     inputTypeProps: InputTypeToggleOptionProps;
 };
 
-export type Editor = typeof INPUT_EDITOR_TYPE | typeof DROPDOWN_EDITOR_TYPE | typeof CHECKBOX_EDITOR_TYPE;
+export type MemFsEditor = typeof INPUT_EDITOR_TYPE | typeof DROPDOWN_EDITOR_TYPE | typeof CHECKBOX_EDITOR_TYPE;
 
 export const isExpression = (value: string | boolean | number): boolean => {
     return typeof value === 'string' && value.includes('{') && value.includes('}');

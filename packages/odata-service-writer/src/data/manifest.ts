@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { dirname, join, sep } from 'node:path';
 import { t } from '../i18n.js';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -37,12 +37,12 @@ function getOdataVersionFromMetadata(metadata: string): string | undefined {
 /**
  * Updates service data in manifest.json.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {DataSourceUpdateSettings} dataSourceUpdateSettings - dataSource settings for update
  */
 function enhanceManifestDatasources(
-    fs: Editor,
+    fs: MemFsEditor,
     webappPath: string,
     dataSourceUpdateSettings: DataSourceUpdateSettings
 ): void {
@@ -221,14 +221,14 @@ function addLocalAnnotationDataSources(
 /**
  * Removes unused service annotations from manifest dataSources and unused annotation files.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param dataSources - dataSources from manifest.json
  * @param serviceName - name of the OData service instance
  * @param createdAnnotations - name of the OData service instance
  */
 function removeUnusedAnnotations(
-    fs: Editor,
+    fs: MemFsEditor,
     webappPath: string,
     dataSources: DataSources,
     serviceName: string,
@@ -258,7 +258,7 @@ function removeUnusedAnnotations(
 /**
  * Adds remote annotations to manifest dataSources and removes unused annotations by the service.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param dataSources - dataSources from manifest.json
  * @param serviceName - name of the OData service instance
@@ -267,7 +267,7 @@ function removeUnusedAnnotations(
  * @returns created annotation dataSources list for service.
  */
 function addRemoteAnnotationDataSources(
-    fs: Editor,
+    fs: MemFsEditor,
     webappPath: string,
     dataSources: DataSources,
     serviceName: string,
@@ -331,14 +331,14 @@ function addRemoteAnnotationDataSources(
  * @param {OdataService} service - the OData service instance
  * @param {Manifest} manifest - the manifest.json of the application
  * @param {string} webappPath - the webapp path of an existing UI5 application
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} forceServiceUpdate - if true, checks and updates service annotations
  */
 function enhanceManifest(
     service: OdataService,
     manifest: Manifest,
     webappPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     forceServiceUpdate: boolean
 ): void {
     const minimumUi5Version = getMinimumUI5Version(manifest);
@@ -373,13 +373,13 @@ function enhanceManifest(
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {string} dataSourceKey - dataSource key in manifest.json
  * @param {ManifestNamespace.DataSource} dataSource - dataSource configuration from manifest.json
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  */
 function convertSingleService(
     webappPath: string,
     dataSourceKey: string,
     dataSource: ManifestNamespace.DataSource,
-    fs: Editor
+    fs: MemFsEditor
 ): void {
     const settings = dataSource.settings;
     if (settings) {
@@ -405,13 +405,13 @@ function convertSingleService(
  *
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {Manifest} manifest - the manifest.json of the application
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @returns modified manifest object.
  */
 async function addMultipleServiceSupportToManifest(
     webappPath: string,
     manifest: Manifest,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<Manifest> {
     const dataSources = manifest?.['sap.app']?.dataSources;
     for (const dataSourceKey in dataSources) {
@@ -439,7 +439,11 @@ async function addMultipleServiceSupportToManifest(
  * @param manifestPath - the root path of an existing UI5 application
  * @param dataSource - name of the OData service instance
  */
-function removeFileForDataSource(fs: Editor, manifestPath: string, dataSource: ManifestNamespace.DataSource): void {
+function removeFileForDataSource(
+    fs: MemFsEditor,
+    manifestPath: string,
+    dataSource: ManifestNamespace.DataSource
+): void {
     const serviceSettings = dataSource.settings ?? {};
     if (serviceSettings?.localUri) {
         const localUriPath = join(dirname(manifestPath), serviceSettings?.localUri);
@@ -458,7 +462,12 @@ function removeFileForDataSource(fs: Editor, manifestPath: string, dataSource: M
  * @param annotations - annotations list
  * @param dataSources - dataSources from manifest.json
  */
-function removeAnnotations(fs: Editor, manifestPath: string, annotations: string[], dataSources?: DataSources): void {
+function removeAnnotations(
+    fs: MemFsEditor,
+    manifestPath: string,
+    annotations: string[],
+    dataSources?: DataSources
+): void {
     for (const datasourceKey of annotations) {
         const annotationDatasource = dataSources?.[datasourceKey];
         if (annotationDatasource?.type === 'ODataAnnotation') {
@@ -480,7 +489,7 @@ function removeAnnotations(fs: Editor, manifestPath: string, annotations: string
  * @param service - name of the OData service instance
  * @param fs - the memfs editor instance
  */
-export function deleteServiceFromManifest(basePath: string, service: OdataService, fs: Editor): void {
+export function deleteServiceFromManifest(basePath: string, service: OdataService, fs: MemFsEditor): void {
     const serviceName: string = service.name ?? 'mainService';
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
@@ -526,13 +535,13 @@ export function deleteServiceFromManifest(basePath: string, service: OdataServic
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {EdmxOdataService} service - the OData service instance
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} forceServiceUpdate - if true, checks and updates service annotations
  */
 export async function updateManifest(
     basePath: string,
     service: OdataService,
-    fs: Editor,
+    fs: MemFsEditor,
     forceServiceUpdate = false
 ): Promise<void> {
     // Update manifest.json

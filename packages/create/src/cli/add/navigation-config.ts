@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import {
     generateInboundConfig,
@@ -79,7 +79,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         const appType = await getAppType(basePath);
         const isAdp = appType === 'Fiori Adaptation';
 
-        const fs = create(createStorage());
+        const fs = create(createStorage<VinylMemFsEditorFile>());
 
         let variant: Variant;
 
@@ -117,7 +117,8 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         );
 
         if (!simulate) {
-            fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
+            await fs.commit();
+            logger.info(`Inbound navigation configuration complete.`);
         } else {
             await traceChanges(fs);
         }
@@ -133,7 +134,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
  *
  * @param {string} basePath - The base path to the project.
  * @param {string} yamlPath - The path to the project configuration file in YAML format.
- * @param {Editor} fs - The mem-fs editor instance.
+ * @param {MemFsEditor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
  * @param {DescriptorVariant} [variant] - The descriptor variant, if applicable.
  * @returns {Promise<{data, systemUI5Version, isCfProject}>} Inbounds plus optional version/CF context.
@@ -141,7 +142,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 async function getInbounds(
     basePath: string,
     yamlPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     logger: ToolsLogger,
     variant: Variant
 ): Promise<{
@@ -195,10 +196,10 @@ async function getCfInbounds(
  * Retrieves the manifest for a Fiori project.
  *
  * @param {string} basePath - The base path to the project.
- * @param {Editor} fs - The mem-fs editor instance.
+ * @param {MemFsEditor} fs - The mem-fs editor instance.
  * @returns {Promise<Manifest>} The base project manifest.
  */
-async function retrieveManifest(basePath: string, fs: Editor): Promise<Manifest> {
+async function retrieveManifest(basePath: string, fs: MemFsEditor): Promise<Manifest> {
     const { manifest } = await readManifest(basePath, fs);
     return manifest;
 }
@@ -247,7 +248,7 @@ async function getUserAnswers(
  * @param {FLPConfigAnswers} answers.flpConfigAnswers - The user-provided configuration answers.
  * @param {TileSettingsAnswers} [answers.tileSettingsAnswers] - The answers for tile settings.
  * @param {Variant} variant - The descriptor variant information.
- * @param {Editor} fs - The mem-fs editor instance.
+ * @param {MemFsEditor} fs - The mem-fs editor instance.
  * @param {ManifestNamespace.Inbound} [inbounds] - Base application inbounds
  * @param {string} [systemUI5Version] - System UI5 version, used to select change type for ABAP projects.
  * @param {boolean} [isCfProject] - Whether this is a CF adaptation project.
@@ -260,7 +261,7 @@ async function generateConfig(
         tileSettingsAnswers?: TileSettingsAnswers;
     },
     variant: Variant,
-    fs: Editor,
+    fs: MemFsEditor,
     inbounds?: ManifestNamespace.Inbound,
     systemUI5Version?: string,
     isCfProject = false

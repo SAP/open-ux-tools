@@ -35,7 +35,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () =>
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create(_store: Store) {
         return {
-            commit: jest.fn().mockImplementation((cb) => cb()),
+            commit: jest.fn().mockResolvedValue(undefined),
             dump: jest.fn(),
             read: jest.fn(),
             readJSON: jest.fn(),

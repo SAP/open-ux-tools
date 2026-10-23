@@ -69,7 +69,7 @@ async function addMockserverConfig(
         const fs = await generateMockserverConfig(basePath, config);
         await traceChanges(fs);
         if (!simulate) {
-            await new Promise<void>((resolve) => fs.commit(resolve));
+            await fs.commit();
             logger.info(`Changes written.`);
             if (skipInstall) {
                 logger.warn('To finish mockserver configuration run commands:');

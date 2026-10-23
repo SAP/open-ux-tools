@@ -1422,7 +1422,7 @@ describe('deleteCapApp', () => {
                 deletedFiles.push(file.path);
             }
         });
-        return deletedFiles;
+        return deletedFiles.sort();
     };
     beforeEach(() => {
         jest.restoreAllMocks();
@@ -1446,8 +1446,8 @@ describe('deleteCapApp', () => {
             join(capProject, 'apps', FileName.IndexCds),
             join(capProject, 'apps', 'one', 'annotations.cds'),
             join(capProject, 'apps', 'one', FileName.Package),
-            join(capProject, 'apps', 'one', FileName.Ui5Yaml),
-            join(capProject, 'apps', 'one', 'source', 'webapp', FileName.Manifest)
+            join(capProject, 'apps', 'one', 'source', 'webapp', FileName.Manifest),
+            join(capProject, 'apps', 'one', FileName.Ui5Yaml)
         ]);
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();

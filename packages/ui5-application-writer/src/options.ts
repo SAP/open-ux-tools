@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { UI5, Ui5App } from './types.js';
 import { getFilePaths } from '@sap-ux/project-access';
@@ -17,7 +17,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  */
 export interface FeatureInput {
     ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType }; ui5?: Partial<UI5> };
-    fs: Editor;
+    fs: MemFsEditor;
     basePath: string;
     tmplPath: string;
     ui5Configs: UI5Config[];
@@ -45,9 +45,9 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
         const outPath = join(basePath, relPath);
         // Extend or add
         if (!fs.exists(outPath)) {
-            fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                globOptions: { dot: true },
-                processDestinationPath: processDestinationPath
+            const processedOutPath = processDestinationPath(outPath);
+            fs.copyTpl(optTmplFilePath, processedOutPath, ui5App, undefined, {
+                globOptions: { dot: true }
             });
         } else if (outPath.endsWith('.json')) {
             // Only merge JSON files (e.g., package.json)
@@ -123,7 +123,7 @@ export async function enableNpmPackageConsumption(input: FeatureInput) {
  */
 export async function applyOptionalFeatures(
     ui5App: Ui5App,
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     tmplPath: string,
     ui5Configs: UI5Config[]
@@ -143,7 +143,7 @@ export async function applyOptionalFeatures(
  * @param basePath - base path to be used for adding the config
  * @param fs - file system reference
  */
-export async function addEslintFeature(basePath: string, fs: Editor): Promise<void> {
+export async function addEslintFeature(basePath: string, fs: MemFsEditor): Promise<void> {
     const input = {
         tmplPath: join(__dirname, '../templates'),
         basePath: basePath,

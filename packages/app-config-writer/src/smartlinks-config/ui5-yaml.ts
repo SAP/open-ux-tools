@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
@@ -65,7 +65,7 @@ const getFioriToolsServeStaticMiddlewareConfig = (
  */
 export async function addUi5YamlServeStaticMiddleware(
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     logger?: ToolsLogger
 ): Promise<void> {
     const ui5Yamls = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];

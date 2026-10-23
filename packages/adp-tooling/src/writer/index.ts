@@ -1,6 +1,8 @@
 import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import ejs from 'ejs';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import { getManifestContent } from './manifest/index.js';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
@@ -56,9 +58,9 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export async function generate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, config: AdpWriterConfig, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const fullConfig = setDefaults(config);
@@ -81,9 +83,9 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
+export async function migrate(basePath: string, config: AdpWriterConfig, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const fullConfig = setDefaults(config);
@@ -97,10 +99,9 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
     fs.copyTpl(join(tmplPath, '**/package.json'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true }
     });
-    fs.copyTpl(join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-    });
+    const gitignoreSrc = join(tmplPath, 'gitignore.tmpl');
+    const rendered = ejs.render(readFileSync(gitignoreSrc, 'utf-8'), fullConfig, { filename: gitignoreSrc });
+    fs.write(join(basePath, '.gitignore'), rendered);
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {

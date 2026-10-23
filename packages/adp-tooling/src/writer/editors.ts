@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import type { GeneratorData, ChangeType } from '../types.js';
 import { WriterFactory } from './changes/writer-factory.js';
@@ -14,20 +14,20 @@ import { WriterFactory } from './changes/writer-factory.js';
  * @param {string} projectPath - The root path of the project.
  * @param {T} type - The type of generator.
  * @param {GeneratorData<T>} data - The data specific to the type of generator, containing information necessary for making changes.
- * @param {Editor | null} [fs] - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor | null} [fs] - The `mem-fs-editor` instance used for file operations.
  * @param {string} templatesPath - The path to the templates used for generating changes.
- * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for making changes, allowing for further operations or committing changes to disk.
+ * @returns {Promise<MemFsEditor>} A promise that resolves to the mem-fs editor instance used for making changes, allowing for further operations or committing changes to disk.
  * @template T - A type parameter extending `ChangeType`, ensuring the function handles a defined set of generator types.
  */
 export async function generateChange<T extends ChangeType>(
     projectPath: string,
     type: T,
     data: GeneratorData<T>,
-    fs: Editor | null = null,
+    fs: MemFsEditor | null = null,
     templatesPath?: string
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const writer = WriterFactory.createWriter<T>(type, fs, projectPath, templatesPath);

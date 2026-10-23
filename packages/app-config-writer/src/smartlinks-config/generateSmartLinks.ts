@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { TargetConfig } from '../types/index.js';
 import { writeSmartLinksConfig } from './utils.js';
@@ -12,16 +12,16 @@ import { writeSmartLinksConfig } from './utils.js';
  * @param config - configuration of the target system for smartlinks
  * @param logger - logger
  * @param fs - the memfs editor instance
- * @returns Promise<Editor> - memfs editor instance with updated files
+ * @returns Promise<MemFsEditor> - memfs editor instance with updated files
  */
 export async function generateSmartLinksConfig(
     basePath: string,
     config: TargetConfig,
     logger?: ToolsLogger,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     await writeSmartLinksConfig(basePath, config, fs, logger);
     return fs;

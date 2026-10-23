@@ -1,5 +1,5 @@
 import { basename, join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { getPreviewMiddleware, getIntentFromPreviewConfig } from '../common/utils.js';
@@ -24,7 +24,7 @@ export async function updateCapRootPackageJsonForCards(
     appId: string,
     appFolderName: string,
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     yamlPath?: string,
     logger?: ToolsLogger
 ): Promise<void> {

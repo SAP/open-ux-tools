@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import {
     type Package,
     findCapProjectRoot,
@@ -26,7 +26,7 @@ const packageName = {
  * @param fs - file system reference
  * @returns indicator if the project is a CAP project that uses 'cds-plugin-ui5'
  */
-async function isUsingCdsPluginUi5(basePath: string, fs: Editor): Promise<boolean> {
+async function isUsingCdsPluginUi5(basePath: string, fs: MemFsEditor): Promise<boolean> {
     const capProjectRootPath = await findCapProjectRoot(basePath, false, fs);
     if (!capProjectRootPath) {
         return false;
@@ -48,7 +48,7 @@ async function isUsingCdsPluginUi5(basePath: string, fs: Editor): Promise<boolea
  */
 export async function checkPrerequisites(
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     convertTests: boolean = false,
     logger?: ToolsLogger
 ): Promise<boolean> {

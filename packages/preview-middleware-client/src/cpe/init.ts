@@ -38,7 +38,7 @@ export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
 ): Promise<void> {
-    Log.info('Initializing Control Property Editor');
+    Log.info('Initializing Control Property MemFsEditor');
 
     // enable telemetry if requested
     const flexSettings = rta.getFlexSettings();
@@ -106,7 +106,7 @@ export default function init(
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));
     } catch (error) {
-        Log.error('Error during initialization of Control Property Editor', getError(error));
+        Log.error('Error during initialization of Control Property MemFsEditor', getError(error));
     }
 
     //  * This is returned immediately to avoid promise deadlock, preventing services from waiting indefinitely.
