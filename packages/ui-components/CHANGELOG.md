@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Prevent the translation input callout from restoring focus to its button when a new i18n entry is created. Restoring focus pulled focus back into the host (e.g. a VS Code webview) and dismissed any host dialog opened in response, such as a QuickPick for selecting the target i18n file. [[b97d413](https://github.com/SAP/open-ux-tools/commit/b97d41343f85755ae21b387f12109fa612192e08)]
+
 ## 3.0.17
 
 ### Patch Changes
