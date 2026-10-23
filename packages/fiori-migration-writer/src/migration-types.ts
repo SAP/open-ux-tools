@@ -564,7 +564,7 @@ export interface TemplateAssemblyContext {
  * Service for project data operations (package.json, entities, UI5 tooling)
  */
 export interface ProjectDataService {
-    getPackageJson: (projectRoot: string) => Promise<any>;
+    getPackageJson: (projectRoot: string) => any;
     getMainEntity: (manifest: Manifest) => string;
     hasUI5Tooling: (packageJson: any) => boolean;
 }
@@ -588,7 +588,7 @@ export interface BackendConfigService {
         scp?: boolean;
         sapClient?: string;
     };
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
+    getFlpIntentFromHtml: (path: string) => string | undefined;
     getDestinationFromNeoApp: (
         projectRoot: string,
         destination: string

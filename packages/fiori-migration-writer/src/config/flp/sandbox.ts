@@ -34,7 +34,7 @@ export async function processFlpSandboxFiles(
     fs: Editor,
     projectRoot: string,
     webappPath: string,
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>,
+    getFlpIntentFromHtml: (path: string) => string | undefined,
     existingFlpIntent?: string
 ): Promise<FlpSandboxProcessingResult> {
     const flpSandboxPath = join(projectRoot, webappPath, 'test', 'flpSandbox.html');
@@ -70,7 +70,7 @@ export async function processFlpSandboxFiles(
 async function processSandboxFile(
     fs: Editor,
     filePath: string,
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>,
+    getFlpIntentFromHtml: (path: string) => string | undefined,
     existingFlpIntent?: string
 ): Promise<{ libs: string; intent?: string; hasRootIntent: boolean }> {
     try {
@@ -105,7 +105,7 @@ async function processSandboxFile(
 async function processMockSandboxFile(
     fs: Editor,
     filePath: string,
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>
+    getFlpIntentFromHtml: (path: string) => string | undefined
 ): Promise<{ intent?: string; hasRootIntent: boolean; targetFile?: string }> {
     try {
         const intent = await getFlpIntentFromHtml(filePath);

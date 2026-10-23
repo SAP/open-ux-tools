@@ -16,8 +16,14 @@ import { getMessageType } from '../utils/validation-severity.js';
  * @param messages - Array to collect validation messages
  * @param strict - Enable strict validation mode (WARNING becomes ERROR)
  */
-// prettier-ignore
-export async function validateAndReportMetadata(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo, manifestJSON: any, messages: Message[], strict: boolean = false): Promise<void> { // NOSONAR - async by contract
+export function validateAndReportMetadata(
+    fs: Editor,
+    rootPath: string,
+    projectInfo: ImportProjectInfo,
+    manifestJSON: any,
+    messages: Message[],
+    strict: boolean = false
+): void {
     const metadataValidation = validateMetadata(
         rootPath,
         projectInfo.webappPath,

@@ -21,7 +21,6 @@ export function getPackageJsonPath(projectRoot: string): string {
  * @param fs - mem-fs editor
  * @param filePath
  */
-// prettier-ignore
-export async function getPackageJson(fs: Editor, filePath: string): Promise<any> { // NOSONAR - async by contract
+export function getPackageJson(fs: Editor, filePath: string): any {
     return readJSON(fs, getPackageJsonPath(filePath));
 }

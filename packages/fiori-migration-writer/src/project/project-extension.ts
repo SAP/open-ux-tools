@@ -42,7 +42,7 @@ export interface ProcessProjectExtensionConfig {
         url?: string;
     };
     getClientFromDestinationName: (destination: string) => string;
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
+    getFlpIntentFromHtml: (path: string) => string | undefined;
     getManifestJson: (projectRoot: string, webappPath: string) => Promise<Manifest>;
 }
 

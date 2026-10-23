@@ -24,8 +24,7 @@ export function getManifestPath(projectRoot: string, webappPath: string): string
  * @param projectRoot
  * @param webappPath
  */
-// prettier-ignore
-export async function getManifestJson(fs: Editor, projectRoot: string, webappPath: string): Promise<Manifest> { // NOSONAR - async by contract
+export function getManifestJson(fs: Editor, projectRoot: string, webappPath: string): Manifest {
     const manifestPath = getManifestPath(projectRoot, webappPath);
     return readJSON(fs, manifestPath);
 }

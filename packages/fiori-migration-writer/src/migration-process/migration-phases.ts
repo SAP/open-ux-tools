@@ -243,14 +243,7 @@ export async function postProcessMigration(config: PostProcessMigrationConfig): 
 
     if (projectInfo.type !== MigrationTypes.projectExtension) {
         // Generate Launch Config using @sap-ux/launch-config
-        await generateLaunchConfiguration(
-            fs,
-            projectInfo,
-            vscode,
-            appIntent,
-            appMockIntent,
-            flpSandboxAvailable
-        );
+        await generateLaunchConfiguration(fs, projectInfo, vscode, appIntent, appMockIntent, flpSandboxAvailable);
     } else {
         // Handle extension project configuration
         handleExtensionProjectConfig(fs, rootPath, projectInfo);
