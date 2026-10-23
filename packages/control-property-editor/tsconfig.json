@@ -11,11 +11,12 @@
     "outDir": "dist",
     "module": "NodeNext",
     "rootDir": ".",
-    "baseUrl": ".",
     "types": [
       "node",
       "jest"
-    ]
+    ],
+    "noUncheckedSideEffectImports": false,
+    "allowArbitraryExtensions": true
   },
   "include": [
     "src/**/*.json",
