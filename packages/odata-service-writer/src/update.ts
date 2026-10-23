@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import type { EdmxOdataService, OdataService, ProjectPaths } from './types.js';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
@@ -17,14 +17,14 @@ import { writeExternalServiceMetadata } from './data/index.js';
 /**
  * Generates mockserver middleware config for ui5-local.yaml file based on ui5-mock.yaml.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {OdataService} ui5YamlPath - path pointing to the ui5.yaml file
  * @param {UI5Config} ui5LocalConfigPath - ui5-local.yaml configuration
  * @param {string} ui5LocalConfig - path pointing to the ui5-local.yaml file
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
 async function generateMockserverMiddlewareBasedOnUi5MockYaml(
-    fs: Editor,
+    fs: MemFsEditor,
     ui5YamlPath: string,
     ui5LocalConfigPath?: string,
     ui5LocalConfig?: UI5Config
@@ -43,7 +43,7 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
 /**
  * Extends backend middleware for UI5Config with the service data.
  *
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {OdataService} service - the OData service instance data
  * @param {UI5Config} ui5Config - UI5 configuration
  * @param {string} ui5ConfigPath - path to the YAML config file
@@ -51,7 +51,7 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
  * @throws {Error} - if required UI5 project files are not found
  */
 function extendBackendMiddleware(
-    fs: Editor,
+    fs: MemFsEditor,
     service: OdataService,
     ui5Config: UI5Config,
     ui5ConfigPath: string,
@@ -94,7 +94,7 @@ function extendBackendMiddleware(
  * @returns Object containing ui5Config and ui5LocalConfig instances
  */
 async function updateUI5YamlConfigs(
-    fs: Editor,
+    fs: MemFsEditor,
     service: EdmxOdataService,
     paths: ProjectPaths
 ): Promise<{ ui5Config?: UI5Config; ui5LocalConfig?: UI5Config }> {
@@ -130,7 +130,7 @@ async function generateAndUpdateMockserverConfig(
     service: EdmxOdataService,
     webappPath: string,
     ui5LocalConfig: UI5Config | undefined,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const config: MockserverConfig = {
         webappPath: webappPath,
@@ -161,14 +161,14 @@ async function generateAndUpdateMockserverConfig(
  * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
  * @param {string} templateRoot - path to the file templates
  * @param {EdmxOdataService} service - the OData service instance
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  */
 export async function addServicesData(
     basePath: string,
     paths: ProjectPaths,
     templateRoot: string,
     service: EdmxOdataService,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const { ui5Config, ui5LocalConfig } = await updateUI5YamlConfigs(fs, service, paths);
     const webappPath = await getWebappPath(basePath, fs);
@@ -202,14 +202,14 @@ export async function addServicesData(
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
  * @param {EdmxOdataService} service - the OData service instance
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} updateMiddlewares - whether the backend proxy (fiori-tools-proxy) middleware in ui5*.yaml should be updated. The mockserver (sap-fe-mockserver) middleware is additionally regenerated whenever external (value-help) services are present, so the written external metadata stays resolvable.
  */
 export async function updateServicesData(
     basePath: string,
     paths: ProjectPaths,
     service: EdmxOdataService,
-    fs: Editor,
+    fs: MemFsEditor,
     updateMiddlewares: boolean
 ): Promise<void> {
     let ui5Config: UI5Config | undefined;
@@ -257,7 +257,7 @@ export async function updateServicesData(
  * @param {EdmxOdataService} service - the OData service instance
  * @param {UI5Config | undefined} ui5Config - ui5.yaml configuration
  * @param {UI5Config | undefined} ui5LocalConfig - ui5-local.yaml configuration
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} updateMiddlewares - whether the backend proxy (fiori-tools-proxy) middleware should be updated
  * @returns {Promise<string | undefined>} webapp path if metadata was written, undefined otherwise
  */
@@ -267,7 +267,7 @@ async function updateMetadata(
     service: EdmxOdataService,
     ui5Config: UI5Config | undefined,
     ui5LocalConfig: UI5Config | undefined,
-    fs: Editor,
+    fs: MemFsEditor,
     updateMiddlewares: boolean
 ): Promise<string | undefined> {
     if (!service.metadata) {

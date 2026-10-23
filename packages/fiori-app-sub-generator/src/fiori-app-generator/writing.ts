@@ -1,6 +1,6 @@
 import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 import { generateAppGenInfo, getHostEnvironment, getFloorplanLabel } from '@sap-ux/fiori-generator-shared';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ApiHubConfig, State } from '../types/index.js';
 import { DEFAULT_CAP_HOST } from '../types/index.js';
@@ -27,7 +27,7 @@ export async function writeAppGenInfoFiles(
     generatorName: string,
     generatorVersion: string,
     targetPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     existingAppGenInfo?: Partial<AppGenInfo>
 ): Promise<void> {
     const templateLabel = getFloorplanLabel(floorplan, service.version);
@@ -116,7 +116,7 @@ export async function writeAppGenInfoFiles(
  * @param destPath
  * @param apiHubConfig
  */
-export function writeAPIHubKeyFiles(fs: Editor, destPath: string, apiHubConfig: ApiHubConfig): void {
+export function writeAPIHubKeyFiles(fs: MemFsEditor, destPath: string, apiHubConfig: ApiHubConfig): void {
     const envFilePath = join(destPath, '.env');
     const envContent = `API_HUB_API_KEY=${apiHubConfig.apiHubKey}\nAPI_HUB_TYPE=${apiHubConfig.apiHubType}`;
     // Create .env to store apiHub integration.

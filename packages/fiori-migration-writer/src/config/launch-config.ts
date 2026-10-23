@@ -63,15 +63,10 @@ export async function generateLaunchConfiguration(
     const fsEditor = await createLaunchConfig(projectPath, fioriOptions);
 
     // Commit the changes to filesystem
-    await new Promise<void>((resolve) => {
-        fsEditor.commit((err) => {
-            if (err) {
-                messages.push({
-                    type: 'ERROR',
-                    description: `Error committing changes while configuring launch json file: ${err}`
-                });
-            }
-            resolve();
+    await fsEditor.commit().catch((err) => {
+        messages.push({
+            type: 'ERROR',
+            description: `Error committing changes while configuring launch json file: ${err}`
         });
     });
 }

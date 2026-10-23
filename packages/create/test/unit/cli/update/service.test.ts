@@ -124,7 +124,7 @@ const mockReadFile = jest.fn<any>().mockResolvedValue('ui5yaml content');
 jest.unstable_mockModule('node:fs/promises', () => ({ readFile: mockReadFile }));
 
 // ── mem-fs / mem-fs-editor ───────────────────────────────────────────────────
-const mockFsCommit = jest.fn<any>().mockImplementation((cb: () => void) => cb());
+const mockFsCommit = jest.fn<any>().mockResolvedValue(undefined);
 const mockFsInstance = { commit: mockFsCommit };
 const mockCreateEditor = jest.fn().mockReturnValue(mockFsInstance);
 const mockCreateMemStore = jest.fn().mockReturnValue({});
@@ -179,7 +179,7 @@ describe('update service-metadata command', () => {
         mockCreateForDestination.mockImplementation(() => new MockAbapServiceProvider());
         mockCreateForAbapOnCloud.mockImplementation(() => new MockAbapServiceProvider());
         mockTlsPatch.isPatchRequired.mockReturnValue(false);
-        mockFsCommit.mockImplementation((cb: () => void) => cb());
+        mockFsCommit.mockResolvedValue(undefined);
     });
 
     test('VSCode: fetches metadata and external services, writes files and commits', async () => {

@@ -1,5 +1,5 @@
 import { join, posix, relative, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig, MockserverConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
@@ -30,7 +30,7 @@ import { getODataSources } from '../app-info.js';
  * @param config - optional config passed in by consumer
  */
 export async function enhanceYaml(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     webappPath: string,
     config?: Ui5MockYamlConfig
@@ -101,7 +101,7 @@ export async function enhanceYaml(
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  */
-export async function removeMockDataFolders(fs: Editor, basePath: string): Promise<void> {
+export async function removeMockDataFolders(fs: MemFsEditor, basePath: string): Promise<void> {
     const webappPath = await getWebappPath(basePath, fs);
     const manifestPath = join(webappPath, FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
@@ -123,7 +123,7 @@ export async function removeMockDataFolders(fs: Editor, basePath: string): Promi
  * If 'overwrite' is set to true, then mockserver middleware configuration would be replaced else only enhanced with data from 'name' and 'path'.
  * 'sap-fe-mockserver' with state of the art config.
  *
- * @param fs - Editor instance to read existing information
+ * @param fs - MemFsEditor instance to read existing information
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
@@ -133,7 +133,7 @@ export async function removeMockDataFolders(fs: Editor, basePath: string): Promi
  * @returns {*}  {Promise<UI5Config>} - Updated Yaml Doc
  */
 async function updateUi5MockYamlConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     webappPath: string,
     ui5MockYamlPath: string,
@@ -166,7 +166,7 @@ async function updateUi5MockYamlConfig(
 /**
  * Create a new ui5-mock.yaml based on existing ui5.yaml.
  *
- * @param fs - Editor instance to read existing information
+ * @param fs - MemFsEditor instance to read existing information
  * @param basePath - the base path where the package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
  * @param dataSourcesConfig - dataSources config from manifest to add to mockserver middleware services list
@@ -174,7 +174,7 @@ async function updateUi5MockYamlConfig(
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateUi5MockYamlBasedOnUi5Yaml(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     webappPath: string,
     dataSourcesConfig: DataSourceConfig[],
@@ -249,7 +249,7 @@ async function getNewMockserverMiddleware(
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  */
-export function removeUi5MockYaml(fs: Editor, basePath: string): void {
+export function removeUi5MockYaml(fs: MemFsEditor, basePath: string): void {
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     if (fs.exists(ui5MockYamlPath)) {
         fs.delete(ui5MockYamlPath);

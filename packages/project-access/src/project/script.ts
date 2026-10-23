@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { FileName } from '../constants.js';
 import type { Package } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readJSON, updatePackageJSON } from '../file/index.js';
 import semVer from 'semver';
 
@@ -17,7 +17,7 @@ export async function updatePackageScript(
     basePath: string,
     scriptName: string,
     script: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<void> {
     const filePath = join(basePath, FileName.Package);
     const packageJson = await readJSON<Package>(filePath, fs);

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
@@ -107,7 +107,7 @@ async function buildLabelResolver(
  */
 export async function getAppFeatures(
     basePath: string,
-    fs?: Editor,
+    fs?: MemFsEditor,
     log?: Logger,
     metadata?: string,
     manifest?: Manifest

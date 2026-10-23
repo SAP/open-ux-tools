@@ -2,23 +2,23 @@
  * File access utilities using mem-fs-editor
  *
  * Uses editor from AsyncLocalStorage context set by runWithEditor().
- * Functions can also accept an explicit Editor parameter for backward compatibility.
+ * Functions can also accept an explicit MemFsEditor parameter for backward compatibility.
  * If no editor is in context or provided, creates a temporary one (for tests/direct usage).
  */
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile as fsReadFile, access } from 'node:fs/promises';
 import { editorHasPath, getCurrentEditor, exists as fsAdapterExists, getEditor } from './fs-adapter.js';
 
 /**
  * Read a text file
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param path - Path to file (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
  * @returns File contents as string
  */
-export function readFile(pathOrFs: string | Editor, path?: string): string {
+export function readFile(pathOrFs: string | MemFsEditor, path?: string): string {
     const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     return fs.read(filePath);
@@ -27,11 +27,11 @@ export function readFile(pathOrFs: string | Editor, path?: string): string {
 /**
  * Read a JSON file
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param path - Path to file (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
  * @returns Parsed JSON object
  */
-export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string): Promise<T> {
+export async function readJSON<T = any>(pathOrFs: string | MemFsEditor, path?: string): Promise<T> {
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
 
     // When called with just a path string and no editor context, read from filesystem directly
@@ -50,11 +50,11 @@ export async function readJSON<T = any>(pathOrFs: string | Editor, path?: string
 /**
  * Check if a file exists
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param path - Path to file (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
  * @returns true if file exists, false otherwise
  */
-export async function fileExists(pathOrFs: string | Editor, path?: string): Promise<boolean> {
+export async function fileExists(pathOrFs: string | MemFsEditor, path?: string): Promise<boolean> {
     // String path: delegate to the single shared existence check (mem-fs staged OR real fs).
     if (typeof pathOrFs === 'string') {
         return fsAdapterExists(pathOrFs);
@@ -78,11 +78,11 @@ export async function fileExists(pathOrFs: string | Editor, path?: string): Prom
 /**
  * Write a text file
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param contentOrPath - Content to write, or path (if first param is Editor)
- * @param content - Content to write (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param contentOrPath - Content to write, or path (if first param is MemFsEditor)
+ * @param content - Content to write (if first param is MemFsEditor)
  */
-export function writeFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
+export function writeFile(pathOrFs: string | MemFsEditor, contentOrPath: string, content?: string): void {
     const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : contentOrPath;
     const fileContent = typeof pathOrFs === 'string' ? contentOrPath : content!;
@@ -93,22 +93,22 @@ export function writeFile(pathOrFs: string | Editor, contentOrPath: string, cont
  * Update a text file
  * Alias for writeFile for backward compatibility
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param contentOrPath - Content to write, or path (if first param is Editor)
- * @param content - Content to write (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param contentOrPath - Content to write, or path (if first param is MemFsEditor)
+ * @param content - Content to write (if first param is MemFsEditor)
  */
-export function updateFile(pathOrFs: string | Editor, contentOrPath: string, content?: string): void {
+export function updateFile(pathOrFs: string | MemFsEditor, contentOrPath: string, content?: string): void {
     writeFile(pathOrFs, contentOrPath, content);
 }
 
 /**
  * Update a JSON file while preserving indentation
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param contentOrPath - Object to write, or path (if first param is Editor)
- * @param _content - Object to write (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param contentOrPath - Object to write, or path (if first param is MemFsEditor)
+ * @param _content - Object to write (if first param is MemFsEditor)
  */
-export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | object, _content?: object): void {
+export function updateJSON(pathOrFs: string | MemFsEditor, contentOrPath: string | object, _content?: object): void {
     const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : (contentOrPath as string);
     const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : _content!;
@@ -133,10 +133,10 @@ export function updateJSON(pathOrFs: string | Editor, contentOrPath: string | ob
 /**
  * Delete a file
  *
- * @param pathOrFs - Path to file, or Editor instance
- * @param path - Path to file (if first param is Editor)
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
  */
-export function deleteFile(pathOrFs: string | Editor, path?: string): void {
+export function deleteFile(pathOrFs: string | MemFsEditor, path?: string): void {
     const fs = getEditor(pathOrFs);
     const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
     fs.delete(filePath);

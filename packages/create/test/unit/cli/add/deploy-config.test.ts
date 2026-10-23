@@ -81,7 +81,7 @@ describe('add/deploy-config', () => {
         mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockGetExistingAdpProjectType.mockResolvedValue(undefined);
         mockReconcileAnswers.mockReturnValue({});

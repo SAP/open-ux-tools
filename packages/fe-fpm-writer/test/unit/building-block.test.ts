@@ -65,7 +65,6 @@ describe('Building Blocks', () => {
     });
 
     beforeEach(async () => {
-        jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
         findFilesByExtensionMock.mockResolvedValue([]);
         generateId = jest.fn((baseId: string, validatedIds: string[] = []) => {

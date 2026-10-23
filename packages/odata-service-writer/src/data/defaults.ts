@@ -4,7 +4,7 @@ import { ServiceType } from '../types.js';
 import { DEFAULT_DATASOURCE_NAME } from './constants.js';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 
 /**
@@ -45,13 +45,13 @@ function generateUniqueServiceName(dataSources: DataSources, serviceName: string
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose name needs to be set or modified.
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} update - whether the service update is running
  */
 async function setDefaultServiceName(
     basePath: string,
     service: OdataService,
-    fs: Editor,
+    fs: MemFsEditor,
     update: boolean
 ): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), FileName.Manifest);
@@ -81,13 +81,13 @@ async function setDefaultServiceName(
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose model needs to be set or modified
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} update - whether the service update is running (if true, makes sure that '' model is updated for the mainService)
  */
 async function setDefaultServiceModel(
     basePath: string,
     service: OdataService,
-    fs: Editor,
+    fs: MemFsEditor,
     update: boolean
 ): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
@@ -219,13 +219,13 @@ function adjustPreviewPathForNewService(service: OdataService, backends: FioriTo
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose preview settings needs to be set or modified.
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} update - whether the service update is running (if true, preserves explicitly set previewSettings.path)
  */
 async function setDefaultPreviewSettings(
     basePath: string,
     service: OdataService,
-    fs: Editor,
+    fs: MemFsEditor,
     update = false
 ): Promise<void> {
     const previewSettings = getPreviewSettings(service);
@@ -258,10 +258,15 @@ async function setDefaultPreviewSettings(
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {boolean} update - whether the service update is running (if true, skips unique service name generation and makes sure that '' model is updated for the mainService)
  */
-export async function enhanceData(basePath: string, service: OdataService, fs: Editor, update = false): Promise<void> {
+export async function enhanceData(
+    basePath: string,
+    service: OdataService,
+    fs: MemFsEditor,
+    update = false
+): Promise<void> {
     if (!update) {
         setDefaultServicePath(service);
     }

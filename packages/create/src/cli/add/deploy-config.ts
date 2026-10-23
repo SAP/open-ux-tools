@@ -165,9 +165,8 @@ async function addDeployConfig(
             await traceChanges(fs);
 
             if (!simulate) {
-                fs.commit(() => {
-                    logger.info(`Changes written.`);
-                });
+                await fs.commit();
+                logger.info(`Changes written.`);
             }
         }
     } catch (error) {

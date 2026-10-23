@@ -4,7 +4,7 @@ import { getI18nConfiguration, getCapI18nFolder } from '../../utils/index.js';
 import { tryAddJsonTexts } from './json.js';
 import { tryAddCsvTexts } from './csv.js';
 import { tryAddPropertiesTexts } from './properties.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Create new i18n entries to an existing file or in a new file if one does not exist.
@@ -27,7 +27,7 @@ export async function createCapI18nEntries(
     path: string,
     newI18nEntries: NewI18nEntry[],
     env: CdsEnvironment,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const { baseFileName } = getI18nConfiguration(env);
     const i18nFolderPath = await getCapI18nFolder(root, path, env, fs);

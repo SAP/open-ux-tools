@@ -2,7 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import type { I18nBundles } from '../i18n/index.js';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Package } from '../package/index.js';
 import type { AnnotationFile, Manifest } from '../webapp/index.js';
 
@@ -12,7 +12,7 @@ interface BaseAccess {
     readonly projectType: ProjectType;
 }
 export interface ApplicationAccessOptions extends ProjectAccessOptions {
-    fs?: Editor;
+    fs?: MemFsEditor;
 }
 export interface ApplicationAccess extends BaseAccess {
     readonly app: ApplicationStructure;
@@ -119,14 +119,14 @@ export interface ApplicationAccess extends BaseAccess {
      * @param packageJson - updated package.json file content
      * @param memFs - optional mem-fs-editor instance
      */
-    updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void>;
+    updatePackageJSON(packageJson: Package, memFs?: MemFsEditor): Promise<void>;
     /**
      * Updates manifest.json file asynchronously by keeping the previous indentation.
      *
      * @param manifest - updated manifest.json file content
      * @param memFs - optional mem-fs-editor instance
      */
-    updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void>;
+    updateManifestJSON(manifest: Manifest, memFs?: MemFsEditor): Promise<void>;
 
     /**
      * Reads and returns the parsed `manifest.json` file for the application.
@@ -134,7 +134,7 @@ export interface ApplicationAccess extends BaseAccess {
      * @param memFs - optional mem-fs-editor instance
      * @returns A promise resolving to the parsed `manifest.json` content.
      */
-    readManifest(memFs?: Editor): Promise<Manifest>;
+    readManifest(memFs?: MemFsEditor): Promise<Manifest>;
 
     /**
      * Reads and returns all Flex Changes (`*.change` files) associated with the application.
@@ -142,7 +142,7 @@ export interface ApplicationAccess extends BaseAccess {
      * @param memFs - optional mem-fs-editor instance
      * @returns A promise that resolves to an array of flex change files.
      */
-    readFlexChanges(memFs?: Editor): Promise<{
+    readFlexChanges(memFs?: MemFsEditor): Promise<{
         [key: string]: string;
     }>;
 
@@ -152,12 +152,12 @@ export interface ApplicationAccess extends BaseAccess {
      * @param memFs - optional mem-fs-editor instance
      * @returns A promise resolving to an array of annotation file descriptors.
      */
-    readAnnotationFiles(memFs?: Editor): Promise<AnnotationFile[]>;
+    readAnnotationFiles(memFs?: MemFsEditor): Promise<AnnotationFile[]>;
 }
 
 export interface ProjectAccessOptions {
     logger?: Logger;
-    memFs?: Editor;
+    memFs?: MemFsEditor;
 }
 
 export interface ProjectAccess extends BaseAccess {

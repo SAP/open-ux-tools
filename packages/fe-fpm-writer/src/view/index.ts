@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomView, InternalCustomView } from './types.js';
 import { join } from 'node:path';
@@ -47,7 +47,7 @@ function mergeViews(config: CustomView & Partial<InternalCustomView>, manifest: 
 /**
  * Enhances the provided custom view configuration with default data.
  *
- * @param {Editor} fs - the mem-fs editor instance
+ * @param {MemFsEditor} fs - the mem-fs editor instance
  * @param {CustomView} data - a custom view configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -55,7 +55,7 @@ function mergeViews(config: CustomView & Partial<InternalCustomView>, manifest: 
  * @returns enhanced configuration
  */
 function enhanceConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     data: CustomView,
     manifestPath: string,
     manifest: Manifest,
@@ -90,12 +90,16 @@ function enhanceConfig(
  *
  * @param {string} basePath - the base path
  * @param {CustomView} customView - the custom view configuration
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
-export async function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Promise<Editor> {
+export async function generateCustomView(
+    basePath: string,
+    customView: CustomView,
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     validateVersion(customView.minUI5Version);
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     await validateBasePath(basePath, fs);
 
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });

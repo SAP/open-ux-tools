@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomFilter, InternalCustomFilter, PageOptions } from './types.js';
 import { join } from 'node:path';
@@ -47,12 +47,16 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
  *
  * @param {string} basePath - the base path
  * @param {CustomFilter} filterConfig - the custom filter configuration
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
-export async function generateCustomFilter(basePath: string, filterConfig: CustomFilter, fs?: Editor): Promise<Editor> {
+export async function generateCustomFilter(
+    basePath: string,
+    filterConfig: CustomFilter,
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     await validateBasePath(basePath, fs);
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });

@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types.js';
 import { TargetControl } from './types.js';
@@ -89,13 +89,17 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
  *
  * @param {string} basePath - the base path
  * @param {CustomAction} actionConfig - the custom action configuration
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
-export async function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Promise<Editor> {
+export async function generateCustomAction(
+    basePath: string,
+    actionConfig: CustomAction,
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     validateVersion(actionConfig.minUI5Version);
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     await validateBasePath(basePath, fs);
 

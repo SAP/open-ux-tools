@@ -3,7 +3,7 @@ import { FileName, getCapCustomPaths, getWebappPath } from '@sap-ux/project-acce
 import { join, normalize, posix } from 'node:path';
 import { enableCdsUi5Plugin } from '../cap-config/index.js';
 import type { CapServiceCdsInfo } from '../cap-config/types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Manifest, Package } from '@sap-ux/project-access';
 
 /**
@@ -29,12 +29,12 @@ export function getCDSWatchScript(projectName: string, appId?: string): { [x: st
 /**
  * Updates the scripts in the package json file with the provided scripts object.
  *
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @param {string} packageJsonPath - The path to the package.json file.
  * @param {Record<string, string>} scripts - The scripts to be added or updated in the package.json file.
  * @returns {void}
  */
-function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scripts: Record<string, string>): void {
+function updatePackageJsonWithScripts(fs: MemFsEditor, packageJsonPath: string, scripts: Record<string, string>): void {
     fs.extendJSON(packageJsonPath, { scripts });
 }
 
@@ -48,7 +48,7 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  * @returns - the watch scripts for existing applications
  */
 async function updateExistingWatchScripts(
-    fs: Editor,
+    fs: MemFsEditor,
     projectPath: string,
     appsPath: string,
     packageJson: Package
@@ -80,7 +80,7 @@ async function updateExistingWatchScripts(
 /**
  * Updates the scripts in the package json file for a CAP project.
  *
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @param {Package} packageJson - The package.json object to be updated.
  * @param project - project details.
  * @param {string} project.projectPath - the path to the CAP project.
@@ -91,7 +91,7 @@ async function updateExistingWatchScripts(
  * @returns {Promise<void>} A Promise that resolves once the scripts are updated.
  */
 async function updateScripts(
-    fs: Editor,
+    fs: MemFsEditor,
     packageJson: Package,
     {
         projectPath,
@@ -125,7 +125,7 @@ async function updateScripts(
  * 1) Adds the app name to the sapux array in the root package.json if sapux is enabled.
  * 2) Adds the cds watch script to the root package.json if applicable.
  *
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @param {string} projectName - The project's name, which is the module name.
  * @param {boolean} sapux - Whether to add the app name to the sapux array.
  * @param {CapServiceCdsInfo} capService - The CAP service instance.
@@ -134,7 +134,7 @@ async function updateScripts(
  * @returns {Promise<void>} A Promise that resolves once the root package.json is updated.
  */
 export async function updateRootPackageJson(
-    fs: Editor,
+    fs: MemFsEditor,
     projectName: string,
     sapux: boolean,
     capService: CapServiceCdsInfo,
@@ -171,10 +171,10 @@ export async function updateRootPackageJson(
  * Updates the package.json file of a CAP project app by removing the sapux property
  * and start scripts, as well as the 'int-test' script.
  *
- * @param {Editor} fs The file system editor.
+ * @param {MemFsEditor} fs The file system editor.
  * @param {string} appRoot The root directory of the application.
  */
-export function updateAppPackageJson(fs: Editor, appRoot: string): void {
+export function updateAppPackageJson(fs: MemFsEditor, appRoot: string): void {
     const packageJsonPath: string = join(appRoot, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
 

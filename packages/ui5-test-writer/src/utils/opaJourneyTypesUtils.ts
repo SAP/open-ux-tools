@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';
@@ -220,7 +220,7 @@ export function spliceJourneysIntoOpaJourneyTypes(fileContent: string, pages: Op
 export function addJourneysToOpaJourneyTypes(
     pages: OpaPageWriteInfo[],
     testOutDirPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     log?: Logger
 ): boolean {
     if (pages.length === 0) {

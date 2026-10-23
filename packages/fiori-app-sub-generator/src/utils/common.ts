@@ -24,7 +24,7 @@ import {
 import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-service-writer';
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types/index.js';
@@ -134,7 +134,7 @@ export function generateToolsId(): string {
  */
 export async function getCdsUi5PluginInfo(
     capProjectPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     cdsVersionInfo?: CdsVersionInfo
 ): Promise<CdsUi5PluginInfo | undefined> {
     // If the project is a Java project, do not pass cdsVersionInfo.
@@ -244,7 +244,7 @@ export async function getLaunchText(
  * @param {string} options.targetFolder - The file path to the project where the launch configuration should be created.
  * @param {string} options.projectName - The name of the project.
  * @param {string} options.appId - The application ID for the project.
- * @param {Editor} fs - The file system editor.
+ * @param {MemFsEditor} fs - The file system editor.
  * @param {any} vscode - The Visual Studio Code object.
  * @param {Logger} [log] - An optional logger instance.
  * @param {boolean} [writeToAppOnly] - A flag indicating whether to write the configuration only to the app folder.
@@ -252,7 +252,7 @@ export async function getLaunchText(
  */
 export async function generateLaunchConfig(
     options: GenerateLaunchConfigOptions,
-    fs: Editor,
+    fs: MemFsEditor,
     vscode?: any,
     log?: Logger,
     writeToAppOnly: boolean = false

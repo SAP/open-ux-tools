@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join, relative } from 'node:path';
 import { DirName, FileName } from '../constants.js';
 import { fileExists, findFilesByExtension, readJSON } from '../file/index.js';
@@ -27,7 +27,7 @@ import { normalizePath } from '../path/index.js';
  * @param memFs - optional mem-fs-editor instance
  * @returns - project structure with project info like project type, apps, root folder
  */
-export async function getProject(root: string, memFs?: Editor): Promise<Project> {
+export async function getProject(root: string, memFs?: MemFsEditor): Promise<Project> {
     if (!(await fileExists(join(root, FileName.Package), memFs))) {
         throw new Error(`The project root folder '${root}' is not a Fiori project. No 'package.json' found.`);
     }
@@ -53,7 +53,7 @@ export async function getProject(root: string, memFs?: Editor): Promise<Project>
  * @param memFs - optional mem-fs-editor instance
  * @returns - array of operating specific application folders
  */
-async function getAppFolders(root: string, memFs?: Editor): Promise<string[]> {
+async function getAppFolders(root: string, memFs?: MemFsEditor): Promise<string[]> {
     const apps = await findAllApps([root], memFs);
     return apps.length > 0 ? apps.map((app) => relative(root, app.appRoot)) : [''];
 }
@@ -69,7 +69,7 @@ async function getAppFolders(root: string, memFs?: Editor): Promise<string[]> {
 async function getApps(
     root: string,
     appFolders: string[],
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<{ [index: string]: ApplicationStructure }> {
     const apps: { [index: string]: ApplicationStructure } = {};
     for (const appFolder of appFolders) {
@@ -92,7 +92,7 @@ async function getApps(
 async function getApplicationStructure(
     root: string,
     appFolder: string,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<ApplicationStructure | undefined> {
     const appRoot = join(root, appFolder);
     const absoluteWebappPath = await getWebappPath(appRoot, memFs);
@@ -124,7 +124,7 @@ async function getApplicationStructure(
  * @param [memFs] - optional mem-fs editor instance
  * @returns - used language, JavaScript or TypeScript
  */
-export async function getAppProgrammingLanguage(appRoot: string, memFs?: Editor): Promise<AppProgrammingLanguage> {
+export async function getAppProgrammingLanguage(appRoot: string, memFs?: MemFsEditor): Promise<AppProgrammingLanguage> {
     const ignoreFolders = ['node_modules', '.git'];
     let appLanguage: AppProgrammingLanguage = '';
     try {
@@ -152,7 +152,7 @@ export async function getAppProgrammingLanguage(appRoot: string, memFs?: Editor)
  * @param memFs - optional mem-fs-editor instance
  * @returns - type of application, e.g. SAP Fiori elements, SAPUI5 freestyle, SAPUI5 Extension, ... see AppType.
  */
-export async function getAppType(appRoot: string, memFs?: Editor): Promise<AppType | undefined> {
+export async function getAppType(appRoot: string, memFs?: MemFsEditor): Promise<AppType | undefined> {
     let appType: AppType | undefined;
     try {
         const artifacts = await findFioriArtifacts({
@@ -192,7 +192,7 @@ export async function getAppType(appRoot: string, memFs?: Editor): Promise<AppTy
  */
 async function getApplicationType(
     application: AllAppResults,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<'SAP Fiori elements' | 'SAPUI5 freestyle'> {
     let appType: 'SAP Fiori elements' | 'SAPUI5 freestyle';
     const rootPackageJsonPath = join(application.projectRoot, FileName.Package);

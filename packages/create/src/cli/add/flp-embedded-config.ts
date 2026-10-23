@@ -65,16 +65,8 @@ async function runFlpEmbeddedConfig(
         if (options.simulate) {
             await traceChanges(fs);
         } else {
-            await new Promise<void>((resolve, reject) => {
-                fs.commit((error) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        logger.info(`FLP Embedded Mode configuration written.`);
-                        resolve();
-                    }
-                });
-            });
+            await fs.commit();
+            logger.info(`FLP Embedded Mode configuration written.`);
         }
     } catch (error) {
         logger.error(`Error while executing add flp-embedded-config: ${(error as Error).message}`);

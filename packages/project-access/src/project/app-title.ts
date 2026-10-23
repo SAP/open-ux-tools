@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { extractDoubleCurlyBracketsKey, getPropertiesI18nBundle } from '@sap-ux/i18n';
 import type { Logger } from '@sap-ux/logger';
 import { FileName } from '../constants.js';
@@ -20,7 +20,7 @@ import { getI18nPropertiesPaths } from './i18n/i18n.js';
  */
 export async function resolveApplicationTitle(
     params: { webappPath: string; manifest?: Manifest },
-    options?: { memFs?: Editor; logger?: Logger }
+    options?: { memFs?: MemFsEditor; logger?: Logger }
 ): Promise<string | undefined> {
     const { webappPath } = params;
     let { manifest } = params;

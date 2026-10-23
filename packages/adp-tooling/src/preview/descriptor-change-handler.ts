@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { type AppDescriptorV4Change } from '../types.js';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
@@ -80,7 +80,12 @@ function getConfig(
  * @param fs - The mem-fs-editor instance for file operations.
  * @param logger - The logger instance for logging information and errors.
  */
-export function addCustomFragment(basePath: string, change: AppDescriptorV4Change, fs: Editor, logger: Logger): void {
+export function addCustomFragment(
+    basePath: string,
+    change: AppDescriptorV4Change,
+    fs: MemFsEditor,
+    logger: Logger
+): void {
     const propertyValue = change.content.entityPropertyChange.propertyValue;
     const config = getConfig(change);
     if (hasTemplate(propertyValue) && config) {

@@ -6,7 +6,7 @@ import type { ApplicationAccess } from '@sap-ux/project-access';
 import { updateProperty } from './json-helper.js';
 
 /**
- * Class representing the Page Editor API
+ * Class representing the Page MemFsEditor API
  */
 export class PageEditorApi {
     private readonly ftfsIO;
