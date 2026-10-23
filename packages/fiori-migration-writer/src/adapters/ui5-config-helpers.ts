@@ -61,8 +61,7 @@ export function buildProxyConfig(
         }
     };
 
-    // Add UI5 version when setUI5Version is true and ui5Version is defined (even if empty string)
-    if (setUI5Version && templateData.ui5Yaml?.ui5Version !== undefined) {
+    if (setUI5Version && templateData.ui5Yaml?.ui5Version) {
         proxyConfig.ui5.version = templateData.ui5Yaml.ui5Version;
     }
 
