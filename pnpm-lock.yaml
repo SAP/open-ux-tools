@@ -4486,6 +4486,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      serve-static:
+        specifier: 2.2.1
+        version: 2.2.1(supports-color@8.1.1)
     devDependencies:
       '@jest/globals':
         specifier: 30.4.1
@@ -4502,9 +4505,6 @@ importers:
       express:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
-      serve-static:
-        specifier: 2.2.1
-        version: 2.2.1(supports-color@8.1.1)
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
