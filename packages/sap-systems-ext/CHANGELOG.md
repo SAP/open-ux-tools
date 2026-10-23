@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.44
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/btp-utils [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
 ## 1.0.43
 
 ### Patch Changes
