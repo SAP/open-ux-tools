@@ -240,12 +240,44 @@ describe('ProjectMigrator', () => {
             expect(result).toBe(false);
             expect(messages.length).toBeGreaterThan(0);
 
-            // All error messages should be non-empty (testing the fallback chain)
-            messages.forEach((msg) => {
-                expect(msg.type).toBe('ERROR');
-                expect(msg.description).toBeTruthy();
-                expect(msg.description.length).toBeGreaterThan(0);
-            });
-        }, 10000); // 10s timeout for migration
+                // All error messages should be non-empty (testing the fallback chain)
+                messages.forEach((msg) => {
+                    expect(msg.type).toBe('ERROR');
+                    expect(msg.description).toBeTruthy();
+                    expect(msg.description.length).toBeGreaterThan(0);
+                });
+            },
+            10000
+        ); // 10s timeout for migration
+
+        it(
+            'should catch and handle exceptions during migration',
+            async () => {
+                const { ProjectMigrator } = await import('../../src/ProjectMigrator.js');
+
+                // Test with a path that will cause an error (non-existent directory that can't be accessed)
+                const invalidPath = '/nonexistent/invalid/path/that/does/not/exist';
+
+                const { result, messages } = await ProjectMigrator.migrate({
+                    projectRoot: invalidPath,
+                    baseUri: 'https://backend.example.com',
+                    fs
+                });
+
+                // Should fail with error message
+                expect(result).toBe(false);
+                expect(messages.length).toBeGreaterThan(0);
+                expect(messages.some((m) => m.type === 'ERROR')).toBe(true);
+                // Should have a meaningful error description (not empty)
+                messages.forEach((msg) => {
+                    if (msg.type === 'ERROR') {
+                        expect(msg.description).toBeTruthy();
+                        expect(msg.description.length).toBeGreaterThan(0);
+                    }
+                });
+            },
+            10000
+        );
+>>>>>>> 824021f1f4 (test(fiori-migration-writer): add exception handling test)
     });
 });
