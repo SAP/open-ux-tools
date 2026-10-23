@@ -16,6 +16,7 @@ import type {
     ReadAppResult,
     Parser
 } from '@sap/ux-specification';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ApplicationAccess, Manifest } from '@sap-ux/project-access';
 import { getSpecificationModuleFromCache, readFlexChanges } from '@sap-ux/project-access';
@@ -250,10 +251,8 @@ export class SapuxFtfsFileIO {
             params.data.minUI5Version = await getUI5Version(this.appAccess);
         }
         const specification = await this.getSpecification();
-        const fsEditor = await specification.generateCustomExtension(params);
-        await fsEditor?.commit(() => {
-            //empty callback, do nothing.
-        });
+        const fsEditor = (await specification.generateCustomExtension(params)) as MemFsEditor | undefined;
+        await fsEditor?.commit();
         return fsEditor ? Object.keys(fsEditor.dump()) : [];
     }
 
