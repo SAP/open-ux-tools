@@ -1067,13 +1067,14 @@ describe('FE V4 Linker - XML', () => {
 });
 
 const CAP_FACET_NO_ID = `
-                annotate service.Priority with @(
-    UI.Facets         : [{
+annotate service.Priority with @(
+    UI.LineItem: [{ $Type: 'UI.DataField', Value: code, Label: 'code' }],
+    UI.Facets: [{
         $Type : 'UI.ReferenceFacet',
-        Target: 'incidentFlow/@UI.LineItem#table_section',
+        Target: '@UI.LineItem',
         Label : 'table section',
         // no ID
-    }, ],
+    }]
 );`;
 
 const CAP_FACET_NO_ANNOTATION = `
@@ -1710,7 +1711,13 @@ describe('FE V4 Linker - CAP', () => {
             assert.fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
-        expect(sections).toHaveLength(0);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].type).toBe('table-section');
+        expect(sections[0].id).toBeUndefined();
+        expect(sections[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.Facets/0');
+        expect(sections[0].children[0].annotationPath).toBe(
+            '@com.sap.vocabularies.UI.v1.LineItem'
+        );
     });
 
     test('collectSections - no section annotation path', async () => {
