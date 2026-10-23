@@ -16,7 +16,8 @@ import {
     UI_LINE_ITEM,
     UI_CHART,
     UI_DATA_FIELD_FOR_ANNOTATION,
-    UI_COLLECTION_FACET
+    UI_COLLECTION_FACET,
+    UI_SELECTION_PRESENTATION_VARIANT
 } from '../../constants.js';
 
 /**
@@ -378,6 +379,57 @@ export const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content?.find((c) => c.type === 'text')?.text;
 
 /**
+ * Extracts the first `UI.LineItem` visualization path from an inline `UI.PresentationVariant` record.
+ *
+ * Used for `UI.SelectionPresentationVariant` where the `PresentationVariant` property is always an
+ * inline Record (never separately indexed).
+ *
+ * @param pvRecord - The `UI.PresentationVariantType` Record element to inspect.
+ * @param pvAliasInfo - Alias information for the file that contains the record.
+ * @returns The fully-qualified annotation path and optional qualifier, or `undefined` if the first
+ *   visualization is not a `UI.LineItem`.
+ */
+function findLineItemInPvRecord(
+    pvRecord: Element,
+    pvAliasInfo: AliasInformation
+): { path: string; qualifier: string | undefined } | undefined {
+    const vizPropValue = getPropertyValueElement(pvRecord, 'Visualizations');
+    if (!vizPropValue) {
+        return undefined;
+    }
+    const [vizCollection] = elementsWithName(Edm.Collection, vizPropValue);
+    if (!vizCollection) {
+        return undefined;
+    }
+    const [vizElement] = elementsWithName(Edm.AnnotationPath, vizCollection);
+    if (!vizElement) {
+        return undefined;
+    }
+    const vizPath = getElementText(vizElement);
+    if (!vizPath) {
+        return undefined;
+    }
+    const atIdx = vizPath.indexOf('@');
+    if (atIdx === -1) {
+        return undefined;
+    }
+    const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
+    const fullyQualifiedTerm = toFullyQualifiedName(
+        pvAliasInfo.aliasMap,
+        pvAliasInfo.currentFileNamespace,
+        parseIdentifier(termAlias)
+    );
+    if (fullyQualifiedTerm !== UI_LINE_ITEM) {
+        return undefined;
+    }
+    const qualifierSuffix = qualifier ? `#${qualifier}` : '';
+    return {
+        path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
+        qualifier
+    };
+}
+
+/**
  * Process a single reference facet record and create a table or header section if applicable.
  *
  * @param record
@@ -452,7 +504,67 @@ function processReferenceFacetRecord(
         );
     }
 
+    if (term === UI_SELECTION_PRESENTATION_VARIANT) {
+        return createTableSectionFromSpv(
+            facets,
+            { index, referencedEntityType, qualifier, sectionLabel, id },
+            annotationPath,
+            aliasInfo,
+            service
+        );
+    }
+
     return undefined;
+}
+
+/**
+ * Resolve a `UI.SelectionPresentationVariant` target to a `TableSectionNode` by following
+ * the inline `PresentationVariant` property to its first `UI.LineItem` visualization.
+ *
+ * @param facets - The facets annotation being processed.
+ * @param config - Section configuration derived from the `UI.ReferenceFacet` record.
+ * @param annotationPath - The raw annotation path from the facet's `Target` property.
+ * @param aliasInfo - Alias information for the file that contains the facet.
+ * @param service - The parsed OData service.
+ * @returns A `TableSectionNode`, or `undefined` if the SPV cannot be resolved to a `UI.LineItem`.
+ */
+function createTableSectionFromSpv(
+    facets: IndexedAnnotation,
+    config: SectionConfig,
+    annotationPath: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService
+): TableSectionNode | undefined {
+    const spvKey = buildAnnotationIndexKey(config.referencedEntityType, UI_SELECTION_PRESENTATION_VARIANT);
+    const spvAnnotation = service.index.annotations[spvKey]?.[config.qualifier ?? 'undefined'];
+    if (!spvAnnotation) {
+        return undefined;
+    }
+    const spvAliasInfo = service.artifacts.aliasInfo[spvAnnotation.top.uri];
+    const [spvRecord] = elementsWithName(Edm.Record, spvAnnotation.top.value);
+    if (!spvRecord) {
+        return undefined;
+    }
+    const pvPropValue = getPropertyValueElement(spvRecord, 'PresentationVariant');
+    if (!pvPropValue) {
+        return undefined;
+    }
+    const [pvRecord] = elementsWithName(Edm.Record, pvPropValue);
+    if (!pvRecord) {
+        return undefined;
+    }
+    const lineItemViz = findLineItemInPvRecord(pvRecord, spvAliasInfo);
+    if (!lineItemViz) {
+        return undefined;
+    }
+    const navPrefix = annotationPath.substring(0, annotationPath.indexOf('@'));
+    return createTableSection(
+        facets,
+        { ...config, qualifier: lineItemViz.qualifier },
+        `${navPrefix}${lineItemViz.path}`,
+        aliasInfo,
+        service
+    );
 }
 
 /**
