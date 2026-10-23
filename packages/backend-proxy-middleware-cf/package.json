@@ -36,7 +36,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "content-type": "^1.0.5",
-        "dotenv": "17.4.2",
+        "dotenv": "18.0.8",
         "http-proxy-middleware": "3.0.7",
         "mime-types": "^3.0.2",
         "portfinder": "1.0.38"
