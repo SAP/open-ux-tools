@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.17.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Dependency Updates
+
+- Upgrade @humanwhocodes/momoa 3.3.9 → 3.3.13 [[746c126](https://github.com/SAP/open-ux-tools/commit/746c1265c3430849e861ac6c8eec0f07d29cffd7)]
+
 ## 10.17.2
 
 ### Patch Changes
