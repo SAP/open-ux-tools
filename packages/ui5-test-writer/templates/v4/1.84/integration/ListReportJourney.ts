@@ -103,12 +103,6 @@ function journey() {
 
 <%_ } -%>
 <%_ }); -%>
-<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-    opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-    });
-
-<%_ } -%>
 <%_ if (startLR) { -%>
     opaTest("Navigate to ObjectPage", function (_Given: Given, When: When, Then: Then) {
         // Note: this test will fail if the ListReport page doesn't show any data
