@@ -1,7 +1,7 @@
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { t } from '../utils/i18n.js';
 import type { AppInfo, AppDownloadContext, AdtQuickDeployContext } from '../app/types.js';
 import { readManifest } from '../utils/file-helpers.js';
@@ -23,7 +23,7 @@ import { resolveTransportRequest, fetchServiceMetadata } from '../utils/download
  * @param {string} extractedProjectPath - Path where the app files are extracted.
  * @param {AppDownloadContext} context - The download context with service provider and qfa info.
  * @param {OdataServiceAnswers} systemSelection - User's selection of the OData service and system.
- * @param {Editor} fs - The file system editor to manipulate project files.
+ * @param {MemFsEditor} fs - The file system editor to manipulate project files.
  * @returns {Promise<FioriElementsApp<LROPSettings>>} - A promise resolving to the generated app configuration.
  * @throws {Error} - Throws an error if there are issues generating the configuration.
  */
@@ -32,7 +32,7 @@ export async function getAppConfig(
     extractedProjectPath: string,
     context: AdtQuickDeployContext,
     systemSelection: OdataServiceAnswers,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<FioriElementsApp<LROPSettings>> {
     try {
         const manifest = readManifest(join(extractedProjectPath, FileName.Manifest), fs);

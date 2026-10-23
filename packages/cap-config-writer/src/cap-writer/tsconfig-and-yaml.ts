@@ -1,5 +1,5 @@
 import { FileName } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
@@ -9,10 +9,10 @@ import { t } from '../i18n.js';
  * Updates the tsconfig.json file to correct the type roots when node_modules
  * are not found in the same directory as the application.
  *
- * @param {Editor} fs The file system editor.
+ * @param {MemFsEditor} fs The file system editor.
  * @param {string} appRoot The root directory of the application.
  */
-export function updateTsConfig(fs: Editor, appRoot: string): void {
+export function updateTsConfig(fs: MemFsEditor, appRoot: string): void {
     const tsConfigPath = join(appRoot, FileName.Tsconfig);
     if (fs.exists(tsConfigPath)) {
         const tsConfig: any = fs.readJSON(tsConfigPath);
@@ -35,14 +35,14 @@ export function updateTsConfig(fs: Editor, appRoot: string): void {
 /**
  * Updates the application YAML file by adding static resource locations if not already present.
  *
- * @param {Editor} fs The file system editor instance.
+ * @param {MemFsEditor} fs The file system editor instance.
  * @param {string} applicationYamlPath The path to the application YAML file.
  * @param {string} capCustomPathsApp The custom paths for CAP application.
  * @param {Logger} [logger] The logger instance for logging errors.
  * @returns {void}
  */
 export async function updateStaticLocationsInApplicationYaml(
-    fs: Editor,
+    fs: MemFsEditor,
     applicationYamlPath: string,
     capCustomPathsApp: string,
     logger?: Logger

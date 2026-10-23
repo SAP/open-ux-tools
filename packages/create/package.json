@@ -63,8 +63,8 @@
         "fast-xml-validator": "1.4.2",
         "dotenv": "18.0.8",
         "i18next": "26.3.6",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "6.0.0",
+        "mem-fs-editor": "12.1.0",
         "prompts": "2.4.2"
     },
     "devDependencies": {
@@ -73,8 +73,6 @@
         "@sap-ux/store": "workspace:*",
         "@types/diff": "8.0.0",
         "@types/inquirer": "8.2.6",
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.9"
     }
 }

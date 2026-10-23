@@ -1,4 +1,4 @@
-import type { CopyOptions, Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types.js';
 import { sep, normalize } from 'node:path';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file/index.js';
@@ -28,7 +28,7 @@ export interface CreateIdGeneratorWithFilesystemOptions {
     /**
      * mem-fs-editor instance.
      */
-    fsEditor: Editor;
+    fsEditor: MemFsEditor;
     fileContentCache?: string[];
 }
 
@@ -191,7 +191,7 @@ function generateUniqueElementId(baseId: string, filteredFilesContent: string[],
  * @param fs - The file system object for reading files
  * @returns A list of view and fragment files
  */
-export async function getFragmentAndViewFiles(appPath: string, fs: Editor): Promise<string[]> {
+export async function getFragmentAndViewFiles(appPath: string, fs: MemFsEditor): Promise<string[]> {
     const files = await findFilesByExtension(
         '.xml',
         appPath,
@@ -235,9 +235,7 @@ export function createIdGenerator(
     return createGenerator([]);
 }
 
-// `noGlob` is supported in `mem-fs-editor` v9,
-// but is missing from `@types/mem-fs-editor` (no v9 typings), so we extend the type here.
-export const COPY_TEMPLATE_OPTIONS: CopyOptions & { noGlob: boolean } = {
+export const COPY_TEMPLATE_OPTIONS = {
     noGlob: true
 };
 
@@ -301,7 +299,11 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
  * @param tabInfo - External tab configuration.
  * @returns tab size information.
  */
-export function getJsonSpace(fs: Editor, filePath: string, tabInfo?: TabInfo | undefined): WriteJsonSpace | undefined {
+export function getJsonSpace(
+    fs: MemFsEditor,
+    filePath: string,
+    tabInfo?: TabInfo | undefined
+): WriteJsonSpace | undefined {
     if (!tabInfo) {
         // 'tabInfo'  was not passed - calculate 'tabInfo' by checking existing content of target file
         const content = fs.read(filePath);
@@ -328,7 +330,7 @@ export function getJsonSpace(fs: Editor, filePath: string, tabInfo?: TabInfo | u
  * @param fs - the mem-fs editor instance.
  * @param params - options for JSON extend.
  */
-export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
+export function extendJSON(fs: MemFsEditor, params: ExtendJsonParams): void {
     const { filepath, content, replacer } = params;
     const space: WriteJsonSpace | undefined = getJsonSpace(fs, filepath, params.tabInfo);
     // Write json
@@ -347,7 +349,7 @@ export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
  * @param {(baseId: string) => string} generateId - Function to generate unique IDs for the building block elements.
  */
 export function copyTpl(
-    fs: Editor,
+    fs: MemFsEditor,
     from: string,
     to: string,
     context?: object,

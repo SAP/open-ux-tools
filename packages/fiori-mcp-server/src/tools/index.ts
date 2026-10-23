@@ -93,7 +93,7 @@ const adpTools = [
 
         The editor server will run independently in the background. Use the returned process ID or port to stop it if needed.`,
         annotations: {
-            title: 'Open Adaptation Editor',
+            title: 'Open Adaptation MemFsEditor',
             readOnlyHint: false,
             idempotentHint: false,
             openWorldHint: false

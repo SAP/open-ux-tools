@@ -1,6 +1,6 @@
 import type { Dirent } from 'node:fs';
 import path from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';
@@ -51,7 +51,7 @@ function getChangeFileExtension(fileType: string | undefined): string {
  * @param {number} timestamp - The timestamp of the change.
  * @param {AnnotationsData} annotation - The annotation data.
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} templatesPath - The path to the templates used for generating changes.
  * @returns {Promise<void>}
  */
@@ -60,7 +60,7 @@ export async function writeAnnotationChange(
     timestamp: number,
     annotation: AnnotationsData['annotation'],
     change: ManifestChangeProperties | undefined,
-    fs: Editor,
+    fs: MemFsEditor,
     templatesPath?: string
 ): Promise<void> {
     try {
@@ -104,7 +104,11 @@ export async function writeAnnotationChange(
  * @param config - The writer configuration.
  * @param fs - Yeoman mem-fs editor.
  */
-export async function writeKeyUserChanges(projectPath: string, config: AdpWriterConfig, fs: Editor): Promise<void> {
+export async function writeKeyUserChanges(
+    projectPath: string,
+    config: AdpWriterConfig,
+    fs: MemFsEditor
+): Promise<void> {
     const changes = config.keyUserChanges;
     if (!changes?.length) {
         return;
@@ -207,14 +211,14 @@ export function isViewRestrictionOnlyChange(change: KeyUserChangeContent['conten
  *
  * @param {string} projectPath - The root path of the project.
  * @param {ManifestChangeProperties} change - The change data to be written to the file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  * @returns {Promise<void>}
  */
 export async function writeChangeToFolder(
     projectPath: string,
     change: ManifestChangeProperties,
-    fs: Editor,
+    fs: MemFsEditor,
     dir = ''
 ): Promise<void> {
     try {
@@ -239,9 +243,9 @@ export async function writeChangeToFolder(
  *
  * @param {string} path - The root path of the project.
  * @param {ManifestChangeProperties} change - The change data to be written to the file.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  */
-export function writeChangeToFile(path: string, change: ManifestChangeProperties, fs: Editor): void {
+export function writeChangeToFile(path: string, change: ManifestChangeProperties, fs: MemFsEditor): void {
     try {
         fs.writeJSON(path, change);
     } catch (e) {
@@ -339,14 +343,14 @@ export function getChangesByType(
  *
  * @param {string} projectPath - The root path of the project.
  * @param {string} inboundId - The inbound ID to search for within change files.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {MemFsEditor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {InboundChangeData} An object containing the file path and the change object with the matching inbound ID.
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
 export async function findChangeWithInboundId(
     projectPath: string,
     inboundId: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<InboundChangeData> {
     let changeObj: InboundChange | undefined;
     let filePath = '';

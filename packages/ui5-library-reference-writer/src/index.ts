@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { updateManifest, updateYaml } from './helpers.js';
 import type { ReuseLibConfig } from './types.js';
@@ -12,9 +12,13 @@ import type { ReuseLibConfig } from './types.js';
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-async function generate(basePath: string, referenceLibraries: ReuseLibConfig[], fs?: Editor): Promise<Editor> {
+async function generate(
+    basePath: string,
+    referenceLibraries: ReuseLibConfig[],
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     updateYaml(basePath, referenceLibraries, fs);

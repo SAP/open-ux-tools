@@ -43,7 +43,7 @@ export type Step = (typeof STEPS)[number];
  */
 export interface RunRtaWorkflowStepInput {
     step: Step;
-    /** Editor URL from the open_adaptation_editor result. Required for every step. */
+    /** MemFsEditor URL from the open_adaptation_editor result. Required for every step. */
     site: string;
     /** Optional iframe element id (e.g. `"preview"`). Required when the editor renders inside an iframe. */
     frameId?: string;

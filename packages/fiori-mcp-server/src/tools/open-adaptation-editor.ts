@@ -66,7 +66,7 @@ function waitForEditorUrl(
 
             rl.on('line', (line: string) => {
                 const clean = line.replace(new RegExp(String.fromCodePoint(27) + String.raw`\[[0-9;]*m`, 'g'), '');
-                logger.debug(`Editor: ${clean}`);
+                logger.debug(`MemFsEditor: ${clean}`);
 
                 if (!foundEditorPath) {
                     const pathMatch = /fiori run --open\s+([^\s]+)/.exec(line);
@@ -98,7 +98,7 @@ function waitForEditorUrl(
         }
 
         childProcess.on('error', (error) => {
-            logger.error(`Editor process error: ${error.message}`);
+            logger.error(`MemFsEditor process error: ${error.message}`);
             done();
         });
     });
@@ -203,7 +203,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         const portLine = port ? `Actual listening port: ${port}` : '';
 
         const message = `Adaptation editor started successfully.
-Editor URL: ${editorUrl}
+MemFsEditor URL: ${editorUrl}
 Process ID: ${processId}
 ${portLine}
 

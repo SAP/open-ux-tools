@@ -27,7 +27,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'node:fs';
 import { mergeTestConfigDefaults } from './test.js';
-import { type Editor, create } from 'mem-fs-editor';
+import { type MemFsEditor, type VinylMemFsEditorFile, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
@@ -625,7 +625,7 @@ const TEMPLATE_PATH = join(__dirname, '../../templates');
 function generateTestRunners(
     configs: TestConfig[] | undefined,
     manifest: Manifest,
-    fs: Editor,
+    fs: MemFsEditor,
     webappPath: string,
     flpTemplConfig: TemplateConfig
 ): void {
@@ -671,7 +671,7 @@ function generateSandbox2Files(
     isAdp: boolean,
     isCap: boolean,
     logger: Logger | undefined,
-    fs: Editor
+    fs: MemFsEditor
 ): void {
     const [major] = getMinimumUI5Version(manifest)!.split('.').map(Number);
     flpTemplConfig.ui5.versionMajor = major;
@@ -696,7 +696,7 @@ function shouldUseSandbox2(
     manifest: Manifest | undefined,
     flpConfig: FlpConfig,
     basePath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): boolean {
     if (flpConfig.useNewSandbox !== true || flpConfig.enhancedHomePage || !manifest) {
         return false;
@@ -739,7 +739,7 @@ async function addAdditionalApps(
     flpConfig: FlpConfig,
     basePath: string,
     flpTemplConfig: TemplateConfig,
-    fs: Editor,
+    fs: MemFsEditor,
     logger: Logger
 ): Promise<void> {
     for (const app of flpConfig.apps) {
@@ -767,14 +767,14 @@ async function addAdditionalApps(
 export async function generatePreviewFiles(
     basePath: string,
     config: MiddlewareConfig,
-    fs?: Editor,
+    fs?: MemFsEditor,
     logger: ToolsLogger = new ToolsLogger()
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     // remove incorrect configurations
     sanitizeConfig(config, logger);
 
     // create file system if not provided
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
     const isCap = (await getProjectType(basePath)) !== 'EDMXBackend';

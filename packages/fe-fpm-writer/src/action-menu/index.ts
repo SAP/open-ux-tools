@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate.js';
@@ -14,13 +14,17 @@ import { TargetControl, type ActionMenu, type ActionMenuTarget } from './types.j
  *
  * @param {string} basePath - the base path
  * @param {ActionMenu} actionMenuConfig - the custom action configuration
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
-export async function generateActionMenu(basePath: string, actionMenuConfig: ActionMenu, fs?: Editor): Promise<Editor> {
+export async function generateActionMenu(
+    basePath: string,
+    actionMenuConfig: ActionMenu,
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     validateVersion(actionMenuConfig.minUI5Version);
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     await validateBasePath(basePath, fs);
 

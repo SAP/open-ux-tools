@@ -4,7 +4,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Regex to extract the first application key from the sap-ushell-config
@@ -27,7 +27,11 @@ const APPLICATIONS_KEY_REGEX = /applications\s*:\s*\{[^"]*"([^"]+)"\s*:/;
  * @param fs - mem-fs-editor instance used to read the file
  * @returns the application key (e.g. `fincashbankmanage-tile`), or undefined
  */
-export function readHashFromFlpSandbox(htmlRelativePath: string, webappPath: string, fs: Editor): string | undefined {
+export function readHashFromFlpSandbox(
+    htmlRelativePath: string,
+    webappPath: string,
+    fs: MemFsEditor
+): string | undefined {
     try {
         const filePath = join(webappPath, htmlRelativePath);
         const content = fs.read(filePath);
@@ -49,7 +53,7 @@ export function readHashFromFlpSandbox(htmlRelativePath: string, webappPath: str
 export function resolveFlpSandboxHtmlTarget(
     testOutDirPath: string,
     webappPath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): string | undefined {
     if (!fs.exists(join(testOutDirPath, 'flpSandbox.html'))) {
         return undefined;

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { addServicesData, updateServicesData } from './update.js';
 import { enhanceData, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data/index.js';
@@ -22,7 +22,7 @@ import { updateManifest } from './data/manifest.js';
  * @param files - list of files that need to exist
  * @param fs - the memfs editor instance
  */
-function ensureExists(basePath: string, files: string[], fs: Editor): void {
+function ensureExists(basePath: string, files: string[], fs: MemFsEditor): void {
     files.forEach((path) => {
         if (!fs.exists(join(basePath, path))) {
             throw new Error(t('error.requiredProjectFileNotFound', { path }));
@@ -34,10 +34,10 @@ function ensureExists(basePath: string, files: string[], fs: Editor): void {
  * Try finding a package.json and a ui5.yaml for the given project by looking upwards in the folder hierachy.
  *
  * @param {string} basePath - the root path of an existing UI5 application
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
  * @returns an object with the optional locations of the package.json and ui5.yaml, ui5-local.yaml, ui5-mock.yaml
  */
-async function findProjectFiles(basePath: string, fs: Editor): Promise<ProjectPaths> {
+async function findProjectFiles(basePath: string, fs: MemFsEditor): Promise<ProjectPaths> {
     const files: ProjectPaths = {};
     const parts = basePath.split(sep);
 
@@ -66,13 +66,13 @@ async function findProjectFiles(basePath: string, fs: Editor): Promise<ProjectPa
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
  * @throws {Error} - if required UI5 project files are not found
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
-export async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, service: OdataService, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const paths = await findProjectFiles(basePath, fs);
     const webappPath = await getWebappPath(basePath, fs);
@@ -98,19 +98,19 @@ export async function generate(basePath: string, service: OdataService, fs?: Edi
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
  * @param {boolean} updateMiddlewares - whether the YAML files for the service (mock-server and fiori-tools-proxy middlewares) should be updated
  * @throws {Error} - if required UI5 project files are not found
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
 export async function update(
     basePath: string,
     service: OdataService,
-    fs?: Editor,
+    fs?: MemFsEditor,
     updateMiddlewares = true
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const paths = await findProjectFiles(basePath, fs);
     const webappPath = await getWebappPath(basePath, fs);
@@ -148,13 +148,13 @@ export async function update(
  * @param {string} service.url - url of the OData service instance
  * @param {ServiceType} service.type - type of the OData service instance
  * @param {OdataService['annotations']} service.annotations - services annotations (EDMX or CDS)
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
  * @throws {Error} - if required UI5 project files are not found
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
-export async function remove(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+export async function remove(basePath: string, service: OdataService, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const paths = await findProjectFiles(basePath, fs);
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;

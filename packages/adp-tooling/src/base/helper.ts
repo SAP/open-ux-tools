@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
@@ -23,10 +23,10 @@ const ADP_CLOUD_PROJECT_BUILD_TASK_NAME = 'app-variant-bundler-build';
  * Get the app descriptor variant.
  *
  * @param {string} basePath - The path to the adaptation project.
- * @param {Editor} fs - The mem-fs editor instance.
+ * @param {MemFsEditor} fs - The mem-fs editor instance.
  * @returns {Promise<DescriptorVariant>} The app descriptor variant.
  */
-export async function getVariant(basePath: string, fs?: Editor): Promise<DescriptorVariant> {
+export async function getVariant(basePath: string, fs?: MemFsEditor): Promise<DescriptorVariant> {
     const webappPath = await getWebappPath(basePath);
     if (fs) {
         return fs.readJSON(join(webappPath, FileName.ManifestAppDescrVar)) as unknown as DescriptorVariant;
@@ -39,9 +39,9 @@ export async function getVariant(basePath: string, fs?: Editor): Promise<Descrip
  *
  * @param {string} basePath - The base path of the project.
  * @param {DescriptorVariant} variant - The descriptor variant object.
- * @param {Editor} fs - The mem-fs editor instance.
+ * @param {MemFsEditor} fs - The mem-fs editor instance.
  */
-export async function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor): Promise<void> {
+export async function updateVariant(basePath: string, variant: DescriptorVariant, fs: MemFsEditor): Promise<void> {
     fs.writeJSON(join(await getWebappPath(basePath), FileName.ManifestAppDescrVar), variant);
 }
 
@@ -73,7 +73,7 @@ export function flpConfigurationExists(variant: DescriptorVariant): boolean {
  * @param fs - An optional `mem-fs-editor` instance to check for the file's existence.
  * @returns `true` if `tsconfig.json` exists, otherwise `false`.
  */
-export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
+export function isTypescriptSupported(basePath: string, fs?: MemFsEditor): boolean {
     const path = join(basePath, 'tsconfig.json');
     return fs ? fs.exists(path) : existsSync(path);
 }

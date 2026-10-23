@@ -2,7 +2,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
 import type {
@@ -100,11 +100,11 @@ export async function generateOPAFiles(
     basePath: string,
     options: OPAGenerationOptions,
     metadata?: string,
-    fs?: Editor,
+    fs?: MemFsEditor,
     log?: Logger,
     standalone = false
-): Promise<Editor> {
-    const editor = fs ?? create(createStorage());
+): Promise<MemFsEditor> {
+    const editor = fs ?? create(createStorage<VinylMemFsEditorFile>());
 
     const manifest = readManifest(editor, basePath);
     const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
@@ -390,7 +390,7 @@ function hasJourneyRunnerFile(testOutDirPath: string): boolean {
  * @param scriptName - the name of the script to check for
  * @returns true if the script exists, false otherwise
  */
-function checkScriptInPackageJson(editor: Editor, basePath: string, scriptName: string): boolean {
+function checkScriptInPackageJson(editor: MemFsEditor, basePath: string, scriptName: string): boolean {
     const packageJsonPath = join(basePath, FileName.Package);
     if (!editor.exists(packageJsonPath)) {
         return false;
@@ -406,7 +406,7 @@ function checkScriptInPackageJson(editor: Editor, basePath: string, scriptName: 
  * @param basePath - the root folder of the app
  * @returns the manifest object. An exception is thrown if the manifest cannot be read.
  */
-export function readManifest(fs: Editor, basePath: string): Manifest {
+export function readManifest(fs: MemFsEditor, basePath: string): Manifest {
     const manifest = fs.readJSON(join(basePath, DirName.Webapp, FileName.Manifest)) as any as Manifest;
     if (!manifest) {
         throw new ValidationError(
@@ -953,7 +953,7 @@ function writePageObject(
     pageConfig: FEV4OPAPageConfig,
     rootTemplateDirPath: string,
     testOutDirPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     dotFileExtension: DotFileExtension
 ): OpaPageWriteInfo {
     fs.copyTpl(

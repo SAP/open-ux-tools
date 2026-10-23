@@ -1,6 +1,6 @@
 import { join, posix } from 'node:path';
 import * as xpath from 'xpath';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Document as XmldomDocument, Element as XmldomElement } from '@xmldom/xmldom';
 import {
     BuildingBlockType,
@@ -44,7 +44,7 @@ interface NamespaceConfig {
  * Context for processing building blocks.
  */
 interface ProcessingContext {
-    fs: Editor;
+    fs: MemFsEditor;
     xmlDocument?: XmldomDocument;
     viewPath?: string;
     embeddedFragment?: EmbeddedFragmentData;
@@ -562,7 +562,7 @@ function processAction(buildingBlockData: BuildingBlock, context: ProcessingCont
  * @param {string} manifestPath - The manifest file path
  * @param {Manifest} manifest - The manifest object
  * @param {string} aggregationPath - The aggregation path
- * @param {Editor} fs - The memfs editor instance
+ * @param {MemFsEditor} fs - The memfs editor instance
  * @returns {object} Object containing updated aggregation path and processed building block data
  */
 export function processBuildingBlock<T extends BuildingBlock>(
@@ -571,7 +571,7 @@ export function processBuildingBlock<T extends BuildingBlock>(
     manifestPath: string,
     manifest: Manifest,
     aggregationPath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): {
     updatedAggregationPath: string;
     processedBuildingBlockData: T;

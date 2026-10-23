@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types.js';
 import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types.js';
@@ -9,11 +9,11 @@ import { parseStringToObject, getChange, writeChangeToFolder } from '../../../ba
  */
 export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     /**
-     * @param {Editor} fs - The filesystem editor instance.
+     * @param {MemFsEditor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      */
     constructor(
-        private readonly fs: Editor,
+        private readonly fs: MemFsEditor,
         private readonly projectPath: string
     ) {}
 

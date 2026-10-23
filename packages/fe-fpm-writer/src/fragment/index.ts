@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'node:path';
 import type { Fragment } from './types.js';
@@ -15,15 +15,15 @@ import { getManifest } from '../common/utils.js';
  *
  * @param {string} basePath - the base path
  * @param {Fragment} fragment - fragment generation configuration
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  * @throws {Error} if the project folder is invalid or manifest.json cannot be found
  * @throws {Error} if sap.fe.templates is missing from manifest.json dependencies (only FPM projects are supported)
  * @throws {Error} if fragment.folder is an absolute path or contains path traversal sequences (..)
  * @throws {Error} if fragment.name is an absolute path or contains path traversal sequences (..)
  */
-export async function generateFragment(basePath: string, fragment: Fragment, fs?: Editor): Promise<Editor> {
-    fs ??= create(createStorage());
+export async function generateFragment(basePath: string, fragment: Fragment, fs?: MemFsEditor): Promise<MemFsEditor> {
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     await validateBasePath(basePath, fs);
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
 

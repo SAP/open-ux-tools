@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import type {
@@ -205,17 +205,17 @@ function getManifestReplacer(
  *
  * @param {string} basePath - the base path
  * @param {ControllerExtension} controllerConfig - the controller extension configuration
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
 export async function generateControllerExtension(
     basePath: string,
     controllerConfig: ControllerExtension,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     // Validate the base and view paths
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     await validateBasePath(basePath, fs);
 

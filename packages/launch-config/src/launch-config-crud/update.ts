@@ -4,7 +4,7 @@ import type { FioriOptions, LaunchJSON } from '../types/index.js';
 import { LAUNCH_JSON_FILE } from '../types/index.js';
 import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
 import { findNodeAtLocation, parse, parseTree } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig, mergeArgs } from './utils.js';
 import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
@@ -17,7 +17,7 @@ type UpdateCallback = (
     filePath: string,
     jsonPath: JSONPath,
     options?: ModificationOptions,
-    fs?: Editor
+    fs?: MemFsEditor
 ) => Promise<void>;
 
 interface LaunchConfigObjectProperty {
@@ -45,7 +45,7 @@ async function traverseAndModifyLaunchConfig(
     filePath: string,
     originalJSON: Node | undefined,
     callback: UpdateCallback,
-    fs: Editor,
+    fs: MemFsEditor,
     initialPath: JSONPath = []
 ): Promise<void> {
     for (const key in obj) {
@@ -94,10 +94,10 @@ async function processArrayProperty(
     callback: UpdateCallback,
     currentPath: JSONPath,
     originalLength: number,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const maxLength = Math.max(arr.length, originalLength);
     for (let i = 0, j = maxLength; i < maxLength; i++) {
@@ -123,7 +123,7 @@ async function processArrayProperty(
 async function processObjectProperty(
     launchConfigObject: LaunchConfigObjectProperty,
     callback: UpdateCallback,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const { obj, originalLength, filePath, originalJSON, currentPath, node } = launchConfigObject;
     const length = Object.keys(obj).length;
@@ -153,10 +153,10 @@ export async function updateLaunchConfig(
     rootFolder: string,
     fioriOptions: FioriOptions,
     index: number,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const launchJSONPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJSONPath)) {

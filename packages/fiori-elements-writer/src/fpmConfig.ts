@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { FioriElementsApp, FPMSettings } from './types.js';
 /**
@@ -13,7 +13,7 @@ import type { FioriElementsApp, FPMSettings } from './types.js';
 export async function generateFpmConfig<T extends {}>(
     feApp: FioriElementsApp<T>,
     basePath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
     await generateCustomPage(

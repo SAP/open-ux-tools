@@ -14,7 +14,7 @@ import {
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
 import { coerce, lt } from 'semver';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {
@@ -45,7 +45,7 @@ import { resolveAggregationPath } from './processor.js';
  * @param fs - the memfs editor instance
  * @returns {Document} the view xml file document
  */
-export function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): XmldomDocument {
+export function getUI5XmlDocument(basePath: string, viewPath: string, fs: MemFsEditor): XmldomDocument {
     let viewContent: string;
     try {
         viewContent = fs.read(join(basePath, viewPath));
@@ -183,7 +183,7 @@ export function buildAggregationIds(
  * @returns parsed XML document whose documentElement contains the aggregation child nodes
  */
 function buildPageAggregationFragment(
-    fs: Editor,
+    fs: MemFsEditor,
     aggName: string,
     aggContext: {
         macrosPrefix: string;
@@ -225,7 +225,7 @@ function buildPageAggregationFragment(
  * @param stickySubheaderId - collision-safe id for the default IconTabBar, shared with the Page's stickySubheaderProvider
  */
 export function appendPageAggregations(
-    fs: Editor,
+    fs: MemFsEditor,
     xmlDocument: XmldomDocument,
     templateDocument: XmldomDocument,
     generateId: IdGeneratorFunction,
@@ -498,7 +498,7 @@ function deriveAggregationIndex(existingContainer: XmldomElement | undefined): n
  * @param viewPath - the path of the xml view relative to the base path
  * @param xmlDocument - the XML document to serialize and write
  */
-function writeXmlDocument(fs: Editor, basePath: string, viewPath: string, xmlDocument: XmldomDocument): void {
+function writeXmlDocument(fs: MemFsEditor, basePath: string, viewPath: string, xmlDocument: XmldomDocument): void {
     fs.write(join(basePath, viewPath), format(new XMLSerializer().serializeToString(xmlDocument)));
 }
 
@@ -534,15 +534,15 @@ function appendChildrenIntoContainer(
  * @param basePath - the base path of the application
  * @param config - the aggregation configuration containing aggregationName
  * @param [fs] - the memfs editor instance
- * @returns {Editor} the updated memfs editor instance
+ * @returns {MemFsEditor} the updated memfs editor instance
  */
 export async function generateBuildingBlockAggregation(
     basePath: string,
     config: GenerateBuildingBlockAggregationConfig,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     const { viewPath, buildingBlockType, aggregationName: aggName } = config;
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     if (buildingBlockType !== BuildingBlockType.Page) {
         throw new Error(
             `generateBuildingBlockAggregation: unsupported building block type '${buildingBlockType}'. Only 'Page' is currently supported.`

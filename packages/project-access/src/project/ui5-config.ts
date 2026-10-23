@@ -1,5 +1,5 @@
 import { basename, dirname, join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { MockserverConfig, MockserverService, Ui5Document, Configuration } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants.js';
@@ -41,7 +41,7 @@ const PATH_MAPPING_DEFAULTS: { [K in Ui5Document['type']]: Required<PathsFor<K>>
  * @param memFs - optional mem-fs editor instance
  * @returns - base directory of the project
  */
-async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
+async function getBaseDir(appRoot: string, memFs?: MemFsEditor): Promise<string> {
     const packageJsonPath = await findFileUp(FileName.Package, appRoot, memFs);
     return packageJsonPath ? dirname(packageJsonPath) : appRoot;
 }
@@ -53,7 +53,7 @@ async function getBaseDir(appRoot: string, memFs?: Editor): Promise<string> {
  * @param [memFs] - optional mem-fs editor instance
  * @returns - path to webapp folder
  */
-export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<string> {
+export async function getWebappPath(appRoot: string, memFs?: MemFsEditor): Promise<string> {
     let pathMappings;
     try {
         pathMappings = await getPathMappings(appRoot, memFs);
@@ -76,7 +76,7 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
  */
 export async function getPathMappings(
     appRoot: string,
-    memFs?: Editor,
+    memFs?: MemFsEditor,
     fileName: string = FileName.Ui5Yaml
 ): Promise<PathMappings> {
     let ui5Config: UI5Config;
@@ -124,7 +124,7 @@ export async function getPathMappings(
 export async function readUi5Yaml(
     projectRoot: string,
     fileName: string,
-    memFs?: Editor,
+    memFs?: MemFsEditor,
     options?: { validateSchema: boolean }
 ): Promise<UI5Config> {
     const ui5YamlPath = join(projectRoot, fileName);
@@ -143,7 +143,7 @@ export async function readUi5Yaml(
  * @returns list of valid and invalid UI5 configuration yaml file names
  * @throws {Error} if an error occurs while reading files from projectRoot
  */
-export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor): Promise<string[]> {
+export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: MemFsEditor): Promise<string[]> {
     try {
         const yamlFilePaths = await findFilesByExtension('.yaml', projectRoot, [], memFs, true);
         return yamlFilePaths.map((path) => basename(path));
