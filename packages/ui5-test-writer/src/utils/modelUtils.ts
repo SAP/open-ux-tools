@@ -131,7 +131,7 @@ export async function getAppFeatures(
         // TODO: Remove workaround when ux-specification is updated to 1.144.8 or later
         const readAppOptions: ReadAppParams & { includeAnnotationProperties: boolean } = {
             app: appAccess,
-            fs: fs,
+            fs: fs as unknown as ReadAppParams['fs'],
             includeAnnotationProperties: true
         };
         const appModel: ReadAppResult = await specification.readApp(readAppOptions);
