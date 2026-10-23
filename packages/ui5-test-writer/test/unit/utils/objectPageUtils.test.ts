@@ -1907,7 +1907,7 @@ describe('Test getObjectPageFeatures()', () => {
         expect(result[0].bodySections?.[0].subSections?.[0].fields).toEqual([]);
     });
 
-    test('drills ConnectedFields and FieldGroup wrappers when metadata is supplied', async () => {
+    test('drills ConnectedFields and FieldGroup wrappers when metadata is supplied, flagging all-boolean groups as checkbox groups', async () => {
         const metadata = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
     <edmx:DataServices>
@@ -2037,8 +2037,109 @@ describe('Test getObjectPageFeatures()', () => {
         expect(subSection?.fields).toEqual([
             { property: 'Country', connectedFields: 'CountryCity' },
             { property: 'CityName', connectedFields: 'CountryCity' },
-            { property: 'PostingIsBlocked', fieldGroup: 'CheckBoxGroup' },
-            { property: 'BusinessPartnerIsBlocked', fieldGroup: 'CheckBoxGroup' }
+            { property: 'PostingIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true },
+            { property: 'BusinessPartnerIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true }
+        ]);
+    });
+
+    test('does not flag a mixed-type FieldGroup as a checkbox group', async () => {
+        const metadata = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="test.svc">
+            <EntityType Name="BookingType">
+                <Key><PropertyRef Name="BookingId"/></Key>
+                <Property Name="BookingId" Type="Edm.String"/>
+                <Property Name="PostingIsBlocked" Type="Edm.Boolean"/>
+                <Property Name="Country" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Bookings" EntityType="test.svc.BookingType"/>
+            </EntityContainer>
+            <Annotations Target="test.svc.BookingType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.FieldGroup" Qualifier="MixedGroup">
+                    <Record>
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                    <PropertyValue Property="Value" Path="PostingIsBlocked"/>
+                                </Record>
+                                <Record Type="com.sap.vocabularies.UI.v1.DataField">
+                                    <PropertyValue Property="Value" Path="Country"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const objectPage = {
+            name: 'objectPage1',
+            pageType: 'ObjectPage',
+            entitySet: 'Bookings',
+            model: {
+                root: {
+                    aggregations: {
+                        header: {
+                            aggregations: {
+                                sections: { aggregations: {} } as unknown as TreeAggregation
+                            } as unknown as TreeAggregation
+                        } as unknown as TreeAggregation,
+                        sections: {
+                            aggregations: {
+                                section1: {
+                                    isTable: false,
+                                    custom: false,
+                                    schema: { keys: [{ name: 'ID', value: 'GeneralInformation' }] },
+                                    aggregations: {
+                                        subsections: {
+                                            aggregations: {
+                                                subSection1: {
+                                                    isTable: false,
+                                                    custom: false,
+                                                    schema: { keys: [{ name: 'ID', value: 'BookingData' }] },
+                                                    aggregations: {
+                                                        form: {
+                                                            schema: { keys: [] },
+                                                            aggregations: {
+                                                                fields: {
+                                                                    aggregations: {
+                                                                        group: {
+                                                                            name: 'DataFieldForAnnotation::FieldGroup::MixedGroup',
+                                                                            schema: {
+                                                                                keys: [
+                                                                                    {
+                                                                                        name: 'Target',
+                                                                                        value: '@UI.FieldGroup#MixedGroup'
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        } as unknown as TreeAggregation
+                                                                    }
+                                                                } as unknown as TreeAggregation
+                                                            } as unknown as TreeAggregation
+                                                        } as unknown as TreeAggregation
+                                                    }
+                                                } as unknown as TreeAggregation
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            }
+        };
+        const result = await getObjectPageFeatures([objectPage] as PageWithModelV4[], undefined, mockLogger, metadata);
+        const subSection = result[0].bodySections?.[0].subSections?.[0];
+        expect(subSection?.fields).toEqual([
+            { property: 'PostingIsBlocked', fieldGroup: 'MixedGroup' },
+            { property: 'Country', fieldGroup: 'MixedGroup' }
         ]);
     });
 

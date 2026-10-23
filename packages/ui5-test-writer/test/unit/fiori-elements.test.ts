@@ -206,6 +206,8 @@ describe('ui5-test-writer', () => {
                     tableIdentifiers: [],
                     tabs: [],
                     toolBarActions,
+                    defaultSortOrder: [],
+                    defaultFilterValues: [],
                     ...overrides
                 });
                 return editor.read(outPath);
@@ -2082,8 +2084,8 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
-            // 1.151.x range resolves to the 1.148 bucket, which does not render them.
+            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
+            // test; they still emit coreLibrary/SortOrder when a PresentationVariant has a SortOrder.
             it.each([
                 ['1.84 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
@@ -2097,12 +2099,10 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('"sap/ui/core/library"');
-                expect(content).not.toContain('coreLibrary');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
-            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test or the coreLibrary import —
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test —
             // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
             // exists from 1.152.0.
             it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (JS)', async () => {
@@ -2113,8 +2113,6 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version: '1.152.0' }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('"sap/ui/core/library"');
-                expect(content).not.toContain('coreLibrary');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
                 expect(content).toContain(
                     'opaTest("Check the presence of the text columns for columns with a Text annotation"'
@@ -2129,8 +2127,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('"sap/ui/core/library"');
-                expect(content).not.toContain('coreLibrary');
+                // PresentationVariant with SortOrder is present in LROPv4 metadata, so coreLibrary is emitted
+                expect(content).toContain('"sap/ui/core/library"');
+                expect(content).toContain('iCheckSortOrder');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
@@ -2192,8 +2191,8 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
-            // 1.151.x range resolves to the 1.148 bucket, which does not render them.
+            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
+            // test; they still emit SortOrder when a PresentationVariant has a SortOrder.
             it.each([
                 ['1.84 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
@@ -2207,12 +2206,10 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('sap/ui/core/library');
-                expect(content).not.toContain('SortOrder');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
-            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test or the SortOrder import —
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test —
             // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
             // exists from 1.152.0.
             it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (TS)', async () => {
@@ -2228,8 +2225,6 @@ export type Then = Opa5 & BaseArrangements & {
                 );
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('sap/ui/core/library');
-                expect(content).not.toContain('SortOrder');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
                 expect(content).toContain(
                     'opaTest("Check the presence of the text columns for columns with a Text annotation"'
@@ -2244,8 +2239,9 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('sap/ui/core/library');
-                expect(content).not.toContain('SortOrder');
+                // PresentationVariant with SortOrder is present in LROPv4 metadata, so SortOrder is emitted
+                expect(content).toContain('sap/ui/core/library');
+                expect(content).toContain('iCheckSortOrder');
                 expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
@@ -2545,6 +2541,86 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
+    });
+});
+
+describe('checkbox-group fields (FXUBRQ34-12809)', () => {
+    const buckets = ['1.84', '1.148', '1.152', 'latest'] as const;
+
+    const renderObjectPageJourney = (
+        bucket: string,
+        extension: 'js' | 'ts',
+        fields: Record<string, unknown>[]
+    ): string => {
+        const templatePath = join(__dirname, `../../templates/v4/${bucket}/integration/ObjectPageJourney.${extension}`);
+        const outPath = join(__dirname, `../test-output/checkbox/${bucket}/ObjectPageJourney.gen.${extension}`);
+        const editor = create(createStorage());
+        editor.copyTpl(templatePath, outPath, {
+            name: 'CustomerObjectPage',
+            hideFilterBar: false,
+            serviceUri: '/odata/v4/TestService/',
+            navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
+            headerTitle: undefined,
+            headerSections: [],
+            headerActions: [],
+            editButton: undefined,
+            bodySections: [
+                {
+                    id: 'GeneralInformation2',
+                    isTable: false,
+                    subSections: [],
+                    fields,
+                    contactCardFields: [],
+                    contactCardColumns: [],
+                    actions: [],
+                    tableColumns: {}
+                }
+            ]
+        });
+        return editor.read(outPath);
+    };
+
+    const liveField = { property: 'AddressTimeZone' };
+    const checkBoxFields = [
+        { property: 'PostingIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true },
+        { property: 'BusinessPartnerIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true }
+    ];
+
+    it.each(buckets)('comments out checkbox-group members in every bucket (%s, JS)', (bucket) => {
+        const journey = renderObjectPageJourney(bucket, 'js', [liveField, ...checkBoxFields]);
+        const lines = journey.split('\n').map((line) => line.trim());
+        // The note is emitted exactly once for the consecutive checkbox-group block.
+        expect(
+            lines.filter((line) => line === '// Checkbox-group members cannot be addressed by sap.fe.test.api')
+        ).toHaveLength(1);
+        // Both checkbox members are present but commented out — never emitted as live steps.
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "BusinessPartnerIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+        const active = lines.filter((line) => !line.startsWith('//'));
+        expect(active.some((line) => line.includes('PostingIsBlocked'))).toBe(false);
+        // The non-checkbox field stays a live assertion.
+        expect(active.some((line) => line.includes('iCheckField({ property: "AddressTimeZone" })'))).toBe(true);
+    });
+
+    it('omits the unused FormIdentifier import when a section has only checkbox-group fields (TS)', () => {
+        const journey = renderObjectPageJourney('latest', 'ts', [...checkBoxFields]);
+        // All field assertions are commented out, so the FormIdentifier type is never used.
+        expect(journey).not.toContain('import type { FormIdentifier }');
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+    });
+
+    it('keeps the FormIdentifier import when a checkbox-group section also has a live field (TS)', () => {
+        const journey = renderObjectPageJourney('latest', 'ts', [liveField, ...checkBoxFields]);
+        expect(journey).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+        expect(journey).toContain(
+            'onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "AddressTimeZone" })'
+        );
     });
 });
 
