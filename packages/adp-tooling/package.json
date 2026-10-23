@@ -78,7 +78,7 @@
         "@types/supertest": "7.2.1",
         "@types/uuid": "11.0.0",
         "cross-env": "10.1.0",
-        "dotenv": "17.4.2",
+        "dotenv": "18.0.8",
         "express": "4.22.1",
         "nock": "14.0.16",
         "rimraf": "6.1.3",
