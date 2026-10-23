@@ -12,7 +12,9 @@ config.transform = {
     '^.+\\.ts$': ['ts-jest', {
         tsconfig: {
             module: 'CommonJS',
-            moduleResolution: 'node'
+            moduleResolution: 'node10',
+            ignoreDeprecations: '6.0',
+            types: ['jest', 'node']
         }
     }]
 };
