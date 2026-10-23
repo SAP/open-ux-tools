@@ -1,5 +1,21 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (dotenv 18) [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+#### Release Date
+
+2026-10-23
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
 ## 1.16.2
 
 ### Patch Changes
