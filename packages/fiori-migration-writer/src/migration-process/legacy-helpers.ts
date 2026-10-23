@@ -183,7 +183,7 @@ export async function fallbackFsMove(rootPath: string, paths: LegacyPaths): Prom
         fse.moveSync(paths.ffLegacyTestQunitPath, paths.ffNewTestPath, { overwrite: true });
     }
     if (await pathExistsOnDisk(paths.ffLegacyTestuiveri5Path)) {
-        fse.moveSync(paths.ffLegacyTestuiveri5Path, paths.ffNewTestPath, { overwrite: true });
+        fse.moveSync(paths.ffLegacyTestuiveri5Path, join(paths.ffNewTestPath, 'uiveri5'), { overwrite: true });
     }
 }
 
