@@ -47,7 +47,7 @@
         "@ui5/manifest": "1.89.0",
         "ejs": "3.1.10",
         "fast-glob": "3.3.3",
-        "fast-xml-parser": "5.10.1",
+        "fast-xml-parser": "5.11.2",
         "fs-extra": "11.4.1",
         "i18next": "26.3.6",
         "json-parse-even-better-errors": "5.0.0",
