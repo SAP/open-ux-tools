@@ -1715,9 +1715,7 @@ describe('FE V4 Linker - CAP', () => {
         expect(sections[0].type).toBe('table-section');
         expect(sections[0].id).toBeUndefined();
         expect(sections[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.Facets/0');
-        expect(sections[0].children[0].annotationPath).toBe(
-            '@com.sap.vocabularies.UI.v1.LineItem'
-        );
+        expect(sections[0].children[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.LineItem');
     });
 
     test('collectSections - no section annotation path', async () => {
