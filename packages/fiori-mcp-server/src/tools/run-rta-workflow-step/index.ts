@@ -3,6 +3,7 @@ import {
     executeAction,
     FrontendActionError,
     getElementContext,
+    getODataMetadata,
     getOverlays,
     getPageActions,
     pressInteractive,
@@ -10,7 +11,7 @@ import {
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
-import { defaultTransport, isRegistryEmpty } from './browser/index.js';
+import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
 
 /**
@@ -31,6 +32,22 @@ function requireString(payload: Record<string, unknown> | undefined, key: string
 }
 
 /**
+ * Asserts the top-level `appPath` is a non-empty string. Required for the
+ * `start` and `restart` steps (project identity + CF session keying).
+ *
+ * @param appPath Value of `input.appPath`.
+ * @returns The validated appPath.
+ */
+function requireAppPath(appPath: string | undefined): string {
+    if (typeof appPath !== 'string' || appPath.length === 0) {
+        throw new Error(
+            'appPath is required for this step. Pass the adaptation project root (the same appPath used to open the editor).'
+        );
+    }
+    return appPath;
+}
+
+/**
  * Reads `key` from `payload` and asserts it is a plain object.
  *
  * @param payload The step payload, possibly undefined.
@@ -43,6 +60,21 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
         throw new Error(`payload.${key} is required and must be an object`);
     }
     return value as Record<string, unknown>;
+}
+
+/**
+ * Reads `key` from `payload` and asserts it is an array of non-empty strings.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The string array value.
+ */
+function requireStringArray(payload: Record<string, unknown> | undefined, key: string): string[] {
+    const value = payload?.[key];
+    if (!Array.isArray(value) || value.some((item) => typeof item !== 'string' || item.length === 0)) {
+        throw new Error(`payload.${key} is required and must be an array of non-empty strings`);
+    }
+    return value as string[];
 }
 
 /**
@@ -91,6 +123,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
                 await defaultTransport.disconnectSite(site);
+                // Record which project (and whether CF) is starting on this site, so
+                // session seeding is keyed by project and ABAP projects skip it entirely.
+                const appPath = requireAppPath(input.appPath);
+                await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, { site, frameId });
                 return { site, frameId, ...result };
             }
@@ -128,6 +164,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'restart': {
                 const page = { site, frameId };
                 await defaultTransport.disconnectSite(site);
+                // disconnectSite forgot the site meta; re-register so the reloaded
+                // editor keeps its project identity / CF session keying.
+                const appPath = requireAppPath(input.appPath);
+                await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, page);
                 return { site, frameId, ...result };
             }
@@ -151,6 +191,11 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const controlId = requireString(input.payload, 'controlId');
                 const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
                 return { result };
+            }
+            case 'get_odata_metadata': {
+                const uris = requireStringArray(input.payload, 'uris');
+                const appPath = requireAppPath(input.appPath);
+                return getODataMetadata(defaultTransport, site, uris, appPath);
             }
             default:
                 throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);

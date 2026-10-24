@@ -7,6 +7,7 @@ import {
     callPageAction,
     executeAction,
     getElementContext,
+    getODataMetadata,
     getOverlays,
     getPageActions,
     pressInteractive,
@@ -15,6 +16,9 @@ import {
     startVisualization,
     stopRta
 } from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const SITE = 'http://localhost:8080/test/adaptation-editor.html';
 const FRAME = 'preview';
@@ -32,6 +36,7 @@ const fail = (code: string, message: string): FrontendActionResult<never> => ({
 
 interface FakeTransport extends FrontendActionTransport {
     callFrontendAction: jest.MockedFunction<FrontendActionTransport['callFrontendAction']>;
+    fetchViaContext: jest.MockedFunction<FrontendActionTransport['fetchViaContext']>;
     disconnectSite: jest.MockedFunction<FrontendActionTransport['disconnectSite']>;
     stopBrowser: jest.MockedFunction<FrontendActionTransport['stopBrowser']>;
 }
@@ -39,6 +44,7 @@ interface FakeTransport extends FrontendActionTransport {
 function createFakeTransport(): FakeTransport {
     return {
         callFrontendAction: jest.fn(),
+        fetchViaContext: jest.fn(),
         disconnectSite: jest.fn().mockResolvedValue(undefined),
         stopBrowser: jest.fn().mockResolvedValue(undefined)
     };
@@ -56,6 +62,23 @@ describe('rta/commands', () => {
         const result = await startRta(transport, { site: SITE, frameId: FRAME });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.startRTA.v1', {}, FRAME);
         expect(result).toEqual({ rtaStarted: true });
+    });
+
+    test('startRta surfaces backend_login_required without throwing', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(
+            ok({ __needsUserAction: 'backend_login_required', message: 'please log in' })
+        );
+        const result = await startRta(transport, { site: SITE, frameId: FRAME });
+        expect(result).toEqual({
+            rtaStarted: false,
+            needsUserAction: 'backend_login_required',
+            message: 'please log in'
+        });
+    });
+
+    test('startRta still throws on a genuine action failure', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(fail('GENERIC_ERROR', 'boom'));
+        await expect(startRta(transport, { site: SITE, frameId: FRAME })).rejects.toThrow(/startRTA/);
     });
 
     test('getOverlays calls getOverlaysInformation', async () => {
@@ -210,6 +233,127 @@ describe('rta/commands', () => {
         });
         await expect(startRta(transport, { site: SITE })).rejects.toMatchObject({
             name: 'FrontendActionError'
+        });
+    });
+
+    describe('getODataMetadata', () => {
+        const siteOrigin = 'http://localhost:8080';
+        const APP = '/tmp/app';
+        const xmlResp = { status: 200, contentType: 'application/xml', body: '<edmx:Edmx><a/></edmx:Edmx>' };
+
+        test('joins a relative trailing-slash URI to <origin>/<uri>$metadata', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            await getODataMetadata(transport, SITE, ['api/recommendation/v1/RecommendationService/'], APP);
+            expect(transport.fetchViaContext).toHaveBeenCalledWith(
+                SITE,
+                `${siteOrigin}/api/recommendation/v1/RecommendationService/$metadata`
+            );
+        });
+
+        test('does not double-up a leading slash', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            await getODataMetadata(transport, SITE, ['/api/svc/'], APP);
+            expect(transport.fetchViaContext).toHaveBeenCalledWith(SITE, `${siteOrigin}/api/svc/$metadata`);
+        });
+
+        test('does not append $metadata twice when the URI already ends in it', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            await getODataMetadata(transport, SITE, ['api/svc/$metadata'], APP);
+            expect(transport.fetchViaContext).toHaveBeenCalledWith(SITE, `${siteOrigin}/api/svc/$metadata`);
+        });
+
+        test('returns formatted EDMX on an xml response', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toMatchObject({ url: 'api/svc/' });
+            const entry = out.entries[0];
+            expect('metadata' in entry && entry.metadata).toContain('edmx:Edmx');
+        });
+
+        test('maps a text/html login response to a per-entry error', async () => {
+            transport.fetchViaContext.mockResolvedValue({
+                status: 200,
+                contentType: 'text/html',
+                body: '<html>login</html>'
+            });
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toHaveProperty('error');
+        });
+
+        test('maps a fetch rejection to a per-entry error', async () => {
+            transport.fetchViaContext.mockRejectedValue(new Error('No active editor session for this site.'));
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toHaveProperty('error');
+        });
+
+        test('returns an empty entries array for an empty uris list', async () => {
+            const out = await getODataMetadata(transport, SITE, [], APP);
+            expect(out).toEqual({ entries: [] });
+            expect(transport.fetchViaContext).not.toHaveBeenCalled();
+        });
+
+        test('refuses an absolute URI that escapes the editor origin (SSRF guard)', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['http://evil.example.com/x/'], APP);
+            expect(out.entries[0]).toHaveProperty('error');
+            expect(transport.fetchViaContext).not.toHaveBeenCalled();
+        });
+
+        test('refuses a protocol-relative URI that escapes the editor origin (SSRF guard)', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['//evil.example.com/x/'], APP);
+            expect(out.entries[0]).toHaveProperty('error');
+            expect(transport.fetchViaContext).not.toHaveBeenCalled();
+        });
+
+        const bigEdmx = `<edmx:Edmx>${'x'.repeat(100_000)}</edmx:Edmx>`;
+
+        test('returns metadata inline when under the threshold', async () => {
+            transport.fetchViaContext.mockResolvedValue(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], '/tmp/doesnotmatter');
+            expect(out.entries[0]).toHaveProperty('metadata');
+            expect(out.entries[0]).not.toHaveProperty('metadataFile');
+        });
+
+        test('writes to a file and returns metadataFile + sizeBytes when over the threshold', async () => {
+            const dir = mkdtempSync(join(tmpdir(), 'md-'));
+            try {
+                transport.fetchViaContext.mockResolvedValue({
+                    status: 200,
+                    contentType: 'application/xml',
+                    body: bigEdmx
+                });
+                const out = await getODataMetadata(
+                    transport,
+                    SITE,
+                    ['api/recommendation/v1/RecommendationService/'],
+                    dir
+                );
+                const entry = out.entries[0] as { url: string; metadataFile: string; sizeBytes: number };
+                expect(entry.metadataFile).toContain(join('webapp', '.context'));
+                expect(entry.sizeBytes).toBeGreaterThan(100_000);
+                expect(readFileSync(entry.metadataFile, 'utf-8')).toContain('edmx:Edmx');
+                expect(entry).not.toHaveProperty('metadata');
+            } finally {
+                rmSync(dir, { recursive: true, force: true });
+            }
+        });
+
+        test('sanitises the URI into a safe filename under .context (no path escape)', async () => {
+            const dir = mkdtempSync(join(tmpdir(), 'md-'));
+            try {
+                transport.fetchViaContext.mockResolvedValue({
+                    status: 200,
+                    contentType: 'application/xml',
+                    body: bigEdmx
+                });
+                const out = await getODataMetadata(transport, SITE, ['/api/svc/$metadata'], dir);
+                const entry = out.entries[0] as { metadataFile: string };
+                expect(entry.metadataFile).not.toMatch(/[$]/);
+                expect(entry.metadataFile.startsWith(join(dir, 'webapp', '.context'))).toBe(true);
+            } finally {
+                rmSync(dir, { recursive: true, force: true });
+            }
         });
     });
 });

@@ -4,9 +4,35 @@ import spawn from 'nano-spawn';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { isCFEnvironment } from '@sap-ux/adp-tooling';
 import { logger } from '../utils/index.js';
 
-const TIMEOUT_MS = 30000;
+/** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
+const ABAP_TIMEOUT_MS = 30000;
+/**
+ * Startup timeout for CF projects. The CF editor (`ui5 serve`) fetches service
+ * keys and boots the embedded approuter before it prints its URL — observed to
+ * take ~40s even on the no-build path — so it needs far more headroom than ABAP.
+ */
+const CF_TIMEOUT_MS = 300000;
+
+/**
+ * Editor entry path. This is the production editor path that generated
+ * adaptation projects expose (see `@sap-ux/adp-tooling` writer `editors` config)
+ * for both ABAP and CF — the server serves it regardless of scenario. (Open-source
+ * middleware test setups may also expose `/local/editor.html`, but that is a
+ * testing artifact, not what production projects use.)
+ */
+const EDITOR_PATH = '/test/adaptation-editor.html';
+
+/**
+ * Launch configuration resolved per scenario.
+ */
+interface LaunchConfig {
+    command: string;
+    args: string[];
+    timeoutMs: number;
+}
 
 /**
  * Resolves the command and arguments to launch the Fiori editor CLI.
@@ -26,6 +52,38 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
         return { command: 'fiori', args: ['run', '/test/adaptation-editor.html'] };
     }
     return { command: 'npm', args: ['run', 'start-editor'] };
+}
+
+/**
+ * Resolves how to launch the editor for the given project. The launch mechanism
+ * is the same for ABAP and Cloud Foundry (CF) — `resolveFioriBin`, which starts
+ * the server (reading the project's `ui5.yaml`, including the CF proxy
+ * middleware) without opening a browser; the browser is opened later by the
+ * `start` RTA step. CF differs only in two respects: it needs a prior build so
+ * the approuter can serve `dist/` (when missing, a `reason` is returned so the
+ * caller fails fast with guidance instead of starting a server that cannot
+ * serve the app), and it needs a longer startup timeout because the embedded
+ * approuter and service-key resolution take significantly longer to come up.
+ *
+ * @param appPath - Absolute path to the adaptation project root.
+ * @returns A launch config, or `{ reason }` when CF prerequisites are not met.
+ */
+async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: string }> {
+    const { command, args } = resolveFioriBin(appPath);
+    const isCf = await isCFEnvironment(appPath);
+    if (!isCf) {
+        return { command, args, timeoutMs: ABAP_TIMEOUT_MS };
+    }
+
+    if (!existsSync(join(appPath, 'dist'))) {
+        return {
+            reason:
+                'This Cloud Foundry adaptation project has no "dist" folder, which the editor needs to serve. ' +
+                'Run "npm run build" once in the project to produce "dist", then try again.'
+        };
+    }
+
+    return { command, args, timeoutMs: CF_TIMEOUT_MS };
 }
 
 /**
@@ -158,7 +216,11 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
     try {
         const isWindows = process.platform === 'win32';
-        const { command, args } = resolveFioriBin(appPath);
+        const launch = await resolveLaunch(appPath);
+        if ('reason' in launch) {
+            return { status: 'Error', message: launch.reason };
+        }
+        const { command, args, timeoutMs } = launch;
 
         logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
 
@@ -166,7 +228,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         const subprocess = spawn(command, args, { cwd: appPath });
         const childProcess: ChildProcess = await subprocess.nodeChildProcess;
 
-        const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, TIMEOUT_MS);
+        const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, timeoutMs);
 
         if (!serverUrl) {
             if (childProcess.pid) {
@@ -179,7 +241,9 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             const detail = stderrOutput ? `\nProcess stderr:\n${stderrOutput.trim()}` : '';
             return {
                 status: 'Error',
-                message: `Timeout: Could not extract server URL from editor output within 30 seconds${detail}`
+                message: `Timeout: Could not extract server URL from editor output within ${Math.round(
+                    timeoutMs / 1000
+                )} seconds${detail}`
             };
         }
 
@@ -192,7 +256,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         }
 
         const port = parsePort(serverUrl);
-        const finalEditorPath = editorPath || '/test/adaptation-editor.html';
+        const finalEditorPath = editorPath || EDITOR_PATH;
         const editorUrl = `${serverUrl}${finalEditorPath}`;
 
         // Keep draining stdout so its pipe buffer never fills and blocks the child.
