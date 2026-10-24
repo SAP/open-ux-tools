@@ -57,6 +57,7 @@ jest.unstable_mockModule('../../../../src/cf/project', () => ({
 }));
 
 const {
+    getAdpServiceInstances,
     getBusinessServiceInfo,
     getFDCApps,
     getCfUi5AppInfo,
@@ -155,6 +156,122 @@ describe('CF Services API', () => {
             const result = await getBusinessServiceInfo(businessService, config, mockLogger);
 
             expect(result).toBeNull();
+        });
+    });
+
+    describe('getAdpServiceInstances', () => {
+        const spaceGuid = 'space-guid';
+
+        const buildResponse = () => ({
+            resources: [
+                {
+                    name: 'inst-b',
+                    guid: 'inst-b-guid',
+                    relationships: { service_plan: { data: { guid: 'plan-hana' } } }
+                },
+                {
+                    name: 'inst-a',
+                    guid: 'inst-a-guid',
+                    relationships: { service_plan: { data: { guid: 'plan-abap' } } }
+                },
+                {
+                    name: 'inst-xsuaa',
+                    guid: 'inst-xsuaa-guid',
+                    relationships: { service_plan: { data: { guid: 'plan-xsuaa' } } }
+                },
+                {
+                    name: 'inst-dest',
+                    guid: 'inst-dest-guid',
+                    relationships: { service_plan: { data: { guid: 'plan-dest' } } }
+                },
+                {
+                    name: 'inst-html5',
+                    guid: 'inst-html5-guid',
+                    relationships: { service_plan: { data: { guid: 'plan-html5' } } }
+                }
+            ],
+            included: {
+                service_plans: [
+                    {
+                        guid: 'plan-hana',
+                        name: 'hdi-shared',
+                        relationships: { service_offering: { data: { guid: 'off-hana' } } }
+                    },
+                    {
+                        guid: 'plan-abap',
+                        name: 'standard',
+                        relationships: { service_offering: { data: { guid: 'off-abap' } } }
+                    },
+                    {
+                        guid: 'plan-xsuaa',
+                        name: 'application',
+                        relationships: { service_offering: { data: { guid: 'off-xsuaa' } } }
+                    },
+                    {
+                        guid: 'plan-dest',
+                        name: 'lite',
+                        relationships: { service_offering: { data: { guid: 'off-dest' } } }
+                    },
+                    {
+                        guid: 'plan-html5',
+                        name: 'app-host',
+                        relationships: { service_offering: { data: { guid: 'off-html5' } } }
+                    }
+                ],
+                service_offerings: [
+                    { guid: 'off-hana', name: 'hana' },
+                    { guid: 'off-abap', name: 'abap' },
+                    { guid: 'off-xsuaa', name: 'xsuaa' },
+                    { guid: 'off-dest', name: 'destination' },
+                    { guid: 'off-html5', name: 'html5-apps-repo' }
+                ]
+            }
+        });
+
+        test('filters out excluded offerings, joins plan/offering and sorts by name', async () => {
+            mockRequestCfApi.mockResolvedValue(buildResponse());
+
+            const result = await getAdpServiceInstances(spaceGuid, mockLogger);
+
+            expect(result).toEqual([
+                { name: 'inst-a', service: 'abap', servicePlan: 'standard' },
+                { name: 'inst-b', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+            expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining(`space_guids=${spaceGuid}`));
+        });
+
+        test('returns empty array when no instances are present', async () => {
+            mockRequestCfApi.mockResolvedValue({ resources: [], included: {} });
+
+            const result = await getAdpServiceInstances(spaceGuid, mockLogger);
+
+            expect(result).toEqual([]);
+        });
+
+        test('skips instances whose offering cannot be resolved', async () => {
+            mockRequestCfApi.mockResolvedValue({
+                resources: [
+                    {
+                        name: 'orphan',
+                        guid: 'orphan-guid',
+                        relationships: { service_plan: { data: { guid: 'missing' } } }
+                    }
+                ],
+                included: { service_plans: [], service_offerings: [] }
+            });
+
+            const result = await getAdpServiceInstances(spaceGuid, mockLogger);
+
+            expect(result).toEqual([]);
+        });
+
+        test('throws a translated error and logs when the request fails', async () => {
+            mockRequestCfApi.mockRejectedValue(new Error('boom'));
+
+            await expect(getAdpServiceInstances(spaceGuid, mockLogger)).rejects.toThrow(
+                t('error.failedToGetAdpServiceInstances', { error: 'boom' })
+            );
+            expect(mockLogger.error).toHaveBeenCalled();
         });
     });
 

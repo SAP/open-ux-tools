@@ -3,13 +3,14 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig } from '@sap-ux/adp-tooling';
+import { isMtaProject } from '@sap-ux/adp-tooling';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n.js';
-import { TargetEnv } from '../types.js';
+import { MtaMode, TargetEnv } from '../types.js';
 import { getTargetEnvAdditionalMessages } from './helper/additional-messages.js';
-import { validateEnvironment, validateProjectPath } from './helper/validators.js';
+import { validateEnvironment, validateMtaId, validateProjectPath } from './helper/validators.js';
 import type { ProjectLocationAnswers, TargetEnvAnswers, TargetEnvQuestion } from '../types.js';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };
@@ -65,6 +66,29 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
 }
 
 /**
+ * Returns the MTA mode prompt: create a new MTA project or use an existing one.
+ *
+ * @returns {YUIQuestion<ProjectLocationAnswers>} The MTA mode prompt.
+ */
+export function getMtaModePrompt(): YUIQuestion<ProjectLocationAnswers> {
+    return {
+        type: 'list',
+        name: 'mtaMode',
+        message: t('prompts.mtaModeLabel'),
+        choices: [
+            { name: t('prompts.mtaModeNewLabel'), value: MtaMode.New },
+            { name: t('prompts.mtaModeExistingLabel'), value: MtaMode.Existing }
+        ],
+        default: MtaMode.New,
+        guiOptions: {
+            mandatory: true,
+            hint: t('prompts.mtaModeTooltip'),
+            breadcrumb: t('prompts.mtaModeBreadcrumb')
+        }
+    } as ListQuestion<ProjectLocationAnswers>;
+}
+
+/**
  * Returns the project path prompt.
  *
  * @param {ToolsLogger} logger - The logger.
@@ -82,8 +106,33 @@ export function getProjectPathPrompt(logger: ToolsLogger, vscode: any): YUIQuest
             breadcrumb: t('prompts.projectLocationBreadcrumb')
         },
         message: t('prompts.projectLocationLabel'),
-        validate: (value: string) => validateProjectPath(value, logger),
+        validate: (value: string, answers?: ProjectLocationAnswers) =>
+            validateProjectPath(value, logger, answers?.mtaMode),
         default: () => getDefaultTargetFolder(vscode),
+        store: false
+    } as InputQuestion<ProjectLocationAnswers>;
+}
+
+/**
+ * Returns the MTA project name prompt, shown only when creating a new MTA project in a folder that is
+ * not already an MTA project. When the selected root path already contains an `mta.yaml`, the project
+ * name is taken from the existing project, so the prompt is hidden.
+ *
+ * @returns {YUIQuestion<ProjectLocationAnswers>} The MTA project name prompt.
+ */
+export function getMtaIdPrompt(): YUIQuestion<ProjectLocationAnswers> {
+    return {
+        type: 'input',
+        name: 'mtaId',
+        message: t('prompts.mtaIdLabel'),
+        when: (answers: ProjectLocationAnswers) =>
+            answers.mtaMode === MtaMode.New && !!answers.projectLocation && !isMtaProject(answers.projectLocation),
+        validate: (value: string, answers?: ProjectLocationAnswers) => validateMtaId(value, answers?.projectLocation),
+        guiOptions: {
+            mandatory: true,
+            hint: t('prompts.mtaIdTooltip'),
+            breadcrumb: t('prompts.mtaIdBreadcrumb')
+        },
         store: false
     } as InputQuestion<ProjectLocationAnswers>;
 }

@@ -7,7 +7,6 @@ const mockValidateProjectName = jest.fn<typeof realProjectInputValidator.validat
 const mockValidateNamespaceAdp = jest.fn<typeof realProjectInputValidator.validateNamespaceAdp>();
 const mockIsExternalLoginEnabled = jest.fn<typeof realAdpTooling.isExternalLoginEnabled>();
 const mockIsMtaProject = jest.fn<typeof realAdpTooling.isMtaProject>();
-const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
 const mockExistsSync = jest.fn<typeof realFs.existsSync>();
 
 const realFs = await import('node:fs');
@@ -37,8 +36,7 @@ const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     isExternalLoginEnabled: mockIsExternalLoginEnabled,
-    isMtaProject: mockIsMtaProject,
-    getMtaServices: mockGetMtaServices
+    isMtaProject: mockIsMtaProject
 }));
 
 const {
@@ -46,9 +44,11 @@ const {
     validateExtensibilityExtension,
     validateEnvironment,
     validateProjectPath,
+    validateMtaId,
     validateBusinessSolutionName
 } = await import('../../../../src/app/questions/helper/validators.js');
 const { initI18n, t } = await import('../../../../src/utils/i18n.js');
+const { MtaMode } = await import('../../../../src/app/types.js');
 
 const availableSystem = 'systemA';
 const nonExistingSystem = 'systemB';
@@ -264,10 +264,9 @@ describe('validateProjectPath', () => {
         jest.clearAllMocks();
     });
 
-    test('should return true for valid project path', async () => {
+    test('should return true for valid existing MTA project', async () => {
         mockExistsSync.mockReturnValue(true);
         mockIsMtaProject.mockReturnValue(true);
-        mockGetMtaServices.mockResolvedValue(['service1', 'service2']);
 
         const result = await validateProjectPath('/test/project', mockLogger);
         expect(result).toBe(true);
@@ -285,7 +284,7 @@ describe('validateProjectPath', () => {
         expect(result).toBe(t('error.projectDoesNotExist'));
     });
 
-    test('should return error when not an MTA project', async () => {
+    test('should return error when existing mode path is not an MTA project', async () => {
         mockExistsSync.mockReturnValue(true);
         mockIsMtaProject.mockReturnValue(false);
 
@@ -293,23 +292,63 @@ describe('validateProjectPath', () => {
         expect(result).toBe(t('error.projectDoesNotExistMta'));
     });
 
-    test('should return error when no services found', async () => {
+    test('should accept an existing MTA project even without a declared service', async () => {
         mockExistsSync.mockReturnValue(true);
         mockIsMtaProject.mockReturnValue(true);
-        mockGetMtaServices.mockResolvedValue([]);
 
-        const result = await validateProjectPath('/test/project', mockLogger);
-        expect(result).toBe(t('error.noAdaptableBusinessServiceFoundInMta'));
+        const result = await validateProjectPath('/test/project', mockLogger, MtaMode.Existing);
+        expect(result).toBe(true);
     });
 
-    test('should return error when getMtaServices throws exception', async () => {
+    test('should not require an MTA project in new mode, only that the parent folder exists', async () => {
         mockExistsSync.mockReturnValue(true);
-        mockIsMtaProject.mockReturnValue(true);
-        mockGetMtaServices.mockRejectedValue(new Error('Service error'));
+        mockIsMtaProject.mockReturnValue(false);
 
-        const result = await validateProjectPath('/test/project', mockLogger);
-        expect(result).toBe(t('error.noAdaptableBusinessServiceFoundInMta'));
-        expect(mockLogger.error).toHaveBeenCalledWith('Failed to get MTA services: Service error');
+        const result = await validateProjectPath('/parent/folder', mockLogger, MtaMode.New);
+        expect(result).toBe(true);
+        expect(mockIsMtaProject).not.toHaveBeenCalled();
+    });
+});
+
+describe('validateMtaId', () => {
+    beforeAll(async () => {
+        await initI18n();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should return error for empty string', () => {
+        const result = validateMtaId('');
+        expect(result).toBe('The input cannot be empty.');
+    });
+
+    test('should return true for a valid name', () => {
+        mockExistsSync.mockReturnValue(false);
+        expect(validateMtaId('my.mta_project-1')).toBe(true);
+    });
+
+    test('should return error for a name with invalid characters', () => {
+        expect(validateMtaId('my project')).toBe(t('error.mtaIdInvalid'));
+    });
+
+    test('should return error for a name that does not start with a letter or number', () => {
+        expect(validateMtaId('-invalid')).toBe(t('error.mtaIdInvalid'));
+    });
+
+    test('should return error when a folder with the name already exists in the parent location', () => {
+        mockExistsSync.mockReturnValue(true);
+
+        const result = validateMtaId('my-mta', '/parent');
+        expect(result).toBe(t('error.mtaIdAlreadyExists'));
+    });
+
+    test('should return true when no folder collision exists at the parent location', () => {
+        mockExistsSync.mockReturnValue(false);
+
+        const result = validateMtaId('my-mta', '/parent');
+        expect(result).toBe(true);
     });
 });
 
