@@ -881,6 +881,31 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('getBuilderResourceExcludes', () => {
+        test('returns empty array when builder.resources.excludes not present', () => {
+            const result = ui5Config.getBuilderResourceExcludes();
+            expect(result).toEqual([]);
+        });
+
+        test('returns values after addBuilderResourceExcludes has been called', () => {
+            ui5Config.addBuilderResourceExcludes();
+            const result = ui5Config.getBuilderResourceExcludes();
+            expect(result).toEqual(['/test/**', '/localService/**']);
+        });
+
+        test('returns partial values when only some excludes are present', async () => {
+            const partial = await UI5Config.newInstance(`builder:\n  resources:\n    excludes:\n      - /custom/**\n`);
+            const result = partial.getBuilderResourceExcludes();
+            expect(result).toEqual(['/custom/**']);
+        });
+
+        test('returns empty array for malformed excludes (null value)', async () => {
+            const malformed = await UI5Config.newInstance(`builder:\n  resources:\n    excludes: ~\n`);
+            const result = malformed.getBuilderResourceExcludes();
+            expect(result).toEqual([]);
+        });
+    });
+
     describe('addAbapDeployTask', () => {
         const app: BspApp = {
             name: '~name',
@@ -937,6 +962,23 @@ describe('UI5Config', () => {
                 app
             );
             expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('writes builder.resources.excludes but not configuration.exclude when no explicit exclude param is passed', () => {
+            ui5Config.addAbapDeployTask({ url, client }, app);
+            const result = ui5Config.toString();
+            expect(result).toContain('builder:\n  resources:\n    excludes:');
+            expect(result).toContain('/test/**');
+            expect(result).toContain('/localService/**');
+            expect(result).not.toContain('exclude:');
+        });
+
+        test('writes explicit exclude array to configuration.exclude without merging builder-derived excludes', () => {
+            ui5Config.addAbapDeployTask({ url, client }, app, true, ['/custom/']);
+            const result = ui5Config.toString();
+            expect(result).toContain('exclude:');
+            expect(result).toContain('/custom/');
+            expect(result).toMatchSnapshot();
         });
     });
 
