@@ -451,24 +451,6 @@ The build process includes `pnpm validate:changesets` to check:
 - No blocked major version bumps (see [scripts/validate-changesets.js](scripts/validate-changesets.js))
 - Summary starts with a valid prefix (`FEAT:`, `FIX:`, or `BUMP:`)
 
-## Quality Gates
-
-The CI/CD pipeline enforces these quality gates on all pull requests:
-
-1. **Build**: All packages must build successfully
-2. **Lint**: Code must pass ESLint checks (on forks)
-3. **Unit Tests**: All unit tests must pass
-4. **Integration Tests**: All Playwright tests must pass
-5. **Changeset Validation**: Valid changesets if source code changed
-6. **SonarCloud**: Code quality and security scanning
-
-**CI Configuration**: [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml)
-
-**Matrix testing:**
-- OS: Ubuntu, Windows, macOS
-- Node: 20.x, 22.x
-- Timeout: 45 minutes
-
 ## Development Standards
 
 ### Code Style
@@ -572,34 +554,6 @@ From [CONTRIBUTING.md](CONTRIBUTING.md):
 5. **AI-generated code** - Follow [SAP's GenAI guidelines](https://github.com/SAP/.github/blob/main/CONTRIBUTING_USING_GENAI.md)
 
 ## Package Management
-
-### Workspace Structure
-
-**Root**: [pnpm-workspace.yaml](pnpm-workspace.yaml)
-```yaml
-packages:
-    - 'packages/*'
-    - 'examples/*'
-    - 'tests/integration/*'
-    - 'tests/fixtures/projects/mock'
-    - 'types'
-```
-
-### Common Package Structure
-
-```
-packages/[package-name]/
-├── src/              # Source code (TypeScript)
-├── test/             # Unit tests
-├── templates/        # Template files (for generators)
-├── dist/             # Build output (generated)
-├── coverage/         # Test coverage (generated)
-├── package.json      # Package manifest
-├── tsconfig.json     # TypeScript config
-├── jest.config.js    # Jest config
-├── eslint.config.js  # ESLint config (optional, extends root config)
-└── README.md         # Package documentation
-```
 
 ### Workspace Dependencies
 
@@ -752,92 +706,6 @@ Config: [.changeset/config.json](.changeset/config.json)
 - GitHub release created (draft)
 - `.vsix` file attached to release
 - Manual approval required for publication
-
-## Useful Commands
-
-### Installation and Build
-
-```bash
-# Install dependencies
-pnpm install
-
-# Build all packages
-pnpm build
-
-# Force rebuild (skip cache)
-pnpm build:force
-
-# Clean build artifacts
-pnpm clean
-```
-
-### Development
-
-```bash
-# Format code
-pnpm format
-
-# Run linting
-pnpm lint
-
-# Fix lint issues
-pnpm lint:fix
-
-# Check dependency versions
-pnpm lint:dependency-versions
-```
-
-### Testing
-
-```bash
-# Run all tests
-pnpm test
-
-# Run integration tests
-pnpm test:integration
-
-# Test specific package
-pnpm --filter @sap-ux/[package-name] test
-```
-
-### Changesets
-
-```bash
-# Create changeset
-pnpm cset
-
-# Validate changesets
-pnpm validate:changesets
-
-# Preview version changes
-pnpm changeset status
-```
-
-### Workspace Operations
-
-```bash
-# Add dependency to specific package
-pnpm --filter @sap-ux/[package-name] add [dependency]
-
-# Run command in specific package
-pnpm --filter @sap-ux/[package-name] [command]
-
-# Run command in all packages
-pnpm -r [command]
-```
-
-### Debugging
-
-```bash
-# View dependency graph
-pnpm graph-deps
-
-# Check workspace structure
-pnpm list --depth 0
-
-# View outdated dependencies
-pnpm outdated
-```
 
 ## Additional Resources
 
