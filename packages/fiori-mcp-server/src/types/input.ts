@@ -184,9 +184,10 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
     step: zod
         .enum(STEPS)
         .describe(
-            'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
-                'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
-                'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
+            'Which RTA workflow step to run. The RTA workflow steps (start, get_overlays, get_context, ' +
+                'call_action, save, get_application_info, cleanup, stop) map 1:1 to the ' +
+                'Flex frontend actions. The page-action steps (get_page_actions, call_page_action) drive ' +
+                'pre-RTA navigation via the registered high-level page actions on the page. ' +
                 'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
         ),
     site: zod
@@ -208,11 +209,12 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .optional()
         .describe(
             'Step-specific arguments. ' +
+                'start: { agentName?: string } (optional driver name). ' +
                 'get_context: { controlId: string, actionId: string }. ' +
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
+                'cleanup: { reason?: string } (optional informational reason). ' +
                 'call_page_action: { id: string }. ' +
-                'press_interactive: { controlId: string }. ' +
-                'get_overlays / save / stop / restart / get_page_actions: omit.'
+                'get_overlays / save / get_application_info / stop / restart / get_page_actions: omit.'
         )
 });
 
