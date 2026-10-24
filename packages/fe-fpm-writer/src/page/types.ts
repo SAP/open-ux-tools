@@ -165,6 +165,21 @@ export enum PageType {
     CustomPage = 'CustomPage'
 }
 
+interface OutboundNavigationSettings {
+    outboundKey: string;
+    crossNavigation?: {
+        semanticObject: string;
+        action: string;
+    };
+}
+/**
+ * Configuration options for adding/replacing an outbound navigation of a page.
+ */
+export interface OutboundNavigation extends FpmPage, WriterConfig {
+    settings: OutboundNavigationSettings;
+    navigation?: Navigation;
+}
+
 /**
  * Additional internal configuration options that will be calculated based on the provided input as well as the target application.
  */
