@@ -397,11 +397,14 @@ declare module 'sap/ui/rta/service/Action' {
          * Action name
          */
         text: string;
+        /**
+         * Submenu entries in case the action opens a submenu (e.g. variant switch).
+         * Each entry's `id` is the target key passed back via the execute payload.
+         */
+        submenu?: Array<Pick<ActionObject, 'id' | 'icon' | 'enabled' | 'text'>>;
     };
     export type ActionService = {
-        get: (controlId: string) => Promise<ActionObject[]>;
-        get: (controlIds: string[]) => Promise<ActionObject[]>;
-        execute: (controlId: string, actionId: string) => Promise<void>;
-        execute: (controlIds: string[], actionId: string) => Promise<void>;
+        get: (controlIds: string | string[]) => Promise<ActionObject[]>;
+        execute: (controlIds: string | string[], actionId: string, payload?: object) => Promise<void>;
     };
 }
