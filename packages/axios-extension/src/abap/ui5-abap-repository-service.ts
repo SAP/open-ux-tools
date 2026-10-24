@@ -133,12 +133,37 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
-            this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
-            if (isAxiosError(error) && error.response?.status === 404) {
+            return this.handleAppLookupError(app, error);
+        }
+    }
+
+    /**
+     * Log a failed application lookup and either resolve a 404 as "not found" or re-throw.
+     *
+     * The full response body (populated on 400/500 Gateway errors) is only logged at debug level,
+     * so the real failure reason is available when debug logging is enabled without leaking at
+     * normal log levels.
+     *
+     * @param app application id (BSP application name) used in the log message
+     * @param error error thrown by the failed request
+     * @returns undefined if the application was not found (404), otherwise the original error is re-thrown
+     */
+    private handleAppLookupError(app: string, error: unknown): undefined {
+        if (isAxiosError(error)) {
+            // A 404 simply means the application does not exist (yet) - resolve as "not found", nothing to log
+            if (error.response?.status === 404) {
                 return undefined;
             }
-            throw error;
+            if (error.response?.data) {
+                const { data } = error.response;
+                const body = typeof data === 'string' ? data : JSON.stringify(data);
+                // Full response body is only logged at debug level to avoid leaking it at normal log levels
+                this.log.debug(body);
+            }
         }
+        const message = error instanceof Error ? error.message : JSON.stringify(error);
+        this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${message}`);
+        throw error;
     }
 
     /**
@@ -178,11 +203,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             const isBase64 = this.isBase64Encoded(data.ZipArchive);
             return Buffer.from(data.ZipArchive, isBase64 ? 'base64' : undefined);
         } catch (error) {
-            this.log.debug(`Retrieving application ${app}, ${error}`);
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return undefined;
-            }
-            throw error;
+            return this.handleAppLookupError(app, error);
         }
     }
 
