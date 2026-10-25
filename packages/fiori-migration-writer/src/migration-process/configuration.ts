@@ -2,6 +2,7 @@
  * Helper functions for preparing configuration data during migration
  */
 import type { ImportProjectInfo } from '../types.js';
+import type { Editor } from 'mem-fs-editor';
 import { getUi5ThemeBasedOnUi5Version } from '../utils/index.js';
 import { getSupportedThemes } from '../template/theme.js';
 import { getComponentMapping } from '../components/component-mapping.js';
@@ -28,18 +29,20 @@ export interface PreparedConfigurationData {
  * Prepare all configuration data needed for migration
  * Consolidates theme resolution, component mapping, and project/service data preparation
  *
+ * @param fs - mem-fs editor
  * @param projectInfo - Project information
  * @param ui5Version - UI5 version (can be undefined)
  * @param enableTypeScript - Whether TypeScript support should be enabled
  * @returns Prepared configuration data
  */
 export async function prepareConfigurationData(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     ui5Version: string | undefined,
     enableTypeScript = false
 ): Promise<PreparedConfigurationData> {
     // Get supported themes for the project
-    const supportedThemes = await getSupportedThemes(projectInfo, ui5Version || '');
+    const supportedThemes = await getSupportedThemes(fs, projectInfo, ui5Version || '');
     const ui5Theme = getUi5ThemeBasedOnUi5Version(ui5Version ?? '', projectInfo.ui5Theme);
 
     // Get component mapping based on floor plan
