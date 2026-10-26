@@ -722,6 +722,53 @@ describe('FE V4 Linker - XML', () => {
         expect(sections).toHaveLength(0);
     });
 
+    test('collectSections - unknown-first PresentationVariant facet with LineItem creates table section', async () => {
+        // FE skips unknown visualization types and renders the first one it recognises.
+        // [@CardItem, @LineItem] => FE renders a table, so the linter must create a table section.
+        const pvAnnotations = `<Annotations Target="IncidentService.Incidents">
+            <Annotation Term="UI.Facets">
+                <Collection>
+                    <Record Type="UI.ReferenceFacet">
+                        <PropertyValue Property="ID" String="IncidentFlows"/>
+                        <PropertyValue Property="Label" String="Incident Flows"/>
+                        <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.PresentationVariant"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+        </Annotations>
+        <Annotations Target="IncidentService.IncidentFlow">
+            <Annotation Term="UI.PresentationVariant">
+                <Record Type="UI.PresentationVariantType">
+                    <PropertyValue Property="Visualizations">
+                        <Collection>
+                            <AnnotationPath>@UI.CardItem</AnnotationPath>
+                            <AnnotationPath>@UI.LineItem</AnnotationPath>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+            </Annotation>
+            <Annotation Term="UI.LineItem">
+                <Collection>
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="processStep"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+        </Annotations>`;
+        const context = await setup({ annotationsChange: pvAnnotations });
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            assert.fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Incidents'];
+        if (!entity?.structuredType) {
+            assert.fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
+    });
+
     test('collectSections - PresentationVariant with no Visualizations creates no table section', async () => {
         const pvAnnotations = `<Annotations Target="IncidentService.Incidents">
             <Annotation Term="UI.Facets">
