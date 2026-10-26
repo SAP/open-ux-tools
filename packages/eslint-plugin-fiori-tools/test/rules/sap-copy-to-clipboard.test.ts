@@ -179,6 +179,46 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
         ),
         createInvalidTest(
             {
+                name: 'V2 - list report - copy is false',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'tableSettings',
+                            'copy'
+                        ],
+                        value: false
+                    }
+                ]),
+                errors: [
+                    {
+                        message:
+                            '`copy` in the table must not be set to `false`, because this will hide the "Copy" button'
+                    }
+                ],
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'tableSettings'
+                        ],
+                        value: {}
+                    }
+                ])
+            },
+            []
+        ),
+        createInvalidTest(
+            {
                 name: 'V4 - disableCopyToClipboard is true',
                 filename: V4_MANIFEST_PATH,
                 code: getManifestAsCode(V4_MANIFEST, [
@@ -252,7 +292,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 errors: [
                     {
                         message:
-                            '`disableCopyToClipboard` in the Incident Flows table must be correctly configured. If not set, the "Copy" button is displayed'
+                            '`disableCopyToClipboard` in the Incident Flows table must not be set to `true`, because this will hide the "Copy" button'
                     }
                 ],
                 output: getManifestAsCode(V4_MANIFEST, [
