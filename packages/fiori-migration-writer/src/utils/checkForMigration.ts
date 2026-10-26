@@ -2,14 +2,18 @@ import { ProjectAccess } from './Project.js';
 import { join } from 'node:path';
 import { getFioriToolsDirectory } from '@sap-ux/store';
 import { FileName, FioriToolsSettings } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
+import { createMemFsEditor } from './fs-adapter.js';
 import type { ImportProjectInfo, Message, MigrationSettingsFile } from '../types.js';
 import { hasDependency, readJSON, findProjectRoot } from './index.js';
 import type { MigrationTypes } from './constants.js';
 
-export const readMigrationSettingsFile = async (): Promise<any> => {
+export const readMigrationSettingsFile = async (fsEditor?: Editor): Promise<any> => {
+    const fs = fsEditor ?? createMemFsEditor();
     let migrationSettingsFile;
     try {
         migrationSettingsFile = await readJSON(
+            fs,
             join(getFioriToolsDirectory(), FioriToolsSettings.migrationSettingsFile)
         );
     } catch (error: unknown) {
@@ -18,8 +22,8 @@ export const readMigrationSettingsFile = async (): Promise<any> => {
     return migrationSettingsFile;
 };
 
-export const readMigrationSettingsFileIgnoreProjects = async (): Promise<string[]> => {
-    const migrationSettingsFile: MigrationSettingsFile = await readMigrationSettingsFile();
+export const readMigrationSettingsFileIgnoreProjects = async (fsEditor?: Editor): Promise<string[]> => {
+    const migrationSettingsFile: MigrationSettingsFile = await readMigrationSettingsFile(fsEditor);
     migrationSettingsFile.ignoreProjects = migrationSettingsFile?.ignoreProjects ?? [];
     return migrationSettingsFile?.ignoreProjects;
 };
@@ -27,8 +31,10 @@ export const readMigrationSettingsFileIgnoreProjects = async (): Promise<string[
 export const checkForMigration = async (
     projectRoot: string,
     type: MigrationTypes,
-    libPath?: string
+    libPath?: string,
+    fsEditor?: Editor
 ): Promise<boolean> => {
+    const fs = fsEditor ?? createMemFsEditor();
     let project: { projectInfo: Partial<ImportProjectInfo>; messages: Message[] } = {
         projectInfo: {},
         messages: []
@@ -37,8 +43,8 @@ export const checkForMigration = async (
     let packageJson: any;
     let hasUi5Tooling = false;
     try {
-        project = await ProjectAccess.getProjectInfo(projectRoot, type, undefined, libPath);
-        packageJson = await readJSON(join(projectRoot, FileName.Package));
+        project = await ProjectAccess.getProjectInfo(projectRoot, type, undefined, libPath, fs);
+        packageJson = await readJSON(fs, join(projectRoot, FileName.Package));
         hasUi5Tooling =
             hasDependency(packageJson, '@sap-ux/ui5-tooling') || hasDependency(packageJson, '@sap/ux-ui5-tooling');
     } catch (error: unknown) {
@@ -59,7 +65,7 @@ export const checkForMigration = async (
         Array.isArray(project.projectInfo.sapux) ||
         project.messages.length > 0 ||
         hasUi5Tooling === true ||
-        (await readMigrationSettingsFileIgnoreProjects()).includes(projectRoot) ||
+        (await readMigrationSettingsFileIgnoreProjects(fs)).includes(projectRoot) ||
         sapUXProjectRoot !== projectRoot
     );
     return migratable;
