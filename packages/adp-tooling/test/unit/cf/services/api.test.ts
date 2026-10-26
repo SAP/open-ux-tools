@@ -60,6 +60,7 @@ const {
     getAdpServiceInstances,
     getBusinessServiceInfo,
     getFDCApps,
+    getAdaptableBusinessServices,
     getCfUi5AppInfo,
     getCfBaseAppInbounds,
     getFDCRequestArguments,
@@ -350,6 +351,89 @@ describe('CF Services API', () => {
                 t('error.failedToGetFDCApps', {
                     error: errorMsg
                 })
+            );
+        });
+    });
+
+    describe('getAdaptableBusinessServices', () => {
+        const config: CfConfig = {
+            org: { GUID: 'test-org-guid', Name: 'test-org' },
+            space: { GUID: 'test-space-guid', Name: 'test-space' },
+            url: 'test.cf.com',
+            token: 'test-token'
+        };
+
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(false);
+        });
+
+        test('should return only services that have adaptable apps', async () => {
+            mockAxios.get.mockResolvedValue({
+                status: 200,
+                data: {
+                    'svc-a': { hasAdaptableApps: true },
+                    'svc-b': { hasAdaptableApps: false },
+                    'svc-c': { hasAdaptableApps: true }
+                }
+            });
+
+            const result = await getAdaptableBusinessServices(['svc-a', 'svc-b', 'svc-c'], config, mockLogger);
+
+            expect([...result].sort()).toEqual(['svc-a', 'svc-c']);
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/info?serviceName=svc-a&serviceName=svc-b&serviceName=svc-c',
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        'Authorization': 'Bearer test-token'
+                    } as Record<string, string>)
+                } as Record<string, unknown>)
+            );
+        });
+
+        test('should return an empty set without calling the service for no names', async () => {
+            const result = await getAdaptableBusinessServices([], config, mockLogger);
+
+            expect(result.size).toBe(0);
+            expect(mockAxios.get).not.toHaveBeenCalled();
+        });
+
+        test('should de-duplicate names and drop falsy entries before requesting', async () => {
+            mockAxios.get.mockResolvedValue({ status: 200, data: { 'svc-a': { hasAdaptableApps: true } } });
+
+            const result = await getAdaptableBusinessServices(['svc-a', 'svc-a', ''], config, mockLogger);
+
+            expect([...result]).toEqual(['svc-a']);
+            expect(mockAxios.get).toHaveBeenCalledTimes(1);
+            expect(mockAxios.get).toHaveBeenCalledWith(
+                'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.test.cf.com/api/business-service/info?serviceName=svc-a',
+                expect.anything()
+            );
+        });
+
+        test('should batch requests in chunks of 100 names', async () => {
+            mockAxios.get.mockResolvedValue({ status: 200, data: {} });
+            const names = Array.from({ length: 150 }, (_, i) => `svc-${i}`);
+
+            await getAdaptableBusinessServices(names, config, mockLogger);
+
+            expect(mockAxios.get).toHaveBeenCalledTimes(2);
+        });
+
+        test('should throw a translated error on a non-200 response', async () => {
+            mockAxios.get.mockResolvedValue({ status: 500, data: {} });
+
+            await expect(getAdaptableBusinessServices(['svc-a'], config, mockLogger)).rejects.toThrow(
+                t('error.failedToGetAdaptableBusinessServices', {
+                    error: t('error.failedToConnectToFDCService', { status: 500 })
+                })
+            );
+        });
+
+        test('should throw a translated error when the request fails', async () => {
+            mockAxios.get.mockRejectedValue(new Error('Network error'));
+
+            await expect(getAdaptableBusinessServices(['svc-a'], config, mockLogger)).rejects.toThrow(
+                t('error.failedToGetAdaptableBusinessServices', { error: 'Network error' })
             );
         });
     });

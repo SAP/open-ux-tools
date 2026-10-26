@@ -102,7 +102,12 @@ export function showBusinessSolutionNameQuestion(
     showSolutionNamePrompt: boolean,
     businessService: string | undefined
 ): boolean {
-    return isCFLoggedIn && answers.approuter === AppRouterType.MANAGED && showSolutionNamePrompt && !!businessService;
+    return (
+        isCFLoggedIn &&
+        (answers.approuter ?? AppRouterType.MANAGED) === AppRouterType.MANAGED &&
+        showSolutionNamePrompt &&
+        !!businessService
+    );
 }
 
 /**

@@ -243,6 +243,18 @@ describe('showBusinessSolutionNameQuestion', () => {
         const result = showBusinessSolutionNameQuestion(answers, true, true, undefined);
         expect(result).toBe(false);
     });
+
+    it('should treat an uncommitted (undefined) approuter as managed so BSN shows for a new MTA', () => {
+        const answers = { businessSolutionName: '' } as CfServicesAnswers;
+        const result = showBusinessSolutionNameQuestion(answers, true, true, 'psm-service-instance');
+        expect(result).toBe(true);
+    });
+
+    it('should return false when the approuter is explicitly standalone', () => {
+        const answers = { approuter: AppRouterType.STANDALONE, businessSolutionName: '' } as CfServicesAnswers;
+        const result = showBusinessSolutionNameQuestion(answers, true, true, 'psm-service-instance');
+        expect(result).toBe(false);
+    });
 });
 
 describe('shouldShowBaseAppPrompt', () => {

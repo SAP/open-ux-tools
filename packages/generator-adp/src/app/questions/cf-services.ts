@@ -17,6 +17,7 @@ import {
     isLoggedInCf,
     getMtaServices,
     getAdpServiceInstances,
+    getAdaptableBusinessServices,
     getCfApps,
     downloadAppContent,
     validateSmartTemplateApplication,
@@ -49,6 +50,10 @@ export class CFServicesPrompter {
      */
     private showSolutionNamePrompt = false;
     /**
+     * Whether the MTA already declares an approuter module.
+     */
+    private hasExistingApprouter = false;
+    /**
      * The type of approuter to use.
      */
     private approuter: AppRouterType;
@@ -60,6 +65,10 @@ export class CFServicesPrompter {
      * The live CF service instances available to bind when the MTA has no service yet.
      */
     private serviceInstances: CfServiceInstanceChoice[] = [];
+    /**
+     * Memoised live instances filtered to those FDC reports as having at least one adaptable app.
+     */
+    private adaptableInstances: CfServiceInstanceChoice[] | undefined;
     /**
      * The info of the business service.
      */
@@ -197,12 +206,29 @@ export class CFServicesPrompter {
                 this.reachableBusinessService = reachable[0];
                 this.singleServiceResult = await this.discoverBusinessServiceApps(reachable[0] ?? '', cfConfig);
             }
+
+            // Detect an existing approuter eagerly so `showSolutionNamePrompt` is set before any prompt's
+            // `when` runs. Yeoman-UI does not guarantee the approuter prompt's `when` (which used to set
+            // this flag) executes before the business-solution-name prompt's `when` reads it.
+            let modules: string[] = [];
+            try {
+                modules = getModuleNames(mtaProjectPath);
+            } catch (e) {
+                // Brand-new MTA has no mta.yaml yet, treat it as having no modules / no existing approuter.
+                this.logger.log(`No mta.yaml found for approuter detection at ${mtaProjectPath}: ${e.message}`);
+            }
+            this.hasExistingApprouter = hasApprouter(modules);
+            if (this.hasExistingApprouter) {
+                this.approuter = getApprouterType(mtaProjectPath);
+            } else {
+                this.showSolutionNamePrompt = true;
+            }
         }
 
         const keyedPrompts: Record<cfServicesPromptNames, CFServicesQuestion> = {
+            [cfServicesPromptNames.approuter]: this.getAppRouterPrompt(cfConfig),
             [cfServicesPromptNames.businessService]: this.getBusinessServicesPrompt(),
             [cfServicesPromptNames.serviceInstance]: this.getServiceInstancePrompt(cfConfig),
-            [cfServicesPromptNames.approuter]: this.getAppRouterPrompt(mtaProjectPath, cfConfig),
             [cfServicesPromptNames.businessSolutionName]: this.getBusinessSolutionNamePrompt(),
             [cfServicesPromptNames.baseApp]: this.getBaseAppPrompt(cfConfig)
         };
@@ -232,7 +258,10 @@ export class CFServicesPrompter {
                     answers,
                     this.isCfLoggedIn,
                     this.showSolutionNamePrompt,
-                    answers.businessService ?? answers.serviceInstance?.name
+                    answers.businessService ||
+                        answers.serviceInstance?.name ||
+                        this.reachableBusinessService ||
+                        this.serviceInstances[0]?.name
                 ),
             validate: (value: string) => validateBusinessSolutionName(value),
             guiOptions: {
@@ -247,36 +276,16 @@ export class CFServicesPrompter {
     /**
      * Prompt for approuter.
      *
-     * @param {string} mtaProjectPath - MTA project path.
      * @param {CfConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for approuter.
      */
-    private getAppRouterPrompt(mtaProjectPath: string, cfConfig: CfConfig): CFServicesQuestion {
+    private getAppRouterPrompt(cfConfig: CfConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
             message: t('prompts.approuterLabel'),
             choices: getAppRouterChoices(this.isInternalUsage),
-            when: () => {
-                let modules: string[] = [];
-                try {
-                    modules = getModuleNames(mtaProjectPath);
-                } catch (e) {
-                    // Brand-new MTA has no mta.yaml yet; treat it as having no modules / no existing approuter.
-                    this.logger.log(`No mta.yaml found for approuter detection at ${mtaProjectPath}: ${e.message}`);
-                }
-                const hasRouter = hasApprouter(modules);
-                if (hasRouter) {
-                    this.approuter = getApprouterType(mtaProjectPath);
-                }
-
-                if (this.isCfLoggedIn && !hasRouter) {
-                    this.showSolutionNamePrompt = true;
-                    return true;
-                } else {
-                    return false;
-                }
-            },
+            when: () => this.isCfLoggedIn && !this.hasExistingApprouter,
             validate: async (value: string) => {
                 this.isCfLoggedIn = await isLoggedInCf(cfConfig, this.logger);
                 if (!this.isCfLoggedIn) {
@@ -344,7 +353,7 @@ export class CFServicesPrompter {
      * Prompt for the business service declared in the MTA.
      *
      * Rendered as a read-only label of the MTA's reachable business service (one that exists among the
-     * live CF service instances); the developer cannot change it. Its discovery runs eagerly in
+     * live CF service instances) the developer cannot change it. Its discovery runs eagerly in
      * `getPrompts`, so this prompt only has to surface a discovery failure via `validate`.
      *
      * @returns {CFServicesQuestion} Prompt for the business service.
@@ -355,7 +364,8 @@ export class CFServicesPrompter {
             name: cfServicesPromptNames.businessService,
             message: t('prompts.businessServiceLabel'),
             default: (_: CfServicesAnswers) => this.reachableBusinessService ?? '',
-            when: () => this.isCfLoggedIn && !!this.reachableBusinessService,
+            when: (answers: CfServicesAnswers) =>
+                this.isCfLoggedIn && !!this.reachableBusinessService && !!(this.approuter || answers.approuter),
             additionalMessages: () =>
                 this.reachableBusinessService
                     ? {
@@ -410,6 +420,40 @@ export class CFServicesPrompter {
     }
 
     /**
+     * Live service instances filtered to those FDC reports as having at least one cloud-adaptable app.
+     * Best-effort and memoised: a failed lookup or an all-non-adaptable result falls back to the full list
+     * so the picker never empties, and the FDC call runs at most once per prompter.
+     *
+     * @param {CfConfig} cfConfig - CF config service instance.
+     * @returns {Promise<CfServiceInstanceChoice[]>} The adaptable (or, on fallback, full) service instances.
+     */
+    private async getAdaptableInstances(cfConfig: CfConfig): Promise<CfServiceInstanceChoice[]> {
+        if (this.adaptableInstances) {
+            return this.adaptableInstances;
+        }
+
+        let result = this.serviceInstances;
+        try {
+            const adaptable = await getAdaptableBusinessServices(
+                this.serviceInstances.map((instance) => instance.name),
+                cfConfig,
+                this.logger
+            );
+            const filtered = this.serviceInstances.filter((instance) => adaptable.has(instance.name));
+            if (filtered.length > 0) {
+                result = filtered;
+            } else {
+                this.logger.log('FDC reported no adaptable service instances; showing the full list.');
+            }
+        } catch (e) {
+            this.logger.log(`Could not determine adaptable service instances; showing all: ${e.message}`);
+        }
+
+        this.adaptableInstances = result;
+        return result;
+    }
+
+    /**
      * Prompt for a live CF service instance to bind, shown when the MTA has no service yet.
      *
      * The selected instance seeds the same discovery the business-service prompt performs
@@ -424,8 +468,10 @@ export class CFServicesPrompter {
             type: 'list',
             name: cfServicesPromptNames.serviceInstance,
             message: t('prompts.businessServiceLabel'),
-            choices: (_: CfServicesAnswers) => getServiceInstanceChoices(this.serviceInstances),
-            when: () => this.isCfLoggedIn && !this.reachableBusinessService,
+            choices: async (_: CfServicesAnswers) =>
+                getServiceInstanceChoices(await this.getAdaptableInstances(cfConfig)),
+            when: (answers: CfServicesAnswers) =>
+                this.isCfLoggedIn && !this.reachableBusinessService && !!(this.approuter || answers.approuter),
             additionalMessages: () =>
                 this.serviceInstances.length === 0
                     ? { message: t('error.noServiceInstancesFound'), severity: Severity.error }
@@ -447,15 +493,18 @@ export class CFServicesPrompter {
                     return t('error.businessServiceDoesNotExist');
                 }
 
-                // Base-app discovery is best-effort: the instance can be bound into mta.yaml even when
-                // it exposes no HTML5 apps, so an empty result or a discovery failure must not block
-                // selection. The base-app prompt hides itself when `this.apps` is empty.
+                // The picker is FDC-filtered to services with adaptable apps, so an empty app list or a
+                // discovery failure here is a real error: the writer needs the selected base app's manifest.
                 try {
                     this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
                     this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
+                    if (this.apps.length === 0) {
+                        return t('error.noAppsFoundForBusinessService');
+                    }
                 } catch (e) {
                     this.apps = [];
                     this.logger?.error(`Failed to get available applications: ${e.message}`);
+                    return e.message;
                 }
 
                 return true;

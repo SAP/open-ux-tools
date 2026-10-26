@@ -244,6 +244,57 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
 }
 
 /**
+ * Returns the subset of the given business-service names that expose at least one cloud-adaptable app,
+ * per the FDC `/api/business-service/info` endpoint. A service is adaptable when one of its apps has
+ * `sap.fiori/cloudDevAdaptationStatus` set to `released`. Names are sent in batches of 100 (endpoint cap).
+ *
+ * @param {string[]} serviceNames - The `sap.cloud.service` business-service names to check.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} [logger] - The logger.
+ * @returns {Promise<Set<string>>} The subset of names that have at least one adaptable app.
+ */
+export async function getAdaptableBusinessServices(
+    serviceNames: string[],
+    cfConfig: CfConfig,
+    logger?: ToolsLogger
+): Promise<Set<string>> {
+    const unique = [...new Set(serviceNames.filter(Boolean))];
+    const adaptable = new Set<string>();
+    if (unique.length === 0) {
+        return adaptable;
+    }
+
+    const requestArguments = getFDCRequestArguments(cfConfig);
+    for (let i = 0; i < unique.length; i += 100) {
+        const batch = unique.slice(i, i + 100);
+        const params = batch.map((name) => `serviceName=${encodeURIComponent(name)}`).join('&');
+        const url = `${requestArguments.url}/api/business-service/info?${params}`;
+
+        try {
+            const response = await axios.get<Record<string, { hasAdaptableApps?: boolean }>>(
+                url,
+                requestArguments.options
+            );
+
+            if (response.status !== 200) {
+                throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+            }
+
+            for (const [name, info] of Object.entries(response.data ?? {})) {
+                if (info?.hasAdaptableApps) {
+                    adaptable.add(name);
+                }
+            }
+        } catch (error) {
+            logger?.error(`Getting adaptable business services failed. Request url: ${url}. ${error}`);
+            throw new Error(t('error.failedToGetAdaptableBusinessServices', { error: error.message }));
+        }
+    }
+
+    return adaptable;
+}
+
+/**
  * Get ui5AppInfo.json from FDC service.
  *
  * @param {string} appId - The application ID.

@@ -16,6 +16,7 @@ const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
 const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
 const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
 const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
+const mockGetAdaptableBusinessServices = jest.fn<typeof realAdpTooling.getAdaptableBusinessServices>();
 const mockGetCfApps = jest.fn<typeof realAdpTooling.getCfApps>();
 const mockDownloadAppContent = jest.fn<typeof realAdpTooling.downloadAppContent>();
 const mockValidateSmartTemplateApplication = jest.fn<typeof realAdpTooling.validateSmartTemplateApplication>();
@@ -51,6 +52,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     isLoggedInCf: mockIsLoggedInCf,
     getMtaServices: mockGetMtaServices,
     getAdpServiceInstances: mockGetAdpServiceInstances,
+    getAdaptableBusinessServices: mockGetAdaptableBusinessServices,
     getCfApps: mockGetCfApps,
     downloadAppContent: mockDownloadAppContent,
     validateSmartTemplateApplication: mockValidateSmartTemplateApplication,
@@ -131,6 +133,7 @@ describe('CFServicesPrompter', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockGetAdpServiceInstances.mockResolvedValue([]);
+        mockGetAdaptableBusinessServices.mockResolvedValue(new Set());
     });
 
     describe('getPrompts', () => {
@@ -142,9 +145,9 @@ describe('CFServicesPrompter', () => {
 
             expect(prompts).toHaveLength(5);
             expect(prompts.map((p) => p.name)).toEqual([
+                cfServicesPromptNames.approuter,
                 cfServicesPromptNames.businessService,
                 cfServicesPromptNames.serviceInstance,
-                cfServicesPromptNames.approuter,
                 cfServicesPromptNames.businessSolutionName,
                 cfServicesPromptNames.baseApp
             ]);
@@ -220,6 +223,51 @@ describe('CFServicesPrompter', () => {
 
             expect(mockGetMtaServices).not.toHaveBeenCalled();
         });
+
+        test('should set showSolutionNamePrompt eagerly when the MTA has no existing approuter', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetModuleNames.mockReturnValue(['module1']);
+            mockHasApprouter.mockReturnValue(false);
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(prompter['hasExistingApprouter']).toBe(false);
+            expect(prompter['showSolutionNamePrompt']).toBe(true);
+            expect(mockGetApprouterType).not.toHaveBeenCalled();
+        });
+
+        test('should detect an existing approuter and not show the solution name prompt', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetModuleNames.mockReturnValue(['approuter-module']);
+            mockHasApprouter.mockReturnValue(true);
+            mockGetApprouterType.mockReturnValue(AppRouterType.MANAGED);
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(prompter['hasExistingApprouter']).toBe(true);
+            expect(prompter['approuter']).toBe(AppRouterType.MANAGED);
+            expect(prompter['showSolutionNamePrompt']).toBe(false);
+        });
+
+        test('should treat a missing mta.yaml as no existing approuter without crashing', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetModuleNames.mockImplementation(() => {
+                throw new Error('Could not find file /test/path/mta.yaml');
+            });
+            mockHasApprouter.mockReturnValue(false);
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(prompter['showSolutionNamePrompt']).toBe(true);
+            expect(mockHasApprouter).toHaveBeenCalledWith([]);
+            expect(mockGetApprouterType).not.toHaveBeenCalled();
+            expect(mockLogger.log).toHaveBeenCalledWith(
+                'No mta.yaml found for approuter detection at /test/path: Could not find file /test/path/mta.yaml'
+            );
+        });
     });
 
     describe('getBusinessSolutionNamePrompt', () => {
@@ -242,7 +290,7 @@ describe('CFServicesPrompter', () => {
             });
         });
 
-        test('should call showBusinessSolutionNameQuestion for when condition', () => {
+        test('should call showBusinessSolutionNameQuestion with the committed business service', () => {
             const answers = { businessService: 'test-service' };
 
             const prompt = prompter['getBusinessSolutionNamePrompt']();
@@ -250,6 +298,55 @@ describe('CFServicesPrompter', () => {
             whenFn(answers);
 
             expect(mockShowBusinessSolutionNameQuestion).toHaveBeenCalledWith(answers, true, false, 'test-service');
+        });
+
+        test('should fall back to the reachable business service when no answer is committed', () => {
+            prompter['reachableBusinessService'] = 'reachable-svc';
+            prompter['serviceInstances'] = [];
+
+            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            (prompt.when as (answers: CfServicesAnswers) => boolean)({});
+
+            expect(mockShowBusinessSolutionNameQuestion).toHaveBeenCalledWith({}, true, false, 'reachable-svc');
+        });
+
+        test('should fall back to the first live service instance for a new MTA without a committed selection', () => {
+            prompter['reachableBusinessService'] = undefined;
+            prompter['serviceInstances'] = [
+                { name: 'inst-1', service: 'hana', servicePlan: 'hdi-shared' }
+            ] as CfServiceInstanceChoice[];
+
+            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            (prompt.when as (answers: CfServicesAnswers) => boolean)({});
+
+            expect(mockShowBusinessSolutionNameQuestion).toHaveBeenCalledWith({}, true, false, 'inst-1');
+        });
+
+        test('should pass undefined when no service is available to bind', () => {
+            prompter['reachableBusinessService'] = undefined;
+            prompter['serviceInstances'] = [];
+
+            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            (prompt.when as (answers: CfServicesAnswers) => boolean)({});
+
+            expect(mockShowBusinessSolutionNameQuestion).toHaveBeenCalledWith({}, true, false, undefined);
+        });
+
+        test('should fall through an empty-string businessService to the live service instance', () => {
+            prompter['reachableBusinessService'] = undefined;
+            prompter['serviceInstances'] = [
+                { name: 'inst-1', service: 'hana', servicePlan: 'hdi-shared' }
+            ] as CfServiceInstanceChoice[];
+
+            const prompt = prompter['getBusinessSolutionNamePrompt']();
+            (prompt.when as (answers: CfServicesAnswers) => boolean)({ businessService: '' });
+
+            expect(mockShowBusinessSolutionNameQuestion).toHaveBeenCalledWith(
+                { businessService: '' },
+                true,
+                false,
+                'inst-1'
+            );
         });
 
         test('should call validateBusinessSolutionName for validation', () => {
@@ -264,22 +361,14 @@ describe('CFServicesPrompter', () => {
     });
 
     describe('getAppRouterPrompt', () => {
-        beforeEach(() => {
-            mockGetModuleNames.mockReturnValue(['module1', 'module2']);
-        });
-
         test('should create approuter prompt', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
-            mockHasApprouter.mockReturnValue(false);
             mockGetAppRouterChoices.mockReturnValue([
                 { name: AppRouterType.STANDALONE, value: AppRouterType.STANDALONE },
                 { name: AppRouterType.MANAGED, value: AppRouterType.MANAGED }
             ]);
 
-            const prompt = prompter['getAppRouterPrompt'](
-                '/test/path',
-                mockCfConfig
-            ) as ListQuestion<CfServicesAnswers>;
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
 
             expect(prompt.type).toBe('list');
             expect(prompt.name).toBe(cfServicesPromptNames.approuter);
@@ -290,66 +379,35 @@ describe('CFServicesPrompter', () => {
             ]);
         });
 
-        test('should set approuter type when router exists', () => {
+        test('should be shown when logged in and no existing approuter', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
-            mockHasApprouter.mockReturnValue(true);
-            mockGetApprouterType.mockReturnValue(AppRouterType.STANDALONE);
+            prompter['hasExistingApprouter'] = false;
 
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
-            const whenFn = prompt.when as () => boolean;
-            whenFn();
-
-            expect(mockHasApprouter).toHaveBeenCalledWith(['module1', 'module2']);
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
+            expect((prompt.when as () => boolean)()).toBe(true);
         });
 
-        test('should show prompt when not logged in and no router', () => {
+        test('should be hidden when not logged in', () => {
             const prompter = new CFServicesPrompter(false, false, mockLogger);
-            mockHasApprouter.mockReturnValue(false);
+            prompter['hasExistingApprouter'] = false;
 
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
-            const whenFn = prompt.when as () => boolean;
-            const shouldShow = whenFn();
-
-            expect(shouldShow).toBe(false);
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
+            expect((prompt.when as () => boolean)()).toBe(false);
         });
 
-        test('should show prompt when logged in and no router', () => {
+        test('should be hidden when the MTA already declares an approuter', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
-            mockHasApprouter.mockReturnValue(false);
+            prompter['hasExistingApprouter'] = true;
 
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
-            const whenFn = prompt.when as () => boolean;
-            const shouldShow = whenFn();
-
-            expect(shouldShow).toBe(true);
-            expect(prompter['showSolutionNamePrompt']).toBe(true);
-        });
-
-        test('should not crash and show prompt when the MTA has no mta.yaml yet', () => {
-            const prompter = new CFServicesPrompter(false, true, mockLogger);
-            mockGetModuleNames.mockImplementation(() => {
-                throw new Error('Could not find file /test/path/mta.yaml');
-            });
-            mockHasApprouter.mockReturnValue(false);
-
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
-            const whenFn = prompt.when as () => boolean;
-            const shouldShow = whenFn();
-
-            expect(shouldShow).toBe(true);
-            expect(prompter['showSolutionNamePrompt']).toBe(true);
-            expect(mockHasApprouter).toHaveBeenCalledWith([]);
-            expect(mockGetApprouterType).not.toHaveBeenCalled();
-            expect(mockLogger.log).toHaveBeenCalledWith(
-                'No mta.yaml found for approuter detection at /test/path: Could not find file /test/path/mta.yaml'
-            );
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
+            expect((prompt.when as () => boolean)()).toBe(false);
         });
 
         test('should validate CF login status', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockIsLoggedInCf.mockResolvedValue(false);
 
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
             const result = await prompt.validate!('STANDALONE');
 
             expect(mockIsLoggedInCf).toHaveBeenCalledWith(mockCfConfig, mockLogger);
@@ -360,7 +418,7 @@ describe('CFServicesPrompter', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockIsLoggedInCf.mockResolvedValue(true);
 
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
             const result = await prompt.validate!('');
 
             expect(result).toBe('The input cannot be empty.');
@@ -370,7 +428,7 @@ describe('CFServicesPrompter', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockIsLoggedInCf.mockResolvedValue(true);
 
-            const prompt = prompter['getAppRouterPrompt']('/test/path', mockCfConfig);
+            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
             const result = await prompt.validate!(AppRouterType.STANDALONE);
 
             expect(result).toBe(true);
@@ -473,14 +531,25 @@ describe('CFServicesPrompter', () => {
             expect(prompt.default({})).toBe('svc');
         });
 
-        test('should be shown only when a reachable business service exists', () => {
+        test('should be shown only when a reachable business service exists and approuter is answered', () => {
             prompter['reachableBusinessService'] = 'svc';
             const shown = prompter['getBusinessServicesPrompt']();
-            expect((shown.when as () => boolean)()).toBe(true);
+            expect((shown.when as (answers: CfServicesAnswers) => boolean)({ approuter: AppRouterType.MANAGED })).toBe(
+                true
+            );
 
             prompter['reachableBusinessService'] = undefined;
             const hidden = prompter['getBusinessServicesPrompt']();
-            expect((hidden.when as () => boolean)()).toBe(false);
+            expect((hidden.when as (answers: CfServicesAnswers) => boolean)({ approuter: AppRouterType.MANAGED })).toBe(
+                false
+            );
+        });
+
+        test('should be hidden until the approuter is answered', () => {
+            prompter['reachableBusinessService'] = 'svc';
+            prompter['approuter'] = undefined as unknown as typeof AppRouterType.MANAGED;
+            const prompt = prompter['getBusinessServicesPrompt']();
+            expect((prompt.when as (answers: CfServicesAnswers) => boolean)({})).toBe(false);
         });
 
         test('should return the eager discovery result from validate', () => {
@@ -557,28 +626,91 @@ describe('CFServicesPrompter', () => {
             });
         });
 
-        test('should map choices from the loaded service instances', () => {
+        test('should map choices from the adaptable service instances', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             prompter['serviceInstances'] = [mockInstance];
             const choices = [{ name: 'my-instance (hana/hdi-shared)', value: mockInstance }];
             mockGetServiceInstanceChoices.mockReturnValue(choices);
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['my-instance']));
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
-            const choicesFn = prompt.choices as (answers: CfServicesAnswers) => typeof choices;
-            const result = choicesFn({});
+            const choicesFn = prompt.choices as (answers: CfServicesAnswers) => Promise<typeof choices>;
+            const result = await choicesFn({});
 
+            expect(mockGetAdaptableBusinessServices).toHaveBeenCalledWith(['my-instance'], mockCfConfig, mockLogger);
             expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
             expect(result).toBe(choices);
         });
 
-        test('should be shown when there is no reachable MTA business service', () => {
+        test('should offer only the adaptable instances in the picker', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            const other: CfServiceInstanceChoice = { name: 'other', service: 'hana', servicePlan: 'hdi-shared' };
+            prompter['serviceInstances'] = [mockInstance, other];
+            mockGetServiceInstanceChoices.mockReturnValue([]);
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['my-instance']));
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
+
+            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
+        });
+
+        test('should show all instances when the adaptable lookup fails', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['serviceInstances'] = [mockInstance];
+            mockGetServiceInstanceChoices.mockReturnValue([]);
+            mockGetAdaptableBusinessServices.mockRejectedValue(new Error('FDC down'));
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
+
+            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
+        });
+
+        test('should show all instances when none are reported adaptable', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['serviceInstances'] = [mockInstance];
+            mockGetServiceInstanceChoices.mockReturnValue([]);
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set());
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
+
+            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
+        });
+
+        test('should call the adaptable lookup at most once (memoised)', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['serviceInstances'] = [mockInstance];
+            mockGetServiceInstanceChoices.mockReturnValue([]);
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['my-instance']));
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            const choicesFn = prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>;
+            await choicesFn({});
+            await choicesFn({});
+
+            expect(mockGetAdaptableBusinessServices).toHaveBeenCalledTimes(1);
+        });
+
+        test('should be shown when there is no reachable MTA business service and approuter is answered', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             prompter['reachableBusinessService'] = undefined;
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
             const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;
 
-            expect(whenFn({})).toBe(true);
+            expect(whenFn({ approuter: AppRouterType.MANAGED })).toBe(true);
+        });
+
+        test('should be hidden until the approuter is answered', () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['reachableBusinessService'] = undefined;
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
+            const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;
+
+            expect(whenFn({})).toBe(false);
         });
 
         test('should be hidden when the MTA business service is reachable (shown as a label)', () => {
@@ -588,7 +720,7 @@ describe('CFServicesPrompter', () => {
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
             const whenFn = prompt.when as (answers: CfServicesAnswers) => boolean;
 
-            expect(whenFn({})).toBe(false);
+            expect(whenFn({ approuter: AppRouterType.MANAGED })).toBe(false);
         });
 
         test('should surface an error message when no service instances were found', () => {
@@ -633,6 +765,7 @@ describe('CFServicesPrompter', () => {
 
             expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith(mockInstance.name, mockCfConfig, mockLogger);
             expect(mockGetCfApps).toHaveBeenCalledWith(mockServiceKeys.serviceKeys, mockCfConfig, mockLogger);
+            expect(prompter['apps']).toEqual([mockCFApp]);
             expect(result).toBe(true);
         });
 
@@ -646,7 +779,7 @@ describe('CFServicesPrompter', () => {
             expect(result).toBe(t('error.businessServiceDoesNotExist'));
         });
 
-        test('should allow selection when the instance exposes no discoverable apps', async () => {
+        test('should return an error when the instance exposes no apps', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockResolvedValue([]);
@@ -654,11 +787,10 @@ describe('CFServicesPrompter', () => {
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
             const result = await prompt.validate!(mockInstance);
 
-            expect(result).toBe(true);
-            expect(prompter['apps']).toEqual([]);
+            expect(result).toBe(t('error.noAppsFoundForBusinessService'));
         });
 
-        test('should allow selection when app discovery fails', async () => {
+        test('should return an error when app discovery fails', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockRejectedValue(new Error('Discovery error'));
@@ -666,7 +798,7 @@ describe('CFServicesPrompter', () => {
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
             const result = await prompt.validate!(mockInstance);
 
-            expect(result).toBe(true);
+            expect(result).toBe('Discovery error');
             expect(prompter['apps']).toEqual([]);
             expect(mockLogger.error).toHaveBeenCalledWith('Failed to get available applications: Discovery error');
         });
