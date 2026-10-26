@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 1.0.73
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
 ## 1.0.72
 
 ### Patch Changes
