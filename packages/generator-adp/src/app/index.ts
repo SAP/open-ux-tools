@@ -525,7 +525,7 @@ export default class extends Generator {
         } else {
             const pathAnswers = await this.prompt<ProjectLocationAnswers>([
                 getMtaModePrompt(),
-                getProjectPathPrompt(this.logger, this.vscode),
+                getProjectPathPrompt(this.logger, this.vscode, this.cfConfig),
                 getMtaIdPrompt()
             ]);
             const selectedLocation = fs.realpathSync(pathAnswers.projectLocation, 'utf-8');

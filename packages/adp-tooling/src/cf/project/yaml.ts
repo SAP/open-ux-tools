@@ -618,3 +618,48 @@ export async function adjustMtaYaml(
 
     return yamlContent;
 }
+
+/**
+ * Reads the CF space GUID persisted in a project's ADP `ui5.yaml` (the `app-variant-bundler-build`
+ * custom task's `space` configuration).
+ *
+ * The ADP app's `ui5.yaml` lives in the project root for a standalone adaptation project, or in an app
+ * subfolder for an MTA project (the MTA root holds `mta.yaml`, the ADP app sits in a child folder). The
+ * search therefore checks the root and each immediate subfolder and returns the first persisted space —
+ * all ADP apps in one MTA target the same space.
+ *
+ * Returns `undefined` when no `ui5.yaml` holds a space value (e.g. the folder is not a CF-generated
+ * adaptation project) — callers treat that as "unknown space", not a mismatch.
+ *
+ * @param {string} projectPath - The root path of the selected project (MTA root or standalone ADP root).
+ * @param {ToolsLogger} [logger] - The logger.
+ * @returns {string | undefined} The persisted CF space GUID, or `undefined` when it cannot be read.
+ */
+export function getCfProjectSpaceGuid(projectPath: string, logger?: ToolsLogger): string | undefined {
+    const candidateDirs = [projectPath];
+    try {
+        for (const entry of fs.readdirSync(projectPath, { withFileTypes: true })) {
+            if (entry.isDirectory()) {
+                candidateDirs.push(path.join(projectPath, entry.name));
+            }
+        }
+    } catch (e) {
+        logger?.log(`Could not scan ${projectPath} for an adaptation project: ${e.message}`);
+    }
+
+    for (const dir of candidateDirs) {
+        if (!fs.existsSync(path.join(dir, 'ui5.yaml'))) {
+            continue;
+        }
+        try {
+            const spaceGuid = getAppParamsFromUI5Yaml(dir).spaceGuid;
+            if (spaceGuid) {
+                return spaceGuid;
+            }
+        } catch (e) {
+            logger?.log(`Could not read CF space from ui5.yaml in ${dir}: ${e.message}`);
+        }
+    }
+
+    return undefined;
+}

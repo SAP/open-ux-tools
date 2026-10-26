@@ -7,6 +7,7 @@ const mockValidateProjectName = jest.fn<typeof realProjectInputValidator.validat
 const mockValidateNamespaceAdp = jest.fn<typeof realProjectInputValidator.validateNamespaceAdp>();
 const mockIsExternalLoginEnabled = jest.fn<typeof realAdpTooling.isExternalLoginEnabled>();
 const mockIsMtaProject = jest.fn<typeof realAdpTooling.isMtaProject>();
+const mockGetCfProjectSpaceGuid = jest.fn<typeof realAdpTooling.getCfProjectSpaceGuid>();
 const mockExistsSync = jest.fn<typeof realFs.existsSync>();
 
 const realFs = await import('node:fs');
@@ -36,7 +37,8 @@ const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     isExternalLoginEnabled: mockIsExternalLoginEnabled,
-    isMtaProject: mockIsMtaProject
+    isMtaProject: mockIsMtaProject,
+    getCfProjectSpaceGuid: mockGetCfProjectSpaceGuid
 }));
 
 const {
@@ -307,6 +309,37 @@ describe('validateProjectPath', () => {
         const result = await validateProjectPath('/parent/folder', mockLogger, MtaMode.New);
         expect(result).toBe(true);
         expect(mockIsMtaProject).not.toHaveBeenCalled();
+        expect(mockGetCfProjectSpaceGuid).not.toHaveBeenCalled();
+    });
+
+    test('should return an error when the MTA belongs to a different CF space', async () => {
+        mockExistsSync.mockReturnValue(true);
+        mockIsMtaProject.mockReturnValue(true);
+        mockGetCfProjectSpaceGuid.mockReturnValue('space-guid-1');
+        const cfConfig = { space: { GUID: 'space-guid-2', Name: 'space-2' } } as unknown as CfConfig;
+
+        const result = await validateProjectPath('/test/project', mockLogger, MtaMode.Existing, cfConfig);
+        expect(result).toBe(t('error.projectSpaceMismatch'));
+    });
+
+    test('should accept the MTA when its space matches the current login', async () => {
+        mockExistsSync.mockReturnValue(true);
+        mockIsMtaProject.mockReturnValue(true);
+        mockGetCfProjectSpaceGuid.mockReturnValue('space-guid-1');
+        const cfConfig = { space: { GUID: 'space-guid-1', Name: 'space-1' } } as unknown as CfConfig;
+
+        const result = await validateProjectPath('/test/project', mockLogger, MtaMode.Existing, cfConfig);
+        expect(result).toBe(true);
+    });
+
+    test('should accept the MTA when its space is unknown (non-CF project)', async () => {
+        mockExistsSync.mockReturnValue(true);
+        mockIsMtaProject.mockReturnValue(true);
+        mockGetCfProjectSpaceGuid.mockReturnValue(undefined);
+        const cfConfig = { space: { GUID: 'space-guid-2', Name: 'space-2' } } as unknown as CfConfig;
+
+        const result = await validateProjectPath('/test/project', mockLogger, MtaMode.Existing, cfConfig);
+        expect(result).toBe(true);
     });
 });
 

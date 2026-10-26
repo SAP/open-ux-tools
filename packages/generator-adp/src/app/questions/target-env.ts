@@ -93,9 +93,14 @@ export function getMtaModePrompt(): YUIQuestion<ProjectLocationAnswers> {
  *
  * @param {ToolsLogger} logger - The logger.
  * @param {any} vscode - The VSCode instance.
+ * @param {CfConfig} [cfConfig] - The current CF config used to block reusing an MTA from a different space.
  * @returns {YUIQuestion<ProjectLocationAnswers>[]} The project path prompt.
  */
-export function getProjectPathPrompt(logger: ToolsLogger, vscode: any): YUIQuestion<ProjectLocationAnswers> {
+export function getProjectPathPrompt(
+    logger: ToolsLogger,
+    vscode: any,
+    cfConfig?: CfConfig
+): YUIQuestion<ProjectLocationAnswers> {
     return {
         type: 'input',
         name: 'projectLocation',
@@ -107,7 +112,7 @@ export function getProjectPathPrompt(logger: ToolsLogger, vscode: any): YUIQuest
         },
         message: t('prompts.projectLocationLabel'),
         validate: (value: string, answers?: ProjectLocationAnswers) =>
-            validateProjectPath(value, logger, answers?.mtaMode),
+            validateProjectPath(value, logger, answers?.mtaMode, cfConfig),
         default: () => getDefaultTargetFolder(vscode),
         store: false
     } as InputQuestion<ProjectLocationAnswers>;

@@ -175,15 +175,16 @@ describe('Target Environment', () => {
             const prompt = getProjectPathPrompt(mockLogger, mockVscode);
 
             const validateResult = prompt.validate!('/test/path');
-            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger, undefined);
+            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger, undefined, undefined);
             expect(validateResult).toBeUndefined();
         });
 
-        test('should thread the selected MTA mode into the validator', () => {
-            const prompt = getProjectPathPrompt(mockLogger, mockVscode);
+        test('should thread the selected MTA mode and CF config into the validator', () => {
+            const cfConfig = { space: { GUID: 'space-guid', Name: 'space' } } as unknown as CfConfig;
+            const prompt = getProjectPathPrompt(mockLogger, mockVscode, cfConfig);
 
             prompt.validate!('/test/path', { mtaMode: MtaMode.New } as ProjectLocationAnswers);
-            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger, MtaMode.New);
+            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger, MtaMode.New, cfConfig);
         });
 
         test('should set up default function', () => {

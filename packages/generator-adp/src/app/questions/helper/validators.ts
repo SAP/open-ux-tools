@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { join } from 'node:path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import { isMtaProject } from '@sap-ux/adp-tooling';
+import { getCfProjectSpaceGuid, isMtaProject } from '@sap-ux/adp-tooling';
 import type { CfConfig, SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
@@ -123,13 +123,15 @@ export async function validateEnvironment(
  *
  * @param {string} projectPath - The path to the project (existing MTA root, or parent folder for new).
  * @param {ToolsLogger} logger - The logger.
- * @param {MtaMode} [mtaMode] - The selected MTA mode; defaults to `existing`.
+ * @param {MtaMode} [mtaMode] - The selected MTA mode defaults to `existing`.
+ * @param {CfConfig} [cfConfig] - The current CF config used to block binding an MTA from a different space.
  * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
  */
 export async function validateProjectPath(
     projectPath: string,
     logger: ToolsLogger,
-    mtaMode: MtaMode = MtaMode.Existing
+    mtaMode: MtaMode = MtaMode.Existing,
+    cfConfig?: CfConfig
 ): Promise<string | boolean> {
     const validationResult = validateEmptyString(projectPath);
     if (typeof validationResult === 'string') {
@@ -146,6 +148,13 @@ export async function validateProjectPath(
 
     if (!isMtaProject(projectPath)) {
         return t('error.projectDoesNotExistMta');
+    }
+
+    // Block reusing an MTA that was created for a different CF space than the current login. The space the
+    // MTA targets is persisted in its ui5.yaml an unknown space (non-CF project) is not treated as a mismatch.
+    const projectSpaceGuid = getCfProjectSpaceGuid(projectPath, logger);
+    if (projectSpaceGuid && cfConfig && projectSpaceGuid !== cfConfig.space.GUID) {
+        return t('error.projectSpaceMismatch');
     }
 
     return true;
