@@ -82,6 +82,12 @@ export interface SaveStepResult {
 
 export interface StopStepResult {
     stopped: true;
+    /**
+     * Whether the editor server process was killed (HTTP relay transport only,
+     * where `stop` derives the port from `site` and kills the detached editor).
+     * Omitted for transports that own the browser/process lifecycle directly.
+     */
+    editorServerStopped?: boolean;
 }
 
 export interface RestartStepResult {

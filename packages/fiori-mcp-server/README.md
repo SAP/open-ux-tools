@@ -136,6 +136,62 @@ Then use `fiori-mcp` as the command (no `args` needed):
 }
 ```
 
+### Optional: ADP RTA in BAS Simple Browser
+
+The adaptation-editor HTTP relay is opt-in; the MCP client connection still uses
+`stdio`. It runs UI5 frontend actions in the real Simple Browser page, allowing
+interactive login without a server-side Chromium browser.
+
+Use a relay-enabled `@sap-ux/preview-middleware` in the adaptation project and the
+matching [ADP Editor Launcher extension](../adp-editor-launcher-ext/README.md).
+No relay patch to `@sap-ux/adp-tooling` is required. Add these flags to the MCP
+server's `env` configuration:
+
+```json
+{
+  "SAP_FIORI_MCP_ADP_TOOLS": "true",
+  "SAP_FIORI_MCP_ADP_HTTP_TRANSPORT": "true"
+}
+```
+
+For local builds, rebuild MCP and preview middleware, install the rebuilt launcher
+extension, **restart MCP and reload the BAS window** before opening a fresh editor.
+Source changes or extension installation alone do not activate the new setup.
+Without the HTTP flag, the default transport remains Playwright.
+
+Call `open_adaptation_editor`: BAS `exposePort` supplies the browser-reachable URL,
+and the extension automatically opens it in Simple Browser. Complete any login
+there, then pass the **exact returned editor URL** as `site` to every
+`run_rta_workflow_step` call, starting with `start` and `frameId: "preview"`.
+HTTP relay sessions belong to the **same MCP process lifetime**: after a reconnect
+or MCP restart, reopen with `open_adaptation_editor`; a pasted old URL cannot
+restore ownership. If automatic opening fails, use **Fiori: Open ADP Editor in
+Simple Browser** after opening the editor through MCP.
+
+**Architecture and lifecycle:**
+
+- The MCP editor-session registry owns the local and browser URLs, relay token,
+  and spawned `ChildProcess`. MCP sends actions to the stored loopback URL;
+  preview middleware relays them to the injected browser client, which calls UI5
+  `FrontendActionsAPI`. BAS hostnames are not reverse-parsed into ports.
+- A fresh 64-hex-character token is generated only when HTTP relay is selected.
+  It is passed privately to the child through
+  `SAP_FIORI_MCP_ADP_RELAY_TOKEN`; this is an internal secret, not a user setting.
+  Preview middleware registers relay routes and injects the client only for ADP
+  with a valid token. Relay API requests use `Authorization: Bearer …`.
+- Each relay allows at most one pending/in-flight command and one owning browser
+  document (`clientId`); conflicting polls and duplicate results are rejected.
+  Mutations are not automatically replayed. `restart` sends `__reload__`, then
+  `__ready__`, and requires readiness from a different `clientId`.
+- Open/close use one atomically replaced mailbox, `/tmp/sap-ux-adp-editor.json`
+  (`tmpdir()` on other hosts), with `{ command, url, id }`; it contains neither
+  credentials nor process details. The launcher closes only its owned Simple
+  Browser tab for that exact URL; ambiguous ownership means no automatic close.
+- `stop` immediately signals close and begins terminating only the owned editor
+  process (its recorded spawned process group on POSIX; `ChildProcess.kill` on
+  Windows). It does not wait for a browser stop sentinel or discover processes
+  by port. Check `editorServerStopped`; an unclosed tab can be closed manually.
+
 ## [Rules](#rules)
 
 The following rules help guide the AI model to use the server correctly. Add them to your system prompt or rules file:

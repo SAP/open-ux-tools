@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/mem-fs-editor.d.ts",
-    "src",
+    "src/**/*.ts",
     "src/**/*.json"
   ],
   "compilerOptions": {

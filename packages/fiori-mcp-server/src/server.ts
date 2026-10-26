@@ -48,6 +48,7 @@ import type {
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
+import { stopEditorSessions } from './utils/editor-session.js';
 
 type ToolArgs =
     | DocSearchInput
@@ -127,6 +128,7 @@ export class FioriFunctionalityServer {
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
         const shutdown = async (): Promise<void> => {
+            await stopEditorSessions();
             await stopBrowser();
             await this.server.close();
             process.exit(0);

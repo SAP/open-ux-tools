@@ -82,6 +82,7 @@ import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { addRtaRelayApis } from './rta-relay.js';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -131,6 +132,7 @@ type RtaDeveloperModeTemplateConfig = {
  */
 export class FlpSandbox {
     private adp?: AdpPreview;
+    private rtaRelay?: ReturnType<typeof addRtaRelayApis>;
     private manifest: Manifest;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
@@ -204,6 +206,9 @@ export class FlpSandbox {
             this.logger
         );
         this.adp = adp;
+        if (adp) {
+            this.rtaRelay ??= addRtaRelayApis(this.router, process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN ?? '');
+        }
         this.manifest = manifest;
 
         await addApp(
@@ -454,10 +459,14 @@ export class FlpSandbox {
             res.redirect(302, `${redirectUrl.pathname}${redirectUrl.search}`);
             return;
         }
+        const rtaRelayTag = this.rtaRelay?.clientTag(req['ui5-patched-router']?.baseUrl ?? req.baseUrl) ?? '';
         const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
             '</body>',
-            `</body>\n<!-- livereload disabled for editor </body>-->`
+            `${rtaRelayTag}</body>\n<!-- livereload disabled for editor </body>-->`
         );
+        if (this.rtaRelay) {
+            res.set('Cache-Control', 'no-store');
+        }
         this.sendResponse(res, 'text/html', 200, html);
     }
 

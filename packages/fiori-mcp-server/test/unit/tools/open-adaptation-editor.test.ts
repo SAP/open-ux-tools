@@ -1,16 +1,16 @@
 import { jest } from '@jest/globals';
 import { EventEmitter } from 'node:events';
+import type { ChildProcess } from 'node:child_process';
+import { PassThrough } from 'node:stream';
+import type { EditorSession } from '../../../src/utils/editor-session.js';
 
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockLoggerError = jest.fn<any>();
 const mockLoggerDebug = jest.fn<any>();
 
-const actualUtils = await import('../../../src/utils/index.js');
-jest.unstable_mockModule('../../../src/utils', () => ({
-    ...actualUtils,
+jest.unstable_mockModule('../../../src/utils/index.js', () => ({
     logger: {
-        ...actualUtils.logger,
         warn: mockLoggerWarn,
         info: mockLoggerInfo,
         error: mockLoggerError,
@@ -21,6 +21,24 @@ jest.unstable_mockModule('../../../src/utils', () => ({
 const mockSpawn = jest.fn<any>();
 jest.unstable_mockModule('nano-spawn', () => ({
     default: mockSpawn
+}));
+
+const mockIsAppStudio = jest.fn<() => boolean>();
+const mockExposePort = jest.fn<(port: number) => Promise<string | undefined>>();
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    isAppStudio: mockIsAppStudio,
+    exposePort: mockExposePort
+}));
+
+const mockRegisterSession = jest.fn<(session: EditorSession) => void>();
+const mockSignalEditor = jest.fn<(command: 'open' | 'close', url: string) => void>();
+const mockTerminate = jest.fn<(child: ChildProcess) => Promise<boolean>>();
+const mockTrackProcess = jest.fn<(child: ChildProcess, detached: boolean) => void>();
+jest.unstable_mockModule('../../../src/utils/editor-session.js', () => ({
+    registerEditorSession: mockRegisterSession,
+    signalEditor: mockSignalEditor,
+    terminateEditorProcess: mockTerminate,
+    trackEditorProcess: mockTrackProcess
 }));
 
 const mockExistsSync = jest.fn<any>().mockReturnValue(false);
@@ -34,24 +52,18 @@ jest.unstable_mockModule('node:fs', () => ({
 const { openAdaptationEditor } = await import('../../../src/tools/open-adaptation-editor.js');
 
 class FakeChildProcess extends EventEmitter {
-    stdout: EventEmitter & { resume: jest.MockedFunction<any>; setEncoding?: jest.MockedFunction<any> };
-    stderr: EventEmitter & { setEncoding: jest.MockedFunction<any> };
+    stdout: PassThrough;
+    stderr: PassThrough;
     pid: number | undefined;
+    exitCode: number | null = null;
+    signalCode: NodeJS.Signals | null = null;
     unref: jest.MockedFunction<any>;
 
     constructor(pid: number | undefined = 1234) {
         super();
         this.pid = pid;
-        this.stdout = Object.assign(new EventEmitter(), {
-            resume: jest.fn(),
-            pause: jest.fn(),
-            pipe: jest.fn(),
-            unpipe: jest.fn(),
-            destroy: jest.fn(),
-            readable: true,
-            readableEncoding: null
-        });
-        this.stderr = Object.assign(new EventEmitter(), { setEncoding: jest.fn() });
+        this.stdout = new PassThrough();
+        this.stderr = new PassThrough();
         this.unref = jest.fn();
     }
 
@@ -62,13 +74,42 @@ class FakeChildProcess extends EventEmitter {
 }
 
 describe('openAdaptationEditor', () => {
+    const savedEnv = { ...process.env };
+    const platformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
+
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSpawn.mockReset();
+        mockExistsSync.mockReset();
         mockExistsSync.mockReturnValue(false);
+        mockIsAppStudio.mockReturnValue(false);
+        mockExposePort.mockReset();
+        mockRegisterSession.mockReset();
+        mockTerminate.mockResolvedValue(true);
+        delete process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT;
+        delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
     });
 
-    function fakeSubprocess(child: FakeChildProcess): { nodeChildProcess: Promise<FakeChildProcess> } {
-        return { nodeChildProcess: Promise.resolve(child) };
+    afterEach(() => {
+        jest.useRealTimers();
+        jest.restoreAllMocks();
+        if (platformDescriptor) {
+            Object.defineProperty(process, 'platform', platformDescriptor);
+        }
+        process.env = { ...savedEnv };
+    });
+
+    function fakeSubprocess(
+        child: FakeChildProcess
+    ): Promise<unknown> & { nodeChildProcess: Promise<FakeChildProcess> } {
+        return Object.assign(new Promise(() => {}), { nodeChildProcess: Promise.resolve(child) });
+    }
+
+    async function startEditor(child = new FakeChildProcess(), lines = ['URL: http://localhost:8080']) {
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+        const result = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        setImmediate(() => lines.forEach((line) => child.emitLine(line)));
+        return result;
     }
 
     test('returns Success when URL line is emitted on stdout', async () => {
@@ -217,11 +258,9 @@ describe('openAdaptationEditor', () => {
         expect(result.port).toEqual(80);
     });
 
-    test('returns Success when URL is emitted but pid is undefined — pid check path', async () => {
-        // FakeChildProcess with pid=undefined: the source checks !processId and returns Error.
-        // However, jest.fn's mockReturnValue returns our child object; child.pid IS undefined.
-        // Verify the pid guard is exercised by checking what the function actually returns.
-        const child = new FakeChildProcess(undefined);
+    test('cleans up and returns Error when the spawned child has no pid', async () => {
+        const child = new FakeChildProcess();
+        child.pid = undefined;
         mockSpawn.mockReturnValue(fakeSubprocess(child));
 
         const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
@@ -230,9 +269,10 @@ describe('openAdaptationEditor', () => {
         });
         const result = await promise;
 
-        // The source's `!processId` guard covers pid=undefined → Error
-        // (pid is undefined → !processId is true)
-        expect(['Error', 'Success']).toContain(result.status);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('Failed to get process ID');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockRegisterSession).not.toHaveBeenCalled();
     });
 
     test('returns Error when spawn throws synchronously', async () => {
@@ -278,5 +318,206 @@ describe('openAdaptationEditor', () => {
         // On non-Windows the fallback command is 'npm'
         expect(spawnCmd).not.toContain('fiori');
         expect(spawnCmd).toContain('npm');
+    });
+
+    test('retains a non-relay process and explicitly clears inherited relay credentials', async () => {
+        process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = 'inherited-secret';
+        const child = new FakeChildProcess();
+        const result = await startEditor(child);
+
+        expect(mockSpawn).toHaveBeenCalledWith('npm', ['run', 'start-editor'], {
+            cwd: '/tmp/myapp',
+            detached: process.platform !== 'win32',
+            env: { SAP_FIORI_MCP_ADP_RELAY_TOKEN: undefined }
+        });
+        expect(process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN).toBe('inherited-secret');
+        expect(mockTrackProcess).toHaveBeenCalledWith(child, process.platform !== 'win32');
+        expect(mockRegisterSession).toHaveBeenCalledWith({
+            localUrl: result.editorUrl,
+            browserUrl: result.editorUrl,
+            relayToken: undefined,
+            childProcess: child,
+            autoOpen: false
+        });
+        expect(mockSignalEditor).not.toHaveBeenCalled();
+    });
+
+    test('generates a fresh exact 64-hex token only for HTTP relay and does not return or log it', async () => {
+        process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = 'true';
+        process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = 'inherited-secret';
+        const first = await startEditor();
+        const token = String(mockSpawn.mock.calls[0][2].env.SAP_FIORI_MCP_ADP_RELAY_TOKEN);
+        const second = await startEditor();
+
+        expect(token).toMatch(/^[a-f0-9]{64}$/);
+        expect(mockRegisterSession.mock.calls[0][0].relayToken).toBe(token);
+        expect(mockSpawn.mock.calls[1][2].env.SAP_FIORI_MCP_ADP_RELAY_TOKEN).not.toBe(token);
+        expect(JSON.stringify([first, second, mockLoggerDebug.mock.calls, mockLoggerInfo.mock.calls])).not.toContain(
+            token
+        );
+        expect(first.message).toContain('run_rta_workflow_step');
+        expect(first.message).not.toMatch(/lsof|netstat|by port/);
+    });
+
+    test.each(['false', 'TRUE', undefined])('does not enable relay for HTTP=%s', async (http) => {
+        if (http !== undefined) {
+            process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = http;
+        }
+        await startEditor();
+        expect(mockSpawn.mock.calls[0][2].env).toEqual({ SAP_FIORI_MCP_ADP_RELAY_TOKEN: undefined });
+    });
+
+    test('BAS auto-opens the external URL while retaining the original local URL and query', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockExposePort.mockResolvedValue('https://port8080.example.cloud.sap/');
+        const result = await startEditor(new FakeChildProcess(), [
+            'info fiori run --open /test/adaptation-editor.html?mode=edit',
+            'URL: http://localhost:8080'
+        ]);
+
+        expect(mockExposePort).toHaveBeenCalledWith(8080);
+        expect(result.editorUrl).toBe('https://port8080.example.cloud.sap/test/adaptation-editor.html?mode=edit');
+        expect(mockRegisterSession).toHaveBeenCalledWith(
+            expect.objectContaining({
+                localUrl: 'http://localhost:8080/test/adaptation-editor.html?mode=edit',
+                browserUrl: result.editorUrl,
+                autoOpen: true
+            })
+        );
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+        expect(mockRegisterSession.mock.invocationCallOrder[0]).toBeLessThan(
+            mockSignalEditor.mock.invocationCallOrder[0]
+        );
+    });
+
+    test.each(['empty', 'error'])('preserves BAS local URL fallback on %s exposure response', async (response) => {
+        mockIsAppStudio.mockReturnValue(true);
+        if (response === 'error') {
+            mockExposePort.mockRejectedValue(new Error('exposure unavailable'));
+        }
+        const result = await startEditor();
+        expect(result.status).toBe('Success');
+        expect(result.editorUrl).toBe('http://localhost:8080/test/adaptation-editor.html');
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+        expect(mockTerminate).not.toHaveBeenCalled();
+    });
+
+    test('BAS still signals open when no listening port can be parsed', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const result = await startEditor(new FakeChildProcess(), ['URL: http://[::1]:notaport']);
+        expect(result.status).toBe('Success');
+        expect(mockExposePort).not.toHaveBeenCalled();
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+    });
+
+    test('Windows does not create or claim a POSIX group and only recommends the owned PID tree', async () => {
+        Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+        const result = await startEditor();
+        expect(mockSpawn.mock.calls[0][2].detached).toBe(false);
+        expect(mockTrackProcess).toHaveBeenCalledWith(expect.anything(), false);
+        expect(result.message).toContain('taskkill /PID 1234 /T /F');
+        expect(result.message).not.toMatch(/lsof|netstat|by port/);
+    });
+
+    test('POSIX only recommends the newly owned process group, never a listening-port kill', async () => {
+        Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
+        const result = await startEditor();
+        expect(result.message).toContain('kill -TERM -- -1234');
+        expect(result.message).not.toMatch(/lsof|netstat|by port/);
+    });
+
+    test('cleans up the owned process if post-startup setup fails', async () => {
+        const child = new FakeChildProcess();
+        child.unref.mockImplementationOnce(() => {
+            throw new Error('startup setup failed');
+        });
+        const result = await startEditor(child);
+        expect(result.status).toBe('Error');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockRegisterSession).not.toHaveBeenCalled();
+        expect(mockSignalEditor).not.toHaveBeenCalled();
+    });
+
+    test('cleans up if the editor exits while BAS exposure is in progress', async () => {
+        const child = new FakeChildProcess();
+        mockIsAppStudio.mockReturnValue(true);
+        mockExposePort.mockImplementationOnce(async () => {
+            child.exitCode = 1;
+            return 'https://port8080.example.cloud.sap/';
+        });
+        mockRegisterSession.mockImplementationOnce(() => {
+            throw new Error('Editor process exited during startup');
+        });
+        const result = await startEditor(child);
+        expect(result.status).toBe('Error');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockSignalEditor).not.toHaveBeenCalled();
+    });
+
+    test('redacts generated and inherited tokens even if the CLI echoes them', async () => {
+        process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = 'true';
+        process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = 'inherited-secret';
+        const child = new FakeChildProcess();
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+        const pending = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        const token = String(mockSpawn.mock.calls[0][2].env.SAP_FIORI_MCP_ADP_RELAY_TOKEN);
+        setImmediate(() => {
+            child.emitLine(`debug ${token} inherited-secret`);
+            child.stderr.emit('data', `${token} inherited-secret`);
+            child.emit('error', new Error(`failed ${token} inherited-secret`));
+        });
+        const result = await pending;
+        const diagnostics = JSON.stringify([
+            result,
+            mockLoggerWarn.mock.calls,
+            mockLoggerError.mock.calls,
+            mockLoggerDebug.mock.calls,
+            mockLoggerInfo.mock.calls
+        ]);
+        expect(result.status).toBe('Error');
+        expect(diagnostics).not.toContain(token);
+        expect(diagnostics).not.toContain('inherited-secret');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+    });
+
+    test('handles nodeChildProcess rejection and consumes the nano-spawn completion rejection', async () => {
+        const failure = new Error('spawn ENOENT');
+        const subprocess = Object.assign(Promise.reject(failure), { nodeChildProcess: Promise.reject(failure) });
+        mockSpawn.mockReturnValue(subprocess);
+        const result = await openAdaptationEditor({ appPath: '/tmp/myapp' });
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('spawn ENOENT');
+        expect(mockTerminate).not.toHaveBeenCalled();
+    });
+
+    test('returns promptly and cleans up when the child exits before emitting a URL', async () => {
+        const child = new FakeChildProcess();
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+        const pending = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        setImmediate(() => {
+            child.exitCode = 1;
+            child.emit('exit', 1, null);
+        });
+        const result = await pending;
+        expect(result.status).toBe('Error');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockRegisterSession).not.toHaveBeenCalled();
+    });
+
+    test('parses ANSI-coloured URL lines and closes startup listeners after success', async () => {
+        const child = new FakeChildProcess();
+        const result = await startEditor(child, ['\u001b[32mURL: http://localhost:8080\u001b[0m']);
+        expect(result.status).toBe('Success');
+        expect(child.listenerCount('exit')).toBe(0);
+    });
+
+    test('does not wait for the startup timeout if the child already exited', async () => {
+        const child = new FakeChildProcess();
+        child.exitCode = 1;
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+        const result = await openAdaptationEditor({ appPath: '/tmp/myapp' });
+        expect(result.status).toBe('Error');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockRegisterSession).not.toHaveBeenCalled();
     });
 });

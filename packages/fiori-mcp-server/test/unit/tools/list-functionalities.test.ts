@@ -81,6 +81,14 @@ describe('listFunctionalities', () => {
         ]);
     });
 
+    test('directs adaptation projects to dedicated tools instead of listing unsupported operations', async () => {
+        mockCreateApplicationAccess.mockClear();
+        await expect(
+            listFunctionalities({ appPath: join(__dirname, '../../test-data/original/adaptation-project') })
+        ).rejects.toThrow('use open_adaptation_editor and run_rta_workflow_step');
+        expect(mockCreateApplicationAccess).not.toHaveBeenCalled();
+    });
+
     test('call with project without apps', async () => {
         mockCreateApplicationAccess.mockImplementation((rootPath) => {
             return {

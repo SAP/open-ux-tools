@@ -10,20 +10,19 @@ import {
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
-import { defaultTransport, firefoxWdTransport, isRegistryEmpty } from './browser/index.js';
+import { defaultTransport, httpTransport, isRegistryEmpty } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
+import { requireEditorSession } from '../../utils/editor-session.js';
 
 /**
  * Selects the FrontendActionTransport implementation.
  *
- * Priority order (first matching env var wins):
- * 1. SAP_FIORI_MCP_ADP_FIREFOX_WD=true — headless Firefox driven via geckodriver
- *    (WebDriver protocol). geckodriver is downloaded automatically on first use.
- *    Works without a display server. Recommended for BAS.
- * 2. Default — Playwright launches Chromium/Chrome (requires a display server).
+ * - SAP_FIORI_MCP_ADP_HTTP_TRANSPORT=true — HTTP relay; the editor page itself
+ *   executes the frontend actions. Used when the editor is opened interactively
+ *   (e.g. BAS Simple Browser) so a login can be completed before RTA runs.
+ * - Default — Playwright launches Chromium/Chrome.
  */
-const activeTransport =
-    process.env.SAP_FIORI_MCP_ADP_FIREFOX_WD === 'true' ? firefoxWdTransport : defaultTransport;
+const activeTransport = process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT === 'true' ? httpTransport : defaultTransport;
 
 /**
  * Reads `key` from `payload` and asserts it is a non-empty string. The Zod
@@ -57,10 +56,11 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
     return value as Record<string, unknown>;
 }
 
+/** Loopback hostnames the editor binds to in local Playwright runs. */
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1']);
+
 /**
- * Asserts that `site` is a non-empty http(s)://localhost or http(s)://127.0.0.1 URL.
- * The adaptation editor always binds to the local loopback interface, so any other
- * host is rejected to prevent SSRF via a malicious MCP client or prompt-injected URL.
+ * Requires an exact owned editor URL for HTTP relay, or loopback for browser transports.
  *
  * @param site Value of `input.site`.
  * @returns The validated site URL.
@@ -78,18 +78,25 @@ function requireSite(site: string | undefined): string {
     if (url.protocol !== 'http:' && url.protocol !== 'https:') {
         throw new Error(`site must be an http:// or https:// URL. Received: "${site}"`);
     }
-    if (url.hostname !== 'localhost' && url.hostname !== '127.0.0.1') {
-        throw new Error(`site must point to localhost or 127.0.0.1. Received: "${url.hostname}"`);
+
+    if (activeTransport === httpTransport) {
+        // Trust the exact session association, not host suffixes or port-shaped hostnames.
+        requireEditorSession(site);
+        return site;
     }
-    return site;
+    const hostname = url.hostname.toLowerCase();
+    if (LOOPBACK_HOSTS.has(hostname)) {
+        return site;
+    }
+
+    throw new Error(`site must point to localhost or 127.0.0.1. Received: "${url.hostname}"`);
 }
 
 /**
  * Runs one step of the RTA workflow. Dispatches by `input.step` and forwards
  * to the corresponding `rta` command wrapper. `site` and `frameId` are passed
- * directly on every call — the tool holds no server-side session state.
- * `connectionRegistry` inside `playwright-bridge` caches the live Playwright
- * page by URL and is the only long-lived state, scoped to the browser process.
+ * directly on every call. HTTP relay lifecycle and credentials belong to the
+ * editor-session registry; browser transports retain their own connections.
  *
  * @param input Step + site + frameId + step-specific payload.
  * @returns Step-specific result. The `start` step echoes `site` and `frameId` back.
@@ -132,7 +139,13 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'stop': {
                 await activeTransport.disconnectSite(site);
-                if (isRegistryEmpty()) {
+                // The relay session owns both the automatic tab signal and server handle.
+                if (activeTransport.stopEditor) {
+                    const editorServerStopped = await activeTransport.stopEditor(site);
+                    return { stopped: true, editorServerStopped };
+                }
+                // Transports that own the browser close it directly.
+                if (activeTransport !== httpTransport && isRegistryEmpty()) {
                     await activeTransport.stopBrowser();
                 }
                 return { stopped: true };
@@ -140,6 +153,13 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'restart': {
                 const page = { site, frameId };
                 await activeTransport.disconnectSite(site);
+                // Reload the editor page so it re-reads the on-disk webapp/changes
+                // (new fragment / controller files). The HTTP relay asks the editor
+                // page to reload itself. Transports without a reload capability fall
+                // back to just re-invoking startRTA in the already-loaded page.
+                if (activeTransport.reloadPage) {
+                    await activeTransport.reloadPage(site);
+                }
                 const result = await startRta(activeTransport, page);
                 return { site, frameId, ...result };
             }

@@ -600,7 +600,17 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
-        test('rta with adp instance', async () => {
+        test.each([
+            ['rta with adp instance', undefined],
+            ['rta with adp instance - invalid relay token', '"><script>alert(1)</script>'],
+            ['rta with adp instance - relay enabled', 'ab'.repeat(32)]
+        ])('%s', async (_label, token) => {
+            const previousToken = process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
+            if (token === undefined) {
+                delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
+            } else {
+                process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = token;
+            }
             const flp = new FlpSandbox(
                 mockConfig as unknown as Partial<MiddlewareConfig>,
                 mockProject,
@@ -636,18 +646,71 @@ describe('FlpSandbox', () => {
                 addApis: jest.fn()
             } as unknown as adpTooling.AdpPreview;
 
-            await flp.init(manifest, componentId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const getRouteSpy = jest.spyOn(flp.router, 'get');
+            try {
+                await flp.init(manifest, componentId, resources, adpToolingMock);
+                if (token === 'ab'.repeat(32)) {
+                    await flp.init(manifest, componentId, resources, adpToolingMock);
+                    expect(getRouteSpy.mock.calls.filter(([path]) => path === '/adp/api/rta/poll')).toHaveLength(1);
+                }
+            } finally {
+                getRouteSpy.mockRestore();
+                if (previousToken === undefined) {
+                    delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
+                } else {
+                    process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = previousToken;
+                }
+            }
             const app = express();
             app.use(flp.router);
             const server = await supertest(app);
 
-            expect(flp.templateConfig).toMatchSnapshot();
+            if (token === undefined) {
+                expect(flp.templateConfig).toMatchSnapshot();
+            }
             const response = await server
                 .get(
                     '/my/editor.html.inner.html?fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true'
                 )
                 .expect(200);
-            expect(response.text).toMatchSnapshot();
+            const enabled = token === 'ab'.repeat(32);
+            expect(response.text.includes('/adp/api/rta/client.js')).toBe(enabled);
+            expect(response.text.includes('data-token=')).toBe(enabled);
+            await server.get('/adp/api/rta/client.js').expect(enabled ? 200 : 404);
+            if (enabled) {
+                expect(response.headers['cache-control']).toBe('no-store');
+                await server.get('/adp/api/rta/poll?clientId=one').expect(401);
+                const mounted = express();
+                mounted.use('/prefix', flp.router);
+                const prefixed = await supertest(mounted)
+                    .get('/prefix/my/editor.html.inner.html?fiori-tools-rta-mode=true')
+                    .expect(200);
+                expect(prefixed.text).toContain('src="/prefix/adp/api/rta/client.js"');
+            }
+            if (token === undefined) {
+                expect(response.text).toMatchSnapshot();
+            }
+        });
+
+        test('relay token alone does not enable automation for non-ADP editors', async () => {
+            const previousToken = process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
+            process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = 'ab'.repeat(32);
+            try {
+                const flp = new FlpSandbox(mockConfig as Partial<MiddlewareConfig>, mockProject, mockUtils, logger);
+                await flp.init({ 'sap.app': { id: 'my.id' } } as Manifest);
+                const app = express();
+                app.use(flp.router);
+                const server = supertest(app);
+                await server.get('/adp/api/rta/client.js').expect(404);
+                const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
+                expect(response.text).not.toContain('/adp/api/rta/client.js');
+            } finally {
+                if (previousToken === undefined) {
+                    delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
+                } else {
+                    process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = previousToken;
+                }
+            }
         });
 
         test('rta with adp instance - preview', async () => {

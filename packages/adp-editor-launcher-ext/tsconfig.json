@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig-cjs.json",
+    "compilerOptions": {
+        "sourceMap": true,
+        "outDir": "dist",
+        "module": "Node16",
+        "moduleResolution": "Node16",
+        "types": ["node"]
+    },
+    "include": ["src/**/*.ts", "package.json"],
+    "exclude": ["dist", "node_modules"]
+}

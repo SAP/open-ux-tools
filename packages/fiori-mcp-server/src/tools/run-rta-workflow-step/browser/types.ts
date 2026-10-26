@@ -25,4 +25,15 @@ export interface FrontendActionTransport {
     disconnectSite(site: string): Promise<void>;
     /** Close every registered page and the underlying transport (browser). */
     stopBrowser(): Promise<void>;
+    /**
+     * Reloads the page hosting `site` so the adaptation editor re-reads the
+     * on-disk `webapp/changes` (used by the `restart` step after new fragment /
+     * controller files have been written). Optional: transports that drive the
+     * browser directly can reload it; the HTTP relay transport asks the editor
+     * page to reload itself. When absent, the `restart` step falls back to
+     * re-invoking `startRTA` in the already-loaded page.
+     */
+    reloadPage?(site: string): Promise<void>;
+    /** Close the owned tab/server and report server termination, without process discovery. */
+    stopEditor?(site: string): Promise<boolean>;
 }

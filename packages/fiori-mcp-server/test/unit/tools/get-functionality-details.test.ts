@@ -75,6 +75,17 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({ ...addPageDependency.ADD_PAGE_FUNCTIONALITY });
     });
 
+    test('rejects generic controller extension details for adaptation projects with actionable guidance', async () => {
+        mockCreateApplicationAccess.mockClear();
+        await expect(
+            getFunctionalityDetails({
+                appPath: join(__dirname, '../../test-data/original/adaptation-project'),
+                functionalityId: 'create-controller-extension'
+            })
+        ).rejects.toThrow('adp_controller_extension');
+        expect(mockCreateApplicationAccess).not.toHaveBeenCalled();
+    });
+
     test('call atomic property', async () => {
         mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);
         const details = await getFunctionalityDetails({
