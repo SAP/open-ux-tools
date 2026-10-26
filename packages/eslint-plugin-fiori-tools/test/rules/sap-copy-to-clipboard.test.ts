@@ -152,7 +152,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 errors: [
                     {
                         message:
-                            '`copy` in the Products table must be correctly configured. If not set, the "Copy" button is displayed',
+                            '`copy` in the Products table must not be set to `false`, because this will hide the "Copy" button',
                         line: 154,
                         column: 23
                     }
@@ -201,7 +201,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 errors: [
                     {
                         message:
-                            '`disableCopyToClipboard` in the table must be correctly configured. If not set, the "Copy" button is displayed',
+                            '`disableCopyToClipboard` in the table must not be set to `true`, because this will hide the "Copy" button',
                         line: 127,
                         column: 21
                     }
