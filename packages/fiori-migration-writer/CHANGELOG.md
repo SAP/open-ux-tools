@@ -1,5 +1,36 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
+## 0.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Restore ui5-mock.yaml middleware and targetMockHtmlFile; resolve SonarQube findings and thread mem-fs editor explicitly [[fc7d03d](https://github.com/SAP/open-ux-tools/commit/fc7d03dac8da1434cf14370da953b15edff89439)]
+
+## 0.0.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+
 ## 0.0.4
 
 ### Patch Changes

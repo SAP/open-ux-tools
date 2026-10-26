@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Migration Integration Tests Legacy Folder Structure Migration should migrate project with src/main/webapp structure (AR) 1`] = `
-"/webapp/Component-changes.json
+"/src/main/webapp/Component-changes.json
 /sap-ui-cachebuster-info.json
 /.user.project.json
 /target

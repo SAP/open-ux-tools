@@ -42,7 +42,7 @@ export interface MemFsStore {
  *
  * @example
  * ```typescript
- * const editor = getCurrentEditor() as EditorWithStore;
+ * const editor = fs as EditorWithStore;
  * editor.store.each((file) => {
  *     console.log(file.path);
  * });
