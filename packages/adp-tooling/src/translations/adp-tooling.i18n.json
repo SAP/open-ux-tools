@@ -135,7 +135,7 @@
         "cfPushFailed": "cf push failed for the '{{appName}}' app: {{error}}",
         "cfEnableSshFailed": "cf enable-ssh failed for the '{{appName}}' app: {{error}}",
         "cfRestartFailed": "cf restart failed for the '{{appName}}' app: {{error}}",
-        "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration."
+        "checkDestinationAuthConfig": "Please check the authentication configuration of the destination in SAP BTP."
     },
     "choices": {
         "true": "true",
