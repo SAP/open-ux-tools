@@ -682,7 +682,57 @@ describe('FE V4 Linker - XML', () => {
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(1);
         expect(sections[0].type).toBe('table-section');
+        expect(sections[0].id).toBe('IncidentFlows');
+        expect(sections[0].children).toHaveLength(1);
         expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
+    });
+
+    test('collectSections - qualified PresentationVariant facet resolves qualified LineItem path', async () => {
+        const pvAnnotations = `<Annotations Target="IncidentService.Incidents">
+            <Annotation Term="UI.Facets">
+                <Collection>
+                    <Record Type="UI.ReferenceFacet">
+                        <PropertyValue Property="ID" String="IncidentFlows"/>
+                        <PropertyValue Property="Label" String="Incident Flows"/>
+                        <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.PresentationVariant#Report"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+        </Annotations>
+        <Annotations Target="IncidentService.IncidentFlow">
+            <Annotation Term="UI.PresentationVariant" Qualifier="Report">
+                <Record Type="UI.PresentationVariantType">
+                    <PropertyValue Property="Visualizations">
+                        <Collection>
+                            <AnnotationPath>@UI.LineItem#Summary</AnnotationPath>
+                        </Collection>
+                    </PropertyValue>
+                </Record>
+            </Annotation>
+            <Annotation Term="UI.LineItem" Qualifier="Summary">
+                <Collection>
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="processStep"/>
+                    </Record>
+                </Collection>
+            </Annotation>
+        </Annotations>`;
+        const context = await setup({ annotationsChange: pvAnnotations });
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            assert.fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Incidents'];
+        if (!entity?.structuredType) {
+            assert.fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].id).toBe('IncidentFlows');
+        expect(sections[0].children).toHaveLength(1);
+        expect(sections[0].children[0].annotationPath).toBe(
+            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem#Summary'
+        );
     });
 
     test('collectSections - chart-first PresentationVariant facet creates no table section', async () => {
