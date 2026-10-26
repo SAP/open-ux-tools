@@ -1153,6 +1153,7 @@ describe('FE V4 Linker - XML', () => {
                                 <PropertyValue Property="Visualizations">
                                     <Collection>
                                         <AnnotationPath>@UI.Chart</AnnotationPath>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
                                     </Collection>
                                 </PropertyValue>
                             </Record>
@@ -1171,6 +1172,47 @@ describe('FE V4 Linker - XML', () => {
             }
             const sections = collectSections('v4', entity.structuredType, mainService);
             expect(sections).toHaveLength(0);
+        });
+
+        test('SelectionPresentationVariant with unknown-first visualization creates table section', async () => {
+            // FE skips unknown types and renders the first recognised one.
+            // [@CardItem, @LineItem] => FE renders a table, so the linter must create a table section.
+            const annotation = `${spvFacetOnly}
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="UI.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection>
+                                        <AnnotationPath>@UI.CardItem</AnnotationPath>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="id" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>`;
+            const context = await setup({ annotationsChange: annotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(1);
+            expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
         });
 
         test('SelectionPresentationVariant without PresentationVariant property produces no section', async () => {

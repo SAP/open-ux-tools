@@ -439,15 +439,19 @@ function findLineItemInVisualization(
 }
 
 /**
- * Extracts the first `UI.LineItem` visualization path from an inline `UI.PresentationVariant` record.
+ * Extracts the first recognised visualization path from an inline `UI.PresentationVariant` record.
  *
  * Used for `UI.SelectionPresentationVariant` where the `PresentationVariant` property is always an
  * inline Record (never separately indexed).
  *
+ * Unknown visualization types are skipped; the search stops at the first recognised term
+ * (`UI.LineItem` or `UI.Chart`). This mirrors Fiori Elements' own resolution order:
+ * `[CardItem, LineItem]` produces a table, `[CardItem, Chart, LineItem]` produces a chart.
+ *
  * @param pvRecord - The `UI.PresentationVariantType` Record element to inspect.
  * @param pvAliasInfo - Alias information for the file that contains the record.
- * @returns The fully-qualified annotation path and optional qualifier, or `undefined` if the first
- *   visualization is not a `UI.LineItem`.
+ * @returns The fully-qualified annotation path and optional qualifier when the first recognised
+ *   visualization is a `UI.LineItem`, or `undefined` otherwise.
  */
 function findLineItemInPvRecord(
     pvRecord: Element,
@@ -461,32 +465,34 @@ function findLineItemInPvRecord(
     if (!vizCollection) {
         return undefined;
     }
-    const [vizElement] = elementsWithName(Edm.AnnotationPath, vizCollection);
-    if (!vizElement) {
-        return undefined;
+    for (const vizElement of elementsWithName(Edm.AnnotationPath, vizCollection)) {
+        const vizPath = getElementText(vizElement);
+        if (!vizPath) {
+            continue;
+        }
+        const atIdx = vizPath.indexOf('@');
+        if (atIdx === -1) {
+            continue;
+        }
+        const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
+        const fullyQualifiedTerm = toFullyQualifiedName(
+            pvAliasInfo.aliasMap,
+            pvAliasInfo.currentFileNamespace,
+            parseIdentifier(termAlias)
+        );
+        if (fullyQualifiedTerm === UI_LINE_ITEM) {
+            const qualifierSuffix = qualifier ? `#${qualifier}` : '';
+            return {
+                path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
+                qualifier
+            };
+        }
+        if (fullyQualifiedTerm === UI_CHART) {
+            return undefined;
+        }
+        // Unknown term — skip and check next visualization
     }
-    const vizPath = getElementText(vizElement);
-    if (!vizPath) {
-        return undefined;
-    }
-    const atIdx = vizPath.indexOf('@');
-    if (atIdx === -1) {
-        return undefined;
-    }
-    const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
-    const fullyQualifiedTerm = toFullyQualifiedName(
-        pvAliasInfo.aliasMap,
-        pvAliasInfo.currentFileNamespace,
-        parseIdentifier(termAlias)
-    );
-    if (fullyQualifiedTerm !== UI_LINE_ITEM) {
-        return undefined;
-    }
-    const qualifierSuffix = qualifier ? `#${qualifier}` : '';
-    return {
-        path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
-        qualifier
-    };
+    return undefined;
 }
 
 /**
