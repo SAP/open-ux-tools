@@ -9,6 +9,7 @@ sap.ui.define([
         pages: {<% if (pages.length > 0) { %>
 <%- pages.map((page) => {return '\t\t\tonThe' + page.targetKey + 'Generated: ' + page.targetKey + "Generated"}).join(',\n')%>
         <% } %>},
+        opaConfig: { autoWait: true },
         async: true
     });
 

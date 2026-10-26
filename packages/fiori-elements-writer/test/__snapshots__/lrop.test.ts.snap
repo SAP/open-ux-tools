@@ -18940,6 +18940,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
 			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -23010,6 +23011,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
 			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -23926,6 +23928,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
 			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -24924,6 +24927,7 @@ const runner = new JourneyRunner({
             CustomBookingObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -26568,6 +26572,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
 			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
