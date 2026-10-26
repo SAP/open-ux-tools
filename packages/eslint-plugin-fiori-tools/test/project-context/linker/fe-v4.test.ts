@@ -816,6 +816,8 @@ describe('FE V4 Linker - XML', () => {
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(1);
+        expect(sections[0].id).toBe('IncidentFlows');
+        expect(sections[0].children).toHaveLength(1);
         expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
     });
 
