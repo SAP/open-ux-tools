@@ -1,5 +1,21 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 2.0.14
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+## 2.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+
 ## 2.0.12
 
 ### Patch Changes

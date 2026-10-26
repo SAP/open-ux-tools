@@ -1,13 +1,14 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Data } from 'ejs';
+import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
 import type { TemplateProperties, SapUxLayer } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { writeFile } from './file-access.js';
-import { createDirectory } from './file-system-utils.js';
+import uniq from 'lodash/uniq.js';
 
 // Get current directory using import.meta.url (ESM)
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -23,16 +24,13 @@ const sapLibsRegexFilter = /(?:^sap|\.sap)/;
  * @param libsStrInput
  */
 export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): string {
-    let libStrOut = '';
     const mlibs = Object.keys(manifestLibs || {});
     // remove spaces and split at comma
     const strlibs = libsStrInput?.replaceAll(' ', '').split(',') || [];
     const libs = mlibs.concat(strlibs);
-    const uniquelibs = libs.filter((v, i, a) => a.indexOf(v) === i);
+    const uniquelibs = uniq(libs);
 
-    libStrOut = uniquelibs.filter((ele) => sapLibsRegexFilter.test(ele)).join(', ');
-
-    return libStrOut;
+    return uniquelibs.filter((ele) => sapLibsRegexFilter.test(ele)).join(', ');
 }
 
 /**
@@ -81,6 +79,7 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
 /**
  * Generate template file using EJS and template utilities
  *
+ * @param fs - mem-fs editor
  * @param templateData
  * @param projectRoot
  * @param templateRoot
@@ -88,6 +87,7 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
  * @param templateProps
  */
 export async function generateTemplate(
+    fs: Editor,
     templateData: Data,
     projectRoot: string,
     templateRoot: string,
@@ -109,19 +109,16 @@ export async function generateTemplate(
     // 2. Resolve template data
     const resolvedData = resolveTemplateData(templateData, templateProps);
 
-    // 3. Ensure target directory exists (uses fs-adapter)
-    createDirectory(dirname(targetFile));
-
-    // 4. Render template
+    // 3. Render template (mem-fs handles directory creation implicitly)
     const { isRendered = true, opts = {} } = templateProps;
-    let content = renderTemplate(templateRoot, fullTemplateName, resolvedData, opts, isRendered);
+    let content = renderTemplate(fs, templateRoot, fullTemplateName, resolvedData, opts, isRendered);
 
-    // 5. Apply file-specific handlers
-    content = await applyFileSpecificHandlers(templateName, content, projectRoot, targetFile, templateData);
+    // 4. Apply file-specific handlers
+    content = await applyFileSpecificHandlers(fs, templateName, content, projectRoot, targetFile, templateData);
 
-    // 6. Write file (uses fs-adapter)
+    // 5. Write file (mem-fs handles directory creation implicitly)
     // Do not catch - let errors propagate to caller for proper handling
-    writeFile(targetFile, content);
+    writeFile(fs, targetFile, content);
 }
 
 /**

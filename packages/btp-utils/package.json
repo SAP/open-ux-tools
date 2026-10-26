@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/btp-utils",
-    "version": "2.0.6",
+    "version": "2.0.8",
     "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
     "type": "module",
     "repository": {
@@ -34,14 +34,14 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
+        "@sap/bas-sdk": "3.13.16",
         "@sap/cf-tools": "3.3.1",
-        "axios": "1.18.1",
-        "@sap/bas-sdk": "3.13.10"
+        "axios": "1.20.0"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
-        "nock": "14.0.16",
-        "@sap-ux/logger": "workspace:*"
+        "@sap-ux/logger": "workspace:*",
+        "nock": "14.0.16"
     },
     "files": [
         "dist",

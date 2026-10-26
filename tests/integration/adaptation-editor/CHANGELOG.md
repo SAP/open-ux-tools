@@ -1,5 +1,31 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.28
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+## 1.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Upgrade npm-run-all2 9.0.2 → 9.0.3 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux-private/playwright 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.0.26
 
 ### Patch Changes

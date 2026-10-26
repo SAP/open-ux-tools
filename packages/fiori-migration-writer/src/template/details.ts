@@ -2,8 +2,9 @@
  * Helper functions for extracting template details from manifest and pom.xml
  */
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { TemplateFileName } from '../index.js';
-import { fileExists, readFile } from '../utils/index.js';
+import { readFile, fileExists } from '../utils/index.js';
 import type { Manifest, ManifestNamespace, FioriElementsVersion } from '../project-spec-types.js';
 import { xmlToJson } from '../utils/service.js';
 import { isAppFreestyle } from '../utils/common.js';
@@ -23,6 +24,7 @@ export interface TemplateDetailsExtractionResult {
 /**
  * Extract template details including FE version, floor plan, and app metadata from manifest and pom.xml
  *
+ * @param fs - mem-fs editor
  * @param manifest - The manifest object
  * @param projectRoot - Root path of the project
  * @param mainService - Main service name
@@ -31,20 +33,21 @@ export interface TemplateDetailsExtractionResult {
  * @param getFloorPlan - Function to get floor plan from manifest
  * @returns Template details extraction result
  */
-export async function extractTemplateDetails(
+export function extractTemplateDetails(
+    fs: Editor,
     manifest: Manifest,
     projectRoot: string,
     mainService: string,
     existingAppVersion: string,
     getVersionFromManifest: (manifest: Manifest) => FioriElementsVersion | undefined,
     getFloorPlan: (manifest: Manifest, feVersion: FioriElementsVersion | undefined) => string
-): Promise<TemplateDetailsExtractionResult> {
+): TemplateDetailsExtractionResult {
     const feVersion = getVersionFromManifest(manifest);
     const isSAPApp = !feVersion ? isAppFreestyle(manifest, feVersion) : false;
     const floorPlan = !isSAPApp ? getFloorPlan(manifest, feVersion) : undefined;
 
     const mainServiceDatasource = extractMainServiceDatasource(manifest, mainService);
-    const { sapAppId, appVersion } = await extractPomDetails(manifest, projectRoot, existingAppVersion);
+    const { sapAppId, appVersion } = extractPomDetails(fs, manifest, projectRoot, existingAppVersion);
 
     return {
         feVersion,
@@ -75,25 +78,27 @@ function extractMainServiceDatasource(manifest: Manifest, mainService: string): 
 /**
  * Extract app ID and version from pom.xml
  *
+ * @param fs - mem-fs editor
  * @param manifest
  * @param projectRoot
  * @param existingAppVersion
  */
-async function extractPomDetails(
+function extractPomDetails(
+    fs: Editor,
     manifest: Manifest,
     projectRoot: string,
     existingAppVersion: string
-): Promise<{ sapAppId: string; appVersion: string }> {
+): { sapAppId: string; appVersion: string } {
     let sapAppId = manifest['sap.app']?.id || '';
     let appVersion = existingAppVersion;
 
     const pomXmlPath = join(projectRoot, TemplateFileName.Pom);
-    if (!(await fileExists(pomXmlPath))) {
+    if (!fileExists(fs, pomXmlPath)) {
         return { sapAppId, appVersion };
     }
 
     try {
-        const pomFileStr = readFile(pomXmlPath);
+        const pomFileStr = readFile(fs, pomXmlPath);
         const pomJSON: any = xmlToJson(pomFileStr);
 
         if (!pomJSON) {

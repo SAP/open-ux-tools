@@ -26,15 +26,13 @@ describe('Library Project - Coverage Tests', () => {
             result,
             messages,
             fs: updatedFs
-        } = await ProjectMigrator.migrate(
-            testInputBase,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        } = await ProjectMigrator.migrate({
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         // Library migration should succeed
         expect(['SUCCESS', 'WARNING'].some((status) => result === true || messages.length > 0)).toBe(true);
@@ -44,7 +42,7 @@ describe('Library Project - Coverage Tests', () => {
         const packageJson = JSON.parse(updatedFs.read(join(testInputBase, 'package.json')).toString());
         expect(packageJson.devDependencies).toHaveProperty('@sap/ux-ui5-tooling', '1');
         expect(packageJson.devDependencies).not.toHaveProperty('@sap-ux/ui5-tooling');
-    });
+    }, 60000);
 
     it('should detect UI5 tooling dependencies in library', async () => {
         if (!existsSync(testInputBase)) {

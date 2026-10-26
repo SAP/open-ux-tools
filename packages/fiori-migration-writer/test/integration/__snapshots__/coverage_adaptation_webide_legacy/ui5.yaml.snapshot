@@ -49,7 +49,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.153.0
 builder:
   resources:
     excludes:

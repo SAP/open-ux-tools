@@ -1,5 +1,67 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Stop emitting unpassable `iCheckField` steps for ObjectPage checkbox-group fields. A nested all-boolean `UI.FieldGroup` renders as a group of checkboxes whose members are not addressable by the sap.fe.test.api form API; such fields are now emitted commented out with an explanatory note instead of as live assertions. [[9a4ce7f](https://github.com/SAP/open-ux-tools/commit/9a4ce7fbcb9d778fcba88b840f13cda2303ac3d9)]
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.27 → 1.2.28
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+
+## 1.19.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Features
+
+- Generate iCheckSortOrder and iCheckFilterField assertions from PresentationVariant and SelectionVariant annotations [[e84f46e](https://github.com/SAP/open-ux-tools/commit/e84f46ea75f7de5ce45f3e67939ede5ca36ecaba)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+
+## 1.18.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- Resolve JourneyRunner launchUrl from test/flpSandbox.html instead of defaulting to index.html [[665fd4b](https://github.com/SAP/open-ux-tools/commit/665fd4b6e6ea3ccd22234ddda547f02781a96fc2)]
+
+## 1.18.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/preview-middleware 1.2.26 → 1.2.27
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.6
+
 ## 1.18.1
 
 ### Patch Changes

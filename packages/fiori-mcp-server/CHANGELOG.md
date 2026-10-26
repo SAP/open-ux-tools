@@ -1,5 +1,41 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/btp-utils [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (dotenv 18) [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+## 1.15.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- make ui5Version optional in app generation tools — omitting it lets the MCP server resolve the latest stable UI5 version from ui5.sap.com instead of using a hardcoded value in the MCP schema [[1e9c957](https://github.com/SAP/open-ux-tools/commit/1e9c957b1ee7253c9ec7f6e85f5509dfc9dd501d)]
+
+## 1.15.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling, @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/inquirer-common, @sap-ux/ui5-config, @sap-ux/telemetry, @sap-ux/ui5-info [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
 ## 1.15.12
 
 ### Patch Changes

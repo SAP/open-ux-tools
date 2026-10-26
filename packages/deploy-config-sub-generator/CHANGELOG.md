@@ -1,5 +1,39 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.82
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/abap-deploy-config-sub-generator 1.0.70 → 1.0.71
+- @sap-ux/cf-deploy-config-sub-generator 1.0.55 → 1.0.56
+- @sap-ux/deploy-config-generator-shared 1.0.44 → 1.0.45
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/odata-service-inquirer 3.2.26 → 3.2.27
+
+## 1.0.81
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/odata-service-inquirer 3.2.25 → 3.2.26
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/deploy-config-generator-shared 1.0.43 → 1.0.44
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/abap-deploy-config-sub-generator 1.0.69 → 1.0.70
+- @sap-ux/cf-deploy-config-sub-generator 1.0.54 → 1.0.55
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.0.80
 
 ### Patch Changes

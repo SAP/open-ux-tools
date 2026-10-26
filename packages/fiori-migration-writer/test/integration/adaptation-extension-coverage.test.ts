@@ -1,10 +1,50 @@
-import { describe, it, expect, beforeAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, jest } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
-import { ProjectMigrator, initI18n } from '../../src/index.js';
+import {
+    defaultMinUi5Version,
+    defaultVersion,
+    getDefaultUI5Theme,
+    getLatestUI5Version,
+    getSapSystemUI5Version,
+    getUi5Themes,
+    latestVersionString,
+    minSupportedSpecVersion,
+    minUI5VersionForLocalDev,
+    minUi5VersionV4Template,
+    supportedUi5VersionFallbacks,
+    ui5ThemeIds,
+    ui5Themes,
+    ui5VersionRequestInfo
+} from '@sap-ux/ui5-info';
 import { loadProjectIntoMemFs } from '../helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../test-constants.js';
+
+const PINNED_UI5_VERSION = '1.153.0';
+
+// Mock the UI5 version lookup to avoid a real network request to https://ui5.sap.com
+// during migration (resolveUI5VersionsForMigration -> getUI5Versions), which otherwise
+// makes the first test in this file slow and flaky on CI.
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    defaultMinUi5Version,
+    defaultVersion,
+    getDefaultUI5Theme,
+    getLatestUI5Version,
+    getSapSystemUI5Version,
+    getUI5Versions: jest.fn().mockResolvedValue([{ version: PINNED_UI5_VERSION }]),
+    getUi5Themes,
+    latestVersionString,
+    minSupportedSpecVersion,
+    minUI5VersionForLocalDev,
+    minUi5VersionV4Template,
+    supportedUi5VersionFallbacks,
+    ui5ThemeIds,
+    ui5Themes,
+    ui5VersionRequestInfo
+}));
+
+const { ProjectMigrator, initI18n } = await import('../../src/index.js');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -46,15 +86,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -75,15 +113,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         // No package.json created intentionally
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -116,15 +152,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'neo-app.json'), JSON.stringify(neoapp, null, 2));
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -152,15 +186,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result, messages } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result, messages } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
         const errors = messages.filter((m) => m.type === 'ERROR');
@@ -190,15 +222,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -218,15 +248,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -257,15 +285,13 @@ describe('Adaptation Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -321,15 +347,13 @@ describe('Extension Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'webapp', 'Component.js'), component);
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -377,15 +401,13 @@ describe('Extension Project - Enhanced Coverage', () => {
         );
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
@@ -429,15 +451,13 @@ describe('Extension Project - Enhanced Coverage', () => {
         writeFileSync(join(testProjectPath, 'webapp', 'view', 'MainExtension.fragment.xml'), viewExtension);
 
         const fs = loadProjectIntoMemFs(testProjectPath);
-        const { result } = await ProjectMigrator.migrate(
-            testProjectPath,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result } = await ProjectMigrator.migrate({
+            projectRoot: testProjectPath,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBeDefined();
     });
