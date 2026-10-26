@@ -93,7 +93,7 @@ describe('isAuthRequired', () => {
         mockIsBasicAuthConfigured.mockResolvedValue(true);
 
         await expect(isAuthRequired('SYS010', logger)).rejects.toThrow(
-            'Please check the SAP BTP destination authentication configuration.'
+            'Please check the authentication configuration of the destination in SAP BTP.'
         );
     });
 
