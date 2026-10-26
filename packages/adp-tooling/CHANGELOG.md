@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 1.0.67
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-26
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
 ## 1.0.66
 
 ### Patch Changes
