@@ -383,9 +383,7 @@ export const getElementText = (element: ElementChild): string | undefined =>
  * Searches a `UI.PresentationVariant` annotation's `Visualizations` collection for the first
  * visualization that Fiori Elements recognises (`UI.LineItem` or `UI.Chart`).
  *
- * Unknown visualization types are skipped; the search stops at the first recognised term.
- * This mirrors Fiori Elements' own resolution order: `[CardItem, LineItem]` produces a table,
- * `[CardItem, Chart, LineItem]` produces a chart (and therefore no table section node).
+ * Extracts the record from the indexed annotation and delegates to {@link findLineItemInPvRecord}.
  *
  * @param pvAnnotation - The indexed `UI.PresentationVariant` annotation to inspect.
  * @param pvAliasInfo - Alias information for the file that contains the PresentationVariant.
@@ -400,42 +398,7 @@ function findLineItemInVisualization(
     if (!pvRecord) {
         return undefined;
     }
-    const vizPropValue = getPropertyValueElement(pvRecord, 'Visualizations');
-    if (!vizPropValue) {
-        return undefined;
-    }
-    const [vizCollection] = elementsWithName(Edm.Collection, vizPropValue);
-    if (!vizCollection) {
-        return undefined;
-    }
-    for (const vizElement of elementsWithName(Edm.AnnotationPath, vizCollection)) {
-        const vizPath = getElementText(vizElement);
-        if (!vizPath) {
-            continue;
-        }
-        const atIdx = vizPath.indexOf('@');
-        if (atIdx === -1) {
-            continue;
-        }
-        const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
-        const fullyQualifiedTerm = toFullyQualifiedName(
-            pvAliasInfo.aliasMap,
-            pvAliasInfo.currentFileNamespace,
-            parseIdentifier(termAlias)
-        );
-        if (fullyQualifiedTerm === UI_LINE_ITEM) {
-            const qualifierSuffix = qualifier ? `#${qualifier}` : '';
-            return {
-                path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
-                qualifier
-            };
-        }
-        if (fullyQualifiedTerm === UI_CHART) {
-            return undefined;
-        }
-        // Unknown term — skip and check next visualization
-    }
-    return undefined;
+    return findLineItemInPvRecord(pvRecord, pvAliasInfo);
 }
 
 /**
@@ -496,6 +459,23 @@ function findLineItemInPvRecord(
 }
 
 /**
+ * Extracts the section label from a `UI.ReferenceFacet` record's `Label` property value.
+ *
+ * @param record - The `UI.ReferenceFacet` Record element to inspect.
+ * @returns The label string, or `undefined` if no label is present.
+ */
+function getSectionLabelFromRecord(record: Element): string | undefined {
+    const propValues = elementsWithName(Edm.PropertyValue, record);
+    const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
+    let sectionLabel = propValue ? getElementAttribute(propValue, Edm.String)?.value : undefined;
+    if (!sectionLabel) {
+        const textContent = findContentByName(propValue?.content ?? [], Edm.String);
+        sectionLabel = textContent ? getElementText(textContent) : undefined;
+    }
+    return sectionLabel;
+}
+
+/**
  * Process a single reference facet record and create a table or header section if applicable.
  *
  * @param record
@@ -543,13 +523,7 @@ function processReferenceFacetRecord(
     const [, _annotationPath] = fullyQualifiedPath.split('@');
     const [term, qualifier] = _annotationPath.split('#');
 
-    const propValues = elementsWithName(Edm.PropertyValue, record);
-    const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
-    let sectionLabel = propValue ? getElementAttribute(propValue, Edm.String)?.value : undefined;
-    if (!sectionLabel) {
-        const textContent = findContentByName(propValue?.content ?? [], Edm.String);
-        sectionLabel = textContent ? getElementText(textContent) : undefined;
-    }
+    const sectionLabel = getSectionLabelFromRecord(record);
     if (term === UI_LINE_ITEM) {
         return createTableSection(
             facets,
