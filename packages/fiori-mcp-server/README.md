@@ -142,9 +142,10 @@ The adaptation-editor HTTP relay is opt-in; the MCP client connection still uses
 `stdio`. It runs UI5 frontend actions in the real Simple Browser page, allowing
 interactive login without a server-side Chromium browser.
 
-Use a relay-enabled `@sap-ux/preview-middleware` in the adaptation project and the
-matching [ADP Editor Launcher extension](../adp-editor-launcher-ext/README.md).
-No relay patch to `@sap-ux/adp-tooling` is required. Add these flags to the MCP
+Use a relay-enabled `@sap-ux/preview-middleware` in the adaptation project. In SAP
+Business Application Studio the editor tab is opened automatically by the SAP Fiori
+tools Application Modeler extension, which watches the launcher mailbox. No relay
+patch to `@sap-ux/adp-tooling` is required. Add these flags to the MCP
 server's `env` configuration:
 
 ```json
