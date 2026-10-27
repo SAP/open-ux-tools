@@ -1,6 +1,9 @@
 import { jest } from '@jest/globals';
 import type { Page } from 'playwright-core';
-import { installAppLoadedListener, waitForAppLoaded } from '../../../../../src/tools/run-rta-workflow-step/browser/editor-ready.js';
+import {
+    installAppLoadedListener,
+    waitForAppLoaded
+} from '../../../../../src/tools/run-rta-workflow-step/browser/editor-ready.js';
 
 /**
  * Minimal Page stub exposing only the methods editor-ready uses.
