@@ -5,7 +5,7 @@ import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 // Migration-specific functions
 import {
@@ -81,7 +81,6 @@ export class ProjectMigrator {
         } = options;
 
         // Resolve relative paths to absolute to avoid issues with path traversal
-        const { resolve } = await import('node:path');
         const projectRoot = resolve(projectRootInput);
 
         // Create a new isolated editor instance for this migration if not provided
