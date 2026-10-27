@@ -178,11 +178,14 @@ Simple Browser** after opening the editor through MCP.
   It is passed privately to the child through
   `SAP_FIORI_MCP_ADP_RELAY_TOKEN`; this is an internal secret, not a user setting.
   Preview middleware registers relay routes and injects the client only for ADP
-  with a valid token. Relay API requests use `Authorization: Bearer …`.
+  with a valid token. Relay API requests carry it in the `X-Relay-Token` header
+  (not `Authorization`, which the BAS router rejects for browser requests).
 - Each relay allows at most one pending/in-flight command and one owning browser
   document (`clientId`); conflicting polls and duplicate results are rejected.
   Mutations are not automatically replayed. `restart` sends `__reload__`, then
-  `__ready__`, and requires readiness from a different `clientId`.
+  `__ready__`, and requires readiness from a different `clientId`. The relay
+  client waits for the editor's own developer-mode RTA before `__ready__` and
+  `startRTA`, so MCP never starts a separate key-user session.
 - Open/close use one atomically replaced mailbox, `/tmp/sap-ux-adp-editor.json`
   (`tmpdir()` on other hosts), with `{ command, url, id }`; it contains neither
   credentials nor process details. The launcher closes only its owned Simple

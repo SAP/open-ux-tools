@@ -36,11 +36,11 @@ describe('preview RTA relay', () => {
         await new Promise<void>((resolve) => listener.close(() => resolve()));
     });
 
-    const poll = (clientId = 'first') => server.get(`${API}/poll`).query({ clientId }).auth(TOKEN, { type: 'bearer' });
+    const poll = (clientId = 'first') => server.get(`${API}/poll`).query({ clientId }).set('X-Relay-Token', TOKEN);
     const action = (actionName = ACTION) =>
-        server.post(`${API}/action`).auth(TOKEN, { type: 'bearer' }).send({ actionName });
+        server.post(`${API}/action`).set('X-Relay-Token', TOKEN).send({ actionName });
     const result = (id: string, clientId = 'first', value: unknown = { isSuccess: true }) =>
-        server.post(`${API}/result`).auth(TOKEN, { type: 'bearer' }).send({ id, clientId, result: value });
+        server.post(`${API}/result`).set('X-Relay-Token', TOKEN).send({ id, clientId, result: value });
 
     // Synchronize on route registration rather than timing sleeps or retried mutations.
     const begin = async (request: supertest.Test) => {
@@ -82,10 +82,11 @@ describe('preview RTA relay', () => {
         ['get', 'poll'],
         ['post', 'action'],
         ['post', 'result']
-    ] as const)('%s %s requires an exact bearer token', async (method, route) => {
-        for (const authorization of ['', `Bearer ${'b'.repeat(64)}`, `Basic ${TOKEN}`]) {
-            await server[method](`${API}/${route}`).set('Authorization', authorization).expect(401);
+    ] as const)('%s %s requires the exact relay token header', async (method, route) => {
+        for (const header of ['', 'b'.repeat(64), `Bearer ${TOKEN}`, TOKEN.toUpperCase()]) {
+            await server[method](`${API}/${route}`).set('X-Relay-Token', header).expect(401);
         }
+        await server[method](`${API}/${route}`).set('Authorization', `Bearer ${TOKEN}`).expect(401);
     });
 
     test('delivers a queued action only once and rejects concurrent commands', async () => {
@@ -114,7 +115,7 @@ describe('preview RTA relay', () => {
         const command = await begin(
             server
                 .post(`${API}/action`)
-                .auth(TOKEN, { type: 'bearer' })
+                .set('X-Relay-Token', TOKEN)
                 .send({ actionName: ACTION, payload: { controlId: 'control' }, frameId: 'preview' })
         );
         const delivery = await poll().expect(200);
@@ -137,7 +138,7 @@ describe('preview RTA relay', () => {
         const delivery = await poll().expect(200);
         await server
             .post(`${API}/result`)
-            .auth(TOKEN, { type: 'bearer' })
+            .set('X-Relay-Token', TOKEN)
             .send({ id: delivery.body.id, clientId: 'first', error: 'UI5 failure' })
             .expect(200);
         expect((await command.response).body).toEqual({ error: 'UI5 failure' });
@@ -209,7 +210,7 @@ describe('preview RTA relay', () => {
         const otherServer = supertest(other);
         const second = otherServer
             .get(`${API}/poll?clientId=second`)
-            .auth(TOKEN, { type: 'bearer' })
+            .set('X-Relay-Token', TOKEN)
             .then((res) => res);
         const command = await begin(action());
         const delivery = await first.response;
@@ -217,13 +218,13 @@ describe('preview RTA relay', () => {
         await command.response;
         const otherCommand = otherServer
             .post(`${API}/action`)
-            .auth(TOKEN, { type: 'bearer' })
+            .set('X-Relay-Token', TOKEN)
             .send({ actionName: ACTION })
             .then((res) => res);
         const secondDelivery = await second;
         await otherServer
             .post(`${API}/result`)
-            .auth(TOKEN, { type: 'bearer' })
+            .set('X-Relay-Token', TOKEN)
             .send({ id: secondDelivery.body.id, clientId: 'second', result: null })
             .expect(200);
         expect((await otherCommand).body.clientId).toBe('second');
@@ -245,7 +246,7 @@ describe('preview RTA relay', () => {
     ])('rejects invalid action bodies: %j', async (body) => {
         await server
             .post(`${API}/action`)
-            .auth(TOKEN, { type: 'bearer' })
+            .set('X-Relay-Token', TOKEN)
             .set('Content-Type', 'application/json')
             .send(JSON.stringify(body))
             .expect(400);
@@ -259,7 +260,7 @@ describe('preview RTA relay', () => {
         { id: 'x', clientId: 'first', error: 1 },
         { id: 'x', clientId: 'first', error: 'failed', result: null }
     ])('rejects invalid result bodies: %j', async (body) => {
-        await server.post(`${API}/result`).auth(TOKEN, { type: 'bearer' }).send(body).expect(400);
+        await server.post(`${API}/result`).set('X-Relay-Token', TOKEN).send(body).expect(400);
     });
 
     test.each(['', 'has spaces', 'first\n', 'a'.repeat(129)])('rejects invalid poll clientId: %s', async (clientId) => {
@@ -270,13 +271,33 @@ describe('preview RTA relay', () => {
 describe('relay browser client', () => {
     const source = readFileSync(new URL('../../../templates/rta-relay-client.js', import.meta.url), 'utf8');
 
+    const editorRta = (instance: unknown = {}) => ({ getCurrentInstance: jest.fn(() => instance) });
+    const requireWith =
+        (api: unknown, rta: unknown = editorRta()) =>
+        (modules: string[], resolve: (module: unknown) => void) =>
+            resolve(modules[0] === 'sap/ui/rta/RuntimeAuthoring' ? rta : api);
+
     const runClient = async (
         actions: Record<string, unknown>[],
         api: Record<string, unknown> = {},
         frameWindow?: unknown,
-        failResult = false
+        failResult = false,
+        { rta = editorRta(), fastClock = false }: { rta?: unknown; fastClock?: boolean } = {}
     ) => {
-        const ui5Require = jest.fn((_modules: string[], resolve: (api: unknown) => void) => resolve(api));
+        const ui5Require = jest.fn(requireWith(api, rta));
+        // A virtual clock lets deadline paths run without real waiting.
+        let now = 0;
+        const clock = fastClock
+            ? {
+                  Date: { now: () => now },
+                  setTimeout: (callback: () => void, ms = 0) =>
+                      setImmediate(() => {
+                          now += ms;
+                          callback();
+                      }),
+                  clearTimeout: clearImmediate
+              }
+            : { setTimeout, clearTimeout };
         const reload = jest.fn();
         const log = jest.fn();
         const fetch = jest.fn(async (url: URL, options: { body?: string }) => {
@@ -302,12 +323,18 @@ describe('relay browser client', () => {
             console: { error: log },
             URL,
             AbortController,
-            setTimeout,
-            clearTimeout,
+            ...clock,
             fetch
         });
         await new Promise(setImmediate);
         return { fetch, reload, log, ui5Require };
+    };
+
+    const waitForResult = async (client: { fetch: jest.Mock }) => {
+        for (let i = 0; i < 2000 && client.fetch.mock.calls.length < 2; i++) {
+            await new Promise(setImmediate);
+        }
+        return JSON.parse(client.fetch.mock.calls[1][1].body ?? '');
     };
 
     test('uses authenticated prefixed endpoints and the inner-frame fallback', async () => {
@@ -318,7 +345,7 @@ describe('relay browser client', () => {
         expect(getOverlays).toHaveBeenCalledWith({ test: true });
         const [url, options] = client.fetch.mock.calls[0];
         expect(url.toString()).toBe(`https://preview.test/prefix${API}/poll?clientId=document-id`);
-        expect(options).toMatchObject({ headers: { Authorization: `Bearer ${TOKEN}` }, cache: 'no-store' });
+        expect(options).toMatchObject({ headers: { 'X-Relay-Token': TOKEN }, cache: 'no-store' });
         expect(JSON.parse(client.fetch.mock.calls[1][1].body ?? '')).toEqual({
             id: '1',
             clientId: 'document-id',
@@ -327,7 +354,7 @@ describe('relay browser client', () => {
     });
 
     test('descends into an existing frame and handles readiness without invoking a UI5 mutation', async () => {
-        const frameRequire = jest.fn((_modules: string[], resolve: (api: unknown) => void) => resolve({}));
+        const frameRequire = jest.fn(requireWith({}));
         const client = await runClient(
             [{ id: '1', actionName: '__ready__', frameId: 'preview' }],
             {},
@@ -337,10 +364,63 @@ describe('relay browser client', () => {
         );
         expect(frameRequire).toHaveBeenCalled();
         expect(client.ui5Require).not.toHaveBeenCalled();
-        expect(JSON.parse(client.fetch.mock.calls[1][1].body ?? '').result).toEqual({
+        expect((await waitForResult(client)).result).toEqual({
             isSuccess: true,
             payload: { ready: true }
         });
+    });
+
+    test.each(['__ready__', 'com.sap.ui.flex.startRTA.v1'])(
+        '%s waits for the editor RTA instance, so startRTA adopts it instead of a key-user session',
+        async (actionName) => {
+            const editor: { instance?: unknown } = {};
+            const rta = { getCurrentInstance: jest.fn(() => editor.instance) };
+            const startRTA = jest.fn().mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true } });
+            const client = await runClient([{ id: '1', actionName }], { startRTA }, undefined, false, {
+                rta,
+                fastClock: true
+            });
+            await new Promise(setImmediate);
+            expect(client.fetch).toHaveBeenCalledTimes(1);
+            expect(startRTA).not.toHaveBeenCalled();
+            editor.instance = {};
+            const body = await waitForResult(client);
+            expect(body.result.isSuccess).toBe(true);
+            expect(startRTA).toHaveBeenCalledTimes(actionName === '__ready__' ? 0 : 1);
+            expect(rta.getCurrentInstance.mock.calls.length).toBeGreaterThan(1);
+        }
+    );
+
+    test.each(['__ready__', 'com.sap.ui.flex.startRTA.v1'])(
+        '%s reports when the editor never starts RTA, without starting a key-user session',
+        async (actionName) => {
+            const startRTA = jest.fn();
+            const client = await runClient([{ id: '1', actionName }], { startRTA }, undefined, false, {
+                rta: { getCurrentInstance: () => undefined },
+                fastClock: true
+            });
+            expect((await waitForResult(client)).result).toEqual({
+                isSuccess: false,
+                payload: null,
+                error: { code: 'EDITOR_RTA_NOT_STARTED', message: 'The adaptation editor did not start UI adaptation' }
+            });
+            expect(startRTA).not.toHaveBeenCalled();
+        }
+    );
+
+    test('treats a missing RuntimeAuthoring module as not started', async () => {
+        const ui5Require = jest.fn(
+            (modules: string[], resolve: (module: unknown) => void, reject: (error: Error) => void) =>
+                modules[0] === 'sap/ui/rta/RuntimeAuthoring' ? reject(new Error('missing')) : resolve({})
+        );
+        const client = await runClient(
+            [{ id: '1', actionName: '__ready__', frameId: 'preview' }],
+            {},
+            { sap: { ui: { require: ui5Require } } },
+            false,
+            { fastClock: true }
+        );
+        expect((await waitForResult(client)).result.error.code).toBe('EDITOR_RTA_NOT_STARTED');
     });
 
     test.each(['__reload__', '__stop__'])(

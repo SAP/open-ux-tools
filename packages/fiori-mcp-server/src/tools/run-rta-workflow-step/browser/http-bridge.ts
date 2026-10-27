@@ -35,7 +35,7 @@ async function requestRelay(
     logger.debug(`HTTP relay: ${actionName}`);
     const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.relayToken}` },
+        headers: { 'Content-Type': 'application/json', 'X-Relay-Token': session.relayToken },
         body: JSON.stringify({ actionName, payload, frameId }),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         redirect: 'error'
@@ -119,13 +119,16 @@ async function reloadPageHttp(site: string): Promise<void> {
         throw new Error(`Editor reload failed: ${reloaded.error ?? 'missing document acknowledgement'}`);
     }
     const ready = await requestRelay(site, '__ready__');
+    const readyError = isFrontendResult(ready.result) ? ready.result.error?.message : undefined;
     if (
         ready.error ||
         ready.clientId === reloaded.clientId ||
         !isFrontendResult(ready.result) ||
         !ready.result.isSuccess
     ) {
-        throw new Error(`Reloaded editor did not become ready: ${ready.error ?? 'no fresh ready document'}`);
+        throw new Error(
+            `Reloaded editor did not become ready: ${ready.error ?? readyError ?? 'no fresh ready document'}`
+        );
     }
 }
 

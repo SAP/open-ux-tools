@@ -13,7 +13,7 @@
         try {
             const response = await fetch(new URL(endpoint, base), {
                 method: body === undefined ? 'GET' : 'POST',
-                headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+                headers: { 'X-Relay-Token': token, 'Content-Type': 'application/json' },
                 body: body === undefined ? undefined : JSON.stringify(body),
                 cache: 'no-store',
                 signal: controller.signal
@@ -29,8 +29,7 @@
         }
     }
 
-    async function resolveApi(targetWindow) {
-        const deadline = Date.now() + 55000;
+    async function resolveApi(targetWindow, deadline) {
         while (typeof targetWindow.sap?.ui?.require !== 'function') {
             if (Date.now() >= deadline) {
                 throw new Error('Timed out waiting for UI5');
@@ -60,10 +59,36 @@
         });
     }
 
+    // Without a running instance, FrontendActionsAPI.startRTA starts a key-user (CUSTOMER) session,
+    // which fails here because the preview connectors report no CUSTOMER-layer key-user flag.
+    async function waitForEditorRta(targetWindow, deadline) {
+        const RuntimeAuthoring = await new Promise((resolve) =>
+            targetWindow.sap.ui.require(['sap/ui/rta/RuntimeAuthoring'], resolve, () => resolve(undefined))
+        );
+        while (!RuntimeAuthoring?.getCurrentInstance?.()) {
+            if (Date.now() >= deadline) {
+                return false;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+        return true;
+    }
+
     async function callAction(action) {
         // The script can already be inside the editor's "preview" frame. Descend only if it exists here.
         const targetWindow = document.getElementById(action.frameId)?.contentWindow ?? window;
-        const api = await resolveApi(targetWindow);
+        const deadline = Date.now() + 55000;
+        const api = await resolveApi(targetWindow, deadline);
+        if (action.actionName === '__ready__' || action.actionName === 'com.sap.ui.flex.startRTA.v1') {
+            const started = await waitForEditorRta(targetWindow, deadline);
+            if (!started) {
+                return {
+                    isSuccess: false,
+                    payload: null,
+                    error: { code: 'EDITOR_RTA_NOT_STARTED', message: 'The adaptation editor did not start UI adaptation' }
+                };
+            }
+        }
         if (action.actionName === '__ready__') {
             return { isSuccess: true, payload: { ready: true } };
         }

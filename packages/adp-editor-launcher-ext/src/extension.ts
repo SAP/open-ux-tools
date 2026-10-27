@@ -12,6 +12,9 @@ const SIMPLE_BROWSER_SHOW = 'simpleBrowser.show';
 /** Webview view type the Simple Browser extension uses for its tabs. */
 const SIMPLE_BROWSER_VIEW_TYPE = 'simpleBrowser.view';
 
+/** Maximum time to wait for the workbench to report the opened tab. */
+const TAB_WAIT_MS = 3000;
+
 interface EditorCommand {
     command: 'open' | 'close';
     url: string;
@@ -25,14 +28,12 @@ const handledIds = new Set<string>();
 let signalQueue = Promise.resolve();
 
 /**
- * Remembers a unique new Simple Browser tab, or the active reused tab.
+ * Finds a unique new Simple Browser tab, or the active reused one.
  *
- * @param url - The editor URL to open.
+ * @param previousTabs - Tabs that existed before the open command.
+ * @returns The identified tab, or undefined if none or ambiguous.
  */
-async function openInSimpleBrowser(url: string): Promise<void> {
-    const previousTabs = new Set(window.tabGroups.all.flatMap((group) => group.tabs));
-    ownedEditor = undefined;
-    await commands.executeCommand(SIMPLE_BROWSER_SHOW, url);
+function identifyTab(previousTabs: Set<Tab>): Tab | undefined {
     const browserTabs = window.tabGroups.all
         .flatMap((group) => group.tabs)
         .filter(
@@ -43,10 +44,60 @@ async function openInSimpleBrowser(url: string): Promise<void> {
         );
     const newTabs = browserTabs.filter((candidate) => !previousTabs.has(candidate));
     const active = window.tabGroups.activeTabGroup.activeTab;
-    let tab = newTabs.length === 1 ? newTabs[0] : undefined;
-    if (newTabs.length === 0 && active && browserTabs.includes(active)) {
-        tab = active;
+    if (newTabs.length === 1) {
+        return newTabs[0];
     }
+    if (newTabs.length === 0 && active && browserTabs.includes(active)) {
+        return active;
+    }
+    return undefined;
+}
+
+/**
+ * Waits until the opened tab can be identified, or the bounded wait ends.
+ *
+ * @param previousTabs - Tabs that existed before the open command.
+ * @returns The identified tab, or undefined.
+ */
+function waitForTab(previousTabs: Set<Tab>): Promise<Tab | undefined> {
+    const found = identifyTab(previousTabs);
+    if (found) {
+        return Promise.resolve(found);
+    }
+    return new Promise((resolve) => {
+        const disposables: { dispose(): void }[] = [];
+        const finish = (tab: Tab | undefined): void => {
+            for (const disposable of disposables) {
+                disposable.dispose();
+            }
+            resolve(tab);
+        };
+        const check = (): void => {
+            const tab = identifyTab(previousTabs);
+            if (tab) {
+                finish(tab);
+            }
+        };
+        const timer = setTimeout(() => finish(identifyTab(previousTabs)), TAB_WAIT_MS);
+        disposables.push(
+            { dispose: () => clearTimeout(timer) },
+            window.tabGroups.onDidChangeTabs(check),
+            window.tabGroups.onDidChangeTabGroups(check)
+        );
+    });
+}
+
+/**
+ * Remembers a unique new Simple Browser tab, or the active reused tab.
+ * `simpleBrowser.show` resolves before the workbench reports the tab to extensions.
+ *
+ * @param url - The editor URL to open.
+ */
+async function openInSimpleBrowser(url: string): Promise<void> {
+    const previousTabs = new Set(window.tabGroups.all.flatMap((group) => group.tabs));
+    ownedEditor = undefined;
+    await commands.executeCommand(SIMPLE_BROWSER_SHOW, url);
+    const tab = await waitForTab(previousTabs);
     if (tab) {
         ownedEditor = { tab, url };
     }

@@ -37,7 +37,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 
 /**
  * Register an opt-in, single-action relay owned by this preview router.
- * The public script contains no secret; all API requests require the bearer token.
+ * The public script contains no secret; all API requests require the token in `X-Relay-Token`.
  *
  * @param router preview router
  * @param token child-process relay token (exactly 64 hexadecimal characters)
@@ -81,7 +81,8 @@ export function addRtaRelayApis(
     });
     router.use(API, (req, res, next) => {
         res.set('Cache-Control', 'no-store');
-        if (req.headers.authorization !== `Bearer ${token}`) {
+        // Not Authorization: the BAS ingress router answers 401 to browser requests that set it.
+        if (req.headers['x-relay-token'] !== token) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }

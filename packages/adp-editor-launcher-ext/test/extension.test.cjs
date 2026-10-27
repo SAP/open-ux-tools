@@ -43,7 +43,13 @@ function createHarness({ contents, tabs = [] } = {}) {
     const warnings = [];
     const watched = [];
     const unwatched = [];
+    const tabListeners = new Set();
+    const timeouts = [];
     let reads = 0;
+    const listen = (listener) => {
+        tabListeners.add(listener);
+        return { dispose: () => tabListeners.delete(listener) };
+    };
     const harness = {
         calls,
         closed,
@@ -54,6 +60,10 @@ function createHarness({ contents, tabs = [] } = {}) {
         groups,
         subscriptions,
         registeredCommands,
+        timeouts,
+        get listenerCount() {
+            return tabListeners.size;
+        },
         onShow: () => harness.show(makeTab()),
         onClose: () => undefined,
         get reads() {
@@ -65,6 +75,9 @@ function createHarness({ contents, tabs = [] } = {}) {
             }
             group.activeTab = tab;
             activeGroup = group;
+            for (const listener of [...tabListeners]) {
+                listener();
+            }
         },
         writeSignal(command) {
             contents = JSON.stringify(command);
@@ -98,6 +111,8 @@ function createHarness({ contents, tabs = [] } = {}) {
             window: {
                 tabGroups: {
                     all: groups,
+                    onDidChangeTabs: listen,
+                    onDidChangeTabGroups: listen,
                     get activeTabGroup() {
                         return activeGroup;
                     },
@@ -153,6 +168,12 @@ function createHarness({ contents, tabs = [] } = {}) {
         {
             module,
             exports: module.exports,
+            // Cap the real tab wait so unidentifiable-tab tests stay fast; the requested bound is recorded.
+            setTimeout(callback, ms) {
+                timeouts.push(ms);
+                return setTimeout(callback, Math.min(ms, 50));
+            },
+            clearTimeout,
             require(id) {
                 assert.ok(Object.hasOwn(mocks, id), `Unexpected import: ${id}`);
                 return mocks[id];
@@ -219,6 +240,19 @@ test('closes only the owned tab for the exact URL, across groups', async () => {
     assert.deepEqual(harness.closed, [owned]);
     assert.deepEqual(harness.groups[0].tabs, [unrelated, codeTab]);
     assert.deepEqual(harness.groups[1].tabs, []);
+});
+
+test('records a tab the workbench reports only after simpleBrowser.show returns', async () => {
+    const harness = createHarness();
+    const owned = makeTab();
+    harness.onShow = () => {
+        setTimeout(() => harness.show(owned), 5);
+    };
+    await harness.signal({ command: 'open', url: URL, id: 'open' });
+    await harness.signal({ command: 'close', url: URL, id: 'close' });
+    assert.deepEqual(harness.closed, [owned]);
+    assert.deepEqual(harness.timeouts, [3000]);
+    assert.equal(harness.listenerCount, 0);
 });
 
 test('tracks only the actual active tab reused by the built-in command', async () => {

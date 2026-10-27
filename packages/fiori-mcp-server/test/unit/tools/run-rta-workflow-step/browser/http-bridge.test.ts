@@ -55,7 +55,7 @@ describe('browser/http-bridge', () => {
         jest.restoreAllMocks();
     });
 
-    test('returns success immediately and uses the exact local URL and Bearer token without a browser hostname port', async () => {
+    test('returns success immediately and uses the exact local URL and relay token without a browser hostname port', async () => {
         respondWith({ result: success, clientId: CLIENT_ID });
         await expect(httpTransport.callFrontendAction(SITE, START, {}, 'preview')).resolves.toEqual(success);
         expect(requireEditorSessionMock).toHaveBeenCalledWith(SITE);
@@ -64,7 +64,7 @@ describe('browser/http-bridge', () => {
         expect(signal).toBeInstanceOf(AbortSignal);
         expect(fetchMock).toHaveBeenCalledWith(new URL('http://127.0.0.1:49152/adp/api/rta/action'), {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${TOKEN}` },
+            headers: { 'Content-Type': 'application/json', 'X-Relay-Token': TOKEN },
             body: JSON.stringify({ actionName: START, payload: {}, frameId: 'preview' }),
             signal,
             redirect: 'error'
