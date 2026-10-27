@@ -164,7 +164,7 @@ overrides:
     '@sap/service-provider-apis>axios': '>=1.20.0'
     '@sap/service-provider-apis@2.8.0>axios': '>=1.20.0'
     'ibm-cloud-sdk-core>axios': '>=1.20.0'
-    '@sap/bas-sdk': '>=3.13.7'
+    '@sap/bas-sdk': '>=3.13.16'
     '@sap/service-provider-apis': '>=2.10.0'
     immutable: '>=5.1.8'
     joi: '>=18.2.6'
