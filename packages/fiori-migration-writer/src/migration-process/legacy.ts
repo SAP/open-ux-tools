@@ -3,24 +3,28 @@
  * Handles migration from /src/main/webapp to /webapp structure
  */
 
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { readFile, updateFile, readJSON, updateJSON, fileExists } from '../utils/index.js';
-import { exists, copyFile, deleteFile } from '../utils/fs-adapter.js';
+import { editorHasPath } from '../utils/fs-adapter.js';
 import { TemplateFileName } from '../index.js';
 import { FileName } from '../project-spec-types.js';
 import { legacyPath, getFFTestSuiteMap, MigrationError } from '../utils/common.js';
 import { ProjectAccess } from '../utils/Project.js';
+import { hasStore } from '../types/mem-fs-types.js';
 import type { ImportProjectInfo } from '../types.js';
 import { buildLegacyPaths, tryGitMove, fallbackFsMove, cleanupEmptyDirs } from './legacy-helpers.js';
 
 /**
  * Migrate project from legacy Fiori Elements folder structure (/src/main/webapp) to new structure (/webapp)
  *
+ * @param fs - mem-fs editor
  * @param projectInfo - Project information including current webapp path
  * @param rootPath - Root path of the project
  * @returns Object containing updated keepIndex flag and updated webapp path
  */
 export async function migrateLegacyFolderStructure(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     rootPath: string
 ): Promise<{ keepIndex: boolean; webappPath: string }> {
@@ -32,12 +36,12 @@ export async function migrateLegacyFolderStructure(
     }
 
     const paths = buildLegacyPaths(rootPath, legacyPath);
-    if (!(await exists(paths.ffLegacyWebappPath))) {
+    if (!fileExists(fs, paths.ffLegacyWebappPath)) {
         return { keepIndex, webappPath: projectInfo.webappPath };
     }
 
     // Try to use git to move files (preserves history)
-    await tryGitMove(rootPath, paths);
+    await tryGitMove(fs, rootPath, paths);
 
     // Fallback using node fs to move folders (handles cases where git fails or isn't available)
     await fallbackFsMove(rootPath, paths);
@@ -46,25 +50,26 @@ export async function migrateLegacyFolderStructure(
     await cleanupEmptyDirs(rootPath, legacyPath, paths);
 
     // Update webapp path after migration
-    const updatedWebappPath = await ProjectAccess.getWebappPath(rootPath);
+    const updatedWebappPath = await ProjectAccess.getWebappPath(rootPath, undefined, undefined, fs);
     const ffTestMap = getFFTestSuiteMap(updatedWebappPath);
 
     // Process legacy qunit runner file
-    await processLegacyQunitRunner(paths.ffNewTestPath, ffTestMap);
+    processLegacyQunitRunner(fs, paths.ffNewTestPath, ffTestMap);
 
     // Update ModulePathForTests.js files
-    await updateModulePathForTests(paths.ffNewTestPath);
+    await updateModulePathForTests(fs, paths.ffNewTestPath);
 
     // Update paths in test files
-    if (await exists(paths.ffNewTestPath)) {
-        await updateTestFilePaths(paths.ffNewTestPath);
+    if (editorHasPath(fs, paths.ffNewTestPath)) {
+        updateTestFilePaths(fs, paths.ffNewTestPath);
     }
 
     // Update various config files
-    await Promise.all([updateGitignore(rootPath), updateNeoApp(rootPath), updateProjectJson(rootPath)]);
+    updateGitignore(fs, rootPath);
+    await Promise.all([updateNeoApp(fs, rootPath), updateProjectJson(fs, rootPath)]);
 
     // Check for mockserver in index.html
-    keepIndex = await checkForMockserver(rootPath, updatedWebappPath);
+    keepIndex = checkForMockserver(fs, rootPath, updatedWebappPath);
 
     return { keepIndex, webappPath: updatedWebappPath };
 }
@@ -72,20 +77,21 @@ export async function migrateLegacyFolderStructure(
 /**
  * Process legacy qunit runner file and generate new test suite
  *
+ * @param fs
  * @param ffNewTestPath
  * @param ffTestMap
  */
-async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): Promise<void> {
+function processLegacyQunitRunner(fs: Editor, ffNewTestPath: string, ffTestMap: any): void {
     const qunitRunner = 'qunit.runner.testsuite.html';
     const legacyRunner = join(ffNewTestPath, qunitRunner);
 
-    if (!(await fileExists(legacyRunner))) {
+    if (!fileExists(fs, legacyRunner)) {
         return;
     }
 
     let legacyRunnerContent = '';
     try {
-        legacyRunnerContent = readFile(legacyRunner);
+        legacyRunnerContent = readFile(fs, legacyRunner);
     } catch (e) {
         throw new MigrationError(e, qunitRunner);
     }
@@ -124,20 +130,20 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
 
     // Handle testsuite.qunit.html file
     const testSuiteRunner = join(ffNewTestPath, TemplateFileName.TestsuiteQunitHtml);
-    if (!(await fileExists(testSuiteRunner))) {
-        updateFile(testSuiteRunner, legacyRunnerContent);
+    if (!fileExists(fs, testSuiteRunner)) {
+        updateFile(fs, testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     } else {
         // Rename using copy+delete pattern (mem-fs compatible)
         const oldTestSuite = join(ffNewTestPath, 'testsuite_old.qunit.html');
-        copyFile(testSuiteRunner, oldTestSuite);
-        deleteFile(testSuiteRunner);
+        fs.copy(testSuiteRunner, oldTestSuite);
+        fs.delete(testSuiteRunner);
 
         // Update references to testsuite.qunit.html
         if (legacyRunnerContent.includes('testsuite.qunit.html')) {
             legacyRunnerContent = legacyRunnerContent.replaceAll('testsuite.qunit.html', 'testsuite_old.qunit.html');
         }
-        updateFile(testSuiteRunner, legacyRunnerContent);
+        updateFile(fs, testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     }
 }
@@ -145,9 +151,10 @@ async function processLegacyQunitRunner(ffNewTestPath: string, ffTestMap: any): 
 /**
  * Update ModulePathForTests.js files to fix path calculations for new structure
  *
+ * @param fs
  * @param ffNewTestPath
  */
-async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
+async function updateModulePathForTests(fs: Editor, ffNewTestPath: string): Promise<void> {
     const { findAll } = await import('../utils/file-discovery.js');
     const moduleFilePath: string[] = [];
     await findAll(ffNewTestPath, TemplateFileName.ModulePathForTests, moduleFilePath, []);
@@ -155,7 +162,7 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
     for (const path of moduleFilePath) {
         let moduleFileContent;
         try {
-            moduleFileContent = readFile(join(path, TemplateFileName.ModulePathForTests));
+            moduleFileContent = readFile(fs, join(path, TemplateFileName.ModulePathForTests));
         } catch (e) {
             throw new MigrationError(e, TemplateFileName.ModulePathForTests);
         }
@@ -172,7 +179,7 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
                     0,
                     functionStart + funcBracket.length
                 )}${replaceContent}${moduleFileContent.slice(posReturn)}`;
-                updateFile(join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
+                updateFile(fs, join(path, TemplateFileName.ModulePathForTests), moduleFileContent);
             }
         }
     }
@@ -181,62 +188,33 @@ async function updateModulePathForTests(ffNewTestPath: string): Promise<void> {
 /**
  * Update paths in test HTML files from legacy structure to new structure
  *
+ * @param fs
  * @param ffNewTestPath
  */
-async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
-    const { getCurrentEditor } = await import('../utils/fs-adapter.js');
-    const { hasStore } = await import('../types/mem-fs-types.js');
-    const { sep } = await import('node:path');
-
-    const editor = getCurrentEditor();
-
-    // Use mem-fs store.each() to iterate over files (works in mem-fs mode)
-    // hasStore is a type guard that narrows editor to EditorWithStore
-    if (editor && hasStore(editor)) {
-        const htmlFiles: string[] = [];
-
-        editor.store.each((file: { path: string }) => {
-            const filePath = file.path;
-            // Check if file is directly under ffNewTestPath (not nested) and ends with .html
-            if (filePath.startsWith(ffNewTestPath + sep) && filePath.endsWith('.html')) {
-                // Only include files directly in the test path (no further path separators after the base)
-                const relativePath = filePath.substring(ffNewTestPath.length + 1);
-                if (!relativePath.includes(sep)) {
-                    htmlFiles.push(filePath);
-                }
-            }
-        });
-
-        for (const filePath of htmlFiles) {
-            let content;
-            try {
-                content = readFile(filePath);
-            } catch (e) {
-                throw new MigrationError(e, filePath);
-            }
-
-            content = content.replaceAll('../../main/webapp', '../../webapp');
-            content = content.replaceAll('/src/test/qunit', '/webapp/test');
-            content = content.replace(
-                '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
-                ''
-            );
-            updateFile(filePath, content);
-        }
+function updateTestFilePaths(fs: Editor, ffNewTestPath: string): void {
+    if (!hasStore(fs)) {
         return;
     }
 
-    // Fallback to fs.promises.readdir when not in mem-fs mode (e.g., direct disk operations)
-    const { readdir } = await import('node:fs/promises');
-    const htmlFiles = (await readdir(ffNewTestPath)).filter((file) => file.endsWith('.html'));
+    const htmlFiles: string[] = [];
+    fs.store.each((file: { path: string }) => {
+        const filePath = file.path;
+        // Check if file is directly under ffNewTestPath (not nested) and ends with .html
+        if (filePath.startsWith(ffNewTestPath + sep) && filePath.endsWith('.html')) {
+            // Only include files directly in the test path (no further path separators after the base)
+            const relativePath = filePath.substring(ffNewTestPath.length + 1);
+            if (!relativePath.includes(sep)) {
+                htmlFiles.push(filePath);
+            }
+        }
+    });
 
-    for (const file of htmlFiles) {
-        const filePath = join(ffNewTestPath, file);
+    for (const filePath of htmlFiles) {
         let content;
         try {
-            content = readFile(filePath);
+            content = readFile(fs, filePath);
         } catch (e) {
-            throw new MigrationError(e, file);
+            throw new MigrationError(e, filePath);
         }
 
         content = content.replaceAll('../../main/webapp', '../../webapp');
@@ -245,25 +223,26 @@ async function updateTestFilePaths(ffNewTestPath: string): Promise<void> {
             '<script src="../../webapp/test-resources/sap/ushell/shells/sandbox/fioriSandboxConfig.js"></script>',
             ''
         );
-        updateFile(filePath, content);
+        updateFile(fs, filePath, content);
     }
 }
 
 /**
  * Update .gitignore to remove legacy path references
  *
+ * @param fs
  * @param rootPath
  */
-async function updateGitignore(rootPath: string): Promise<void> {
+function updateGitignore(fs: Editor, rootPath: string): void {
     const gitignore = join(rootPath, '.gitignore');
-    if (!(await fileExists(gitignore))) {
+    if (!fileExists(fs, gitignore)) {
         return;
     }
 
     try {
-        let gitignoreContent = readFile(gitignore);
+        let gitignoreContent = readFile(fs, gitignore);
         gitignoreContent = gitignoreContent.replaceAll('/src/main', '');
-        updateFile(gitignore, gitignoreContent);
+        updateFile(fs, gitignore, gitignoreContent);
     } catch (e) {
         throw new MigrationError(e, '.gitignore');
     }
@@ -274,17 +253,20 @@ async function updateGitignore(rootPath: string): Promise<void> {
  * Updates path properties structurally rather than via string replacement
  * to avoid corrupting other string-valued properties.
  *
+ * @param fs
  * @param rootPath
  */
-async function updateNeoApp(rootPath: string): Promise<void> {
+async function updateNeoApp(fs: Editor, rootPath: string): Promise<void> {
     const neoapp = join(rootPath, FileName.NeoApp);
-    if (!(await fileExists(neoapp))) {
+    if (!fileExists(fs, neoapp)) {
         return;
     }
 
     try {
-        const neoappContent: { routes?: Array<{ path?: string; target?: { entryPath?: string } }> } =
-            await readJSON(neoapp);
+        const neoappContent: { routes?: Array<{ path?: string; target?: { entryPath?: string } }> } = await readJSON(
+            fs,
+            neoapp
+        );
         if (Array.isArray(neoappContent.routes)) {
             neoappContent.routes = neoappContent.routes.map((route) => ({
                 ...route,
@@ -299,7 +281,7 @@ async function updateNeoApp(rootPath: string): Promise<void> {
                     : route.target
             }));
         }
-        updateJSON(neoapp, neoappContent);
+        updateJSON(fs, neoapp, neoappContent);
     } catch (e) {
         throw new MigrationError(e, FileName.NeoApp);
     }
@@ -309,23 +291,24 @@ async function updateNeoApp(rootPath: string): Promise<void> {
  * Update .project.json (WEB IDE) to remove legacy path references.
  * Updates path properties structurally rather than via string replacement.
  *
+ * @param fs
  * @param rootPath
  */
-async function updateProjectJson(rootPath: string): Promise<void> {
+async function updateProjectJson(fs: Editor, rootPath: string): Promise<void> {
     const projectJson = join(rootPath, '.che', 'project.json');
-    if (!(await fileExists(projectJson))) {
+    if (!fileExists(fs, projectJson)) {
         return;
     }
 
     try {
-        const projectJsonContent: { contentRoot?: string; path?: string } = await readJSON(projectJson);
+        const projectJsonContent: { contentRoot?: string; path?: string } = await readJSON(fs, projectJson);
         if (projectJsonContent.contentRoot) {
             projectJsonContent.contentRoot = projectJsonContent.contentRoot.replace('src/main', '');
         }
         if (projectJsonContent.path) {
             projectJsonContent.path = projectJsonContent.path.replace('src/main', '');
         }
-        updateJSON(projectJson, projectJsonContent);
+        updateJSON(fs, projectJson, projectJsonContent);
     } catch (e) {
         throw new MigrationError(e, 'project.json');
     }
@@ -335,18 +318,19 @@ async function updateProjectJson(rootPath: string): Promise<void> {
  * Check if index.html contains mockserver references
  * If it does, the file should be preserved and new index will be named index_new.html
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  * @param webappPath - Updated webapp path
  * @returns true if mockserver found and index.html should be preserved
  */
-async function checkForMockserver(rootPath: string, webappPath: string): Promise<boolean> {
+function checkForMockserver(fs: Editor, rootPath: string, webappPath: string): boolean {
     const indexPath = join(rootPath, webappPath, TemplateFileName.IndexHtml);
-    if (!(await fileExists(indexPath))) {
+    if (!fileExists(fs, indexPath)) {
         return false;
     }
 
     try {
-        const indexFile = readFile(indexPath);
+        const indexFile = readFile(fs, indexPath);
         // Check if mockserver is referenced (case-insensitive)
         if (indexFile.toLowerCase().includes('mockserver')) {
             // Found mockserver reference - mark that index.html should be renamed

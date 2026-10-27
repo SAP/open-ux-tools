@@ -1,6 +1,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Data } from 'ejs';
+import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
@@ -78,6 +79,7 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
 /**
  * Generate template file using EJS and template utilities
  *
+ * @param fs - mem-fs editor
  * @param templateData
  * @param projectRoot
  * @param templateRoot
@@ -85,6 +87,7 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
  * @param templateProps
  */
 export async function generateTemplate(
+    fs: Editor,
     templateData: Data,
     projectRoot: string,
     templateRoot: string,
@@ -108,14 +111,14 @@ export async function generateTemplate(
 
     // 3. Render template (mem-fs handles directory creation implicitly)
     const { isRendered = true, opts = {} } = templateProps;
-    let content = renderTemplate(templateRoot, fullTemplateName, resolvedData, opts, isRendered);
+    let content = renderTemplate(fs, templateRoot, fullTemplateName, resolvedData, opts, isRendered);
 
     // 4. Apply file-specific handlers
-    content = await applyFileSpecificHandlers(templateName, content, projectRoot, targetFile, templateData);
+    content = await applyFileSpecificHandlers(fs, templateName, content, projectRoot, targetFile, templateData);
 
     // 5. Write file (mem-fs handles directory creation implicitly)
     // Do not catch - let errors propagate to caller for proper handling
-    writeFile(targetFile, content);
+    writeFile(fs, targetFile, content);
 }
 
 /**
