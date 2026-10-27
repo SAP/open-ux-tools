@@ -148,6 +148,29 @@ const sharpStubPlugin = {
     }
 };
 
+// ── fe-fpm-writer templates path override plugin ─────────────────────────────
+// fe-fpm-writer's getTemplatePath() resolves templates as join(__dirname, '../templates').
+// When bundled here, __dirname is dist/, so that resolves to dist/../templates/ =
+// packages/fiori-mcp-server/templates/ (the package root) — outside of dist/.
+// This plugin replaces templates.ts with a version that resolves to __dirname/templates/
+// (i.e. dist/templates/) so all template files live inside the self-contained dist/ output.
+const fpmWriterTemplatesPlugin = {
+    name: 'fe-fpm-writer-templates',
+    setup(build) {
+        build.onLoad({ filter: /fe-fpm-writer[/\\]dist[/\\]templates\.js$/ }, () => ({
+            contents: [
+                "import { dirname, join } from 'node:path';",
+                "import { fileURLToPath } from 'node:url';",
+                "const __dirname = dirname(fileURLToPath(import.meta.url));",
+                "export function getTemplatePath(relativeTemplatePath = '') {",
+                "    return join(__dirname, 'templates', relativeTemplatePath);",
+                "}"
+            ].join('\n'),
+            loader: 'js'
+        }));
+    }
+};
+
 // ── onnxruntime-node WASM alias plugin ────────────────────────────────────────
 // Replaces native onnxruntime-node (multi-platform binaries, ~140 MB) with
 // onnxruntime-web (WASM, ~12 MB, platform-independent).
@@ -225,7 +248,7 @@ await esbuild.build({
     external: ['vscode', 'chromium-bidi'],
     legalComments: 'linked',
     metafile: true,
-    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]
+    plugins: [fpmWriterTemplatesPlugin, onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]
 });
 
 console.log('✓ esbuild bundle complete');
@@ -328,7 +351,24 @@ const pwCorePkgDir = findPkgRoot(req.resolve('playwright-core'), 'playwright-cor
 fs.copyFileSync(path.join(pwCorePkgDir, 'browsers.json'), path.join(PKG_ROOT, 'browsers.json'));
 console.log('✓ Copied playwright-core/browsers.json');
 
-// ── Step 6: copy icons ────────────────────────────────────────────────────────
+// ── Step 6: copy fe-fpm-writer templates ─────────────────────────────────────
+// fe-fpm-writer's getTemplatePath() resolves templates as dist/../templates/.
+// When bundled here, __dirname is dist/, so the path resolves to dist/../templates/
+// which is dist/templates/ one level up — i.e. inside dist/ itself.
+// Copy the templates into dist/templates/ so they are self-contained in the bundle
+// output and included when the npm package is published.
+
+const fpmWriterPkgDir = findPkgRoot(req.resolve('@sap-ux/fe-fpm-writer'), '@sap-ux/fe-fpm-writer');
+const fpmWriterTemplatesDir = path.join(fpmWriterPkgDir, 'templates');
+const fpmWriterTemplatesOut = path.join(DIST, 'templates');
+if (fs.existsSync(fpmWriterTemplatesDir)) {
+    copyDir(fpmWriterTemplatesDir, fpmWriterTemplatesOut);
+    console.log('✓ Copied fe-fpm-writer templates');
+} else {
+    console.warn('⚠ fe-fpm-writer templates not found at', fpmWriterTemplatesDir);
+}
+
+// ── Step 7: copy icons ────────────────────────────────────────────────────────
 
 for (const icon of ['icon.png', 'icon.svg']) {
     fs.copyFileSync(path.join(PKG_ROOT, 'assets', icon), path.join(DIST, icon));

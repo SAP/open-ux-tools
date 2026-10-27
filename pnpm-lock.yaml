@@ -2768,6 +2768,9 @@ importers:
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -8402,6 +8405,7 @@ packages:
   '@opentelemetry/propagator-jaeger@2.9.0':
     resolution: {integrity: sha512-4mYGty27rYvSM0jtp1ZUOqd3LfVRCYg9H5G9OFzSx5HViYToU21MFhWfco7x1HwXr7ER8yGOiCIHZUwjPksc0Q==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Package no longer supported. See https://github.com/open-telemetry/opentelemetry-js/pull/7077
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -8472,42 +8476,49 @@ packages:
   '@opentelemetry/sdk-trace-base@2.10.0':
     resolution: {integrity: sha512-GuYQQT7QD2EeO8lcZLRQzcbOyhqAzL+6WWTKTU9mSUBYBazkEDl+VrQcXQhbB08OWM9anD1aHleVadzulpOaUQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.5.0':
     resolution: {integrity: sha512-VzRf8LzotASEyNDUxTdaJ9IRJ1/h692WyArDBInf5puLCjxbICD6XkHgpuudis56EndyS7LYFmtTMny6UABNdQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.8.0':
     resolution: {integrity: sha512-mhU4jp+vW0mGbFRd+GeXHvmfA4aDqWjBjLC3pE5XMpLs0IE2ryYb019Ts2AQrOq67gaTF25D91+fgvEHDZEnuQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-base@2.9.0':
     resolution: {integrity: sha512-cp9zmTl62R8PJrpvFcmc8N2JQU/xfa0S+61q511Nji+QxCfZ8Ifvg7H27G8cANe4crg4RTrWsVvanHiXjSp6ag==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.10.0':
     resolution: {integrity: sha512-GZK/G6oZyBLGlH1pUgeDch7D91KoHd2uotUGIkWCPi9GI5T9X0p4L7nNAMDR1BQjkRYoDqo+ddfVx9t5Uhys+Q==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.9.0':
     resolution: {integrity: sha512-ec9a7ps37huy5itYk0MalaZdSLlM6AXWp/FhtEjgMpp5leEGojBDvAl/UWttQnkMZOvFHKzRESn8TD3yKTF5nQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-web@2.5.0':
     resolution: {integrity: sha512-xWibakHs+xbx6vxH7Q8TbFS6zjf812o/kIS4xBDB32qSL9wF+Z5IZl2ZAGu4rtmPBQ7coZcOd684DobMhf8dKw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 

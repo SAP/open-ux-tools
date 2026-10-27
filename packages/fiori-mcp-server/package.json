@@ -63,6 +63,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",

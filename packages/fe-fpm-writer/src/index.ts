@@ -30,13 +30,20 @@ export type { FPMConfig } from './app/index.js';
 
 export { validateBasePath, validateVersion } from './common/validate.js';
 export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
+export { getFragmentAndViewFiles } from './common/file.js';
+export { applyEventHandlerConfiguration } from './common/event-handler.js';
+export type { EventHandlerConfiguration, TextFragmentInsertion } from './common/types.js';
+export { getTemplatePath } from './templates.js';
+export { getXPathStringsForXmlFile, getFilterBarIdsInFile } from './building-block/prompts/utils/xml.js';
+export { BUILDING_BLOCK_CONFIG } from './building-block/processor.js';
 
 export {
     BuildingBlockType,
     PageTemplateType,
     PAGE_AGGREGATIONS,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
+    MIN_UI5_VERSION_RICH_TEXT_EDITOR
 } from './building-block/types.js';
 export type {
     FilterBar,
