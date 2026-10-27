@@ -29,7 +29,7 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "fast-glob": "3.3.3",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "read-package-up": "12.0.0",
         "semver": "7.8.5"
     },
