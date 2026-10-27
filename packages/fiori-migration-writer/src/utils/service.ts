@@ -1,7 +1,7 @@
 import { fileExists } from './file-access.js';
 import { createMemFsEditor } from './fs-adapter.js';
 import type { Manifest } from '../project-spec-types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { XMLValidator, XMLParser } from 'fast-xml-parser';
 import { join } from 'node:path';
 
@@ -17,13 +17,13 @@ export function xmlToJson(metadata: any): JSON | undefined {
     return XMLValidator.validate(metadata) ? new XMLParser(options).parse(metadata, true) : undefined;
 }
 
-export function validateMetadata(
+export async function validateMetadata(
     rootPath: string,
     webappPath: string,
     isSAPApp?: boolean,
     manifestJSON?: Manifest | undefined,
-    fsEditor?: Editor
-): { config: boolean; fileExists: boolean } {
+    fsEditor?: MemFsEditor
+): Promise<{ config: boolean; fileExists: boolean }> {
     const fs = fsEditor ?? createMemFsEditor();
     if (!manifestJSON) {
         return { config: false, fileExists: false };
@@ -52,12 +52,12 @@ export function validateMetadata(
  * @param rootPath
  * @param webappPath
  */
-function validateDataSources(
-    fs: Editor,
+async function validateDataSources(
+    fs: MemFsEditor,
     dataSources: Record<string, any>,
     rootPath: string,
     webappPath: string
-): { config: boolean; fileExists: boolean } {
+): Promise<{ config: boolean; fileExists: boolean }> {
     const datasourceKeys = Object.keys(dataSources);
     let metadataValidation = { config: false, fileExists: false };
 
@@ -67,7 +67,7 @@ function validateDataSources(
 
         // Check OData datasources or datasources without explicit type
         if (datasource.type === 'OData' || datasource.type === undefined) {
-            const result = checkLocalMetadata(fs, datasource, rootPath, webappPath);
+            const result = await checkLocalMetadata(fs, datasource, rootPath, webappPath);
             if (result.config) {
                 metadataValidation = result;
             }
@@ -85,18 +85,18 @@ function validateDataSources(
  * @param rootPath
  * @param webappPath
  */
-function checkLocalMetadata(
-    fs: Editor,
+async function checkLocalMetadata(
+    fs: MemFsEditor,
     datasource: any,
     rootPath: string,
     webappPath: string
-): { config: boolean; fileExists: boolean } {
+): Promise<{ config: boolean; fileExists: boolean }> {
     if (!datasource.settings?.localUri) {
         return { config: false, fileExists: false };
     }
 
     const metadataPath = join(rootPath, webappPath, datasource.settings.localUri);
-    const exists = fileExists(fs, metadataPath);
+    const exists = await fileExists(fs, metadataPath);
 
     return {
         config: true,

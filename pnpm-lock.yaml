@@ -23942,7 +23942,7 @@ snapshots:
   '@types/vinyl@2.0.12':
     dependencies:
       '@types/expect': 1.20.4
-      '@types/node': 22.13.14
+      '@types/node': 22.20.1
 
   '@types/vscode@1.110.0': {}
 

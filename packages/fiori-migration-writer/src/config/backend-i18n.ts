@@ -2,7 +2,7 @@
  * Helper functions for extracting backend configuration and app title from i18n
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists } from '../utils/index.js';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 
@@ -35,7 +35,7 @@ export interface BackendAndI18nConfigResult {
  * Options for extractBackendAndI18nConfig
  */
 export interface ExtractBackendAndI18nConfigOptions {
-    fs: Editor;
+    fs: MemFsEditor;
     projectRoot: string;
     webappPath: string;
     getFirstBackend: (projectRoot: string) => {
@@ -79,7 +79,7 @@ export async function extractBackendAndI18nConfig(
     // Extract app title from i18n
     let appTitle = '';
     const i18Path = join(projectRoot, webappPath, 'i18n/i18n.properties');
-    if (fileExists(fs, i18Path)) {
+    if (await fileExists(fs, i18Path)) {
         try {
             const i18nProperties = await getPropertiesI18nBundle(i18Path);
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

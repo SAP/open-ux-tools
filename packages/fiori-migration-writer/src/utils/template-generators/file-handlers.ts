@@ -3,7 +3,7 @@
  * Extracted from common.ts generateTemplate function to reduce complexity
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile, fileExists, readJSON, deleteFile } from '../file-access.js';
 import { createMemFsEditor } from '../fs-adapter.js';
 import mergeWith from 'lodash/mergeWith.js';
@@ -16,9 +16,13 @@ import { MigrationTypes } from '../constants.js';
  * @param templateContent
  * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  */
-export function handleGitIgnoreFile(targetFile: string, templateContent: string, fsEditor?: Editor): string {
+export async function handleGitIgnoreFile(
+    targetFile: string,
+    templateContent: string,
+    fsEditor?: MemFsEditor
+): Promise<string> {
     const fs = fsEditor ?? createMemFsEditor();
-    if (!fileExists(fs, targetFile)) {
+    if (!(await fileExists(fs, targetFile))) {
         return templateContent;
     }
 
@@ -82,11 +86,11 @@ export async function handlePackageJsonFile(
     targetFile: string,
     templateContent: string,
     templateData: any,
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<string> {
     const fs = fsEditor ?? createMemFsEditor();
     const ownsEditor = !fsEditor;
-    if (!fileExists(fs, targetFile)) {
+    if (!(await fileExists(fs, targetFile))) {
         return templateContent;
     }
 
@@ -111,7 +115,7 @@ export async function handlePackageJsonFile(
     removeLegacyDependencies(currentFileContent, templateContentJSON);
 
     // Remove legacy Grunt module and file
-    removeLegacyGruntModule(fs, projectRoot, currentFileContent);
+    await removeLegacyGruntModule(fs, projectRoot, currentFileContent);
 
     // Remove old beta ui5-tooling module
     removeBetaUi5ToolingModule(currentFileContent);
@@ -129,7 +133,7 @@ export async function handlePackageJsonFile(
     // When we created the editor ourselves, persist staged side effects (e.g. Gruntfile.js deletion).
     // When the caller passed an editor, they own the commit (migration flow commits once at the end).
     if (ownsEditor) {
-        await new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
+        await fs.commit();
     }
 
     return JSON.stringify(mergedContent, null, 2);
@@ -174,7 +178,7 @@ function removeLegacyDependencies(currentFileContent: any, templateContentJSON: 
  * @param projectRoot
  * @param currentFileContent
  */
-function removeLegacyGruntModule(fs: Editor, projectRoot: string, currentFileContent: any): void {
+async function removeLegacyGruntModule(fs: MemFsEditor, projectRoot: string, currentFileContent: any): Promise<void> {
     const gruntModule = '@sap/grunt-sapui5-bestpractice-build';
     let deleteGruntFile = false;
 
@@ -191,7 +195,7 @@ function removeLegacyGruntModule(fs: Editor, projectRoot: string, currentFileCon
     // If dependency exists, also remove the Gruntfile.js
     if (deleteGruntFile) {
         const gruntFilePath = join(projectRoot, 'Gruntfile.js');
-        if (fileExists(fs, gruntFilePath)) {
+        if (await fileExists(fs, gruntFilePath)) {
             deleteFile(fs, gruntFilePath);
         }
     }

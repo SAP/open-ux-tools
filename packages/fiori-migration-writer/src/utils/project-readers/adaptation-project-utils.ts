@@ -4,7 +4,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists, readJSON } from '../../index.js';
 import { sapWattCommonSetting } from '../../types.js';
 
@@ -16,7 +16,7 @@ import { sapWattCommonSetting } from '../../types.js';
  * @param projectRoot - Root path of the project
  * @returns Adaptation project configuration or undefined
  */
-export async function checkMigratableAdaptationProject(fs: Editor, projectRoot: string): Promise<any> {
+export async function checkMigratableAdaptationProject(fs: MemFsEditor, projectRoot: string): Promise<any> {
     let adaptationProject: any;
 
     // Check for legacy WebIDE adaptation project settings
@@ -54,10 +54,10 @@ export async function checkMigratableAdaptationProject(fs: Editor, projectRoot: 
  * @param projectRoot - Root path of the project
  * @returns Adaptation project settings or undefined
  */
-async function checkCheProjectSettings(fs: Editor, projectRoot: string): Promise<any> {
+async function checkCheProjectSettings(fs: MemFsEditor, projectRoot: string): Promise<any> {
     try {
         const cheProjectJsonPath = join(projectRoot, '.che', 'project.json');
-        if (fileExists(fs, cheProjectJsonPath)) {
+        if (await fileExists(fs, cheProjectJsonPath)) {
             const projectJson = await readJSON(fs, cheProjectJsonPath);
             if (projectJson?.attributes?.[sapWattCommonSetting]) {
                 try {
@@ -83,9 +83,9 @@ async function checkCheProjectSettings(fs: Editor, projectRoot: string): Promise
  * @param projectRoot - Root path of the project
  * @returns Adaptation project config with isAdp flag or undefined
  */
-async function checkFioriToolsAdaptation(fs: Editor, projectRoot: string): Promise<any> {
+async function checkFioriToolsAdaptation(fs: MemFsEditor, projectRoot: string): Promise<any> {
     try {
-        if (isFioriToolsAdaptationProject(fs, projectRoot)) {
+        if (await isFioriToolsAdaptationProject(fs, projectRoot)) {
             const config = await readJSON(fs, join(projectRoot, '.adp', 'config.json'));
             if (config) {
                 config.isAdp = true;
@@ -105,10 +105,10 @@ async function checkFioriToolsAdaptation(fs: Editor, projectRoot: string): Promi
  * @param projectRoot - Root path of the project
  * @returns Reference string or undefined
  */
-async function readManifestReference(fs: Editor, projectRoot: string): Promise<string | undefined> {
+async function readManifestReference(fs: MemFsEditor, projectRoot: string): Promise<string | undefined> {
     try {
         const manifestAppdescrPath = join(projectRoot, 'webapp', 'manifest.appdescr_variant');
-        if (fileExists(fs, manifestAppdescrPath)) {
+        if (await fileExists(fs, manifestAppdescrPath)) {
             const manifestAppdescr = await readJSON(fs, manifestAppdescrPath);
             return manifestAppdescr?.reference ?? '';
         }
@@ -125,7 +125,7 @@ async function readManifestReference(fs: Editor, projectRoot: string): Promise<s
  * @param projectRoot - Root path of the project
  * @returns True if .adp/config.json exists
  */
-export function isFioriToolsAdaptationProject(fs: Editor, projectRoot: string): boolean {
+export async function isFioriToolsAdaptationProject(fs: MemFsEditor, projectRoot: string): Promise<boolean> {
     const adpConfigJsonPath = join(projectRoot, '.adp', 'config.json');
     return fileExists(fs, adpConfigJsonPath);
 }

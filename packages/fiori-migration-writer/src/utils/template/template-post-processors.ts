@@ -1,5 +1,5 @@
 import type { Data } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { TemplateFileName } from '../../index.js';
 import { FileName } from '../../project-spec-types.js';
 import { handleGitIgnoreFile, handlePackageJsonFile, handleLocateReuseLibsFile } from '../template-generators/index.js';
@@ -27,7 +27,7 @@ const packageJsonTmplName = `${FileName.Package}.tmpl`;
  * @returns Post-processed template content
  */
 export async function applyFileSpecificHandlers(
-    fs: Editor,
+    fs: MemFsEditor,
     templateName: string,
     templateContent: string,
     projectRoot: string,

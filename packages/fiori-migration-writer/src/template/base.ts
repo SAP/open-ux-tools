@@ -1,6 +1,6 @@
 import { basename, join } from 'node:path';
 import type { FioriElementsVersion } from '../project-spec-types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { trueCasePath } from 'true-case-path';
@@ -12,7 +12,7 @@ import { applyTemplates } from './template-helpers.js';
  * Configuration for applying base templates
  */
 export interface ApplyBaseTemplatesConfig {
-    fs: Editor;
+    fs: MemFsEditor;
     projectInfo: ImportProjectInfo;
     templateData: TemplateData;
     rootPath: string;

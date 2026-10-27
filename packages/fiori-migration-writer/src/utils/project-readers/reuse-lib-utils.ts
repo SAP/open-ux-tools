@@ -3,7 +3,7 @@
  */
 
 import { basename, join, relative } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { getReuseLibs, ReuseLibType } from '../file-discovery.js';
 import { createMemFsEditor } from '../fs-adapter.js';
 import { readJSON } from '../../index.js';
@@ -44,7 +44,7 @@ export function isSamePath(pathA: string, pathB: string): boolean {
  * @returns The nested manifest and its path, or undefined if none is found
  */
 export async function findNestedReuseLibManifest(
-    fs: Editor,
+    fs: MemFsEditor,
     projectRoot: string
 ): Promise<{ manifest: Manifest; manifestPath: string } | undefined> {
     const libs = await getReuseLibs(fs, [{ uri: URI.file(projectRoot), name: projectRoot, index: 0 }]);
@@ -77,7 +77,7 @@ export async function checkIfReuseLib(
     projectRoot: string,
     type?: MigrationTypes,
     manifest?: Manifest,
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<boolean> {
     if (type) {
         return type === MigrationTypes.library;
@@ -111,7 +111,7 @@ export async function getReuseLibModuleName(
     projectRoot: string,
     workspaceFolders?: readonly ProjectFolder[],
     manifest?: Manifest,
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<string> {
     const fs = fsEditor ?? createMemFsEditor();
     let moduleName;

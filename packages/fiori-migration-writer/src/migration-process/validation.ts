@@ -1,5 +1,5 @@
 import type { Message, ImportProjectInfo } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { validateMetadata, determineMessage } from '../utils/index.js';
 import { MigrationTypes, postMigrationAction } from '../utils/constants.js';
 import { updateExtConfigJson } from '../components/extension.js';
@@ -16,15 +16,15 @@ import { getMessageType } from '../utils/validation-severity.js';
  * @param messages - Array to collect validation messages
  * @param strict - Enable strict validation mode (WARNING becomes ERROR)
  */
-export function validateAndReportMetadata(
-    fs: Editor,
+export async function validateAndReportMetadata(
+    fs: MemFsEditor,
     rootPath: string,
     projectInfo: ImportProjectInfo,
     manifestJSON: any,
     messages: Message[],
     strict: boolean = false
-): void {
-    const metadataValidation = validateMetadata(
+): Promise<void> {
+    const metadataValidation = await validateMetadata(
         rootPath,
         projectInfo.webappPath,
         projectInfo.isSAPApp,
@@ -51,9 +51,13 @@ export function validateAndReportMetadata(
  * @param rootPath - Root path of the project
  * @param projectInfo - Project information
  */
-export function handleExtensionProjectConfig(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): void {
+export async function handleExtensionProjectConfig(
+    fs: MemFsEditor,
+    rootPath: string,
+    projectInfo: ImportProjectInfo
+): Promise<void> {
     if (projectInfo.type === MigrationTypes.projectExtension && projectInfo.extensionProjectSettings) {
-        updateExtConfigJson(fs, rootPath, projectInfo);
+        await updateExtConfigJson(fs, rootPath, projectInfo);
     }
 }
 

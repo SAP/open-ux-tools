@@ -37,7 +37,7 @@ describe('loadProjectIntoEditor', () => {
 
         // Overwrite on disk after loading; commit must NOT restore the loaded copy
         writeFileSync(untouched, 'changed-on-disk');
-        await new Promise<void>((resolve, reject) => editor.commit((err) => (err ? reject(err) : resolve())));
+        await editor.commit();
 
         expect(readFileSync(untouched, 'utf-8')).toBe('changed-on-disk');
     });

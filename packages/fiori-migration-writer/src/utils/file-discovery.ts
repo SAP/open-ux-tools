@@ -8,7 +8,7 @@
 import fastGlob from 'fast-glob';
 import { dirname, basename, join, normalize } from 'node:path';
 import { access } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readJSON } from './file-access.js';
 import { normalizePath } from './file-system-utils.js';
 import type { ProjectFolder } from '../types.js';
@@ -33,7 +33,7 @@ export type ReuseLibType = (typeof ReuseLibType)[keyof typeof ReuseLibType];
  * @param sapuxRequired - If true, only return projects with sapux in dependencies
  * @returns Array of project root paths
  */
-export async function findAllProjectRoots(fs: Editor, paths: string[], sapuxRequired = false): Promise<string[]> {
+export async function findAllProjectRoots(fs: MemFsEditor, paths: string[], sapuxRequired = false): Promise<string[]> {
     const roots: string[] = [];
     const ignorePatterns = ['**/node_modules/**', '**/dist/**', '**/.git/**'];
 
@@ -188,7 +188,10 @@ async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: s
  * @param workspaceFolders - Array of workspace folders to search
  * @returns Array of reuse library information
  */
-export async function getReuseLibs(fs: Editor, workspaceFolders: readonly ProjectFolder[]): Promise<ReuseLibResult[]> {
+export async function getReuseLibs(
+    fs: MemFsEditor,
+    workspaceFolders: readonly ProjectFolder[]
+): Promise<ReuseLibResult[]> {
     // Process all workspace folders in parallel
     const folderResults = await Promise.all(
         workspaceFolders.map(async (folder) => {

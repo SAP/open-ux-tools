@@ -1,5 +1,5 @@
 import { dirname, join, relative, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
 import { getReuseLibs, findAllProjectRoots, ReuseLibType } from './file-discovery.js';
 import type { Manifest, Package } from '../project-spec-types.js';
@@ -50,7 +50,7 @@ import {
  * @returns Manifest and updated webapp path, or undefined if not found
  */
 async function tryLoadManifest(
-    fs: Editor,
+    fs: MemFsEditor,
     projectRoot: string,
     webappPath: string
 ): Promise<{ manifest: Manifest; updatedWebappPath: string } | undefined> {
@@ -81,7 +81,7 @@ async function tryLoadManifest(
  * @returns Manifest and webapp path if found
  */
 async function tryFindNestedLibManifest(
-    fs: Editor,
+    fs: MemFsEditor,
     projectRoot: string
 ): Promise<{ manifest: Manifest; webappPath: string } | undefined> {
     const nestedLib = await findNestedReuseLibManifest(fs, projectRoot);
@@ -106,7 +106,7 @@ async function tryFindNestedLibManifest(
  * @returns Resolution result with manifest, webappPath, isReuseLib flag, and messages
  */
 async function resolveManifestForUnknownProject(
-    fs: Editor,
+    fs: MemFsEditor,
     projectRoot: string,
     migrationType: MigrationTypes | undefined,
     isProjectExtension: boolean,
@@ -217,7 +217,7 @@ export class ProjectAccess {
         migrationType?: MigrationTypes,
         workspaceFolders?: readonly ProjectFolder[],
         libPath?: string,
-        fsEditor?: Editor
+        fsEditor?: MemFsEditor
     ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
         const fs = fsEditor ?? createMemFsEditor();
         let manifest: Manifest | undefined;
@@ -295,7 +295,7 @@ export class ProjectAccess {
      * @returns Processed project info and messages
      */
     private static async processProjectByType(
-        fs: Editor,
+        fs: MemFsEditor,
         projectType: ProjectType,
         projectRoot: string,
         manifest: Manifest | undefined,
@@ -407,7 +407,7 @@ export class ProjectAccess {
         projectRoot: string,
         type?: MigrationTypes,
         libPath?: string,
-        fsEditor?: Editor
+        fsEditor?: MemFsEditor
     ): Promise<string> {
         return getWebappPath(fsEditor ?? createMemFsEditor(), projectRoot, type, libPath);
     }
@@ -420,11 +420,15 @@ export class ProjectAccess {
         return getPackageJsonPath(projectRoot);
     }
 
-    public static getPackageJson(filePath: string, fsEditor?: Editor): Promise<any> {
+    public static getPackageJson(filePath: string, fsEditor?: MemFsEditor): Promise<any> {
         return getPackageJson(fsEditor ?? createMemFsEditor(), filePath);
     }
 
-    public static async getManifestJson(projectRoot: string, webappPath: string, fsEditor?: Editor): Promise<Manifest> {
+    public static async getManifestJson(
+        projectRoot: string,
+        webappPath: string,
+        fsEditor?: MemFsEditor
+    ): Promise<Manifest> {
         return getManifestJson(fsEditor ?? createMemFsEditor(), projectRoot, webappPath);
     }
 
@@ -436,7 +440,7 @@ export class ProjectAccess {
         return getSemanticObjectAction(manifest);
     }
 
-    public static getFlpIntentFromHtml(htmlFilePath: string, fsEditor?: Editor) {
+    public static getFlpIntentFromHtml(htmlFilePath: string, fsEditor?: MemFsEditor) {
         return getFlpIntentFromHtml(fsEditor ?? createMemFsEditor(), htmlFilePath);
     }
 
@@ -448,11 +452,11 @@ export class ProjectAccess {
         return getMainEntity(manifest);
     }
 
-    public static getFirstBackend(projectRoot: string, fsEditor?: Editor): ReturnType<typeof getFirstBackend> {
+    public static getFirstBackend(projectRoot: string, fsEditor?: MemFsEditor): ReturnType<typeof getFirstBackend> {
         return getFirstBackend(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async checkMigratableAdaptationProject(projectRoot: string, fsEditor?: Editor) {
+    public static async checkMigratableAdaptationProject(projectRoot: string, fsEditor?: MemFsEditor) {
         return checkMigratableAdaptationProject(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
@@ -460,20 +464,20 @@ export class ProjectAccess {
         projectRoot: string,
         type?: MigrationTypes,
         manifest?: Manifest,
-        fsEditor?: Editor
+        fsEditor?: MemFsEditor
     ) {
         return checkIfReuseLib(projectRoot, type, manifest, fsEditor ?? createMemFsEditor());
     }
 
-    public static async readProjectExtensionSettings(projectRoot: string, fsEditor?: Editor) {
+    public static async readProjectExtensionSettings(projectRoot: string, fsEditor?: MemFsEditor) {
         return readProjectExtensionSettings(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static async checkIfProjectExtension(projectRoot: string, fsEditor?: Editor) {
+    public static async checkIfProjectExtension(projectRoot: string, fsEditor?: MemFsEditor) {
         return checkIfProjectExtension(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
-    public static isFioriToolsAdaptationProject(projectRoot: string, fsEditor?: Editor) {
+    public static isFioriToolsAdaptationProject(projectRoot: string, fsEditor?: MemFsEditor) {
         return isFioriToolsAdaptationProject(fsEditor ?? createMemFsEditor(), projectRoot);
     }
 
@@ -481,7 +485,7 @@ export class ProjectAccess {
         projectRoot: string,
         workspaceFolders?: readonly ProjectFolder[],
         manifest?: Manifest,
-        fsEditor?: Editor
+        fsEditor?: MemFsEditor
     ) {
         return getReuseLibModuleName(projectRoot, workspaceFolders, manifest, fsEditor ?? createMemFsEditor());
     }
@@ -494,7 +498,7 @@ export class ProjectAccess {
         return getNeoAppData(neoAppJson, destination, isUiAdaptation);
     }
 
-    public static async getDestinationFromNeoApp(projectRoot: string, destinationIn: string, fsEditor?: Editor) {
+    public static async getDestinationFromNeoApp(projectRoot: string, destinationIn: string, fsEditor?: MemFsEditor) {
         return getDestinationFromNeoApp(fsEditor ?? createMemFsEditor(), projectRoot, destinationIn);
     }
 
@@ -507,7 +511,7 @@ export class ProjectAccess {
     public static async getProjectRoots(
         workspaceRoots: readonly ProjectFolder[],
         sapuxRequired = false,
-        fsEditor?: Editor
+        fsEditor?: MemFsEditor
     ): Promise<MigratableFolder[]> {
         const fs = fsEditor ?? createMemFsEditor();
         // find projects by package.json and pom.xml
