@@ -123,7 +123,8 @@ describe('FioriFunctionalityServer', () => {
             'generate_fiori_app_cap',
             'list_functionality',
             'get_functionality_details',
-            'execute_functionality'
+            'execute_functionality',
+            'add_building_block'
             // ADP tools are omitted — they require SAP_FIORI_MCP_ADP_TOOLS=true
         ]);
     });
@@ -373,7 +374,8 @@ describe('FioriFunctionalityServer', () => {
                 'generate_fiori_app_cap',
                 'list_functionality',
                 'get_functionality_details',
-                'execute_functionality'
+                'execute_functionality',
+                'add_building_block'
                 // ADP tools are omitted — they require SAP_FIORI_MCP_ADP_TOOLS=true
             ]);
         });

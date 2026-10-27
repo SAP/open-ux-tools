@@ -29,7 +29,13 @@ export { enableFPM } from './app/index.js';
 export type { FPMConfig } from './app/index.js';
 
 export { validateBasePath, validateVersion } from './common/validate.js';
-export { createIdGenerator, type IdGeneratorFunction, getRelativeTemplateComponentPath } from './common/file.js';
+export {
+    createIdGenerator,
+    type IdGeneratorFunction,
+    getRelativeTemplateComponentPath,
+    getFragmentAndViewFiles
+} from './common/file.js';
+export { getXPathStringsForXmlFile } from './building-block/prompts/utils/xml.js';
 
 export {
     BuildingBlockType,
@@ -39,6 +45,7 @@ export {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from './building-block/types.js';
 export type {
+    BuildingBlock,
     FilterBar,
     Form,
     Chart,
