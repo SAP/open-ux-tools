@@ -20,7 +20,7 @@ import {
 } from './migration-process/index.js';
 
 // File operations
-import { copyAdaptationFiles, copyLibraryFiles } from './files/index.js';
+import { copyAdaptationFiles, copyLibraryFiles, commitFileSystemChanges } from './files/index.js';
 
 // Template functions
 import { assembleTemplateData } from './template/index.js';
@@ -134,9 +134,7 @@ export class ProjectMigrator {
         // Commit only when we own the editor; otherwise the caller commits (matches other writers).
         if (ownsEditor && migrationResult.result) {
             try {
-                await new Promise<void>((resolve, reject) =>
-                    migrationResult.fs.commit((error) => (error ? reject(error) : resolve()))
-                );
+                await commitFileSystemChanges(migrationResult.fs);
             } catch (error) {
                 migrationResult.result = false;
                 migrationResult.messages.push({
