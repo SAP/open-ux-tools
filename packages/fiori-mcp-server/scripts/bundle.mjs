@@ -253,6 +253,29 @@ if (matchCount === 0) {
     console.log(`✓ Rewrote ${matchCount} @zowe/secrets-for-zowe-sdk require(s) to inline prebuilds shim`);
 }
 
+// ── Step 1c: inline lz-string require in bundle ──────────────────────────────
+// @sap/ux-specification 1.144.12 added lz-string as a runtime dependency. Its
+// ESM bundle calls createRequire(import.meta.url)("lz-string") which esbuild
+// cannot intercept (createRequire-based requires are opaque to static analysis).
+// Post-process the bundle to replace every createRequire-based "lz-string" call
+// with a direct require() of lz-string's resolved absolute entry point so the
+// module is available without a node_modules lookup at runtime.
+const uxSpecEntry = req.resolve('@sap/ux-specification');
+const uxSpecReq = createRequire(uxSpecEntry);
+const lzStringEntry = uxSpecReq.resolve('lz-string');
+const lzStringPattern = /\w+\(["']lz-string["']\)/g;
+const lzMatchCount = (bundleSource.match(lzStringPattern) || []).length;
+if (lzMatchCount === 0) {
+    throw new Error(
+        'No createRequire-based require("lz-string") found in bundle — bundle may have changed; ' +
+        'update the lzStringPattern regex in bundle.mjs.'
+    );
+} else {
+    bundleSource = bundleSource.replace(lzStringPattern, `require(${JSON.stringify(lzStringEntry)})`);
+    fs.writeFileSync(bundleFile, bundleSource, 'utf8');
+    console.log(`✓ Rewrote ${lzMatchCount} lz-string require(s) to absolute path`);
+}
+
 // ── Step 2: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────
 // The inline shim (above) loads the native keyring binary directly from
 // dist/prebuilds/ at runtime. Copy only the platform-specific prebuilds here;
