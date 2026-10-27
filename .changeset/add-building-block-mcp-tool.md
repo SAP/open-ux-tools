@@ -3,7 +3,7 @@
 "@sap-ux/fe-fpm-writer": patch
 ---
 
-feat(fiori-mcp-server): add `add_building_block` MCP tool for Fiori Elements building blocks
+FEAT: add `add_building_block` MCP tool for Fiori Elements building blocks
 
 Adds a new `add_building_block` MCP tool that delegates to `@sap-ux/fe-fpm-writer`'s `generateBuildingBlock()` — the
 same generator as the SAP Page Editor — so any MCP client can add building blocks (table, chart, filter-bar, field,
