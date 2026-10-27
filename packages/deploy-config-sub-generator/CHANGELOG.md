@@ -1,5 +1,18 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.83
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-26
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.71 → 1.0.72
+- @sap-ux/odata-service-inquirer 3.2.27 → 3.2.27
+
 ## 1.0.82
 
 ### Patch Changes
