@@ -18,6 +18,53 @@ const APP_LOADED_ACTION_TYPE = '[ext] app-loaded';
 /** Flag the injected listener sets on `window` once the app-loaded signal is seen. */
 const APP_LOADED_FLAG = '__sapUxAppLoadedSeen';
 
+/** Argument object passed to {@link appLoadedListenerScript} when injected into the page. */
+export interface AppLoadedListenerConfig {
+    /** The expected postMessage envelope `type`. */
+    envelopeType: string;
+    /** The expected external action `type`. */
+    actionType: string;
+    /** The `window` property name the listener flips to `true` on the signal. */
+    flag: string;
+}
+
+/**
+ * The browser-side listener body, as a self-contained function.
+ *
+ * This runs in the page, not in Node: {@link installAppLoadedListener} hands it to
+ * Playwright's `addInitScript`, which serializes it with `.toString()` and re-parses
+ * it in the browser. It therefore MUST NOT reference anything from module scope
+ * (imports, top-level consts, other functions) — every input arrives via its single
+ * `config` argument, and it uses only browser globals (`window`). It is a named
+ * top-level function (not an inline closure) purely so it can be invoked directly
+ * from unit tests against a fake `window`.
+ *
+ * On the top window it seeds `window[flag] = false`, then on every `message` event
+ * rejects cross-origin senders first — so a frame from another origin can never spoof
+ * the app-loaded flag — and flips `window[flag] = true` on a same-origin message whose
+ * envelope and action type match.
+ *
+ * @param config Envelope/action types to match and the flag property to set.
+ */
+export function appLoadedListenerScript(config: AppLoadedListenerConfig): void {
+    const { envelopeType, actionType, flag } = config;
+    // Only install on the top window (the editor shell receives the message).
+    if (window.parent !== window) {
+        return;
+    }
+    (window as unknown as Record<string, unknown>)[flag] = false;
+    window.addEventListener('message', (event: MessageEvent) => {
+        // Reject cross-origin senders first, so a frame from another origin cannot spoof the app-loaded flag.
+        if (event.origin !== window.location.origin) {
+            return;
+        }
+        const data = event.data as { type?: string; action?: { type?: string } } | undefined;
+        if (data?.type === envelopeType && data.action?.type === actionType) {
+            (window as unknown as Record<string, unknown>)[flag] = true;
+        }
+    });
+}
+
 /**
  * Installs a `message` listener on the page that flips {@link APP_LOADED_FLAG}
  * to `true` when the preview iframe posts its `app-loaded` action to the parent.
@@ -28,25 +75,11 @@ const APP_LOADED_FLAG = '__sapUxAppLoadedSeen';
  * @param page The editor page to instrument.
  */
 export async function installAppLoadedListener(page: Page): Promise<void> {
-    await page.addInitScript(
-        ({ envelopeType, actionType, flag }) => {
-            // Only install on the top window (the editor shell receives the message).
-            if (window.parent !== window) {
-                return;
-            }
-            (window as unknown as Record<string, unknown>)[flag] = false;
-            window.addEventListener('message', (event: MessageEvent) => {
-                if (event.origin !== window.location.origin) {
-                    return;
-                }
-                const data = event.data as { type?: string; action?: { type?: string } } | undefined;
-                if (data?.type === envelopeType && data.action?.type === actionType) {
-                    (window as unknown as Record<string, unknown>)[flag] = true;
-                }
-            });
-        },
-        { envelopeType: POST_MESSAGE_ACTION_TYPE, actionType: APP_LOADED_ACTION_TYPE, flag: APP_LOADED_FLAG }
-    );
+    await page.addInitScript(appLoadedListenerScript, {
+        envelopeType: POST_MESSAGE_ACTION_TYPE,
+        actionType: APP_LOADED_ACTION_TYPE,
+        flag: APP_LOADED_FLAG
+    });
 }
 
 /**
