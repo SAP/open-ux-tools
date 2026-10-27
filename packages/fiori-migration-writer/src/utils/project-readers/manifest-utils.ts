@@ -5,7 +5,7 @@
 
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists } from '../../index.js';
 import { readFile } from '../../utils/file-access.js';
 import type { Manifest, SapUi5RoutingTarget } from '../../project-spec-types.js';
@@ -140,9 +140,9 @@ function extractFlpIntentFromConfig(htmlContent: string): string | undefined {
  * @param htmlFilePath - Path to HTML file
  * @returns FLP intent string or undefined
  */
-export function getFlpIntentFromHtml(fs: Editor, htmlFilePath: string): string | undefined {
+export async function getFlpIntentFromHtml(fs: MemFsEditor, htmlFilePath: string): Promise<string | undefined> {
     try {
-        if (!fileExists(fs, htmlFilePath)) {
+        if (!(await fileExists(fs, htmlFilePath))) {
             return undefined;
         }
 
@@ -246,7 +246,7 @@ export function getMainEntity(manifest: Manifest): string {
  * @returns Backend configuration object
  */
 export function getFirstBackend(
-    fs: Editor,
+    fs: MemFsEditor,
     projectRoot: string
 ): {
     destination?: string;

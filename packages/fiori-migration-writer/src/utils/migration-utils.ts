@@ -1,7 +1,7 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Data } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
@@ -87,7 +87,7 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
  * @param templateProps
  */
 export async function generateTemplate(
-    fs: Editor,
+    fs: MemFsEditor,
     templateData: Data,
     projectRoot: string,
     templateRoot: string,

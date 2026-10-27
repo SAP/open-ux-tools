@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
-import { createMemFsEditor, loadProjectIntoEditor } from '../../src/utils/fs-adapter.js';
+import type { MemFsEditor } from 'mem-fs-editor';
+import { createMemFsEditor, loadProjectIntoEditor, runWithEditor } from '../../src/utils/fs-adapter.js';
 import { writeFile as writeFileUtil, initI18n } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -16,7 +16,7 @@ const getProjectMigratorPrivate = async (): Promise<any> => {
 };
 
 describe('ProjectMigrator', () => {
-    let fs: Editor;
+    let fs: MemFsEditor;
     const testOutputDir = join(__dirname, 'test-output', 'project-migrator');
 
     beforeEach(async () => {
@@ -36,9 +36,7 @@ describe('ProjectMigrator', () => {
             await mkdir(join(rootPath, 'webapp'), { recursive: true });
             await writeFile(join(rootPath, 'webapp', 'Component.js'), 'sap.ui.define([], function() {});');
 
-            // Access private method via reflection
-            await loadProjectIntoEditor(fs, rootPath);
-            const result = await ProjectMigrator['detectTypeScriptApp'](fs, rootPath, 'webapp');
+            const result = await ProjectMigrator['detectTypeScriptApp'](rootPath, 'webapp');
             expect(result).toBe(false);
         });
 
@@ -48,9 +46,7 @@ describe('ProjectMigrator', () => {
             await mkdir(join(rootPath, 'webapp'), { recursive: true });
             await writeFile(join(rootPath, 'webapp', 'Component.ts'), 'export class Component {}');
 
-            await loadProjectIntoEditor(fs, rootPath);
-
-            const result = await ProjectMigrator['detectTypeScriptApp'](fs, rootPath, 'webapp');
+            const result = await ProjectMigrator['detectTypeScriptApp'](rootPath, 'webapp');
             expect(result).toBe(true);
         });
 
@@ -60,9 +56,7 @@ describe('ProjectMigrator', () => {
             await mkdir(join(rootPath, 'webapp'), { recursive: true });
             await writeFile(join(rootPath, 'webapp', 'types.d.ts'), 'declare module "test" {}');
 
-            await loadProjectIntoEditor(fs, rootPath);
-
-            const result = await ProjectMigrator['detectTypeScriptApp'](fs, rootPath, 'webapp');
+            const result = await ProjectMigrator['detectTypeScriptApp'](rootPath, 'webapp');
             expect(result).toBe(false);
         });
 
@@ -71,9 +65,7 @@ describe('ProjectMigrator', () => {
             const rootPath = join(testOutputDir, 'no-webapp');
             await mkdir(rootPath, { recursive: true });
 
-            await loadProjectIntoEditor(fs, rootPath);
-
-            const result = await ProjectMigrator['detectTypeScriptApp'](fs, rootPath, 'webapp');
+            const result = await ProjectMigrator['detectTypeScriptApp'](rootPath, 'webapp');
             expect(result).toBe(false);
         });
     });
@@ -85,8 +77,7 @@ describe('ProjectMigrator', () => {
             await mkdir(join(webappPath, 'controller'), { recursive: true });
             await writeFile(join(webappPath, 'controller', 'Main.controller.ts'), 'export class Main {}');
 
-            await loadProjectIntoEditor(fs, webappPath);
-            const result = ProjectMigrator['webappHasTypeScriptFile'](fs, webappPath);
+            const result = await ProjectMigrator['webappHasTypeScriptFile'](webappPath);
             expect(result).toBe(true);
         });
 
@@ -95,7 +86,7 @@ describe('ProjectMigrator', () => {
             const webappPath = join(testOutputDir, 'empty-webapp', 'webapp');
             await mkdir(webappPath, { recursive: true });
 
-            const result = ProjectMigrator['webappHasTypeScriptFile'](fs, webappPath);
+            const result = await ProjectMigrator['webappHasTypeScriptFile'](webappPath);
             expect(result).toBe(false);
         });
 
@@ -106,7 +97,8 @@ describe('ProjectMigrator', () => {
             // Write a .ts file to mem-fs
             writeFileUtil(fs, join(webappPath, 'Component.ts'), 'export class Component {}');
 
-            const result = ProjectMigrator['webappHasTypeScriptFile'](fs, webappPath);
+            // Run inside runWithEditor so getCurrentEditor() returns our fs
+            const result = await runWithEditor(fs, () => ProjectMigrator['webappHasTypeScriptFile'](webappPath));
             expect(result).toBe(true);
         });
 
@@ -123,7 +115,8 @@ describe('ProjectMigrator', () => {
             // Delete the file in mem-fs
             fs.delete(join(webappPath, 'Component.ts'));
 
-            const result = ProjectMigrator['webappHasTypeScriptFile'](fs, webappPath);
+            // Run inside runWithEditor so getCurrentEditor() returns our fs
+            const result = await runWithEditor(fs, () => ProjectMigrator['webappHasTypeScriptFile'](webappPath));
             // File is deleted in mem-fs, should return false
             expect(result).toBe(false);
         });
@@ -136,7 +129,7 @@ describe('ProjectMigrator', () => {
             const rootPath = join(testOutputDir, 'ts-setup-error');
             await mkdir(rootPath, { recursive: true });
 
-            const messages = await ProjectMigrator['setupTypeScript'](fs, rootPath);
+            const messages = await ProjectMigrator['setupTypeScript'](rootPath);
             // Should return error message
             expect(messages.some((m: { type: string }) => m.type === 'ERROR')).toBe(true);
         });

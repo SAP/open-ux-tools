@@ -1,5 +1,5 @@
 import type { ImportProjectInfo } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readManifest } from '../utils/common.js';
 import { getExcludedThemes } from '../utils/UI5Theme.js';
 
@@ -13,7 +13,7 @@ import { getExcludedThemes } from '../utils/UI5Theme.js';
  * @returns Array of supported theme names with 'themelib_' prefix
  */
 export async function getSupportedThemes(
-    fs: Editor,
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     ui5Version: string | undefined
 ): Promise<string[]> {

@@ -7,7 +7,7 @@
 
 import type { ImportProjectInfo, Message, TemplateData, NeoappDestination } from '../types.js';
 import type { SapAppSourceTemplate } from '../project-spec-types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import { MigrationTypes, distVar } from '../utils/constants.js';
 
@@ -24,7 +24,7 @@ import { generateAllUI5YamlFiles, updateManifestForMigration, generateLaunchConf
  * Configuration for generating app settings phase
  */
 export interface GenerateAppSettingsConfig {
-    fs: Editor;
+    fs: MemFsEditor;
     rootPath: string;
     templateData: TemplateData;
     destination: string;
@@ -42,7 +42,7 @@ export interface GenerateAppSettingsConfig {
  * Configuration for applying all templates phase
  */
 export interface ApplyAllTemplatesConfig {
-    fs: Editor;
+    fs: MemFsEditor;
     projectInfo: ImportProjectInfo;
     rootPath: string;
     templateData: TemplateData;
@@ -59,7 +59,7 @@ export interface ApplyAllTemplatesConfig {
  * Configuration for post-processing migration phase
  */
 export interface PostProcessMigrationConfig {
-    fs: Editor;
+    fs: MemFsEditor;
     projectInfo: ImportProjectInfo;
     rootPath: string;
     manifestJSON: any;
@@ -83,7 +83,7 @@ export interface PostProcessMigrationConfig {
  * @returns Updated webapp path and keepIndex flag
  */
 export async function setupProjectStructure(
-    fs: Editor,
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     rootPath: string
 ): Promise<{ webappPath: string; keepIndex: boolean }> {
@@ -96,7 +96,7 @@ export async function setupProjectStructure(
     }
 
     // Create extension project manifest if needed
-    createExtensionProjectManifest(fs, rootPath, projectInfo);
+    await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
     // Create webapp folder and migrate files if needed
     await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
@@ -215,7 +215,7 @@ export async function applyAllTemplates(config: ApplyAllTemplatesConfig): Promis
     });
 
     // Remove package-lock if exists
-    removePackageLock(fs, projectInfo.rootPath);
+    await removePackageLock(fs, projectInfo.rootPath);
 }
 
 /**
@@ -243,9 +243,9 @@ export async function postProcessMigration(config: PostProcessMigrationConfig): 
 
     if (projectInfo.type !== MigrationTypes.projectExtension) {
         // Generate Launch Config using @sap-ux/launch-config
-        await generateLaunchConfiguration(fs, projectInfo, vscode, appIntent, appMockIntent, flpSandboxAvailable);
+        await generateLaunchConfiguration(projectInfo, vscode, appIntent, appMockIntent, flpSandboxAvailable, messages);
     } else {
         // Handle extension project configuration
-        handleExtensionProjectConfig(fs, rootPath, projectInfo);
+        await handleExtensionProjectConfig(fs, rootPath, projectInfo);
     }
 }

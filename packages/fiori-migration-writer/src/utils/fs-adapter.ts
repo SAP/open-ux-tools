@@ -6,6 +6,7 @@
  * it to be passed through every function call.
  */
 import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import fastGlob from 'fast-glob';

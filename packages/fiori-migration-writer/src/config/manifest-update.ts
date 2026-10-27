@@ -3,7 +3,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readJSON, updateJSON, fileExists } from '../utils/index.js';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
@@ -30,7 +30,7 @@ import { getMessageType } from '../utils/validation-severity.js';
  * Options for updateManifestForMigration
  */
 export interface UpdateManifestForMigrationOptions {
-    fs: Editor;
+    fs: MemFsEditor;
     rootPath: string;
     webappPath: string;
     templateData: TemplateData;
@@ -48,7 +48,7 @@ export interface UpdateManifestForMigrationOptions {
 export async function updateManifestForMigration(options: UpdateManifestForMigrationOptions): Promise<void> {
     const { fs, rootPath, webappPath, templateData, floorplan, messages, sourceTemplateTest, strict = false } = options;
     const manifestPath = join(webappPath, TemplateFileName.ManifestJson);
-    if (!fileExists(fs, join(rootPath, manifestPath))) {
+    if (!(await fileExists(fs, join(rootPath, manifestPath)))) {
         return;
     }
 

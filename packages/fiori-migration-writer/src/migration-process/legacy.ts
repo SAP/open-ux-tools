@@ -4,7 +4,7 @@
  */
 
 import { join, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile, updateFile, readJSON, updateJSON, fileExists } from '../utils/index.js';
 import { editorHasPath } from '../utils/fs-adapter.js';
 import { TemplateFileName } from '../index.js';
@@ -24,7 +24,7 @@ import { buildLegacyPaths, tryGitMove, fallbackFsMove, cleanupEmptyDirs } from '
  * @returns Object containing updated keepIndex flag and updated webapp path
  */
 export async function migrateLegacyFolderStructure(
-    fs: Editor,
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     rootPath: string
 ): Promise<{ keepIndex: boolean; webappPath: string }> {
@@ -36,7 +36,7 @@ export async function migrateLegacyFolderStructure(
     }
 
     const paths = buildLegacyPaths(rootPath, legacyPath);
-    if (!fileExists(fs, paths.ffLegacyWebappPath)) {
+    if (!(await fileExists(fs, paths.ffLegacyWebappPath))) {
         return { keepIndex, webappPath: projectInfo.webappPath };
     }
 
@@ -54,7 +54,7 @@ export async function migrateLegacyFolderStructure(
     const ffTestMap = getFFTestSuiteMap(updatedWebappPath);
 
     // Process legacy qunit runner file
-    processLegacyQunitRunner(fs, paths.ffNewTestPath, ffTestMap);
+    await processLegacyQunitRunner(fs, paths.ffNewTestPath, ffTestMap);
 
     // Update ModulePathForTests.js files
     await updateModulePathForTests(fs, paths.ffNewTestPath);
@@ -65,11 +65,11 @@ export async function migrateLegacyFolderStructure(
     }
 
     // Update various config files
-    updateGitignore(fs, rootPath);
+    await updateGitignore(fs, rootPath);
     await Promise.all([updateNeoApp(fs, rootPath), updateProjectJson(fs, rootPath)]);
 
     // Check for mockserver in index.html
-    keepIndex = checkForMockserver(fs, rootPath, updatedWebappPath);
+    keepIndex = await checkForMockserver(fs, rootPath, updatedWebappPath);
 
     return { keepIndex, webappPath: updatedWebappPath };
 }
@@ -81,11 +81,11 @@ export async function migrateLegacyFolderStructure(
  * @param ffNewTestPath
  * @param ffTestMap
  */
-function processLegacyQunitRunner(fs: Editor, ffNewTestPath: string, ffTestMap: any): void {
+async function processLegacyQunitRunner(fs: MemFsEditor, ffNewTestPath: string, ffTestMap: any): Promise<void> {
     const qunitRunner = 'qunit.runner.testsuite.html';
     const legacyRunner = join(ffNewTestPath, qunitRunner);
 
-    if (!fileExists(fs, legacyRunner)) {
+    if (!(await fileExists(fs, legacyRunner))) {
         return;
     }
 
@@ -130,7 +130,7 @@ function processLegacyQunitRunner(fs: Editor, ffNewTestPath: string, ffTestMap: 
 
     // Handle testsuite.qunit.html file
     const testSuiteRunner = join(ffNewTestPath, TemplateFileName.TestsuiteQunitHtml);
-    if (!fileExists(fs, testSuiteRunner)) {
+    if (!(await fileExists(fs, testSuiteRunner))) {
         updateFile(fs, testSuiteRunner, legacyRunnerContent);
         delete ffTestMap[TemplateFileName.TestsuiteQunitHtml];
     } else {
@@ -154,7 +154,7 @@ function processLegacyQunitRunner(fs: Editor, ffNewTestPath: string, ffTestMap: 
  * @param fs
  * @param ffNewTestPath
  */
-async function updateModulePathForTests(fs: Editor, ffNewTestPath: string): Promise<void> {
+async function updateModulePathForTests(fs: MemFsEditor, ffNewTestPath: string): Promise<void> {
     const { findAll } = await import('../utils/file-discovery.js');
     const moduleFilePath: string[] = [];
     await findAll(ffNewTestPath, TemplateFileName.ModulePathForTests, moduleFilePath, []);
@@ -191,7 +191,7 @@ async function updateModulePathForTests(fs: Editor, ffNewTestPath: string): Prom
  * @param fs
  * @param ffNewTestPath
  */
-function updateTestFilePaths(fs: Editor, ffNewTestPath: string): void {
+function updateTestFilePaths(fs: MemFsEditor, ffNewTestPath: string): void {
     if (!hasStore(fs)) {
         return;
     }
@@ -233,9 +233,9 @@ function updateTestFilePaths(fs: Editor, ffNewTestPath: string): void {
  * @param fs
  * @param rootPath
  */
-function updateGitignore(fs: Editor, rootPath: string): void {
+async function updateGitignore(fs: MemFsEditor, rootPath: string): Promise<void> {
     const gitignore = join(rootPath, '.gitignore');
-    if (!fileExists(fs, gitignore)) {
+    if (!(await fileExists(fs, gitignore))) {
         return;
     }
 
@@ -256,9 +256,9 @@ function updateGitignore(fs: Editor, rootPath: string): void {
  * @param fs
  * @param rootPath
  */
-async function updateNeoApp(fs: Editor, rootPath: string): Promise<void> {
+async function updateNeoApp(fs: MemFsEditor, rootPath: string): Promise<void> {
     const neoapp = join(rootPath, FileName.NeoApp);
-    if (!fileExists(fs, neoapp)) {
+    if (!(await fileExists(fs, neoapp))) {
         return;
     }
 
@@ -294,9 +294,9 @@ async function updateNeoApp(fs: Editor, rootPath: string): Promise<void> {
  * @param fs
  * @param rootPath
  */
-async function updateProjectJson(fs: Editor, rootPath: string): Promise<void> {
+async function updateProjectJson(fs: MemFsEditor, rootPath: string): Promise<void> {
     const projectJson = join(rootPath, '.che', 'project.json');
-    if (!fileExists(fs, projectJson)) {
+    if (!(await fileExists(fs, projectJson))) {
         return;
     }
 
@@ -323,9 +323,9 @@ async function updateProjectJson(fs: Editor, rootPath: string): Promise<void> {
  * @param webappPath - Updated webapp path
  * @returns true if mockserver found and index.html should be preserved
  */
-function checkForMockserver(fs: Editor, rootPath: string, webappPath: string): boolean {
+async function checkForMockserver(fs: MemFsEditor, rootPath: string, webappPath: string): Promise<boolean> {
     const indexPath = join(rootPath, webappPath, TemplateFileName.IndexHtml);
-    if (!fileExists(fs, indexPath)) {
+    if (!(await fileExists(fs, indexPath))) {
         return false;
     }
 

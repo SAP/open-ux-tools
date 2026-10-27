@@ -19,7 +19,7 @@ import {
 } from '@sap-ux/ui5-info';
 import { loadProjectIntoMemFs, fileExistsInMemFs, getFileFromMemFs } from '../helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../test-constants.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { toMatchSpecificSnapshot } from 'jest-specific-snapshot';
 
 const PINNED_UI5_VERSION = '1.153.0';
@@ -79,7 +79,7 @@ function inputHasSourceTemplateVersion(projectPath: string): boolean {
  * Helper to verify migrated files using per-file snapshots
  * Creates separate snapshot files for each app to make reviews manageable
  */
-function verifyMigratedFiles(fs: Editor, projectPath: string, appName: string): void {
+function verifyMigratedFiles(fs: MemFsEditor, projectPath: string, appName: string): void {
     // Core configuration files - these MUST exist after migration
     const requiredFiles = ['package.json', 'ui5.yaml', '.gitignore'];
     // Only normalize the migrator-written version when the input had no pre-existing version.

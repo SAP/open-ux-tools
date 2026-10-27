@@ -161,7 +161,7 @@ export class ProjectMigrator {
                 }
 
                 // Validate project is suitable for migration (not a Fiori app in CAP project)
-                await validateProjectForMigration(projectRoot);
+                await validateProjectForMigration(editor, projectRoot);
 
                 if (
                     projectInfo &&
@@ -260,14 +260,16 @@ export class ProjectMigrator {
             const isTypeScriptApp = await ProjectMigrator.detectTypeScriptApp(rootPath, projectInfo.webappPath);
 
             // Prepare configuration data
-            const configData = await prepareConfigurationData(projectInfo, projectInfo.ui5Version, isTypeScriptApp);
+            const fs = getCurrentEditor() ?? createMemFsEditor();
+            const configData = await prepareConfigurationData(fs, projectInfo, projectInfo.ui5Version, isTypeScriptApp);
 
             // Phase 1: Setup project structure
-            const { webappPath, keepIndex } = await setupProjectStructure(projectInfo, rootPath);
+            const { webappPath, keepIndex } = await setupProjectStructure(fs, projectInfo, rootPath);
             projectInfo.webappPath = webappPath;
 
             // Phase 2: Assemble template data
             const templateContext = await assembleTemplateData({
+                fs,
                 projectInfo,
                 rootPath,
                 projectData: configData.projectData,
@@ -318,6 +320,7 @@ export class ProjectMigrator {
             // Phase 3: Generate app settings
             const sourceTemplateType = determineSourceTemplateType(projectInfo, MigrationTypes);
             await generateAppSettings({
+                fs,
                 rootPath,
                 templateData: templateContext.templateData,
                 destination,
@@ -333,6 +336,7 @@ export class ProjectMigrator {
 
             // Phase 4: Apply all templates
             await applyAllTemplates({
+                fs,
                 projectInfo,
                 rootPath,
                 templateData: templateContext.templateData,
@@ -347,6 +351,7 @@ export class ProjectMigrator {
 
             // Phase 5: Post-processing
             await postProcessMigration({
+                fs,
                 projectInfo,
                 rootPath,
                 manifestJSON: templateContext.manifestJSON,

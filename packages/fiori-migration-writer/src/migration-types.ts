@@ -2,7 +2,7 @@ import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './pro
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { Annotations } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -547,7 +547,7 @@ export interface TemplateModuleInfo {
  * Context for assembleTemplateData function
  */
 export interface TemplateAssemblyContext {
-    fs: Editor;
+    fs: MemFsEditor;
     projectInfo: ImportProjectInfo;
     rootPath: string;
     projectData: any;
@@ -588,7 +588,7 @@ export interface BackendConfigService {
         scp?: boolean;
         sapClient?: string;
     };
-    getFlpIntentFromHtml: (path: string) => string | undefined;
+    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
     getDestinationFromNeoApp: (
         projectRoot: string,
         destination: string
@@ -607,7 +607,7 @@ export interface BackendConfigService {
  * Context for processRegularProject function
  */
 export interface RegularProjectContext {
-    fs: Editor;
+    fs: MemFsEditor;
     projectRoot: string;
     manifest: Manifest;
     defaultProjectInfo: ImportProjectInfo;

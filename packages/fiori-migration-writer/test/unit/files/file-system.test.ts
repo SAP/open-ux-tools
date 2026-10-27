@@ -4,13 +4,13 @@ import { fileURLToPath } from 'node:url';
 import { mkdir, rm } from 'node:fs/promises';
 import { create as createMemFsEditor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { commitFileSystemChanges } from '../../../src/files/file-system.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('file-system', () => {
-    let fs: Editor;
+    let fs: MemFsEditor;
     const testOutputDir = join(__dirname, 'test-output', 'file-system');
 
     beforeEach(async () => {
@@ -71,12 +71,9 @@ describe('file-system', () => {
         });
 
         test('should reject on commit error', async () => {
-            // Force the underlying commit to fail. A platform-specific "invalid path" is unreliable
-            // (e.g. /root/... is writable on Windows), so stub commit to invoke its callback with an error.
+            // Force the underlying commit to fail by returning a rejected Promise.
             const commitError = new Error('commit failed');
-            jest.spyOn(fs, 'commit').mockImplementation((callback: (err?: Error) => void) => {
-                callback(commitError);
-            });
+            jest.spyOn(fs, 'commit').mockRejectedValue(commitError);
 
             // Should reject with the error
             await expect(commitFileSystemChanges(fs)).rejects.toThrow('commit failed');

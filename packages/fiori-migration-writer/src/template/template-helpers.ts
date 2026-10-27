@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile, updateFile, generateTemplate, updateThemeAttribute, fileExists } from '../utils/index.js';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName, templatesDirPath } from '../index.js';
@@ -17,7 +17,7 @@ import type { TemplateData, TemplateMap } from '../types.js';
  * @param ui5Version - Optional UI5 version for theme updates
  */
 export async function applyTemplates(
-    fs: Editor,
+    fs: MemFsEditor,
     templates: TemplateMap,
     templateData: TemplateData,
     projectRoot: string,
@@ -34,7 +34,7 @@ export async function applyTemplates(
 
     if (
         templateData.project.type === MigrationTypes.projectExtension &&
-        fileExists(fs, join(projectRoot, DirName.Webapp, TemplateFileName.IndexHtml))
+        (await fileExists(fs, join(projectRoot, DirName.Webapp, TemplateFileName.IndexHtml)))
     ) {
         // For project extensions, we usually leave the index.html file unchanged.
         // However, since the Belize theme is no longer available after UI5 version 1.136.0,

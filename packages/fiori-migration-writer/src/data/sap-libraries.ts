@@ -2,7 +2,7 @@
  * Helper functions for extracting and filtering SAP libraries from manifest
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists, readFile } from '../utils/index.js';
 import { sapUI5LibsNS } from '../utils/constants.js';
 
@@ -24,12 +24,12 @@ export interface SapLibrariesExtractionResult {
  * @param webappPath - Webapp path within the project
  * @returns SAP libraries extraction result
  */
-export function extractSapLibraries(
-    fs: Editor,
+export async function extractSapLibraries(
+    fs: MemFsEditor,
     manifestLibsTmp: Record<string, any>,
     projectRoot: string,
     webappPath: string
-): SapLibrariesExtractionResult {
+): Promise<SapLibrariesExtractionResult> {
     const manifestLibs: any = {};
     const reuseManifestLibs: any = {};
 
@@ -50,7 +50,7 @@ export function extractSapLibraries(
     // Check for sap.ca.scfld.md in component.js in older projects
     try {
         const componentJSPath = join(projectRoot, webappPath, 'Component.js');
-        if (fileExists(fs, componentJSPath)) {
+        if (await fileExists(fs, componentJSPath)) {
             // sap.ca.scfld.md
             const componentJsContent = readFile(fs, componentJSPath);
             if (componentJsContent.indexOf('sap.ca.scfld.md') > 0) {

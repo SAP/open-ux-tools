@@ -145,7 +145,7 @@ export async function copyLibraryFiles(
         };
         // Perform migration for Reuse Library
         // 1. Create app settings (package.json)
-        await applyTemplates(getLibraryTemplatesMap(), templateData, rootPath, TemplateFileName.LibrarySettings);
+        await applyTemplates(fs, getLibraryTemplatesMap(), templateData, rootPath, TemplateFileName.LibrarySettings);
 
         //2. Create ui5.yaml
         const ui5YamlTemplate = readFile(

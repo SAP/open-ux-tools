@@ -1,5 +1,5 @@
 import { create as createMemFs } from 'mem-fs';
-import { create as createEditor, type Editor } from 'mem-fs-editor';
+import { create as createEditor, type MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { readdirSync, statSync, readFileSync } from 'node:fs';
 
@@ -9,7 +9,7 @@ import { readdirSync, statSync, readFileSync } from 'node:fs';
  * @param projectPath - Path to project directory
  * @returns Mem-fs editor with project loaded
  */
-export function loadProjectIntoMemFs(projectPath: string): Editor {
+export function loadProjectIntoMemFs(projectPath: string): MemFsEditor {
     const store = createMemFs();
     const fs = createEditor(store);
 
@@ -26,7 +26,7 @@ export function loadProjectIntoMemFs(projectPath: string): Editor {
  * @param targetPath - Target path in mem-fs
  * @param fs - Mem-fs editor
  */
-function copyDirectoryToMemFs(sourcePath: string, targetPath: string, fs: Editor): void {
+function copyDirectoryToMemFs(sourcePath: string, targetPath: string, fs: MemFsEditor): void {
     const items = readdirSync(sourcePath);
 
     for (const item of items) {
@@ -53,7 +53,7 @@ function copyDirectoryToMemFs(sourcePath: string, targetPath: string, fs: Editor
  * @param basePath - Base path to dump from
  * @returns Map of file paths to contents
  */
-export function extractFromMemFs(fs: Editor, basePath: string): Record<string, string> {
+export function extractFromMemFs(fs: MemFsEditor, basePath: string): Record<string, string> {
     const files: Record<string, string> = {};
     const dump = fs.dump(basePath);
 
@@ -72,7 +72,7 @@ export function extractFromMemFs(fs: Editor, basePath: string): Record<string, s
  * @param filePath - Relative file path
  * @returns File content or undefined if not found
  */
-export function getFileFromMemFs(fs: Editor, basePath: string, filePath: string): string | undefined {
+export function getFileFromMemFs(fs: MemFsEditor, basePath: string, filePath: string): string | undefined {
     const fullPath = join(basePath, filePath);
     try {
         return fs.read(fullPath, { raw: false }) as string;
@@ -89,7 +89,7 @@ export function getFileFromMemFs(fs: Editor, basePath: string, filePath: string)
  * @param filePath - Relative file path
  * @returns True if file exists
  */
-export function fileExistsInMemFs(fs: Editor, basePath: string, filePath: string): boolean {
+export function fileExistsInMemFs(fs: MemFsEditor, basePath: string, filePath: string): boolean {
     const fullPath = join(basePath, filePath);
     return fs.exists(fullPath);
 }

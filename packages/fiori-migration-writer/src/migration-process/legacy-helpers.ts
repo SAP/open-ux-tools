@@ -1,6 +1,6 @@
 import { join, relative, sep } from 'node:path';
 import { access, readdir } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
@@ -75,7 +75,7 @@ function moveMemFsDirectory(fs: EditorWithStore, fromPath: string, toPath: strin
     }
 }
 
-function memFsMove(fs: Editor, rootPath: string, paths: LegacyPaths): void {
+function memFsMove(fs: MemFsEditor, rootPath: string, paths: LegacyPaths): void {
     if (!hasStore(fs)) {
         return;
     }
@@ -119,7 +119,7 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
  * @param rootPath - Project root path
  * @param _paths - Legacy paths object (unused, paths rebuilt internally for security)
  */
-export async function tryGitMove(fs: Editor, rootPath: string, _paths: LegacyPaths): Promise<void> {
+export async function tryGitMove(fs: MemFsEditor, rootPath: string, _paths: LegacyPaths): Promise<void> {
     // Keep the in-memory store consistent by moving the staged files first.
     memFsMove(fs, rootPath, _paths);
 
