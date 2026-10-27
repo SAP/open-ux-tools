@@ -120,7 +120,7 @@ export function createProjectData(config: CreateProjectDataConfig): ProjectMigra
         ui5Theme: ui5Theme,
         ui5Version: projectUI5Version,
         minSupportedUI5Version: odataVersion === ODataVersion.v4 ? minUi5VersionV4Template : defaultMinUi5Version,
-        localUI5Version: projectUI5Version.length > 0 ? projectUI5Version : (localUI5Version as string),
+        localUI5Version: localUI5Version as string,
         manifestUI5Version,
         neoAppUI5Version,
         sapux: !isSAPApp,

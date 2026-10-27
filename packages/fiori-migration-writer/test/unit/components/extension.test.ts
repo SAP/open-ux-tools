@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { join } from 'node:path';
-import { mkdirSync, rmSync, readFileSync, existsSync } from 'node:fs';
+import { mkdirSync, rmSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { updateExtConfigJson } from '../../../src/components/extension.js';
-import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../../../src/types.js';
 
 describe('components/extension', () => {
@@ -44,10 +44,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             expect(existsSync(extConfigPath)).toBe(true);
@@ -66,10 +64,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -94,10 +90,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -123,10 +117,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -139,10 +131,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             expect(existsSync(extConfigPath)).toBe(true);
@@ -160,10 +150,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -181,10 +169,8 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
@@ -204,14 +190,33 @@ describe('components/extension', () => {
             } as unknown as ImportProjectInfo;
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                await updateExtConfigJson(testRoot, projectInfo);
-                await commitEditor(fs);
-            });
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
 
             const extConfigPath = join(testRoot, '.extconfig.json');
             const content = JSON.parse(readFileSync(extConfigPath, 'utf-8')) as Record<string, unknown>;
             expect((content.system as Record<string, unknown>).sapClient).toBe('');
+        });
+
+        it('should delete .project.json when a webidedispatcher path is migrated', async () => {
+            // A WebIDE dispatcher path marks the project for .project.json removal.
+            writeFileSync(join(testRoot, '.project.json'), JSON.stringify({ generation: [] }));
+
+            const projectInfo = {
+                extensionProjectSettings: {
+                    system: {
+                        name: 'testDest',
+                        uri: '/webidedispatcher/destinations/myDest/sap/opu/odata'
+                    }
+                }
+            } as unknown as ImportProjectInfo;
+
+            const fs = createMemFsEditor();
+            await updateExtConfigJson(fs, testRoot, projectInfo);
+            await commitEditor(fs);
+
+            // .project.json should be removed after migration.
+            expect(existsSync(join(testRoot, '.project.json'))).toBe(false);
         });
     });
 });

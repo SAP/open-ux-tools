@@ -32,6 +32,8 @@ server:
             client: ''
             url: ''
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -45,7 +47,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.153.0
 builder:
   resources:
     excludes:

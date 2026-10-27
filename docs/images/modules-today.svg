@@ -27,15 +27,15 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:document-units="in"
-   inkscape:zoom="1.7284394"
-   inkscape:cx="604.59164"
-   inkscape:cy="300.27087"
+   inkscape:zoom="1.9646553"
+   inkscape:cx="572.11054"
+   inkscape:cy="289.87273"
    inkscape:window-width="3440"
-   inkscape:window-height="1387"
+   inkscape:window-height="1382"
    inkscape:window-x="0"
-   inkscape:window-y="25"
+   inkscape:window-y="30"
    inkscape:window-maximized="0"
-   inkscape:current-layer="layer3" />
+   inkscape:current-layer="shape3-21-5" />
 	<v:documentProperties
    v:langID="1033"
    v:viewMarkup="false">
@@ -739,12 +739,12 @@
    v:tabSpace="42.5197"
    v:verticalAlign="2" />
 			<v:textRect
-   cx="153.071"
+   cx="141.033"
    cy="295.753"
-   width="306.15"
+   width="282.07"
    height="124.724" />
 			<path
-   d="M 0,358.12 H 306.14 V 233.39 H 0 Z"
+   d="M 0,358.12 H 282.07 V 233.39 H 0 Z"
    class="st3"
    id="path5" />
 			<text
@@ -758,7 +758,13 @@
    class="st4"
    v:langID="1033"
    id="text5-0"
-   style="font-size:6.99994px;font-family:Arial;fill:#000000"><v:paragraph /><v:tabList />@sap-ux/{name}-sub-generator</text>		</g><g
+   style="font-size:6.99994px;font-family:Arial;fill:#000000"><v:paragraph /><v:tabList />@sap-ux/{name}-sub-generator</text><text
+   x="312.07471"
+   y="223.60484"
+   class="st4"
+   v:langID="1033"
+   id="text5-0-4"
+   style="font-size:6.99994px;font-family:Arial;fill:#000000"><v:paragraph /><v:tabList />Released software </text>		</g><g
    id="shape22-7-39"
    v:mID="22"
    v:groupContext="shape"
@@ -888,12 +894,12 @@
    v:tabSpace="42.5197"
    v:verticalAlign="2" />
 			<v:textRect
-   cx="153.071"
+   cx="81.648"
    cy="295.753"
-   width="306.15"
+   width="163.30"
    height="124.724" />
 			<path
-   d="M 0,358.12 H 306.14 V 233.39 H 0 Z"
+   d="M 0,358.12 H 163.30 V 233.39 H 0 Z"
    class="st3"
    id="path5-5"
    style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3.5, 2.5" />
@@ -903,6 +909,151 @@
    class="st4"
    v:langID="1033"
    id="text5-4"
+   style="font-size:6.99994px;font-family:Arial;fill:#000000"><v:paragraph /><v:tabList /></text>		</g><g
+   id="shape22-7-39-3"
+   v:mID="22"
+   v:groupContext="shape"
+   transform="matrix(1.3409869,0,0,0.43756445,122.6766,-65.972375)">
+			<title
+   id="title5-0-0">agent.22</title>
+			<desc
+   id="desc5-5-8">@sap-ux/{name}-writer</desc>
+			<v:custProps>
+				<v:cp
+   v:nameU="PSMType"
+   v:lbl="Type"
+   v:type="0"
+   v:format="@"
+   v:invis="true"
+   v:langID="1031"
+   v:val="VT4(agent)" />
+				<v:cp
+   v:nameU="FMCType"
+   v:lbl="Type"
+   v:type="0"
+   v:format="@"
+   v:invis="true"
+   v:langID="1031"
+   v:val="VT4(active)" />
+				<v:cp
+   v:nameU="Offset"
+   v:lbl="Stacking Offset"
+   v:prompt="Offset for stacking (Multiplicity)"
+   v:type="2"
+   v:format=""
+   v:sortKey=""
+   v:invis="false"
+   v:ask="false"
+   v:langID="1033"
+   v:cal="0"
+   v:val="VT0(0.078740157480315):24" />
+				<v:cp
+   v:nameU="HumanSize"
+   v:lbl="Size of Human Agent"
+   v:prompt="Size of Human Agent"
+   v:type="2"
+   v:format=""
+   v:sortKey=""
+   v:invis="false"
+   v:ask="false"
+   v:langID="1033"
+   v:cal="0"
+   v:val="VT0(0.31496062992126):24" />
+			</v:custProps>
+			<v:userDefs>
+				<v:ud
+   v:nameU="N100"
+   v:val="VT0(1):26" />
+				<v:ud
+   v:nameU="N101"
+   v:val="VT0(1):26" />
+				<v:ud
+   v:nameU="N102"
+   v:val="VT0(1):26" />
+				<v:ud
+   v:nameU="N103"
+   v:val="VT0(1):26" />
+				<v:ud
+   v:nameU="S100"
+   v:val="VT0(3):26" />
+				<v:ud
+   v:nameU="S101"
+   v:val="VT0(3):26" />
+				<v:ud
+   v:nameU="S102"
+   v:val="VT0(3):26" />
+				<v:ud
+   v:nameU="S103"
+   v:val="VT0(3):26" />
+				<v:ud
+   v:nameU="W100"
+   v:val="VT0(4):26" />
+				<v:ud
+   v:nameU="W101"
+   v:val="VT0(4):26" />
+				<v:ud
+   v:nameU="W102"
+   v:val="VT0(4):26" />
+				<v:ud
+   v:nameU="W103"
+   v:val="VT0(4):26" />
+				<v:ud
+   v:nameU="E100"
+   v:val="VT0(2):26" />
+				<v:ud
+   v:nameU="E101"
+   v:val="VT0(2):26" />
+				<v:ud
+   v:nameU="E102"
+   v:val="VT0(2):26" />
+				<v:ud
+   v:nameU="E103"
+   v:val="VT0(2):26" />
+				<v:ud
+   v:nameU="FMC_DrawingType"
+   v:prompt="TAM-Block_diagram" />
+				<v:ud
+   v:nameU="FMC_Identifier_ID"
+   v:val="VT0(0):26" />
+				<v:ud
+   v:nameU="FMC_ST_Version"
+   v:val="VT4(4.0)" />
+				<v:ud
+   v:nameU="FMC_Outline_ID"
+   v:val="VT0(0):26" />
+				<v:ud
+   v:nameU="DrawingType"
+   v:prompt="Block_diagram"
+   v:val="VT0(0):26" />
+				<v:ud
+   v:nameU="Version"
+   v:prompt=""
+   v:val="VT4(4.0)" />
+				<v:ud
+   v:nameU="Type"
+   v:prompt="Agent"
+   v:val="VT0(0):26" />
+			</v:userDefs>
+			<v:textBlock
+   v:margins="rect(2.8,2.8,1.6,2.8)"
+   v:tabSpace="42.5197"
+   v:verticalAlign="2" />
+			<v:textRect
+   cx="81.648"
+   cy="295.753"
+   width="163.30"
+   height="124.724" />
+			<path
+   d="M 0,358.12 H 163.3 V 233.39 H 0 Z"
+   class="st3"
+   id="path5-5-4"
+   style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3.5, 2.5" />
+			<text
+   x="2.8"
+   y="354.42001"
+   class="st4"
+   v:langID="1033"
+   id="text5-4-0"
    style="font-size:6.99994px;font-family:Arial;fill:#000000"><v:paragraph /><v:tabList /></text>		</g>
 		<g
    id="shape16-10"
@@ -1048,139 +1199,12 @@
    class="st4"
    v:langID="1033"
    id="text6"><v:paragraph /><v:tabList />@sap-ux/{name}</text>		</g>
-		<g
-   id="shape10-13"
-   v:mID="10"
-   v:groupContext="shape"
-   transform="translate(-176.12289,-147.652)">
-			<title
-   id="title7">agent.10</title>
-			<v:custProps>
-				<v:cp
-   v:nameU="PSMType"
-   v:lbl="Type"
-   v:type="0"
-   v:format="@"
-   v:invis="true"
-   v:langID="1031"
-   v:val="VT4(agent)" />
-				<v:cp
-   v:nameU="FMCType"
-   v:lbl="Type"
-   v:type="0"
-   v:format="@"
-   v:invis="true"
-   v:langID="1031"
-   v:val="VT4(active)" />
-				<v:cp
-   v:nameU="Offset"
-   v:lbl="Stacking Offset"
-   v:prompt="Offset for stacking (Multiplicity)"
-   v:type="2"
-   v:format=""
-   v:sortKey=""
-   v:invis="false"
-   v:ask="false"
-   v:langID="1033"
-   v:cal="0"
-   v:val="VT0(0.078740157480315):24" />
-				<v:cp
-   v:nameU="HumanSize"
-   v:lbl="Size of Human Agent"
-   v:prompt="Size of Human Agent"
-   v:type="2"
-   v:format=""
-   v:sortKey=""
-   v:invis="false"
-   v:ask="false"
-   v:langID="1033"
-   v:cal="0"
-   v:val="VT0(0.31496062992126):24" />
-			</v:custProps>
-			<v:userDefs>
-				<v:ud
-   v:nameU="N100"
-   v:val="VT0(1):26" />
-				<v:ud
-   v:nameU="N101"
-   v:val="VT0(1):26" />
-				<v:ud
-   v:nameU="N102"
-   v:val="VT0(1):26" />
-				<v:ud
-   v:nameU="N103"
-   v:val="VT0(1):26" />
-				<v:ud
-   v:nameU="S100"
-   v:val="VT0(3):26" />
-				<v:ud
-   v:nameU="S101"
-   v:val="VT0(3):26" />
-				<v:ud
-   v:nameU="S102"
-   v:val="VT0(3):26" />
-				<v:ud
-   v:nameU="S103"
-   v:val="VT0(3):26" />
-				<v:ud
-   v:nameU="W100"
-   v:val="VT0(4):26" />
-				<v:ud
-   v:nameU="W101"
-   v:val="VT0(4):26" />
-				<v:ud
-   v:nameU="W102"
-   v:val="VT0(4):26" />
-				<v:ud
-   v:nameU="W103"
-   v:val="VT0(4):26" />
-				<v:ud
-   v:nameU="E100"
-   v:val="VT0(2):26" />
-				<v:ud
-   v:nameU="E101"
-   v:val="VT0(2):26" />
-				<v:ud
-   v:nameU="E102"
-   v:val="VT0(2):26" />
-				<v:ud
-   v:nameU="E103"
-   v:val="VT0(2):26" />
-				<v:ud
-   v:nameU="FMC_DrawingType"
-   v:prompt="TAM-Block_diagram" />
-				<v:ud
-   v:nameU="FMC_Identifier_ID"
-   v:val="VT0(0):26" />
-				<v:ud
-   v:nameU="FMC_ST_Version"
-   v:val="VT4(4.0)" />
-				<v:ud
-   v:nameU="FMC_Outline_ID"
-   v:val="VT0(0):26" />
-				<v:ud
-   v:nameU="DrawingType"
-   v:prompt="Block_diagram"
-   v:val="VT0(0):26" />
-				<v:ud
-   v:nameU="Version"
-   v:prompt=""
-   v:val="VT4(4.0)" />
-				<v:ud
-   v:nameU="Type"
-   v:prompt="Agent"
-   v:val="VT0(0):26" />
-			</v:userDefs>
-			<path
-   d="m 0,358.12 h 283.46 v -56.7 H 0 Z"
-   class="st3"
-   id="path7" />
-		</g>
+		
 		<g
    id="shape1-15"
    v:mID="1"
    v:groupContext="shape"
-   transform="translate(-164.78439,-158.99)">
+   transform="translate(-175.28439,-158.99)">
 			<title
    id="title8">agent</title>
 			<desc
@@ -1324,7 +1348,7 @@
    id="shape2-18"
    v:mID="2"
    v:groupContext="shape"
-   transform="translate(-74.076122,-158.99)">
+   transform="translate(-87.576131,-158.99)">
 			<title
    id="title9">agent.2</title>
 			<desc
@@ -1467,7 +1491,7 @@
    id="shape2-18-4"
    v:mID="2"
    v:groupContext="shape"
-   transform="translate(-90.799966,-158.40008)">
+   transform="translate(-98.299971,-158.40008)">
 			<title
    id="title9-1">agent.2</title>
 			<desc
@@ -1614,7 +1638,7 @@
    id="shape3-21"
    v:mID="3"
    v:groupContext="shape"
-   transform="translate(-164.78439,-215.683)">
+   transform="translate(-175.28439,-215.683)">
 			<title
    id="title10">agent.3</title>
 			<desc
@@ -1757,7 +1781,7 @@
    id="shape3-21-5"
    v:mID="3"
    v:groupContext="shape"
-   transform="translate(-169.54283,-278.28102)">
+   transform="translate(-176.04283,-278.28102)">
 			<title
    id="title10-4">agent.3</title>
 			<desc
@@ -1890,11 +1914,11 @@
    d="M 0,358.12 H 79.37 V 324.1 H 0 Z"
    class="st5"
    id="path10-1"
-   style="fill:#2a5fa5;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1" /><path
+   style="fill:#2a5fa5;fill-opacity:1;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round" /><path
    d="m 88.49286,358.09684 h 79.36996 v -34.02 H 88.49286 Z"
    class="st5"
    id="path10-1-3"
-   style="fill:#2a5fa5;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1" />
+   style="fill:#2a5fa5;fill-opacity:1;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round" />
 			<text
    x="24.430012"
    y="343.81"
@@ -1913,14 +1937,46 @@
    d="m 176.24289,358.09684 h 79.36996 v -34.02 h -79.36996 z"
    class="st5"
    id="path10-1-3-8"
-   style="fill:#2a5fa5;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1" /><text
+   style="fill:#2a5fa5;fill-opacity:1;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round" /><text
    x="197.95938"
    y="343.3331"
    class="st6"
    v:langID="1033"
    id="text10-6-6-8"
    style="font-size:9px;font-family:Arial;fill:#ffffff"><v:paragraph
-   v:horizAlign="1" /><v:tabList />flp-config</text>		</g>
+   v:horizAlign="1" /><v:tabList />flp-config</text><path
+   d="m 312.83844,357.229 h 55.29644 24.07352 V 348.53094 323.209 h -79.36996 z"
+   class="st5"
+   id="path10-1-3-9"
+   style="fill:#2a5fa5;fill-opacity:1;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round"
+   sodipodi:nodetypes="ccccccc" /><path
+   d="m 416.55292,357.2397 h 55.29644 24.07352 v -8.69806 -25.32194 h -79.36996 z"
+   class="st5"
+   id="path10-1-3-9-5"
+   style="fill:#2a5fa5;fill-opacity:1;stroke:#000000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round"
+   sodipodi:nodetypes="ccccccc" /><text
+   x="320.49286"
+   y="343.3331"
+   class="st6"
+   v:langID="1033"
+   id="text10-6-6-9"
+   style="font-size:9px;font-family:Arial;fill:#ffffff"><v:paragraph
+   v:horizAlign="1" /><v:tabList />fiori-mcp-server</text><text
+   x="433.62375"
+   y="337.21527"
+   class="st6"
+   v:langID="1033"
+   id="text10-6-6-9-4"
+   style="font-size:9px;font-family:Arial;fill:#ffffff"><tspan
+     sodipodi:role="line"
+     id="tspan3"
+     x="433.62375"
+     y="337.21527"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Connection </tspan><tspan
+     sodipodi:role="line"
+     id="tspan4"
+     x="433.62375"
+     y="348.46527">Manager</tspan></text>		</g>
 		<g
    id="shape4-24"
    v:mID="4"
@@ -2799,7 +2855,7 @@
    id="shape38-34"
    v:mID="38"
    v:groupContext="shape"
-   transform="translate(-74.076122,-215.683)">
+   transform="translate(-87.576131,-215.683)">
 			<title
    id="title14">agent.38</title>
 			<desc
@@ -2943,7 +2999,7 @@
    id="shape44-37"
    v:mID="44"
    v:groupContext="shape"
-   transform="translate(16.632944,-215.683)">
+   transform="translate(3.1329335,-215.683)">
 			<title
    id="title15">agent.44</title>
 			<desc
@@ -5204,7 +5260,7 @@
    id="shape153-106"
    v:mID="153"
    v:groupContext="shape"
-   transform="rotate(90,45.291927,187.724)">
+   transform="rotate(90,40.04192,182.474)">
 			<title
    id="title36">Annotation Arrow.153</title>
 			<v:custProps>
@@ -5249,7 +5305,7 @@
    id="shape154-111"
    v:mID="154"
    v:groupContext="shape"
-   transform="rotate(90,90.646487,233.0785)">
+   transform="rotate(90,83.896478,226.3285)">
 			<title
    id="title37">Annotation Arrow.154</title>
 			<v:custProps>
@@ -6355,10 +6411,10 @@
    xml:space="preserve"><tspan
      x="23.93"
      y="343.81"
-     id="tspan1">annotation-</tspan><tspan
+     id="tspan5">annotation-</tspan><tspan
      x="23.93"
      y="355.06001"
-     id="tspan2">generator</tspan></text>		</g>
+     id="tspan6">generator</tspan></text>		</g>
 		<g
    id="shape159-119"
    v:mID="159"

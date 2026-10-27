@@ -16,7 +16,8 @@ import {
     UI_LINE_ITEM,
     UI_CHART,
     UI_DATA_FIELD_FOR_ANNOTATION,
-    UI_COLLECTION_FACET
+    UI_COLLECTION_FACET,
+    UI_PRESENTATION_VARIANT
 } from '../../constants.js';
 
 /**
@@ -378,6 +379,65 @@ export const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content?.find((c) => c.type === 'text')?.text;
 
 /**
+ * Searches a `UI.PresentationVariant` annotation's `Visualizations` collection for the first
+ * visualization that Fiori Elements recognises (`UI.LineItem` or `UI.Chart`).
+ *
+ * Unknown visualization types are skipped; the search stops at the first recognised term.
+ * This mirrors Fiori Elements' own resolution order: `[CardItem, LineItem]` produces a table,
+ * `[CardItem, Chart, LineItem]` produces a chart (and therefore no table section node).
+ *
+ * @param pvAnnotation - The indexed `UI.PresentationVariant` annotation to inspect.
+ * @param pvAliasInfo - Alias information for the file that contains the PresentationVariant.
+ * @returns The fully-qualified annotation path and an optional qualifier when the first recognised
+ *   visualization is a `UI.LineItem`, or `undefined` otherwise.
+ */
+function findLineItemInVisualization(
+    pvAnnotation: IndexedAnnotation,
+    pvAliasInfo: AliasInformation
+): { path: string; qualifier: string | undefined } | undefined {
+    const [pvRecord] = elementsWithName(Edm.Record, pvAnnotation.top.value);
+    if (!pvRecord) {
+        return undefined;
+    }
+    const vizPropValue = getPropertyValueElement(pvRecord, 'Visualizations');
+    if (!vizPropValue) {
+        return undefined;
+    }
+    const [vizCollection] = elementsWithName(Edm.Collection, vizPropValue);
+    if (!vizCollection) {
+        return undefined;
+    }
+    for (const vizElement of elementsWithName(Edm.AnnotationPath, vizCollection)) {
+        const vizPath = getElementText(vizElement);
+        if (!vizPath) {
+            continue;
+        }
+        const atIdx = vizPath.indexOf('@');
+        if (atIdx === -1) {
+            continue;
+        }
+        const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
+        const fullyQualifiedTerm = toFullyQualifiedName(
+            pvAliasInfo.aliasMap,
+            pvAliasInfo.currentFileNamespace,
+            parseIdentifier(termAlias)
+        );
+        if (fullyQualifiedTerm === UI_LINE_ITEM) {
+            const qualifierSuffix = qualifier ? `#${qualifier}` : '';
+            return {
+                path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
+                qualifier
+            };
+        }
+        if (fullyQualifiedTerm === UI_CHART) {
+            return undefined;
+        }
+        // Unknown term — skip and check next visualization
+    }
+    return undefined;
+}
+
+/**
  * Process a single reference facet record and create a table or header section if applicable.
  *
  * @param record
@@ -447,6 +507,27 @@ function processReferenceFacetRecord(
             facets,
             { index, referencedEntityType, qualifier, sectionLabel, id },
             annotationPath,
+            aliasInfo,
+            service
+        );
+    }
+
+    if (term === UI_PRESENTATION_VARIANT) {
+        const pvKey = buildAnnotationIndexKey(referencedEntityType, UI_PRESENTATION_VARIANT);
+        const pvAnnotation = service.index.annotations[pvKey]?.[qualifier ?? 'undefined'];
+        if (!pvAnnotation) {
+            return undefined;
+        }
+        const pvAliasInfo = service.artifacts.aliasInfo[pvAnnotation.top.uri];
+        const lineItemViz = findLineItemInVisualization(pvAnnotation, pvAliasInfo);
+        if (!lineItemViz) {
+            return undefined;
+        }
+        const navPrefix = annotationPath.substring(0, annotationPath.indexOf('@'));
+        return createTableSection(
+            facets,
+            { index, referencedEntityType, qualifier: lineItemViz.qualifier, sectionLabel, id },
+            `${navPrefix}${lineItemViz.path}`,
             aliasInfo,
             service
         );
