@@ -76,15 +76,6 @@ export function forgetSite(site: string): void {
 }
 
 /**
- * Clears all in-memory session state. Called when the browser disconnects or
- * is stopped, so a fresh process state is rebuilt on the next launch.
- */
-export function clearSessions(): void {
-    siteMeta.clear();
-    sessionByProject.clear();
-}
-
-/**
  * Resolves the session key (project identity) for a site from the metadata
  * `start` recorded, or `undefined` when the site is unknown or not a CF project.
  * Session seeding/snapshotting only applies to CF projects, so a missing or

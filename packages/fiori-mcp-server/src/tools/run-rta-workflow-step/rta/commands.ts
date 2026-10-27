@@ -72,7 +72,9 @@ export interface StartRtaResult {
 }
 
 /**
- * Starts Runtime Authoring on the editor page.
+ * Starts Runtime Authoring on the editor page. The caller (the bridge) awaits the
+ * editor's `app-loaded` signal before invoking this, so `startRTA` does not race
+ * a half-booted RuntimeAuthoring.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.

@@ -22,6 +22,7 @@ class FakeFrame {
     }));
     public readonly frameElement = jest.fn(async () => new FakeFrameElement(this.id));
     public readonly waitForFunction = jest.fn(async () => undefined);
+    public readonly waitForLoadState = jest.fn(async () => undefined);
     constructor(public readonly id: string | null) {}
 }
 
@@ -32,6 +33,8 @@ class FakePage extends EventEmitter {
         error: null
     }));
     public readonly waitForFunction = jest.fn(async () => undefined);
+    public readonly waitForLoadState = jest.fn(async () => undefined);
+    public readonly addInitScript = jest.fn(async () => undefined);
     public readonly goto = jest.fn(async () => this.gotoResponse);
     public currentUrl: string;
     /** Response returned by `goto`. `null` mimics a navigation with no response (Playwright's Response | null). */
@@ -171,6 +174,7 @@ beforeEach(() => {
     mockIsCFEnvironment.mockResolvedValue(true); // default: treat registered sites as CF
     delete process.env.PLAYWRIGHT_SESSION_STATE_PATH;
     delete process.env.PLAYWRIGHT_HEADLESS;
+    delete process.env.PLAYWRIGHT_LOGIN_WAIT_MS;
 });
 
 describe('browser/playwright-bridge', () => {
@@ -524,8 +528,12 @@ describe('browser/playwright-bridge', () => {
         return page;
     }
 
-    test('B2: backend login page returns needsUserAction signal without registering', async () => {
-        const page = loginProbePage(IDP_URL);
+    test('B2: login not completed in the wait budget → signal, window closed, not registered', async () => {
+        // Probe always fails → the user never logs in within the budget.
+        const page = new FakePage([], IDP_URL);
+        page.waitForFunction.mockReset();
+        page.waitForFunction.mockRejectedValue(new Error('probe timeout'));
+        process.env.PLAYWRIGHT_LOGIN_WAIT_MS = '0'; // one probe attempt, then give up
         const { browser } = setupBrowser([page]);
 
         const fs = await loadPlaywrightBridge();
@@ -536,9 +544,45 @@ describe('browser/playwright-bridge', () => {
             payload: expect.objectContaining({ __needsUserAction: 'backend_login_required' }),
             error: null
         });
-        // Context torn down, nothing registered → next start reopens cleanly.
+        // Context torn down only after the wait elapsed; nothing registered → next start reopens cleanly.
         expect(browser.contexts[0].close).toHaveBeenCalled();
         expect(fs.isRegistryEmpty()).toBe(true);
+
+        await fs.stopBrowser();
+    });
+
+    test('B2: user logs in during the wait → bridge appears in the editor iframe, start continues, window kept', async () => {
+        // The editor runs inside the `preview` iframe, so the bridge appears on the
+        // FRAME, never on the top-level page. The top page probe always fails; the
+        // frame probe fails on initial detection (login page) then succeeds once the
+        // user has signed in and the app loaded into the frame.
+        const previewFrame = new FakeFrame('preview');
+        const page = new FakePage([previewFrame], IDP_URL);
+        // Top-level page.waitForFunction serves createPageRPC's readyState wait — it
+        // resolves. The bridge is probed on the FRAME, never the top page.
+        previewFrame.waitForFunction.mockReset();
+        previewFrame.waitForFunction.mockRejectedValueOnce(new Error('still on login')); // initial detection
+        previewFrame.waitForFunction.mockResolvedValue(undefined); // login completed → bridge in frame
+        previewFrame.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        process.env.PLAYWRIGHT_LOGIN_WAIT_MS = '10000';
+        const { browser } = setupBrowser([page]);
+
+        const session = await loadSession();
+        await session.registerSite(CF_SITE, '/path/to/cf-project'); // CF (default mock)
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(CF_SITE, 'com.sap.ui.flex.startRTA.v1', {}, 'preview');
+
+        // Proceeded to run the action in the frame on the same call — no second start needed.
+        expect(result).toEqual({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        // The editor `app-loaded` readiness listener was installed before navigation,
+        // and the flow gated on it before running the action (so startRTA does not
+        // race a half-booted RuntimeAuthoring).
+        expect(page.addInitScript).toHaveBeenCalled();
+        // Window kept open and registered for reuse by subsequent steps.
+        expect(browser.contexts[0].close).not.toHaveBeenCalled();
+        expect(fs.isRegistryEmpty()).toBe(false);
+        // Fresh authenticated session snapshotted (CF project).
+        expect(browser.contexts[0].storageState).toHaveBeenCalled();
 
         await fs.stopBrowser();
     });
@@ -769,29 +813,33 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
-    test('disconnected event clears session maps (next redirect re-arms the gate)', async () => {
+    test('disconnected event keeps the CF session map (next start reuses the login)', async () => {
         const loginPage = loginProbePage(IDP_URL);
         const appPage = new FakePage([], CF_SITE);
         appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
         const { browser } = setupBrowser([loginPage, appPage]);
 
+        const session = await loadSession();
+        await session.registerSite(CF_SITE, '/path/to/cf-project'); // CF (default mock)
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(CF_SITE, 'a'); // login arms gate
-        await fs.callFrontendAction(CF_SITE, 'a'); // app
+        await fs.callFrontendAction(CF_SITE, 'a'); // app → session snapshotted
 
+        // Simulate the browser disconnecting (e.g. the human closed the window).
         browser.connected = false;
         browser.emit('disconnected');
 
-        // After disconnect, a fresh browser + a plain (unredirected) start must
-        // NOT be seeded (gate cleared).
-        const freshPage = new FakePage([], CF_SITE); // bridge present now
+        // After disconnect, a fresh browser + a new start for the SAME project MUST
+        // be seeded from the surviving session (the login is not lost).
+        const freshPage = new FakePage([], CF_SITE);
         const newBrowser = new FakeBrowser();
         newBrowser.newPage.mockResolvedValue(freshPage);
         launchMock.mockResolvedValueOnce(newBrowser);
         freshPage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
 
+        await session.registerSite(CF_SITE, '/path/to/cf-project'); // re-register after reconnect
         await fs.callFrontendAction(CF_SITE, 'a');
-        expect(newBrowser.contexts[0].options).not.toHaveProperty('storageState');
+        expect(newBrowser.contexts[0].options).toHaveProperty('storageState');
 
         await fs.stopBrowser();
     });

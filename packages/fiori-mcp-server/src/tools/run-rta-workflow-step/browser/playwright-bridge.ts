@@ -1,10 +1,29 @@
 import { chromium, type Browser, type BrowserContext, type Frame, type Page } from 'playwright-core';
 import { logger } from '../../../utils/logger.js';
-import { isHeadless } from './env.js';
-import { isBackendLoginPage, LOGIN_REQUIRED_MESSAGE, probeBridge, type NeedsUserActionPayload } from './login-page.js';
+import { appLoadedWaitMs, isHeadless, loginWaitMs } from './env.js';
+import { installAppLoadedListener, waitForAppLoaded } from './editor-ready.js';
+import {
+    isBackendLoginPage,
+    LOGIN_REQUIRED_MESSAGE,
+    LOGIN_WAIT_MESSAGE,
+    probeBridge,
+    waitForLogin,
+    type NeedsUserActionPayload
+} from './login-page.js';
 import { originKey } from './origin.js';
-import { buildContextOptions, clearSessions, forgetSite, persistSessionState } from './session.js';
+import { buildContextOptions, forgetSite, persistSessionState } from './session.js';
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
+
+/**
+ * Outcome of classifying a freshly-navigated editor page:
+ * - `ready` — the app is reachable (bridge present, login completed, or a
+ *   slow-but-valid app); the caller proceeds to persist/register.
+ * - `login-timed-out` — a backend login page was served and login did NOT
+ *   complete within the budget; the caller tears down and returns the login
+ *   signal. (A login page where the human DID sign in resolves to `ready`.)
+ * - `error` — the editor served an HTTP error; the caller tears down and throws.
+ */
+type EditorReadiness = { outcome: 'ready' | 'login-timed-out' } | { outcome: 'error'; status: number | undefined };
 
 // Module-scope singleton state.
 //   `browser` — launched once and reused for the lifetime of the Node process.
@@ -183,7 +202,6 @@ async function startBrowser(): Promise<Browser> {
             browser = undefined;
             browserStartPromise = undefined;
             connectionRegistry.clear();
-            clearSessions();
         });
         return browser;
     } catch (error) {
@@ -221,6 +239,42 @@ function editorNotLoadedError(status: number | undefined, site: string): Error {
 }
 
 /**
+ * Classifies a navigated editor page without owning its teardown. Probes for the
+ * webclient bridge (in the editor iframe); if absent, distinguishes a backend
+ * login page from a hard HTTP error from a slow-but-valid app.
+ *
+ * @param page The navigated editor page.
+ * @param response The navigation response (for its HTTP status), or `null`.
+ * @param frameId Optional iframe element id hosting the editor (e.g. `preview`).
+ * @returns The readiness outcome for the caller to act on.
+ */
+async function classifyEditorReadiness(
+    page: Page,
+    response: Awaited<ReturnType<Page['goto']>>,
+    frameId: string | undefined
+): Promise<EditorReadiness> {
+    if (await probeBridge(page, frameId)) {
+        return { outcome: 'ready' };
+    }
+    const landedUrl = page.url();
+    const [title, bodyText] = await Promise.all([
+        page.title().catch(() => ''),
+        page.evaluate(() => document.body?.innerText?.slice(0, 4000) ?? '').catch(() => '')
+    ]);
+    if (isBackendLoginPage(landedUrl, title, bodyText)) {
+        // Keep the headed window open and block while the human signs in.
+        logger.info(LOGIN_WAIT_MESSAGE);
+        const loggedIn = await waitForLogin(page, loginWaitMs(), frameId);
+        return { outcome: loggedIn ? 'ready' : 'login-timed-out' };
+    }
+    if (isEditorErrorStatus(response?.status())) {
+        return { outcome: 'error', status: response?.status() };
+    }
+    // Slow-but-valid app: proceed and let the per-action bridge wait be the backstop.
+    return { outcome: 'ready' };
+}
+
+/**
  * Invokes a Joule frontend action on the page hosting `site`. Reuses an
  * existing page if one is registered for the site; otherwise opens a new
  * one. Throws on transport / lookup failures; returns the frontend action
@@ -246,6 +300,10 @@ export async function callFrontendAction<TReturn = unknown>(
         const context = await activeBrowser.newContext(buildContextOptions(site));
         const page: Page = await context.newPage();
 
+        // Install the editor `app-loaded` listener before any navigation, so a
+        // signal fired during boot is never missed.
+        await installAppLoadedListener(page);
+
         page.on('pageerror', (err) => {
             logger.warn(`Page error for ${site}: ${err.message}`);
         });
@@ -257,36 +315,25 @@ export async function callFrontendAction<TReturn = unknown>(
         try {
             const response = await page.goto(site, { waitUntil: 'networkidle', timeout: 60000 });
 
-            // Bounded probe for the webclient bridge. On success → app page.
-            // On timeout → distinguish a backend login page from a slow app.
-            const bridgeReady = await probeBridge(page);
-            if (!bridgeReady) {
-                const landedUrl = page.url();
-                const [title, bodyText] = await Promise.all([
-                    page.title().catch(() => ''),
-                    page.evaluate(() => document.body?.innerText?.slice(0, 4000) ?? '').catch(() => '')
-                ]);
-                if (isBackendLoginPage(landedUrl, title, bodyText)) {
-                    // Not the app — a backend login page. Tear down and return the
-                    // structured signal (riding a success envelope so `unwrap` does
-                    // not throw). Do NOT register, so the next `start` reopens cleanly.
-                    await context.close().catch(() => undefined);
-                    const loginPayload: NeedsUserActionPayload = {
-                        __needsUserAction: 'backend_login_required',
-                        message: LOGIN_REQUIRED_MESSAGE
-                    };
-                    return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
-                }
-                // Bridge absent, not a login page: fail fast on an HTTP-error page,
-                // else fall through to the slow-but-valid backstop.
-                if (isEditorErrorStatus(response?.status())) {
-                    await context.close().catch(() => undefined);
-                    throw editorNotLoadedError(response?.status(), site);
-                }
-            } else {
-                // Authenticated app reached — persist the session for reuse (gated).
-                await persistSessionState(site, context);
+            const readiness = await classifyEditorReadiness(page, response, frameId);
+            // Two terminal outcomes tear down and exit here; `ready` falls through.
+            if (readiness.outcome === 'login-timed-out') {
+                await context.close().catch(() => undefined);
+                const loginPayload: NeedsUserActionPayload = {
+                    __needsUserAction: 'backend_login_required',
+                    message: LOGIN_REQUIRED_MESSAGE
+                };
+                return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
             }
+            if (readiness.outcome === 'error') {
+                await context.close().catch(() => undefined);
+                throw editorNotLoadedError(readiness.status, site);
+            }
+
+            // Persist the (CF-gated) session for reuse, then gate on the editor's `app-loaded` signal
+            // before running any action, so `startRTA` does not race a half-booted RuntimeAuthoring.
+            await persistSessionState(site, context);
+            await waitForAppLoaded(page, appLoadedWaitMs());
 
             rpc = await createPageRPC(page, context, site);
             connectionRegistry.set(key, rpc);
@@ -348,7 +395,6 @@ export async function stopBrowser(): Promise<void> {
 
     browser = undefined;
     browserStartPromise = undefined;
-    clearSessions();
 }
 
 /**
