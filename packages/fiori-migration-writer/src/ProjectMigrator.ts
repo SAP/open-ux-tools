@@ -106,6 +106,9 @@ export class ProjectMigrator {
             );
             messages = messages.concat(projectInfoMessages);
 
+            // Ensure projectInfo.rootPath uses the resolved absolute path
+            // This is critical when importProjectInfo is provided with a relative rootPath
+            projectInfo.rootPath = projectRoot;
             projectInfo.baseUri = baseUriOpt;
 
             // Resolve UI5 versions for migration
