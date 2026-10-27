@@ -745,6 +745,30 @@ describe('browser/playwright-bridge', () => {
         }
     });
 
+    test('B1 disk opt-in, no file yet: first run is not seeded (avoids Playwright ENOENT)', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-first-'));
+        process.env.PLAYWRIGHT_SESSION_STATE_PATH = dir; // set, but no session file exists yet
+        try {
+            const appPage = new FakePage([], CF_SITE);
+            appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+
+            const { browser } = setupBrowser([appPage]);
+            const session = await loadSession();
+            await session.registerSite(CF_SITE, '/path/to/cf-project'); // CF (default mock)
+            const fs = await loadPlaywrightBridge();
+
+            await fs.callFrontendAction(CF_SITE, 'a');
+
+            // No stored file → plain context, NOT seeded with a (missing) storageState
+            // path, so Playwright never throws ENOENT on first login.
+            expect(browser.contexts[0].options).not.toHaveProperty('storageState');
+
+            await fs.stopBrowser();
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
+    });
+
     test('B1 disk off by default: nothing is written to disk', async () => {
         const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-off-'));
         try {

@@ -1,4 +1,6 @@
 import { chmod, mkdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { type BrowserContext } from 'playwright-core';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
@@ -90,13 +92,21 @@ function cfProjectKey(site: string): string | undefined {
 }
 
 /**
- * Maps a session key to a filesystem-safe file name for on-disk persistence.
+ * Maps a session key (the project's appPath) to a short, filesystem-safe, and
+ * human-recognisable file name for on-disk persistence. Combines the project's
+ * last path segment (sanitised, so a human can tell which project a file belongs
+ * to) with a truncated SHA-256 of the full key (so two projects that share a last
+ * segment never collide onto the same file — which would cross-seed their
+ * sessions). The same project always maps to the same file (overwritten on
+ * refresh); different projects always map to different files.
  *
  * @param key Session key (a project path).
- * @returns A sanitised `<key>.json` file name.
+ * @returns A `<sanitised-last-segment>-<8-hex>.json` file name.
  */
-function sessionFileName(key: string): string {
-    return `${key.replace(/[^a-zA-Z0-9.-]+/g, '_')}.json`;
+export function sessionFileName(key: string): string {
+    const segment = (key.split(/[/\\]/).filter(Boolean).pop() ?? 'project').replace(/[^a-zA-Z0-9.-]+/g, '_');
+    const hash = createHash('sha256').update(key).digest('hex').slice(0, 8);
+    return `${segment}-${hash}.json`;
 }
 
 /**
@@ -120,9 +130,11 @@ export function buildContextOptions(site: string): { viewport: null; storageStat
     }
     const dir = sessionDir();
     if (dir) {
-        // Playwright accepts a path and silently starts fresh if it is unreadable,
-        // but guard the join so a bad key can never seed from an unexpected path.
-        return { viewport: null, storageState: join(dir, sessionFileName(projectKey)) };
+        // Seed from the on-disk session only when the file actually exists.
+        const file = join(dir, sessionFileName(projectKey));
+        if (existsSync(file)) {
+            return { viewport: null, storageState: file };
+        }
     }
     return { viewport: null };
 }
