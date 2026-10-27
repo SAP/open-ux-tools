@@ -70,7 +70,7 @@ export class ProjectMigrator {
         options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
         const {
-            projectRoot,
+            projectRoot: projectRootInput,
             baseUri: baseUriOpt,
             ui5SnapshotUrl: ui5SnapshotUrlOpt,
             importProjectInfo: importProjectInfoOpt,
@@ -80,13 +80,15 @@ export class ProjectMigrator {
             strict: strictOpt = false
         } = options;
 
+        // Resolve relative paths to absolute to avoid issues with path traversal
+        const { resolve } = await import('node:path');
+        const projectRoot = resolve(projectRootInput);
+
         // Create a new isolated editor instance for this migration if not provided
         // This enables concurrent migrations without shared state corruption
         const ownsEditor = !fsOpt;
         const editor = fsOpt ?? createMemFsEditor();
-        console.log('[DEBUG] Starting migration, ownsEditor:', ownsEditor);
         await initI18n();
-        console.log('[DEBUG] i18n initialized');
 
         let messages: Message[] = [];
         let result = false;
@@ -94,35 +96,26 @@ export class ProjectMigrator {
         try {
             // Load the project tree into mem-fs so existence checks see untracked files
             // on disk and migration writes never silently overwrite them.
-            console.log('[DEBUG] Loading project into editor...');
             await loadProjectIntoEditor(editor, projectRoot);
-            console.log('[DEBUG] Project loaded into editor');
 
             // Load or fetch project information
-            console.log('[DEBUG] Loading/fetching project info...');
             const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
                 projectRoot,
                 importProjectInfoOpt,
                 editor
             );
             messages = messages.concat(projectInfoMessages);
-            console.log('[DEBUG] Project info loaded');
 
             projectInfo.baseUri = baseUriOpt;
 
             // Resolve UI5 versions for migration
-            console.log('[DEBUG] Resolving UI5 versions...');
             const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrlOpt);
             projectInfo.localUI5Version = ui5Versions?.[0]?.version;
-            console.log('[DEBUG] UI5 versions resolved:', projectInfo.localUI5Version);
             // ui5Version left as-is from project/neo-app data
 
             // Validate project is suitable for migration (not a Fiori app in CAP project)
-            console.log('[DEBUG] Validating project...');
             await validateProjectForMigration(editor, projectRoot);
-            console.log('[DEBUG] Project validated');
 
-            console.log('[DEBUG] Running migration for project info...');
             const dispatch = await this.runMigrationForProjectInfo(editor, projectInfo, messages, {
                 vscode: vscodeOpt,
                 ui5SnapshotUrl: ui5SnapshotUrlOpt,
@@ -131,9 +124,7 @@ export class ProjectMigrator {
             });
             messages = dispatch.messages;
             result = dispatch.result;
-            console.log('[DEBUG] Migration completed, result:', result);
         } catch (e) {
-            console.log('[DEBUG] Migration error caught:', e);
             const error = e instanceof Error ? e : new Error(String(e));
             const useMessage = typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
             messages.push({
@@ -143,16 +134,12 @@ export class ProjectMigrator {
         }
 
         const migrationResult = { fs: editor, result, messages };
-        console.log('[DEBUG] Created migrationResult, ownsEditor:', ownsEditor, 'result:', result);
 
         // Commit only when we own the editor; otherwise the caller commits (matches other writers).
         if (ownsEditor && migrationResult.result) {
-            console.log('[DEBUG] About to commit filesystem changes...');
             try {
                 await commitFileSystemChanges(migrationResult.fs);
-                console.log('[DEBUG] Filesystem changes committed successfully');
             } catch (error) {
-                console.log('[DEBUG] Commit failed:', error);
                 migrationResult.result = false;
                 migrationResult.messages.push({
                     type: 'ERROR',
@@ -161,7 +148,6 @@ export class ProjectMigrator {
             }
         }
 
-        console.log('[DEBUG] Returning migration result');
         return migrationResult;
     }
 
