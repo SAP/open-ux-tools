@@ -25,7 +25,7 @@ export class BulkProjectMigrator {
      */
     public async migrate(
         projects: MigrationUIProjectInfo[],
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl?: string,
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<MigrationUIProjectInfo[]> {
@@ -59,7 +59,7 @@ export class BulkProjectMigrator {
     private async migrateProject(
         project: MigrationUIProjectInfo,
         index: number,
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl: string | undefined,
         vscode: any,
         internalToggle: boolean
     ): Promise<MigrationUIProjectInfo> {
