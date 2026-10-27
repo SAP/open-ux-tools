@@ -104,7 +104,7 @@ function cfProjectKey(site: string): string | undefined {
  * @returns A `<sanitised-last-segment>-<8-hex>.json` file name.
  */
 export function sessionFileName(key: string): string {
-    const segment = (key.split(/[/\\]/).filter(Boolean).pop() ?? 'project').replace(/[^a-zA-Z0-9.-]+/g, '_');
+    const segment = (key.split(/[/\\]/).findLast(Boolean) ?? 'project').replace(/[^a-zA-Z0-9.-]+/g, '_');
     const hash = createHash('sha256').update(key).digest('hex').slice(0, 8);
     return `${segment}-${hash}.json`;
 }

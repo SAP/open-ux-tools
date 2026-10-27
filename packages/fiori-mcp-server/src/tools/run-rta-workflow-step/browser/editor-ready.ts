@@ -36,6 +36,9 @@ export async function installAppLoadedListener(page: Page): Promise<void> {
             }
             (window as unknown as Record<string, unknown>)[flag] = false;
             window.addEventListener('message', (event: MessageEvent) => {
+                if (event.origin !== window.location.origin) {
+                    return;
+                }
                 const data = event.data as { type?: string; action?: { type?: string } } | undefined;
                 if (data?.type === envelopeType && data.action?.type === actionType) {
                     (window as unknown as Record<string, unknown>)[flag] = true;
