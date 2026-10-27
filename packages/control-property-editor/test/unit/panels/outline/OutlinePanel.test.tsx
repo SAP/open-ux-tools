@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -7,6 +7,7 @@ import {
     controlSelected,
     executeContextMenuAction,
     outlineChanged,
+    PropertyType,
     requestControlContextMenu,
     selectControl,
     SCENARIO
@@ -16,7 +17,7 @@ import { render } from '../../utils';
 
 import { OutlinePanel } from '../../../../src/panels/outline';
 import type { FilterOptions } from '../../../../src/slice';
-import { FilterName, filterNodes } from '../../../../src/slice';
+import { FilterName, filterNodes, changeProperty } from '../../../../src/slice';
 
 const getOutlineNodes = (
     editable = true,
@@ -546,6 +547,47 @@ describe('OutlinePanel', () => {
         // the deselected row must not stay highlighted via the stale primary selection
         expect(row0101?.className).not.toContain('app-panel-selected-bg');
         expect(row0102?.className).toContain('app-panel-selected-bg');
+    });
+
+    test('tree - a property change on the selected control keeps the multi-selection', () => {
+        const { container, store } = render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, true),
+                filterQuery: filterInitOptions,
+                // primary selection already points at 01-01 (as if selected from the preview)
+                selectedControl: {
+                    id: '01-01',
+                    type: 'name.space.first.child.one',
+                    properties: [{ name: 'text', value: 'old' }]
+                } as never
+            }
+        });
+
+        const secondChild = screen.getByText(/^second child of one$/i);
+        // extend the primary (01-01) into a multi-selection with 01-02
+        fireEvent.click(secondChild, { ctrlKey: true });
+
+        const row0101 = container.querySelector('[data-control-id="01-01"]');
+        const row0102 = container.querySelector('[data-control-id="01-02"]');
+        expect(row0101?.className).toContain('app-panel-selected-bg');
+        expect(row0102?.className).toContain('app-panel-selected-bg');
+
+        // a property change mutates selectedControl via Immer (new reference, same id) — this must not wipe the selection
+        act(() => {
+            store.dispatch(
+                changeProperty({
+                    controlId: '01-01',
+                    controlName: 'name.space.first.child.one',
+                    propertyName: 'text',
+                    value: 'new',
+                    propertyType: PropertyType.ControlProperty,
+                    changeType: 'propertyChange'
+                })
+            );
+        });
+
+        expect(container.querySelector('[data-control-id="01-01"]')?.className).toContain('app-panel-selected-bg');
+        expect(container.querySelector('[data-control-id="01-02"]')?.className).toContain('app-panel-selected-bg');
     });
 
     test('tree - a context-menu response for a different control is not shown', () => {

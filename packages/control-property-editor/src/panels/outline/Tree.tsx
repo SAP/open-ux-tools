@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/react';
@@ -57,6 +57,7 @@ export const Tree = (): ReactElement => {
     });
     const [showActionContextualMenu, setShowActionContextualMenu] = useState<OutlineNodeItem | undefined>();
     const [multiSelectedIds, setMultiSelectedIds] = useState<string[]>([]);
+    const previousSelectedControlId = useRef<string | undefined>(undefined);
     const [contextMenuControlIds, setContextMenuControlIds] = useState<ContextMenuTarget>(undefined);
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
@@ -75,7 +76,10 @@ export const Tree = (): ReactElement => {
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
 
     useEffect(() => {
-        setMultiSelectedIds([]);
+        if (previousSelectedControlId.current !== selectedControl?.id) {
+            previousSelectedControlId.current = selectedControl?.id;
+            setMultiSelectedIds([]);
+        }
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
             updateSelectionFromPreview(selectedControl);
         }
@@ -94,7 +98,7 @@ export const Tree = (): ReactElement => {
     }, [selectedControl]);
     useMemo(() => {
         adaptExpandCollapsed(groups, collapsed);
-    }, [groups, collapsed, selection, multiSelectedIds]);
+    }, [groups, collapsed]);
 
     const scrollRef = useCallback((node: Element) => {
         if (node !== null) {
