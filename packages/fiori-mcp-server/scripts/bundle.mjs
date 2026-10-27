@@ -222,7 +222,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode', 'chromium-bidi'],
+    external: ['vscode', 'chromium-bidi', '@sap-ux/fe-fpm-writer', '@sap-ux/fiori-annotation-api'],
     legalComments: 'linked',
     metafile: true,
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]

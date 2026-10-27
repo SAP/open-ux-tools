@@ -162,3 +162,40 @@ export const ExecuteFunctionalityOutputSchema = zod.object({
     /** Timestamp of the execution */
     timestamp: zod.string()
 });
+
+/**
+ * Output schema for the 'add_building_block' tool
+ */
+export const AddBuildingBlockOutputSchema = zod.object({
+    /** Outcome: success, error, or needs_input (discovery — caller must supply more input) */
+    status: zod
+        .enum(['success', 'error', 'needs_input'])
+        .describe(
+            'Outcome of the operation. "needs_input" means viewOrFragmentPath or aggregationPath was omitted and the discovered candidates are returned in insertionPoints — pick one and call again.'
+        ),
+    /** Relative paths of files written to disk */
+    modifiedFiles: zod.array(zod.string()).describe('Relative paths of files modified by the operation.'),
+    /** Human-readable result or error description */
+    message: zod.string().describe('Human-readable description of the result or error.'),
+    /** Discovered insertion points, returned when status is 'needs_input' */
+    insertionPoints: zod
+        .array(
+            zod.object({
+                file: zod.string().describe('Relative path to a view or fragment XML file.'),
+                aggregationPaths: zod
+                    .array(zod.string())
+                    .describe('Valid aggregationPath XPath values for this file. Empty when only the file is known.')
+            })
+        )
+        .optional()
+        .describe(
+            'Candidate insertion points for a follow-up call. Present only when status is "needs_input": lists views/fragments and, once a view is chosen, the valid aggregationPaths within it.'
+        ),
+    /** Non-fatal warning about annotation-shell writing */
+    annotationWarning: zod
+        .string()
+        .optional()
+        .describe(
+            'Set when the building block was inserted but its UI annotation shell could not be written. The building block still succeeded; the annotation may need to be added manually.'
+        )
+});
