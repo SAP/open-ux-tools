@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.17.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-27
+
+#### Bug Fixes
+
+- Detect `disableCopyToClipboard` in Object Page sections whose `UI.Facets` target is a `UI.PresentationVariant` [[e795082](https://github.com/SAP/open-ux-tools/commit/e795082aab45ef5208e43ee5d4d98917e119d38f)]
+
 ## 10.17.3
 
 ### Patch Changes
