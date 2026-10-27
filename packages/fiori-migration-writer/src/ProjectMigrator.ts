@@ -46,7 +46,7 @@ export interface MigrateOptions {
     /** Base URI for backend services */
     baseUri: string;
     /** URL for UI5 snapshot version */
-    ui5SnapshotUrl: string;
+    ui5SnapshotUrl?: string;
     /** Optional partial project information */
     importProjectInfo?: Partial<ImportProjectInfo>;
     /** Optional VS Code context */
@@ -170,7 +170,7 @@ export class ProjectMigrator {
         editor: Editor,
         projectInfo: ImportProjectInfo,
         messages: Message[],
-        opts: { vscode: any; ui5SnapshotUrl: string; internalToggle: boolean; strict: boolean }
+        opts: { vscode: any; ui5SnapshotUrl?: string; internalToggle: boolean; strict: boolean }
     ): Promise<{ result: boolean; messages: Message[] }> {
         const isSupportedApp =
             projectInfo.isSAPApp ||
@@ -223,7 +223,7 @@ export class ProjectMigrator {
         fs: Editor,
         projectInfo: ImportProjectInfo,
         vscode: any,
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl?: string,
         internalToggle: boolean = false,
         strict: boolean = false
     ): Promise<{ result: boolean; messages: Message[] }> {
@@ -362,7 +362,7 @@ export class ProjectMigrator {
     private static async copyAdaptationFiles(
         fs: Editor,
         projectInfo: ImportProjectInfo,
-        snapshotUrl: string
+        snapshotUrl?: string
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
         return copyAdaptationFiles(fs, projectInfo, snapshotUrl);
     }

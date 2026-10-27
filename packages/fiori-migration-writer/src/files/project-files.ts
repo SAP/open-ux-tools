@@ -41,7 +41,7 @@ import type {
 export async function copyAdaptationFiles(
     fs: Editor,
     projectInfo: ImportProjectInfo,
-    snapshotUrl: string
+    snapshotUrl?: string
 ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
     const messages: Message[] = [];
     const { moduleName, moduleDescription, ui5Version, appTitle, rootPath, destination } = projectInfo;
