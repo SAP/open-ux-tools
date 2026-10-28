@@ -1,0 +1,125 @@
+name: Notify Awesome Copilot on plugin version bump
+
+# Fires when the version commit pushed by the `version` CI job touches plugin.json.
+on:
+    push:
+        branches: [main]
+        paths:
+            - 'plugins-coding-agents/fiori/.github/plugin/plugin.json'
+
+jobs:
+    notify:
+        if: github.repository == 'SAP/open-ux-tools'
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            issues: write
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+              with:
+                  fetch-depth: 2
+
+            - name: Detect version change
+              id: version
+              run: |
+                  PLUGIN_JSON=plugins-coding-agents/fiori/.github/plugin/plugin.json
+                  OLD=$(git show HEAD~1:"$PLUGIN_JSON" | jq -r .version 2>/dev/null || echo "")
+                  NEW=$(jq -r .version "$PLUGIN_JSON")
+                  echo "old=$OLD"
+                  echo "new=$NEW"
+                  if [ "$OLD" = "$NEW" ] || [ -z "$NEW" ]; then
+                    echo "changed=false" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "changed=true" >> "$GITHUB_OUTPUT"
+                    echo "old=$OLD" >> "$GITHUB_OUTPUT"
+                    echo "new=$NEW" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Build pre-filled issue URL
+              if: steps.version.outputs.changed == 'true'
+              id: issue_url
+              run: |
+                  python3 - <<'PYEOF'
+                  import json, os, urllib.parse
+
+                  with open("plugins-coding-agents/fiori/.github/plugin/plugin.json") as f:
+                      plugin = json.load(f)
+
+                  description = plugin.get("description", "")
+                  keywords = "\n".join(plugin.get("keywords", []))
+                  version = os.environ["NEW_VERSION"]
+                  old_version = os.environ["OLD_VERSION"]
+                  sha = os.environ["COMMIT_SHA"]
+
+                  notes = (
+                      f"Version update from {old_version} to {version}. "
+                      "The plugin bundles the @sap-ux/fiori-mcp-server MCP server with 7 skills for SAP Fiori development. "
+                      "The Awesome Copilot manifest is at plugins-coding-agents/fiori/.github/plugin/plugin.json."
+                  )
+
+                  params = urllib.parse.urlencode({
+                      "template": "external-plugin.yml",
+                      "title": "[External Plugin]: sap-ux-fiori-tools",
+                      "plugin-name": "sap-ux-fiori-tools",
+                      "short-description": description,
+                      "github-repository": "SAP/open-ux-tools",
+                      "plugin-path": "plugins-coding-agents/fiori",
+                      "immutable-sha": sha,
+                      "version": version,
+                      "license": "Apache-2.0",
+                      "author-name": "SAP SE",
+                      "author-url": "https://www.sap.com",
+                      "homepage-url": "https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori",
+                      "keywords": keywords,
+                      "additional-notes": notes,
+                  }, quote_via=urllib.parse.quote)
+
+                  url = f"https://github.com/github/awesome-copilot/issues/new?{params}"
+
+                  with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                      f.write(f"url={url}\n")
+                  PYEOF
+              env:
+                  NEW_VERSION: ${{ steps.version.outputs.new }}
+                  OLD_VERSION: ${{ steps.version.outputs.old }}
+                  COMMIT_SHA: ${{ github.sha }}
+
+            - name: Create tracking issue
+              if: steps.version.outputs.changed == 'true'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  NEW_VERSION: ${{ steps.version.outputs.new }}
+                  OLD_VERSION: ${{ steps.version.outputs.old }}
+                  ISSUE_URL: ${{ steps.issue_url.outputs.url }}
+                  ACTOR: ${{ github.actor }}
+              run: |
+                  USER_TYPE=$(gh api users/${ACTOR} --jq '.type' 2>/dev/null)
+                  if [[ "$USER_TYPE" == "User" ]]; then
+                    ASSIGN="--assignee ${ACTOR}"
+                  else
+                    PARENT_SHA=$(git log HEAD~1 --pretty='%H' -1)
+                    PARENT_LOGIN=$(gh api repos/SAP/open-ux-tools/commits/${PARENT_SHA} --jq '.author.login // empty' 2>/dev/null)
+                    [[ -n "$PARENT_LOGIN" ]] && ASSIGN="--assignee ${PARENT_LOGIN}" || ASSIGN=""
+                  fi
+                  gh issue create \
+                    --repo SAP/open-ux-tools \
+                    --title "chore: submit sap-ux-fiori-tools ${NEW_VERSION} to Awesome Copilot" \
+                    $ASSIGN \
+                    --label "plugins-coding-agents" \
+                    --body "Plugin \`sap-ux-fiori-tools\` was bumped from \`${OLD_VERSION}\` to \`${NEW_VERSION}\`.
+
+                  Submit the update to the [Awesome Copilot marketplace](https://github.com/github/awesome-copilot) using the pre-filled issue link below:
+
+                  **[Create review issue on github/awesome-copilot](${ISSUE_URL})**"
+
+            - name: Post job summary
+              if: steps.version.outputs.changed == 'true'
+              env:
+                  NEW_VERSION: ${{ steps.version.outputs.new }}
+                  OLD_VERSION: ${{ steps.version.outputs.old }}
+                  ISSUE_URL: ${{ steps.issue_url.outputs.url }}
+              run: |
+                  echo "## Plugin version bumped: ${OLD_VERSION} → ${NEW_VERSION}" >> "$GITHUB_STEP_SUMMARY"
+                  echo "" >> "$GITHUB_STEP_SUMMARY"
+                  echo "[Create review issue on github/awesome-copilot](${ISSUE_URL})" >> "$GITHUB_STEP_SUMMARY"
