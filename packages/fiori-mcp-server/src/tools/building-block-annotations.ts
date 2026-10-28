@@ -96,12 +96,10 @@ function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema): s
     const navTarget = convertedSchema.entitySets
         .flatMap((es) => es.entityType.navigationProperties)
         .find((nav) => nav.name === entitySetName);
-    // Both sides must be fully-qualified: entityTypeName is an FQN (e.g. "ns.Booking") while
-    // navTarget.targetType.name is only the short name, so the match uses the target type's FQN.
-    const targetEntitySet = navTarget
-        ? convertedSchema.entitySets.find((es) => es.entityTypeName === navTarget.targetType.fullyQualifiedName)
-        : undefined;
-    return targetEntitySet?.entityTypeName ?? targetEntitySet?.name ?? entitySetName;
+    // The target is the navigation's target entity type FQN. Use targetType.fullyQualifiedName directly rather than
+    // looking it up via a top-level entity set — a contained (composition) target type has no own entity set, and the
+    // lookup would then wrongly fall back to the bare nav name.
+    return navTarget?.targetType.fullyQualifiedName ?? entitySetName;
 }
 
 /**
