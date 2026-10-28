@@ -141,7 +141,7 @@ overrides:
     postcss: '>=8.5.23'
     sanitize-html: '>=2.17.7'
     'sanitize-html>htmlparser2': '^8.0.2'
-    'jest-environment-jsdom@29.7.0>jest-mock': '30.4.1'
+    '@jest/environment': '30.4.1'
     'socks>ip-address': '>=10.5.1'
     'express-rate-limit>ip-address': '>=10.5.1'
     ip-address: '>=10.5.1'
