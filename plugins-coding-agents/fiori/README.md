@@ -38,7 +38,7 @@ claude plugin install sap-ux-fiori-tools
 
 ## Installing in GitHub Copilot
 
-**VS Code:** In the Copilot Chat panel, type `@agentPlugins` to browse and install, or open the Command Palette and run `Chat: Plugins`.
+**VS Code:** In the Extensions viewn search box type `@agentPlugins` to browse and install, or open the Command Palette and run `Chat: Plugins`.
 
 **CLI** (requires GitHub Copilot CLI with `plugin` subcommand support):
 
