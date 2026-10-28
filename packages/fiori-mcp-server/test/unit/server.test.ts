@@ -515,6 +515,29 @@ describe('FioriFunctionalityServer', () => {
             );
         });
 
+        test('add_building_block returns a structured error (not a throw) on invalid input', async () => {
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'add_building_block',
+                    arguments: {
+                        appPath: '/app',
+                        viewOrFragmentPath: 'webapp/ext/main/Main.view.xml',
+                        aggregationPath: '/mvc:View/content',
+                        // missing the required `id` — Zod validation must fail
+                        buildingBlockData: { buildingBlockType: 'table' }
+                    }
+                }
+            });
+            expect(result.structuredContent).toEqual({
+                status: 'error',
+                modifiedFiles: [],
+                message: expect.stringContaining('Invalid add_building_block input')
+            });
+            expect(result.content).toEqual([{ type: 'text', text: JSON.stringify(result.structuredContent) }]);
+        });
+
         test('download_odata_service_metadata', async () => {
             const mockResult = {
                 status: 'Success',

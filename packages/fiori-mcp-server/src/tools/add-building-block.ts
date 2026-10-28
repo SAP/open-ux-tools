@@ -13,7 +13,7 @@ import type {
     CustomFormField,
     RichTextEditor
 } from '@sap-ux/fe-fpm-writer';
-import { create as createMemFsEditor } from 'mem-fs-editor';
+import { create as createMemFsEditor, type Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { isAbsolute, join, relative } from 'node:path';
 import type { AddBuildingBlockInput, AddBuildingBlockOutput } from '../types/index.js';
@@ -60,13 +60,52 @@ function applyRteMetaPath(data: BuildingBlock): BuildingBlock {
     return data;
 }
 
+type InsertionPoint = { file: string; aggregationPaths: string[] };
+
+/**
+ * Builds a discovery response: `needs_input` when candidates were found (the caller picks one and calls again),
+ * or `error` when none were — a dead-end that needs a different action (e.g. creating a view first) rather than a
+ * retry of the same call.
+ */
+function discovery(message: string, insertionPoints: InsertionPoint[], found: boolean): AddBuildingBlockOutput {
+    return { status: found ? 'needs_input' : 'error', modifiedFiles: [], message, insertionPoints };
+}
+
+/** Discovery step 1 — list the app's view/fragment files when no target view was supplied. */
+async function discoverViewFiles(appPath: string, fs: Editor): Promise<AddBuildingBlockOutput> {
+    const files = await getFragmentAndViewFiles(appPath, fs);
+    const insertionPoints = files.map((file) => ({ file: relative(appPath, file), aggregationPaths: [] }));
+    return discovery(
+        insertionPoints.length
+            ? 'Specify viewOrFragmentPath — candidate view/fragment files are in insertionPoints. Call again with the chosen file to get its aggregationPath options.'
+            : 'No view or fragment files were found in the app. Create an FPM custom page or fragment first.',
+        insertionPoints,
+        insertionPoints.length > 0
+    );
+}
+
+/** Discovery step 2 — list the valid aggregation XPaths for a chosen view/fragment. */
+function discoverAggregationPaths(appPath: string, viewOrFragmentPath: string, fs: Editor): AddBuildingBlockOutput {
+    const absoluteView = isAbsolute(viewOrFragmentPath) ? viewOrFragmentPath : join(appPath, viewOrFragmentPath);
+    const { inputChoices } = getXPathStringsForXmlFile(absoluteView, fs);
+    const aggregationPaths = Object.keys(inputChoices);
+    return discovery(
+        aggregationPaths.length
+            ? 'Specify aggregationPath — valid XPath options for this file are in insertionPoints. Call again with the chosen aggregationPath.'
+            : `No insertion points were found in ${viewOrFragmentPath}. Check the path points to a valid view or fragment.`,
+        [{ file: viewOrFragmentPath, aggregationPaths }],
+        aggregationPaths.length > 0
+    );
+}
+
 /**
  * Adds a SAP Fiori Elements Building Block to an existing view or fragment XML file.
  *
  * Runs in two modes depending on which inputs are supplied:
  * - **Discovery** — when `viewOrFragmentPath` is omitted the available view/fragment files are returned; when
  *   `viewOrFragmentPath` is given but `aggregationPath` is omitted the valid aggregation XPaths for that file are
- *   returned. Both return `status: 'needs_input'` with `insertionPoints` so the caller can pick and call again.
+ *   returned. Returns `status: 'needs_input'` with `insertionPoints` when candidates exist, or `status: 'error'`
+ *   when none do.
  * - **Execute** — when both paths are supplied, calls `generateBuildingBlock()` from `@sap-ux/fe-fpm-writer`,
  *   writes any required UI annotation shell (Table/FilterBar/Form), commits the mem-fs editor to disk, and returns
  *   the list of modified file paths.
@@ -81,36 +120,18 @@ export async function addBuildingBlock(params: AddBuildingBlockInput): Promise<A
         const store = createMemFs();
         const fs = createMemFsEditor(store);
 
-        // Discovery: no target view yet — return the available view/fragment files.
         if (!viewOrFragmentPath) {
-            const files = await getFragmentAndViewFiles(appPath, fs);
-            const insertionPoints = files.map((file) => ({ file: relative(appPath, file), aggregationPaths: [] }));
-            return {
-                status: 'needs_input',
-                modifiedFiles: [],
-                message: insertionPoints.length
-                    ? 'Specify viewOrFragmentPath — candidate view/fragment files are in insertionPoints. Call again with the chosen file to get its aggregationPath options.'
-                    : 'No view or fragment files were found in the app. Create an FPM custom page or fragment first.',
-                insertionPoints
-            };
+            return await discoverViewFiles(appPath, fs);
+        }
+        if (!aggregationPath) {
+            return discoverAggregationPaths(appPath, viewOrFragmentPath, fs);
         }
 
-        // Discovery: target view known but no aggregation yet — return the valid XPaths for that file.
-        if (!aggregationPath) {
-            const absoluteView = isAbsolute(viewOrFragmentPath)
-                ? viewOrFragmentPath
-                : join(appPath, viewOrFragmentPath);
-            const { inputChoices } = getXPathStringsForXmlFile(absoluteView, fs);
-            const aggregationPaths = Object.keys(inputChoices);
-            return {
-                status: 'needs_input',
-                modifiedFiles: [],
-                message: aggregationPaths.length
-                    ? 'Specify aggregationPath — valid XPath options for this file are in insertionPoints. Call again with the chosen aggregationPath.'
-                    : `No insertion points were found in ${viewOrFragmentPath}. Check the path points to a valid view or fragment.`,
-                insertionPoints: [{ file: viewOrFragmentPath, aggregationPaths }]
-            };
-        }
+        // Execute: both paths supplied. Normalise the view path so an absolute path (accepted by discovery) also
+        // works here — generateBuildingBlock joins it with appPath, which would break for an absolute path.
+        const normalizedViewPath = isAbsolute(viewOrFragmentPath)
+            ? relative(appPath, viewOrFragmentPath)
+            : viewOrFragmentPath;
 
         const generateId = await createIdGenerator({ basePath: appPath, fsEditor: fs });
 
@@ -122,28 +143,35 @@ export async function addBuildingBlock(params: AddBuildingBlockInput): Promise<A
         );
 
         const config: BuildingBlockConfig<BuildingBlock> = {
-            viewOrFragmentPath,
+            viewOrFragmentPath: normalizedViewPath,
             aggregationPath,
             buildingBlockData: rawBuildingBlockData
         };
 
         const resultFs = await generateBuildingBlock(appPath, config, fs);
 
-        // Write the UI annotation shell (Table → LineItem, FilterBar → SelectionFields, Form → FieldGroup) into the
-        // same mem-fs so it commits atomically with the building block XML. Best-effort — failure is non-fatal.
+        // Best-effort UI annotation shell (Table → LineItem, FilterBar → SelectionFields, Form → FieldGroup) written
+        // into the same mem-fs so it commits atomically with the building block XML. Isolated in its own try/catch:
+        // nothing in the annotation phase (including a resolveApplication timeout) may abort the commit of an
+        // already-generated building block.
         let annotationWarning: string | undefined;
-        const appDetails = await resolveApplication(appPath);
-        if (appDetails?.applicationAccess) {
-            const { failed } = await writeAnnotationShells(
-                buildingBlockData as unknown as Record<string, unknown>,
-                appDetails.applicationAccess,
-                appDetails.appId,
-                resultFs
-            );
-            if (failed) {
-                annotationWarning =
-                    'The building block was added, but its UI annotation shell could not be written. Add the annotation manually if the data does not render.';
+        const annotationFailedMessage =
+            'The building block was added, but its UI annotation shell could not be written. Add the annotation manually if the data does not render.';
+        try {
+            const appDetails = await resolveApplication(appPath);
+            if (appDetails?.applicationAccess) {
+                const { failed } = await writeAnnotationShells(
+                    buildingBlockData,
+                    appDetails.applicationAccess,
+                    appDetails.appId,
+                    resultFs
+                );
+                if (failed) {
+                    annotationWarning = annotationFailedMessage;
+                }
             }
+        } catch {
+            annotationWarning = annotationFailedMessage;
         }
 
         await resultFs.commit(() => {

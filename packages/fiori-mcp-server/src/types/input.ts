@@ -304,13 +304,35 @@ const BuildingBlockBaseSchema = zod.object({
         .describe('Absolute entity set path providing the binding context, e.g. "/SalesOrder".')
 });
 
+/** FilterBar reference field, shared by the Table and Chart schemas. */
+const FilterBarRefSchema = zod
+    .string()
+    .optional()
+    .describe('ID of the FilterBar building block to associate with this table or chart.');
+
+/** Position of a custom element relative to an existing one. Shared by the custom-* building blocks. */
+const PositionSchema = zod
+    .object({
+        anchor: zod.string().optional().describe('Key of an existing element to position this one relative to.'),
+        placement: zod.enum(['Before', 'After']).optional().describe('Whether to place before or after the anchor.')
+    })
+    .optional()
+    .describe('Position of this element relative to an existing one.');
+
+/** Base button-group fields shared by both rich-text-editor button-group variants. */
+const ButtonGroupBaseSchema = zod.object({
+    name: zod.string().describe('Unique identifier for the button group, e.g. "font-style", "clipboard".'),
+    buttons: zod.string().describe('Comma-separated list of buttons, e.g. "bold,italic,underline".'),
+    priority: zod.number().optional().describe('Display priority for ordering button groups. Defaults to 10.')
+});
+
 /**
  * Per-type building block schemas derived from @sap-ux/fe-fpm-writer types.
  * Each discriminant value matches BuildingBlockType in fe-fpm-writer/src/building-block/types.ts.
  */
 const TableBuildingBlockSchema = BuildingBlockBaseSchema.extend({
     buildingBlockType: zod.literal(BuildingBlockType.Table),
-    filterBar: zod.string().optional().describe('ID of the FilterBar building block to associate with this table.'),
+    filterBar: FilterBarRefSchema,
     personalization: zod
         .union([zod.boolean(), zod.enum(['Sort', 'Column', 'Filter'])])
         .optional()
@@ -337,7 +359,7 @@ const TableBuildingBlockSchema = BuildingBlockBaseSchema.extend({
 
 const ChartBuildingBlockSchema = BuildingBlockBaseSchema.extend({
     buildingBlockType: zod.literal(BuildingBlockType.Chart),
-    filterBar: zod.string().optional().describe('ID of the FilterBar building block to associate with this chart.'),
+    filterBar: FilterBarRefSchema,
     personalization: zod
         .union([zod.boolean(), zod.string()])
         .optional()
@@ -412,16 +434,7 @@ const RichTextEditorBuildingBlockSchema = BuildingBlockBaseSchema.extend({
         .optional()
         .describe('Property path for the Rich Text Editor, e.g. "/EntitySet/targetProperty".'),
     buttonGroups: zod
-        .array(
-            zod.object({
-                name: zod.string().describe('Unique identifier for the button group, e.g. "font-style", "clipboard".'),
-                buttons: zod.string().describe('Comma-separated list of buttons, e.g. "bold,italic,underline".'),
-                priority: zod
-                    .number()
-                    .optional()
-                    .describe('Display priority for ordering button groups. Defaults to 10.')
-            })
-        )
+        .array(ButtonGroupBaseSchema)
         .optional()
         .describe('Button groups to include in the editor toolbar.')
 });
@@ -430,13 +443,7 @@ const RichTextEditorButtonGroupsBuildingBlockSchema = BuildingBlockBaseSchema.ex
     buildingBlockType: zod.literal(BuildingBlockType.RichTextEditorButtonGroups),
     buttonGroups: zod
         .array(
-            zod.object({
-                name: zod.string().describe('Unique identifier for the button group, e.g. "font-style", "clipboard".'),
-                buttons: zod.string().describe('Comma-separated list of buttons, e.g. "bold,italic,underline".'),
-                priority: zod
-                    .number()
-                    .optional()
-                    .describe('Display priority for ordering button groups. Defaults to 10.'),
+            ButtonGroupBaseSchema.extend({
                 visible: zod.boolean().optional().describe('Whether this button group is visible. Defaults to true.'),
                 customToolbarPriority: zod
                     .number()
@@ -457,13 +464,7 @@ const CustomFilterFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
     property: zod.string().describe('The property to filter by.'),
     required: zod.boolean().describe('Whether the filter field is required.'),
     filterFieldKey: zod.string().optional().describe('Property name of the FilterField.'),
-    position: zod
-        .object({
-            anchor: zod.string().optional().describe('Key of an existing filter to position relative to.'),
-            placement: zod.enum(['Before', 'After']).optional().describe('Whether to place before or after the anchor.')
-        })
-        .optional()
-        .describe('Position of this filter field relative to an existing one.'),
+    position: PositionSchema,
     embededFragment: EmbededFragmentSchema
 });
 
@@ -471,13 +472,7 @@ const CustomFormFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
     buildingBlockType: zod.literal(BuildingBlockType.CustomFormField),
     label: zod.string().describe('Label text for this form field.'),
     formElementKey: zod.string().optional().describe('Optional key for the FormElement.'),
-    position: zod
-        .object({
-            anchor: zod.string().optional().describe('Key of another field to position this one relative to.'),
-            placement: zod.enum(['Before', 'After']).optional().describe('Position relative to the anchor.')
-        })
-        .optional()
-        .describe('Position of the custom form field relative to an anchor element.'),
+    position: PositionSchema,
     targetProperty: zod.string().optional().describe('Property path for the custom form field.'),
     embededFragment: EmbededFragmentSchema
 });
@@ -487,13 +482,7 @@ const CustomColumnBuildingBlockSchema = BuildingBlockBaseSchema.extend({
     title: zod.string().describe('Column header text.'),
     width: zod.string().optional().describe('Column width, e.g. "10rem".'),
     columnKey: zod.string().optional().describe('Unique key for the column.'),
-    position: zod
-        .object({
-            anchor: zod.string().optional().describe('Key of an existing column to position relative to.'),
-            placement: zod.enum(['Before', 'After']).optional().describe('Whether to place before or after the anchor.')
-        })
-        .optional()
-        .describe('Position of this column relative to an existing one.'),
+    position: PositionSchema,
     embededFragment: EmbededFragmentSchema
 });
 
@@ -547,21 +536,18 @@ const buildingBlockSchemaByType = {
     [BuildingBlockType.Action]: ActionBuildingBlockSchema
 } satisfies Record<BuildingBlockType, zod.ZodType>;
 
-/** Discriminated union of all supported building block types. */
-const BuildingBlockDataSchema = zod.discriminatedUnion('buildingBlockType', [
-    buildingBlockSchemaByType[BuildingBlockType.Table],
-    buildingBlockSchemaByType[BuildingBlockType.Chart],
-    buildingBlockSchemaByType[BuildingBlockType.FilterBar],
-    buildingBlockSchemaByType[BuildingBlockType.Field],
-    buildingBlockSchemaByType[BuildingBlockType.Form],
-    buildingBlockSchemaByType[BuildingBlockType.Page],
-    buildingBlockSchemaByType[BuildingBlockType.RichTextEditor],
-    buildingBlockSchemaByType[BuildingBlockType.RichTextEditorButtonGroups],
-    buildingBlockSchemaByType[BuildingBlockType.CustomFilterField],
-    buildingBlockSchemaByType[BuildingBlockType.CustomFormField],
-    buildingBlockSchemaByType[BuildingBlockType.CustomColumn],
-    buildingBlockSchemaByType[BuildingBlockType.Action]
-]);
+/**
+ * Discriminated union of all supported building block types.
+ *
+ * Derived from `buildingBlockSchemaByType` via `Object.values` so the union can never drift out of sync with the
+ * exhaustiveness-guarded map above: a new `BuildingBlockType` that is added to the map is automatically part of the
+ * union (and a type missing from the map already breaks the build at the `satisfies` guard).
+ */
+const buildingBlockSchemaList = Object.values(buildingBlockSchemaByType);
+const BuildingBlockDataSchema = zod.discriminatedUnion(
+    'buildingBlockType',
+    buildingBlockSchemaList as [(typeof buildingBlockSchemaList)[number], ...(typeof buildingBlockSchemaList)[number][]]
+);
 
 /**
  * Input interface for the 'add_building_block' tool

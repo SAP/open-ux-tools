@@ -17,6 +17,22 @@ export const ANNOTATION_SHELL_TERMS: Partial<Record<BuildingBlockType, UIAnnotat
     [BuildingBlockType.Form]: UIAnnotationTerms.FieldGroup
 };
 
+/** Minimal building-block fields the annotation-shell writer needs. */
+export interface AnnotationShellInput {
+    buildingBlockType: BuildingBlockType;
+    contextPath?: string;
+    metaPath?: string;
+}
+
+/** An entity set as exposed by the raw schema from `FioriAnnotationService.getSchema()`. */
+type RawEntitySet = { name: string; entityTypeName?: string; fullyQualifiedName?: string };
+
+/** An annotation list (a target and the annotations on it) as exposed by the raw schema. */
+type RawAnnotationList = { target: string; annotations: Array<{ term: string; qualifier?: string }> };
+
+/** The subset of `FioriAnnotationService.getSchema()` this module reads. */
+type RawSchema = { schema: { entitySets: RawEntitySet[]; annotations: Record<string, RawAnnotationList[]> } };
+
 /**
  * Extracts the entity set name from an absolute OData context path.
  * The annotation schema indexes entity sets by bare name, so the full path cannot be used directly.
@@ -70,21 +86,20 @@ function qualifierFromMetaPath(metaPath: string | undefined): string {
  * @param rawSchema - Raw schema returned by `annotationService.getSchema()`
  * @returns Fully qualified OData type name to use as the annotation target
  */
-function resolveAnnotationTarget(entitySetName: string, rawSchema: unknown): string {
-    type RawEntitySet = { name: string; entityTypeName?: string; fullyQualifiedName?: string };
-    const entitySets: RawEntitySet[] = (rawSchema as { schema: { entitySets: RawEntitySet[] } }).schema.entitySets;
-
-    const directMatch = entitySets.find((es) => es.name === entitySetName);
+function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema): string {
+    const directMatch = rawSchema.schema.entitySets.find((es) => es.name === entitySetName);
     if (directMatch) {
         return directMatch.entityTypeName ?? directMatch.fullyQualifiedName ?? entitySetName;
     }
 
-    const convertedSchema = convert(rawSchema as Parameters<typeof convert>[0]);
+    const convertedSchema = convert(rawSchema as unknown as Parameters<typeof convert>[0]);
     const navTarget = convertedSchema.entitySets
         .flatMap((es) => es.entityType.navigationProperties)
         .find((nav) => nav.name === entitySetName);
+    // Both sides must be fully-qualified: entityTypeName is an FQN (e.g. "ns.Booking") while
+    // navTarget.targetType.name is only the short name, so the match uses the target type's FQN.
     const targetEntitySet = navTarget
-        ? convertedSchema.entitySets.find((es) => es.entityTypeName === navTarget.targetType.name)
+        ? convertedSchema.entitySets.find((es) => es.entityTypeName === navTarget.targetType.fullyQualifiedName)
         : undefined;
     return targetEntitySet?.entityTypeName ?? targetEntitySet?.name ?? entitySetName;
 }
@@ -113,9 +128,34 @@ function buildAnnotationValue(term: UIAnnotationTerms, qualifier: string): Recor
 }
 
 /**
+ * True when `term` + `qualifier` already annotates `target` anywhere in the schema — including read-only sources
+ * such as backend metadata. Scanning every source (not just writable files) prevents writing an empty shell that
+ * would shadow an existing populated annotation at runtime.
+ *
+ * @param rawSchema - Raw schema returned by `annotationService.getSchema()`
+ * @param target - Fully qualified annotation target
+ * @param term - OData annotation term
+ * @param qualifier - Annotation qualifier, or "" for the default unqualified annotation
+ * @returns Whether the annotation already exists
+ */
+function annotationExists(rawSchema: RawSchema, target: string, term: string, qualifier: string): boolean {
+    for (const annotationLists of Object.values(rawSchema.schema.annotations)) {
+        for (const list of annotationLists) {
+            if (
+                list.target === target &&
+                list.annotations.some((a) => a.term === term && (a.qualifier ?? '') === qualifier)
+            ) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/**
  * Writes the UI annotation shell a standard building block needs to render data at runtime
  * (Table → UI.LineItem, FilterBar → UI.SelectionFields, Form → UI.FieldGroup). The shell is only written
- * when the annotation does not already exist in a writable file. The write targets the shared mem-fs editor
+ * when the annotation does not already exist (in any source file). The write targets the shared mem-fs editor
  * and is committed together with the building block XML by the caller.
  *
  * This is best-effort: any failure is logged and reported via the returned `failed` flag rather than thrown,
@@ -128,19 +168,17 @@ function buildAnnotationValue(term: UIAnnotationTerms, qualifier: string): Recor
  * @returns Count of shells written and whether the attempt failed
  */
 export async function writeAnnotationShells(
-    buildingBlockData: Record<string, unknown>,
+    buildingBlockData: AnnotationShellInput,
     applicationAccess: ApplicationAccess,
     appId: string,
     fs: Editor
 ): Promise<{ written: number; failed?: boolean }> {
-    const type = buildingBlockData['buildingBlockType'] as BuildingBlockType;
-    const term = ANNOTATION_SHELL_TERMS[type];
+    const { buildingBlockType, contextPath, metaPath } = buildingBlockData;
+    const term = ANNOTATION_SHELL_TERMS[buildingBlockType];
     if (!term) {
         return { written: 0 };
     }
 
-    const contextPath = buildingBlockData['contextPath'] as string | undefined;
-    const metaPath = buildingBlockData['metaPath'] as string | undefined;
     const entitySetName = contextPath ? entitySetFromContextPath(contextPath) : entitySetFromMetaPath(metaPath);
     if (!entitySetName) {
         logger.warn(
@@ -149,6 +187,7 @@ export async function writeAnnotationShells(
         return { written: 0 };
     }
     const qualifier = qualifierFromMetaPath(metaPath);
+    const qualifierSuffix = qualifier ? `#${qualifier}` : '';
 
     try {
         const serviceName = await getServiceName(applicationAccess);
@@ -167,37 +206,17 @@ export async function writeAnnotationShells(
         );
         await annotationService.sync();
 
-        const allFiles = annotationService.getAllFiles();
-        const writableFile = allFiles.find((f) => !f.isReadOnly);
+        const writableFile = annotationService.getAllFiles().find((f) => !f.isReadOnly);
         if (!writableFile) {
             logger.warn(`[add_building_block] annotation shell: no writable annotation file found, skipping`);
             return { written: 0 };
         }
 
-        const rawSchema = annotationService.getSchema();
-        const writableUris = new Set(allFiles.filter((f) => !f.isReadOnly).map((f) => f.uri));
+        const rawSchema = annotationService.getSchema() as unknown as RawSchema;
         const fullyQualifiedTarget = resolveAnnotationTarget(entitySetName, rawSchema);
 
-        const alreadyExistsInWritableFile = Object.entries(rawSchema.schema.annotations).some(
-            ([sourceUri, annotationLists]) =>
-                writableUris.has(sourceUri) &&
-                (
-                    annotationLists as Array<{
-                        target: string;
-                        annotations: Array<{ term: string; qualifier?: string }>;
-                    }>
-                ).some(
-                    (list) =>
-                        list.target === fullyQualifiedTarget &&
-                        list.annotations.some((a) => a.term === term && (a.qualifier ?? '') === qualifier)
-                )
-        );
-        if (alreadyExistsInWritableFile) {
-            logger.info(
-                `[add_building_block] annotation shell: ${term}${
-                    qualifier ? `#${qualifier}` : ''
-                } already exists, skipping`
-            );
+        if (annotationExists(rawSchema, fullyQualifiedTarget, term, qualifier)) {
+            logger.info(`[add_building_block] annotation shell: ${term}${qualifierSuffix} already exists, skipping`);
             return { written: 0 };
         }
 
@@ -212,9 +231,7 @@ export async function writeAnnotationShells(
         });
         await annotationService.save();
         logger.info(
-            `[add_building_block] annotation shell: wrote ${term}${
-                qualifier ? `#${qualifier}` : ''
-            } on ${fullyQualifiedTarget}`
+            `[add_building_block] annotation shell: wrote ${term}${qualifierSuffix} on ${fullyQualifiedTarget}`
         );
         return { written: 1 };
     } catch (e) {

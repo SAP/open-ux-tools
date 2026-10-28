@@ -372,7 +372,14 @@ Manual XML authoring will produce broken output — wrong namespaces, missing ma
                             const issues = parsed.error.issues
                                 .map((i) => `${i.path.join('.')}: ${i.message}`)
                                 .join('; ');
-                            throw new Error(`Invalid add_building_block input — ${issues}`);
+                            // Return a structured error (not a throw) so the client receives the declared
+                            // AddBuildingBlockOutput shape and can self-correct — acceptance criterion S2.
+                            result = {
+                                status: 'error',
+                                modifiedFiles: [],
+                                message: `Invalid add_building_block input — ${issues}`
+                            };
+                            break;
                         }
                         result = await addBuildingBlock(parsed.data);
                         break;

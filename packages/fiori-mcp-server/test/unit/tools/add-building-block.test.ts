@@ -252,12 +252,12 @@ describe('addBuildingBlock', () => {
             expect(mockGenerateBuildingBlock).not.toHaveBeenCalled();
         });
 
-        test('needs_input when no view/fragment files exist', async () => {
+        test('returns error (not needs_input) when no view/fragment files exist', async () => {
             mockGetFragmentAndViewFiles.mockResolvedValue([]);
 
             const result = await addBuildingBlock({ ...baseParams, viewOrFragmentPath: undefined });
 
-            expect(result.status).toBe('needs_input');
+            expect(result.status).toBe('error');
             expect(result.insertionPoints).toEqual([]);
             expect(result.message).toContain('No view or fragment files');
         });
@@ -305,6 +305,18 @@ describe('addBuildingBlock', () => {
             expect(result.status).toBe('success');
             expect(result.annotationWarning).toBeUndefined();
             expect(mockWriteAnnotationShells).not.toHaveBeenCalled();
+        });
+
+        test('still succeeds (with a warning) when resolveApplication rejects, instead of discarding the block', async () => {
+            mockDump.mockReturnValue({ '/app/webapp/ext/main/Main.view.xml': 'content' });
+            mockResolveApplication.mockRejectedValue(new Error('resolveApplication timed out after 7000ms'));
+
+            const result = await addBuildingBlock(baseParams);
+
+            expect(result.status).toBe('success');
+            expect(result.modifiedFiles).toEqual(['webapp/ext/main/Main.view.xml']);
+            expect(result.annotationWarning).toBeDefined();
+            expect(mockCommit).toHaveBeenCalled();
         });
     });
 });
