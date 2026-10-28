@@ -86,7 +86,7 @@ describe('openAdaptationEditor', () => {
         mockExposePort.mockReset();
         mockRegisterSession.mockReset();
         mockTerminate.mockResolvedValue(true);
-        delete process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT;
+        delete process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN;
         delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
     });
 
@@ -343,7 +343,7 @@ describe('openAdaptationEditor', () => {
     });
 
     test('generates a fresh exact 64-hex token only for HTTP relay and does not return or log it', async () => {
-        process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = 'true';
+        process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN = 'true';
         process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = 'inherited-secret';
         const first = await startEditor();
         const token = String(mockSpawn.mock.calls[0][2].env.SAP_FIORI_MCP_ADP_RELAY_TOKEN);
@@ -359,13 +359,16 @@ describe('openAdaptationEditor', () => {
         expect(first.message).not.toMatch(/lsof|netstat|by port/);
     });
 
-    test.each(['false', 'TRUE', undefined])('does not enable relay for HTTP=%s', async (http) => {
-        if (http !== undefined) {
-            process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = http;
+    test.each(['false', 'TRUE', undefined])(
+        'does not enable relay outside BAS for FORCE_AUTOOPEN=%s',
+        async (force) => {
+            if (force !== undefined) {
+                process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN = force;
+            }
+            await startEditor();
+            expect(mockSpawn.mock.calls[0][2].env).toEqual({ SAP_FIORI_MCP_ADP_RELAY_TOKEN: undefined });
         }
-        await startEditor();
-        expect(mockSpawn.mock.calls[0][2].env).toEqual({ SAP_FIORI_MCP_ADP_RELAY_TOKEN: undefined });
-    });
+    );
 
     test('BAS auto-opens the external URL while retaining the original local URL and query', async () => {
         mockIsAppStudio.mockReturnValue(true);
@@ -455,7 +458,7 @@ describe('openAdaptationEditor', () => {
     });
 
     test('redacts generated and inherited tokens even if the CLI echoes them', async () => {
-        process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = 'true';
+        process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN = 'true';
         process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN = 'inherited-secret';
         const child = new FakeChildProcess();
         mockSpawn.mockReturnValue(fakeSubprocess(child));

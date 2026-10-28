@@ -1,4 +1,13 @@
-import { tools } from '../../../src/tools/index.js';
+// Tool registration reads SAP_FIORI_MCP_ADP_TOOLS at import time. Unset it before importing
+// so the suite is independent of the caller's environment (e.g. a shell that exports it).
+const savedAdpTools = process.env.SAP_FIORI_MCP_ADP_TOOLS;
+delete process.env.SAP_FIORI_MCP_ADP_TOOLS;
+const { tools } = await import('../../../src/tools/index.js');
+if (savedAdpTools === undefined) {
+    delete process.env.SAP_FIORI_MCP_ADP_TOOLS;
+} else {
+    process.env.SAP_FIORI_MCP_ADP_TOOLS = savedAdpTools;
+}
 
 const listFioriApps = tools.find((tool) => tool.name === 'list_fiori_apps');
 const listFunctionality = tools.find((tool) => tool.name === 'list_functionality');

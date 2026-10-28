@@ -51,13 +51,14 @@ jest.unstable_mockModule('../../../../src/utils/logger.js', () => ({
 
 // Transport selection happens at import time. Keep this suite independent of
 // both the caller's environment and the default browser dispatcher tests.
-const savedHttpTransport = process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT;
-process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = 'true';
+// Outside BAS the relay transport is selected via SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN.
+const savedForceAutoOpen = process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN;
+process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN = 'true';
 const { runRtaWorkflowStep } = await import('../../../../src/tools/run-rta-workflow-step/index.js');
-if (savedHttpTransport === undefined) {
-    delete process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT;
+if (savedForceAutoOpen === undefined) {
+    delete process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN;
 } else {
-    process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT = savedHttpTransport;
+    process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN = savedForceAutoOpen;
 }
 
 describe('runRtaWorkflowStep HTTP dispatcher', () => {

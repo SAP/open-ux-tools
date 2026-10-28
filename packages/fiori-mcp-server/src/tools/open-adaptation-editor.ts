@@ -13,6 +13,7 @@ import {
     terminateEditorProcess,
     trackEditorProcess
 } from '../utils/editor-session.js';
+import { isSimpleBrowserRelayEnabled } from '../utils/simple-browser-relay.js';
 
 const TIMEOUT_MS = 30000;
 
@@ -178,11 +179,11 @@ function parsePort(serverUrl: string): number | undefined {
  *
  * @param pid - The process ID of the running editor server.
  * @param isWindows - Whether the current platform is Windows.
- * @param relay - Whether the editor uses the RTA HTTP relay.
+ * @param useHttpRelay - Whether the editor uses the RTA HTTP relay.
  * @returns A formatted string with platform-appropriate instructions for stopping the process.
  */
-function buildKillInstructions(pid: number, isWindows: boolean, relay: boolean): string {
-    if (relay) {
+function buildKillInstructions(pid: number, isWindows: boolean, useHttpRelay: boolean): string {
+    if (useHttpRelay) {
         return 'To stop the editor, use run_rta_workflow_step with step "stop" and the exact Editor URL above.';
     }
     return isWindows
@@ -213,8 +214,8 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
     try {
         const isWindows = process.platform === 'win32';
-        const relay = process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT === 'true';
-        relayToken = relay ? randomBytes(32).toString('hex') : undefined;
+        const useHttpRelay = isSimpleBrowserRelayEnabled();
+        relayToken = useHttpRelay ? randomBytes(32).toString('hex') : undefined;
         const { command, args } = resolveFioriBin(appPath);
 
         logger.info(redact(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`));
@@ -271,7 +272,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             signalEditor('open', editorUrl);
         }
 
-        const killCommandsSection = buildKillInstructions(processId, isWindows, relay);
+        const killCommandsSection = buildKillInstructions(processId, isWindows, useHttpRelay);
         const portLine = port ? `Actual listening port: ${port}` : '';
 
         const message = `Adaptation editor started successfully.

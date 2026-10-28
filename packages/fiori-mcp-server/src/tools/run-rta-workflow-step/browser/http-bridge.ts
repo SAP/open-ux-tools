@@ -29,7 +29,9 @@ async function requestRelay(
 ): Promise<RelayResponse> {
     const session = requireEditorSession(site);
     if (!session.relayToken) {
-        throw new Error('This editor has no HTTP relay. Enable SAP_FIORI_MCP_ADP_HTTP_TRANSPORT and reopen it.');
+        throw new Error(
+            'This editor has no HTTP relay. It is enabled in BAS, or locally by setting SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN; reopen the editor.'
+        );
     }
     const endpoint = new URL('/adp/api/rta/action', session.localUrl);
     logger.debug(`HTTP relay: ${actionName}`);

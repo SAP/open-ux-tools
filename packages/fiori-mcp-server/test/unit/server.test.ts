@@ -46,6 +46,9 @@ const mockAdpControllerExtension = jest.fn<any>();
 const mockRunRtaWorkflowStep = jest.fn<any>();
 const mockReadODataMetadataAdp = jest.fn<any>();
 const mockLookupUi5Documentation = jest.fn<any>();
+// Build the static tool list with ADP tools off, independent of the ambient env.
+const savedAdpTools = process.env.SAP_FIORI_MCP_ADP_TOOLS;
+delete process.env.SAP_FIORI_MCP_ADP_TOOLS;
 const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
     ...actualTools,
@@ -71,6 +74,11 @@ const { Server } = await import('@modelcontextprotocol/sdk/server/index.js');
 const { FioriFunctionalityServer } = await import('../../src/server.js');
 const { TelemetryHelper, unknownTool } = await import('../../src/telemetry/index.js');
 const tools = await import('../../src/tools/index.js');
+if (savedAdpTools === undefined) {
+    delete process.env.SAP_FIORI_MCP_ADP_TOOLS;
+} else {
+    process.env.SAP_FIORI_MCP_ADP_TOOLS = savedAdpTools;
+}
 
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {

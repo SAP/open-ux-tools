@@ -13,16 +13,17 @@ import { logger } from '../../utils/logger.js';
 import { defaultTransport, httpTransport, isRegistryEmpty } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
 import { requireEditorSession } from '../../utils/editor-session.js';
+import { isSimpleBrowserRelayEnabled } from '../../utils/simple-browser-relay.js';
 
 /**
  * Selects the FrontendActionTransport implementation.
  *
- * - SAP_FIORI_MCP_ADP_HTTP_TRANSPORT=true — HTTP relay; the editor page itself
- *   executes the frontend actions. Used when the editor is opened interactively
- *   (e.g. BAS Simple Browser) so a login can be completed before RTA runs.
+ * - Simple Browser HTTP relay — the editor page itself executes the frontend actions.
+ *   Used in BAS (and locally via SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN) so a login can be
+ *   completed in the interactive browser before RTA runs. See isSimpleBrowserRelayEnabled.
  * - Default — Playwright launches Chromium/Chrome.
  */
-const activeTransport = process.env.SAP_FIORI_MCP_ADP_HTTP_TRANSPORT === 'true' ? httpTransport : defaultTransport;
+const activeTransport = isSimpleBrowserRelayEnabled() ? httpTransport : defaultTransport;
 
 /**
  * Reads `key` from `payload` and asserts it is a non-empty string. The Zod

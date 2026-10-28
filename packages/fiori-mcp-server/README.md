@@ -145,20 +145,21 @@ interactive login without a server-side Chromium browser.
 Use a relay-enabled `@sap-ux/preview-middleware` in the adaptation project. In SAP
 Business Application Studio the editor tab is opened automatically by the SAP Fiori
 tools Application Modeler extension, which watches the launcher mailbox. No relay
-patch to `@sap-ux/adp-tooling` is required. Add these flags to the MCP
+patch to `@sap-ux/adp-tooling` is required. Enable the ADP tools in the MCP
 server's `env` configuration:
 
 ```json
 {
-  "SAP_FIORI_MCP_ADP_TOOLS": "true",
-  "SAP_FIORI_MCP_ADP_HTTP_TRANSPORT": "true"
+  "SAP_FIORI_MCP_ADP_TOOLS": "true"
 }
 ```
 
 For local builds, rebuild MCP and preview middleware, install the rebuilt launcher
 extension, **restart MCP and reload the BAS window** before opening a fresh editor.
 Source changes or extension installation alone do not activate the new setup.
-Without the HTTP flag, the default transport remains Playwright.
+The Simple Browser relay is selected automatically in BAS; to exercise the same flow
+locally (outside BAS) for debugging, set `SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN=true` —
+without it the default transport remains Playwright.
 
 Call `open_adaptation_editor`: BAS `exposePort` supplies the browser-reachable URL,
 and the extension automatically opens it in Simple Browser. Complete any login
