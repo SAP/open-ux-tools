@@ -12,7 +12,7 @@
         "path": "plugins-coding-agents/fiori"
       },
       "description": "MCP server and skills for SAP Fiori development. Build, modify, and test SAP Fiori Elements applications with AI assistance.",
-      "version": "1.16.2",
+      "version": "1.16.5",
       "author": {
         "name": "SAP SE"
       },
