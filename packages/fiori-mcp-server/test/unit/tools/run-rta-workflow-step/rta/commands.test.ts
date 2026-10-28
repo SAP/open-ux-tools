@@ -330,7 +330,7 @@ describe('rta/commands', () => {
                     dir
                 );
                 const entry = out.entries[0] as { url: string; metadataFile: string; sizeBytes: number };
-                expect(entry.metadataFile).toContain(join('webapp', '.context'));
+                expect(entry.metadataFile).toContain(join(dir, '.context'));
                 expect(entry.sizeBytes).toBeGreaterThan(100_000);
                 expect(readFileSync(entry.metadataFile, 'utf-8')).toContain('edmx:Edmx');
                 expect(entry).not.toHaveProperty('metadata');
@@ -350,7 +350,7 @@ describe('rta/commands', () => {
                 const out = await getODataMetadata(transport, SITE, ['/api/svc/$metadata'], dir);
                 const entry = out.entries[0] as { metadataFile: string };
                 expect(entry.metadataFile).not.toMatch(/[$]/);
-                expect(entry.metadataFile.startsWith(join(dir, 'webapp', '.context'))).toBe(true);
+                expect(entry.metadataFile.startsWith(join(dir, '.context'))).toBe(true);
             } finally {
                 rmSync(dir, { recursive: true, force: true });
             }

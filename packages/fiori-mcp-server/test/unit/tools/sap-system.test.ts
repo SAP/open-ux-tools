@@ -1,4 +1,10 @@
 import { jest } from '@jest/globals';
+
+// These tests exercise general utilities; adaptation tasks have their own test suite.
+jest.unstable_mockModule('../../../src/utils/manifest-builder.js', () => ({
+    getMergedManifest: jest.fn(),
+    downloadAppResources: jest.fn()
+}));
 import type { BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
 import type { ODataService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';

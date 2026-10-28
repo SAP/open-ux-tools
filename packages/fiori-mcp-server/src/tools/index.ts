@@ -19,6 +19,7 @@ export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 export { readODataMetadataAdp } from './read-odata-metadata.js';
+export { downloadBaseApp } from './download-base-app.js';
 export { lookupUi5Documentation } from './lookup-ui5-documentation/index.js';
 
 const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
@@ -171,6 +172,24 @@ const adpTools = [
         },
         inputSchema: convertToSchema(Input.ReadODataMetadataInputSchema),
         outputSchema: convertToSchema(Output.ReadODataMetadataOutputSchema)
+    },
+    {
+        name: 'download_base_app_adp',
+        description: `Downloads the base app resources for the specified Adaptation Project.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Connects to the SAP system and downloads the base app resources
+        - Returns the downloaded base app resources for the Adaptation Project
+
+        Use this tool when you need to download the base app resources for an Adaptation Project.`,
+        annotations: {
+            title: 'Download Base App Resources for Adaptation Project',
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.DownloadAppResourcesInputSchema),
+        outputSchema: convertToSchema(Output.DownloadAppResourcesOutputSchema)
     }
 ] as Tool[];
 

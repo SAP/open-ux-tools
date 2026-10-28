@@ -44,6 +44,11 @@ declare module '@ui5/fs' {
      */
     export class DuplexCollection {
         /**
+         * Writes a resource to the workspace overlay.
+         */
+        write(resource: Resource): Promise<void>;
+
+        /**
          *
          */
         byGlob(virPattern: string | string[], options?: object): Promise<Resource[]>;
@@ -149,4 +154,28 @@ declare module '@ui5/server' {
 
         middlewareUtil: MiddlewareUtils;
     }
+}
+
+declare module '@ui5/fs/resourceFactory' {
+    // eslint-disable-next-line sonarjs/no-implicit-dependencies -- References the ambient module declared above.
+    import type { DuplexCollection, ReaderCollection } from '@ui5/fs';
+
+    /**
+     * Creates a filesystem reader with paths rooted in a virtual namespace.
+     *
+     * @param options Filesystem and virtual root paths.
+     * @param options.fsBasePath Filesystem directory containing the source files.
+     * @param options.virBasePath Virtual namespace root for the source files.
+     * @returns A reader for the source files.
+     */
+    export function createReader(options: { fsBasePath: string; virBasePath: string }): ReaderCollection;
+
+    /**
+     * Creates a workspace backed by a reader and an in-memory writer.
+     *
+     * @param options Source reader.
+     * @param options.reader Reader providing the workspace's source files.
+     * @returns A workspace for reading and modifying resources.
+     */
+    export function createWorkspace(options: { reader: ReaderCollection }): DuplexCollection;
 }

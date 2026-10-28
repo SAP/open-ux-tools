@@ -1,4 +1,10 @@
 import { jest } from '@jest/globals';
+
+// These tests exercise general utilities; adaptation tasks have their own test suite.
+jest.unstable_mockModule('../../../src/utils/manifest-builder.js', () => ({
+    getMergedManifest: jest.fn(),
+    downloadAppResources: jest.fn()
+}));
 import { join } from 'node:path';
 import listReportSchema from '../page-editor-api/test-data/schema/ListReport.json';
 import * as zod from 'zod';

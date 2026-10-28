@@ -242,6 +242,14 @@ export const ReadODataMetadataInputSchema = zod.object({
         )
 });
 
+export const DownloadAppResourcesInputSchema = zod.object({
+    appPath: zod
+        .string()
+        .describe(
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
+        )
+});
+
 /**
  * Supported UI5 documentation lookup types.
  */

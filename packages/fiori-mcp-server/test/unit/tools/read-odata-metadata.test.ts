@@ -4,16 +4,15 @@ const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockFormatXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
 const mockWriteContextMetadata = jest.fn<any>(
-    (appPath: string, name: string) => `${appPath}/webapp/.context/${name}-metadata.xml`
+    (appPath: string, name: string) => `${appPath}/.context/${name}-metadata.xml`
 );
 
-const actualUtils = await import('../../../src/utils/index.js');
+const mockGetMergedManifest = jest.fn<() => Promise<object>>();
 jest.unstable_mockModule('../../../src/utils', () => ({
-    ...actualUtils,
+    getMergedManifest: mockGetMergedManifest,
     formatXml: mockFormatXml,
     writeContextMetadata: mockWriteContextMetadata,
     logger: {
-        ...actualUtils.logger,
         warn: mockLoggerWarn,
         info: mockLoggerInfo,
         error: jest.fn(),
@@ -22,20 +21,10 @@ jest.unstable_mockModule('../../../src/utils', () => ({
 }));
 
 const mockReadUi5Config = jest.fn<any>();
-const mockGetVariant = jest.fn<any>().mockResolvedValue({ id: 'customer.app.variant' });
-const mockInitMergedManifest = jest.fn<any>();
 const mockIsCFEnvironment = jest.fn<any>().mockResolvedValue(false);
-const mockManifestServiceCFInit = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     readUi5Config: mockReadUi5Config,
-    getVariant: mockGetVariant,
-    isCFEnvironment: mockIsCFEnvironment,
-    ManifestService: {
-        initMergedManifest: mockInitMergedManifest
-    },
-    ManifestServiceCF: {
-        init: mockManifestServiceCFInit
-    }
+    isCFEnvironment: mockIsCFEnvironment
 }));
 
 const mockCreateAbapServiceProvider = jest.fn<any>();
@@ -57,16 +46,6 @@ function makeAbapProvider(serviceMetadata = makeMetadata()) {
     };
 }
 
-function makeManifestService(
-    dataSources: Record<string, { type: string; uri: string }>,
-    ui5Models: Record<string, unknown> = {}
-) {
-    return {
-        getManifest: jest.fn<any>().mockReturnValue({ 'sap.ui5': { models: ui5Models } }),
-        getManifestDataSources: jest.fn<any>().mockReturnValue(dataSources)
-    };
-}
-
 describe('readODataMetadataAdp', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -85,7 +64,10 @@ describe('readODataMetadataAdp', () => {
     ) {
         const provider = makeAbapProvider();
         mockCreateAbapServiceProvider.mockReturnValue(provider);
-        mockInitMergedManifest.mockResolvedValue(makeManifestService(dataSources, ui5Models));
+        mockGetMergedManifest.mockResolvedValue({
+            'sap.app': { dataSources },
+            'sap.ui5': { models: ui5Models }
+        });
         return provider;
     }
 
@@ -100,7 +82,8 @@ describe('readODataMetadataAdp', () => {
         expect(result.entries).toHaveLength(1);
         expect(result.entries[0].id).toEqual('mainService');
         expect(result.entries[0].url).toEqual('/sap/opu/odata/main');
-        expect(result.entries[0].metadata).toContain('<formatted>');
+        expect(result.entries[0].metadata).toEqual('<formatted><edmx/></formatted>');
+        expect(mockGetMergedManifest).toHaveBeenCalledWith(APP_PATH);
     });
 
     test('attaches matching ui5 model to entry', async () => {
@@ -162,23 +145,63 @@ describe('readODataMetadataAdp', () => {
         );
     });
 
+    test('fetches each OData service and detects the environment only once', async () => {
+        const provider = setupProvider({
+            main: { type: 'OData', uri: '/odata/main' },
+            secondary: { type: 'OData', uri: '/odata/secondary' }
+        });
+
+        const result = await readODataMetadataAdp({ appPath: APP_PATH });
+
+        expect(result.entries.map((entry) => entry.id)).toEqual(['main', 'secondary']);
+        expect(provider.service).toHaveBeenCalledWith('/odata/main');
+        expect(provider.service).toHaveBeenCalledWith('/odata/secondary');
+        expect(mockIsCFEnvironment).toHaveBeenCalledTimes(1);
+    });
+
+    test('ignores models without a data source and keeps the last matching model', async () => {
+        const model = { dataSource: 'main', settings: { sizeLimit: 100 } };
+        setupProvider(
+            { main: { type: 'OData', uri: '/odata/main' }, unbound: { type: 'OData', uri: '/odata/unbound' } },
+            { resource: { type: 'sap.ui.model.resource.ResourceModel' }, first: { dataSource: 'main' }, last: model }
+        );
+
+        const result = await readODataMetadataAdp({ appPath: APP_PATH });
+
+        expect(result.entries[0].model).toEqual(model);
+        expect(result.entries[1].model).toBeUndefined();
+    });
+
+    test('propagates metadata errors without writing a context file', async () => {
+        const provider = setupProvider({ main: { type: 'OData', uri: '/odata/main' } });
+        const error = new Error('Metadata unavailable');
+        provider.service.mockReturnValue({ metadata: jest.fn<() => Promise<string>>().mockRejectedValue(error) });
+
+        await expect(readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true })).rejects.toThrow(error);
+
+        expect(mockWriteContextMetadata).not.toHaveBeenCalled();
+    });
+
     describe('Cloud Foundry projects', () => {
         function setupCfProvider(
             dataSources: Record<string, { type: string; uri: string }>,
             ui5Models: Record<string, unknown> = {}
         ) {
             mockIsCFEnvironment.mockResolvedValue(true);
-            mockManifestServiceCFInit.mockResolvedValue(makeManifestService(dataSources, ui5Models));
+            mockGetMergedManifest.mockResolvedValue({
+                'sap.app': { dataSources },
+                'sap.ui5': { models: ui5Models }
+            });
         }
 
-        test('uses ManifestServiceCF and does not create an ABAP service provider', async () => {
+        test('uses the merged manifest builder and does not create an ABAP service provider', async () => {
             setupCfProvider({ mainService: { type: 'OData', uri: '/odata/v4/main/' } });
 
             await readODataMetadataAdp({ appPath: APP_PATH });
 
-            expect(mockManifestServiceCFInit).toHaveBeenCalledWith(APP_PATH, expect.anything());
+            expect(mockGetMergedManifest).toHaveBeenCalledWith(APP_PATH);
+            expect(mockReadUi5Config).not.toHaveBeenCalled();
             expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
-            expect(mockInitMergedManifest).not.toHaveBeenCalled();
         });
 
         test('returns OData data sources with empty metadata (EDMX unavailable for CF)', async () => {
@@ -194,6 +217,18 @@ describe('readODataMetadataAdp', () => {
             expect(result.entries[0].url).toEqual('/odata/v4/main/');
             expect(result.entries[0].metadata).toEqual('');
         });
+
+        test.each([{}, { 'sap.app': {} }, { 'sap.app': { dataSources: {} } }])(
+            'returns no entries for a manifest without data sources: %j',
+            async (manifest) => {
+                mockIsCFEnvironment.mockResolvedValue(true);
+                mockGetMergedManifest.mockResolvedValue(manifest);
+
+                await expect(readODataMetadataAdp({ appPath: APP_PATH })).resolves.toEqual({ entries: [] });
+
+                expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
+            }
+        );
 
         test('attaches matching ui5 model to CF entry', async () => {
             const model = { dataSource: 'mainService', settings: {} };

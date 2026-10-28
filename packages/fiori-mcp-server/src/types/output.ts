@@ -145,6 +145,11 @@ export const AdpControllerExtensionOutputSchema = zod.object({
     appPath: zod.string(),
     changes: zod.array(zod.string())
 });
+export const DownloadAppResourcesOutputSchema = zod.object({
+    status: zod.string(),
+    message: zod.string(),
+    appPath: zod.string()
+});
 
 export const ExecuteFunctionalityOutputSchema = zod.object({
     /** ID or array of IDs of the executed functionality(ies) */
