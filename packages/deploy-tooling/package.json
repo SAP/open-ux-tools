@@ -57,7 +57,7 @@
         "@jest/globals": "30.4.1",
         "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.4.9",
-        "@types/adm-zip": "0.5.8"
+        "@types/adm-zip": "0.6.0"
     },
     "engines": {
         "node": ">=22.x"
