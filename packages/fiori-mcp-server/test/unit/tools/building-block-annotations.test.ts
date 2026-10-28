@@ -2,10 +2,15 @@ import { jest } from '@jest/globals';
 
 const mockCreateService = jest.fn<any>();
 const mockGetServiceName = jest.fn<any>().mockResolvedValue('mainService');
+const mockConvert = jest.fn<any>();
 
 jest.unstable_mockModule('@sap-ux/fiori-annotation-api', () => ({
     FioriAnnotationService: { createService: mockCreateService },
     ChangeType: { InsertAnnotation: 'insert-annotation' }
+}));
+
+jest.unstable_mockModule('@sap-ux/annotation-converter', () => ({
+    convert: mockConvert
 }));
 
 jest.unstable_mockModule('../../../src/page-editor-api/index.js', () => ({
@@ -143,6 +148,73 @@ describe('writeAnnotationShells', () => {
 
         expect(result).toEqual({ written: 0 });
         expect(edit).not.toHaveBeenCalled();
+    });
+
+    test('does not write a duplicate shell when the annotation exists only in a read-only source', async () => {
+        const edit = jest.fn();
+        mockCreateService.mockResolvedValue(
+            fakeService({
+                entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }],
+                // The writable file is file:///ann.xml (from the helper); the LineItem lives in a different,
+                // read-only backend-metadata source. The dedup check must still find it.
+                annotations: {
+                    'file:///backend-metadata.xml': [
+                        {
+                            target: 'ns.SalesOrder',
+                            annotations: [{ term: 'com.sap.vocabularies.UI.v1.LineItem', qualifier: '' }]
+                        }
+                    ]
+                },
+                edit
+            })
+        );
+
+        const result = await writeAnnotationShells(
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        expect(result).toEqual({ written: 0 });
+        expect(edit).not.toHaveBeenCalled();
+    });
+
+    test('resolves a navigation-property target by its fully-qualified type name', async () => {
+        const edit = jest.fn();
+        // Direct entity-set lookup misses "to_Items"; resolution falls through to the converted schema's
+        // navigation properties, which must be matched on the fully-qualified target type name.
+        mockConvert.mockReturnValue({
+            entitySets: [
+                {
+                    name: 'SalesOrder',
+                    entityTypeName: 'ns.SalesOrder',
+                    entityType: {
+                        navigationProperties: [
+                            { name: 'to_Items', targetType: { name: 'Item', fullyQualifiedName: 'ns.Item' } }
+                        ]
+                    }
+                },
+                { name: 'Items', entityTypeName: 'ns.Item', entityType: { navigationProperties: [] } }
+            ]
+        });
+        mockCreateService.mockResolvedValue(
+            fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], edit })
+        );
+
+        const result = await writeAnnotationShells(
+            { buildingBlockType: 'table', metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem' },
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        expect(result).toEqual({ written: 1 });
+        expect(edit).toHaveBeenCalledWith(
+            expect.objectContaining({
+                content: expect.objectContaining({ target: 'ns.Item' })
+            })
+        );
     });
 
     test('skips when no writable annotation file is available', async () => {
