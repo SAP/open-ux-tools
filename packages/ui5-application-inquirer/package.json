@@ -41,7 +41,7 @@
         "semver": "7.8.5"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.2",

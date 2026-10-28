@@ -56,7 +56,7 @@
         "qrcode": "1.5.4"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
         "@sap-ux-private/playwright": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",

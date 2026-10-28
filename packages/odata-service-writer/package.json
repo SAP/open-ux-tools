@@ -47,7 +47,7 @@
         "xml-formatter": "3.7.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@types/ejs": "3.1.5",
