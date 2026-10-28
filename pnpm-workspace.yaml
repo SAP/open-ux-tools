@@ -30,6 +30,7 @@ auditConfig: { ignoreGhsas: [GHSA-vv9j-gjw2-j8wp] }
 
 minimumReleaseAgeExclude:
     - promptfoo@0.124.0
+    - ts-jest@29.4.15
 
 overrides:
     '@sap-ux/vocabularies-types': '0.16.0'
@@ -43,7 +44,7 @@ overrides:
     'sharp@<0.35.0': '>=0.33.5'
     '@huggingface/transformers>sharp': '>=0.35.5'
     'promptfoo>sharp': '>=0.35.5'
-    fast-xml-parser: '5.8.0'
+    fast-xml-parser: '5.11.2'
     fast-uri: '>=4.2.1'
     '@babel/core@>=7.0.0 <8.0.0': '7.29.7'
     'yeoman-test>yeoman-environment': '3.19.3'
@@ -141,7 +142,7 @@ overrides:
     postcss: '>=8.5.23'
     sanitize-html: '>=2.17.7'
     'sanitize-html>htmlparser2': '^8.0.2'
-    'jest-environment-jsdom@29.7.0>jest-mock': '30.4.1'
+    '@jest/environment': '30.4.1'
     'socks>ip-address': '>=10.5.1'
     'express-rate-limit>ip-address': '>=10.5.1'
     ip-address: '>=10.5.1'
@@ -163,7 +164,7 @@ overrides:
     '@sap/service-provider-apis>axios': '>=1.20.0'
     '@sap/service-provider-apis@2.8.0>axios': '>=1.20.0'
     'ibm-cloud-sdk-core>axios': '>=1.20.0'
-    '@sap/bas-sdk': '>=3.13.7'
+    '@sap/bas-sdk': '>=3.13.16'
     '@sap/service-provider-apis': '>=2.10.0'
     immutable: '>=5.1.8'
     joi: '>=18.2.6'

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
-import type { AppInfo, AbapServiceProvider, ErrorMessage } from '../../src/index.js';
+import type { AppInfo, AbapServiceProvider, ErrorMessage, FileStoreService } from '../../src/index.js';
 import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
@@ -150,6 +150,36 @@ describe('Ui5AbapRepositoryService', () => {
         test('Server error (500) logs the response body at debug level and re-throws', async () => {
             await expect(service.downloadFiles(serverErrorApp)).rejects.toThrow('Request failed with status code 500');
             expect(loggerMock.debug).toHaveBeenCalledWith(serverErrorBody);
+        });
+    });
+
+    describe('downloadFilesViaAdt', () => {
+        test('should recursively collect files and return a ZIP buffer', async () => {
+            const mockFileStoreService = {
+                getAppArchiveContent: jest
+                    .fn()
+                    .mockResolvedValueOnce([
+                        { path: '/webapp', type: 'folder' },
+                        { path: '/Component.js', type: 'file' }
+                    ])
+                    .mockResolvedValueOnce([{ path: '/webapp/index.html', type: 'file' }])
+                    .mockResolvedValueOnce(Buffer.from('<html/>'))
+                    .mockResolvedValueOnce(Buffer.from('Component content'))
+            } as unknown as FileStoreService;
+
+            const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);
+            expect(result).toBeInstanceOf(Buffer);
+            expect(result).toBeDefined();
+            expect(result?.length).toBeGreaterThan(0);
+        });
+
+        test('should return undefined when no files are found', async () => {
+            const mockFileStoreService = {
+                getAppArchiveContent: jest.fn().mockResolvedValue([])
+            } as unknown as FileStoreService;
+
+            const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);
+            expect(result).toBeUndefined();
         });
     });
 

@@ -1,5 +1,32 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.87
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.84 → 3.1.85
+- @sap-ux/fiori-freestyle-writer 3.0.127 → 3.0.128
+- @sap-ux/odata-service-inquirer 3.2.27 → 3.2.27
+
+## 1.3.86
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/odata-service-inquirer 3.2.26 → 3.2.27
+- @sap-ux/telemetry 2.0.11 → 2.0.12
+- @sap-ux/fiori-elements-writer 3.1.83 → 3.1.84
+- @sap-ux/fiori-freestyle-writer 3.0.126 → 3.0.127
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+- @sap-ux/cap-config-writer 1.0.44 → 1.0.45
+- @sap-ux/ui5-application-inquirer 1.0.49 → 1.0.50
+
 ## 1.3.85
 
 ### Patch Changes

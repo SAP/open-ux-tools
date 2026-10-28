@@ -26,15 +26,13 @@ describe('Reuse Libraries - Coverage Tests', () => {
             result,
             messages,
             fs: updatedFs
-        } = await ProjectMigrator.migrate(
-            testInputBase,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        } = await ProjectMigrator.migrate({
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBe(true);
 
@@ -59,15 +57,13 @@ describe('Service Detection Edge Cases - Coverage Tests', () => {
 
         const fs = loadProjectIntoMemFs(testInputBase);
 
-        const { result, messages } = await ProjectMigrator.migrate(
-            testInputBase,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result, messages } = await ProjectMigrator.migrate({
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         // Should handle multiple dataSources without critical errors
         expect(result).toBe(true);
@@ -95,15 +91,13 @@ describe('Backend Configuration Variants - Coverage Tests', () => {
             result,
             messages,
             fs: updatedFs
-        } = await ProjectMigrator.migrate(
-            testInputBase,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        } = await ProjectMigrator.migrate({
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         expect(result).toBe(true);
 

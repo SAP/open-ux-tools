@@ -65,13 +65,13 @@ export * from './i18n.js';
 
 // Public API - Utilities (re-export selective functions for backward compatibility)
 export {
+    readFile,
     findProjectRoot,
     getProjectType,
     getMainService,
     hasDependency,
     getMinUI5VersionAsArray,
     type CdsUi5PluginInfo,
-    readFile,
     readJSON,
     fileExists,
     writeFile,
@@ -95,7 +95,14 @@ export type { UI5YamlOptions } from './adapters/ui5-config-adapter.js';
 
 // Additional exports from utils for test compatibility
 export { readManifest, getUI5Version } from './utils/manifest-and-version-utils.js';
-export { stripSpaces, escapeSingleQuotes, escapeDoubleQuotes, doesDirectoryExists } from './utils/file-system-utils.js';
+export {
+    stripSpaces,
+    escapeSingleQuotes,
+    escapeDoubleQuotes,
+    doesDirectoryExists,
+    createDirectory,
+    doesPropertyExist
+} from './utils/file-system-utils.js';
 export { generateSapLibsStr, getSourceTemplate } from './utils/migration-utils.js';
 export { getWebIDEProjectPathsAsLabels } from './utils/project-discovery.js';
 export {

@@ -1,4 +1,6 @@
-import { findProjectRoot, getProjectType, fileExists } from '../utils/index.js';
+import { access } from 'node:fs/promises';
+import type { Editor } from 'mem-fs-editor';
+import { findProjectRoot, getProjectType } from '../utils/index.js';
 import { MigrationError } from '../utils/common.js';
 import { i18nText } from '../i18n.js';
 
@@ -6,12 +8,16 @@ import { i18nText } from '../i18n.js';
  * Validates that the project is suitable for migration.
  * Checks if project is within a CAP project structure and rejects if so.
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root directory of the project to validate
  * @throws {MigrationError} If project is a Fiori app within a CAP project
  */
-export async function validateProjectForMigration(projectRoot: string): Promise<void> {
-    // Quick existence check to avoid hanging on non-existent paths
-    if (!(await fileExists(projectRoot))) {
+export async function validateProjectForMigration(fs: Editor, projectRoot: string): Promise<void> {
+    // Quick existence check to avoid hanging on non-existent paths.
+    // This is a directory check on the real filesystem (mem-fs exists() only reports files).
+    try {
+        await access(projectRoot);
+    } catch {
         // Path doesn't exist - skip validation (will fail later with appropriate error)
         return;
     }

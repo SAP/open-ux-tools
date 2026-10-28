@@ -1,5 +1,26 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.67
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
+## 0.3.66
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+
 ## 0.3.65
 
 ### Patch Changes

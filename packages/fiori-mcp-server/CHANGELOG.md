@@ -1,5 +1,37 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Features
+
+- Split adp-controller-extension skill into workflow core and reference files (hitl-gating, rta-actions, example-session) add enhancement to knowledge base [[af39811](https://github.com/SAP/open-ux-tools/commit/af39811669fb24d1b52231faff96eb131c337c6f)]
+
+## 1.15.16
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.15.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/btp-utils [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (dotenv 18) [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
 ## 1.15.14
 
 ### Patch Changes

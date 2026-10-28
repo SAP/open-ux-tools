@@ -2,6 +2,8 @@ import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
 import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message.js';
 import { ODataService } from '../base/odata-service.js';
 import { isAxiosError } from '../base/odata-request-error.js';
+import type { FileStoreService } from './adt-catalog/services/filestore-service.js';
+import AdmZip from 'adm-zip';
 /**
  * Required configuration a transportable object.
  */
@@ -204,6 +206,52 @@ export class Ui5AbapRepositoryService extends ODataService {
             return Buffer.from(data.ZipArchive, isBase64 ? 'base64' : undefined);
         } catch (error) {
             return this.handleAppLookupError(app, error);
+        }
+    }
+
+    /**
+     * Download application files via ADT FileStoreService by recursively walking the folder tree
+     * and building a ZIP buffer. Use as fallback on systems older than SAP_UI 754 where
+     * ABAP_REPOSITORY_SRV does not return a ZipArchive.
+     *
+     * @param app application id (BSP application name)
+     * @param fileStoreService FileStoreService instance obtained via AbapServiceProvider.getAdtService
+     * @returns ZIP buffer of the application files, or undefined if the root folder is empty
+     */
+    public async downloadFilesViaAdt(app: string, fileStoreService: FileStoreService): Promise<Buffer | undefined> {
+        const zip = new AdmZip();
+        let fileCount = 0;
+        await this.collectFilesIntoZip(fileStoreService, zip, app, '', () => fileCount++);
+        return fileCount > 0 ? zip.toBuffer() : undefined;
+    }
+
+    /**
+     * Recursively walks the ADT file store tree and adds every file to `zip`.
+     * Sequential awaits are intentional — child entries are only known after the parent folder response.
+     *
+     * @param fileStoreService ADT FileStoreService for listing folders and fetching file content
+     * @param zip AdmZip instance to append files to
+     * @param appName BSP application name
+     * @param path Current folder path relative to the app root (empty string for root)
+     * @param onFileAdded Callback invoked for each file added to the ZIP
+     */
+    private async collectFilesIntoZip(
+        fileStoreService: FileStoreService,
+        zip: AdmZip,
+        appName: string,
+        path: string,
+        onFileAdded: () => void
+    ): Promise<void> {
+        const entries = await fileStoreService.getAppArchiveContent('folder', appName, path);
+        // Sequential iteration is intentional: each folder must be fetched before its children are known.
+        for (const entry of entries) {
+            if (entry.type === 'folder') {
+                await this.collectFilesIntoZip(fileStoreService, zip, appName, entry.path, onFileAdded); // NOSONAR
+            } else {
+                const content = await fileStoreService.getAppArchiveContent('file', appName, entry.path); // NOSONAR
+                zip.addFile(entry.path.replace(/^\//, ''), content);
+                onFileAdded();
+            }
         }
     }
 
