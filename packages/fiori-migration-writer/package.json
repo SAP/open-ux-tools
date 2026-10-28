@@ -58,7 +58,7 @@
         "semver": "7.8.5",
         "true-case-path": "2.2.1",
         "uuid": "11.1.1",
-        "vscode-uri": "3.1.0",
+        "vscode-uri": "3.2.0",
         "yaml": "2.9.1"
     },
     "devDependencies": {
