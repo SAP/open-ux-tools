@@ -163,6 +163,18 @@ describe('addBuildingBlock', () => {
         expect(result.message).toContain('myFilterBar');
     });
 
+    test('normalizes an absolute viewOrFragmentPath to a relative path for generateBuildingBlock', async () => {
+        await addBuildingBlock({ ...baseParams, viewOrFragmentPath: '/app/webapp/ext/main/Main.view.xml' });
+
+        expect(mockGenerateBuildingBlock).toHaveBeenCalledWith(
+            '/app',
+            expect.objectContaining({
+                viewOrFragmentPath: 'webapp/ext/main/Main.view.xml'
+            }),
+            expect.anything()
+        );
+    });
+
     test('RTE with targetProperty passes it as metaPath to generateBuildingBlock', async () => {
         const params: AddBuildingBlockInput = {
             ...baseParams,

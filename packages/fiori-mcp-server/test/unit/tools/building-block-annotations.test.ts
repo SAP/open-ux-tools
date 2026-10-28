@@ -180,10 +180,10 @@ describe('writeAnnotationShells', () => {
         expect(edit).not.toHaveBeenCalled();
     });
 
-    test('resolves a navigation-property target by its fully-qualified type name', async () => {
+    test('resolves a navigation-property target by its FQN even when the target type has no own entity set', async () => {
         const edit = jest.fn();
-        // Direct entity-set lookup misses "to_Items"; resolution falls through to the converted schema's
-        // navigation properties, which must be matched on the fully-qualified target type name.
+        // Containment/composition case: "to_Items" resolves to type ns.Item, which is NOT exposed as a top-level
+        // entity set. The target must still come from the nav property's target type FQN, not a bare nav name.
         mockConvert.mockReturnValue({
             entitySets: [
                 {
@@ -194,8 +194,7 @@ describe('writeAnnotationShells', () => {
                             { name: 'to_Items', targetType: { name: 'Item', fullyQualifiedName: 'ns.Item' } }
                         ]
                     }
-                },
-                { name: 'Items', entityTypeName: 'ns.Item', entityType: { navigationProperties: [] } }
+                }
             ]
         });
         mockCreateService.mockResolvedValue(
