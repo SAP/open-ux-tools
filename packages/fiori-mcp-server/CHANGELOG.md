@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Features
+
+- Split adp-controller-extension skill into workflow core and reference files (hitl-gating, rta-actions, example-session) add enhancement to knowledge base [[af39811](https://github.com/SAP/open-ux-tools/commit/af39811669fb24d1b52231faff96eb131c337c6f)]
+
 ## 1.15.16
 
 ### Patch Changes
