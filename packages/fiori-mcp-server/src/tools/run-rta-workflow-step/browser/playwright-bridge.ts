@@ -14,10 +14,23 @@ import { originKey } from './origin.js';
 import { buildContextOptions, forgetSite, persistSessionState } from './session.js';
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
 
+// Browser driver for the adaptation-editor automation.
+//
+// This module is OUR Node-side component (not anything in the page): it owns a
+// single shared Chromium, keeps a registry of open editor pages by origin, and
+// runs frontend actions by evaluating into the page. It drives the browser — it
+// is not itself a "bridge".
+//
+// The one thing here that is literally a bridge is the editor's own in-page
+// object, `window.sapdas.webclientBridge` (SAP/Joule-injected), whose
+// `getFrontendActions()` we detect (readiness) and call (to start/drive RTA).
+// Wherever a comment below says "bridge" it means that webclient bridge, never
+// this module.
+
 /**
  * Outcome of classifying a freshly-navigated editor page:
- * - `ready` — the app is reachable (bridge present, login completed, or a
- *   slow-but-valid app); the caller proceeds to persist/register.
+ * - `ready` — the app is reachable (webclient bridge present, login completed,
+ *   or a slow-but-valid app); the caller proceeds to persist/register.
  * - `login-timed-out` — a backend login page was served and login did NOT
  *   complete within the budget; the caller tears down and returns the login
  *   signal. (A login page where the human DID sign in resolves to `ready`.)
@@ -109,7 +122,7 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
             executionContext = matched;
         }
 
-        // Wait up to 60 s for the bridge to be registered (RTA needs time to start).
+        // Wait up to 60 s for the webclient bridge to be registered (RTA needs time to start).
         await (executionContext as Page | Frame).waitForFunction(
             () =>
                 !!(
@@ -270,7 +283,7 @@ async function classifyEditorReadiness(
     if (isEditorErrorStatus(response?.status())) {
         return { outcome: 'error', status: response?.status() };
     }
-    // Slow-but-valid app: proceed and let the per-action bridge wait be the backstop.
+    // Slow-but-valid app: proceed and let the per-action webclient-bridge wait be the backstop.
     return { outcome: 'ready' };
 }
 

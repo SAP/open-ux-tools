@@ -8,7 +8,7 @@ import { logger } from '../../../utils/logger.js';
 import { sessionDir } from './env.js';
 import { originKey } from './origin.js';
 
-// Session state shared across the browser bridge.
+// Session state shared across the browser driver.
 //   `siteMeta` — site origin → { projectKey, isCf }. Rewritten by every `start`
 //      (via registerSite), so the project currently running on a reused port
 //      always wins; a previous project's metadata can never be served to a new

@@ -2,7 +2,7 @@ import { type Frame, type Page } from 'playwright-core';
 
 // Backend login / IdP page detection. A CF editor URL may redirect to an XSUAA
 // login page instead of serving the app, in which case the Joule webclient bridge never injects.
-// These helpers let the bridge tell "slow but valid app" apart from "needs interactive login".
+// These helpers let the browser driver tell "slow but valid app" apart from "needs interactive login".
 
 /** Bounded probe for the webclient bridge: generous for a valid app, far below the 60 s action timeout. */
 const BRIDGE_PROBE_MS = 8000;
@@ -25,7 +25,7 @@ export const LOGIN_WAIT_MESSAGE =
     'there. The "start" step is waiting and will continue automatically once you are signed in.';
 
 /**
- * Reserved payload the bridge returns from a `start`/`restart` call when the
+ * Reserved payload the browser driver returns from a `start`/`restart` call when the
  * editor URL served a backend login page (CF XSUAA / ABAP reentrance) instead
  * of the app, so the webclient bridge never injected. It rides a successful
  * (`isSuccess: true`) envelope so `unwrap` does not throw — "needs login" is

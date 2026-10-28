@@ -1,5 +1,5 @@
-// Environment-variable configuration surface for the Playwright browser bridge.
-// Kept in one place so the knobs the bridge reads (headless mode, cross-restart
+// Environment-variable configuration surface for the Playwright browser driver.
+// Kept in one place so the knobs the driver reads (headless mode, cross-restart
 // session directory) are discoverable together rather than scattered.
 
 /**
