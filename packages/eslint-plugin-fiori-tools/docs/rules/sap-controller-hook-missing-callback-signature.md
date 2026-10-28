@@ -40,4 +40,4 @@ The following patterns are not considered warnings:
 
 ## Bug Report
 
-If you detect an issue with the check, please open a [GitHub issue](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).

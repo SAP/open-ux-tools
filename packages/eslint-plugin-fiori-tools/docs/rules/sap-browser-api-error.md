@@ -112,10 +112,6 @@ If the check produces a false positive, that is, you receive a warning but your 
 
 ```
 
-## Bug report
+## Bug Report
 
-In case you detect an issue with the check please open a Github issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
-
-## Further Reading
-
-[SAPUI5 Coding Guidelines](http://veui5infra.dhcp.wdf.sap.corp:8080/demokit/#docs/guide/030fcd14963048218488048f407f8f34.html)
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).

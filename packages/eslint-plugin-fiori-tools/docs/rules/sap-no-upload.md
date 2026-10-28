@@ -34,4 +34,4 @@ Upload controls pose security risks as they allow users to upload files directly
 
 ## Bug Report
 
-If you detect a false positive, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
