@@ -12,6 +12,7 @@ const { readJson } = require('../../../scripts/lib/read-json.cjs');
 const pluginRoot = path.join(__dirname, '..');
 const pluginPkgPath = path.join(pluginRoot, 'package.json');
 const claudePluginJsonPath = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
+const claudeMarketplaceJsonPath = path.join(pluginRoot, '.claude-plugin', 'marketplace.json');
 const awesomeCopilotPluginJsonPath = path.join(pluginRoot, '.github', 'plugin', 'plugin.json');
 
 function deepEqual(a, b) {
@@ -28,6 +29,7 @@ function deepEqual(a, b) {
 try {
     const pluginPkg = readJson(pluginPkgPath);
     const claudePluginJson = readJson(claudePluginJsonPath);
+    const claudeMarketplaceJson = fs.existsSync(claudeMarketplaceJsonPath) ? readJson(claudeMarketplaceJsonPath) : null;
     const awesomeCopilotPluginJson = readJson(awesomeCopilotPluginJsonPath);
 
     const { version: pluginVersion } = pluginPkg;
@@ -46,11 +48,16 @@ try {
         }
     }
 
-    if (claudePluginJson.version === pluginVersion && awesomeCopilotPluginJson.version === pluginVersion) {
+    const marketplaceEntry = claudeMarketplaceJson?.plugins?.find(p => p.name === claudePluginJson.name) ?? null;
+
+    if (
+        claudePluginJson.version === pluginVersion &&
+        awesomeCopilotPluginJson.version === pluginVersion &&
+        (!claudeMarketplaceJson || marketplaceEntry?.version === pluginVersion)
+    ) {
         console.log(`Plugin version unchanged (${pluginVersion}) — nothing to sync.`);
         process.exit(0);
     }
-
     // Validate both manifests are in sync before updating — catches manual drift.
     // Exclude the case where one manifest already matches the target version (valid intermediate state).
     if (
@@ -71,6 +78,15 @@ try {
 
     fs.writeFileSync(claudePluginJsonPath, JSON.stringify(claudePluginJson, null, 4) + '\n');
     console.log(`Updated .claude-plugin/plugin.json to version ${pluginVersion}`);
+
+    if (claudeMarketplaceJson) {
+        if (!marketplaceEntry) {
+            throw new Error(`marketplace.json has no entry named "${claudePluginJson.name}"`);
+        }
+        marketplaceEntry.version = pluginVersion;
+        fs.writeFileSync(claudeMarketplaceJsonPath, JSON.stringify(claudeMarketplaceJson, null, 2) + '\n');
+        console.log(`Updated .claude-plugin/marketplace.json entry "${claudePluginJson.name}" to version ${pluginVersion}`);
+    }
 
     fs.writeFileSync(awesomeCopilotPluginJsonPath, JSON.stringify(awesomeCopilotPluginJson, null, 4) + '\n');
     console.log(`Updated .github/plugin/plugin.json to version ${pluginVersion}`);
