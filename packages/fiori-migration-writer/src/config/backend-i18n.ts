@@ -2,6 +2,7 @@
  * Helper functions for extracting backend configuration and app title from i18n
  */
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { fileExists } from '../utils/index.js';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 
@@ -20,6 +21,7 @@ export interface BackendAndI18nConfigResult {
  * Extract backend configuration and app title from i18n properties
  * Combines backend settings from UI5 backend config with i18n app title extraction
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @param webappPath - Webapp path within the project
  * @param getFirstBackend - Function to get the first backend configuration
@@ -29,20 +31,44 @@ export interface BackendAndI18nConfigResult {
  * @param existingSapClient - Existing sapClient value
  * @returns Backend and i18n configuration result
  */
-export async function extractBackendAndI18nConfig(
-    projectRoot: string,
-    webappPath: string,
+/**
+ * Options for extractBackendAndI18nConfig
+ */
+export interface ExtractBackendAndI18nConfigOptions {
+    fs: Editor;
+    projectRoot: string;
+    webappPath: string;
     getFirstBackend: (projectRoot: string) => {
         destination?: string;
         scp?: boolean;
         url?: string;
         sapClient?: string;
-    },
-    existingDestination: string,
-    existingScp: boolean | undefined,
-    existingHostname: string,
-    existingSapClient: string
+    };
+    existingDestination: string;
+    existingScp: boolean | undefined;
+    existingHostname: string;
+    existingSapClient: string;
+}
+
+/**
+ * Extract backend configuration and app title from i18n.
+ *
+ * @param options - Backend/i18n extraction options
+ * @returns Backend and i18n configuration result
+ */
+export async function extractBackendAndI18nConfig(
+    options: ExtractBackendAndI18nConfigOptions
 ): Promise<BackendAndI18nConfigResult> {
+    const {
+        fs,
+        projectRoot,
+        webappPath,
+        getFirstBackend,
+        existingDestination,
+        existingScp,
+        existingHostname,
+        existingSapClient
+    } = options;
     // Get backend configuration
     const ui5Backend = getFirstBackend(projectRoot);
     const destination = ui5Backend?.destination ?? existingDestination;
@@ -53,7 +79,7 @@ export async function extractBackendAndI18nConfig(
     // Extract app title from i18n
     let appTitle = '';
     const i18Path = join(projectRoot, webappPath, 'i18n/i18n.properties');
-    if (await fileExists(i18Path)) {
+    if (fileExists(fs, i18Path)) {
         try {
             const i18nProperties = await getPropertiesI18nBundle(i18Path);
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

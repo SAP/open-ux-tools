@@ -1,5 +1,25 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[af39811](https://github.com/SAP/open-ux-tools/commit/af39811669fb24d1b52231faff96eb131c337c6f)]
+
+## 1.16.4
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
 ## 1.16.3
 
 ### Patch Changes
