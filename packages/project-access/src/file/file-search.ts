@@ -1,5 +1,5 @@
 import type { MemFsEditor } from 'mem-fs-editor';
-import { basename, dirname, extname, join, resolve, sep, posix } from 'node:path';
+import { basename, dirname, extname, join } from 'node:path';
 import type { FindError } from 'findit2';
 import find from 'findit2';
 import { fileExists } from './file-access.js';
@@ -32,17 +32,18 @@ function getMemFsChanges(
     const modified: string[] = [];
     const filteredChanges = Object.keys(changes).filter(
         (f) =>
-            f.startsWith(root.replaceAll(sep, posix.sep)) &&
+            !f.startsWith('..') &&
             (fileNames.includes(basename(f)) ||
                 extensionNames.includes(extname(f)) ||
                 (fileNames.length === 0 && extensionNames.length === 0))
     );
-    for (const file of filteredChanges) {
-        if (changes[file].state === 'deleted') {
-            deleted.push(join(file));
+    for (const relPath of filteredChanges) {
+        const absPath = join(root, relPath);
+        if (changes[relPath].state === 'deleted') {
+            deleted.push(absPath);
         }
-        if (changes[file].state === 'modified') {
-            modified.push(join(file));
+        if (changes[relPath].state === 'modified') {
+            modified.push(absPath);
         }
     }
     return { deleted, modified };
@@ -72,9 +73,8 @@ function getFindResultOnEnd(
     let fatalErrors = errors;
 
     if (memFs) {
-        const rawDump = memFs.dump();
-        const absDump = Object.fromEntries(Object.entries(rawDump).map(([relPath, val]) => [resolve(relPath), val]));
-        const { modified, deleted } = getMemFsChanges(absDump, fileNames, extensionNames, root);
+        const rootDump = memFs.dump(root);
+        const { modified, deleted } = getMemFsChanges(rootDump, fileNames, extensionNames, root);
         const merged = Array.from(new Set([...results, ...modified]));
         searchResult = merged.filter((f) => !deleted.includes(f));
         // Filter out errors that are of type ENOENT and path is part of memfs changes, which can happen for folders that contain memfs files only.
