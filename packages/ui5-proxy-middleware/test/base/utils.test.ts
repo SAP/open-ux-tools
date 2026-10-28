@@ -19,7 +19,7 @@ import type { ProxyConfig } from '../../src/base/types.js';
 import type { IncomingMessage } from 'node:http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import dotenv from 'dotenv';
 import path from 'node:path';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler, Request, Response, NextFunction } from 'express';
 
