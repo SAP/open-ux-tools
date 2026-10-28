@@ -1,5 +1,45 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+
+## 1.1.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.1.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+
+## 1.1.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Bug Fixes
+
+- Cap generated managed service-names at the Cloud Foundry 50 character limit so long MTA IDs no longer produce service instance names that get silently truncated at deploy time, breaking destination-content ServiceInstanceName references [[4342a95](https://github.com/SAP/open-ux-tools/commit/4342a95613263821ed938f82b6ac9f59a4cc379a)]
+
 ## 1.1.7
 
 ### Patch Changes

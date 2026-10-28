@@ -1,5 +1,6 @@
 import type { IdGeneratorFunction } from '../common/file.js';
 import type { CustomElement, CustomFragment, EventHandler, FragmentContentData, Position } from '../common/types.js';
+import type { Node as XmldomNode, Element as XmldomElement } from '@xmldom/xmldom';
 
 export const PageTemplateType = {
     Full: 'full',
@@ -434,6 +435,13 @@ export interface Page extends BuildingBlock {
      * When templateType is 'full', each entry is written as the inner XML of the corresponding aggregation.
      */
     aggregations?: Partial<Record<PageAggregationName, string>>;
+
+    /**
+     * Collision-safe id of the IconTabBar that acts as the page's sticky subheader.
+     * Set internally for the full template so the Page's stickySubheaderProvider and the
+     * generated IconTabBar share the same id. Not part of the public input.
+     */
+    stickySubheaderId?: string;
 }
 
 export const PAGE_TEMPLATE_COMMENT = 'This is a sample template, event handlers should be added for implementation';
@@ -443,7 +451,7 @@ export const MACROS_NAMESPACE_URI = 'sap.fe.macros';
  * A group of XML nodes representing one Page aggregation element and its preceding sibling comments.
  * Used when re-ordering aggregation children under a macros:Page element.
  */
-export type XmlAggregationGroup = { comments: Node[]; element: Element; originalIndex: number };
+export type XmlAggregationGroup = { comments: XmldomNode[]; element: XmldomElement; originalIndex: number };
 
 /**
  * Configuration for appending a named aggregation to an existing building block element in a view XML file.

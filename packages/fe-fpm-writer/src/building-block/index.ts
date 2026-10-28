@@ -3,7 +3,13 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { coerce, lt } from 'semver';
 import { join, parse, relative } from 'node:path';
-import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
+import {
+    DOMParser,
+    XMLSerializer,
+    type Document as XmldomDocument,
+    type Node as XmldomNode,
+    type Element as XmldomElement
+} from '@xmldom/xmldom';
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
 import type { Editor } from 'mem-fs-editor';
@@ -110,23 +116,37 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         hasAggregation,
         aggregationNamespace
     };
+
+    const fullPageTemplate = isFullPageTemplate(buildingBlockData);
+    const pageAggregationNames = getPageAggregationNames(buildingBlockData);
+
+    // The full page template renders a default IconTabBar that acts as the page's sticky subheader
+    // (removing the empty gap between header and tab bar). Generate its id once so the Page's
+    // stickySubheaderProvider and the IconTabBar share the same collision-safe id.
+    const stickySubheaderId = fullPageTemplate ? fnGenerateId('stickySubheaderBar') : undefined;
+
     const templateDocument = getTemplateDocument(
-        { ...processedBuildingBlockData, generateId: fnGenerateId },
+        { ...processedBuildingBlockData, stickySubheaderId, generateId: fnGenerateId },
         xmlDocument,
         fs,
         manifest,
         templateConfig
     );
 
-    const fullPageTemplate = isFullPageTemplate(buildingBlockData);
-    const pageAggregationNames = getPageAggregationNames(buildingBlockData);
-
     if (fullPageTemplate) {
         validateFullPageTemplateVersion(manifest);
     }
 
     if (pageAggregationNames) {
-        appendPageAggregations(fs, xmlDocument, templateDocument, fnGenerateId, pageAggregationNames, fullPageTemplate);
+        appendPageAggregations(
+            fs,
+            xmlDocument,
+            templateDocument,
+            fnGenerateId,
+            pageAggregationNames,
+            fullPageTemplate,
+            stickySubheaderId
+        );
     }
 
     if (
@@ -247,7 +267,7 @@ function getMetaPath(
  */
 function getTemplateContent<T extends BuildingBlock>(
     buildingBlockData: T,
-    viewDocument: Document | undefined,
+    viewDocument: XmldomDocument | undefined,
     manifest: Manifest | undefined,
     fs: Editor,
     usePlaceholders?: boolean,
@@ -325,11 +345,11 @@ export async function getManifestContent(fs: Editor, library = 'sap.fe.macros'):
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
-    viewDocument: Document | undefined,
+    viewDocument: XmldomDocument | undefined,
     fs: Editor,
     manifest: Manifest | undefined,
     templateConfig: TemplateConfig
-): Document {
+): XmldomDocument {
     const templateContent = getTemplateContent(
         buildingBlockData,
         viewDocument,
@@ -340,7 +360,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     );
 
     // Parse the rendered template content
-    let templateDocument: Document;
+    let templateDocument: XmldomDocument;
     try {
         templateDocument = new DOMParser(getDOMParserOptions(TEMPLATE_NAMESPACES)).parseFromString(
             templateContent,
@@ -370,8 +390,8 @@ function updateViewFile(
     basePath: string,
     viewPath: string,
     aggregationPath: string,
-    viewDocument: Document,
-    templateDocument: Document,
+    viewDocument: XmldomDocument,
+    templateDocument: XmldomDocument,
     fs: Editor,
     replace: boolean = false
 ): Editor {
@@ -379,7 +399,7 @@ function updateViewFile(
     if (!root) {
         throw new Error(`Unable to read namespace map from view ${viewPath}.`);
     }
-    const nsMap = (root as any)?._nsMap ?? {};
+    const nsMap: Record<string, string> = (root as XmldomElement & { _nsMap?: Record<string, string> })?._nsMap ?? {};
     const xpathSelect = xpath.useNamespaces(nsMap);
 
     // XPath 1.0 does not support default namespaces: unprefixed names match only no-namespace
@@ -387,10 +407,14 @@ function updateViewFile(
     const resolvedPath = resolveAggregationPath(aggregationPath);
 
     // Find target aggregated element and append template as child
-    const targetNodes = xpathSelect(resolvedPath, viewDocument);
+    const targetNodes = xpathSelect(resolvedPath, viewDocument as unknown as Node);
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
-        const targetNode = targetNodes[0] as Node;
-        const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
+        const targetNode = targetNodes[0] as unknown as XmldomNode;
+        const docElement = templateDocument.documentElement;
+        if (!docElement) {
+            throw new Error(`Template document has no root element.`);
+        }
+        const sourceNode = viewDocument.importNode(docElement, true);
         if (replace) {
             targetNode.parentNode?.replaceChild(sourceNode, targetNode);
         } else {
@@ -447,8 +471,9 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = viewOrFragmentPath ? getUI5XmlDocument(basePath, viewOrFragmentPath, fs) : undefined;
     const { content: manifest, path: manifestPath } = await getManifest(basePath, fs, false);
     const fnGenerateId = buildingBlockData.generateId ?? (await createIdGenerator({ basePath, fsEditor: fs }));
+    const stickySubheaderId = isFullPageTemplate(buildingBlockData) ? fnGenerateId('stickySubheaderBar') : undefined;
     const content = getTemplateContent(
-        { ...buildingBlockData, generateId: fnGenerateId },
+        { ...buildingBlockData, stickySubheaderId, generateId: fnGenerateId },
         xmlDocument,
         manifest,
         fs,
@@ -478,7 +503,9 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
         );
         const snippetDoc = new DOMParser(
             getDOMParserOptions(TEMPLATE_NAMESPACES, (level, message) => {
-                throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
+                if (level !== 'warning') {
+                    throw new Error(`Unable to parse Page building block snippet. Details: [${level}] - ${message}`);
+                }
             })
         ).parseFromString(snippetContent, 'text/xml');
         appendPageAggregations(
@@ -487,7 +514,8 @@ export async function getSerializedFileContent<T extends BuildingBlock>(
             snippetDoc,
             fnGenerateId,
             pageAggNames,
-            isFullPageTemplate(buildingBlockData)
+            isFullPageTemplate(buildingBlockData),
+            stickySubheaderId
         );
         const resultNode = snippetDoc.documentElement;
         viewOrFragmentContent = resultNode ? format(new XMLSerializer().serializeToString(resultNode)) : content;

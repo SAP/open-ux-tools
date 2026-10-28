@@ -1880,7 +1880,7 @@ exports[`Building Blocks generate Page building block with basic template genera
 
 exports[`Building Blocks generate Page building block with full template inserts all 7 aggregations: generate-page-block-full 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
-    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
+    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\" stickySubheaderProvider=\\"stickySubheaderBar\\">
         <!--This is a sample template, event handlers should be added for implementation-->
         <macros:breadcrumbs>
             <!-- Breadcrumbs aggregation -->
@@ -1911,7 +1911,7 @@ exports[`Building Blocks generate Page building block with full template inserts
         </macros:headerContent>
         <macros:items>
             <!-- Main content -->
-            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+            <IconTabBar id=\\"stickySubheaderBar\\" class=\\"sapUiResponsiveContentPadding\\">
                 <items>
                     <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
                     </IconTabFilter>
@@ -1932,7 +1932,7 @@ exports[`Building Blocks generate Page building block with full template inserts
 
 exports[`Building Blocks generate Page building block with full template uses default content with IDs: generate-page-block-full-defaults 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
-    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\">
+    <macros:Page id=\\"testPage\\" title=\\"Test Page\\" showFooter=\\"true\\" stickySubheaderProvider=\\"stickySubheaderBar\\">
         <!--This is a sample template, event handlers should be added for implementation-->
         <macros:breadcrumbs>
             <!-- Breadcrumbs aggregation -->
@@ -1963,7 +1963,7 @@ exports[`Building Blocks generate Page building block with full template uses de
         </macros:headerContent>
         <macros:items>
             <!-- Main content -->
-            <IconTabBar id=\\"iconTabBaritems\\" class=\\"sapUiResponsiveContentPadding\\">
+            <IconTabBar id=\\"stickySubheaderBar\\" class=\\"sapUiResponsiveContentPadding\\">
                 <items>
                     <IconTabFilter id=\\"iconTabFilteritems\\" text=\\"Tab 1\\">
                     </IconTabFilter>

@@ -1,5 +1,37 @@
 # @sap-ux/ui-components
 
+## 3.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Prevent the translation input callout from restoring focus to its button when a new i18n entry is created. Restoring focus pulled focus back into the host (e.g. a VS Code webview) and dismissed any host dialog opened in response, such as a QuickPick for selecting the target i18n file. [[b97d413](https://github.com/SAP/open-ux-tools/commit/b97d41343f85755ae21b387f12109fa612192e08)]
+
+## 3.0.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Dependency Updates
+
+- Upgrade react-movable 2.5.4 → 3.4.1 [[5545002](https://github.com/SAP/open-ux-tools/commit/5545002e520272845923f57b7ae9a53f77acd9f3)]
+
+## 3.0.16
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
 ## 3.0.15
 
 ## 3.0.14

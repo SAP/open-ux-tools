@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "1.15.6",
+    "version": "1.15.16",
     "mcpName": "io.github.SAP/fiori-mcp-server",
     "keywords": [
         "SAP Fiori tools",
@@ -36,11 +36,7 @@
         "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx -y @modelcontextprotocol/inspector@latest node dist/index.js",
         "inspector-ts": "npx -y @modelcontextprotocol/inspector@latest ts-node -T src/index.ts --log-level=debug",
-        "start": "npx -y supergateway --port 9881 --sessionTimeout 300000 --stdio \"node ./dist/index.js\"",
-        "view:integration": "promptfoo view -y",
-        "test:integration:once": "promptfoo eval --config test/integration/scenarios/promptfooconfig.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
-        "test:integration:dev": "promptfoo eval --config test/integration/scenarios/test-dev.yaml --max-concurrency 1 --repeat 1 --output reports/integration.txt",
-        "test:integration:multiple": "npm run test:promptfoo -- --repeat 5"
+        "start": "npx -y supergateway --port 9881 --sessionTimeout 300000 --stdio \"node ./dist/index.js\""
     },
     "files": [
         "LICENSE",
@@ -58,7 +54,7 @@
         "@jest/globals": "30.4.1",
         "@langchain/core": "1.2.8",
         "@langchain/mcp-adapters": "1.1.3",
-        "@modelcontextprotocol/sdk": "1.30.0",
+        "@modelcontextprotocol/sdk": "1.32.1",
         "@sap-ai-sdk/foundation-models": "2.14.0",
         "@sap-ai-sdk/langchain": "2.14.0",
         "@sap-ux/adp-tooling": "workspace:*",
@@ -83,6 +79,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@sap/ux-specification": "1.144.5",
         "@types/json-schema": "7.0.15",
@@ -94,11 +91,10 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "nano-spawn": "2.1.0",
-        "npm-run-all2": "9.0.2",
+        "npm-run-all2": "9.0.3",
         "os-name": "4.0.1",
         "playwright-core": "1.63.0",
         "prettify-xml": "1.2.0",
-        "promptfoo": "0.122.0",
         "ts-node": "10.9.2",
         "xml-formatter": "3.7.0",
         "zod": "4.4.3"

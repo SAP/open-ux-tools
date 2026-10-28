@@ -20,14 +20,18 @@ import {
     safeGetSemanticKeyProperties,
     getCustomFilterFieldProperties,
     getTableIdentifiers,
+    isColumnPersonalizationEnabled,
+    isViewColumnPersonalizationEnabled,
+    getViewTableType,
     getListReportViews,
     getListReportTabs,
     getPropertyLabelFromMetadata,
     isHiddenFilter,
-    hasTextArrangement,
-    isHiddenProperty,
     getFilterFieldItems,
-    extractCustomToolBarActions
+    extractCustomToolBarActions,
+    extractTextAnnotationCandidatesFromMetadata,
+    getDefaultSortOrder,
+    getDefaultFilterValues
 } from '../../../src/utils/listReportUtils.js';
 import type { ButtonState, FEV4ManifestTarget } from '../../../src/types.js';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
@@ -2264,21 +2268,117 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             pageType: 'ListReport'
         }) as unknown as PageWithModelV4;
 
-    test('includes the column when the merged metadata carries a TextArrangement', () => {
+    test('emits the code column and its text target when the merged metadata carries a TextArrangement (TextLast)', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
             localAnnotationXml
         ]);
-        expect(result.textAnnotationColumns).toEqual([{ textProperty: 'CustomerName' }]);
+        // The code column (CustomerID) and its text target (CustomerName) are both asserted — the latest
+        // UI5 keeps the code column separately sortable even with a TextArrangement present.
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
     });
 
-    test('excludes the column when no TextArrangement is present in metadata or annotations', () => {
+    // TextOnly arrangement: the column renders only the text value. The code column and its text target
+    // are both still asserted (the latest UI5 keeps the code column separately sortable).
+    const textOnlyAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <Annotations Target="TestService.TravelType/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
+                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextOnly"/>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+    test('emits the code column and its text target when the arrangement is TextOnly', () => {
+        const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml, undefined, undefined, [
+            textOnlyAnnotationXml
+        ]);
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+    });
+
+    test('emits the code column for a non-hidden text target with no TextArrangement (CompanyCode regression)', () => {
+        // Regression (fin.test.v4.lr2 view 6): CompanyCode carries a Common.Text (CompanyCodeName) with no
+        // explicit UI.TextArrangement. The code column and its text target are both asserted (the latest
+        // UI5 keeps the code column separately sortable). Mirrors that shape with CustomerID / CustomerName.
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataXml);
-        expect(result.textAnnotationColumns).toEqual([]);
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
     });
 
     test('returns an empty array when there is no metadata', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger);
         expect(result.textAnnotationColumns).toEqual([]);
+    });
+
+    test('emits the code column and the navigation-path text target (Customer regression)', () => {
+        // Regression (fin.test.v4.lr2): the "Customer" column carries a Common.Text. The code column
+        // (Customer) and its text target "_CustomerDetail/CustomerName" are both asserted. Though reached
+        // through an association, the text target is a valid sort name and is tested in both the sort order
+        // and the column-adaptation dialog (the dialog assertion is expected to fail until the service is
+        // adjusted to expose the navigation-path column, per the LoB guidance).
+        const page = {
+            model: {
+                root: {
+                    aggregations: {
+                        table: {
+                            aggregations: {
+                                columns: {
+                                    aggregations: {
+                                        'DataField::Customer': {
+                                            schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                                            properties: {
+                                                text: {
+                                                    artifactType: 'Annotation',
+                                                    value: '_CustomerDetail/CustomerName'
+                                                }
+                                            }
+                                        } as unknown as TreeAggregation
+                                    }
+                                } as unknown as TreeAggregation
+                            }
+                        } as unknown as TreeAggregation
+                    }
+                } as unknown as TreeAggregation,
+                name: 'test',
+                schema: {}
+            },
+            entitySet: 'Travel',
+            pageType: 'ListReport'
+        } as unknown as PageWithModelV4;
+
+        const result = getListReportFeatures(page, mockLogger, metadataXml);
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
     });
 
     // Regression: project5 shape — the TextArrangement lives in the service metadata (not the local
@@ -2338,12 +2438,21 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
             undefined,
             [unrelatedLocalAnnotationXml]
         );
-        expect(result.textAnnotationColumns).toEqual([{ textProperty: 'CustomerName' }]);
+        // TextLast is preserved through the merge, so the code column and its text target are both emitted
+        // (regression was: the arrangement being lost, which previously suppressed the text-target test).
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
     });
 
-    // Regression (fin.test.v4.lr1): the column's bound property has a TextArrangement, but the text
-    // (sort target) property carries UI.Hidden and so is not a sortable column — must be excluded, or
-    // the generated sort test fails with "can not find sort item".
+    // Regression (fin.test.v4.lr1): the text (sort target) property carries UI.Hidden. The sort test is
+    // still emitted regardless — a hidden sort target is treated as a likely annotation mistake that the
+    // (typically failing) generated test should surface to the developer, not silently suppress.
     const metadataWithHiddenTextProperty = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
     <edmx:DataServices>
@@ -2369,9 +2478,17 @@ describe('getListReportFeatures() — textAnnotationColumns extraction', () => {
     </edmx:DataServices>
 </edmx:Edmx>`;
 
-    test('excludes the column when its text (sort target) property is hidden', () => {
+    test('still emits the column when its text (sort target) property is hidden', () => {
         const result = getListReportFeatures(buildPageModel(), mockLogger, metadataWithHiddenTextProperty);
-        expect(result.textAnnotationColumns).toEqual([]);
+        // The code column and its (hidden) text target are both still emitted.
+        expect(result.textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
     });
 });
 
@@ -2420,6 +2537,310 @@ describe('Test getCustomFilterFieldProperties()', () => {
         expect(result.has('StandardField')).toBe(false);
         expect(result.has('EmptyTemplate')).toBe(false);
         expect(result.size).toBe(1);
+    });
+});
+
+describe('Test isColumnPersonalizationEnabled()', () => {
+    const makeManifest = (personalization?: boolean | Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        '@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: personalization === undefined ? {} : { personalization }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('enabled when manifest is undefined', () => {
+        expect(isColumnPersonalizationEnabled(undefined, 'MyLR')).toBe(true);
+    });
+
+    test('enabled when target key is undefined', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(false), undefined)).toBe(true);
+    });
+
+    test('enabled when controlConfiguration/tableSettings is absent', () => {
+        const manifest = { 'sap.ui5': { routing: { targets: { MyLR: {} } } } } as unknown as Manifest;
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(true);
+    });
+
+    test('enabled when personalization is absent (default)', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(), 'MyLR')).toBe(true);
+    });
+
+    test('enabled when personalization is true', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(true), 'MyLR')).toBe(true);
+    });
+
+    test('disabled when personalization is false', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest(false), 'MyLR')).toBe(false);
+    });
+
+    test('enabled when personalization object sets column: true', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest({ sort: true, column: true }), 'MyLR')).toBe(true);
+    });
+
+    test('disabled when personalization object sets column: false', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest({ sort: true, column: false }), 'MyLR')).toBe(false);
+    });
+
+    test('disabled when personalization object omits column', () => {
+        expect(isColumnPersonalizationEnabled(makeManifest({ sort: true }), 'MyLR')).toBe(false);
+    });
+
+    const makeManifestWithKey = (
+        controlConfigurationKey: string,
+        personalization?: boolean | Record<string, unknown>
+    ): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        [controlConfigurationKey]: {
+                                            tableSettings: personalization === undefined ? {} : { personalization }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    test('resolves qualified LineItem key (@...LineItem#Main) when personalization is false', () => {
+        const manifest = makeManifestWithKey('@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(false);
+    });
+
+    test('resolves context-prefixed LineItem key when personalization is false', () => {
+        const manifest = makeManifestWithKey('/Travel/@com.sap.vocabularies.UI.v1.LineItem', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('resolves context-prefixed qualified LineItem key when personalization is false', () => {
+        const manifest = makeManifestWithKey('/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('resolves single qualified key without context path (single-table LR)', () => {
+        const manifest = makeManifestWithKey('@com.sap.vocabularies.UI.v1.LineItem#Main', false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', undefined)).toBe(false);
+    });
+
+    test('does not combine settings from unrelated tables (multi-table ambiguity → enabled)', () => {
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    controlConfiguration: {
+                                        '/Travel/@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: { personalization: false }
+                                        },
+                                        '/Booking/@com.sap.vocabularies.UI.v1.LineItem': {
+                                            tableSettings: { personalization: true }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+        // No contextPath → ambiguous, must not pick either table's setting
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR')).toBe(true);
+        // With contextPath → resolves the matching table only
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Booking')).toBe(true);
+    });
+
+    const makeManifestWithKeys = (entries: Record<string, boolean | Record<string, unknown>>): Manifest => {
+        const controlConfiguration: Record<string, unknown> = {};
+        for (const [key, personalization] of Object.entries(entries)) {
+            controlConfiguration[key] = { tableSettings: { personalization } };
+        }
+        return {
+            'sap.ui5': { routing: { targets: { MyLR: { options: { settings: { controlConfiguration } } } } } }
+        } as unknown as Manifest;
+    };
+
+    test('does not guess among conflicting qualifiers under one context (disabled first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Alt': true
+        });
+        // Two qualified keys under the same context path → default table's qualifier is undetermined.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(true);
+    });
+
+    test('does not guess among conflicting qualifiers under one context (enabled first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Alt': true,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false
+        });
+        // Key order must not change the outcome: still undetermined → enabled.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(true);
+    });
+
+    test('does not mask a disabled default table with an unrelated bare entry (bare first)', () => {
+        const manifest = makeManifestWithKeys({
+            '@com.sap.vocabularies.UI.v1.LineItem': true,
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false
+        });
+        // The bare entry belongs to another table; the context-scoped qualified key is the default
+        // table and disables personalization.
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('does not mask a disabled default table with an unrelated bare entry (qualified first)', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem#Main': false,
+            '@com.sap.vocabularies.UI.v1.LineItem': true
+        });
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+
+    test('prefers the context-prefixed bare key over an unrelated qualified key', () => {
+        const manifest = makeManifestWithKeys({
+            '/Travel/@com.sap.vocabularies.UI.v1.LineItem': false,
+            '/Booking/@com.sap.vocabularies.UI.v1.LineItem#Main': true
+        });
+        expect(isColumnPersonalizationEnabled(manifest, 'MyLR', '/Travel')).toBe(false);
+    });
+});
+
+describe('Test isViewColumnPersonalizationEnabled()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+
+    test('returns true when manifest or target key is missing', () => {
+        expect(isViewColumnPersonalizationEnabled(undefined, 'MyLR', 'x#VAR1')).toBe(true);
+        expect(isViewColumnPersonalizationEnabled(makeManifest({}), undefined, 'x#VAR1')).toBe(true);
+    });
+
+    test('matches the qualified LineItem key for the view annotationPath qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: true } },
+            [`${lineItem}#VAR2`]: { tableSettings: { personalization: { column: false } } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(
+                manifest,
+                'MyLR',
+                'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2'
+            )
+        ).toBe(false);
+    });
+
+    test('falls back to the unqualified LineItem key when no qualified key exists', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: { column: false } } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1')
+        ).toBe(false);
+    });
+
+    test('treats a null personalization as enabled (Fiori elements default)', () => {
+        const manifest = makeManifest({
+            [`${lineItem}#VAR3`]: { tableSettings: { personalization: null } }
+        });
+        expect(
+            isViewColumnPersonalizationEnabled(
+                manifest,
+                'MyLR',
+                'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR3'
+            )
+        ).toBe(true);
+    });
+
+    test('returns true when controlConfiguration is absent', () => {
+        const manifest = {
+            'sap.ui5': { routing: { targets: { MyLR: { options: { settings: {} } } } } }
+        } as unknown as Manifest;
+        expect(isViewColumnPersonalizationEnabled(manifest, 'MyLR', 'x#VAR1')).toBe(true);
+    });
+
+    test('uses the unqualified key when the view annotationPath has no qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: false } }
+        });
+        expect(isViewColumnPersonalizationEnabled(manifest, 'MyLR', undefined)).toBe(false);
+    });
+});
+
+describe('Test getViewTableType()', () => {
+    const makeManifest = (controlConfiguration: Record<string, unknown>): Manifest =>
+        ({
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: { options: { settings: { controlConfiguration } } }
+                    }
+                }
+            }
+        }) as unknown as Manifest;
+
+    const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+
+    test('returns undefined when manifest or target key is missing', () => {
+        expect(getViewTableType(undefined, 'MyLR', 'x#VAR1')).toBeUndefined();
+        expect(getViewTableType(makeManifest({}), undefined, 'x#VAR1')).toBeUndefined();
+    });
+
+    test('resolves the table type from the qualified LineItem key for the view qualifier', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { type: 'GridTable' } },
+            [`${lineItem}#VAR2`]: { tableSettings: { type: 'AnalyticalTable' } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2')).toBe(
+            'AnalyticalTable'
+        );
+    });
+
+    test('falls back to the unqualified LineItem key when no qualified key exists', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { type: 'GridTable' } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1')).toBe(
+            'GridTable'
+        );
+    });
+
+    test('returns undefined when no table type is configured', () => {
+        const manifest = makeManifest({
+            [lineItem]: { tableSettings: { personalization: true } }
+        });
+        expect(getViewTableType(manifest, 'MyLR', undefined)).toBeUndefined();
     });
 });
 
@@ -2592,115 +3013,6 @@ describe('Test getPropertyLabelFromMetadata() and isHiddenFilter()', () => {
     test('isHiddenFilter returns false for an unknown entity set or property', () => {
         expect(isHiddenFilter(metadata, 'Unknown', 'Secret')).toBe(false);
         expect(isHiddenFilter(metadata, 'Items', 'Unknown')).toBe(false);
-    });
-});
-
-describe('Test hasTextArrangement()', () => {
-    // Base $metadata: CustomerID carries a Common.Text pointing at CustomerName, but NO TextArrangement.
-    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TravelType">
-                <Key><PropertyRef Name="TravelID"/></Key>
-                <Property Name="TravelID" Type="Edm.String"/>
-                <Property Name="CustomerID" Type="Edm.String"/>
-                <Property Name="CustomerName" Type="Edm.String"/>
-                <Property Name="Plain" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
-            </EntityContainer>
-            <Annotations Target="TestService.TravelType/CustomerID">
-                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    // Local annotation file: adds the TextArrangement nested on the existing Common.Text of CustomerID.
-    const localAnnotationXml = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:Reference Uri="/sap/opu/odata4/metadata"><edmx:Include Namespace="TestService"/></edmx:Reference>
-    <edmx:DataServices>
-        <Schema Namespace="local" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <Annotations Target="TestService.TravelType/CustomerID">
-                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName">
-                    <Annotation Term="com.sap.vocabularies.UI.v1.TextArrangement" EnumMember="com.sap.vocabularies.UI.v1.TextArrangementType/TextLast"/>
-                </Annotation>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    test('returns false when $metadata has no TextArrangement annotation', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(hasTextArrangement(metadata, 'Travel', 'CustomerID')).toBe(false);
-    });
-
-    test('returns true once the local annotation carrying TextArrangement is merged in', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, 'Travel', 'CustomerID')).toBe(true);
-    });
-
-    test('returns false for a property without a Text annotation', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, 'Travel', 'Plain')).toBe(false);
-    });
-
-    test('returns false when the entity set name is undefined', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, undefined, 'CustomerID')).toBe(false);
-    });
-
-    test('returns false for an unknown entity set or property', () => {
-        const merged = convert(merge(parse(metadataXml), parse(localAnnotationXml)));
-        expect(hasTextArrangement(merged, 'Unknown', 'CustomerID')).toBe(false);
-        expect(hasTextArrangement(merged, 'Travel', 'Unknown')).toBe(false);
-    });
-});
-
-describe('Test isHiddenProperty()', () => {
-    // TravelType/HiddenName carries UI.Hidden; VisibleName does not.
-    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
-    <edmx:DataServices>
-        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-            <EntityType Name="TravelType">
-                <Key><PropertyRef Name="TravelID"/></Key>
-                <Property Name="TravelID" Type="Edm.String"/>
-                <Property Name="HiddenName" Type="Edm.String"/>
-                <Property Name="VisibleName" Type="Edm.String"/>
-            </EntityType>
-            <EntityContainer Name="EntityContainer">
-                <EntitySet Name="Travel" EntityType="TestService.TravelType"/>
-            </EntityContainer>
-            <Annotations Target="TestService.TravelType/HiddenName">
-                <Annotation Term="com.sap.vocabularies.UI.v1.Hidden"/>
-            </Annotations>
-        </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`;
-
-    test('returns true for a property carrying UI.Hidden', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Travel', 'HiddenName')).toBe(true);
-    });
-
-    test('returns false for a property without UI.Hidden', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Travel', 'VisibleName')).toBe(false);
-    });
-
-    test('returns false when the entity set name is undefined', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, undefined, 'HiddenName')).toBe(false);
-    });
-
-    test('returns false for an unknown entity set or property', () => {
-        const metadata = convert(parse(metadataXml));
-        expect(isHiddenProperty(metadata, 'Unknown', 'HiddenName')).toBe(false);
-        expect(isHiddenProperty(metadata, 'Travel', 'Unknown')).toBe(false);
     });
 });
 
@@ -3173,5 +3485,753 @@ describe('getListReportTabs()', () => {
         const manifest = makeManifest([{ key: '1' }, { key: '2' }, { key: '9' }]);
 
         expect(getListReportTabs(page, undefined, manifest).map((tab) => tab.key)).toEqual(['1', '2']);
+    });
+
+    test('populates per-tab textAnnotationColumns from each view table', () => {
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CustomerID" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CustomerID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::CustomerID': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'CustomerID' }] },
+                    properties: { text: { artifactType: 'Annotation', value: 'CustomerName' } }
+                }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        expect(tabs[0].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CustomerID',
+                textProperty: 'CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+        expect(tabs[1].textAnnotationColumns).toEqual([]);
+    });
+
+    test('falls back to metadata Common.Text for views whose spec model omits properties.text', () => {
+        // Reproduces the multi-tab bug: ux-specification only resolves `properties.text` on the first
+        // view's columns. View 2 here carries the same bound column but no `properties.text`, so the
+        // text target must be sourced from the shared entity type's Common.Text metadata instead.
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const page = makePage({
+            // View 1: columns carry resolved properties.text (as ux-specification populates for the primary view).
+            '1': makeViewNode({
+                'DataField::CompanyCode': {
+                    description: 'Company Code',
+                    schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] },
+                    properties: { text: { artifactType: 'Annotation', value: 'CompanyCode_Text' } }
+                },
+                'DataField::Customer': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                    properties: { text: { artifactType: 'Annotation', value: '_CustomerDetail/CustomerName' } }
+                }
+            }),
+            // View 2: same bound columns but NO properties.text (ux-specification leaves secondary views empty).
+            '2': makeViewNode({
+                'DataField::CompanyCode': {
+                    description: 'Company Code',
+                    schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] }
+                },
+                'DataField::Customer': {
+                    description: 'Customer',
+                    schema: { keys: [{ name: 'Value', value: 'Customer' }] }
+                }
+            })
+        });
+        const manifest = makeManifest([{ key: '1' }, { key: '2' }]);
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        const expected = [
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ];
+        // View 1 (spec-model path) and view 2 (metadata fallback) now both emit the same tests.
+        expect(tabs[0].textAnnotationColumns).toEqual(expected);
+        expect(tabs[1].textAnnotationColumns).toEqual(expected);
+    });
+
+    test('marks nav-path text target as not sortable for an AnalyticalTable view only', () => {
+        // An AnalyticalTable cannot sort on a navigation-property path (only properties of the
+        // aggregated entity are sortable). View 2 is configured as an AnalyticalTable via its
+        // LineItem#VAR2 controlConfiguration, so its nav-path target must get textPropertyNotSortable:
+        // true, while view 1 (default GridTable) keeps it sortable.
+        const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="CustomerName" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+        const columns = {
+            'DataField::CompanyCode': {
+                description: 'Company Code',
+                schema: { keys: [{ name: 'Value', value: 'CompanyCode' }] },
+                properties: { text: { artifactType: 'Annotation', value: 'CompanyCode_Text' } }
+            },
+            'DataField::Customer': {
+                description: 'Customer',
+                schema: { keys: [{ name: 'Value', value: 'Customer' }] },
+                properties: { text: { artifactType: 'Annotation', value: '_CustomerDetail/CustomerName' } }
+            }
+        };
+        const page = makePage({ '1': makeViewNode(columns), '2': makeViewNode(columns) });
+        const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+        // Manifest carries both the per-view paths (view 2 points at SPV#VAR2) and the
+        // controlConfiguration where LineItem#VAR2 renders an AnalyticalTable.
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [
+                                            { key: '1' },
+                                            { key: '2', annotationPath: '@…SelectionPresentationVariant#VAR2' }
+                                        ]
+                                    },
+                                    controlConfiguration: {
+                                        [lineItem]: { tableSettings: { type: 'GridTable' } },
+                                        [`${lineItem}#VAR2`]: { tableSettings: { type: 'AnalyticalTable' } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        const tabs = getListReportTabs(page, convert(parse(metadataXml)), manifest);
+
+        // View 1 (default GridTable): nav-path target remains sortable.
+        expect(tabs[0].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            }
+        ]);
+        // View 2 (AnalyticalTable): nav-path target is skipped in the sort test.
+        expect(tabs[1].textAnnotationColumns).toEqual([
+            {
+                columnProperty: 'CompanyCode',
+                textProperty: 'CompanyCode_Text',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: false
+            },
+            {
+                columnProperty: 'Customer',
+                textProperty: '_CustomerDetail/CustomerName',
+                skipTextPropertyTest: false,
+                textPropertyNotSortable: true
+            }
+        ]);
+    });
+
+    test('resolves columnPersonalizationSupported per view from each view annotationPath', () => {
+        const page = makePage({
+            '1': makeViewNode({
+                'DataField::A': { description: 'A', schema: { keys: [{ name: 'Value', value: 'A' }] } }
+            }),
+            '2': makeViewNode({
+                'DataField::B': { description: 'B', schema: { keys: [{ name: 'Value', value: 'B' }] } }
+            })
+        });
+        const lineItem = '@com.sap.vocabularies.UI.v1.LineItem';
+        const manifest = {
+            'sap.ui5': {
+                routing: {
+                    targets: {
+                        MyLR: {
+                            options: {
+                                settings: {
+                                    views: {
+                                        paths: [
+                                            {
+                                                key: '1',
+                                                annotationPath: 'com.sap.vocabularies.UI.v1.SelectionVariant#VAR1'
+                                            },
+                                            {
+                                                key: '2',
+                                                annotationPath:
+                                                    'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#VAR2'
+                                            }
+                                        ]
+                                    },
+                                    controlConfiguration: {
+                                        [lineItem]: { tableSettings: { personalization: true } },
+                                        [`${lineItem}#VAR2`]: { tableSettings: { personalization: { column: false } } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        const tabs = getListReportTabs(page, undefined, manifest);
+
+        // View 1 (#VAR1) has no matching LineItem#VAR1 key, so it falls back to the enabled default.
+        expect(tabs[0].columnPersonalizationSupported).toBe(true);
+        // View 2 (#VAR2) maps to LineItem#VAR2, which disables column personalization.
+        expect(tabs[1].columnPersonalizationSupported).toBe(false);
+    });
+});
+
+describe('extractTextAnnotationCandidatesFromMetadata()', () => {
+    const metadataXml = `<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="TestService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key><PropertyRef Name="ID"/></Key>
+                <Property Name="ID" Type="Edm.String"/>
+                <Property Name="CompanyCode" Type="Edm.String"/>
+                <Property Name="CompanyCode_Text" Type="Edm.String"/>
+                <Property Name="Customer" Type="Edm.String"/>
+                <Property Name="PlainColumn" Type="Edm.String"/>
+            </EntityType>
+            <EntityContainer Name="EntityContainer"><EntitySet Name="Customer" EntityType="TestService.Customer"/></EntityContainer>
+            <Annotations Target="TestService.Customer/CompanyCode">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="CompanyCode_Text"/>
+            </Annotations>
+            <Annotations Target="TestService.Customer/Customer">
+                <Annotation Term="com.sap.vocabularies.Common.v1.Text" Path="_CustomerDetail/CustomerName"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+    const metadata = convert(parse(metadataXml));
+
+    test('returns a sortable candidate for a direct Common.Text target', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, 'Customer')).toEqual([
+            { columnProperty: 'CompanyCode', textProperty: 'CompanyCode_Text' }
+        ]);
+    });
+
+    test('keeps a navigation text target as a sortable candidate', () => {
+        // The ID column ("Customer") is a real, non-association column, so the test is generated — and a
+        // navigation-path text target is itself a valid sort/adaptation name, emitted unchanged.
+        expect(extractTextAnnotationCandidatesFromMetadata(['Customer'], metadata, 'Customer')).toEqual([
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName' }
+        ]);
+    });
+
+    test('skips columns without a Common.Text annotation', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['PlainColumn'], metadata, 'Customer')).toEqual([]);
+    });
+
+    test('preserves column order and only emits text-annotated columns', () => {
+        expect(
+            extractTextAnnotationCandidatesFromMetadata(
+                ['PlainColumn', 'CompanyCode', 'Customer'],
+                metadata,
+                'Customer'
+            )
+        ).toEqual([
+            { columnProperty: 'CompanyCode', textProperty: 'CompanyCode_Text' },
+            { columnProperty: 'Customer', textProperty: '_CustomerDetail/CustomerName' }
+        ]);
+    });
+
+    test('returns an empty array when the entity set is undefined or missing from metadata', () => {
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, undefined)).toEqual([]);
+        expect(extractTextAnnotationCandidatesFromMetadata(['CompanyCode'], metadata, 'Unknown')).toEqual([]);
+    });
+});
+
+describe('getDefaultSortOrder()', () => {
+    const fixtureMetadata = readFileSync(join(__dirname, '../../fixtures/metadata.xml'), 'utf8');
+    const convertedMetadata = convert(parse(fixtureMetadata));
+
+    test('returns sort items from unqualified PresentationVariant', () => {
+        expect(getDefaultSortOrder(convertedMetadata, 'Travel')).toEqual([{ property: 'TravelID', descending: true }]);
+    });
+
+    test('returns empty array when entity set does not exist', () => {
+        expect(getDefaultSortOrder(convertedMetadata, 'NonExistent')).toEqual([]);
+    });
+
+    test('returns empty array when no PresentationVariant exists', () => {
+        expect(getDefaultSortOrder(convertedMetadata, 'Booking')).toEqual([]);
+    });
+
+    test('resolves PV via qualified SPV annotationPath', () => {
+        const xml = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+            <edmx:DataServices>
+                <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="ns">
+                    <EntityType Name="MyType"><Key><PropertyRef Name="ID"/></Key>
+                        <Property Name="ID" Type="Edm.String" Nullable="false"/>
+                        <Property Name="Name" Type="Edm.String"/>
+                    </EntityType>
+                    <EntityContainer Name="Container">
+                        <EntitySet Name="MySet" EntityType="ns.MyType"/>
+                    </EntityContainer>
+                    <Annotations Target="ns.MyType">
+                        <Annotation Term="com.sap.vocabularies.UI.v1.SelectionPresentationVariant" Qualifier="Q1">
+                            <Record>
+                                <PropertyValue Property="PresentationVariant">
+                                    <Record Type="com.sap.vocabularies.UI.v1.PresentationVariantType">
+                                        <PropertyValue Property="SortOrder">
+                                            <Collection>
+                                                <Record Type="com.sap.vocabularies.Common.v1.SortOrderType">
+                                                    <PropertyValue Property="Property" PropertyPath="Name"/>
+                                                    <PropertyValue Property="Descending" Bool="false"/>
+                                                </Record>
+                                            </Collection>
+                                        </PropertyValue>
+                                        <PropertyValue Property="Visualizations">
+                                            <Collection><AnnotationPath>@com.sap.vocabularies.UI.v1.LineItem</AnnotationPath></Collection>
+                                        </PropertyValue>
+                                    </Record>
+                                </PropertyValue>
+                                <PropertyValue Property="SelectionVariant">
+                                    <Record Type="com.sap.vocabularies.UI.v1.SelectionVariantType">
+                                        <PropertyValue Property="SelectOptions"><Collection/></PropertyValue>
+                                    </Record>
+                                </PropertyValue>
+                            </Record>
+                        </Annotation>
+                    </Annotations>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>`;
+        const meta = convert(parse(xml));
+        expect(
+            getDefaultSortOrder(meta, 'MySet', 'com.sap.vocabularies.UI.v1.SelectionPresentationVariant#Q1')
+        ).toEqual([{ property: 'Name', descending: false }]);
+    });
+
+    test('skips entries without a PropertyPath value', () => {
+        const xml = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+            <edmx:DataServices>
+                <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="ns">
+                    <EntityType Name="MyType"><Key><PropertyRef Name="ID"/></Key>
+                        <Property Name="ID" Type="Edm.String" Nullable="false"/>
+                    </EntityType>
+                    <EntityContainer Name="Container">
+                        <EntitySet Name="MySet" EntityType="ns.MyType"/>
+                    </EntityContainer>
+                    <Annotations Target="ns.MyType">
+                        <Annotation Term="com.sap.vocabularies.UI.v1.PresentationVariant">
+                            <Record>
+                                <PropertyValue Property="SortOrder"><Collection/></PropertyValue>
+                                <PropertyValue Property="Visualizations">
+                                    <Collection><AnnotationPath>@com.sap.vocabularies.UI.v1.LineItem</AnnotationPath></Collection>
+                                </PropertyValue>
+                            </Record>
+                        </Annotation>
+                    </Annotations>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>`;
+        expect(getDefaultSortOrder(convert(parse(xml)), 'MySet')).toEqual([]);
+    });
+});
+
+describe('getDefaultFilterValues()', () => {
+    const buildMetadata = (annotationXml: string): ReturnType<typeof convert> => {
+        const schemaXml = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+            <edmx:DataServices>
+                <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="ns">
+                    <EntityType Name="MyType"><Key><PropertyRef Name="ID"/></Key>
+                        <Property Name="ID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+                        <Property Name="Country" Type="Edm.String" Nullable="false" MaxLength="3"/>
+                    </EntityType>
+                    <EntityContainer Name="Container">
+                        <EntitySet Name="MySet" EntityType="ns.MyType"/>
+                    </EntityContainer>
+                    ${annotationXml}
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>`;
+        return convert(parse(schemaXml));
+    };
+
+    test('returns EQ/Sign=I filter values', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([{ property: 'Country', value: 'DE' }]);
+    });
+
+    test('skips Sign=E (exclude) ranges', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/E"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([]);
+    });
+
+    test('includes LE operator and sets operator field', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/LE"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([{ property: 'Country', value: 'DE', operator: 'LE' }]);
+    });
+
+    test('resolves SV via unqualified SPV', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionPresentationVariant">
+                    <Record>
+                        <PropertyValue Property="SelectionVariant">
+                            <Record Type="com.sap.vocabularies.UI.v1.SelectionVariantType">
+                                <PropertyValue Property="SelectOptions">
+                                    <Collection>
+                                        <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                            <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                            <PropertyValue Property="Ranges">
+                                                <Collection>
+                                                    <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                        <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                        <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                        <PropertyValue Property="Low" String="US"/>
+                                                    </Record>
+                                                </Collection>
+                                            </PropertyValue>
+                                        </Record>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="com.sap.vocabularies.UI.v1.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection><AnnotationPath>@com.sap.vocabularies.UI.v1.LineItem</AnnotationPath></Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([{ property: 'Country', value: 'US' }]);
+    });
+
+    test('returns empty array when no SV exists', () => {
+        const meta = buildMetadata('');
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([]);
+    });
+
+    test('returns empty array for unknown entity set', () => {
+        const meta = buildMetadata('');
+        expect(getDefaultFilterValues(meta, 'Unknown')).toEqual([]);
+    });
+
+    test('collects all matching ranges for a property (multiple Sign=I ranges)', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="FR"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([
+            { property: 'Country', value: 'DE' },
+            { property: 'Country', value: 'FR' }
+        ]);
+    });
+
+    test('returns both boundaries for BT range', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/BT"/>
+                                                <PropertyValue Property="Low" String="AA"/>
+                                                <PropertyValue Property="High" String="MZ"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([
+            { property: 'Country', value: 'AA', value2: 'MZ', operator: 'BT' }
+        ]);
+    });
+
+    test('skips BT range when Low or High is absent', () => {
+        const mkBT = (low?: string, high?: string) =>
+            buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/BT"/>
+                                                ${low !== undefined ? `<PropertyValue Property="Low" String="${low}"/>` : ''}
+                                                ${high !== undefined ? `<PropertyValue Property="High" String="${high}"/>` : ''}
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        expect(getDefaultFilterValues(mkBT('AA', undefined), 'MySet')).toEqual([]);
+        expect(getDefaultFilterValues(mkBT(undefined, 'MZ'), 'MySet')).toEqual([]);
+        expect(getDefaultFilterValues(mkBT(undefined, undefined), 'MySet')).toEqual([]);
+    });
+
+    test('zero-pads IsDigitSequence values to property maxLength', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="ID"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="12"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ns.MyType/ID">
+                <Annotation Term="com.sap.vocabularies.Common.v1.IsDigitSequence"/>
+            </Annotations>`);
+        // ID: MaxLength=8, IsDigitSequence — "12" must be padded to "00000012"
+        expect(getDefaultFilterValues(meta, 'MySet')).toEqual([{ property: 'ID', value: '00000012' }]);
+    });
+
+    test('resolves SV and falls back to unqualified PV sort order when annotationPath points to bare SelectionVariant', () => {
+        const meta = buildMetadata(`
+            <Annotations Target="ns.MyType">
+                <Annotation Term="com.sap.vocabularies.UI.v1.PresentationVariant">
+                    <Record>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.Common.v1.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="ID"/>
+                                    <PropertyValue Property="Descending" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection><AnnotationPath>@com.sap.vocabularies.UI.v1.LineItem</AnnotationPath></Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="com.sap.vocabularies.UI.v1.SelectionVariant" Qualifier="SV1">
+                    <Record>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection>
+                                <Record Type="com.sap.vocabularies.UI.v1.SelectOptionType">
+                                    <PropertyValue Property="PropertyName" PropertyPath="Country"/>
+                                    <PropertyValue Property="Ranges">
+                                        <Collection>
+                                            <Record Type="com.sap.vocabularies.UI.v1.SelectionRangeType">
+                                                <PropertyValue Property="Sign" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeSignType/I"/>
+                                                <PropertyValue Property="Option" EnumMember="com.sap.vocabularies.UI.v1.SelectionRangeOptionType/EQ"/>
+                                                <PropertyValue Property="Low" String="DE"/>
+                                            </Record>
+                                        </Collection>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`);
+        // SV has no PV — sort order must fall back to the unqualified PV
+        expect(getDefaultSortOrder(meta, 'MySet', 'com.sap.vocabularies.UI.v1.SelectionVariant#SV1')).toEqual([
+            { property: 'ID', descending: true }
+        ]);
+        // SV filter values must still be resolved from the qualified SV
+        expect(getDefaultFilterValues(meta, 'MySet', 'com.sap.vocabularies.UI.v1.SelectionVariant#SV1')).toEqual([
+            { property: 'Country', value: 'DE' }
+        ]);
     });
 });
