@@ -706,9 +706,9 @@ describe('File Store Service', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'));
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
         const fileContent = await fsService?.getAppArchiveContent('file', 'ZTESTAPP', '/Component-dbg.js');
-        expect(typeof fileContent).toEqual('string');
+        expect(Buffer.isBuffer(fileContent)).toBe(true);
         expect(fileContent).toEqual(
-            fs.readFileSync(join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'), 'utf-8')
+            fs.readFileSync(join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'))
         );
     });
 
