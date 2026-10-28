@@ -4,7 +4,7 @@ The documentation for the controller hook contains a malformed callback signatur
 
 ## Rule Details
 
-The check includes:
+The check ensures  that:
 
 - the type of the owner object is maintained
 - the method name is equal to the method name of the hook call
