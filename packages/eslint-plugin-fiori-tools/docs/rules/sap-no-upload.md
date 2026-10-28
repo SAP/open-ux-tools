@@ -1,10 +1,10 @@
-# Prevent usage of upload controls (sap-no-upload)
+# Prevent Usage of Upload Controls (`sap-no-upload`)
 
-Dynamically constructed upload controls must not be used. Uploaded files shall be sent to VSI 2.0 before being stored on the database.
+Dynamically constructed upload controls must not be used. Uploaded files must be sent to Virus Scanning Interface (VSI) 2.0 before being stored on the database.
 
 ## Rule Details
 
-This rule prevents the usage of `sap.ca.ui.FileUpload` and `sap.ca.ui.AddPicture` upload controls to ensure security compliance. These controls can be instantiated in two ways and both are forbidden:
+This rule prevents the usage of `sap.ca.ui.FileUpload` and `sap.ca.ui.AddPicture` upload controls to ensure security compliance. These controls can be instantiated in the following ways and both are forbidden:
 
 - Using the `new` operator (constructor)
 - Direct function call
@@ -30,8 +30,8 @@ var oFileUpload = new sap.ca.ui.FileUpload({
 
 ## Rationale
 
-Upload controls pose security risks as they allow users to upload files directly to the system. To maintain security compliance, all uploaded files must be processed through VSI 2.0 (Virus Scanning Interface) before being stored in the database. This rule helps enforce this security policy by preventing the use of these upload controls.
+Upload controls pose security risks as they allow users to upload files directly to the system. To maintain security compliance, all uploaded files must be processed using VSI 2.0 before being stored in the database. This rule helps enforce this security policy by preventing the use of these upload controls.
 
-## Bug report
+## Bug Report
 
-In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect a false positive, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).

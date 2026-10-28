@@ -1,16 +1,15 @@
-# Hardcoded (not localized) string used (JS_NOT_LOCALIZED)
+# Hardcoded Strings Used (`JS_NOT_LOCALIZED`)
 
-Don't use hardcoded strings, else they won't be translated. All strings should be localized and defined in an external file for translation.
+Don't use hardcoded strings, else they won't be translated. All strings must be localized and defined in an external file for translation.
 
-_Warning Message: All strings should be localized and defined in an external file for translation_
+**Warning message**: All strings should be localized and defined in an external file for translation.
 
 ## Rule Details
 
-The rule checks the following methods in JavaScript
+The rule checks the following methods in JavaScript for whether they contain a string literal:
 
 > _setText, setHeaderText, setPurpose_
 
-whether they contain a string literal.
 
 The following patterns are considered warnings:
 
@@ -20,7 +19,7 @@ obj.setHeaderText('This is a hardcoded string');
 obj.setPurpose('This is a hardcoded string');
 ```
 
-The following patterns are **NOT** considered warnings:
+The following patterns are not considered warnings:
 
 ```js
 obj.setText(i18n.someString);
@@ -28,6 +27,6 @@ obj.setText(i18n.someString);
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading

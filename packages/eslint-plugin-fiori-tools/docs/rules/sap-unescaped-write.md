@@ -1,10 +1,10 @@
-# Avoid the use of unescaped write (sap-unescaped-write)
+# Avoid the Use of Unescaped Write (`sap-unescaped-write`)
 
 This happens when you create custom controls and define their renderers.
-Inside the renderer you are calling the method RenderManager.write/writeAttribute with dynamically retrieves values (e.g properties).
-This should be replaced with calls to RenderManager.writeEscaped/writeAttributeEscaped
+Inside the renderer, you call the method RenderManager.write/writeAttribute with dynamically retrieves values, for example properties.
+This must be replaced with calls to `RenderManager.writeEscaped/writeAttributeEscaped`.
 
-_Warning Message: When creating custom controls you have to make sure that all operations that are going to write in the DOM using non static value are escaped properly (potential XSS issue)_
+**Warning message**: When creating custom controls, you must ensure that all operations that are going to write in the DOM using non-static values are escaped properly. Otherwise, cross-site scripting may occur.
 
 The following patterns are considered warnings:
 
@@ -27,6 +27,6 @@ oRm.write('</div>');
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
 
 ## Further Reading
