@@ -1,4 +1,4 @@
-# Avoid `getModel()` on `sap.ui.getCore()` (sap-no-core-model-usage)
+# Avoid `getModel()` on `sap.ui.getCore()` (`sap-no-core-model-usage`)
 
 Using `sap.ui.getCore().getModel()` or `sap.ui.getCore().setModel()` accesses a shared, global model registry.
 In component-based Fiori applications this causes unexpected cross-contamination between components.

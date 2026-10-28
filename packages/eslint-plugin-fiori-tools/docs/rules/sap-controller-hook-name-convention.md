@@ -1,6 +1,6 @@
-# Controller hook must start with 'extHook'(sap-controller-hook-name-convention)
+# Controller Hook Must Start with `extHook` (`sap-controller-hook-name-convention`)
 
-The callback function name should follow the naming convention and starts with either 'extHook' (follow casing)
+The callback function name must follow the naming convention and start with either `extHook`
 
 The following patterns are considered warnings:
 ```js
@@ -20,7 +20,7 @@ The following patterns are considered warnings:
    */
 ```
 
-The following patterns are no considered warnings:
+The following patterns are not considered warnings:
 
 ```js
   /**
@@ -41,4 +41,4 @@ The following patterns are no considered warnings:
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).

@@ -1,8 +1,8 @@
-# String concatenation (JS_CONCATENATED_STRINGS)
+# String Concatenation (`JS_CONCATENATED_STRINGS`)
 
-String concatenation should not be done manually because this would determine a certain sequence which might not be valid for all languages.
+String concatenation must not be performed manually because this determines a certain sequence which may not be valid for all languages.
 
-_Warning Message: Strings should not be concatenated, all concatenations must be done as a specific parameterized resource_
+**Warning message**: Strings must not be concatenated, all concatenations must be done as a specific parameterized resource_
 
 ## Rule Details
 
@@ -28,6 +28,6 @@ obj.setText("{parts:[{path:'i18n>ORGANIZER'}, {path:'/Organizer/Mailbox/Name'}],
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading

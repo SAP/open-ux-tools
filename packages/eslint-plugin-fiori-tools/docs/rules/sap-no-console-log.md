@@ -1,11 +1,11 @@
-# Detect usage of console log (sap-no-console-log)
+# Detect Usage of `console.log` (`sap-no-console-log`)
 
-The use of console.log is not allowed.
+The use of `console.log` is not allowed.
 
 ## Rule Details
 
-Use `Log` from `sap/base/Log` (`Log.info`, `Log.debug`, `Log.error`) instead of `console.log`
+Use `Log` from `sap/base/Log`, that is, `Log.info`, `Log.debug`, or `Log.error`, instead of `console.log`.
 
-## Bug report
+## Bug Report
 
-In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect a false positive, please open a [Github issue](https://github.com/SAP/open-ux-tools/issues).

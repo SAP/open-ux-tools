@@ -1,6 +1,6 @@
-# Controller hook documentation does not contain callback signature (sap-controller-hook-missing-callback-signature)
+# Controller Hook Documentation Does Not Contain a Callback Signature (`sap-controller-hook-missing-callback-signature`)
 
-This rule checks that a controller hook has the @callback signature to be defined.
+This rule checks that a controller hook has the @callback signature defined.
 
 The following patterns are considered warnings:
 ```js
@@ -19,7 +19,7 @@ The following patterns are considered warnings:
    */
 ```
 
-The following patterns are no considered warnings:
+The following patterns are not considered warnings:
 
 ```js
   /**
@@ -40,4 +40,4 @@ The following patterns are no considered warnings:
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.tools.sap/FIORI-PIPELINE/fioriPipelinesGo/issues).

@@ -1,7 +1,7 @@
-# Reports the count of how many eslint rules are being disabled  (sap-eslint-disable-count)
+# Reports the Number of ESLint Rules That Are Disabled (`sap-eslint-disable-count`)
 
-This rule it's just a warning which reports how many eslint rules are being skipped on the source code
+This rule is a warning which reports how many ESLint rules are skipped.
 
 ## Bug Report
 
-In case you detect an issue with the check please open a GitHub issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).

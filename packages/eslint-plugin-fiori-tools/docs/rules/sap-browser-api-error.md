@@ -1,15 +1,15 @@
-# Detect some forbidden usages of browser APIs (sap-browser-api-error)
+# Detect Some Forbidden Usages of Browser APIs (`sap-browser-api-error`)
 
-This is a collection of usages of browser APIs that might lead to issues.
+This is a collection of usages of browser APIs that may lead to issues.
 Please search for the warning messages that you see in ESLint to find the explanation of the respective check.
 
 ## Rule Details
 
-This rule aims to detect forbidden usages of browser APIs and raise error.
+This rule aims to detect forbidden usages of browser APIs and raise an error.
 
-#### Direct DOM insertion
+### Direct DOM insertion
 
-Warning message: _Direct DOM insertion, create a custom control instead_
+**Warning message**: "Direct DOM insertion, create a custom control instead"
 
 The following patterns are considered warnings:
 
@@ -17,9 +17,9 @@ The following patterns are considered warnings:
 document.createElement(foo);
 ```
 
-#### Direct DOM manipulation
+### Direct DOM Manipulation
 
-Warning message: _Direct DOM Manipulation, better to use `jQuery.appendTo` if really needed_
+**Warning message**: "Direct DOM Manipulation, better to use `jQuery.appendTo` if really needed"
 
 The following patterns are considered warnings:
 
@@ -27,9 +27,9 @@ The following patterns are considered warnings:
 document.execCommand(cmd, false, args);
 ```
 
-#### insertBrOnReturn
+### `insertBrOnReturn`
 
-Warning message: _`insertBrOnReturn` is not allowed since it is a Mozilla specific method, Chrome doesn't support that._
+**Warning message**: "`insertBrOnReturn` is not allowed since it is a Mozilla specific method, Chrome doesn't support that."
 
 The following patterns are considered warnings:
 
@@ -37,9 +37,9 @@ The following patterns are considered warnings:
 var abc = document.queryCommandSupported('insertBrOnReturn');
 ```
 
-#### Location reload
+### Location Reload
 
-Warning message: _location.reload() is not permitted._
+**Warning message**: "`location.reload()` is not permitted."
 
 The following patterns are considered warnings:
 
@@ -49,9 +49,9 @@ var mylocation = location;
 mylocation.reload();
 ```
 
-#### Global event handling override
+### Override of Global Event Handling
 
-Warning message: _Global event handling override is not permitted, please modify only single events._
+**Warning message**: "Global event handling override is not permitted, please modify only single events."
 
 The following patterns are considered warnings:
 
@@ -62,11 +62,11 @@ window.onload = function () {
 };
 ```
 
-#### Proprietary Browser API access
+### Access to Proprietary Browser APIs
 
-Some browser APIs should not be used at all, instead the sap.ui.Device API has to be used.
+Some browser APIs should not be used at all, instead the `sap.ui.Device` API must be used.
 
-Warning message: _Proprietary Browser API access, use `sap.ui.Device` API instead._
+**Warning message**: "Proprietary Browser API access, use `sap.ui.Device` API instead."
 
 The following patterns are considered warnings:
 
@@ -78,9 +78,9 @@ navigator.back();
 var x = navigator.appCodeName;
 ```
 
-#### Definition of globals via window object
+### Definition of Globals using the `window` Object
 
-Warning message: _Definition of global variable/api in `window` object is not permitted._
+**Warning message**: "Definition of a global variable or api in the `window` object is not permitted."
 
 The following patterns are considered warnings:
 
@@ -89,9 +89,9 @@ var mynavig = window.top.tip;
 window.define();
 ```
 
-#### Dynamic style insertion
+### Dynamic Style Insertion
 
-Warning message: _Dynamic style insertion, use library CSS or lessifier instead._
+**Warning message**: "Dynamic style insertion, use library CSS or lessifier instead."
 
 The following patterns are considered warnings:
 
@@ -102,9 +102,7 @@ var abc = document.styleSheets.length;
 
 ## False positives
 
-There might be cases where the check produces a false positive, i.e. you receive a warning but your code is correct and complies to the UI5 guidelines.
-In such a case, you can be deactivate the rule by placing the following pseudo-comment block around your code.
-**Please make sure to have your code reviewed by a colleague before you enter such a pseudo-comment.**
+If the check produces a false positive, that is, you receive a warning but your code is correct and complies to the SAPUI5 guidelines, you can be deactivate the rule by placing the following pseudo-comment block around your code, as shown in the following sample code:
 
 ```js
 
@@ -120,4 +118,4 @@ In case you detect an issue with the check please open a Github issue [here](htt
 
 ## Further Reading
 
-[SAPUI5 coding guidelines](http://veui5infra.dhcp.wdf.sap.corp:8080/demokit/#docs/guide/030fcd14963048218488048f407f8f34.html)
+[SAPUI5 Coding Guidelines](http://veui5infra.dhcp.wdf.sap.corp:8080/demokit/#docs/guide/030fcd14963048218488048f407f8f34.html)
