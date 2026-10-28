@@ -32,7 +32,7 @@
     ],
     "dependencies": {
         "@sap/cf-tools": "3.3.1",
-        "@sap-ux/annotation-converter": "0.10.22",
+        "@sap-ux/annotation-converter": "0.10.23",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.10.0",

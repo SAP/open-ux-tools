@@ -33,7 +33,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.22",
+        "@sap-ux/annotation-converter": "0.10.23",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",

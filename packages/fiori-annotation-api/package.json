@@ -24,7 +24,7 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.10.22",
+        "@sap-ux/annotation-converter": "0.10.23",
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/cds-odata-annotation-converter": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
@@ -37,8 +37,8 @@
         "@sap-ux/vocabularies-types": "0.16.0",
         "@sap-ux/xml-odata-annotation-converter": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.25.0",
-        "@xml-tools/ast": "5.0.5",
-        "@xml-tools/parser": "1.0.11",
+        "@xml-tools/ast": "5.0.6",
+        "@xml-tools/parser": "1.0.12",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "vscode-languageserver-textdocument": "1.0.15"
