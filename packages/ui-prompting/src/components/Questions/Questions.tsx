@@ -150,6 +150,7 @@ export const Questions = (props: QuestionsProps) => {
             <TranslationProvider
                 bundle={translationProps.bundle}
                 onEvent={translationProps.onEvent}
+                translationInputProps={translationProps.translationInputProps}
                 pendingQuestions={translationProps.pendingQuestions}>
                 <div className="prompt-entries">
                     {layoutType === PromptsLayoutType.MultiColumn && groups?.length
