@@ -6,6 +6,8 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip",
@@ -162,6 +164,8 @@ test.namespace_sap.app.title=Test CF App",
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip",
@@ -323,6 +327,8 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip",
@@ -479,6 +485,8 @@ test.namespace_sap.app.title=Test CF App",
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip",
@@ -671,6 +679,8 @@ test.namespace_sap.app.title=Test CF App",
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip",
@@ -832,6 +842,8 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip",
