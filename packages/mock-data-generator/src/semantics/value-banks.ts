@@ -233,6 +233,30 @@ function completeString(
     return undefined;
 }
 
+/** A winter day, so a zone's offset is its standard time rather than its daylight saving time. */
+const STANDARD_TIME_INSTANT = new Date(Date.UTC(2024, 0, 15));
+
+/**
+ * The standard-time offset of an IANA time zone from UTC in its short form.
+ *
+ * @param timeZone IANA time zone name
+ * @returns `UTC` for no offset, else the offset in hours and minutes when they are not whole
+ * @example
+ * utcOffsetName('Europe/Berlin'); // 'UTC+1'
+ */
+function utcOffsetName(timeZone: string): string {
+    const offset =
+        new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' })
+            .formatToParts(STANDARD_TIME_INSTANT)
+            .find(({ type }) => type === 'timeZoneName')?.value ?? 'GMT';
+    const match = /^GMT([+-])(\d{2}):(\d{2})$/u.exec(offset);
+    if (!match) {
+        return 'UTC';
+    }
+    const [, sign, hours, minutes] = match;
+    return `UTC${sign}${Number(hours)}${minutes === '00' ? '' : `:${minutes}`}`;
+}
+
 function catalogSample(role: string, index: number): string | undefined {
     const samples = roleSamples(role);
     return samples?.length ? samples[index % samples.length] : undefined;
@@ -503,9 +527,10 @@ function descriptiveValue(
         case 'manufacturer':
             return catalogSample(role, hash);
         case 'timezone':
-            // A zone that does not fit is left out rather than replaced by a zone of another place.
+            // A zone name that does not fit gives way to the same place's offset from UTC, never to a zone of
+            // another place.
             return property.maxLength !== undefined && property.maxLength < context.location.timeZone.length
-                ? undefined
+                ? completeString([utcOffsetName(context.location.timeZone)], property.maxLength)
                 : context.location.timeZone;
         case 'temperature_unit':
             return catalogSample(role, hash);

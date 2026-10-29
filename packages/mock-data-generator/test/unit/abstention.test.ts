@@ -42,11 +42,14 @@ describe('abstention instead of placeholders', () => {
         const result = await generateServiceForTesting(request, { mode: 'deterministic', seed: 3, rowsPerEntity: 4 });
 
         // Then, as the last resort, each field holds the property name and the row index the way the standard
-        // mock server writes it, cut to the column, and no field holds a label or the entity name
+        // mock server writes it, a column too short for the name holds a code, and no field holds a label or the
+        // entity name
         const rows = result.resources.Widgets;
         expect(rows.map((row) => row.Zorblat)).toEqual(['Zorblat_0', 'Zorblat_1', 'Zorblat_2', 'Zorblat_3']);
         expect(rows.map((row) => row.Quixel)).toEqual(['Quixel_0', 'Quixel_1', 'Quixel_2', 'Quixel_3']);
-        expect(rows.map((row) => row.QuixelCode)).toEqual(['Q_0', 'Q_1', 'Q_2', 'Q_3']);
+        for (const row of rows) {
+            expect(row.QuixelCode).toMatch(/^[A-Z0-9]{1,3}$/u);
+        }
         expect(JSON.stringify(rows.map((row) => Object.values(row)))).not.toMatch(/Widget/u);
         // And the abstentions and the fallback cells are counted, while the typed-floor causes still add up to
         // the typed tier

@@ -1,7 +1,8 @@
 import type { SchemaEntity, SchemaGraph, SchemaProperty } from '../schema/graph.js';
-import type { ExistingMockData, JsonValue, MockDataRow } from '../types.js';
+import type { ExistingMockData, JsonValue, MockDataRow, SyntheticCoherenceRule } from '../types.js';
 import { generatedRowFlags } from './authored.js';
 import { codeTextPairs } from './code-texts.js';
+import { coherencePropertyNames } from './coherence.js';
 import { propertyValueIsValid } from './constraints.js';
 import { protectedPropertyNames, sameValue } from './rows.js';
 import {
@@ -15,11 +16,17 @@ import { standardFallbackValue } from '../spec/standard-mockserver.js';
 import { semanticPropertyKey } from '../semantics/classifier.js';
 import { undoChangesBreakingFinalChecks } from './final-checks.js';
 import { semanticValueIsValid } from './semantic-plan.js';
+import { codeShaped } from './deterministic.js';
+import { sha256Uint32 } from '../hash.js';
+import { semanticRules } from '../semantics/rule-store.js';
+import { semanticRoleDefinition } from '../semantics/role-registry.js';
 
 /** The rows after the fallback and how many cells it filled. */
 export interface StandardFallbackResult {
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
     filled: number;
+    /** Filled cells by `EntitySet.Property`. */
+    filledByField: ReadonlyMap<string, number>;
 }
 
 /** A value list of an owner property, with the owner fields its value-help rows determine. */
@@ -54,13 +61,15 @@ interface OwnedValueList {
  * @param resources the final rows
  * @param existingData the caller's existing rows
  * @param roles planned semantic roles by field
+ * @param coherence the coherence rules by entity set; the fields they govern keep the values the rules chose
  * @returns the rows and the number of filled cells
  */
 export function applyStandardFallback(
     graph: SchemaGraph,
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>,
     existingData: Readonly<Record<string, ExistingMockData>>,
-    roles: Readonly<Record<string, string>>
+    roles: Readonly<Record<string, string>>,
+    coherence: Readonly<Record<string, readonly SyntheticCoherenceRule[]>> = {}
 ): StandardFallbackResult {
     const lists = ownedValueLists(graph, existingData);
     const held = heldPropertyNames(graph, lists, existingData);
@@ -78,8 +87,14 @@ export function applyStandardFallback(
         const generated = generatedRowFlags(entity, rows, existingData);
         const codeOf = new Map(codeTextPairs(entity).map(({ code, text }) => [text.name, code.name]));
         const excluded = held.get(entity.entitySetName) ?? new Set<string>();
+        const governed = coherencePropertyNames(entity, coherence[entity.entitySetName] ?? ['temporal']);
+        // An empty indicator says "no", so it holds a value already, as does a field a coherence rule decides.
         const fillable = entity.properties.filter(
-            (property) => property.primitiveType === 'string' && !excluded.has(property.name)
+            (property) =>
+                property.primitiveType === 'string' &&
+                !excluded.has(property.name) &&
+                !governed.has(property.name) &&
+                !holdsTruthValue(roles[semanticPropertyKey(entity.entitySetName, property.name)])
         );
         const replacements = new Map<number, Record<string, JsonValue>>();
         for (const property of fillable) {
@@ -97,7 +112,7 @@ export function applyStandardFallback(
                 }
                 const ordinal =
                     code === undefined ? index : (firstRowOfCode.get(JSON.stringify(row[code] ?? null)) ?? index);
-                const value = standardFallbackValue(property, ordinal);
+                const value = fallbackValue(entity, property, ordinal);
                 if (value !== undefined && fits(entity, property, value)) {
                     replacements.set(index, { ...replacements.get(index), [property.name]: value });
                     filled += 1;
@@ -125,7 +140,40 @@ export function applyStandardFallback(
         }
     }
     const checked = undoChangesBreakingFinalChecks(graph, resources, output, existingData, roles);
-    return { resources: checked.resources, filled: filled - checked.reverted };
+    return {
+        resources: checked.resources,
+        filled: filled - checked.reverted,
+        filledByField: filledCells(resources, checked.resources)
+    };
+}
+
+/**
+ * The cells that were empty before the fallback and hold a value after it, counted by field.
+ *
+ * @param before the rows before the fallback
+ * @param after the rows after it
+ * @returns the filled cells by `EntitySet.Property`
+ */
+function filledCells(
+    before: Readonly<Record<string, ReadonlyArray<MockDataRow>>>,
+    after: Readonly<Record<string, ReadonlyArray<MockDataRow>>>
+): ReadonlyMap<string, number> {
+    const counts = new Map<string, number>();
+    for (const [entitySetName, rows] of Object.entries(after)) {
+        const previous = before[entitySetName];
+        if (previous === undefined || previous === rows) {
+            continue;
+        }
+        rows.forEach((row, index) => {
+            for (const [name, value] of Object.entries(row)) {
+                if (!isEmpty(value) && isEmpty(previous[index]?.[name])) {
+                    const key = semanticPropertyKey(entitySetName, name);
+                    counts.set(key, (counts.get(key) ?? 0) + 1);
+                }
+            }
+        });
+    }
+    return counts;
 }
 
 /**
@@ -274,6 +322,35 @@ function heldPropertyNames(
         }
     }
     return held;
+}
+
+/**
+ * The fallback value of one cell: the standard mock server's value when the whole field name fits the field,
+ * else a code of the field's initials, which a short field holds better than a cut-off name (`Addr_0`).
+ *
+ * @param entity the field's entity
+ * @param property the string field
+ * @param ordinal the zero-based ordinal of the value
+ * @returns the value, or undefined when not even a code fits
+ */
+function fallbackValue(entity: SchemaEntity, property: SchemaProperty, ordinal: number): string | undefined {
+    const value = standardFallbackValue(property, ordinal);
+    if (value?.startsWith(`${property.name}_`)) {
+        return value;
+    }
+    const hash = sha256Uint32(`${entity.entitySetName}:${property.name}:${ordinal}`);
+    const code = codeShaped(property.name, (hash % semanticRules().typedFloor.codeOrdinals) + 1, property.maxLength);
+    return code === '' ? undefined : code;
+}
+
+/**
+ * Whether a planned role makes a string field a truth value, whose empty value means false.
+ *
+ * @param role the planned role, if any
+ * @returns true for a role of the boolean family
+ */
+function holdsTruthValue(role: string | undefined): boolean {
+    return role !== undefined && semanticRoleDefinition(role)?.family === 'boolean';
 }
 
 /**

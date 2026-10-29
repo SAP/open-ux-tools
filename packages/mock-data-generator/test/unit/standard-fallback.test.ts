@@ -149,7 +149,7 @@ describe('standard fallback', () => {
     ): ReturnType<typeof applyStandardFallback> =>
         applyStandardFallback(graphOf(carriers, flights), resources, existingData, {});
 
-    it('fills empty generated strings, keeps every value and key, and leaves a column too short alone', () => {
+    it('fills empty generated strings, keeps every value and key, and gives a column too short for the name a code', () => {
         // Given generated carriers with empty names, notes and flags, one note set
         const resources = {
             Carriers: [
@@ -162,12 +162,13 @@ describe('standard fallback', () => {
         const result = fill(resources);
 
         // Then each empty string holds its standard value, the set note and the keys stay, and the one-character
-        // flag stays empty
+        // flag, which cannot hold its name, holds a one-character code
+        const code = expect.stringMatching(/^[A-Z0-9]$/u);
         expect(result.resources.Carriers).toEqual([
-            { CarrierID: 'AA', CarrierName: 'CarrierName_0', Note: 'Note_0', Flag: null },
-            { CarrierID: 'BB', CarrierName: 'CarrierName_1', Note: 'kept', Flag: null }
+            { CarrierID: 'AA', CarrierName: 'CarrierName_0', Note: 'Note_0', Flag: code },
+            { CarrierID: 'BB', CarrierName: 'CarrierName_1', Note: 'kept', Flag: code }
         ]);
-        expect(result.filled).toBe(3);
+        expect(result.filled).toBe(5);
     });
 
     it('gives each code one text', () => {
@@ -229,11 +230,11 @@ describe('standard fallback', () => {
         // When the fallback runs with that role
         const result = applyStandardFallback(graphOf(carriers, flights), resources, {}, { 'Carriers.Note': 'url' });
 
-        // Then the URL stays empty instead of holding a name and a number, and the name is filled
+        // Then the URL stays empty instead of holding a name and a number, and the name and the flag are filled
         expect(result.resources.Carriers).toEqual([
-            { CarrierID: 'AA', CarrierName: 'CarrierName_0', Note: null, Flag: null }
+            { CarrierID: 'AA', CarrierName: 'CarrierName_0', Note: null, Flag: expect.stringMatching(/^[A-Z0-9]$/u) }
         ]);
-        expect(result.filled).toBe(1);
+        expect(result.filled).toBe(2);
     });
 
     it('leaves a field several value lists determine, and the columns it reads, as they are', () => {
@@ -294,7 +295,12 @@ describe('standard fallback', () => {
         // Then the supplied row stays as given, and only the generated row is filled
         expect(result.resources.Carriers).toEqual([
             supplied,
-            { CarrierID: 'BB', CarrierName: 'CarrierName_1', Note: 'Note_1', Flag: null }
+            {
+                CarrierID: 'BB',
+                CarrierName: 'CarrierName_1',
+                Note: 'Note_1',
+                Flag: expect.stringMatching(/^[A-Z0-9]$/u)
+            }
         ]);
     });
 });

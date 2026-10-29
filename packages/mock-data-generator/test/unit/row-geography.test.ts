@@ -173,7 +173,7 @@ describe('anchorRowGeography', () => {
         expect(resources.Branches).toEqual([supplied]);
     });
 
-    it('leaves a time zone empty when the zone of the row country does not fit the field', () => {
+    it('writes the offset of the row country when its zone name does not fit the field', () => {
         // Given a time zone field shorter than any IANA zone of the location bank
         const short = parseServiceMetadata(
             service(
@@ -196,8 +196,8 @@ describe('anchorRowGeography', () => {
             projectedProperties: new Map([['Branches', new Set(['CountryCode'])]])
         });
 
-        // Then no zone of another place is written
-        expect(resources.Branches[0].TimeZone).toBeNull();
+        // Then the zone of the row's own place is written as its standard offset, not a zone of another place
+        expect(resources.Branches[0].TimeZone).toBe('UTC+1');
     });
 
     it('sets a free country from a city another entity fixed', () => {

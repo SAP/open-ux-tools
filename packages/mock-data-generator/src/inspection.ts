@@ -72,7 +72,11 @@ function decision(
 ): MockDataGeneratorFieldDecisionInspection {
     const threshold = finalClassification?.routeThreshold ?? semanticRules().thresholds.statistics;
     let acceptedRole: string | undefined;
-    if (finalClassification && finalClassification.role !== 'unknown' && finalClassification.confidence >= threshold) {
+    if (
+        finalClassification &&
+        finalClassification.role !== 'unknown' &&
+        (finalClassification.bestEffort === true || finalClassification.confidence >= threshold)
+    ) {
         acceptedRole = finalClassification.role;
     }
     let abstentionReason: MockDataGeneratorFieldDecisionInspection['abstentionReason'];

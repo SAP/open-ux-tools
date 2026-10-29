@@ -11,7 +11,7 @@ import { authoredDomainValues, effectiveValueListParameters, valueListDisplayLin
 import { generationRelationships } from './deterministic.js';
 import { authoredRows } from './authored.js';
 import { semanticPropertyKey } from '../semantics/classifier.js';
-import { semanticRoleDefinition } from '../semantics/role-registry.js';
+import { routedRoleCompatibility, semanticRoleDefinition } from '../semantics/role-registry.js';
 import { URL_ORIGIN, providerCapableRoles } from '../semantics/value-banks.js';
 import { semanticRules } from '../semantics/rule-store.js';
 import { packagedBanks, isIbanCountry } from '../semantics/bank-store.js';
@@ -340,8 +340,98 @@ export function compileSemanticPlan(
         for (const property of entity.properties) {
             reviewPlannedRole(review, property);
         }
+        // A role another field of the entity holds would write that field's value again in the same row.
+        const taken = new Set(
+            entity.properties
+                .map(({ name }) => plan.get(semanticPropertyKey(entity.entitySetName, name))?.role)
+                .filter((role): role is string => role !== undefined && role !== 'unknown')
+        );
+        for (const property of entity.properties) {
+            adoptBestEffortRole(
+                review,
+                property,
+                classifications.get(semanticPropertyKey(entity.entitySetName, property.name)),
+                taken
+            );
+        }
     }
     return plan;
+}
+
+/**
+ * Why a field may still take a lower-ranked classifier role: the classifier named roles but none was certain
+ * enough, or the field's form, facets or domain withdrew the role it had. A key, a technical field or a field
+ * the classifier calls unknown keeps no role.
+ */
+const BEST_EFFORT_REASONS = new Set<SemanticClassification['abstentionReason']>([
+    'below-threshold',
+    'conflicting-candidates',
+    'unsupported-domain',
+    'incompatible-facets'
+]);
+
+/**
+ * Give a field that ended the review without a role the best-ranked classifier role that fits it, so it
+ * holds a value close to its meaning rather than the standard fallback. Each candidate passes the same review
+ * as a planned role, and a role another field of the entity holds is skipped, since the row would show the
+ * same value twice; its confidence stays the classifier's, below the route threshold, so the model may still
+ * replace its values.
+ *
+ * @param review the entity being reviewed and the plan and diagnostics to update
+ * @param property the field
+ * @param detected the field's arbitrated decision, which carries the classifier's ranked candidates
+ * @param taken the roles fields of the entity already hold; the adopted role is added
+ */
+function adoptBestEffortRole(
+    review: EntityPlanReview,
+    property: SchemaProperty,
+    detected: SemanticClassification | undefined,
+    taken: Set<string>
+): void {
+    const key = semanticPropertyKey(review.entity.entitySetName, property.name);
+    const reviewed = review.plan.get(key);
+    if (
+        !detected?.top ||
+        !reviewed ||
+        reviewed.role !== 'unknown' ||
+        reviewed.source === 'concept' ||
+        !BEST_EFFORT_REASONS.has(reviewed.abstentionReason)
+    ) {
+        return;
+    }
+    const silent: EntityPlanReview = { ...review, diagnostics: [] };
+    // A role the classifier ranks below `unknown` is less likely than no role at all, so it is no candidate.
+    const unknownRank = detected.top.findIndex(({ role }) => role === 'unknown');
+    const ranked = unknownRank === -1 ? detected.top : detected.top.slice(0, unknownRank);
+    for (const { role, confidence } of ranked) {
+        if (role === detected.role || taken.has(role) || routedRoleCompatibility(role, property) !== 'compatible') {
+            continue;
+        }
+        review.plan.set(
+            key,
+            Object.freeze({
+                role,
+                confidence,
+                source: 'classifier',
+                routeThreshold: detected.routeThreshold ?? semanticRules().thresholds.route,
+                top: detected.top,
+                bestEffort: true
+            })
+        );
+        reviewPlannedRole(silent, property);
+        const adopted = review.plan.get(key)?.role;
+        if (adopted !== undefined && adopted !== 'unknown') {
+            taken.add(adopted);
+            review.diagnostics.push({
+                code: 'SEMANTIC_ROLE_BEST_EFFORT',
+                severity: 'info',
+                target: key,
+                message: 'No role was certain for the field; the best-ranked role that fits it fills its values.'
+            });
+            return;
+        }
+    }
+    review.plan.set(key, reviewed);
 }
 
 /** The fields whose values supply a bound field, keyed by the bound field's semantic key. */

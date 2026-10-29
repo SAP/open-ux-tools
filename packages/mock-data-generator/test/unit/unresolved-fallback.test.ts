@@ -56,7 +56,7 @@ describe('LLM fallback for unresolved semantics', () => {
         expect(result.statistics.sft.fallbackSlots).toBe(2);
     });
 
-    it('keeps deterministic rows and reports an incomplete synthetic domain instead of shrinking it', async () => {
+    it('keeps the model rows of an incomplete synthetic domain and reports the partial fallback', async () => {
         const result = await generateServiceForTesting({ ...request, targets: request.targets.slice(0, 2) }, options, {
             sft: {
                 fingerprint: 'partial-domain',
@@ -64,10 +64,30 @@ describe('LLM fallback for unresolved semantics', () => {
             },
             candidateVerifier: { fingerprint: 'reviewed-test', verifyBatch: async (pairs) => pairs.map(() => true) }
         });
-        expect(result.diagnostics.some(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED')).toBe(true);
+        expect(result.resources.PhaseCodes).toEqual([{ Code: 'R', Caption: 'Review requested' }]);
+        expect(result.diagnostics.some(({ code }) => code === 'SFT_PARTIAL_FALLBACK')).toBe(true);
     });
 
-    it('pays for one model call when the verifier declines a synthetic domain candidate', async () => {
+    it('keeps the first row of each code when the model repeats codes of a synthetic domain', async () => {
+        // Given a model that proposes the same phase twice and a valid second phase
+        const result = await generateServiceForTesting({ ...request, targets: request.targets.slice(0, 2) }, options, {
+            sft: {
+                fingerprint: 'repeated-domain',
+                generate: async () => ({
+                    rows: [
+                        { Code: 'R', Caption: 'Review requested' },
+                        { Code: 'R', Caption: 'Reviewed' }
+                    ]
+                })
+            },
+            candidateVerifier: { fingerprint: 'reviewed-test', verifyBatch: async (pairs) => pairs.map(() => true) }
+        });
+
+        // Then the domain keeps the phase with its first caption instead of discarding every proposal
+        expect(result.resources.PhaseCodes).toEqual([{ Code: 'R', Caption: 'Review requested' }]);
+    });
+
+    it('pays for one model call and keeps a valid synthetic domain the verifier declines', async () => {
         const generate = jest.fn<SftGenerator['generate']>(async () => ({
             rows: [
                 { Code: 'R', Caption: 'Review requested' },
@@ -80,7 +100,7 @@ describe('LLM fallback for unresolved semantics', () => {
         });
         expect(result.diagnostics.some(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED')).toBe(true);
         expect(generate.mock.calls.filter(([input]) => input.entityName === 'PhaseCode')).toHaveLength(1);
-        expect(result.statistics.sft.acceptedSlots).toBe(0);
+        expect(result.resources.PhaseCodes.map(({ Caption }) => Caption)).toEqual(['Review requested', 'Approved']);
     });
 
     it('passes incoming value-help context to unresolved reference fields', async () => {

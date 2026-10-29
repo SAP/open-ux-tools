@@ -79,7 +79,7 @@ describe('per-field acceptance of fine-tuned values', () => {
         expect(effort).toMatchObject({ acceptedSlots: 2, invalidSlots: 1 });
     });
 
-    it('keeps the fallback caption of rows the relevance check declines and accepts the verified rows', async () => {
+    it('keeps the valid captions of rows the relevance check declines, and reports them', async () => {
         const result = await generateServiceForTesting(request, options, {
             sft: answering([
                 { Category: 'HW', CategoryText: 'Hardware fault', Remark: 'Replaced the fan', Effort: 2.5 },
@@ -91,9 +91,9 @@ describe('per-field acceptance of fine-tuned values', () => {
 
         const rows = result.resources.Tickets;
         expect(rows[0]).toMatchObject({ Category: 'HW', CategoryText: 'Hardware fault' });
-        expect(rows[1]?.CategoryText).not.toBe('Software fault');
-        expect(rows[1]).toMatchObject({ Remark: 'Patched the client', Effort: 1.5 });
-        expect(rows[2]?.CategoryText).not.toBe('Network outage');
+        expect(rows[1]).toMatchObject({ CategoryText: 'Software fault', Remark: 'Patched the client', Effort: 1.5 });
+        expect(rows[2]).toMatchObject({ CategoryText: 'Network outage' });
+        expect(result.diagnostics.some(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED')).toBe(true);
     });
 });
 

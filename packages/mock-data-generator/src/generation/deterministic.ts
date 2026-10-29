@@ -34,7 +34,8 @@ function routedRole(classification: SemanticClassification | undefined): string 
     if (
         !classification ||
         classification.role === 'unknown' ||
-        classification.confidence < (classification.routeThreshold ?? semanticRules().thresholds.statistics)
+        (!classification.bestEffort &&
+            classification.confidence < (classification.routeThreshold ?? semanticRules().thresholds.statistics))
     ) {
         return undefined;
     }
@@ -77,7 +78,7 @@ function nameInitials(name: string, maximum: number): string {
  * @param maximumLength declared maximum length, if any
  * @returns the code
  */
-function codeShaped(name: string, ordinal: number, maximumLength?: number): string {
+export function codeShaped(name: string, ordinal: number, maximumLength?: number): string {
     if (maximumLength !== undefined && maximumLength <= 0) {
         return '';
     }

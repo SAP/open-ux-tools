@@ -35,7 +35,6 @@ import {
 import { authoredRows, generatedRowFlags, preserveAuthoredRows } from './generation/authored.js';
 import { withholdUnrealisticValues } from './generation/realism-guard.js';
 import { applyStandardFallback } from './generation/standard-fallback.js';
-import { standardFallbackTest } from './spec/standard-mockserver.js';
 import { assessRealism, REALISM_CHECKS_VERSION, REALISM_HARD_CHECKS } from './quality/realism.js';
 import { finalizeSemanticServiceWorld } from './generation/service-world.js';
 import { reconcileCodeTexts } from './generation/code-texts.js';
@@ -111,7 +110,7 @@ function fingerprint(value: unknown): string {
     return sha256(canonicalJson(value));
 }
 
-const GENERATOR_LOGIC_VERSION = 45;
+const GENERATOR_LOGIC_VERSION = 46;
 
 /**
  * Marks every cell of a resource the caller supplied as authored, because `preserveAuthoredRows`
@@ -193,7 +192,8 @@ function valueTierStatistics(
     tally: ValueTierTally,
     targets: ReadonlyArray<MockDataTarget>,
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>,
-    statistics: SftGenerationStatistics
+    statistics: SftGenerationStatistics,
+    fallbackByField: ReadonlyMap<string, number> = new Map()
 ): {
     tiers: MockDataGeneratorTierStatistics;
     typedFloor: MockDataGeneratorTypedFloorCauses;
@@ -216,7 +216,6 @@ function valueTierStatistics(
         structural: 0
     };
     const causes = { keys: 0, booleans: 0, protocol: 0, addressable: 0 };
-    const isFallback = graph ? standardFallbackTest(graph) : (): boolean => false;
     let abstained = 0;
     const fieldTiers = new Map<string, Readonly<{ tier: ValueTier; cells: number; modelCells: number }>>();
     for (const { name } of targets) {
@@ -243,9 +242,9 @@ function valueTierStatistics(
             if (cause === 'addressable') {
                 // The model writes no empty values, so every empty cell of the column, and every cell the standard
                 // fallback filled after the floor left it empty, is one the floor abstained on.
-                const empty = rows.filter(
-                    (row) => row[propertyName] === null || row[propertyName] === '' || isFallback(row[propertyName])
-                ).length;
+                const empty =
+                    rows.filter((row) => row[propertyName] === null || row[propertyName] === '').length +
+                    (fallbackByField.get(semanticPropertyKey(name, propertyName)) ?? 0);
                 abstained += Math.min(remaining, empty);
             }
         }
@@ -715,8 +714,8 @@ interface ServiceGenerationContext {
     valueTiers: ValueTierTally;
     /** Receives the properties finalization projected from related entities. */
     projectedProperties: Map<string, Set<string>>;
-    /** Generated cells the realism guard withheld, and cells the standard fallback filled. */
-    withheld: { cells: number; fallback: number };
+    /** Generated cells the realism guard withheld, and cells the standard fallback filled, also by field. */
+    withheld: { cells: number; fallback: number; fallbackByField: ReadonlyMap<string, number> };
 }
 
 /** The request metadata, parsed and adjusted by the application domains and the synthetic scenario. */
@@ -1034,8 +1033,15 @@ function finalizeGeneratedResources(
     const guarded = withholdUnrealisticValues(graph, finalResources, request.existingData, plannedRoles, diagnostics);
     context.withheld.cells += guarded.withheld;
     // Last resort, as the standard mock server does: what no tier filled gets the property name and row index.
-    const completed = applyStandardFallback(graph, guarded.resources, request.existingData, plannedRoles);
+    const completed = applyStandardFallback(
+        graph,
+        guarded.resources,
+        request.existingData,
+        plannedRoles,
+        options.syntheticScenario?.coherence
+    );
     context.withheld.fallback += completed.filled;
+    context.withheld.fallbackByField = completed.filledByField;
     reportFinalTemporalViolations(graph, completed.resources, options.syntheticScenario, diagnostics);
     return completed.resources;
 }
@@ -1243,7 +1249,8 @@ function assembleGenerationResult(
         valueTiers,
         world.generationTargets,
         world.resources,
-        world.sftStatistics
+        world.sftStatistics,
+        context.withheld.fallbackByField
     );
     const result = Object.freeze({
         resources: world.resources,
@@ -1308,7 +1315,7 @@ async function executeServiceGeneration(
         diagnostics: [],
         valueTiers: new Map(),
         projectedProperties: new Map(),
-        withheld: { cells: 0, fallback: 0 }
+        withheld: { cells: 0, fallback: 0, fallbackByField: new Map() }
     };
     const world: GeneratedWorld =
         request.targets.length > 0

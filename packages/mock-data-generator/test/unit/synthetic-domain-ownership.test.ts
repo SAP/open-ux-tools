@@ -279,7 +279,7 @@ describe('synthetic reference-domain ownership', () => {
         expect(result.diagnostics.some(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED')).toBe(true);
     });
 
-    it('keeps deterministic rows when a separate relevance check rejects a synthetic caption', async () => {
+    it('keeps a valid synthetic caption the relevance check does not confirm, and reports it', async () => {
         let generations = 0;
         const sft: SftGenerator = {
             fingerprint: 'candidate-retry-test',
@@ -308,7 +308,8 @@ describe('synthetic reference-domain ownership', () => {
         });
 
         expect(generations).toBe(1);
-        expect(result.resources.Codes).toEqual([{ Code: 'K0', Caption: 'Fallback' }]);
+        expect(result.resources.Codes).toEqual([{ Code: 'K1', Caption: 'Bus' }]);
+        expect(result.diagnostics.some(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED')).toBe(true);
         expect(verifier.verifyBatch).toHaveBeenCalledTimes(1);
         expect(verifier.verifyBatch).toHaveBeenCalledWith(
             [
@@ -322,9 +323,9 @@ describe('synthetic reference-domain ownership', () => {
         );
         expect(result.statistics).toMatchObject({
             eligibleSlots: 2,
-            acceptedSlots: 0,
-            rejectedSlots: 2,
-            fallbackSlots: 2
+            acceptedSlots: 2,
+            rejectedSlots: 0,
+            fallbackSlots: 0
         });
     });
 
@@ -363,10 +364,11 @@ describe('synthetic reference-domain ownership', () => {
             existingData: { Codes: absentOwnership },
             candidateVerifier: verifier
         });
-        // The off-topic caption is checked and declined, so the deterministic caption stands.
+        // The caption is checked; declined, it is still closer than the fallback, so it stands and is reported.
         expect(generations).toBe(1);
         expect(verifier.verifyBatch).toHaveBeenCalledTimes(1);
-        expect(result.resources.Codes).toEqual([{ Code: 'K0', Caption: 'Fallback' }]);
+        expect(result.resources.Codes).toEqual([{ Code: 'K0', Caption: 'Bus' }]);
+        expect(result.diagnostics.some(({ code }) => code === 'SFT_CANDIDATE_RELEVANCE_UNVERIFIED')).toBe(true);
     });
 
     it('keeps deterministic captions when the proposal is off-topic', async () => {

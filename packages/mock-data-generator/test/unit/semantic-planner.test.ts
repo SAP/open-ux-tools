@@ -156,11 +156,14 @@ describe('semantic-v2 arbitration', () => {
             providerState: 'available',
             evidence: { rawCandidate: { role: 'unknown' } }
         });
+        // A conflicting classifier role is not detected, but the best-ranked role that fits it and that no other
+        // field of the entity holds (SWIFTCode holds bic) still fills the field
         expect(decisions.get('BankInternalID')).toMatchObject({
-            acceptedRole: undefined,
-            abstentionReason: 'conflicting-candidates',
-            providerState: 'not-selected'
+            acceptedRole: 'bank_account_internal_id',
+            abstentionReason: undefined,
+            providerState: 'available'
         });
+        expect(decisions.get('BankInternalID')?.detectedRole).toBeUndefined();
         expect(decisions.get('SWIFTCode')).toMatchObject({
             acceptedRole: 'bic',
             abstentionReason: undefined,

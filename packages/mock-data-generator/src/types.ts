@@ -177,6 +177,11 @@ export interface SemanticClassification {
     predictionSet?: ReadonlyArray<string>;
     top?: ReadonlyArray<Readonly<{ role: string; confidence: number }>>;
     abstentionReason?: MockDataGeneratorAbstentionReason;
+    /**
+     * The role was not certain but is the best-ranked one that fits the field: its values fill the field, and
+     * the fine-tuned tier may still replace them.
+     */
+    bestEffort?: boolean;
 }
 
 export interface SemanticClassifier {
@@ -312,6 +317,7 @@ export type MockDataGeneratorDiagnosticCode =
     | 'SEMANTIC_DOMAIN_CONFLICT'
     | 'SEMANTIC_DOMAIN_UNAVAILABLE'
     | 'SEMANTIC_PROVIDER_UNAVAILABLE'
+    | 'SEMANTIC_ROLE_BEST_EFFORT'
     | 'SEMANTIC_ROLE_DOMAIN_CONFLICT'
     | 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE'
     | 'SEMANTIC_TUPLE_MEMBERSHIP_INVALID'
