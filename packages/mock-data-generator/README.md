@@ -1,8 +1,69 @@
 # `@sap-ux/mock-data-generator`
 
-Generate OData mock data offline from EDMX or CSN metadata. The package includes a semantic classifier, a local language model, and synthetic value banks.
+Create realistic test data for an OData service, on your own machine, without a backend and without sending anything to the cloud.
 
-## Usage
+You give it the service metadata (EDMX or CSN). It gives you rows for each entity set: names that look like names, dates in the right order, codes with matching texts, and references that point to rows that exist. Everything runs offline. The package ships with a small field classifier, a small local language model and curated lists of sample values.
+
+## What it does, in short
+
+- Reads your service metadata and works out what each field is for (a city, an email, a status code, an amount...).
+- Fills each field from the most trustworthy source it has, from your own data down to a safe default.
+- Keeps rows consistent: a text belongs to its code, a start date comes before its end date, a foreign key points to a real row.
+- Checks the result before handing it back, and tells you where a value is only a best guess.
+- Can write the data straight into an application's mock data folder, safely.
+
+## How it works
+
+```mermaid
+flowchart LR
+    A["Service metadata<br/>EDMX or CSN"] --> B["Read the schema<br/>entities, keys, annotations,<br/>value helps, relationships"]
+    B --> C["Understand each field<br/>metadata, rules and<br/>the field classifier"]
+    C --> D["Fill the rows<br/>tier by tier"]
+    D --> E["Make the rows agree<br/>codes and texts, dates,<br/>addresses, references"]
+    E --> F["Check the result<br/>formats, relationships,<br/>realism checks"]
+    F --> G["Rows per entity set<br/>plus a report"]
+```
+
+### Where each value comes from
+
+Every cell is filled by the first source that has a good answer. The sources are called tiers, and the result tells you how many cells each tier filled.
+
+```mermaid
+flowchart TD
+    Start(["A cell to fill"]) --> T0a{"Did you supply<br/>rows for it?"}
+    T0a -- yes --> Keep["Keep your value<br/>T0 authored"]
+    T0a -- no --> T0b{"Does the schema list<br/>the allowed values?<br/>enumeration, boolean"}
+    T0b -- yes --> Declared["Pick an allowed value<br/>T0 declared"]
+    T0b -- no --> T1{"Is the field's meaning<br/>recognised?<br/>city, email, currency..."}
+    T1 -- yes --> Bank["Take a value from the<br/>matching sample list<br/>T1 recognised"]
+    T1 -- no --> T2{"Can the local model<br/>propose a value that<br/>passes the checks?"}
+    T2 -- yes --> Model["Use the model's value<br/>T2 model"]
+    T2 -- no --> T3["Write a value that fits the<br/>declared type and length<br/>T3 typed"]
+```
+
+Keys and foreign keys are generated so that every reference resolves. When nothing knows what a text field holds, it gets the value the standard SAP Fiori elements mock server would write, the property name and the row number (`BankNumber_3`). That is honest: it says plainly that the value is a placeholder, instead of pretending to be real.
+
+### The local model and its time budget
+
+The language model is the slowest part, so it only fills what the earlier tiers could not, and it runs inside a time budget. Code lists the model writes go first, because other fields refer to them; then the entity sets the host names in `sftPriorityTargets` (an editor passes the ones the application displays); then the rest, smallest first. Each entity set may use what is left of the budget, and stops as soon as its fields are done, so the time it does not need goes to the next one. The model writes a few fields per call, so even a slow machine finishes some calls instead of none. Whatever the model does not reach keeps its earlier value.
+
+```mermaid
+sequenceDiagram
+    participant G as Generator
+    participant M as Local model
+    Note over G: Budget starts
+    G->>M: Priority entity set A, a few fields per call
+    M-->>G: Values for A
+    Note over G: A finished early, the rest of the budget stays
+    G->>M: Priority entity set B
+    M-->>G: Values for B
+    G->>M: Other entity sets while time remains
+    Note over G: Budget spent, the remaining fields keep their earlier values
+```
+
+The model's answers are kept in memory, and optionally on disk (`answerCacheDirectory`), so the same request is answered again without running the model.
+
+## Quick start
 
 ```ts
 import { createMockDataGenerator, generateProjectData } from '@sap-ux/mock-data-generator';
@@ -27,32 +88,113 @@ await generateProjectData({
 });
 ```
 
-`request` contains metadata, service identity, target resources, authored rows, and an optional cancellation signal. Generation modes are `auto`, `learned`, and `deterministic`. `generateService()` and `inspectService()` also have one-shot exports that dispose their session automatically. `getMockDataGeneratorInfo()` returns the public API version (`apiVersion: 2`, which hosts pin), package/model identity and the required native runtime, without allocating it.
+`request` holds the metadata, the service identity, the entity sets to fill, any rows you already have, and an optional cancellation signal. `generateService()` and `inspectService()` are also exported as one-shot functions that clean up after themselves. `getMockDataGeneratorInfo()` tells you the public API version (`apiVersion: 2`, which hosts pin), the package and model identity, and the native runtime it needs, without loading anything.
 
-Sessions accept `onProgress`, an optional absolute `answerCacheDirectory`, an optional absolute `resourceRoot`, and an execution mode. Execution modes are budget presets named after the host's purpose and kept for compatibility: `api` (default) and `start-mock` apply no preset, and `data-editor` bounds the language model for an interactive editor with the `DATA_EDITOR_SFT_*` limits of `src/limits.ts`. Explicit generation options always win over a preset; the preset table itself is not exported.
+### Modes
 
-`resourceRoot` is for hosts that bundle the package (for example with esbuild, as an ES module or CommonJS bundle) and copy its whole `resources/` directory elsewhere. Everything is read from that directory: the model manifest, the model artifacts, the value banks, the semantic rules and the role registry. Every data file is verified against the manifest's SHA-256 digests before it is parsed. Importing the package reads no resource file, so a bundle loads even where the package cannot locate its own `resources/` directory; a CommonJS bundle must pass `resourceRoot`. A process uses one set of value banks, rules and registry: the first session fixes the root they are read from, and a later session on another root is accepted only when that root holds byte-identical files (otherwise `CONFIGURATION_INVALID`). `getMockDataGeneratorInfo({ resourceRoot })` and `generateProjectData({ ..., resourceRoot })` accept the same option.
+| Mode            | What it uses                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `deterministic` | Metadata, rules and sample lists only. Fast, the same output every time for the same seed. |
+| `learned`       | Adds the field classifier and the local model.                                             |
+| `auto`          | Uses the models when they are available and falls back to deterministic otherwise.         |
 
-The CLI supports `mockgen help`, `mockgen info` and `mockgen generate --input <request.json>`, where the input has the `generateProjectData()` shape. The command result is one JSON document on standard output; usage and error messages go through `@sap-ux/logger`. The CLI validates the request document before generating and names the JSON path of the first invalid value; a cancellation signal cannot be supplied in JSON.
+### Common generation options
+
+| Option                               | What it does                                                                    |
+| ------------------------------------ | ------------------------------------------------------------------------------- |
+| `rowsPerEntity`                      | Rows per entity set: one number, or a number per entity set.                    |
+| `seed`                               | Same seed, same deterministic values.                                           |
+| `referenceDate`, `windowYears`       | The calendar window dates are drawn from (`YYYY-MM-DD`, and 1 to 100 years).    |
+| `sftBudgetMs`, `sftTimeoutMs`        | Time the local model may use for the whole service, and for one entity set.     |
+| `sftDeadlineMs`                      | Time for the whole generation; the model gets what the earlier steps leave.     |
+| `sftPriorityTargets`                 | Entity sets the model fills first, such as the ones the application shows.      |
+| `sftModelRows`                       | Rows per entity set the model writes; the other rows reuse its values.          |
+| `sftFieldsPerCall`                   | Fields the model writes per call. Fewer fields finish sooner on a slow machine. |
+| `sampleDataset`, `syntheticScenario` | Your own sample texts, or explicit domains and consistency rules.               |
+
+### Sessions and execution modes
+
+A session (`createMockDataGenerator()`) accepts `onProgress`, an optional absolute `answerCacheDirectory`, an optional absolute `resourceRoot`, and an execution mode. Execution modes are time-budget presets named after the host's purpose: `api` (default) and `start-mock` apply no preset, and `data-editor` keeps the local model within the limits an interactive editor can wait for (the `DATA_EDITOR_SFT_*` limits in `src/limits.ts`). Options you pass yourself always win over a preset.
+
+### Command line
+
+`mockgen help`, `mockgen info` and `mockgen generate --input <request.json>`, where the input has the `generateProjectData()` shape. The command prints one JSON document to standard output; usage and error messages go through `@sap-ux/logger`. The request is checked before anything is generated, and an invalid value is reported with its JSON path. A cancellation signal cannot be given in JSON.
+
+## Writing data into a project
+
+`generateProjectData()` never leaves a project half-written.
+
+```mermaid
+flowchart TD
+    A["Generate the rows"] --> B["Check paths<br/>no traversal, symlinks<br/>or special files"]
+    B --> C["Take the project lock<br/>.mockgen-project.lock"]
+    C --> D["Write and validate the JSON<br/>in a staging folder"]
+    D --> E["Replace the data folder<br/>unrelated files are kept"]
+    E -- success --> F["Release the lock"]
+    E -- failure --> G["Restore the original files"] --> F
+```
+
+Runs on the same project take turns through the lock directory next to the data folder; a lock left behind by an ended process on the same host is removed automatically. It does not edit application scripts or UI5 configuration.
+
+## What you get back
+
+```mermaid
+flowchart LR
+    R["Result"] --> Rows["resources<br/>rows per entity set"]
+    R --> Tiers["tiers and routing<br/>which source filled what"]
+    R --> Abst["abstentions<br/>cells nothing could give<br/>a meaningful value"]
+    R --> Real["realism<br/>no placeholders, no leaked names,<br/>one text per code, dates in order"]
+    R --> Val["validation and coverage<br/>formats, relationships"]
+    R --> Diag["diagnostics<br/>what was guessed, skipped<br/>or degraded, and why"]
+```
+
+The result also reports the execution mode actually used, which components were ready, and fingerprints of the request, so you can tell a reproducible result from one that depended on the model's time budget. Some things to keep in mind:
+
+- Data that is valid in format is not proven valid for the business.
+- `validation.relationships` is false when rows you supplied reference rows that do not exist; generated references always resolve.
+- Inspection includes generated values only when you ask for them, and progress events never contain prompts or row values.
+- Schema elements the generator does not support are left out, with a diagnostic.
+
+Your own data, enumerations, value helps and explicit relationships always win over synthetic samples. A generated code list with texts is accepted only after an independent relevance check, and a model value for a field whose role is only a best guess is kept only when that role accepts it.
 
 ## Errors and diagnostics
 
-Failures a caller can act on throw `MockGenError` with a stable `code` from `MOCKGEN_ERROR_CODE` (exported with the `MockGenErrorCode` type): for example `REQUEST_INVALID` (request document, request or generation option), `METADATA_INVALID`, `CONFIGURATION_INVALID` (session options such as a relative `resourceRoot`), `CLI_USAGE`, `FILE_UNREADABLE`, `RESOURCE_INTEGRITY` (a shipped resource or model is missing, corrupt or does not match the manifest), `PROJECT_PATH_UNSAFE`, `PROJECT_LOCKED`, `PROJECT_DATA_CHANGED` and `PROJECT_RECOVERY_REQUIRED`. The underlying error is kept as `cause`. Messages for people (CLI usage, request validation, lock and recovery, integrity failures) are translatable and come from `src/translations/mock-data-generator.i18n.json` through i18next; match on `code`, not on message text. `TypeError` remains only for internal contract violations, as documented in `src/errors.ts`.
+Failures you can act on throw `MockGenError` with a stable `code` from `MOCKGEN_ERROR_CODE` (exported with the `MockGenErrorCode` type), for example `REQUEST_INVALID` (request document, request or generation option), `METADATA_INVALID`, `CONFIGURATION_INVALID` (session options such as a relative `resourceRoot`), `CLI_USAGE`, `FILE_UNREADABLE`, `RESOURCE_INTEGRITY` (a shipped resource or model is missing, corrupt or does not match the manifest), `PROJECT_PATH_UNSAFE`, `PROJECT_LOCKED`, `PROJECT_DATA_CHANGED` and `PROJECT_RECOVERY_REQUIRED`. The underlying error is kept as `cause`. Messages for people are translatable and come from `src/translations/mock-data-generator.i18n.json` through i18next, so match on `code`, not on the message text. `TypeError` is left only for internal contract violations, as documented in `src/errors.ts`.
 
-Generation diagnostics are not errors: `MockDataGeneratorDiagnostic.code` is the string-literal union `MockDataGeneratorDiagnosticCode`, and diagnostic messages are English technical text.
+Diagnostics are not errors: they explain how a result was produced. `MockDataGeneratorDiagnostic.code` is the string-literal union `MockDataGeneratorDiagnosticCode`, and diagnostic messages are English technical text.
 
-Metadata `format` is `edmx` or `csn`. When a CSN document defines services, only one service is read and its entity sets carry CAP's OData names (`CatalogService.Books.texts` becomes `Books_texts`). The service is chosen by `service.alias` (qualified or short service name), otherwise by matching `service.urlPath` against the service's `@path` or CAP's default path, otherwise it must be the only service.
+## Metadata formats
 
-## Generation and validation
+`format` is `edmx` or `csn`. When a CSN document defines services, one service is read and its entity sets carry CAP's OData names (`CatalogService.Books.texts` becomes `Books_texts`). The service is chosen by `service.alias` (qualified or short service name), otherwise by matching `service.urlPath` against the service's `@path` or CAP's default path, otherwise it must be the only service.
 
-Authored data, enumerations, value helps, and explicit relationships take precedence over synthetic samples. Deterministic dates fall in a calendar window set by `referenceDate` (`YYYY-MM-DD`, default `2020-01-01`) and `windowYears` (1 to 100, default 6). The classifier routes supported fields to deterministic providers; the language model proposes unresolved values, and validated deterministic values provide fallback. Classifier and model failures are isolated. Generated code/text domains require an independent candidate verifier before model proposals are accepted.
+## Bundling the package
 
-Results report execution mode, component readiness, diagnostics, routing, value tiers, the cells nothing could give a meaningful value, which keep the standard mock server value (property name and row index) or stay empty where the column is too short (`abstentions`), whether the generated rows pass the hard realism checks (`realism`: no placeholder, no leaked name, one text per code, no start after its end), semantic coverage, validation, and fingerprints. Format-valid synthetic data does not establish business validity. `validation.relationships` is false when caller-supplied rows reference rows that do not exist; generated references always resolve. Inspection includes generated values only when explicitly requested, and progress events exclude prompts and row values. Unsupported schema elements are omitted with diagnostics.
+`resourceRoot` is for hosts that bundle the package (for example with esbuild, as an ES module or CommonJS bundle) and copy its whole `resources/` directory elsewhere. Everything is read from that directory: the model manifest, the model files, the value banks, the semantic rules and the role registry, and every data file is checked against the manifest's SHA-256 digests before it is read. Importing the package reads no resource file, so a bundle loads even where the package cannot find its own `resources/` directory; a CommonJS bundle must pass `resourceRoot`. A process uses one set of value banks, rules and registry: the first session fixes the root, and a later session on another root is accepted only when that root holds byte-identical files (otherwise `CONFIGURATION_INVALID`). `getMockDataGeneratorInfo({ resourceRoot })` and `generateProjectData({ ..., resourceRoot })` accept the same option.
 
-`generateProjectData()` stages and validates JSON before replacing the target directory, preserves unrelated files, and restores originals on commit failure. Concurrent runs on the same project take turns through a lock directory (`.mockgen-project.lock`) next to the data directory; a lock left by an ended process on the same host is removed automatically. It rejects traversal, symlinks, and special files. It does not edit application scripts or UI5 configuration.
+## Resources, models and release checks
 
-## Resources and packaging
+- The sample value lists live in `resources/banks/value-banks.v2.json`.
+- The semantic rules (lexical rules, ABAP data elements, temporal and consistency vocabulary, model output filters, routing policy and thresholds) live in `resources/rules/semantic-rules.v1.json`, described by `semantic-rules.schema.json`.
+- The role registry is `resources/rules/role-registry.v1.json`.
+- The order of values and rules affects seeded output.
+- After changing resources, regenerate the manifest with `node scripts/build-model-manifest.mjs` from the package directory. An approved provenance is kept while the manifest revision is unchanged and is withdrawn when the content changes.
 
-All role and concept value banks live in `resources/banks/value-banks.v2.json`, and the semantic rules (lexical rules, ABAP data elements, temporal and coherence vocabulary, model output filters, routing policy and thresholds) in `resources/rules/semantic-rules.v1.json`, documented by `semantic-rules.schema.json`. The role registry is `resources/rules/role-registry.v1.json`. Value and rule order affect seeded output. `sampleDataset` can replace descriptive samples; `syntheticScenario` supplies explicit domains and coherence rules. After changing resources, regenerate the manifest with `node scripts/build-model-manifest.mjs` from the package directory. An approved provenance is kept while the manifest revision is unchanged and is withdrawn when the content changes.
+The model manifest, the generation config (including the prompt texts of the model contract), the tokenizer, the vocabulary and the classifier heads are tracked with the package. The two ONNX model files are supplied separately for the npm tarball, as described in [model supply](docs/model-supply.md). The models are English-only.
 
-The model manifest, the SFT generation config (including the prompt texts of the model contract), the tokenizer, the vocabulary and the classifier heads are tracked with the package; the two ONNX binaries are supplied separately for inclusion in the npm tarball, as described in [model supply](docs/model-supply.md). The models are English-only. The package verifies the digests of the value banks, semantic rules and role registry and the pinned `onnxruntime-node` version when a session is created, and the model artifacts' sizes and SHA-256 hashes before it first loads models (once per process; never in deterministic mode). A model component that fails to load is reported as a warning diagnostic with its cause, and generation continues on the deterministic tiers. Run `pnpm check:package` to verify the packed artifact; `pnpm check:release` additionally checks model qualification, relevance verification, approved provenance, and that `MOCKGEN_REALISM_REPORTS` lists a passing realism sweep report of this exact build for each release profile (no hard-check finding, nothing worse than the baseline release). See [model licenses and provenance](docs/model-licenses.md) for redistribution requirements, and the [data and heuristics design record](docs/design/data-and-heuristics.md) for where each kind of data lives, the specification citations of the remaining in-code constants, the documented limits of each heuristic, the determinism guarantees and the integrity chain.
+```mermaid
+flowchart LR
+    A["Session created"] --> B["Check digests of value banks,<br/>rules and role registry,<br/>and the native runtime version"]
+    B --> C{"Models needed?<br/>not in deterministic mode"}
+    C -- yes --> D["Check model sizes and SHA-256,<br/>once per process"]
+    D --> E{"Loaded?"}
+    E -- yes --> F["Generate with models"]
+    E -- no --> G["Warn with the cause and<br/>generate without models"]
+    C -- no --> H["Generate without models"]
+```
+
+Run `pnpm check:package` to check the packed artifact. `pnpm check:release` also checks model qualification, relevance verification and approved provenance, and that `MOCKGEN_REALISM_REPORTS` lists a passing realism report of this exact build for each release profile (no hard-check finding, nothing worse than the previous release).
+
+## Further reading
+
+- [Model licenses and provenance](docs/model-licenses.md): redistribution requirements.
+- [Data and heuristics design record](docs/design/data-and-heuristics.md): where each kind of data lives, the specification behind the remaining constants in code, the known limits of each heuristic, the determinism guarantees and the integrity chain.
