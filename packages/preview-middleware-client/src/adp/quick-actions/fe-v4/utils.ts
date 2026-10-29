@@ -130,7 +130,7 @@ export function getPropertyPath(table: UI5Element, property: 'actions' | 'column
     const macroTable = table.getParent();
     const configPath = '';
     if (isMacroTable(macroTable)) {
-        const lineItemAnnotation = getLineItemAnnotation(macroTable);
+        const lineItemAnnotation = getLineItemAnnotation(macroTable as unknown as UI5Element);
 
         const navigationPath = macroTable.metaPath.split(macroTable.getProperty('contextPath'))[1];
         if (!lineItemAnnotation) {
