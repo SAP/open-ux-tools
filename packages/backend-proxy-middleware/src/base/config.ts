@@ -23,9 +23,12 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
             process.env.all_proxy ||
             process.env.ALL_PROXY;
 
-        if (!proxyFromEnv && proxyFromConfig) {
-            process.env.http_proxy = proxyFromConfig;
-            process.env.https_proxy = proxyFromConfig;
+        // proxy-from-env@2 no longer reads npm_config_*; promote legacy .npmrc proxy into standard vars.
+        const legacyNpmProxy = process.env.npm_config_proxy || process.env.npm_config_https_proxy;
+        const fallback = proxyFromEnv ? undefined : legacyNpmProxy || proxyFromConfig;
+        if (fallback) {
+            process.env.http_proxy = fallback;
+            process.env.https_proxy = fallback;
         }
     }
 }

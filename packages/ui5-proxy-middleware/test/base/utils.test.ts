@@ -147,6 +147,13 @@ describe('utils', () => {
             process.env.http_proxy = envProxy;
             process.env.https_proxy = envHttpsProxy;
         });
+        test('get value from npm_config_proxy when no standard env is set (legacy .npmrc support)', () => {
+            delete process.env.http_proxy;
+            delete process.env.https_proxy;
+            process.env.npm_config_proxy = corporateProxy;
+            expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
+            delete process.env.npm_config_proxy;
+        });
     });
 
     describe('updateProxyEnv', () => {
@@ -154,6 +161,8 @@ describe('utils', () => {
         afterEach(() => {
             delete process.env.http_proxy;
             delete process.env.https_proxy;
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
         });
 
         test('set value from CLI (wins over input)', () => {
@@ -174,7 +183,24 @@ describe('utils', () => {
             updateProxyEnv(undefined);
             expect(process.env.http_proxy).toEqual(corporateProxy);
             expect(process.env.https_proxy).toEqual(corporateProxy);
-            process.env.FIORI_TOOLS_PROXY = envProxy;
+            if (envProxy === undefined) {
+                delete process.env.FIORI_TOOLS_PROXY;
+            } else {
+                process.env.FIORI_TOOLS_PROXY = envProxy;
+            }
+        });
+        test('promotes legacy npm_config_proxy into standard vars when no standard env is set', () => {
+            process.env.npm_config_proxy = corporateProxy;
+            updateProxyEnv();
+            expect(process.env.http_proxy).toEqual(corporateProxy);
+            expect(process.env.https_proxy).toEqual(corporateProxy);
+        });
+        test('standard env wins over npm_config_proxy (no promotion)', () => {
+            const standard = 'https://standard.proxy:3128';
+            process.env.http_proxy = standard;
+            process.env.npm_config_proxy = corporateProxy;
+            updateProxyEnv();
+            expect(process.env.http_proxy).toEqual(standard);
         });
     });
 
