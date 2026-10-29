@@ -9,7 +9,6 @@ const mockWriteContextMetadata = jest.fn<any>(
 
 const mockGetMergedManifest = jest.fn<() => Promise<object>>();
 jest.unstable_mockModule('../../../src/utils', () => ({
-    getMergedManifest: mockGetMergedManifest,
     formatXml: mockFormatXml,
     writeContextMetadata: mockWriteContextMetadata,
     logger: {
@@ -24,7 +23,8 @@ const mockReadUi5Config = jest.fn<any>();
 const mockIsCFEnvironment = jest.fn<any>().mockResolvedValue(false);
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     readUi5Config: mockReadUi5Config,
-    isCFEnvironment: mockIsCFEnvironment
+    isCFEnvironment: mockIsCFEnvironment,
+    getMergedManifest: mockGetMergedManifest
 }));
 
 const mockCreateAbapServiceProvider = jest.fn<any>();

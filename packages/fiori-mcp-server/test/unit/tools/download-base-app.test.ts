@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
-import type { AppResources } from '../../../src/utils/manifest-builder.js';
+import type { AppResources } from '@sap-ux/adp-tooling';
 import { DownloadAppResourcesOutputSchema } from '../../../src/types/output.js';
 
 const downloadAppResources = jest.fn<(appPath: string) => Promise<AppResources>>();
-jest.unstable_mockModule('../../../src/utils/index.js', () => ({ downloadAppResources }));
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({ downloadAppResources }));
 
 const { downloadBaseApp } = await import('../../../src/tools/download-base-app.js');
 

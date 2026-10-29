@@ -14,10 +14,11 @@ const readUi5Config = jest.fn<() => Promise<typeof ui5Config>>();
 const getVariant = jest.fn<() => Promise<{ id?: unknown }>>();
 const getWebappPath = jest.fn<() => Promise<string>>();
 
-jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({ readUi5Config, getVariant }));
+const realHelper = await import('../../../src/base/helper.js');
+jest.unstable_mockModule('../../../src/base/helper.js', () => ({ ...realHelper, readUi5Config, getVariant }));
 jest.unstable_mockModule('@sap-ux/project-access', () => ({ getWebappPath }));
 
-const { getMergedManifest, downloadAppResources } = await import('../../../src/utils/manifest-builder.js');
+const { getMergedManifest, downloadAppResources } = await import('../../../src/base/manifest-builder.js');
 
 /**
  * Mocks the adaptation module resolved from a project directory.

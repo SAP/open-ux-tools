@@ -25,7 +25,7 @@ export type ODataMetadataEntry = {
  */
 async function getProvider(appPath: string): Promise<AbapServiceProvider | undefined> {
     if (await isCFEnvironment(appPath)) {
-        return Promise.resolve(undefined);
+        return undefined;
     }
     const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
     const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
