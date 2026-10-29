@@ -222,7 +222,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode', 'chromium-bidi', 'playwright-core', '@ui5/task-adaptation'],
+    external: ['vscode', 'chromium-bidi'],
     legalComments: 'linked',
     metafile: true,
     plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]

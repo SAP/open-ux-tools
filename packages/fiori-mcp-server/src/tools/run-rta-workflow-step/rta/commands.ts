@@ -205,10 +205,9 @@ export async function describeUi(
         params.rootElementId = rootElementId;
     }
     // ActionHelpers.describeUI returns the UI element tree directly; the transport
-    // normalizes it into the Flex envelope, so `unwrap` yields the tree (and throws
-    // FrontendActionError if the runtime reported a failure, e.g. root not found).
-    const tree = unwrap(name, await transport.callFrontendAction<UiElementNode>(page.site, name, params, page.frameId));
-    return { content: tree };
+    // normalizes it into the Flex envelope, so `unwrap` yields the root node (and
+    // throws FrontendActionError if the runtime reported a failure, e.g. root not found).
+    return unwrap(name, await transport.callFrontendAction<UiElementNode>(page.site, name, params, page.frameId));
 }
 
 /**
@@ -239,9 +238,9 @@ export async function executeUfaAction(
         params.actionParameters = actionParameters;
     }
     // A failed press is not exceptional — the caller decides what to do — so read the
-    // normalized envelope directly instead of unwrapping (which would throw). The
-    // transport maps a runtime `{ success: false }` to `isSuccess: false` and carries
-    // the raw result (incl. any error message) in `payload`.
+    // normalized envelope directly instead of unwrapping (which would throw). On success
+    // the raw UFA result is in `payload`; on failure the transport puts the reason in
+    // `error`, so surface that (the skill tells callers to report it to the user).
     const result = await transport.callFrontendAction<unknown>(page.site, name, params, page.frameId);
-    return { isSuccess: result.isSuccess, result: result.payload };
+    return { isSuccess: result.isSuccess, result: result.isSuccess ? result.payload : (result.error ?? result.payload) };
 }

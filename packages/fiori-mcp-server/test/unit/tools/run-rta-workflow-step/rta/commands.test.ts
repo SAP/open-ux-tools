@@ -188,7 +188,7 @@ describe('rta/commands', () => {
     // Reached via ActionHelpers; the transport normalizes their raw results into
     // the { isSuccess, payload, error } envelope, so these use ok()/fail().
 
-    test('describeUi calls the UFA describeUI action and returns the tree as content', async () => {
+    test('describeUi calls the UFA describeUI action and returns the root node directly', async () => {
         const tree = { id: 'root', type: 'sap.m.Page', children: [{ id: 'go', type: 'sap.m.Button' }] };
         transport.callFrontendAction.mockResolvedValueOnce(ok(tree));
         const result = await describeUi(transport, { site: SITE, frameId: FRAME });
@@ -198,7 +198,7 @@ describe('rta/commands', () => {
             {},
             FRAME
         );
-        expect(result).toEqual({ content: tree });
+        expect(result).toEqual(tree);
     });
 
     test('describeUi forwards rootElementId when provided', async () => {
@@ -233,12 +233,14 @@ describe('rta/commands', () => {
         expect(result.result).toEqual({ success: true });
     });
 
-    test('executeUfaAction maps a failed press to isSuccess:false', async () => {
+    test('executeUfaAction maps a failed press to isSuccess:false and surfaces the error reason', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(
             fail('UFA_ACTION_FAILED', "Control does not support 'press' action")
         );
         const result = await executeUfaAction(transport, { site: SITE }, 'press', 'label-1');
         expect(result.isSuccess).toBe(false);
+        // The failure reason lives in the envelope's error, not payload — it must be surfaced.
+        expect(result.result).toMatchObject({ message: "Control does not support 'press' action" });
     });
 
     test('executeUfaAction forwards actionParameters when provided', async () => {

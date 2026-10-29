@@ -175,7 +175,7 @@ describe('runRtaWorkflowStep dispatcher', () => {
 
     describe('describe_ui step', () => {
         test('calls describeUi without rootElementId and returns uiTree', async () => {
-            const tree = { content: { id: 'root', type: 'sap.ui.core.mvc.XMLView', children: [] } };
+            const tree = { id: 'root', type: 'sap.ui.core.mvc.XMLView', children: [] };
             mockDescribeUi.mockResolvedValue(tree);
             const result = (await runRtaWorkflowStep({ step: 'describe_ui', site: SITE })) as any;
             expect(mockDescribeUi).toHaveBeenCalledWith(
@@ -187,7 +187,7 @@ describe('runRtaWorkflowStep dispatcher', () => {
         });
 
         test('passes rootElementId to describeUi when provided', async () => {
-            mockDescribeUi.mockResolvedValue({ content: { id: 'tbl', type: 'sap.m.Table', children: [] } });
+            mockDescribeUi.mockResolvedValue({ id: 'tbl', type: 'sap.m.Table', children: [] });
             await runRtaWorkflowStep({ step: 'describe_ui', site: SITE, payload: { rootElementId: 'tbl' } });
             expect(mockDescribeUi).toHaveBeenCalledWith(expect.anything(), expect.anything(), 'tbl');
         });

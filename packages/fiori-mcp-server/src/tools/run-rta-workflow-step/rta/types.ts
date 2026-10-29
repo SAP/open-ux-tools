@@ -158,12 +158,11 @@ export interface UiElementNode {
 }
 
 /**
- * Result of the `describeUI` Unified Frontend Action.
+ * Result of the `describeUI` Unified Frontend Action: the root node of the
+ * current UI element tree. `describe_ui` returns this directly as `uiTree`, so
+ * callers inspect `uiTree.id`, `uiTree.children`, etc.
  */
-export interface DescribeUiResult {
-    /** Root of the current UI element tree. */
-    content: UiElementNode;
-}
+export type DescribeUiResult = UiElementNode;
 
 /**
  * Result of the `executeAction` Unified Frontend Action.
