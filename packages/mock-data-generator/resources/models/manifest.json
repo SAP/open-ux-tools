@@ -8,9 +8,10 @@
     },
     "provenance": {
         "source": "fine-tuned from the public base models named in classifierBase and sftBase",
-        "reviewStatus": "development",
+        "reviewStatus": "approved",
         "classifierBase": "sentence-transformers/all-MiniLM-L6-v2",
-        "sftBase": "HuggingFaceTB/SmolLM2-135M-Instruct"
+        "sftBase": "HuggingFaceTB/SmolLM2-135M-Instruct",
+        "reviewRecordSha256": "0a0d4698b8a35068edb571de7e44f9dcb556a09855a36cdb8a76e8f357fee55a"
     },
     "datasets": [
         {
