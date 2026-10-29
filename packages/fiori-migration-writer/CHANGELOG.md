@@ -1,5 +1,17 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Features
+
+- Export `postMigrationAction` and `distVar` from the public API so consumers do not need to import from internal `/dist/` sub-paths [[61dddec](https://github.com/SAP/open-ux-tools/commit/61dddec1f4da2806fc7a4772615a7a6818b6d24b)]
+
 ## 0.0.8
 
 ### Patch Changes
