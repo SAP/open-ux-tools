@@ -168,6 +168,9 @@
       "path": "packages/logger"
     },
     {
+      "path": "packages/mock-data-generator"
+    },
+    {
       "path": "packages/mockserver-config-writer"
     },
     {

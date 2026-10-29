@@ -3587,6 +3587,31 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
 
+  packages/mock-data-generator:
+    dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      fast-xml-parser:
+        specifier: 5.8.0
+        version: 5.8.0
+      i18next:
+        specifier: 26.3.6
+        version: 26.3.6(typescript@5.9.3)
+      onnxruntime-node:
+        specifier: 1.24.3
+        version: 1.24.3
+    devDependencies:
+      '@jest/globals':
+        specifier: 30.4.1
+        version: 30.4.1(supports-color@8.1.1)
+      cldr-bcp47:
+        specifier: 49.0.0
+        version: 49.0.0
+      libphonenumber-js:
+        specifier: 1.13.15
+        version: 1.13.15
+
   packages/mockserver-config-writer:
     dependencies:
       '@sap-ux/project-access':
@@ -11460,6 +11485,9 @@ packages:
   cjs-module-lexer@2.2.0:
     resolution: {integrity: sha512-4bHTS2YuzUvtoLjdy+98ykbNB5jS0+07EvFNXerqZQJ89F7DI6ET7OQo/HJuW6K0aVsKA9hj9/RVb2kQVOrPDQ==}
 
+  cldr-bcp47@49.0.0:
+    resolution: {integrity: sha512-EHxRNhjo9dbvg3sflSaqxyjEieMkQiN92Vp/Vlmwi/91jTWFzM12/u2aApHxKq367PH6m7/vNtcnyxOTzlKSNw==}
+
   clean-css@5.3.3:
     resolution: {integrity: sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg==}
     engines: {node: '>= 10.0'}
@@ -14407,6 +14435,9 @@ packages:
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
+
+  libphonenumber-js@1.13.15:
+    resolution: {integrity: sha512-AHdhEQeDFEJ4GKDAQ9AwxChy+v2kUILUB3TGQRpkXMkWePjXTU/WQEzWVQoIx/Gz8fE73Wr5SEuZCy2vk8jrMQ==}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -25840,6 +25871,8 @@ snapshots:
 
   cjs-module-lexer@2.2.0: {}
 
+  cldr-bcp47@49.0.0: {}
+
   clean-css@5.3.3:
     dependencies:
       source-map: 0.6.1
@@ -29461,6 +29494,8 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
       type-check: 0.4.0
+
+  libphonenumber-js@1.13.15: {}
 
   lines-and-columns@1.2.4: {}
 

@@ -1,0 +1,139 @@
+{
+    "formatVersion": 1,
+    "bundleId": "mockgen-v1",
+    "revision": "302c89b2beda4fc1a8a72146e31df01797efc2ab708c4f9ff2dda210fe78b9b7",
+    "runtime": {
+        "package": "onnxruntime-node",
+        "version": "1.24.3"
+    },
+    "provenance": {
+        "source": "fine-tuned from the public base models named in classifierBase and sftBase",
+        "reviewStatus": "approved",
+        "classifierBase": "sentence-transformers/all-MiniLM-L6-v2",
+        "sftBase": "HuggingFaceTB/SmolLM2-135M-Instruct",
+        "reviewRecordSha256": "69bd8e9d734766cd9a6beaa0608b429069c8924e4325635d24403920f8a771aa"
+    },
+    "datasets": [
+        {
+            "id": "mockgen-value-banks",
+            "version": "2",
+            "path": "resources/banks/value-banks.v2.json",
+            "license": "Apache-2.0",
+            "provenance": "package-authored synthetic examples and concept banks of the packaged classifier",
+            "bytes": 911130,
+            "sha256": "a20de5036affa7c80b1da5552a30d25901e7b6ac7266b29d2c8122c14a984d3f"
+        },
+        {
+            "id": "mockgen-semantic-rules",
+            "version": "1",
+            "path": "resources/rules/semantic-rules.v1.json",
+            "license": "Apache-2.0",
+            "provenance": "package-authored naming rules, SAP naming vocabulary and ABAP Dictionary data-element roles",
+            "bytes": 53616,
+            "sha256": "0e21d8e7dcecacfa404a1b6636947f6213b2ba06612c595ccf36b850d205e988"
+        },
+        {
+            "id": "mockgen-role-registry",
+            "version": "1",
+            "path": "resources/rules/role-registry.v1.json",
+            "license": "Apache-2.0",
+            "provenance": "package-authored semantic role definitions; the classifier head pins their canonical fingerprint",
+            "bytes": 40451,
+            "sha256": "1721e8de9117c921585d12ce3e13a3e01fd3e9d47098306fa5f92d0e049a1e3e"
+        }
+    ],
+    "components": [
+        {
+            "id": "semantic-classifier",
+            "kind": "classifier",
+            "version": "calibrated-v2",
+            "fingerprint": "3d47db12b15537cad04d38373e8fedbf31b21e80c364919a685f87ba1288c2f5",
+            "license": "Apache-2.0",
+            "modelCard": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
+            "contract": {
+                "inputFormat": "v3",
+                "inputs": [
+                    "input_ids",
+                    "attention_mask",
+                    "token_type_ids"
+                ],
+                "outputs": [
+                    "last_hidden_state"
+                ]
+            },
+            "files": [
+                {
+                    "role": "encoder",
+                    "path": "classifier/encoder.onnx",
+                    "bytes": 22972370,
+                    "sha256": "afdb6f1a0e45b715d0bb9b11772f032c399babd23bfc31fed1c170afc848bdb1"
+                },
+                {
+                    "role": "classifier-head",
+                    "path": "classifier/head.json",
+                    "bytes": 11006209,
+                    "sha256": "53bcbf146638602eb8a568519202ed3a33acd4ff4fd02e45e11e0c234536fcff"
+                },
+                {
+                    "role": "vocabulary",
+                    "path": "classifier/vocab.txt",
+                    "bytes": 231508,
+                    "sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3"
+                },
+                {
+                    "role": "relevance-head",
+                    "path": "classifier/relevance-head.json",
+                    "bytes": 10858,
+                    "sha256": "5bb7f5ce7639dba33c787c0a6334c32138b4a6498f79766d81f07e35e86d8417"
+                },
+                {
+                    "role": "concept-head",
+                    "path": "classifier/concept-head.json",
+                    "bytes": 1528188,
+                    "sha256": "2ef127bb736d520d8eeac72f1efe19b58729e31129f99cc91d4594489ed4e6bf"
+                }
+            ]
+        },
+        {
+            "id": "row-generator",
+            "kind": "sft",
+            "version": "published-smollm2-135m-int8",
+            "fingerprint": "cafad5242688cdfc4d616f76bf5a69f56bc28dac5778ddbad93b02c1709a0b0f",
+            "license": "Apache-2.0",
+            "modelCard": "https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct",
+            "contract": {
+                "inputFormat": "row-object-v1",
+                "inputs": [
+                    "input_ids",
+                    "attention_mask",
+                    "position_ids",
+                    "past_key_values.*"
+                ],
+                "outputs": [
+                    "logits",
+                    "present.*"
+                ]
+            },
+            "files": [
+                {
+                    "role": "model",
+                    "path": "sft/model.onnx",
+                    "bytes": 164924987,
+                    "sha256": "4679d6d2a594945f781b16441aa632e6c5763245e452e9d4592941c2f7d04910"
+                },
+                {
+                    "role": "tokenizer",
+                    "path": "sft/tokenizer.json",
+                    "bytes": 3522755,
+                    "sha256": "a98e682ef5e06816223674214ebc23ea06a80e31ef8e7f45d1468c04ddd17905"
+                },
+                {
+                    "role": "generation-config",
+                    "path": "sft/generation-config.json",
+                    "bytes": 1220,
+                    "sha256": "a918591edd9cf6cd2a4a6385a6da631093c4b0c2090568b7cff966eb8a4d3d63"
+                }
+            ]
+        }
+    ]
+}

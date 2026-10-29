@@ -1,0 +1,844 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/SAP/open-ux-tools/packages/mock-data-generator/resources/rules/semantic-rules.schema.json",
+    "title": "MockGen semantic rule store, version 1",
+    "description": "Documents the format of semantic-rules.v1.json for reviewers. The strict parser in src/semantics/rule-store.ts is authoritative and also checks cross-field invariants this schema cannot express: rules never name an abbreviation that tokenization expands, and data elements and sap:semantics values are unique.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "format",
+        "version",
+        "sapAbbreviations",
+        "lexicalRules",
+        "dataElements",
+        "metadataRoles",
+        "temporalVocabulary",
+        "coherenceVocabulary",
+        "vdmFieldGroups",
+        "modelOutputFilters",
+        "codeTexts",
+        "geography",
+        "temporalSpread",
+        "generationRanges",
+        "typedFloor",
+        "realismGuard",
+        "realismChecks",
+        "rolePolicy",
+        "thresholds"
+    ],
+    "$defs": {
+        "word": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+$"
+        },
+        "words": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "role": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "notes": {
+            "type": "string",
+            "minLength": 1
+        },
+        "primitive": {
+            "enum": ["string", "int", "decimal", "date", "datetime", "datetimeoffset", "bool", "guid", "binary", "time"]
+        },
+        "roles": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/role"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "threshold": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["value", "notes"],
+            "properties": {
+                "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        }
+    },
+    "properties": {
+        "format": {
+            "const": "mockgen-semantic-rules"
+        },
+        "version": {
+            "const": 1
+        },
+        "sapAbbreviations": {
+            "description": "SAP naming abbreviations. Entries with appliedInLexicalRules are replaced by their word when a name is tokenized for the lexical rules; the others are documented only, because expanding them would widen rules that accept only the full word.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["abbreviation", "word", "appliedInLexicalRules", "notes"],
+                "properties": {
+                    "abbreviation": {
+                        "$ref": "#/$defs/word"
+                    },
+                    "word": {
+                        "$ref": "#/$defs/word"
+                    },
+                    "appliedInLexicalRules": {
+                        "type": "boolean"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+        },
+        "lexicalRules": {
+            "description": "Ordered name rules; the first match wins. A word rule matches when the type is listed, the last word is listed, each element of all (a word, or a list of alternatives) and the any list each have a word of the name, and the name has no word of none; with adjacent, the elements of all match consecutive words of the name, in order. A first-word rule routes to the first of its words the name uses, in name order.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["role"],
+                        "anyOf": [
+                            {
+                                "required": ["all"]
+                            },
+                            {
+                                "required": ["any"]
+                            },
+                            {
+                                "required": ["lastWord"]
+                            }
+                        ],
+                        "properties": {
+                            "role": {
+                                "$ref": "#/$defs/role"
+                            },
+                            "all": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/$defs/word"
+                                        },
+                                        {
+                                            "$ref": "#/$defs/words"
+                                        }
+                                    ]
+                                }
+                            },
+                            "any": {
+                                "$ref": "#/$defs/words"
+                            },
+                            "none": {
+                                "$ref": "#/$defs/words"
+                            },
+                            "lastWord": {
+                                "$ref": "#/$defs/words"
+                            },
+                            "adjacent": {
+                                "type": "boolean"
+                            },
+                            "primitiveTypes": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "$ref": "#/$defs/primitive"
+                                }
+                            },
+                            "notes": {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["firstMatchingWord"],
+                        "properties": {
+                            "firstMatchingWord": {
+                                "$ref": "#/$defs/words"
+                            },
+                            "notes": {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "dataElements": {
+            "description": "ABAP Dictionary data elements and the role they imply, with provenance; review flags doubtful entries.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["dataElement", "role", "source"],
+                "properties": {
+                    "dataElement": {
+                        "type": "string",
+                        "pattern": "^[A-Z0-9_/]+$"
+                    },
+                    "role": {
+                        "$ref": "#/$defs/role"
+                    },
+                    "source": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "review": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+        },
+        "metadataRoles": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "vocabularyTerms", "sapSemantics"],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "vocabularyTerms": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["termSuffix", "term", "role"],
+                        "properties": {
+                            "termSuffix": {
+                                "type": "string",
+                                "pattern": "^\\.[a-z0-9]+$"
+                            },
+                            "term": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "role": {
+                                "$ref": "#/$defs/role"
+                            }
+                        }
+                    }
+                },
+                "sapSemantics": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["value", "role"],
+                        "properties": {
+                            "value": {
+                                "type": "string",
+                                "pattern": "^[a-z0-9-]+$"
+                            },
+                            "role": {
+                                "$ref": "#/$defs/role"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "temporalVocabulary": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notes",
+                "created",
+                "changed",
+                "start",
+                "end",
+                "datePairStart",
+                "datePairEnd",
+                "datePairAnchor",
+                "clock"
+            ],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "created": {
+                    "$ref": "#/$defs/words"
+                },
+                "changed": {
+                    "$ref": "#/$defs/words"
+                },
+                "start": {
+                    "$ref": "#/$defs/words"
+                },
+                "end": {
+                    "$ref": "#/$defs/words"
+                },
+                "datePairStart": {
+                    "$ref": "#/$defs/words"
+                },
+                "datePairEnd": {
+                    "$ref": "#/$defs/words"
+                },
+                "datePairAnchor": {
+                    "$ref": "#/$defs/words"
+                },
+                "clock": {
+                    "$ref": "#/$defs/words"
+                }
+            }
+        },
+        "coherenceVocabulary": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notes",
+                "phone",
+                "phoneContextIgnored",
+                "country",
+                "countryContextIgnored",
+                "countryNameMarkers",
+                "currency",
+                "currencyContextIgnored",
+                "amount",
+                "amountContextIgnored",
+                "statusMarker",
+                "statusTextSuffix",
+                "fieldControlSuffix",
+                "balance",
+                "currencyDataElements",
+                "currencySemantics"
+            ],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "phone": {
+                    "$ref": "#/$defs/words"
+                },
+                "phoneContextIgnored": {
+                    "$ref": "#/$defs/words"
+                },
+                "country": {
+                    "$ref": "#/$defs/words"
+                },
+                "countryContextIgnored": {
+                    "$ref": "#/$defs/words"
+                },
+                "countryNameMarkers": {
+                    "$ref": "#/$defs/words"
+                },
+                "currency": {
+                    "$ref": "#/$defs/words"
+                },
+                "currencyContextIgnored": {
+                    "$ref": "#/$defs/words"
+                },
+                "amount": {
+                    "$ref": "#/$defs/words"
+                },
+                "amountContextIgnored": {
+                    "$ref": "#/$defs/words"
+                },
+                "statusMarker": {
+                    "$ref": "#/$defs/word"
+                },
+                "statusTextSuffix": {
+                    "$ref": "#/$defs/word"
+                },
+                "fieldControlSuffix": {
+                    "$ref": "#/$defs/word"
+                },
+                "balance": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["opening", "debit", "credit", "closing"],
+                    "properties": {
+                        "opening": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/word"
+                            },
+                            "minItems": 1
+                        },
+                        "debit": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/word"
+                            },
+                            "minItems": 1
+                        },
+                        "credit": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/word"
+                            },
+                            "minItems": 1
+                        },
+                        "closing": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/word"
+                            },
+                            "minItems": 1
+                        }
+                    }
+                },
+                "currencyDataElements": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[A-Z0-9_]+$"
+                    }
+                },
+                "currencySemantics": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+        },
+        "vdmFieldGroups": {
+            "description": "Normalized field-name profiles (lower case, no separators) of SAP S/4HANA interface views, applied only when a scenario opts into the coherence rule.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "unitOfMeasure", "siUnitConversion", "lifecycle", "processingStatus"],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "unitOfMeasure": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["sourceView", "code", "text", "iso", "temperature", "pressure"],
+                    "properties": {
+                        "sourceView": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "code": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "text": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "iso": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "temperature": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "pressure": {
+                            "$ref": "#/$defs/word"
+                        }
+                    }
+                },
+                "siUnitConversion": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "sourceView",
+                        "unit",
+                        "additive",
+                        "numerator",
+                        "denominator",
+                        "exponent",
+                        "minimumFields"
+                    ],
+                    "properties": {
+                        "sourceView": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "unit": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "additive": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "numerator": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "denominator": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "exponent": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "minimumFields": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                },
+                "lifecycle": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["source", "suffixes", "minimumFields", "states"],
+                    "properties": {
+                        "source": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "suffixes": {
+                            "type": "object",
+                            "minProperties": 1,
+                            "additionalProperties": {
+                                "$ref": "#/$defs/word"
+                            }
+                        },
+                        "minimumFields": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "states": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "processingStatus": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "source",
+                        "primaryPostedSuffix",
+                        "primaryPostedExcludes",
+                        "secondaryPostedSuffix",
+                        "interpretedSuffix"
+                    ],
+                    "properties": {
+                        "source": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "primaryPostedSuffix": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "primaryPostedExcludes": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "secondaryPostedSuffix": {
+                            "$ref": "#/$defs/word"
+                        },
+                        "interpretedSuffix": {
+                            "$ref": "#/$defs/word"
+                        }
+                    }
+                }
+            }
+        },
+        "modelOutputFilters": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Patterns are JavaScript regular expressions compiled with the u flag; the parser compiles each and rejects an invalid one.",
+            "required": [
+                "notes",
+                "instructionEcho",
+                "placeholderValues",
+                "pathOrUrl",
+                "fieldInstruction",
+                "fieldPlaceholder",
+                "fieldOrdinal"
+            ],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "instructionEcho": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "minLength": 1 }
+                },
+                "placeholderValues": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "minLength": 1 }
+                },
+                "pathOrUrl": { "type": "string", "minLength": 1 },
+                "fieldInstruction": { "type": "string", "pattern": "\\{fields\\}" },
+                "fieldPlaceholder": { "type": "string", "pattern": "\\{fields\\}" },
+                "fieldOrdinal": { "type": "string", "pattern": "\\{fields\\}" }
+            }
+        },
+        "codeTexts": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "textSuffixes", "codeRoles", "nameRoleOf", "recordNames", "minimumTextLetters"],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "textSuffixes": { "$ref": "#/$defs/words" },
+                "codeRoles": { "$ref": "#/$defs/roles" },
+                "nameRoleOf": { "type": "object", "additionalProperties": { "$ref": "#/$defs/role" } },
+                "recordNames": {
+                    "type": "object",
+                    "additionalProperties": { "enum": ["region", "currency", "language", "unit"] }
+                },
+                "minimumTextLetters": { "type": "integer", "minimum": 1 }
+            }
+        },
+        "realismGuard": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "minimumEchoedWords", "minimumCountedNumbers"],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "minimumEchoedWords": { "type": "integer", "minimum": 1 },
+                "minimumCountedNumbers": { "type": "integer", "minimum": 1 }
+            }
+        },
+        "realismChecks": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notes",
+                "textFormWords",
+                "identifierFormWords",
+                "textFieldWords",
+                "countryWords",
+                "timeWords",
+                "clockWords",
+                "qualifierWords",
+                "eventWords",
+                "codeShare",
+                "kindShare",
+                "cityShare",
+                "maximumCodeLength",
+                "minimumPatternRows",
+                "minimumSharedWords",
+                "minimumSharedValues",
+                "minimumEchoedWords",
+                "minimumCountedNumbers"
+            ],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "textFormWords": { "$ref": "#/$defs/words" },
+                "identifierFormWords": { "$ref": "#/$defs/words" },
+                "textFieldWords": { "$ref": "#/$defs/words" },
+                "countryWords": { "$ref": "#/$defs/words" },
+                "timeWords": { "$ref": "#/$defs/words" },
+                "clockWords": { "$ref": "#/$defs/words" },
+                "qualifierWords": { "$ref": "#/$defs/words" },
+                "eventWords": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["created", "changed", "from", "to"],
+                    "properties": {
+                        "created": { "$ref": "#/$defs/words" },
+                        "changed": { "$ref": "#/$defs/words" },
+                        "from": { "$ref": "#/$defs/words" },
+                        "to": { "$ref": "#/$defs/words" }
+                    }
+                },
+                "codeShare": { "type": "number", "minimum": 0, "maximum": 1 },
+                "kindShare": { "type": "number", "minimum": 0, "maximum": 1 },
+                "cityShare": { "type": "number", "minimum": 0, "maximum": 1 },
+                "maximumCodeLength": { "type": "integer", "minimum": 1 },
+                "minimumPatternRows": { "type": "integer", "minimum": 1 },
+                "minimumSharedWords": { "type": "integer", "minimum": 1 },
+                "minimumSharedValues": { "type": "integer", "minimum": 1 },
+                "minimumEchoedWords": { "type": "integer", "minimum": 1 },
+                "minimumCountedNumbers": { "type": "integer", "minimum": 1 }
+            }
+        },
+        "typedFloor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "codeOrdinals"],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "codeOrdinals": { "type": "integer", "minimum": 1 }
+            }
+        },
+        "temporalSpread": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "unchangedOneIn", "meanGapDays", "maximumGapDays", "gapMinutes"],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "unchangedOneIn": { "type": "integer", "minimum": 1 },
+                "meanGapDays": { "type": "integer", "minimum": 1 },
+                "maximumGapDays": { "type": "integer", "minimum": 1 },
+                "gapMinutes": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": {
+                        "minimum": { "type": "integer", "minimum": 1 },
+                        "maximum": { "type": "integer", "minimum": 1 }
+                    }
+                }
+            }
+        },
+        "generationRanges": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notes",
+                "endDateGapDays",
+                "dateRepairGapDays",
+                "streetNumber",
+                "bankStatementPage",
+                "count",
+                "decimalPlaces",
+                "dimensionExponent"
+            ],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "endDateGapDays": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                },
+                "dateRepairGapDays": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                },
+                "streetNumber": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                },
+                "bankStatementPage": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                },
+                "count": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                },
+                "decimalPlaces": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                },
+                "dimensionExponent": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["minimum", "maximum"],
+                    "properties": { "minimum": { "type": "integer" }, "maximum": { "type": "integer" } }
+                }
+            }
+        },
+        "geography": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "anchorRole", "leafRoles", "contextLeafRoles"],
+            "properties": {
+                "notes": { "$ref": "#/$defs/notes" },
+                "anchorRole": { "$ref": "#/$defs/role" },
+                "leafRoles": { "$ref": "#/$defs/roles" },
+                "contextLeafRoles": { "$ref": "#/$defs/roles" }
+            }
+        },
+        "rolePolicy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "notes",
+                "authoritative",
+                "lexicalBlocked",
+                "applicationDomain",
+                "organizationNameEvidence",
+                "refinableTo"
+            ],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "authoritative": {
+                    "$ref": "#/$defs/roles"
+                },
+                "lexicalBlocked": {
+                    "$ref": "#/$defs/roles"
+                },
+                "applicationDomain": {
+                    "$ref": "#/$defs/roles"
+                },
+                "organizationNameEvidence": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["notes", "subjectWords", "displayWords"],
+                    "properties": {
+                        "notes": { "$ref": "#/$defs/notes" },
+                        "subjectWords": { "$ref": "#/$defs/words" },
+                        "displayWords": { "$ref": "#/$defs/words" }
+                    }
+                },
+                "refinableTo": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/$defs/roles"
+                    }
+                }
+            }
+        },
+        "thresholds": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["notes", "route", "conflict", "lexicalConfidence", "statistics"],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "route": {
+                    "$ref": "#/$defs/threshold"
+                },
+                "conflict": {
+                    "$ref": "#/$defs/threshold"
+                },
+                "lexicalConfidence": {
+                    "$ref": "#/$defs/threshold"
+                },
+                "statistics": {
+                    "$ref": "#/$defs/threshold"
+                }
+            }
+        }
+    }
+}
