@@ -396,7 +396,7 @@ export class ProjectMigrator {
             return messages;
         }
         // Check and update ui5*.yaml files sequentially - order doesn't matter but list is small
-        for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
+        for (const yamlName of [FileName.Ui5LocalYaml, FileName.Ui5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
 
             if (fileExists(fs, yamlPath)) {

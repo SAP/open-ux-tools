@@ -7,7 +7,8 @@ export const PROJECT_TYPE = {
     OverviewPageV2: 'V2_OVERVIEW',
     ListReportObjectPage: 'LIST_REPORT_OBJECT_PAGE',
     AnalyticalListPage: 'ANALYTICAL_LIST_PAGE'
-};
+} as const;
+export type ProjectType = (typeof PROJECT_TYPE)[keyof typeof PROJECT_TYPE];
 
 // Common base libraries for V2 Smart Template applications
 const V2_SMART_TEMPLATE_BASE_LIBS =

@@ -4,6 +4,11 @@ import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
+// Import UI5FlexLayer and alias as SapUxLayer for backwards compatibility
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+// Import CapRuntime from fiori-generator-shared
+import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
+
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
@@ -16,6 +21,7 @@ export const ODataVersion = {
     v4: '4'
 } as const;
 export type ODataVersion = (typeof ODataVersion)[keyof typeof ODataVersion];
+
 /**
  * package.json script entries (commands and tasks)
  */
@@ -24,11 +30,15 @@ export type Script = {
     command: string;
 };
 
+/**
+ * SAP UX Layer values for flex changes
+ * Re-exported from @sap-ux/project-access as UI5FlexLayer
+ */
 export const SapUxLayer = {
     VENDOR: 'VENDOR',
     CUSTOMER_BASE: 'CUSTOMER_BASE'
 } as const;
-export type SapUxLayer = (typeof SapUxLayer)[keyof typeof SapUxLayer];
+export type SapUxLayer = UI5FlexLayer;
 
 /** package.json interface */
 export interface PackageJson {
@@ -294,6 +304,18 @@ export interface Project {
 /**
  * User credentials for authentication.
  *
+ * NOTE: This interface is duplicated across multiple @sap-ux packages:
+ * - @sap-ux/abap-deploy-config-inquirer
+ * - @sap-ux/fiori-app-sub-generator
+ * - @sap-ux/fiori-migration-writer (this package)
+ * - @sap-ux/generator-adp
+ * Additionally, @sap-ux/system-access exports BasicAuth as a similar type.
+ *
+ * A shared @sap-ux/auth-types package would eliminate this duplication,
+ * but would require coordinating changes across all consuming packages.
+ * For now, each package maintains its own Credentials interface to avoid
+ * circular dependencies and maintain independence.
+ *
  * SECURITY: This interface contains sensitive authentication data.
  * The `password` field must NEVER be logged, included in error messages,
  * or transmitted to telemetry systems.
@@ -309,11 +331,16 @@ export interface Credentials {
      */
     password?: string;
 }
+/**
+ * CAP runtime implementation type
+ * Re-exported from @sap-ux/fiori-generator-shared as CapRuntime
+ * Const object kept for backwards compatibility
+ */
 export const CapType = {
     NODE_JS: 'Node.js',
     JAVA: 'Java'
 } as const;
-export type CapType = (typeof CapType)[keyof typeof CapType];
+export type CapType = CapRuntime;
 export const ApiHubType = {
     apiHub: 'API_HUB',
     apiHubEnterprise: 'API_HUB_ENTERPRISE'

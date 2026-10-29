@@ -22,6 +22,9 @@
             "path": "../eslint-plugin-fiori-tools"
         },
         {
+            "path": "../fiori-generator-shared"
+        },
+        {
             "path": "../i18n"
         },
         {

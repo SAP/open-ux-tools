@@ -69,7 +69,7 @@ async function resolveFromCheProjectJson(fs: Editor, projectRoot: string): Promi
  */
 function resolveFromUi5Yaml(fs: Editor, projectRoot: string): string | undefined {
     try {
-        const yamlContent = readFile(fs, join(projectRoot, FileName.UI5Yaml));
+        const yamlContent = readFile(fs, join(projectRoot, FileName.Ui5Yaml));
         return parse(yamlContent)?.resources?.configuration?.paths?.webapp;
     } catch (error: unknown) {
         // File not found or invalid YAML, skip
