@@ -253,4 +253,27 @@ describe('rta/commands', () => {
             undefined
         );
     });
+
+    test('executeUfaAction omits elementId from the params when not provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ success: true }));
+        await executeUfaAction(transport, { site: SITE }, 'refresh');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.unified.frontend.actions.executeAction',
+            { actionName: 'refresh' },
+            undefined
+        );
+    });
+
+    test('executeUfaAction falls back to payload when a failure carries no error', async () => {
+        // isSuccess:false with error:null — the result should fall back to payload.
+        transport.callFrontendAction.mockResolvedValueOnce({
+            isSuccess: false,
+            payload: { note: 'nothing happened' },
+            error: null
+        });
+        const result = await executeUfaAction(transport, { site: SITE }, 'press', 'x');
+        expect(result.isSuccess).toBe(false);
+        expect(result.result).toEqual({ note: 'nothing happened' });
+    });
 });

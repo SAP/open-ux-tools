@@ -238,5 +238,37 @@ describe('runRtaWorkflowStep dispatcher', () => {
             })) as any;
             expect(result.isSuccess).toBe(false);
         });
+
+        test('forwards a valid actionParameters object to executeUfaAction', async () => {
+            mockExecuteUfaAction.mockResolvedValue({ isSuccess: true, result: undefined });
+            await runRtaWorkflowStep({
+                step: 'execute_page_action',
+                site: SITE,
+                payload: { actionName: 'setValue', elementId: 'field1', actionParameters: { value: 'X' } }
+            });
+            expect(mockExecuteUfaAction).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.anything(),
+                'setValue',
+                'field1',
+                { value: 'X' }
+            );
+        });
+
+        test('ignores a non-object actionParameters (e.g. array) and passes undefined', async () => {
+            mockExecuteUfaAction.mockResolvedValue({ isSuccess: true, result: undefined });
+            await runRtaWorkflowStep({
+                step: 'execute_page_action',
+                site: SITE,
+                payload: { actionName: 'press', elementId: 'btn1', actionParameters: ['not', 'an', 'object'] }
+            });
+            expect(mockExecuteUfaAction).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.anything(),
+                'press',
+                'btn1',
+                undefined
+            );
+        });
     });
 });
