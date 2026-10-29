@@ -136,7 +136,11 @@ function discoverAggregationPaths(appPath: string, viewOrFragmentPath: string, f
             false
         );
     }
-    const { inputChoices } = getXPathStringsForXmlFile(absoluteView.replaceAll('\\', '/'), fs);
+    // Reconstruct from the original appPath to avoid a Windows drive-letter prefix
+    // that resolve() adds when appPath is a POSIX-style path (e.g. in tests or on WSL).
+    const relToApp = relative(resolve(appPath), absoluteView).replaceAll('\\', '/');
+    const posixAbsoluteView = `${appPath.replaceAll('\\', '/').replace(/\/$/, '')}/${relToApp}`;
+    const { inputChoices } = getXPathStringsForXmlFile(posixAbsoluteView, fs);
     const aggregationPaths = Object.keys(inputChoices);
     return discovery(
         aggregationPaths.length
