@@ -107,7 +107,10 @@ function discovery(message: string, insertionPoints: InsertionPoint[], found: bo
  */
 async function discoverViewFiles(appPath: string, fs: Editor): Promise<AddBuildingBlockOutput> {
     const files = await getFragmentAndViewFiles(appPath, fs);
-    const insertionPoints = files.map((file) => ({ file: relative(appPath, file), aggregationPaths: [] }));
+    const insertionPoints = files.map((file) => ({
+        file: relative(appPath, file).replaceAll('\\', '/'),
+        aggregationPaths: []
+    }));
     return discovery(
         insertionPoints.length
             ? 'Specify viewOrFragmentPath — candidate view/fragment files are in insertionPoints. Call again with the chosen file to get its aggregationPath options.'
@@ -133,7 +136,7 @@ function discoverAggregationPaths(appPath: string, viewOrFragmentPath: string, f
             false
         );
     }
-    const { inputChoices } = getXPathStringsForXmlFile(absoluteView, fs);
+    const { inputChoices } = getXPathStringsForXmlFile(absoluteView.replaceAll('\\', '/'), fs);
     const aggregationPaths = Object.keys(inputChoices);
     return discovery(
         aggregationPaths.length
@@ -193,7 +196,7 @@ export async function addBuildingBlock(params: AddBuildingBlockInput): Promise<A
                 message: `viewOrFragmentPath "${viewOrFragmentPath}" resolves outside the application root; provide a path inside the app.`
             };
         }
-        const normalizedViewPath = relative(resolve(appPath), containedView);
+        const normalizedViewPath = relative(resolve(appPath), containedView).replaceAll('\\', '/');
 
         const generateId = await createIdGenerator({ basePath: appPath, fsEditor: fs });
 
