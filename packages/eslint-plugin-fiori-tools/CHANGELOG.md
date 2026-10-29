@@ -1,5 +1,33 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.17.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- Allow `UI.ReferenceFacet` without an explicit `ID` to produce a table section node; resolve `UI.SelectionPresentationVariant` targets via their inline `PresentationVariant` property [[aaf9884](https://github.com/SAP/open-ux-tools/commit/aaf98847a917f087092a3012077cb92094f8f196)]
+
+## 10.17.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated fast-xml-parser dependencies [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade globals 17.6.0 → 17.13.0 [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
 ## 10.17.4
 
 ### Patch Changes
