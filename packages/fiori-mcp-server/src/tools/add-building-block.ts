@@ -15,10 +15,10 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import { create as createMemFsEditor, type Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
-import { isAbsolute, join, relative } from 'node:path';
+import { isAbsolute, relative, resolve } from 'node:path';
 import type { AddBuildingBlockInput, AddBuildingBlockOutput } from '../types/index.js';
 import { resolveApplication } from '../utils/index.js';
-import { writeAnnotationShells } from './building-block-annotations.js';
+import { writeAnnotationShell } from './building-block-annotations.js';
 
 /**
  * The custom building block templates (custom-column, custom-filter-field, custom-form-field)
@@ -67,6 +67,26 @@ function applyRteMetaPath(data: BuildingBlock): BuildingBlock {
 type InsertionPoint = { file: string; aggregationPaths: string[] };
 
 /**
+ * Resolves `viewOrFragmentPath` against the application root and returns the absolute path only when it stays
+ * inside that root. `viewOrFragmentPath` is MCP-client-supplied, so an absolute path or `../` segments could
+ * otherwise point `generateBuildingBlock` (and the discovery reads) at a file outside the app. Returns undefined
+ * when the resolved path escapes the canonical root.
+ *
+ * @param appPath - Absolute application root
+ * @param viewOrFragmentPath - Client-supplied view/fragment path (absolute or relative to appPath)
+ * @returns The contained absolute path, or undefined when it escapes the root
+ */
+function resolveWithinApp(appPath: string, viewOrFragmentPath: string): string | undefined {
+    const root = resolve(appPath);
+    const resolved = isAbsolute(viewOrFragmentPath) ? resolve(viewOrFragmentPath) : resolve(root, viewOrFragmentPath);
+    const rel = relative(root, resolved);
+    if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
+        return rel === '' ? resolved : undefined;
+    }
+    return resolved;
+}
+
+/**
  * Builds a discovery response: `needs_input` when candidates were found (the caller picks one and calls again),
  * or `error` when none were — a dead-end that needs a different action (e.g. creating a view first) rather than a
  * retry of the same call.
@@ -105,7 +125,14 @@ async function discoverViewFiles(appPath: string, fs: Editor): Promise<AddBuildi
  * @param fs
  */
 function discoverAggregationPaths(appPath: string, viewOrFragmentPath: string, fs: Editor): AddBuildingBlockOutput {
-    const absoluteView = isAbsolute(viewOrFragmentPath) ? viewOrFragmentPath : join(appPath, viewOrFragmentPath);
+    const absoluteView = resolveWithinApp(appPath, viewOrFragmentPath);
+    if (!absoluteView) {
+        return discovery(
+            `viewOrFragmentPath "${viewOrFragmentPath}" resolves outside the application root; provide a path inside the app.`,
+            [],
+            false
+        );
+    }
     const { inputChoices } = getXPathStringsForXmlFile(absoluteView, fs);
     const aggregationPaths = Object.keys(inputChoices);
     return discovery(
@@ -146,11 +173,27 @@ export async function addBuildingBlock(params: AddBuildingBlockInput): Promise<A
             return discoverAggregationPaths(appPath, viewOrFragmentPath, fs);
         }
 
-        // Execute: both paths supplied. Normalise the view path so an absolute path (accepted by discovery) also
-        // works here — generateBuildingBlock joins it with appPath, which would break for an absolute path.
-        const normalizedViewPath = isAbsolute(viewOrFragmentPath)
-            ? relative(appPath, viewOrFragmentPath)
-            : viewOrFragmentPath;
+        // Execute mode: both paths supplied. buildingBlockData is optional in the schema (it is unused during
+        // discovery), so guard it here rather than letting the later property accesses throw.
+        if (!buildingBlockData) {
+            return {
+                status: 'error',
+                modifiedFiles: [],
+                message: 'buildingBlockData is required when both viewOrFragmentPath and aggregationPath are provided.'
+            };
+        }
+
+        // Reject a client-supplied path that escapes the app root before any write. Normalise to a path relative to
+        // the app root because generateBuildingBlock joins it with appPath (an absolute path would break there).
+        const containedView = resolveWithinApp(appPath, viewOrFragmentPath);
+        if (!containedView) {
+            return {
+                status: 'error',
+                modifiedFiles: [],
+                message: `viewOrFragmentPath "${viewOrFragmentPath}" resolves outside the application root; provide a path inside the app.`
+            };
+        }
+        const normalizedViewPath = relative(resolve(appPath), containedView);
 
         const generateId = await createIdGenerator({ basePath: appPath, fsEditor: fs });
 
@@ -179,7 +222,7 @@ export async function addBuildingBlock(params: AddBuildingBlockInput): Promise<A
         try {
             const appDetails = await resolveApplication(appPath);
             if (appDetails?.applicationAccess) {
-                const { failed } = await writeAnnotationShells(
+                const { failed } = await writeAnnotationShell(
                     buildingBlockData,
                     appDetails.applicationAccess,
                     appDetails.appId,

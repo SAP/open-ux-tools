@@ -17,7 +17,7 @@ jest.unstable_mockModule('../../../src/page-editor-api/index.js', () => ({
     getServiceName: mockGetServiceName
 }));
 
-const { writeAnnotationShells, ANNOTATION_SHELL_TERMS } =
+const { writeAnnotationShell, ANNOTATION_SHELL_TERMS } =
     await import('../../../src/tools/building-block-annotations.js');
 
 const applicationAccess = { project: { root: '/app', projectType: 'EDMXBackend' } } as any;
@@ -51,21 +51,21 @@ describe('ANNOTATION_SHELL_TERMS', () => {
     });
 });
 
-describe('writeAnnotationShells', () => {
+describe('writeAnnotationShell', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockGetServiceName.mockResolvedValue('mainService');
     });
 
     test('skips (no term) for a building block type without an annotation shell', async () => {
-        const result = await writeAnnotationShells({ buildingBlockType: 'chart' }, applicationAccess, 'app', fs);
+        const result = await writeAnnotationShell({ buildingBlockType: 'chart' }, applicationAccess, 'app', fs);
 
         expect(result).toEqual({ written: 0 });
         expect(mockCreateService).not.toHaveBeenCalled();
     });
 
     test('skips when no entity set can be derived', async () => {
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', metaPath: '@com.sap.vocabularies.UI.v1.LineItem' },
             applicationAccess,
             'app',
@@ -82,7 +82,7 @@ describe('writeAnnotationShells', () => {
             fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], edit })
         );
 
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', contextPath: '/SalesOrder' },
             applicationAccess,
             'app',
@@ -101,13 +101,53 @@ describe('writeAnnotationShells', () => {
         );
     });
 
+    test('prefers the metaPath navigation target over a root contextPath', async () => {
+        const edit = jest.fn();
+        // Root context + relative navigation annotation: the shell must land on the navigation target type
+        // (ns.Item), not on the context entity (ns.SalesOrder).
+        mockConvert.mockReturnValue({
+            entitySets: [
+                {
+                    name: 'SalesOrder',
+                    entityTypeName: 'ns.SalesOrder',
+                    entityType: {
+                        navigationProperties: [
+                            { name: 'to_Items', targetType: { name: 'Item', fullyQualifiedName: 'ns.Item' } }
+                        ]
+                    }
+                }
+            ]
+        });
+        mockCreateService.mockResolvedValue(
+            fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], edit })
+        );
+
+        const result = await writeAnnotationShell(
+            {
+                buildingBlockType: 'table',
+                contextPath: '/SalesOrder',
+                metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem'
+            },
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        expect(result).toEqual({ written: 1 });
+        expect(edit).toHaveBeenCalledWith(
+            expect.objectContaining({
+                content: expect.objectContaining({ target: 'ns.Item' })
+            })
+        );
+    });
+
     test('builds a record wrapper for a Form FieldGroup shell', async () => {
         const edit = jest.fn();
         mockCreateService.mockResolvedValue(
             fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], edit })
         );
 
-        await writeAnnotationShells(
+        await writeAnnotationShell(
             { buildingBlockType: 'form', metaPath: 'SalesOrder/@com.sap.vocabularies.UI.v1.FieldGroup' },
             applicationAccess,
             'app',
@@ -139,7 +179,7 @@ describe('writeAnnotationShells', () => {
             })
         );
 
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', contextPath: '/SalesOrder' },
             applicationAccess,
             'app',
@@ -169,7 +209,7 @@ describe('writeAnnotationShells', () => {
             })
         );
 
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', contextPath: '/SalesOrder' },
             applicationAccess,
             'app',
@@ -201,7 +241,7 @@ describe('writeAnnotationShells', () => {
             fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], edit })
         );
 
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem' },
             applicationAccess,
             'app',
@@ -216,12 +256,38 @@ describe('writeAnnotationShells', () => {
         );
     });
 
-    test('skips when no writable annotation file is available', async () => {
+    test('reports failure when the shell is needed but no writable annotation file is available', async () => {
         mockCreateService.mockResolvedValue(
             fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], writable: false })
         );
 
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        expect(result).toEqual({ written: 0, failed: true });
+    });
+
+    test('does not report failure when the annotation already exists even with no writable file', async () => {
+        mockCreateService.mockResolvedValue(
+            fakeService({
+                entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }],
+                writable: false,
+                annotations: {
+                    'file:///backend-metadata.xml': [
+                        {
+                            target: 'ns.SalesOrder',
+                            annotations: [{ term: 'com.sap.vocabularies.UI.v1.LineItem', qualifier: '' }]
+                        }
+                    ]
+                }
+            })
+        );
+
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', contextPath: '/SalesOrder' },
             applicationAccess,
             'app',
@@ -234,7 +300,7 @@ describe('writeAnnotationShells', () => {
     test('reports a non-fatal failure when the annotation service throws', async () => {
         mockCreateService.mockRejectedValue(new Error('service boom'));
 
-        const result = await writeAnnotationShells(
+        const result = await writeAnnotationShell(
             { buildingBlockType: 'table', contextPath: '/SalesOrder' },
             applicationAccess,
             'app',
