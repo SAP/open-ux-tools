@@ -372,7 +372,8 @@ const BEST_EFFORT_REASONS = new Set<SemanticClassification['abstentionReason']>(
 
 /**
  * Give a field that ended the review without a role the best-ranked classifier role that fits it, so it
- * holds a value close to its meaning rather than the standard fallback. Each candidate passes the same review
+ * holds a value close to its meaning rather than the standard fallback. Only a role ranked with the rule
+ * store's calibrated best-effort confidence is a candidate, so most adopted roles are right. Each candidate passes the same review
  * as a planned role, and a role another field of the entity holds is skipped, since the row would show the
  * same value twice; its confidence stays the classifier's, below the route threshold, so the model may still
  * replace its values.
@@ -404,7 +405,12 @@ function adoptBestEffortRole(
     const unknownRank = detected.top.findIndex(({ role }) => role === 'unknown');
     const ranked = unknownRank === -1 ? detected.top : detected.top.slice(0, unknownRank);
     for (const { role, confidence } of ranked) {
-        if (role === detected.role || taken.has(role) || routedRoleCompatibility(role, property) !== 'compatible') {
+        if (
+            confidence < semanticRules().thresholds.bestEffort ||
+            role === detected.role ||
+            taken.has(role) ||
+            routedRoleCompatibility(role, property) !== 'compatible'
+        ) {
             continue;
         }
         review.plan.set(

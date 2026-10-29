@@ -1,17 +1,16 @@
 {
     "formatVersion": 1,
     "bundleId": "mockgen-v1",
-    "revision": "302c89b2beda4fc1a8a72146e31df01797efc2ab708c4f9ff2dda210fe78b9b7",
+    "revision": "64b27f96af6cc1fab7bc960b1dbb1d6fbeae789f5f00b2ed7f800e0d184c8583",
     "runtime": {
         "package": "onnxruntime-node",
         "version": "1.24.3"
     },
     "provenance": {
         "source": "fine-tuned from the public base models named in classifierBase and sftBase",
-        "reviewStatus": "approved",
+        "reviewStatus": "development",
         "classifierBase": "sentence-transformers/all-MiniLM-L6-v2",
-        "sftBase": "HuggingFaceTB/SmolLM2-135M-Instruct",
-        "reviewRecordSha256": "69bd8e9d734766cd9a6beaa0608b429069c8924e4325635d24403920f8a771aa"
+        "sftBase": "HuggingFaceTB/SmolLM2-135M-Instruct"
     },
     "datasets": [
         {
@@ -20,8 +19,8 @@
             "path": "resources/banks/value-banks.v2.json",
             "license": "Apache-2.0",
             "provenance": "package-authored synthetic examples and concept banks of the packaged classifier",
-            "bytes": 911130,
-            "sha256": "a20de5036affa7c80b1da5552a30d25901e7b6ac7266b29d2c8122c14a984d3f"
+            "bytes": 910862,
+            "sha256": "731b31a7fb06e0c83567f0f92a3fe3b4235b60b9c521b01d2923f4fb6221ad72"
         },
         {
             "id": "mockgen-semantic-rules",
@@ -29,8 +28,8 @@
             "path": "resources/rules/semantic-rules.v1.json",
             "license": "Apache-2.0",
             "provenance": "package-authored naming rules, SAP naming vocabulary and ABAP Dictionary data-element roles",
-            "bytes": 53616,
-            "sha256": "0e21d8e7dcecacfa404a1b6636947f6213b2ba06612c595ccf36b850d205e988"
+            "bytes": 53932,
+            "sha256": "93d6d667796598ccf51484d366f99ee29a0db59213436018c534e05b56502b95"
         },
         {
             "id": "mockgen-role-registry",

@@ -820,7 +820,7 @@
         "thresholds": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["notes", "route", "conflict", "lexicalConfidence", "statistics"],
+            "required": ["notes", "route", "conflict", "lexicalConfidence", "statistics", "bestEffort"],
             "properties": {
                 "notes": {
                     "type": "string",
@@ -836,6 +836,9 @@
                     "$ref": "#/$defs/threshold"
                 },
                 "statistics": {
+                    "$ref": "#/$defs/threshold"
+                },
+                "bestEffort": {
                     "$ref": "#/$defs/threshold"
                 }
             }

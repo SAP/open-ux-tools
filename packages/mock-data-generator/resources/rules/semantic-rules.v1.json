@@ -1443,6 +1443,10 @@
         "statistics": {
             "value": 0.5,
             "notes": "Confidence a decision without its own route threshold must reach to count as routed in coverage statistics and tier attribution."
+        },
+        "bestEffort": {
+            "value": 0.88,
+            "notes": "Minimum classifier confidence of a role given to a field no role was certain for. Calibrated on held-out labelled fields: the lowest confidence at which at least 80% of such roles belong to the family of the field's labelled role."
         }
     }
 }

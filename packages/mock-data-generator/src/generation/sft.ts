@@ -33,6 +33,7 @@ import {
 } from '../limits.js';
 import { descriptiveKeyNames } from './key-identity.js';
 import { ownsInitialData } from './rows.js';
+import { semanticValueIsValid } from './semantic-plan.js';
 import { errorMessage } from '../guards.js';
 
 const SFT_PRIMITIVE_TYPES = new Set<SchemaProperty['primitiveType']>(['string', 'int', 'decimal']);
@@ -809,6 +810,8 @@ interface SftResourceAttempt {
     readonly domainKey: string | undefined;
     readonly linkedTexts: ReturnType<typeof linkedTextOwners>;
     readonly coupledGroups: ReadonlyArray<ReadonlyArray<string>>;
+    /** The best-effort role of each requested field that has one; a model value must fit it. */
+    readonly bestEffortRoles: ReadonlyMap<string, string>;
     /** How many leading rows the model writes; the others reuse its values. */
     readonly modelRowCount: number;
     readonly modelFallbackRows: ReadonlyArray<MockDataRow>;
@@ -1001,6 +1004,30 @@ function verifiableFields(
  * @param schedule the service budget, updated with this resource
  * @returns the attempt, or undefined when the resource keeps its fallback rows
  */
+/**
+ * The best-effort roles of the requested fields. The model may replace a best-effort value, but only with a
+ * value the role accepts, so the planned role still holds for every row.
+ *
+ * @param entity the resource's entity
+ * @param fields the fields the model is asked for
+ * @param classifications the planned roles by `EntitySet.Property`
+ * @returns the role of each requested field planned as a best effort
+ */
+function bestEffortRoles(
+    entity: SchemaEntity,
+    fields: ReadonlyArray<SftFieldRequest>,
+    classifications: ReadonlyMap<string, SemanticClassification>
+): ReadonlyMap<string, string> {
+    const roles = new Map<string, string>();
+    for (const { name } of fields) {
+        const decision = classifications.get(semanticPropertyKey(entity.entitySetName, name));
+        if (decision?.bestEffort === true && decision.role !== 'unknown') {
+            roles.set(name, decision.role);
+        }
+    }
+    return roles;
+}
+
 function scheduleSftAttempt(
     resource: PreparedSftResource,
     request: SftGenerationRequest,
@@ -1064,6 +1091,7 @@ function scheduleSftAttempt(
         domainKey,
         linkedTexts,
         coupledGroups,
+        bestEffortRoles: bestEffortRoles(entity, fields, request.classifications),
         modelRowCount,
         modelFallbackRows: fallbackRows.slice(0, modelRowCount),
         budgetMs,
@@ -1473,7 +1501,15 @@ function mergeCandidateRow(merge: SftRowMerge, rowIndex: number, fallbackRow: Mo
     }
     const valid = new Set(
         present
-            .filter(({ name }) => candidateFieldIsValid(entity, fieldByName.get(name), name, candidateRow, fallbackRow))
+            .filter(({ name }) => {
+                const property = fieldByName.get(name);
+                const role = attempt.bestEffortRoles.get(name);
+                return (
+                    candidateFieldIsValid(entity, property, name, candidateRow, fallbackRow) &&
+                    (role === undefined ||
+                        (property !== undefined && semanticValueIsValid(role, property, candidateRow[name])))
+                );
+            })
             .map(({ name }) => name)
     );
     present.forEach(({ name }) => {
@@ -1517,7 +1553,37 @@ function mergeModelRows(attempt: SftResourceAttempt, candidates: SftCandidates, 
     for (const [rowIndex, fallbackRow] of attempt.modelFallbackRows.entries()) {
         mergeCandidateRow(merge, rowIndex, fallbackRow);
     }
+    keepOneTextPerCode(attempt, merged);
     return merged;
+}
+
+/**
+ * Make each linked text a function of its code: a code that rows show with different texts keeps the text
+ * of its first row everywhere, so the model's caption is kept rather than replaced by a placeholder.
+ *
+ * @param attempt the resource attempt
+ * @param merged the merged model rows, updated in place
+ */
+function keepOneTextPerCode(attempt: SftResourceAttempt, merged: MergedSftRows): void {
+    for (const { owner, text } of attempt.linkedTexts) {
+        const textByCode = new Map<string, JsonValue>();
+        for (const [rowIndex, row] of merged.generatedRows.entries()) {
+            const code = row[owner.name];
+            if (code === null || code === undefined) {
+                continue;
+            }
+            const first = textByCode.get(String(code));
+            if (first === undefined) {
+                textByCode.set(String(code), row[text.name] as JsonValue);
+            } else if (row[text.name] !== first) {
+                merged.generatedRows[rowIndex] = Object.freeze({ ...row, [text.name]: first });
+                const accepted = merged.acceptedValues[rowIndex];
+                if (accepted && text.name in accepted) {
+                    accepted[text.name] = first;
+                }
+            }
+        }
+    }
 }
 
 /**

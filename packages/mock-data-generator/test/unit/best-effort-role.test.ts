@@ -44,15 +44,16 @@ const abstained = (
 
 describe('best-effort roles', () => {
     it('gives a field the classifier was not certain about its best-ranked role that fits', () => {
-        // Given a carrier name the classifier ranks as an organisation name below its route threshold
+        // Given a carrier name the classifier ranks as an organisation name with the calibrated best-effort
+        // confidence, but below its route threshold
         const diagnostics: MockDataGeneratorDiagnostic[] = [];
         const detected = new Map([
             [
                 'Carriers.CarrierName',
                 abstained('below-threshold', [
-                    { role: 'org_name', confidence: 0.51 },
-                    { role: 'description', confidence: 0.27 },
-                    { role: 'unknown', confidence: 0.11 }
+                    { role: 'org_name', confidence: 0.9 },
+                    { role: 'description', confidence: 0.05 },
+                    { role: 'unknown', confidence: 0.03 }
                 ])
             ]
         ]);
@@ -66,6 +67,26 @@ describe('best-effort roles', () => {
         expect(diagnostics).toContainEqual(
             expect.objectContaining({ code: 'SEMANTIC_ROLE_BEST_EFFORT', target: 'Carriers.CarrierName' })
         );
+    });
+
+    it('ignores a role ranked below the calibrated best-effort confidence', () => {
+        // Given a carrier name the classifier ranks as an organisation name with a confidence most such
+        // guesses do not reach the right role at
+        const detected = new Map([
+            [
+                'Carriers.CarrierName',
+                abstained('below-threshold', [
+                    { role: 'org_name', confidence: 0.6 },
+                    { role: 'unknown', confidence: 0.3 }
+                ])
+            ]
+        ]);
+
+        // When the plan is compiled
+        const plan = compileSemanticPlan(graph, detected, []);
+
+        // Then the field keeps no role, so it takes the standard fallback instead of a likely wrong value
+        expect(plan.get('Carriers.CarrierName')).toMatchObject({ role: 'unknown' });
     });
 
     it('ignores a role the classifier ranks below no role at all', () => {
@@ -100,7 +121,7 @@ describe('best-effort roles', () => {
                     top: [{ role: 'org_name', confidence: 0.99 }]
                 }
             ],
-            ['Carriers.Remark', abstained('below-threshold', [{ role: 'org_name', confidence: 0.5 }])]
+            ['Carriers.Remark', abstained('below-threshold', [{ role: 'org_name', confidence: 0.9 }])]
         ]);
 
         // When the plan is compiled

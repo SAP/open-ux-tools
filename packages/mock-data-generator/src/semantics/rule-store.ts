@@ -262,6 +262,7 @@ export interface Thresholds {
     readonly conflict: number;
     readonly lexicalConfidence: number;
     readonly statistics: number;
+    readonly bestEffort: number;
 }
 
 /**
@@ -1177,7 +1178,7 @@ function parseGeography(value: unknown): Geography {
  */
 function parseThresholds(value: unknown): Thresholds {
     const label = 'thresholds';
-    const names = ['route', 'conflict', 'lexicalConfidence', 'statistics'] as const;
+    const names = ['route', 'conflict', 'lexicalConfidence', 'statistics', 'bestEffort'] as const;
     const input = objectRecord(value, label);
     assertKeys(input, new Set(['notes', ...names]), label);
     nonEmptyString(input.notes, `${label}.notes`);
@@ -1191,7 +1192,8 @@ function parseThresholds(value: unknown): Thresholds {
         route: threshold('route'),
         conflict: threshold('conflict'),
         lexicalConfidence: threshold('lexicalConfidence'),
-        statistics: threshold('statistics')
+        statistics: threshold('statistics'),
+        bestEffort: threshold('bestEffort')
     });
 }
 

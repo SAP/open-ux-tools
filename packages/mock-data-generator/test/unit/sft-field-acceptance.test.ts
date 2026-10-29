@@ -1,6 +1,6 @@
 import { isStructuralFragment } from '../../src/generation/sft.js';
 import { generateServiceForTesting } from '../../src/index.js';
-import type { SftCandidateRelevanceVerifier, SftGenerator } from '../../src/types.js';
+import type { SemanticClassification, SftCandidateRelevanceVerifier, SftGenerator } from '../../src/types.js';
 
 // A code with its caption (both proposed by the model), a free text and an amount.
 const metadata = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0"><edmx:DataServices><Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Demo">
@@ -123,5 +123,76 @@ describe('structural fragments in model values', () => {
         expect(result.statistics.sft.assignments[0]?.fields.find(({ name }) => name === 'Remark')).toMatchObject({
             invalidSlots: 1
         });
+    });
+});
+
+describe('model values for best-effort roles', () => {
+    const contactMetadata = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0"><edmx:DataServices><Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Demo">
+<EntityType Name="Visit"><Key><PropertyRef Name="ID"/></Key>
+<Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+<Property Name="Reach" Type="Edm.String" MaxLength="60"/>
+</EntityType>
+<EntityContainer Name="Container"><EntitySet Name="Visits" EntityType="Demo.Visit"/></EntityContainer>
+</Schema></edmx:DataServices></edmx:Edmx>`;
+    const contactRequest = {
+        metadata: { format: 'edmx', content: contactMetadata },
+        service: { urlPath: '/visits', odataVersion: '4.0' },
+        targets: [{ name: 'Visits', kind: 'entity-set' }],
+        existingData: {}
+    } as const;
+    const classifier = {
+        fingerprint: 'best-effort-email',
+        classify: async (input: { propertyName: string }): Promise<SemanticClassification> =>
+            input.propertyName === 'Reach'
+                ? {
+                      role: 'email',
+                      confidence: 0.9,
+                      source: 'classifier',
+                      routeThreshold: 0.95,
+                      top: [
+                          { role: 'email', confidence: 0.9 },
+                          { role: 'unknown', confidence: 0.05 }
+                      ]
+                  }
+                : { role: 'unknown', confidence: 1, source: 'unknown', top: [{ role: 'unknown', confidence: 1 }] }
+    };
+
+    it('lets the model replace a best-effort value only with a value the role accepts', async () => {
+        // Given a field the classifier ranks as an email below its threshold, and a model that writes one
+        // value that is no email and one that is
+        const result = await generateServiceForTesting(
+            contactRequest,
+            { seed: 5, rowsPerEntity: 2 },
+            { classifier, sft: answering([{ Reach: 'HYD' }, { Reach: 'ana.silva@example.com' }]) }
+        );
+
+        // When the rows are generated, then the field keeps its best-effort email where the model value does
+        // not fit, takes the model value where it does, and generation passes its final checks
+        expect(result.semanticRoles?.['Visits.Reach']).toBe('email');
+        const rows = result.resources.Visits;
+        expect(rows[0]?.Reach).toMatch(/^[^@\s]+@[^@\s]+\.[a-z]+$/u);
+        expect(rows[1]?.Reach).toBe('ana.silva@example.com');
+    });
+});
+
+describe('model captions of a linked code', () => {
+    it('keeps one caption per code across the rows', async () => {
+        // Given a model that writes the same category twice with different captions
+        const result = await generateServiceForTesting(request, options, {
+            sft: answering([
+                { Category: 'HW', CategoryText: 'Hardware fault', Remark: 'Replaced the fan', Effort: 2.5 },
+                { Category: 'HW', CategoryText: 'Broken screen', Remark: 'Patched the client', Effort: 1.5 },
+                { Category: 'NW', CategoryText: 'Network outage', Remark: 'Reset the switch', Effort: 3.5 }
+            ]),
+            candidateVerifier: verifying(['Hardware fault', 'Broken screen', 'Network outage'])
+        });
+
+        // When the rows are merged, then the repeated code shows the caption of its first row
+        const rows = result.resources.Tickets;
+        expect(rows.map((row) => [row.Category, row.CategoryText])).toEqual([
+            ['HW', 'Hardware fault'],
+            ['HW', 'Hardware fault'],
+            ['NW', 'Network outage']
+        ]);
     });
 });
