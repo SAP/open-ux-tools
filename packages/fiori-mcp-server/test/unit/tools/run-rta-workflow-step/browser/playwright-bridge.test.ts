@@ -111,6 +111,21 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
+    test('closes the browser context and rethrows when page navigation fails', async () => {
+        const page = new FakePage();
+        const { browser } = setupBrowser([page]);
+        page.goto.mockRejectedValueOnce(new Error('net::ERR_CONNECTION_REFUSED'));
+
+        const fs = await loadPlaywrightBridge();
+        await expect(fs.callFrontendAction(SITE_A, 'com.sap.ui.flex.startRTA.v1', {})).rejects.toThrow(
+            'net::ERR_CONNECTION_REFUSED'
+        );
+        // The failed-goto catch must close the context it opened (no leaked context).
+        expect(browser.contextClose).toHaveBeenCalledTimes(1);
+
+        await fs.stopBrowser();
+    });
+
     test('reuses page on second callFrontendAction for same site', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
