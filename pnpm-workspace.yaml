@@ -139,7 +139,6 @@ overrides:
     'jsdom>http-proxy-agent': '>=7.0.2'
     'css-loader>postcss': '>=8.5.23'
     'sanitize-html>postcss': '>=8.5.23'
-    postcss: '>=8.5.23'
     sanitize-html: '>=2.17.7'
     'sanitize-html>htmlparser2': '^8.0.2'
     '@jest/environment': '30.4.1'
