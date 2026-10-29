@@ -79,6 +79,7 @@ export interface CopyToClipboard {
     type: typeof COPY_TO_CLIPBOARD;
     pageName: string;
     property: string;
+    value: string;
     pageSectionName?: string;
     manifest: ManifestPropertyDiagnosticData;
 }
