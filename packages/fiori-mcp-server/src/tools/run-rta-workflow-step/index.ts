@@ -1,11 +1,10 @@
 import {
-    callPageAction,
+    describeUi,
     executeAction,
+    executeUfaAction,
     FrontendActionError,
     getElementContext,
     getOverlays,
-    getPageActions,
-    pressInteractive,
     saveChanges,
     startRta
 } from './rta/index.js';
@@ -131,26 +130,29 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const result = await startRta(defaultTransport, page);
                 return { site, frameId, ...result };
             }
-            case 'get_page_actions': {
-                const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
-                    site,
-                    frameId
-                });
-                return {
-                    registered,
-                    interactive,
-                    ...(interactiveTruncated && { interactiveTruncated })
-                };
+            case 'describe_ui': {
+                const rawRootId = input.payload?.['rootElementId'];
+                const rootElementId = rawRootId !== undefined ? String(rawRootId) : undefined;
+                const uiTree = await describeUi(defaultTransport, { site, frameId }, rootElementId);
+                return { uiTree };
             }
-            case 'call_page_action': {
-                const id = requireString(input.payload, 'id');
-                const result = await callPageAction(defaultTransport, { site, frameId }, id);
-                return { result };
-            }
-            case 'press_interactive': {
-                const controlId = requireString(input.payload, 'controlId');
-                const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
-                return { result };
+            case 'execute_page_action': {
+                const actionName = requireString(input.payload, 'actionName');
+                const rawElemId = input.payload?.['elementId'];
+                const elementId = rawElemId !== undefined ? String(rawElemId) : undefined;
+                const rawParams = input.payload?.['actionParameters'];
+                const actionParameters =
+                    typeof rawParams === 'object' && rawParams !== null && !Array.isArray(rawParams)
+                        ? (rawParams as Record<string, unknown>)
+                        : undefined;
+                const ufaResult = await executeUfaAction(
+                    defaultTransport,
+                    { site, frameId },
+                    actionName,
+                    elementId,
+                    actionParameters
+                );
+                return { isSuccess: ufaResult.isSuccess, result: ufaResult.result };
             }
             default:
                 throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);
