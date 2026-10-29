@@ -1,5 +1,14 @@
 # @sap-ux/telemetry
 
+## 2.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+
 ## 2.0.12
 
 ### Patch Changes

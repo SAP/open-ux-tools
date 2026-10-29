@@ -1,5 +1,17 @@
 # @sap-ux/odata-cli
 
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+
 ## 1.0.14
 
 ### Patch Changes

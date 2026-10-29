@@ -1,5 +1,13 @@
 # @sap-ux/nodejs-utils
 
+## 1.0.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade read-package-up 11.0.0 → 12.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
 ## 1.0.12
 
 ### Patch Changes
