@@ -96,6 +96,14 @@ export function addExistingServiceToMta(
             suffix++;
         }
         resourceName = `${instance.name}-${suffix}`;
+
+        for (const module of yamlContent.modules ?? []) {
+            for (const require of module.requires ?? []) {
+                if (require.name === instance.name) {
+                    require.name = resourceName;
+                }
+            }
+        }
     }
 
     yamlContent.resources.push({
@@ -569,8 +577,8 @@ export async function adjustMtaYaml(
     logger?: ToolsLogger
 ): Promise<MtaYaml> {
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
-    // Tolerate a missing mta.yaml so the new-MTA flow (no yaml yet) falls back to the default
-    // scaffold; existing MTA projects still read their yaml from disk as before.
+    // Tolerate a missing mta.yaml so the new-MTA flow (no yaml yet) falls back to the default scaffold,
+    // existing MTA projects still read their yaml from disk as before.
     const loadedYamlContent = memFs.exists(mtaYamlPath) ? getYamlContent<MtaYaml>(mtaYamlPath) : undefined;
 
     const defaultYaml: MtaYaml = {
@@ -625,7 +633,7 @@ export async function adjustMtaYaml(
  *
  * The ADP app's `ui5.yaml` lives in the project root for a standalone adaptation project, or in an app
  * subfolder for an MTA project (the MTA root holds `mta.yaml`, the ADP app sits in a child folder). The
- * search therefore checks the root and each immediate subfolder and returns the first persisted space —
+ * search therefore checks the root and each immediate subfolder and returns the first persisted space -
  * all ADP apps in one MTA target the same space.
  *
  * Returns `undefined` when no `ui5.yaml` holds a space value (e.g. the folder is not a CF-generated
@@ -648,11 +656,14 @@ export function getCfProjectSpaceGuid(projectPath: string, logger?: ToolsLogger)
     }
 
     for (const dir of candidateDirs) {
-        if (!fs.existsSync(path.join(dir, 'ui5.yaml'))) {
+        const ui5YamlPath = path.join(dir, 'ui5.yaml');
+        if (!fs.existsSync(ui5YamlPath)) {
             continue;
         }
         try {
-            const spaceGuid = getAppParamsFromUI5Yaml(dir).spaceGuid;
+            const ui5Yaml = getYamlContent<CfUI5Yaml>(ui5YamlPath);
+            const spaceGuid = ui5Yaml?.builder?.customTasks?.find((task) => task.name === 'app-variant-bundler-build')
+                ?.configuration?.space;
             if (spaceGuid) {
                 return spaceGuid;
             }

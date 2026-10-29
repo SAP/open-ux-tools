@@ -1,6 +1,6 @@
 ---
-'@sap-ux/generator-adp': patch
-'@sap-ux/adp-tooling': patch
+'@sap-ux/generator-adp': minor
+'@sap-ux/adp-tooling': minor
 '@sap-ux/fiori-mcp-server': patch
 '@sap-ux/fiori-tools-plugin': patch
 ---
