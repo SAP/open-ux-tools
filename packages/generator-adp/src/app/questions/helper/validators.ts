@@ -143,6 +143,11 @@ export function validateProjectPath(
     }
 
     if (mtaMode === MtaMode.New) {
+        // New mode scaffolds a new MTA inside the selected folder an already-MTA folder is a conflicting
+        // choice (it would nest or silently reuse the MTA), so block it and point the user at Existing mode.
+        if (isMtaProject(projectPath)) {
+            return t('error.newModeFolderAlreadyMta');
+        }
         return true;
     }
 

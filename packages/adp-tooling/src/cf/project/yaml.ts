@@ -96,14 +96,6 @@ export function addExistingServiceToMta(
             suffix++;
         }
         resourceName = `${instance.name}-${suffix}`;
-
-        for (const module of yamlContent.modules ?? []) {
-            for (const require of module.requires ?? []) {
-                if (require.name === instance.name) {
-                    require.name = resourceName;
-                }
-            }
-        }
     }
 
     yamlContent.resources.push({

@@ -302,14 +302,21 @@ describe('validateProjectPath', () => {
         expect(result).toBe(true);
     });
 
-    test('should not require an MTA project in new mode, only that the parent folder exists', async () => {
+    test('should accept a non-MTA parent folder in new mode', async () => {
         mockExistsSync.mockReturnValue(true);
         mockIsMtaProject.mockReturnValue(false);
 
         const result = await validateProjectPath('/parent/folder', mockLogger, MtaMode.New);
         expect(result).toBe(true);
-        expect(mockIsMtaProject).not.toHaveBeenCalled();
         expect(mockGetCfProjectSpaceGuid).not.toHaveBeenCalled();
+    });
+
+    test('should return an error in new mode when the selected folder is already an MTA project', async () => {
+        mockExistsSync.mockReturnValue(true);
+        mockIsMtaProject.mockReturnValue(true);
+
+        const result = await validateProjectPath('/existing-mta', mockLogger, MtaMode.New);
+        expect(result).toBe(t('error.newModeFolderAlreadyMta'));
     });
 
     test('should return an error when the MTA belongs to a different CF space', async () => {

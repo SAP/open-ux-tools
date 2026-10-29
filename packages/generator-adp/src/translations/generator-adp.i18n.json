@@ -135,6 +135,7 @@
         "projectDoesNotExist": "The project does not exist. Please select an MTA project.",
         "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
         "projectSpaceMismatch": "The selected MTA project was created for a different Cloud Foundry space. Log in to that space, or choose another project.",
+        "newModeFolderAlreadyMta": "The selected folder is already an MTA project. Choose an empty folder to create a new MTA project, or select 'Create SAPUI5 Adaptation Project in an Existing MTA Project'.",
         "noAdaptableBusinessServiceFoundInMta": "No adaptable business service found in the MTA.",
         "noAppsFoundForBusinessService": "No applications were found for the selected business service. Please check the service configuration.",
         "fetchBaseInboundsFailed": "Fetching base application inbounds failed: {{error}}.",
