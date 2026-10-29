@@ -24,6 +24,8 @@ import { writeAnnotationShells } from './building-block-annotations.js';
  * The custom building block templates (custom-column, custom-filter-field, custom-form-field)
  * access `data.position.anchor` unconditionally, so `position` must always be an object —
  * even when the caller omits it.
+ *
+ * @param data
  */
 function applyPositionDefault(data: BuildingBlock): BuildingBlock {
     const type = data.buildingBlockType;
@@ -48,6 +50,8 @@ function applyPositionDefault(data: BuildingBlock): BuildingBlock {
  * "/Products/description"), there is no entitySet to combine — the writer emits metaPath="".
  * This function short-circuits that by copying targetProperty directly into metaPath so the
  * template receives the correct value without needing entitySet.
+ *
+ * @param data
  */
 function applyRteMetaPath(data: BuildingBlock): BuildingBlock {
     if (data.buildingBlockType !== BuildingBlockType.RichTextEditor) {
@@ -66,12 +70,21 @@ type InsertionPoint = { file: string; aggregationPaths: string[] };
  * Builds a discovery response: `needs_input` when candidates were found (the caller picks one and calls again),
  * or `error` when none were — a dead-end that needs a different action (e.g. creating a view first) rather than a
  * retry of the same call.
+ *
+ * @param message
+ * @param insertionPoints
+ * @param found
  */
 function discovery(message: string, insertionPoints: InsertionPoint[], found: boolean): AddBuildingBlockOutput {
     return { status: found ? 'needs_input' : 'error', modifiedFiles: [], message, insertionPoints };
 }
 
-/** Discovery step 1 — list the app's view/fragment files when no target view was supplied. */
+/**
+ * Discovery step 1 — list the app's view/fragment files when no target view was supplied.
+ *
+ * @param appPath
+ * @param fs
+ */
 async function discoverViewFiles(appPath: string, fs: Editor): Promise<AddBuildingBlockOutput> {
     const files = await getFragmentAndViewFiles(appPath, fs);
     const insertionPoints = files.map((file) => ({ file: relative(appPath, file), aggregationPaths: [] }));
@@ -84,7 +97,13 @@ async function discoverViewFiles(appPath: string, fs: Editor): Promise<AddBuildi
     );
 }
 
-/** Discovery step 2 — list the valid aggregation XPaths for a chosen view/fragment. */
+/**
+ * Discovery step 2 — list the valid aggregation XPaths for a chosen view/fragment.
+ *
+ * @param appPath
+ * @param viewOrFragmentPath
+ * @param fs
+ */
 function discoverAggregationPaths(appPath: string, viewOrFragmentPath: string, fs: Editor): AddBuildingBlockOutput {
     const absoluteView = isAbsolute(viewOrFragmentPath) ? viewOrFragmentPath : join(appPath, viewOrFragmentPath);
     const { inputChoices } = getXPathStringsForXmlFile(absoluteView, fs);
