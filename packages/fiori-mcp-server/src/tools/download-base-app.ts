@@ -1,4 +1,4 @@
-import { downloadAppResources } from '../utils/index.js';
+import { downloadAppResources } from '@sap-ux/adp-tooling';
 import type { DownloadAppResourcesInput, DownloadAppResourcesOutput } from '../types/index.js';
 
 /**

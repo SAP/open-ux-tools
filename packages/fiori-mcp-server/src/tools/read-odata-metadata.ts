@@ -1,10 +1,10 @@
-import { readUi5Config, isCFEnvironment } from '@sap-ux/adp-tooling';
+import { readUi5Config, isCFEnvironment, getMergedManifest } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { formatXml, logger, writeContextMetadata, getMergedManifest } from '../utils/index.js';
+import { formatXml, logger, writeContextMetadata } from '../utils/index.js';
 import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
 type Ui5Model = ManifestNamespace.Model & Record<string, unknown>;
