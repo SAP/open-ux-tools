@@ -242,5 +242,8 @@ export async function executeUfaAction(
     // the raw UFA result is in `payload`; on failure the transport puts the reason in
     // `error`, so surface that (the skill tells callers to report it to the user).
     const result = await transport.callFrontendAction<unknown>(page.site, name, params, page.frameId);
-    return { isSuccess: result.isSuccess, result: result.isSuccess ? result.payload : (result.error ?? result.payload) };
+    return {
+        isSuccess: result.isSuccess,
+        result: result.isSuccess ? result.payload : (result.error ?? result.payload)
+    };
 }

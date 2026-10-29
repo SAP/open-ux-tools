@@ -236,7 +236,7 @@ function cleanupKeyUserChangesFile(filePath: string | undefined): void {
 }
 
 /**
-
+ 
 /**
  * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *

@@ -464,13 +464,13 @@ describe('browser/playwright-bridge', () => {
 
         test('maps a UFA { success: false, error } result to a failure envelope preserving the reason', async () => {
             const fs = await loadPlaywrightBridge();
-            expect(fs.normalizeUfaResult({ success: false, error: "Control does not support 'press' action" }, true)).toEqual(
-                {
-                    isSuccess: false,
-                    payload: null,
-                    error: { code: 'UFA_ACTION_FAILED', message: "Control does not support 'press' action" }
-                }
-            );
+            expect(
+                fs.normalizeUfaResult({ success: false, error: "Control does not support 'press' action" }, true)
+            ).toEqual({
+                isSuccess: false,
+                payload: null,
+                error: { code: 'UFA_ACTION_FAILED', message: "Control does not support 'press' action" }
+            });
         });
 
         test('uses message when error is absent, and a generic fallback when neither is present', async () => {

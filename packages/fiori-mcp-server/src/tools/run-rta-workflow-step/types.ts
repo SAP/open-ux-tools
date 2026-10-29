@@ -1,10 +1,4 @@
-import type {
-    ActionsCatalog,
-    DescribeUiResult,
-    ElementContext,
-    ExecuteUfaActionResult,
-    Overlay
-} from './rta/types.js';
+import type { ActionsCatalog, DescribeUiResult, ElementContext, ExecuteUfaActionResult, Overlay } from './rta/types.js';
 
 /**
  * The steps run_rta_workflow_step accepts. Single source of truth — the
