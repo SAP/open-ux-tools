@@ -77,6 +77,9 @@ async function buildMetaModel(serviceInfo: ServiceInfoResponse): Promise<OvpMeta
     });
 
     const metaModel = model.getMetaModel();
+    if (!metaModel) {
+        throw new Error('Could not retrieve OData meta model');
+    }
     await metaModel.loaded();
 
     return {

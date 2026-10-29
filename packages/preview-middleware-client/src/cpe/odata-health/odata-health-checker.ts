@@ -120,7 +120,7 @@ export class ODataHealthChecker {
         return oModel.metadataLoaded(true).finally(
             // Do clean up in case the helath check is done multiple times.
             () => oModel.destroy()
-        );
+        ) as unknown as Promise<ODataMetadata>;
     }
 
     private getServiceV4Metadata(serviceUrl: string): Promise<ODataMetadata> {
