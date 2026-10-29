@@ -51,7 +51,7 @@ const FLEX_RE = /^com\.sap\.ui\.flex\.(.+)\.v\d+$/;
  * @param actionName Fully-qualified contract name.
  * @returns The module path, method name, and whether it is a UFA action.
  */
-function resolveAction(actionName: string): { module: string; method: string; ufa: boolean } {
+export function resolveAction(actionName: string): { module: string; method: string; ufa: boolean } {
     if (actionName.startsWith(UFA_PREFIX)) {
         return { module: UFA_ACTIONS_MODULE, method: actionName.slice(UFA_PREFIX.length), ufa: true };
     }
@@ -62,6 +62,40 @@ function resolveAction(actionName: string): { module: string; method: string; uf
     // Unknown shape — try it verbatim against the Flex API and let the page report
     // "method not available" rather than guessing a module here.
     return { module: FLEX_ACTIONS_MODULE, method: actionName, ufa: false };
+}
+
+/**
+ * Normalizes the raw value returned by a frontend-action method into the Flex
+ * `{ isSuccess, payload, error }` envelope.
+ *
+ * Flex actions (`isUfa === false`) already return that envelope, so the raw value
+ * is passed through. UFA actions (`ActionHelpers`) return raw results instead: a
+ * mutation returns `{ success: boolean, error?/message? }` and a describe returns
+ * raw data (e.g. a UI tree). A `{ success: false }` result becomes
+ * `{ isSuccess: false, error }` (reason preserved from `error`/`message`); anything
+ * else becomes `{ isSuccess: true, payload: <raw> }`.
+ *
+ * Kept at module scope (rather than inside the browser `evaluate` closure) so it
+ * runs in Node and is directly unit-testable.
+ *
+ * @param raw The value returned by the action method.
+ * @param isUfa Whether the action is a UFA action needing normalization.
+ * @returns The Flex result envelope.
+ */
+export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendActionResult {
+    if (!isUfa) {
+        // Flex actions already return the { isSuccess, payload, error } envelope.
+        return raw as FrontendActionResult;
+    }
+    const r = raw as { success?: boolean; error?: unknown; message?: unknown } | undefined;
+    if (r && typeof r === 'object' && r.success === false) {
+        const message =
+            (typeof r.error === 'string' && r.error) ||
+            (typeof r.message === 'string' && r.message) ||
+            'UFA action failed';
+        return { isSuccess: false, payload: null, error: { code: 'UFA_ACTION_FAILED', message } };
+    }
+    return { isSuccess: true, payload: raw, error: null };
 }
 
 /**
@@ -121,7 +155,7 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
         );
 
         const response = await executionContext.evaluate(
-            async ({ mod, fn, p, isUfa }: { mod: string; fn: string; p: Record<string, unknown>; isUfa: boolean }) => {
+            async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
                 const require = (
                     window as unknown as {
                         sap?: {
@@ -145,26 +179,13 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
                 if (typeof method !== 'function') {
                     throw new Error(`Frontend action "${fn}" is not available on ${mod}`);
                 }
-                const raw = await (method as (arg: unknown) => unknown).call(api, p);
-                if (!isUfa) {
-                    // Flex actions already return the { isSuccess, payload, error } envelope.
-                    return raw;
-                }
-                // Normalize raw UFA results into the same envelope. A UFA mutation
-                // returns { success: boolean, error? }; a describe returns raw data.
-                const r = raw as { success?: boolean; error?: unknown; message?: unknown } | undefined;
-                if (r && typeof r === 'object' && r.success === false) {
-                    const message =
-                        (typeof r.error === 'string' && r.error) ||
-                        (typeof r.message === 'string' && r.message) ||
-                        'UFA action failed';
-                    return { isSuccess: false, payload: null, error: { code: 'UFA_ACTION_FAILED', message } };
-                }
-                return { isSuccess: true, payload: raw, error: null };
+                // Return the raw method result; normalization into the Flex envelope
+                // happens in Node (normalizeUfaResult) so that pure logic stays testable.
+                return await (method as (arg: unknown) => unknown).call(api, p);
             },
-            { mod: module, fn: method, p: payload, isUfa: ufa }
+            { mod: module, fn: method, p: payload }
         );
-        return response as FrontendActionResult<TReturn>;
+        return normalizeUfaResult(response, ufa) as FrontendActionResult<TReturn>;
     };
 
     const close = async (): Promise<void> => {

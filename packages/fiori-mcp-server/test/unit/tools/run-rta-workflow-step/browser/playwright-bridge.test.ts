@@ -403,4 +403,86 @@ describe('browser/playwright-bridge', () => {
         await expect(fs.callFrontendAction(SITE_A, 'a')).rejects.toThrow(/npx playwright install chromium/);
         expect(launchMock).toHaveBeenCalledTimes(2);
     });
+
+    describe('resolveAction', () => {
+        test('maps a Flex contract name to FrontendActionsAPI + bare method', async () => {
+            const fs = await loadPlaywrightBridge();
+            expect(fs.resolveAction('com.sap.ui.flex.startRTA.v1')).toEqual({
+                module: 'sap/ui/rta/api/FrontendActionsAPI',
+                method: 'startRTA',
+                ufa: false
+            });
+            expect(fs.resolveAction('com.sap.ui.flex.getOverlaysInformation.v2')).toEqual({
+                module: 'sap/ui/rta/api/FrontendActionsAPI',
+                method: 'getOverlaysInformation',
+                ufa: false
+            });
+        });
+
+        test('maps a UFA contract name to ActionHelpers + bare method', async () => {
+            const fs = await loadPlaywrightBridge();
+            expect(fs.resolveAction('com.sap.ui.unified.frontend.actions.describeUI')).toEqual({
+                module: 'sap/ui/joule/frontend/util/ActionHelpers',
+                method: 'describeUI',
+                ufa: true
+            });
+            expect(fs.resolveAction('com.sap.ui.unified.frontend.actions.executeAction')).toEqual({
+                module: 'sap/ui/joule/frontend/util/ActionHelpers',
+                method: 'executeAction',
+                ufa: true
+            });
+        });
+
+        test('falls back to the Flex module verbatim for an unrecognized name', async () => {
+            const fs = await loadPlaywrightBridge();
+            expect(fs.resolveAction('somethingUnexpected')).toEqual({
+                module: 'sap/ui/rta/api/FrontendActionsAPI',
+                method: 'somethingUnexpected',
+                ufa: false
+            });
+        });
+    });
+
+    describe('normalizeUfaResult', () => {
+        test('passes a Flex envelope through unchanged (isUfa=false)', async () => {
+            const fs = await loadPlaywrightBridge();
+            const envelope = { isSuccess: true, payload: { rtaStarted: true }, error: null };
+            expect(fs.normalizeUfaResult(envelope, false)).toBe(envelope);
+        });
+
+        test('wraps a raw UFA describe result as a success envelope', async () => {
+            const fs = await loadPlaywrightBridge();
+            const tree = { id: 'root', type: 'sap.m.Page', children: [] };
+            expect(fs.normalizeUfaResult(tree, true)).toEqual({ isSuccess: true, payload: tree, error: null });
+        });
+
+        test('wraps a UFA { success: true } mutation result as a success envelope', async () => {
+            const fs = await loadPlaywrightBridge();
+            const raw = { success: true };
+            expect(fs.normalizeUfaResult(raw, true)).toEqual({ isSuccess: true, payload: raw, error: null });
+        });
+
+        test('maps a UFA { success: false, error } result to a failure envelope preserving the reason', async () => {
+            const fs = await loadPlaywrightBridge();
+            expect(fs.normalizeUfaResult({ success: false, error: "Control does not support 'press' action" }, true)).toEqual(
+                {
+                    isSuccess: false,
+                    payload: null,
+                    error: { code: 'UFA_ACTION_FAILED', message: "Control does not support 'press' action" }
+                }
+            );
+        });
+
+        test('uses message when error is absent, and a generic fallback when neither is present', async () => {
+            const fs = await loadPlaywrightBridge();
+            expect(fs.normalizeUfaResult({ success: false, message: 'boom' }, true).error).toEqual({
+                code: 'UFA_ACTION_FAILED',
+                message: 'boom'
+            });
+            expect(fs.normalizeUfaResult({ success: false }, true).error).toEqual({
+                code: 'UFA_ACTION_FAILED',
+                message: 'UFA action failed'
+            });
+        });
+    });
 });
