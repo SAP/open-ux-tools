@@ -15,14 +15,7 @@ import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } fr
 import { requireEditorSession } from '../../utils/editor-session.js';
 import { isSimpleBrowserRelayEnabled } from '../../utils/simple-browser-relay.js';
 
-/**
- * Selects the FrontendActionTransport implementation.
- *
- * - Simple Browser HTTP relay — the editor page itself executes the frontend actions.
- *   Used in BAS (and locally via SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN) so a login can be
- *   completed in the interactive browser before RTA runs. See isSimpleBrowserRelayEnabled.
- * - Default — Playwright launches Chromium/Chrome.
- */
+// Simple Browser HTTP relay when enabled (BAS / FORCE_AUTOOPEN), else Playwright.
 const activeTransport = isSimpleBrowserRelayEnabled() ? httpTransport : defaultTransport;
 
 /**
@@ -81,7 +74,6 @@ function requireSite(site: string | undefined): string {
     }
 
     if (activeTransport === httpTransport) {
-        // Trust the exact session association, not host suffixes or port-shaped hostnames.
         requireEditorSession(site);
         return site;
     }

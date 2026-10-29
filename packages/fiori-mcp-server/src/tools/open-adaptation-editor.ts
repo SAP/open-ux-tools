@@ -18,11 +18,8 @@ import { isSimpleBrowserRelayEnabled } from '../utils/simple-browser-relay.js';
 const TIMEOUT_MS = 30000;
 
 /**
- * In SAP Business Application Studio the editor binds to a local loopback port
- * that is not reachable from the user's browser; BAS re-exposes it under an
- * external HTTPS URL. This resolves that external URL for the given port and
- * rewrites the editor URL's origin accordingly. Outside BAS the URL is returned
- * unchanged.
+ * In BAS the editor's loopback URL isn't browser-reachable, so rewrite its origin to the
+ * BAS-exposed external HTTPS URL for the given port. Outside BAS the URL is returned unchanged.
  *
  * @param editorUrl - The localhost editor URL (origin + editor path).
  * @param port - The local port the editor server listens on.
