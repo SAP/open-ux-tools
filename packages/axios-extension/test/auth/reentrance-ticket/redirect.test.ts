@@ -5,12 +5,24 @@ import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/aba
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { ConnectionError, TimeoutError } from '../../../src/auth/index.js';
 import request from 'supertest';
-import nock = require('nock');
+import nock from 'nock';
 
 describe('setupRedirectHandling()', () => {
     beforeEach(() => {
         jest.useFakeTimers();
         jest.resetAllMocks();
+        // nock 15 uses @mswjs/interceptors which intercepts socket-level connections,
+        // including connections to locally-started test servers. Deactivate to allow
+        // supertest to connect to the redirect handler server without interference.
+        if (nock.isActive()) {
+            nock.restore();
+        }
+    });
+
+    afterEach(() => {
+        if (!nock.isActive()) {
+            nock.activate();
+        }
     });
 
     afterAll(() => {

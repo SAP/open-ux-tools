@@ -74,7 +74,7 @@
         "copyfiles": "2.4.1",
         "dotenv": "18.0.8",
         "express": "4.22.1",
-        "nock": "14.0.16",
+        "nock": "15.0.5",
         "npm-run-all2": "9.0.3",
         "supertest": "7.2.2"
     },

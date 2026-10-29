@@ -894,8 +894,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -1016,8 +1016,8 @@ importers:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
 
   packages/axios-extension:
     dependencies:
@@ -1086,8 +1086,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -1156,8 +1156,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -1230,8 +1230,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
 
   packages/cap-config-writer:
     dependencies:
@@ -4019,8 +4019,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       npm-run-all2:
         specifier: 9.0.3
         version: 9.0.3
@@ -4584,8 +4584,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -4951,8 +4951,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0(jest@30.4.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@6.0.3)))(typescript@6.0.3)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -5214,8 +5214,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
 
   packages/ui5-library-inquirer:
     dependencies:
@@ -5533,8 +5533,8 @@ importers:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
       nock:
-        specifier: 14.0.16
-        version: 14.0.16
+        specifier: 15.0.5
+        version: 15.0.5(supports-color@8.1.1)
       supertest:
         specifier: 7.2.2
         version: 7.2.2(supports-color@8.1.1)
@@ -7925,9 +7925,9 @@ packages:
       '@cfworker/json-schema':
         optional: true
 
-  '@mswjs/interceptors@0.41.3':
-    resolution: {integrity: sha512-cXu86tF4VQVfwz8W1SPbhoRyHJkti6mjH/XJIxp40jhO4j2k1m4KYrEykxqWPkFF3vrK4rgQppBh//AwyGSXPA==}
-    engines: {node: '>=18'}
+  '@mswjs/interceptors@0.44.0':
+    resolution: {integrity: sha512-IYHevRStF4ijM20GI9c9Ndhw483NSAjCydQhUr4/zIB0BNLsTVw3vFAxTo6TlvX4QnV60wEHttUa9539TTAq+A==}
+    engines: {node: '>=22'}
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -8198,14 +8198,8 @@ packages:
   '@octokit/types@6.41.0':
     resolution: {integrity: sha512-eJ2jbzjdijiL3B4PrSQaSjuF2sPEQPVCPzBvTHJD9Nz+9dw2SGH4K4xeQJ77YfTq5bRQ+bD8wT11JbeDPmxmGg==}
 
-  '@open-draft/deferred-promise@2.2.0':
-    resolution: {integrity: sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==}
-
-  '@open-draft/logger@0.3.0':
-    resolution: {integrity: sha512-X2g45fzhxH238HKO4xbSr7+wBS8Fvw6ixhTDuvLd5mqh6bJJCFAPwU9mPDxbcrRtfxv4u5IHCEH77BmxvXmmxQ==}
-
-  '@open-draft/until@2.1.0':
-    resolution: {integrity: sha512-U69T3ItWHvLwGg5eJ0n3I62nWuE6ilHlmz7zM0npLBRvPRd7e6NYmg54vvRtP5mZG7kZqZCFVdsTWo7BPtBujg==}
+  '@open-draft/until@3.0.1':
+    resolution: {integrity: sha512-s7/9ELP4aP9YZtW7RJaa0Xf3RISaRH9+EFN18FtykJYRHGNrl8f9ymvoNXzjhrjmftFvkQudtuDU9RYhk0xs3A==}
 
   '@opentelemetry/api-logs@0.211.0':
     resolution: {integrity: sha512-swFdZq8MCdmdR22jTVGQDhwqDzcI4M10nhjXkLr1EsIzXgZBqm4ZlmmcWsg3TSNf+3mzgOiqveXmBLZuDi2Lgg==}
@@ -14989,9 +14983,9 @@ packages:
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
-  nock@14.0.16:
-    resolution: {integrity: sha512-8r4KEc6nT1D/fdLD/R1BO1CPaVEL8o40u/guFRJlXabN7vr3RmMqyjsY5Krt0nMwhsOAwXQ/mtN5vy5Jh3aErg==}
-    engines: {node: '>=18.20.0 <20 || >=20.12.1'}
+  nock@15.0.5:
+    resolution: {integrity: sha512-nVeuZGS2we1PyvqbW082Qj0EB4bd//6pZk/zOPDlaTPU72qcWrqfHg3kx9JcBcH1fJxwJHjmsfuQ4mss42su4w==}
+    engines: {node: '>=22.20.0'}
 
   node-abi@3.87.0:
     resolution: {integrity: sha512-+CGM1L1CgmtheLcBuleyYOn7NWPVu0s0EJH2C4puxgEZb9h8QpR9G2dBfZJOAUhi7VQxuBPMd0hiISWcTyiYyQ==}
@@ -15865,10 +15859,6 @@ packages:
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
 
-  propagate@2.0.1:
-    resolution: {integrity: sha512-vGrhOavPSTz4QVNuBNdcNXePNdNMaO1xj9yBeH1ScQPjk/rhg9sSlCXPhMkFuaNNW/syTvYqsnbIJxMBfRbbag==}
-    engines: {node: '>= 8'}
-
   properties-reader@2.3.0:
     resolution: {integrity: sha512-z597WicA7nDZxK12kZqHr2TcvwNU1GCfA5UwfDY/HDp3hXPoPlb5rlEx9bwGTiJnc0OqbBTkU975jDToth8Gxw==}
     engines: {node: '>=14'}
@@ -16357,6 +16347,9 @@ packages:
   retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
+
+  rettime@0.11.12:
+    resolution: {integrity: sha512-5ExtR1ppiDBQkVoPw5NAqdbfH4Iq2VOmQKHMtUoaFxA9bo2krzFYBtyq6K40xxbYp+2w/YOr6D+1ToF6tTN53A==}
 
   reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
@@ -17006,9 +16999,6 @@ packages:
 
   streamx@2.23.0:
     resolution: {integrity: sha512-kn+e44esVfn2Fa/O0CPFcex27fjIL6MkVae0Mm6q+E6f0hWv578YCERbv+4m02cjxvDsPKLnmxral/rR6lBMAg==}
-
-  strict-event-emitter@0.5.1:
-    resolution: {integrity: sha512-vMgjE/GGEPEFnhFub6pa4FmJBRBVOLpIII2hvCZ8Kzb7K0hlHo7mQv6xYrBvCL2LtAIBwFUK8wvuJgTVSQ5MFQ==}
 
   strict-uri-encode@2.0.0:
     resolution: {integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==}
@@ -21274,14 +21264,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mswjs/interceptors@0.41.3':
+  '@mswjs/interceptors@0.44.0(supports-color@8.1.1)':
     dependencies:
-      '@open-draft/deferred-promise': 2.2.0
-      '@open-draft/logger': 0.3.0
-      '@open-draft/until': 2.1.0
+      '@open-draft/until': 3.0.1
+      '@types/debug': 4.1.13
+      debug: 4.4.3(supports-color@8.1.1)
       is-node-process: 1.2.0
       outvariant: 1.4.3
-      strict-event-emitter: 0.5.1
+      rettime: 0.11.12
+    transitivePeerDependencies:
+      - supports-color
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
@@ -21663,14 +21655,7 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 12.11.0
 
-  '@open-draft/deferred-promise@2.2.0': {}
-
-  '@open-draft/logger@0.3.0':
-    dependencies:
-      is-node-process: 1.2.0
-      outvariant: 1.4.3
-
-  '@open-draft/until@2.1.0': {}
+  '@open-draft/until@3.0.1': {}
 
   '@opentelemetry/api-logs@0.211.0':
     dependencies:
@@ -30075,11 +30060,11 @@ snapshots:
       lower-case: 2.0.2
       tslib: 2.8.1
 
-  nock@14.0.16:
+  nock@15.0.5(supports-color@8.1.1):
     dependencies:
-      '@mswjs/interceptors': 0.41.3
-      json-stringify-safe: 5.0.1
-      propagate: 2.0.1
+      '@mswjs/interceptors': 0.44.0(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
 
   node-abi@3.87.0:
     dependencies:
@@ -31198,8 +31183,6 @@ snapshots:
       object-assign: 4.1.1
       react-is: 16.13.1
 
-  propagate@2.0.1: {}
-
   properties-reader@2.3.0:
     dependencies:
       mkdirp: 1.0.4
@@ -31845,6 +31828,8 @@ snapshots:
   retry@0.12.0: {}
 
   retry@0.13.1: {}
+
+  rettime@0.11.12: {}
 
   reusify@1.1.0: {}
 
@@ -32655,8 +32640,6 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
-
-  strict-event-emitter@0.5.1: {}
 
   strict-uri-encode@2.0.0: {}
 
