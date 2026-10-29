@@ -306,6 +306,11 @@ function semanticCoverage(
             fields.filter(({ acceptedSlots }) => acceptedSlots > 0).map(({ name }) => `${resource}.${name}`)
         )
     );
+    // A best-effort role fills a field no role was certain for; routing counts that field as abstained, so
+    // coverage does too.
+    const bestEffortFields = new Set(
+        result.diagnostics.filter(({ code }) => code === 'SEMANTIC_ROLE_BEST_EFFORT').map(({ target }) => target)
+    );
     for (const entity of graph.entities) {
         if (!targets.has(entity.entitySetName)) {
             continue;
@@ -316,7 +321,8 @@ function semanticCoverage(
             if (evidenceVerified) {
                 evidenceVerifiedFields++;
             }
-            const role = result.semanticRoles?.[`${entity.entitySetName}.${property.name}`];
+            const key = `${entity.entitySetName}.${property.name}`;
+            const role = bestEffortFields.has(key) ? undefined : result.semanticRoles?.[key];
             if (!role) {
                 if (!evidenceVerified && sftFields.has(`${entity.entitySetName}.${property.name}`)) {
                     syntheticUnverifiedFields++;
