@@ -46,6 +46,14 @@ export const DATA_EDITOR_SFT_MODEL_ROWS = 4;
 /** Budget preset of the `data-editor` execution mode: the overall SFT deadline, in milliseconds. */
 export const DATA_EDITOR_SFT_DEADLINE_MS = 20_000;
 
+/**
+ * Budget preset of the `data-editor` execution mode: the fields the SFT model writes per call. On a
+ * two-core workspace a call of three fields for four rows takes three to five seconds and a call of four
+ * fields up to seven, so three fields per call let a wide entity set keep model values within the
+ * editor's deadline.
+ */
+export const DATA_EDITOR_SFT_FIELDS_PER_CALL = 3;
+
 /** Default time limit of one SFT model run for one entity set, in milliseconds. */
 export const DEFAULT_SFT_ENTITY_TIMEOUT_MS = 90_000;
 
@@ -61,6 +69,9 @@ export const MAX_SFT_DEADLINE_MS = 600_000;
  * even when that exceeds this number. Callers can override it with `maxFieldsPerPrompt`.
  */
 export const DEFAULT_SFT_FIELDS_PER_CALL = 8;
+
+/** Largest number of fields per SFT call a caller may set. */
+export const MAX_SFT_FIELDS_PER_CALL = 64;
 
 /**
  * Rows the SFT model decodes together. Smaller batches complete progressively, so a time budget that

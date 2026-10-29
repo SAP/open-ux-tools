@@ -43,13 +43,13 @@ These are product decisions, not specification values; each constant documents i
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Result and input size               | `MAX_ROWS_PER_ENTITY`, `SATURATED_KEY_CAPACITY`, `MAX_METADATA_INPUT_BYTES`, `MAX_GENERATED_RESULT_BYTES`                                                                      |
 | SFT time budgets                    | `DEFAULT_SFT_SERVICE_BUDGET_MS`, `DEFAULT_SFT_ENTITY_TIMEOUT_MS`, `MAX_SFT_TIME_LIMIT_MS`, `MAX_SFT_DEADLINE_MS`, `MINIMUM_SFT_ATTEMPT_MS`, `DEADLINE_FINALIZATION_RESERVE_MS` |
-| `data-editor` execution-mode preset | `DATA_EDITOR_SFT_BUDGET_MS`, `DATA_EDITOR_SFT_ENTITY_TIMEOUT_MS`, `DATA_EDITOR_SFT_MODEL_ROWS`, `DATA_EDITOR_SFT_DEADLINE_MS`                                                  |
-| SFT call shape                      | `DEFAULT_SFT_FIELDS_PER_CALL`, `SFT_BATCH_ROWS`, `MAX_SFT_STRING_LENGTH`                                                                                                       |
+| `data-editor` execution-mode preset | `DATA_EDITOR_SFT_BUDGET_MS`, `DATA_EDITOR_SFT_ENTITY_TIMEOUT_MS`, `DATA_EDITOR_SFT_MODEL_ROWS`, `DATA_EDITOR_SFT_DEADLINE_MS`, `DATA_EDITOR_SFT_FIELDS_PER_CALL`               |
+| SFT call shape                      | `DEFAULT_SFT_FIELDS_PER_CALL`, `MAX_SFT_FIELDS_PER_CALL`, `SFT_BATCH_ROWS`, `MAX_SFT_STRING_LENGTH`                                                                            |
 | Deterministic date window           | `DEFAULT_REFERENCE_DATE`, `DEFAULT_WINDOW_YEARS`, `MAX_WINDOW_YEARS`, `KEY_DATE_SPREAD_DAYS`                                                                                   |
 | Classifier batching                 | `DEFAULT_CLASSIFIER_BATCH_SIZE`, `MAX_CLASSIFIER_BATCH_SIZE`                                                                                                                   |
 | Bounded caches                      | `DEFAULT_COMPLETION_STORE_ENTRIES`, `CLASSIFIER_CACHE_ENTRIES`, `SFT_ALLOWED_TOKEN_CACHE_ENTRIES`, `SFT_FORCED_TEXT_CACHE_ENTRIES`                                             |
 
-The execution modes `api`, `data-editor` and `start-mock` of `createMockDataGenerator` are budget presets named by the host's purpose. `api` and `start-mock` apply no preset; `data-editor` applies the `DATA_EDITOR_SFT_*` limits. Explicit generation options always win.
+The execution modes `api`, `data-editor` and `start-mock` of `createMockDataGenerator` are budget presets named by the host's purpose. `api` and `start-mock` apply no preset; `data-editor` applies the `DATA_EDITOR_SFT_*` limits. Explicit generation options always win. Within the SFT service budget, each entity set the model fills may use what remains of the budget, up to the per-entity timeout, and returns as soon as its fields are done; the entity sets of `sftPriorityTargets` go first. An even share would leave a wide entity set too little time to finish a single call on a small machine. `sftFieldsPerCall` sets how many fields one call writes; fewer fields per call finish sooner, so more of the model's values fit within the budget.
 
 ### Code, not data
 

@@ -235,6 +235,57 @@ describe('SFT row generator', () => {
         expect(new Set(generate.mock.calls.map(([request]) => request.seed)).size).toBe(3);
     });
 
+    test('asks for the fields per call a request sets instead of the generator default', async () => {
+        // Given a generator that takes four fields per call by default
+        const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
+            JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))
+        );
+        const generator = createRowGenerator({
+            promptTemplate: SHIPPED_PROMPT_TEMPLATE,
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate },
+            sampling: {
+                temperature: 0.6,
+                topP: 0.9,
+                repetitionPenalty: 1.15
+            },
+            maxFieldsPerPrompt: 4
+        });
+        const fields = ['FieldA', 'FieldB', 'FieldC', 'FieldD'].map((name) => ({
+            name,
+            primitiveType: 'string',
+            nullable: false
+        }));
+
+        // When a request asks for three fields per call
+        const result = await generator.generate(
+            { ...input, fields, rowCount: 1, maxFieldsPerPrompt: 3 },
+            new AbortController().signal
+        );
+
+        // Then the fields are split three and one, and every field is still generated
+        expect(generate.mock.calls.map(([request]) => request.grammar.map(({ name }) => name))).toEqual([
+            ['FieldA', 'FieldB', 'FieldC'],
+            ['FieldD']
+        ]);
+        expect(result.rows).toEqual([{ FieldA: 'FieldA', FieldB: 'FieldB', FieldC: 'FieldC', FieldD: 'FieldD' }]);
+    });
+
+    test('rejects a request whose fields per call is not a positive integer', async () => {
+        // Given a generator
+        const generator = createRowGenerator({
+            promptTemplate: SHIPPED_PROMPT_TEMPLATE,
+            fingerprint: 'sft-model-sha256',
+            textGenerator: { generate: async () => '{}' },
+            sampling: { temperature: 0.6, topP: 0.9, repetitionPenalty: 1.15 }
+        });
+
+        // When a request asks for zero fields per call, then it is rejected before any model call
+        await expect(
+            generator.generate({ ...input, maxFieldsPerPrompt: 0 }, new AbortController().signal)
+        ).rejects.toThrow('SFT maximum fields per prompt must be a positive integer');
+    });
+
     test('generates both rows of a chunk consecutively so the grammar cache can be reused', async () => {
         const generate = jest.fn(async ({ grammar }: Parameters<ConstrainedTextGenerator['generate']>[0]) =>
             JSON.stringify(Object.fromEntries(grammar.map(({ name }) => [name, name])))

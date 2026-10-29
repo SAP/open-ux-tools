@@ -33,6 +33,7 @@ const OPTION_NAMES: ReadonlySet<string> = new Set(
         sftBudgetMs: true,
         sftModelRows: true,
         sftPriorityTargets: true,
+        sftFieldsPerCall: true,
         sftDeadlineMs: true,
         referenceDate: true,
         windowYears: true

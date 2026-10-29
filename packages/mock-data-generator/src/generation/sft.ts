@@ -795,8 +795,6 @@ interface SftSchedule {
     readonly serviceBudgetMs: number;
     /** The shortest slice an attempt gets. */
     readonly minimumAttemptMs: number;
-    /** Resources with fields to fill that have not been attempted or skipped yet. */
-    remainingEntities: number;
     attemptedResources: number;
     budgetSkipped: number;
 }
@@ -1043,7 +1041,6 @@ function scheduleSftAttempt(
     const fields = verifiableFields(resource, entity, request.candidateVerifier, state.diagnostics);
     if (fields.length === 0) {
         state.generated[resourceName] = fallbackRows;
-        schedule.remainingEntities -= 1;
         return undefined;
     }
     const linkedTexts = linkedTextOwners(entity, fields);
@@ -1054,12 +1051,14 @@ function scheduleSftAttempt(
         domainKey === undefined
             ? Math.min(fallbackRows.length, options.sftModelRows ?? fallbackRows.length)
             : fallbackRows.length;
-    // Each attempt gets a slice long enough to finish on a small machine; once the service budget
-    // cannot fund another slice, the remaining resources keep their deterministic rows.
+    // An attempt may use what remains of the service budget, up to the per-resource timeout: an even
+    // share gives a wide resource too little time to finish any call on a small machine, so it would
+    // keep no model value at all. The generator returns as soon as its fields are done, leaving the rest
+    // to the resources after it. Once the service budget cannot fund a minimum slice, the remaining
+    // resources keep their deterministic rows.
     const remainingServiceMs = schedule.serviceBudgetMs - (performance.now() - schedule.startedAt);
     if (schedule.attemptedResources > 0 && remainingServiceMs < schedule.minimumAttemptMs) {
         state.generated[resourceName] = fallbackRows;
-        schedule.remainingEntities -= 1;
         schedule.budgetSkipped += 1;
         state.skippedResources.push(
             Object.freeze({
@@ -1078,11 +1077,10 @@ function scheduleSftAttempt(
         Math.floor(
             Math.min(
                 options.sftTimeoutMs ?? DEFAULT_SFT_ENTITY_TIMEOUT_MS,
-                Math.max(schedule.minimumAttemptMs, remainingServiceMs / Math.max(1, schedule.remainingEntities))
+                Math.max(schedule.minimumAttemptMs, remainingServiceMs)
             )
         )
     );
-    schedule.remainingEntities -= 1;
     return {
         resourceName,
         entity,
@@ -1267,6 +1265,7 @@ async function requestSftCandidates(
             fields,
             ...(coupledGroups.length > 0 ? { coupledFieldGroups: coupledGroups } : {}),
             budgetMs: attemptBudgetMs,
+            ...(options.sftFieldsPerCall === undefined ? {} : { maxFieldsPerPrompt: options.sftFieldsPerCall }),
             rowCount: attempt.modelRowCount,
             seed: (options.seed ?? 1) % Number.MAX_SAFE_INTEGER
         }),
@@ -1805,7 +1804,6 @@ export async function applySftGeneration(request: SftGenerationRequest): Promise
         serviceBudgetMs,
         // A caller budget below the minimum slice goes to a single attempt rather than to none.
         minimumAttemptMs: Math.min(MINIMUM_SFT_ATTEMPT_MS, serviceBudgetMs),
-        remainingEntities: prepared.filter(({ fields, fallbackRows }) => fields.length && fallbackRows.length).length,
         attemptedResources: 0,
         budgetSkipped: 0
     };

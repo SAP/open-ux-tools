@@ -109,7 +109,8 @@ describe('fine-tuned row policy', () => {
             sftBudgetMs: 20_000,
             sftTimeoutMs: 30_000,
             sftModelRows: 4,
-            sftDeadlineMs: 20_000
+            sftDeadlineMs: 20_000,
+            sftFieldsPerCall: 3
         });
         expect(executionModeDefaults()).toEqual({});
         expect(executionModeDefaults('start-mock')).toEqual({});

@@ -24,6 +24,7 @@
         "sftDeadline": "Mock data generator SFT deadline must be an integer between 1 and {{maximum}} milliseconds",
         "sftModelRows": "Mock data generator SFT model rows must be an integer between 1 and {{maximum}}",
         "sftPriorityTargets": "Mock data generator SFT priority targets must be a list of entity set names",
+        "sftFieldsPerCall": "Mock data generator SFT fields per call must be an integer between 1 and {{maximum}}",
         "referenceDate": "Mock data generator reference date must be an ISO 8601 calendar date (YYYY-MM-DD)",
         "windowYears": "Mock data generator window years must be an integer between 1 and {{maximum}}",
         "includeGeneratedValues": "includeGeneratedValues must be a boolean"

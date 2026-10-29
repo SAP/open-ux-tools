@@ -784,6 +784,18 @@ async function generateChunkRowByRow(
 }
 
 /**
+ * Check a fields-per-call setting.
+ *
+ * @param maxFieldsPerPrompt the setting, absent when the default applies
+ * @throws {TypeError} when it is present and not a positive integer
+ */
+function assertFieldsPerPrompt(maxFieldsPerPrompt: number | undefined): void {
+    if (maxFieldsPerPrompt !== undefined && (!Number.isSafeInteger(maxFieldsPerPrompt) || maxFieldsPerPrompt <= 0)) {
+        throw new TypeError('SFT maximum fields per prompt must be a positive integer');
+    }
+}
+
+/**
  * Generate the requested fields of every row, chunk by chunk, within the call's budget.
  *
  * @param settings the row generator's resolved settings
@@ -796,11 +808,13 @@ async function generateRows(
     input: SftGenerationInput,
     signal: AbortSignal
 ): Promise<SftGenerationOutput> {
-    const { options, budgetMs, separators, maxFieldsPerPrompt } = settings;
+    const { options, budgetMs, separators } = settings;
     const requestBudgetMs = input.budgetMs ?? budgetMs;
     if (!Number.isFinite(requestBudgetMs) || requestBudgetMs <= 0) {
         throw new TypeError('SFT request budget must be positive');
     }
+    assertFieldsPerPrompt(input.maxFieldsPerPrompt);
+    const maxFieldsPerPrompt = input.maxFieldsPerPrompt ?? settings.maxFieldsPerPrompt;
     const context = abortContext(signal, Math.min(budgetMs, requestBudgetMs));
     const fieldChunks = chunkFields(input.fields, maxFieldsPerPrompt, input.coupledFieldGroups ?? []);
     const call: RowGenerationCall = {
@@ -848,12 +862,7 @@ export function createRowGenerator(options: CreateRowGeneratorOptions): SftGener
     if (!Number.isFinite(budgetMs) || budgetMs <= 0) {
         throw new TypeError('SFT budget must be positive');
     }
-    if (
-        options.maxFieldsPerPrompt !== undefined &&
-        (!Number.isSafeInteger(options.maxFieldsPerPrompt) || options.maxFieldsPerPrompt <= 0)
-    ) {
-        throw new TypeError('SFT maximum fields per prompt must be a positive integer');
-    }
+    assertFieldsPerPrompt(options.maxFieldsPerPrompt);
     const settings: RowGeneratorSettings = Object.freeze({
         options,
         budgetMs,

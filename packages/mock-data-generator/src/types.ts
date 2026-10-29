@@ -92,6 +92,12 @@ export interface MockDataGeneratorOptions {
     /** Entity sets the fine-tuned tier fills first, in this order, such as those an app displays. */
     sftPriorityTargets?: ReadonlyArray<string>;
     /**
+     * Fields the fine-tuned model writes per call (coupled fields always share a call). Fewer fields per
+     * call finish sooner, so a slow machine keeps more of the model's values within its time budget.
+     * `DEFAULT_SFT_FIELDS_PER_CALL` of `src/limits.ts` when absent.
+     */
+    sftFieldsPerCall?: number;
+    /**
      * Wall time for the whole generation: the fine-tuned tier gets at most what remains of it after the
      * earlier tiers (and at most `sftBudgetMs`), less a short reserve for finalization. No deadline when absent.
      */
@@ -253,6 +259,8 @@ export interface SftGenerationInput {
      * text, a linked text with its code). The remaining fields may be split across calls.
      */
     coupledFieldGroups?: ReadonlyArray<ReadonlyArray<string>>;
+    /** Fields per model call for this request; the generator's own setting when absent. */
+    maxFieldsPerPrompt?: number;
 }
 
 export interface SftGenerationOutput {

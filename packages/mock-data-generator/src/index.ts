@@ -68,6 +68,7 @@ import {
     DEFAULT_SFT_SERVICE_BUDGET_MS,
     MAX_ROWS_PER_ENTITY,
     MAX_SFT_DEADLINE_MS,
+    MAX_SFT_FIELDS_PER_CALL,
     MAX_SFT_TIME_LIMIT_MS
 } from './limits.js';
 import { validateDateWindowOptions } from './date-window.js';
@@ -110,7 +111,7 @@ function fingerprint(value: unknown): string {
     return sha256(canonicalJson(value));
 }
 
-const GENERATOR_LOGIC_VERSION = 46;
+const GENERATOR_LOGIC_VERSION = 47;
 
 /**
  * Marks every cell of a resource the caller supplied as authored, because `preserveAuthoredRows`
@@ -648,6 +649,17 @@ function validateOptions(options: MockDataGeneratorOptions): void {
         throw new MockGenError(
             MOCKGEN_ERROR_CODE.REQUEST_INVALID,
             t('options.sftModelRows', { maximum: MAX_ROWS_PER_ENTITY })
+        );
+    }
+    if (
+        options.sftFieldsPerCall !== undefined &&
+        (!Number.isSafeInteger(options.sftFieldsPerCall) ||
+            options.sftFieldsPerCall <= 0 ||
+            options.sftFieldsPerCall > MAX_SFT_FIELDS_PER_CALL)
+    ) {
+        throw new MockGenError(
+            MOCKGEN_ERROR_CODE.REQUEST_INVALID,
+            t('options.sftFieldsPerCall', { maximum: MAX_SFT_FIELDS_PER_CALL })
         );
     }
     if (

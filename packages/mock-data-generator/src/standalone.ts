@@ -36,6 +36,7 @@ import {
     DATA_EDITOR_SFT_BUDGET_MS,
     DATA_EDITOR_SFT_DEADLINE_MS,
     DATA_EDITOR_SFT_ENTITY_TIMEOUT_MS,
+    DATA_EDITOR_SFT_FIELDS_PER_CALL,
     DATA_EDITOR_SFT_MODEL_ROWS
 } from './limits.js';
 import { MOCKGEN_ERROR_CODE, MockGenError } from './errors.js';
@@ -126,8 +127,8 @@ export interface CreateMockDataGeneratorOptions {
      * Budget preset named after the host's purpose; explicit generation options always win.
      * - `api` (default) and `start-mock`: no preset, the defaults of the generation options apply.
      * - `data-editor`: an interactive editor waits for the result, so the SFT tier is bounded by
-     *   `DATA_EDITOR_SFT_BUDGET_MS`, `DATA_EDITOR_SFT_ENTITY_TIMEOUT_MS`, `DATA_EDITOR_SFT_MODEL_ROWS`
-     *   and `DATA_EDITOR_SFT_DEADLINE_MS` of `src/limits.ts`.
+     *   `DATA_EDITOR_SFT_BUDGET_MS`, `DATA_EDITOR_SFT_ENTITY_TIMEOUT_MS`, `DATA_EDITOR_SFT_MODEL_ROWS`,
+     *   `DATA_EDITOR_SFT_DEADLINE_MS` and `DATA_EDITOR_SFT_FIELDS_PER_CALL` of `src/limits.ts`.
      */
     executionMode?: 'api' | 'data-editor' | 'start-mock';
     onProgress?: (event: MockDataGenerationProgress) => void;
@@ -158,7 +159,8 @@ const EXECUTION_MODE_DEFAULTS: Readonly<
         sftBudgetMs: DATA_EDITOR_SFT_BUDGET_MS,
         sftTimeoutMs: DATA_EDITOR_SFT_ENTITY_TIMEOUT_MS,
         sftModelRows: DATA_EDITOR_SFT_MODEL_ROWS,
-        sftDeadlineMs: DATA_EDITOR_SFT_DEADLINE_MS
+        sftDeadlineMs: DATA_EDITOR_SFT_DEADLINE_MS,
+        sftFieldsPerCall: DATA_EDITOR_SFT_FIELDS_PER_CALL
     })
 });
 
