@@ -1,5 +1,29 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated fast-xml-parser dependencies [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-mcp-server [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-mcp-server [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
 ## 1.16.5
 
 ### Patch Changes

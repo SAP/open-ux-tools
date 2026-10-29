@@ -362,6 +362,7 @@ describe('Repo App Download', () => {
         };
         (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.1' }]);
         (validateQfaJsonFile as jest.Mock).mockReturnValue(true);
+        (downloadUtils.hasQfaJson as jest.Mock).mockReturnValue(true);
         (getAdtDeployConfig as jest.Mock).mockResolvedValue({
             target: { url: 'https://test-url.com', client: '100', destination: 'TEST_DESTINATION' },
             app: { name: appId, package: 'MY_PKG', description: '', transport: 'REPLACE_WITH_TRANSPORT' }
@@ -903,6 +904,34 @@ describe('Repo App Download', () => {
                 errorMessage: 'extract failed'
             })
         );
+    });
+
+    it('should route to AbapRepository writing flow when downloadType is not explicit and qfa.json is absent', async () => {
+        // CLI invocations default downloadType to ADTQuickDeploy but do not set appDownloadType in data,
+        // so downloadTypeExplicit = false. When the downloaded zip contains no qfa.json, isAdtQuickDeploy
+        // must be false and writing() must call _generateAbapRepositoryApp, not _generateAdtQuickDeployApp.
+        (downloadUtils.hasQfaJson as jest.Mock).mockReturnValue(false);
+
+        const yeomanEnv = env.createEnv();
+        const generator = new RepoAppDownloadGenerator([], {
+            env: yeomanEnv,
+            appWizard: mockAppWizard as AppWizard,
+            logger: {},
+            vscode: mockVSCode
+            // no data.appDownloadType → downloadTypeExplicit = false, downloadType = ADTQuickDeploy
+        });
+
+        const generateAbapRepo = jest
+            .spyOn(generator as any, '_generateAbapRepositoryApp')
+            .mockResolvedValue(undefined);
+        const generateAdtQuickDeploy = jest
+            .spyOn(generator as any, '_generateAdtQuickDeployApp')
+            .mockResolvedValue(undefined);
+
+        await generator.writing();
+
+        expect(generateAbapRepo).toHaveBeenCalled();
+        expect(generateAdtQuickDeploy).not.toHaveBeenCalled();
     });
 
     it('should send ABAP_REPO_APP_WRITING_FAILED telemetry when writing phase throws for AbapRepository', async () => {
