@@ -1,6 +1,6 @@
 ---
 "@sap-ux/fiori-mcp-server": minor
-"@sap-ux/fe-fpm-writer": patch
+"@sap-ux/fe-fpm-writer": minor
 ---
 
 FEAT: add `add_building_block` MCP tool for Fiori Elements building blocks
