@@ -1,5 +1,29 @@
 # @sap-ux/axios-extension
 
+## 2.1.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Bug Fixes
+
+- Normalize ADT schema workspace to array to support older ABAP systems (e.g. ABAP 731) that return a single workspace object instead of an array [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
 ## 2.1.3
 
 ### Patch Changes

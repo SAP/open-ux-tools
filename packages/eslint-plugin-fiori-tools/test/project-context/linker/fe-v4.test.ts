@@ -1064,16 +1064,281 @@ describe('FE V4 Linker - XML', () => {
         const sections = collectSections('v4', entity.structuredType, mainService);
         expect(sections).toHaveLength(0);
     });
+
+    describe('collectSections', () => {
+        const spvFacetAnnotation = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="SpvSection" />
+                            <PropertyValue Property="Label" String="SPV Section" />
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.SelectionPresentationVariant" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="UI.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="id" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>`;
+
+        // Shared facet that targets @UI.SelectionPresentationVariant on incidentFlow.
+        // Used by negative tests — each one supplies a different (or absent) SPV annotation.
+        const spvFacetOnly = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="SpvSection" />
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.SelectionPresentationVariant" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>`;
+
+        test('SelectionPresentationVariant facet creates table section via LineItem visualization', async () => {
+            const context = await setup({ annotationsChange: spvFacetAnnotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(1);
+            expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
+        });
+
+        test('SelectionPresentationVariant not in index produces no section', async () => {
+            // Facet targets @UI.SelectionPresentationVariant but no such annotation exists on IncidentFlow
+            const context = await setup({ annotationsChange: spvFacetOnly });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(0);
+        });
+
+        test('SelectionPresentationVariant with chart-first visualization produces no section', async () => {
+            const annotation = `${spvFacetOnly}
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="UI.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection>
+                                        <AnnotationPath>@UI.Chart</AnnotationPath>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+            const context = await setup({ annotationsChange: annotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(0);
+        });
+
+        test('SelectionPresentationVariant with unknown-first visualization creates table section', async () => {
+            // FE skips unknown types and renders the first recognised one.
+            // [@CardItem, @LineItem] => FE renders a table, so the linter must create a table section.
+            const annotation = `${spvFacetOnly}
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="UI.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection>
+                                        <AnnotationPath>@UI.CardItem</AnnotationPath>
+                                        <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                    </Collection>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="id" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>`;
+            const context = await setup({ annotationsChange: annotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(1);
+            expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
+        });
+
+        test('SelectionPresentationVariant without PresentationVariant property produces no section', async () => {
+            const annotation = `${spvFacetOnly}
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="SelectionVariant">
+                            <Record Type="UI.SelectionVariantType" />
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+            const context = await setup({ annotationsChange: annotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(0);
+        });
+
+        test('SelectionPresentationVariant with empty Visualizations collection produces no section', async () => {
+            const annotation = `${spvFacetOnly}
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.SelectionPresentationVariant">
+                    <Record Type="UI.SelectionPresentationVariantType">
+                        <PropertyValue Property="PresentationVariant">
+                            <Record Type="UI.PresentationVariantType">
+                                <PropertyValue Property="Visualizations">
+                                    <Collection />
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>`;
+            const context = await setup({ annotationsChange: annotation });
+            const mainService = getParsedServiceByName(context.app);
+            if (!mainService) {
+                assert.fail('Service not found');
+            }
+            const entity = mainService.index.entitySets['Incidents'];
+            if (!entity?.structuredType) {
+                assert.fail('Entity not found');
+            }
+            const sections = collectSections('v4', entity.structuredType, mainService);
+            expect(sections).toHaveLength(0);
+        });
+    });
+
+    test('collectSections - ReferenceFacet without explicit ID produces section with undefined id', async () => {
+        const annotation = `<Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="Incident Flows"/>
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="processStep"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>`;
+        const context = await setup({ annotationsChange: annotation });
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            assert.fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['Incidents'];
+        if (!entity?.structuredType) {
+            assert.fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].type).toBe('table-section');
+        // FE generates a synthetic ID from the annotation path at runtime, but the plugin stores
+        // undefined here because no explicit ID was authored. V4 rules don't use section.id (only
+        // the V2 linker does), so this accurately reflects what the manifest controlConfiguration
+        // can reference.
+        expect(sections[0].id).toBeUndefined();
+        expect(sections[0].children[0].annotationPath).toBe('incidentFlow/@com.sap.vocabularies.UI.v1.LineItem');
+    });
 });
 
 const CAP_FACET_NO_ID = `
-                annotate service.Priority with @(
-    UI.Facets         : [{
+annotate service.Priority with @(
+    UI.LineItem: [{ $Type: 'UI.DataField', Value: code, Label: 'code' }],
+    UI.Facets: [{
         $Type : 'UI.ReferenceFacet',
-        Target: 'incidentFlow/@UI.LineItem#table_section',
+        Target: '@UI.LineItem',
         Label : 'table section',
         // no ID
-    }, ],
+    }]
+);`;
+
+// CdsAnnotationProvider.serviceArtifactCache is shared across tests; bake SPV annotations
+// into fileCache so they are included in the shared CDS compilation, not in annotationsChange.
+const CAP_SPV_ANNOTATIONS = `
+annotate service.Incidents with @(
+    UI.SelectionPresentationVariant: {
+        $Type: 'UI.SelectionPresentationVariantType',
+        PresentationVariant: {
+            $Type: 'UI.PresentationVariantType',
+            Visualizations: ['@UI.LineItem'],
+        }
+    }
+);
+annotate service.IncidentFlow with @(
+    UI.Facets: [{
+        $Type : 'UI.ReferenceFacet',
+        ID    : 'SpvSection',
+        Target: 'incident/@UI.SelectionPresentationVariant',
+        Label : 'SPV Section',
+    }]
 );`;
 
 const CAP_FACET_NO_ANNOTATION = `
@@ -1090,28 +1355,35 @@ describe('FE V4 Linker - CAP', () => {
     let artifacts: FoundFioriArtifacts;
     const fileCache = new Map<string, string>();
 
-    beforeAll(async () => {
-        npmInstall(CAP_PROJECT_PATH);
-        artifacts = await findFioriArtifacts({
-            wsFolders: [CAP_PROJECT_PATH],
-            artifacts: ['applications', 'adaptations']
-        });
-        const files = [
-            join('app', 'incidents', 'annotations.cds'),
-            join('srv', 'incidentservice.cds'),
-            join('app', 'incidents', 'webapp', 'manifest.json')
-        ];
-        for (const file of files) {
-            const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
-            let content = await readFile(absolutePath, 'utf-8');
-            if (file.endsWith('annotations.cds')) {
-                content +=
-                    CAP_FACETS_ANNOTATIONS + CAP_FACET_NO_ID + CAP_FACET_NO_ANNOTATION + CAP_SECOND_TABLE_ANNOTATION;
+    beforeAll(
+        async () => {
+            npmInstall(CAP_PROJECT_PATH);
+            artifacts = await findFioriArtifacts({
+                wsFolders: [CAP_PROJECT_PATH],
+                artifacts: ['applications', 'adaptations']
+            });
+            const files = [
+                join('app', 'incidents', 'annotations.cds'),
+                join('srv', 'incidentservice.cds'),
+                join('app', 'incidents', 'webapp', 'manifest.json')
+            ];
+            for (const file of files) {
+                const absolutePath = normalizePath(join(CAP_PROJECT_PATH, file));
+                let content = await readFile(absolutePath, 'utf-8');
+                if (file.endsWith('annotations.cds')) {
+                    content +=
+                        CAP_FACETS_ANNOTATIONS +
+                        CAP_FACET_NO_ID +
+                        CAP_FACET_NO_ANNOTATION +
+                        CAP_SECOND_TABLE_ANNOTATION +
+                        CAP_SPV_ANNOTATIONS;
+                }
+                const uri = pathToFileURL(absolutePath).toString();
+                fileCache.set(uri, content);
             }
-            const uri = pathToFileURL(absolutePath).toString();
-            fileCache.set(uri, content);
-        }
-    });
+        },
+        5 * 60 * 1000
+    );
 
     async function setup(options?: TestOptions): Promise<LinkerContext> {
         const testCache = new Map<string, string>(fileCache);
@@ -1710,7 +1982,31 @@ describe('FE V4 Linker - CAP', () => {
             assert.fail('Entity not found');
         }
         const sections = collectSections('v4', entity.structuredType, mainService);
-        expect(sections).toHaveLength(0);
+        expect(sections).toHaveLength(1);
+        expect(sections[0].type).toBe('table-section');
+        // see 'ReferenceFacet without explicit ID produces section with undefined id': V4 rules don't use section.id
+        expect(sections[0].id).toBeUndefined();
+        expect(sections[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.Facets/0');
+        expect(sections[0].children[0].annotationPath).toBe('@com.sap.vocabularies.UI.v1.LineItem');
+    });
+
+    test('collectSections - SelectionPresentationVariant facet creates table section via inline PresentationVariant', async () => {
+        const context = await setup({});
+        const mainService = getParsedServiceByName(context.app);
+        if (!mainService) {
+            assert.fail('Service not found');
+        }
+        const entity = mainService.index.entitySets['IncidentFlow'];
+        if (!entity?.structuredType) {
+            assert.fail('Entity not found');
+        }
+        const sections = collectSections('v4', entity.structuredType, mainService);
+        const spvSection = sections.find((s) => s.id === 'SpvSection');
+        if (!spvSection) {
+            assert.fail('SPV section not found');
+        }
+        expect(spvSection.type).toBe('table-section');
+        expect(spvSection.children[0].annotationPath).toBe('incident/@com.sap.vocabularies.UI.v1.LineItem');
     });
 
     test('collectSections - no section annotation path', async () => {

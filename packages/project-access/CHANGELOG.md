@@ -1,5 +1,21 @@
 # @sap-ux/project-access
 
+## 2.3.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Bug Fixes
+
+- export PackageJson namespace to resolve typescript-eslint no-unused-vars [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
 ## 2.3.1
 
 ### Patch Changes
