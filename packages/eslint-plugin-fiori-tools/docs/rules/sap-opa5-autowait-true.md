@@ -11,3 +11,7 @@ This rule aims to detect error in OPA test code. Checks if the autoWait param is
 ```js
 autoWait: true,
 ```
+
+## Bug Report
+
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
