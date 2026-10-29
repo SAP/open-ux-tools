@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.17.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- Improve `sap-copy-to-clipboard` warning message to explicitly state the forbidden value and its effect [[9ba68ed](https://github.com/SAP/open-ux-tools/commit/9ba68ed05f89094830a663fb4591a7554e3e74a6)]
+
 ## 10.17.6
 
 ### Patch Changes
