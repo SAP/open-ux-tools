@@ -1,5 +1,42 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Features
+
+- Export `postMigrationAction` and `distVar` from the public API so consumers do not need to import from internal `/dist/` sub-paths [[61dddec](https://github.com/SAP/open-ux-tools/commit/61dddec1f4da2806fc7a4772615a7a6818b6d24b)]
+
+## 0.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade read-package-up 11.0.0 → 12.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+- @sap-ux/launch-config 1.0.25 → 1.0.26
+
 ## 0.0.7
 
 ### Patch Changes

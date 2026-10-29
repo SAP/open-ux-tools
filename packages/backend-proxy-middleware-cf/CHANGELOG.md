@@ -1,5 +1,17 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.68
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+
 ## 0.3.67
 
 ### Patch Changes
