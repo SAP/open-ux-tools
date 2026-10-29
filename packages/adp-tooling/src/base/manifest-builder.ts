@@ -1,5 +1,5 @@
-import { getVariant, readUi5Config } from '@sap-ux/adp-tooling';
-import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { getVariant, readUi5Config } from './helper.js';
+import type { AdpPreviewConfig } from '../types.js';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { createReader, createWorkspace } from '@ui5/fs/resourceFactory';
 import path, { join } from 'node:path';
