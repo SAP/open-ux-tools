@@ -140,7 +140,7 @@ export function getManifestVersion(ui5Version: string, manifestVersion?: string)
      * @returns closest matching manifest version or undefined, if none found (below lowest value)
      */
     const getClosestManifestVersion = (version: SemVer) => {
-        const verToManifestVer = versionToManifestDescMapping as Record<string, string>;
+        const verToManifestVer = versionToManifestDescMapping as unknown as Record<string, string>;
 
         let matchVersion = verToManifestVer[`${semVer.major(version)}.${semVer.minor(version)}`];
         if (!matchVersion) {
