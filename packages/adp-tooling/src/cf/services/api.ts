@@ -265,31 +265,37 @@ export async function getAdaptableBusinessServices(
     }
 
     const requestArguments = getFDCRequestArguments(cfConfig);
+    const batches: string[][] = [];
     for (let i = 0; i < unique.length; i += 100) {
-        const batch = unique.slice(i, i + 100);
-        const params = batch.map((name) => `serviceName=${encodeURIComponent(name)}`).join('&');
-        const url = `${requestArguments.url}/api/business-service/info?${params}`;
-
-        try {
-            const response = await axios.get<Record<string, { hasAdaptableApps?: boolean }>>(
-                url,
-                requestArguments.options
-            );
-
-            if (response.status !== 200) {
-                throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
-            }
-
-            for (const [name, info] of Object.entries(response.data ?? {})) {
-                if (info?.hasAdaptableApps) {
-                    adaptable.add(name);
-                }
-            }
-        } catch (error) {
-            logger?.error(`Getting adaptable business services failed. Request url: ${url}. ${error}`);
-            throw new Error(t('error.failedToGetAdaptableBusinessServices', { error: error.message }));
-        }
+        batches.push(unique.slice(i, i + 100));
     }
+
+    await Promise.all(
+        batches.map(async (batch) => {
+            const params = batch.map((name) => `serviceName=${encodeURIComponent(name)}`).join('&');
+            const url = `${requestArguments.url}/api/business-service/info?${params}`;
+
+            try {
+                const response = await axios.get<Record<string, { hasAdaptableApps?: boolean }>>(
+                    url,
+                    requestArguments.options
+                );
+
+                if (response.status !== 200) {
+                    throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+                }
+
+                for (const [name, info] of Object.entries(response.data ?? {})) {
+                    if (info?.hasAdaptableApps) {
+                        adaptable.add(name);
+                    }
+                }
+            } catch (error) {
+                logger?.error(`Getting adaptable business services failed. Request url: ${url}. ${error}`);
+                throw new Error(t('error.failedToGetAdaptableBusinessServices', { error: error.message }));
+            }
+        })
+    );
 
     return adaptable;
 }

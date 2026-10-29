@@ -125,14 +125,14 @@ export async function validateEnvironment(
  * @param {ToolsLogger} logger - The logger.
  * @param {MtaMode} [mtaMode] - The selected MTA mode defaults to `existing`.
  * @param {CfConfig} [cfConfig] - The current CF config used to block binding an MTA from a different space.
- * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
+ * @returns {string | boolean} Returns true if the project path is valid, otherwise returns an error message.
  */
-export async function validateProjectPath(
+export function validateProjectPath(
     projectPath: string,
     logger: ToolsLogger,
     mtaMode: MtaMode = MtaMode.Existing,
     cfConfig?: CfConfig
-): Promise<string | boolean> {
+): string | boolean {
     const validationResult = validateEmptyString(projectPath);
     if (typeof validationResult === 'string') {
         return validationResult;

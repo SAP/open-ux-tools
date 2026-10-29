@@ -379,28 +379,26 @@ describe('CFServicesPrompter', () => {
             ]);
         });
 
-        test('should be shown when logged in and no existing approuter', () => {
-            const prompter = new CFServicesPrompter(false, true, mockLogger);
-            prompter['hasExistingApprouter'] = false;
+        test.each([
+            {
+                desc: 'shown when logged in and no existing approuter',
+                loggedIn: true,
+                hasRouter: false,
+                expected: true
+            },
+            { desc: 'hidden when not logged in', loggedIn: false, hasRouter: false, expected: false },
+            {
+                desc: 'hidden when the MTA already declares an approuter',
+                loggedIn: true,
+                hasRouter: true,
+                expected: false
+            }
+        ])('should be $desc', ({ loggedIn, hasRouter, expected }) => {
+            const prompter = new CFServicesPrompter(false, loggedIn, mockLogger);
+            prompter['hasExistingApprouter'] = hasRouter;
 
             const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
-            expect((prompt.when as () => boolean)()).toBe(true);
-        });
-
-        test('should be hidden when not logged in', () => {
-            const prompter = new CFServicesPrompter(false, false, mockLogger);
-            prompter['hasExistingApprouter'] = false;
-
-            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
-            expect((prompt.when as () => boolean)()).toBe(false);
-        });
-
-        test('should be hidden when the MTA already declares an approuter', () => {
-            const prompter = new CFServicesPrompter(false, true, mockLogger);
-            prompter['hasExistingApprouter'] = true;
-
-            const prompt = prompter['getAppRouterPrompt'](mockCfConfig);
-            expect((prompt.when as () => boolean)()).toBe(false);
+            expect((prompt.when as () => boolean)()).toBe(expected);
         });
 
         test('should validate CF login status', async () => {
