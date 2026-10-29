@@ -1,5 +1,17 @@
 # @sap-ux/serve-static-middleware
 
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade serve-static 1.16.2 → 2.2.1 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
 ## 1.0.3
 
 ### Patch Changes
