@@ -255,13 +255,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         const port = parsePort(serverUrl);
         const finalEditorPath = editorPath ?? '/test/adaptation-editor.html';
         const localEditorUrl = `${serverUrl}${finalEditorPath}`;
-
-        // In BAS the loopback URL is unreachable from the browser; resolve the
-        // externally reachable URL and signal the auto-open extension to show it
-        // in Simple Browser (where an interactive login can be completed).
         const editorUrl = await resolveExternalEditorUrl(localEditorUrl, port);
-        // Auto-open in BAS; locally it can be forced with SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN
-        // so the editor opens in Simple Browser for debugging the relay flow outside BAS.
         const autoOpen = isAppStudio() || process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN === 'true';
 
         // Keep draining stdout so its pipe buffer never fills and blocks the child.

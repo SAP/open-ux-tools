@@ -1,15 +1,25 @@
 (function () {
     'use strict';
 
+    const REQUEST_TIMEOUT_MS = 30000;
+    const ACTION_DEADLINE_MS = 55000;
+    const API_POLL_INTERVAL_MS = 200;
+    const RTA_POLL_INTERVAL_MS = 250;
+    const RETRY_DELAY_MS = 1000;
+
     // Capture currentScript before any await. Deriving endpoints from its URL preserves mount prefixes.
     const script = document.currentScript;
     const token = script.dataset.token;
     const base = new URL('.', script.src);
     const clientId = crypto.randomUUID();
 
+    function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
     async function request(endpoint, body) {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 30000);
+        const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
         try {
             const response = await fetch(new URL(endpoint, base), {
                 method: body === undefined ? 'GET' : 'POST',
@@ -34,7 +44,7 @@
             if (Date.now() >= deadline) {
                 throw new Error('Timed out waiting for UI5');
             }
-            await new Promise((resolve) => setTimeout(resolve, 200));
+            await delay(API_POLL_INTERVAL_MS);
         }
         return await new Promise((resolve, reject) => {
             const timer = setTimeout(
@@ -59,8 +69,6 @@
         });
     }
 
-    // Without a running instance, FrontendActionsAPI.startRTA starts a key-user (CUSTOMER) session,
-    // which fails here because the preview connectors report no CUSTOMER-layer key-user flag.
     async function waitForEditorRta(targetWindow, deadline) {
         const RuntimeAuthoring = await new Promise((resolve) =>
             targetWindow.sap.ui.require(['sap/ui/rta/RuntimeAuthoring'], resolve, () => resolve(undefined))
@@ -69,7 +77,7 @@
             if (Date.now() >= deadline) {
                 return false;
             }
-            await new Promise((resolve) => setTimeout(resolve, 250));
+            await delay(RTA_POLL_INTERVAL_MS);
         }
         return true;
     }
@@ -77,7 +85,7 @@
     async function callAction(action) {
         // The script can already be inside the editor's "preview" frame. Descend only if it exists here.
         const targetWindow = document.getElementById(action.frameId)?.contentWindow ?? window;
-        const deadline = Date.now() + 55000;
+        const deadline = Date.now() + ACTION_DEADLINE_MS;
         const api = await resolveApi(targetWindow, deadline);
         if (action.actionName === '__ready__' || action.actionName === 'com.sap.ui.flex.startRTA.v1') {
             const started = await waitForEditorRta(targetWindow, deadline);
@@ -100,7 +108,7 @@
     }
 
     async function pollLoop() {
-        for (;;) {
+        while (true) {
             let action;
             try {
                 action = await request('poll?clientId=' + encodeURIComponent(clientId));
@@ -109,7 +117,7 @@
                     return;
                 }
                 // Only the read-only poll is retried; actions and result submissions are never replayed.
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+                await delay(RETRY_DELAY_MS);
                 continue;
             }
             if (!action) {

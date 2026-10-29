@@ -35,6 +35,63 @@ function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/** Frontend action names the relay accepts: flex actions plus the lifecycle sentinels. */
+const ACTION_NAME_PATTERN = /^(?:com\.sap\.ui\.flex\.[A-Za-z][A-Za-z\d]*\.v\d+|__reload__|__ready__|__stop__)$/;
+
+interface ActionBody {
+    actionName: string;
+    payload?: Record<string, unknown>;
+    frameId?: string;
+}
+
+interface ResultBody {
+    id: string;
+    clientId: string;
+    error?: string;
+    result?: unknown;
+}
+
+/**
+ * Validates the `clientId` query parameter: a short, opaque, URL-safe identifier.
+ *
+ * @param value raw query value
+ * @returns whether it is a usable clientId
+ */
+function isValidClientId(value: unknown): value is string {
+    return typeof value === 'string' && value.length > 0 && value.length <= 128 && !/[^\w-]/.test(value);
+}
+
+/**
+ * Validates a POST /action body. The anchored name pattern already rejects any whitespace.
+ *
+ * @param body parsed request body
+ * @returns whether it is a well-formed action request
+ */
+function isValidActionBody(body: unknown): body is ActionBody {
+    return (
+        isObject(body) &&
+        typeof body.actionName === 'string' &&
+        ACTION_NAME_PATTERN.test(body.actionName) &&
+        (body.payload === undefined || isObject(body.payload)) &&
+        (body.frameId === undefined || (typeof body.frameId === 'string' && body.frameId.trim() !== ''))
+    );
+}
+
+/**
+ * Validates a POST /result body: id + clientId, and exactly one of `error` (string) or `result`.
+ *
+ * @param body parsed request body
+ * @returns whether it is a well-formed result submission
+ */
+function isValidResultBody(body: unknown): body is ResultBody {
+    if (!isObject(body) || typeof body.id !== 'string' || typeof body.clientId !== 'string') {
+        return false;
+    }
+    return body.error !== undefined
+        ? typeof body.error === 'string' && !Object.hasOwn(body, 'result')
+        : Object.hasOwn(body, 'result');
+}
+
 /**
  * Register an opt-in, single-action relay owned by this preview router.
  * The public script contains no secret; all API requests require the token in `X-Relay-Token`.
@@ -73,6 +130,13 @@ export function addRtaRelayApis(
         });
     };
 
+    // Rejects a poll that is not the current owner, collides with an existing one, or was retired.
+    const isPollRejected = (clientId: string): boolean =>
+        clientId === releasedClientId ||
+        poll !== undefined ||
+        pending?.delivered === true ||
+        (owner !== undefined && owner.clientId !== clientId && Date.now() - owner.lastSeen < OWNER_LEASE_MS);
+
     router.get(`${API}/client.js`, (_req, res) => {
         res.set('Cache-Control', 'no-store');
         res.type('application/javascript').send(
@@ -92,16 +156,11 @@ export function addRtaRelayApis(
 
     router.get(`${API}/poll`, (req, res) => {
         const clientId = req.query.clientId;
-        if (typeof clientId !== 'string' || !clientId || clientId.length > 128 || /[^\w-]/.test(clientId)) {
+        if (!isValidClientId(clientId)) {
             res.status(400).json({ error: 'clientId is required' });
             return;
         }
-        if (
-            clientId === releasedClientId ||
-            poll ||
-            pending?.delivered ||
-            (owner && owner.clientId !== clientId && Date.now() - owner.lastSeen < OWNER_LEASE_MS)
-        ) {
+        if (isPollRejected(clientId)) {
             res.status(409).json({ error: 'Relay owned by another poll or document' });
             return;
         }
@@ -125,16 +184,7 @@ export function addRtaRelayApis(
 
     router.post(`${API}/action`, (req, res) => {
         const body: unknown = req.body;
-        if (
-            !isObject(body) ||
-            typeof body.actionName !== 'string' ||
-            body.actionName.trim() !== body.actionName ||
-            !/^(?:com\.sap\.ui\.flex\.[A-Za-z][A-Za-z\d]*\.v\d+|__reload__|__ready__|__stop__)$/.test(
-                body.actionName
-            ) ||
-            (body.payload !== undefined && !isObject(body.payload)) ||
-            (body.frameId !== undefined && (typeof body.frameId !== 'string' || !body.frameId.trim()))
-        ) {
+        if (!isValidActionBody(body)) {
             res.status(400).json({ error: 'Invalid actionName, payload or frameId' });
             return;
         }
@@ -166,14 +216,7 @@ export function addRtaRelayApis(
 
     router.post(`${API}/result`, (req, res) => {
         const body: unknown = req.body;
-        if (
-            !isObject(body) ||
-            typeof body.id !== 'string' ||
-            typeof body.clientId !== 'string' ||
-            (body.error !== undefined
-                ? typeof body.error !== 'string' || Object.hasOwn(body, 'result')
-                : !Object.hasOwn(body, 'result'))
-        ) {
+        if (!isValidResultBody(body)) {
             res.status(400).json({ error: 'Invalid result' });
             return;
         }
