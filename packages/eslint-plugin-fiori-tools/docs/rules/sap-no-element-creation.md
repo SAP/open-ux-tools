@@ -14,9 +14,6 @@ The following patterns are considered warnings:
 document.createElement(foo);
 ```
 
-## Further Reading
-
-
-## Bug report
+## Bug Report
 
 In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
