@@ -1,6 +1,6 @@
 // Stub for @sap-ux/fiori-annotation-api — prevents the real package (and its static ESM import of
 // @sap/ux-cds-compiler-facade) from loading under jest's --experimental-vm-modules. add-building-block.ts
-// imports writeAnnotationShells -> this package, so any suite that loads the tool/server chain needs it stubbed.
+// imports writeAnnotationShell -> this package, so any suite that loads the tool/server chain needs it stubbed.
 // Only the symbols imported by building-block-annotations.ts need to be present.
 const ChangeType = {
     InsertAnnotation: 'insert-annotation',

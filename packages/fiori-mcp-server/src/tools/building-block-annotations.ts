@@ -165,7 +165,7 @@ function annotationExists(rawSchema: RawSchema, target: string, term: string, qu
  * @param fs - Shared mem-fs editor instance (written, not committed, here)
  * @returns Count of shells written and whether the attempt failed
  */
-export async function writeAnnotationShells(
+export async function writeAnnotationShell(
     buildingBlockData: AnnotationShellInput,
     applicationAccess: ApplicationAccess,
     appId: string,
@@ -177,7 +177,8 @@ export async function writeAnnotationShells(
         return { written: 0 };
     }
 
-    const entitySetName = contextPath ? entitySetFromContextPath(contextPath) : entitySetFromMetaPath(metaPath);
+    const entitySetName =
+        entitySetFromMetaPath(metaPath) ?? (contextPath ? entitySetFromContextPath(contextPath) : undefined);
     if (!entitySetName) {
         logger.warn(
             `[add_building_block] annotation shell: cannot derive entity set from contextPath="${contextPath}" or metaPath="${metaPath}", skipping`
@@ -204,18 +205,21 @@ export async function writeAnnotationShells(
         );
         await annotationService.sync();
 
-        const writableFile = annotationService.getAllFiles().find((f) => !f.isReadOnly);
-        if (!writableFile) {
-            logger.warn(`[add_building_block] annotation shell: no writable annotation file found, skipping`);
-            return { written: 0 };
-        }
-
         const rawSchema = annotationService.getSchema() as unknown as RawSchema;
         const fullyQualifiedTarget = resolveAnnotationTarget(entitySetName, rawSchema);
 
         if (annotationExists(rawSchema, fullyQualifiedTarget, term, qualifier)) {
             logger.info(`[add_building_block] annotation shell: ${term}${qualifierSuffix} already exists, skipping`);
             return { written: 0 };
+        }
+
+        // The shell is needed (it does not already exist) but there is no writable annotation file to put it in.
+        // Report failure so the caller surfaces a warning, rather than reporting unqualified success. Checked after
+        // the existence scan so an annotation already present in read-only backend metadata is not flagged as failed.
+        const writableFile = annotationService.getAllFiles().find((f) => !f.isReadOnly);
+        if (!writableFile) {
+            logger.warn(`[add_building_block] annotation shell: no writable annotation file found, skipping`);
+            return { written: 0, failed: true };
         }
 
         annotationService.edit({

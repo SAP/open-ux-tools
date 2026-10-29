@@ -8,7 +8,7 @@ const mockGenerateBuildingBlock = jest.fn<any>().mockResolvedValue({ commit: moc
 const mockCreateIdGenerator = jest.fn<any>().mockResolvedValue(() => 'generated-id');
 const mockGetFragmentAndViewFiles = jest.fn<any>().mockResolvedValue([]);
 const mockGetXPathStringsForXmlFile = jest.fn<any>().mockReturnValue({ inputChoices: {} });
-const mockWriteAnnotationShells = jest.fn<any>().mockResolvedValue({ written: 0 });
+const mockWriteAnnotationShell = jest.fn<any>().mockResolvedValue({ written: 0 });
 const mockResolveApplication = jest.fn<any>().mockResolvedValue(undefined);
 
 jest.unstable_mockModule('@sap-ux/fe-fpm-writer', () => ({
@@ -33,7 +33,7 @@ jest.unstable_mockModule('@sap-ux/fe-fpm-writer', () => ({
 }));
 
 jest.unstable_mockModule('../../../src/tools/building-block-annotations.js', () => ({
-    writeAnnotationShells: mockWriteAnnotationShells
+    writeAnnotationShell: mockWriteAnnotationShell
 }));
 
 jest.unstable_mockModule('../../../src/utils/index.js', () => ({
@@ -63,7 +63,7 @@ describe('addBuildingBlock', () => {
         mockCommit.mockResolvedValue(undefined);
         mockGetFragmentAndViewFiles.mockResolvedValue([]);
         mockGetXPathStringsForXmlFile.mockReturnValue({ inputChoices: {} });
-        mockWriteAnnotationShells.mockResolvedValue({ written: 0 });
+        mockWriteAnnotationShell.mockResolvedValue({ written: 0 });
         mockResolveApplication.mockResolvedValue(undefined);
     });
 
@@ -275,18 +275,56 @@ describe('addBuildingBlock', () => {
         });
     });
 
+    describe('input validation and path containment', () => {
+        test('returns error in execute mode when buildingBlockData is missing', async () => {
+            const result = await addBuildingBlock({ ...baseParams, buildingBlockData: undefined });
+
+            expect(result.status).toBe('error');
+            expect(result.message).toContain('buildingBlockData is required');
+            expect(mockGenerateBuildingBlock).not.toHaveBeenCalled();
+        });
+
+        test('rejects a relative viewOrFragmentPath that escapes the app root', async () => {
+            const result = await addBuildingBlock({ ...baseParams, viewOrFragmentPath: '../../../etc/passwd.xml' });
+
+            expect(result.status).toBe('error');
+            expect(result.message).toContain('outside the application root');
+            expect(mockGenerateBuildingBlock).not.toHaveBeenCalled();
+        });
+
+        test('rejects an absolute viewOrFragmentPath outside the app root', async () => {
+            const result = await addBuildingBlock({ ...baseParams, viewOrFragmentPath: '/etc/passwd.xml' });
+
+            expect(result.status).toBe('error');
+            expect(result.message).toContain('outside the application root');
+            expect(mockGenerateBuildingBlock).not.toHaveBeenCalled();
+        });
+
+        test('rejects an escaping path during aggregation-path discovery', async () => {
+            const result = await addBuildingBlock({
+                ...baseParams,
+                viewOrFragmentPath: '../outside.view.xml',
+                aggregationPath: undefined
+            });
+
+            expect(result.status).toBe('error');
+            expect(result.message).toContain('outside the application root');
+            expect(mockGetXPathStringsForXmlFile).not.toHaveBeenCalled();
+        });
+    });
+
     describe('annotation shell writing', () => {
         test('writes annotation shell when the application resolves', async () => {
             mockDump.mockReturnValue({ '/app/webapp/ext/main/Main.view.xml': 'content' });
             const applicationAccess = { project: { root: '/app' } };
             mockResolveApplication.mockResolvedValue({ root: '/app', appId: 'app', applicationAccess });
-            mockWriteAnnotationShells.mockResolvedValue({ written: 1 });
+            mockWriteAnnotationShell.mockResolvedValue({ written: 1 });
 
             const result = await addBuildingBlock(baseParams);
 
             expect(result.status).toBe('success');
             expect(result.annotationWarning).toBeUndefined();
-            expect(mockWriteAnnotationShells).toHaveBeenCalledWith(
+            expect(mockWriteAnnotationShell).toHaveBeenCalledWith(
                 expect.objectContaining({ buildingBlockType: 'table', id: 'myTable' }),
                 applicationAccess,
                 'app',
@@ -301,7 +339,7 @@ describe('addBuildingBlock', () => {
                 appId: 'app',
                 applicationAccess: { project: { root: '/app' } }
             });
-            mockWriteAnnotationShells.mockResolvedValue({ written: 0, failed: true });
+            mockWriteAnnotationShell.mockResolvedValue({ written: 0, failed: true });
 
             const result = await addBuildingBlock(baseParams);
 
@@ -316,7 +354,7 @@ describe('addBuildingBlock', () => {
 
             expect(result.status).toBe('success');
             expect(result.annotationWarning).toBeUndefined();
-            expect(mockWriteAnnotationShells).not.toHaveBeenCalled();
+            expect(mockWriteAnnotationShell).not.toHaveBeenCalled();
         });
 
         test('still succeeds (with a warning) when resolveApplication rejects, instead of discarding the block', async () => {
@@ -414,15 +452,8 @@ describe('AddBuildingBlockInputSchema', () => {
         test('accepts types that only require id', () => {
             // custom-* types have additional required fields and are tested separately below
             // form is also tested separately (requires title)
-            const typesRequiringOnlyId = [
-                'table',
-                'chart',
-                'filter-bar',
-                'field',
-                'page',
-                'rich-text-editor',
-                'rich-text-editor-button-groups'
-            ] as const;
+            // rich-text-editor-button-groups requires buttonGroups and action requires embeddedAction (tested separately)
+            const typesRequiringOnlyId = ['table', 'chart', 'filter-bar', 'field', 'page', 'rich-text-editor'] as const;
 
             for (const buildingBlockType of typesRequiringOnlyId) {
                 const result = AddBuildingBlockInputSchema.safeParse({
@@ -547,7 +578,24 @@ describe('AddBuildingBlockInputSchema', () => {
             expect(result.success).toBe(false);
         });
 
-        test('accepts action with required actionKey and text', () => {
+        test('accepts action with required actionKey, text and embeddedAction', () => {
+            const result = AddBuildingBlockInputSchema.safeParse({
+                appPath: '/app',
+                viewOrFragmentPath: 'webapp/ext/main/Main.view.xml',
+                aggregationPath: '/mvc:View/content',
+                buildingBlockData: {
+                    buildingBlockType: 'action',
+                    id: 'myAction',
+                    actionKey: 'myActionKey',
+                    text: 'Click me',
+                    embeddedAction: { eventHandler: { fnName: '.onPress' } }
+                }
+            });
+
+            expect(result.success).toBe(true);
+        });
+
+        test('rejects action missing required embeddedAction', () => {
             const result = AddBuildingBlockInputSchema.safeParse({
                 appPath: '/app',
                 viewOrFragmentPath: 'webapp/ext/main/Main.view.xml',
@@ -560,7 +608,7 @@ describe('AddBuildingBlockInputSchema', () => {
                 }
             });
 
-            expect(result.success).toBe(true);
+            expect(result.success).toBe(false);
         });
 
         test('rejects action missing required actionKey', () => {
@@ -571,7 +619,37 @@ describe('AddBuildingBlockInputSchema', () => {
                 buildingBlockData: {
                     buildingBlockType: 'action',
                     id: 'myAction',
-                    text: 'Click me'
+                    text: 'Click me',
+                    embeddedAction: {}
+                }
+            });
+
+            expect(result.success).toBe(false);
+        });
+
+        test('accepts rich-text-editor-button-groups with required buttonGroups', () => {
+            const result = AddBuildingBlockInputSchema.safeParse({
+                appPath: '/app',
+                viewOrFragmentPath: 'webapp/ext/main/Main.view.xml',
+                aggregationPath: '/mvc:View/content',
+                buildingBlockData: {
+                    buildingBlockType: 'rich-text-editor-button-groups',
+                    id: 'myGroups',
+                    buttonGroups: []
+                }
+            });
+
+            expect(result.success).toBe(true);
+        });
+
+        test('rejects rich-text-editor-button-groups missing required buttonGroups', () => {
+            const result = AddBuildingBlockInputSchema.safeParse({
+                appPath: '/app',
+                viewOrFragmentPath: 'webapp/ext/main/Main.view.xml',
+                aggregationPath: '/mvc:View/content',
+                buildingBlockData: {
+                    buildingBlockType: 'rich-text-editor-button-groups',
+                    id: 'myGroups'
                 }
             });
 
@@ -664,6 +742,7 @@ describe('AddBuildingBlockInputSchema', () => {
                     id: 'myAction',
                     actionKey: 'key',
                     text: 'Do it',
+                    embeddedAction: {},
                     placement: 'Middle'
                 }
             });

@@ -453,8 +453,9 @@ const RichTextEditorButtonGroupsBuildingBlockSchema = BuildingBlockBaseSchema.ex
                 id: zod.string().optional().describe('Optional ID for the button group.')
             })
         )
-        .optional()
-        .describe('Button groups to configure in the rich text editor toolbar.')
+        .describe(
+            'Button groups to configure in the rich text editor toolbar. Required: a schema-valid request without this array removes all existing button groups. Pass an empty array to explicitly remove all.'
+        )
 });
 
 const CustomFilterFieldBuildingBlockSchema = BuildingBlockBaseSchema.extend({
@@ -509,8 +510,9 @@ const ActionBuildingBlockSchema = BuildingBlockBaseSchema.extend({
                 .optional()
                 .describe('Event handler wired to the action press event.')
         })
-        .optional()
-        .describe('Embedded action configuration for linking a press handler to the action button.')
+        .describe(
+            'Embedded action configuration for linking a press handler to the action button. Required so the writer runs action-aggregation detection and reuses an existing actions aggregation instead of appending a duplicate.'
+        )
 });
 
 /**
@@ -569,8 +571,8 @@ export const AddBuildingBlockInputSchema = zod.object({
         .describe(
             'XPath expression pointing to the aggregation element in the view/fragment where the building block is inserted, e.g. "/mvc:View/content". Omit (while passing viewOrFragmentPath) to have the tool return the valid aggregationPaths for that file (status "needs_input").'
         ),
-    /** Building block configuration — shape varies by buildingBlockType */
-    buildingBlockData: BuildingBlockDataSchema.describe(
-        'Configuration for the building block. Required: buildingBlockType, id. Optional: metaPath, contextPath, and type-specific properties.'
+    /** Building block configuration — shape varies by buildingBlockType (required only in execute mode) */
+    buildingBlockData: BuildingBlockDataSchema.optional().describe(
+        'Configuration for the building block. Required when both viewOrFragmentPath and aggregationPath are provided (execute mode); omit during discovery. Required: buildingBlockType, id. Optional: metaPath, contextPath, and type-specific properties.'
     )
 });
