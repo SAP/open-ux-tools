@@ -241,7 +241,7 @@ const ZOWE_SHIM = `(()=>{const{join:_j}=require("path"),{existsSync:_e}=require(
 
 const bundleFile = path.join(DIST, 'index.js');
 let bundleSource = fs.readFileSync(bundleFile, 'utf8');
-const zowePattern = /\w+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
+const zowePattern = /[$\w]+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
 const matchCount = (bundleSource.match(zowePattern) || []).length;
 if (matchCount === 0) {
     throw new Error(
@@ -267,7 +267,7 @@ const uxSpecReq = createRequire(uxSpecEntry);
 const lzStringEntry = uxSpecReq.resolve('lz-string');
 fs.copyFileSync(lzStringEntry, path.join(DIST, 'lz-string.cjs'));
 console.log('✓ Copied lz-string.cjs to dist/');
-const lzStringPattern = /\w+\(["']lz-string["']\)/g;
+const lzStringPattern = /[$\w]+\(["']lz-string["']\)/g;
 const lzMatchCount = (bundleSource.match(lzStringPattern) || []).length;
 if (lzMatchCount === 0) {
     throw new Error(
