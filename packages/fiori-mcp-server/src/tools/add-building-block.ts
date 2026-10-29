@@ -240,7 +240,8 @@ export async function addBuildingBlock(params: AddBuildingBlockInput): Promise<A
             // intentionally empty — commit triggers disk writes internally
         });
 
-        const modifiedFiles = Object.keys(resultFs.dump()).map((filePath) => relative(appPath, filePath));
+        const modifiedFiles = Object.keys(resultFs.dump())
+            .map((filePath) => relative(appPath, filePath).replaceAll('\\', '/'));
 
         return {
             status: 'success',
