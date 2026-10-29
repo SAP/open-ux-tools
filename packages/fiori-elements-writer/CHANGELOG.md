@@ -1,5 +1,23 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.86
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade read-package-up 11.0.0 → 12.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+- @sap-ux/annotation-generator 1.0.33 → 1.0.34
+- @sap-ux/cap-config-writer 1.0.45 → 1.0.46
+- @sap-ux/fe-fpm-writer 1.3.25 → 1.3.26
+- @sap-ux/ui5-test-writer 1.19.2 → 1.19.3
+
 ## 3.1.85
 
 ### Patch Changes
