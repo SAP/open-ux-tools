@@ -185,6 +185,7 @@ function typedFloorCause(
  * @param targets the entity sets the caller asked for
  * @param resources the published rows
  * @param statistics the fine-tuned tier's own per-field accounting
+ * @param fallbackByField
  * @returns generated value slots by writing tier, the typed floor by cause, and each published
  * property's split between the fine-tuned tier and the tier that wrote its remaining cells
  */
