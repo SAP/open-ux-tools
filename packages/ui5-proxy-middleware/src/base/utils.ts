@@ -64,12 +64,14 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
     return (
         proxyFromArgs ||
         process.env.FIORI_TOOLS_PROXY ||
-        process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy ||
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
+        process.env.all_proxy ||
+        process.env.ALL_PROXY ||
+        process.env.npm_config_proxy ||
+        process.env.npm_config_https_proxy ||
         yamlProxyServer
     );
 };
@@ -107,20 +109,23 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
     });
 
     if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
-        process.env['npm_config_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
-        process.env['npm_config_https_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['http_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['https_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
     } else {
         const proxyFromEnv =
-            process.env.npm_config_proxy ||
-            process.env.npm_config_https_proxy ||
             process.env.http_proxy ||
             process.env.HTTP_PROXY ||
             process.env.https_proxy ||
-            process.env.HTTPS_PROXY;
+            process.env.HTTPS_PROXY ||
+            process.env.all_proxy ||
+            process.env.ALL_PROXY;
 
-        if (!proxyFromEnv && proxyFromConfig) {
-            process.env['npm_config_proxy'] = proxyFromConfig;
-            process.env['npm_config_https_proxy'] = proxyFromConfig;
+        // proxy-from-env@2 no longer reads npm_config_*; promote legacy .npmrc proxy into standard vars.
+        const legacyNpmProxy = process.env.npm_config_proxy || process.env.npm_config_https_proxy;
+        const fallback = proxyFromEnv ? undefined : legacyNpmProxy || proxyFromConfig;
+        if (fallback) {
+            process.env['http_proxy'] = fallback;
+            process.env['https_proxy'] = fallback;
         }
     }
 }

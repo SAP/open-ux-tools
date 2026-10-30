@@ -42,8 +42,9 @@
         "dotenv": "18.0.8",
         "http-proxy-middleware": "3.0.7",
         "https-proxy-agent": "7.0.6",
+
         "i18next": "26.5.11",
-        "proxy-from-env": "1.1.0"
+        "proxy-from-env": "2.1.0"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",

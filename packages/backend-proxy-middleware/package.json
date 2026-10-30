@@ -44,7 +44,7 @@
         "https-proxy-agent": "7.0.6",
         "i18next": "26.5.11",
         "prompts": "2.4.2",
-        "proxy-from-env": "1.1.0"
+        "proxy-from-env": "2.1.0"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",
