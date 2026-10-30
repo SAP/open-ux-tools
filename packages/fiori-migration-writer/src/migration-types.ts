@@ -327,13 +327,8 @@ export interface Credentials {
 }
 /**
  * CAP runtime implementation type
- * Re-exported from @sap-ux/fiori-generator-shared as CapRuntime
- * Const object kept for backwards compatibility
+ * Use CapRuntime from @sap-ux/fiori-generator-shared directly
  */
-export const CapType = {
-    NODE_JS: 'Node.js',
-    JAVA: 'Java'
-} as const;
 export type CapType = CapRuntime;
 export const ApiHubType = {
     apiHub: 'API_HUB',

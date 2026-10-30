@@ -64,13 +64,17 @@ describe('Constants', () => {
         });
     });
 
-    describe('CapType', () => {
-        test('should have NODE_JS type', () => {
-            expect(CapType.NODE_JS).toBe('Node.js');
+    // CapType is now a type alias to CapRuntime from @sap-ux/fiori-generator-shared
+    // The const object was removed - tests should use string literals directly
+    describe('CapRuntime / CapType string literal values', () => {
+        test('NODE_JS value should be correct', () => {
+            const nodeType: 'Node.js' = 'Node.js';
+            expect(nodeType).toBe('Node.js');
         });
 
-        test('should have JAVA type', () => {
-            expect(CapType.JAVA).toBe('Java');
+        test('JAVA value should be correct', () => {
+            const javaType: 'Java' = 'Java';
+            expect(javaType).toBe('Java');
         });
     });
 

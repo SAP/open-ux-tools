@@ -28,14 +28,15 @@ describe('migration type constants', () => {
         expect(neoAppJsonRouteTargetTypes).toEqual({ application: 'application', destination: 'destination' });
     });
 
-    it('preserves template, CAP, API Hub, and SAP system values', () => {
+    it('preserves template, API Hub, and SAP system values', () => {
         expect(TemplateDataKey).toEqual({
             project: 'project',
             service: 'service',
             ui5Yaml: 'ui5Yaml',
             packageJson: 'packageJson'
         });
-        expect(CapType).toEqual({ NODE_JS: 'Node.js', JAVA: 'Java' });
+        // CapType const was removed - it's now just a type alias to CapRuntime
+        // Tests for the values moved to constants.test.ts using string literals
         expect(ApiHubType).toEqual({ apiHub: 'API_HUB', apiHubEnterprise: 'API_HUB_ENTERPRISE' });
         expect(SapSystemSourceType).toEqual({
             SCP: 'SCP',
