@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
 import type { AxiosRequestConfig } from 'axios';
-import { Cli } from '@sap/cf-tools';
+import { Cli, cfGetAuthToken } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -128,6 +128,7 @@ export async function getAdpServiceInstances(
 
             instances.push({
                 name: instance.name,
+                guid: instance.guid,
                 service: offeringName,
                 servicePlan: plan?.name ?? ''
             });
@@ -166,12 +167,30 @@ export async function getBusinessServiceInfo(
 }
 
 /**
+ * Reads the `sap.cloud.service` business-service name from a service instance's existing service-key
+ * credentials. Read-only: it only reads existing keys and never creates one, so it is safe to call
+ * across many instances (e.g. to pre-filter the picker). Returns `undefined` when the instance has no
+ * service key yet or the key carries no `sap.cloud.service`.
+ *
+ * @param {string} serviceInstanceGuid - The service instance GUID.
+ * @param {ToolsLogger} [logger] - The logger.
+ * @returns {Promise<string | undefined>} The `sap.cloud.service` value, or `undefined` if unavailable.
+ */
+export async function getSapCloudServiceName(
+    serviceInstanceGuid: string,
+    logger?: ToolsLogger
+): Promise<string | undefined> {
+    const keys = await getServiceKeys(serviceInstanceGuid, 'updated_at', logger);
+    return keys[0]?.credentials?.['sap.cloud.service'] as string | undefined;
+}
+
+/**
  * Get the FDC request arguments.
  *
  * @param {CfConfig} cfConfig - The CF config.
- * @returns {RequestArguments} The request arguments.
+ * @returns {Promise<RequestArguments>} The request arguments.
  */
-export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
+export async function getFDCRequestArguments(cfConfig: CfConfig): Promise<RequestArguments> {
     const fdcUrl = 'https://ui5-flexibility-design-and-configuration.';
     const cfApiEndpoint = `https://api.cf.${cfConfig.url}`;
     const endpointParts = /https:\/\/api\.cf(?:\.([^-.]*)(-\d+)?(\.hana\.ondemand\.com)|(.*))/.exec(cfApiEndpoint);
@@ -204,7 +223,11 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     }
 
     if (!isBAS || !endpointParts?.[3]) {
-        options.headers!['Authorization'] = `Bearer ${cfConfig.token}`;
+        // Fetch a fresh token via the CF CLI rather than the static `cfConfig.token` read from
+        // ~/.cf/config.json at startup, which expires (~60 min) and causes 401s on the FDC calls.
+        // `cfGetAuthToken` returns a `bearer <jwt>`-prefixed string, so strip any existing scheme.
+        const token = (await cfGetAuthToken())?.replace(/^bearer\s+/i, '') ?? '';
+        options.headers!['Authorization'] = `Bearer ${token}`;
     }
 
     return {
@@ -222,7 +245,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
  * @returns {Promise<CFApp[]>} The FDC apps.
  */
 export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
     logger?.log(`App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
@@ -264,7 +287,7 @@ export async function getAdaptableBusinessServices(
         return adaptable;
     }
 
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
     const batches: string[][] = [];
     for (let i = 0; i < unique.length; i += 100) {
         batches.push(unique.slice(i, i + 100));
@@ -285,7 +308,10 @@ export async function getAdaptableBusinessServices(
                     throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
                 }
 
-                for (const [name, info] of Object.entries(response.data ?? {})) {
+                const data = response.data ?? {};
+                logger?.info(`FDC adaptable lookup for [${batch.join(', ')}] returned: ${JSON.stringify(data)}`);
+
+                for (const [name, info] of Object.entries(data)) {
                     if (info?.hasAdaptableApps) {
                         adaptable.add(name);
                     }
@@ -315,7 +341,7 @@ export async function getCfUi5AppInfo(
     cfConfig: CfConfig,
     logger?: ToolsLogger
 ): Promise<CfUi5AppInfo> {
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
     const url = `${requestArguments.url}/api/business-service/ui5appinfo?appId=${encodeURIComponent(
@@ -356,7 +382,7 @@ export async function getCfBaseAppInbounds(
     logger?: ToolsLogger,
     lang: string = 'en'
 ): Promise<ManifestNamespace.Inbound | undefined> {
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
 
     const params = new URLSearchParams({ appId, appHostId, 'sap-language': lang });
     const url = `${requestArguments.url}/api/business-service/inbounds?${params}`;

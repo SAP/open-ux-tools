@@ -126,6 +126,7 @@
         "businessServiceHasToBeSelected": "Business service has to be selected. Please select a business service.",
         "serviceInstanceHasToBeSelected": "A service instance must be selected. Please select a service instance.",
         "noServiceInstancesFound": "No service instances were found in the targeted Cloud Foundry space. Please create a service instance to continue.",
+        "noAdaptableServiceInstancesFound": "None of the service instances in the targeted Cloud Foundry space have adaptable applications.",
         "mtaIdInvalid": "Invalid MTA project name. Only letters, numbers, dots (.), underscores (_), and hyphens (-) are allowed. The name must start with a letter or number.",
         "mtaIdTooLong": "MTA project name must be 20 characters or fewer.",
         "mtaIdAlreadyExists": "A folder with this name already exists in the selected location. Please choose a different MTA project name.",

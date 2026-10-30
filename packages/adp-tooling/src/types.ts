@@ -1314,6 +1314,10 @@ export interface CfServiceInstanceChoice {
      */
     name: string;
     /**
+     * The service instance GUID.
+     */
+    guid: string;
+    /**
      * The service offering (e.g. 'destination', 'connectivity').
      */
     service: string;

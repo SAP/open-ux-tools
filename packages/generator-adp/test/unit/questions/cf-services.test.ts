@@ -17,6 +17,7 @@ const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
 const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
 const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
 const mockGetAdaptableBusinessServices = jest.fn<typeof realAdpTooling.getAdaptableBusinessServices>();
+const mockGetSapCloudServiceName = jest.fn<typeof realAdpTooling.getSapCloudServiceName>();
 const mockGetCfApps = jest.fn<typeof realAdpTooling.getCfApps>();
 const mockDownloadAppContent = jest.fn<typeof realAdpTooling.downloadAppContent>();
 const mockValidateSmartTemplateApplication = jest.fn<typeof realAdpTooling.validateSmartTemplateApplication>();
@@ -53,6 +54,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getMtaServices: mockGetMtaServices,
     getAdpServiceInstances: mockGetAdpServiceInstances,
     getAdaptableBusinessServices: mockGetAdaptableBusinessServices,
+    getSapCloudServiceName: mockGetSapCloudServiceName,
     getCfApps: mockGetCfApps,
     downloadAppContent: mockDownloadAppContent,
     validateSmartTemplateApplication: mockValidateSmartTemplateApplication,
@@ -134,6 +136,7 @@ describe('CFServicesPrompter', () => {
         jest.clearAllMocks();
         mockGetAdpServiceInstances.mockResolvedValue([]);
         mockGetAdaptableBusinessServices.mockResolvedValue(new Set());
+        mockGetSapCloudServiceName.mockResolvedValue(undefined);
     });
 
     describe('getPrompts', () => {
@@ -177,7 +180,9 @@ describe('CFServicesPrompter', () => {
         test('should label the MTA business service when it is reachable among live instances', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockGetMtaServices.mockResolvedValue(['svc']);
-            mockGetAdpServiceInstances.mockResolvedValue([{ name: 'svc', service: 'hana', servicePlan: 'hdi-shared' }]);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'svc', guid: 'svc-guid', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
             mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
             mockGetCfApps.mockResolvedValue([mockCFApp]);
 
@@ -193,7 +198,7 @@ describe('CFServicesPrompter', () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             mockGetMtaServices.mockResolvedValue(['svc']);
             mockGetAdpServiceInstances.mockResolvedValue([
-                { name: 'other', service: 'hana', servicePlan: 'hdi-shared' }
+                { name: 'other', guid: 'other-guid', service: 'hana', servicePlan: 'hdi-shared' }
             ]);
 
             await prompter.getPrompts('/test/path', mockCfConfig);
@@ -268,6 +273,41 @@ describe('CFServicesPrompter', () => {
                 'No mta.yaml found for approuter detection at /test/path: Could not find file /test/path/mta.yaml'
             );
         });
+
+        test('should eagerly resolve adaptable instances when no MTA business service is reachable', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'inst1', guid: 'inst1-guid', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+            mockGetSapCloudServiceName.mockResolvedValue('sap.cloud.inst1');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set());
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(mockGetSapCloudServiceName).toHaveBeenCalledWith('inst1-guid', mockLogger);
+            expect(mockGetAdaptableBusinessServices).toHaveBeenCalledWith(
+                ['sap.cloud.inst1'],
+                mockCfConfig,
+                mockLogger
+            );
+            expect(prompter['adaptableInstances']).toEqual([]);
+        });
+
+        test('should not resolve adaptable instances when the MTA business service is reachable', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            mockGetMtaServices.mockResolvedValue(['svc']);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'svc', guid: 'svc-guid', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+            mockGetBusinessServiceInfo.mockResolvedValue(mockServiceKeys);
+            mockGetCfApps.mockResolvedValue([mockCFApp]);
+
+            await prompter.getPrompts('/test/path', mockCfConfig);
+
+            expect(mockGetAdaptableBusinessServices).not.toHaveBeenCalled();
+            expect(prompter['adaptableInstances']).toBeUndefined();
+        });
     });
 
     describe('getBusinessSolutionNamePrompt', () => {
@@ -313,7 +353,7 @@ describe('CFServicesPrompter', () => {
         test('should fall back to the first live service instance for a new MTA without a committed selection', () => {
             prompter['reachableBusinessService'] = undefined;
             prompter['serviceInstances'] = [
-                { name: 'inst-1', service: 'hana', servicePlan: 'hdi-shared' }
+                { name: 'inst-1', guid: 'inst-1-guid', service: 'hana', servicePlan: 'hdi-shared' }
             ] as CfServiceInstanceChoice[];
 
             const prompt = prompter['getBusinessSolutionNamePrompt']();
@@ -335,7 +375,7 @@ describe('CFServicesPrompter', () => {
         test('should fall through an empty-string businessService to the live service instance', () => {
             prompter['reachableBusinessService'] = undefined;
             prompter['serviceInstances'] = [
-                { name: 'inst-1', service: 'hana', servicePlan: 'hdi-shared' }
+                { name: 'inst-1', guid: 'inst-1-guid', service: 'hana', servicePlan: 'hdi-shared' }
             ] as CfServiceInstanceChoice[];
 
             const prompt = prompter['getBusinessSolutionNamePrompt']();
@@ -605,6 +645,7 @@ describe('CFServicesPrompter', () => {
     describe('getServiceInstancePrompt', () => {
         const mockInstance: CfServiceInstanceChoice = {
             name: 'my-instance',
+            guid: 'my-instance-guid',
             service: 'hana',
             servicePlan: 'hdi-shared'
         };
@@ -624,28 +665,42 @@ describe('CFServicesPrompter', () => {
             });
         });
 
-        test('should map choices from the adaptable service instances', async () => {
+        test('should resolve each instance sap.cloud.service and query FDC with it', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             prompter['serviceInstances'] = [mockInstance];
             const choices = [{ name: 'my-instance (hana/hdi-shared)', value: mockInstance }];
             mockGetServiceInstanceChoices.mockReturnValue(choices);
-            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['my-instance']));
+            mockGetSapCloudServiceName.mockResolvedValue('sap.cloud.psm.service');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['sap.cloud.psm.service']));
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
             const choicesFn = prompt.choices as (answers: CfServicesAnswers) => Promise<typeof choices>;
             const result = await choicesFn({});
 
-            expect(mockGetAdaptableBusinessServices).toHaveBeenCalledWith(['my-instance'], mockCfConfig, mockLogger);
+            expect(mockGetSapCloudServiceName).toHaveBeenCalledWith('my-instance-guid', mockLogger);
+            expect(mockGetAdaptableBusinessServices).toHaveBeenCalledWith(
+                ['sap.cloud.psm.service'],
+                mockCfConfig,
+                mockLogger
+            );
             expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
             expect(result).toBe(choices);
         });
 
         test('should offer only the adaptable instances in the picker', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
-            const other: CfServiceInstanceChoice = { name: 'other', service: 'hana', servicePlan: 'hdi-shared' };
+            const other: CfServiceInstanceChoice = {
+                name: 'other',
+                guid: 'other-guid',
+                service: 'hana',
+                servicePlan: 'hdi-shared'
+            };
             prompter['serviceInstances'] = [mockInstance, other];
             mockGetServiceInstanceChoices.mockReturnValue([]);
-            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['my-instance']));
+            mockGetSapCloudServiceName.mockImplementation(async (guid: string) =>
+                guid === 'my-instance-guid' ? 'sap.cloud.my' : 'sap.cloud.other'
+            );
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['sap.cloud.my']));
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
             await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
@@ -653,35 +708,52 @@ describe('CFServicesPrompter', () => {
             expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
         });
 
-        test('should show all instances when the adaptable lookup fails', async () => {
+        test('should exclude instances whose sap.cloud.service could not be resolved', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             prompter['serviceInstances'] = [mockInstance];
             mockGetServiceInstanceChoices.mockReturnValue([]);
-            mockGetAdaptableBusinessServices.mockRejectedValue(new Error('FDC down'));
-
-            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
-            await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
-
-            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
-        });
-
-        test('should show all instances when none are reported adaptable', async () => {
-            const prompter = new CFServicesPrompter(false, true, mockLogger);
-            prompter['serviceInstances'] = [mockInstance];
-            mockGetServiceInstanceChoices.mockReturnValue([]);
+            // No existing service key → undefined → cannot be validated → excluded.
+            mockGetSapCloudServiceName.mockResolvedValue(undefined);
             mockGetAdaptableBusinessServices.mockResolvedValue(new Set());
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
             await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
 
-            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([mockInstance]);
+            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([]);
+        });
+
+        test('should empty the picker when the adaptable lookup fails', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['serviceInstances'] = [mockInstance];
+            mockGetServiceInstanceChoices.mockReturnValue([]);
+            mockGetSapCloudServiceName.mockResolvedValue('sap.cloud.my');
+            mockGetAdaptableBusinessServices.mockRejectedValue(new Error('FDC down'));
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
+
+            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([]);
+        });
+
+        test('should filter out a resolved instance that FDC reports not adaptable', async () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['serviceInstances'] = [mockInstance];
+            mockGetServiceInstanceChoices.mockReturnValue([]);
+            mockGetSapCloudServiceName.mockResolvedValue('sap.cloud.my');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set());
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
+            await (prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>)({});
+
+            expect(mockGetServiceInstanceChoices).toHaveBeenCalledWith([]);
         });
 
         test('should call the adaptable lookup at most once (memoised)', async () => {
             const prompter = new CFServicesPrompter(false, true, mockLogger);
             prompter['serviceInstances'] = [mockInstance];
             mockGetServiceInstanceChoices.mockReturnValue([]);
-            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['my-instance']));
+            mockGetSapCloudServiceName.mockResolvedValue('sap.cloud.my');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['sap.cloud.my']));
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
             const choicesFn = prompt.choices as (answers: CfServicesAnswers) => Promise<unknown>;
@@ -742,6 +814,20 @@ describe('CFServicesPrompter', () => {
             const additionalMessages = prompt.additionalMessages as () => unknown;
 
             expect(additionalMessages()).toBeUndefined();
+        });
+
+        test('should surface an error message when none of the service instances are adaptable', () => {
+            const prompter = new CFServicesPrompter(false, true, mockLogger);
+            prompter['serviceInstances'] = [mockInstance];
+            prompter['adaptableInstances'] = [];
+
+            const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
+            const additionalMessages = prompt.additionalMessages as () => { message: string; severity: number };
+
+            expect(additionalMessages()).toEqual({
+                message: t('error.noAdaptableServiceInstancesFound'),
+                severity: Severity.error
+            });
         });
 
         test('should return error when no instance is selected', async () => {

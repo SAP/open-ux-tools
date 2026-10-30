@@ -18,6 +18,7 @@ import {
     getMtaServices,
     getAdpServiceInstances,
     getAdaptableBusinessServices,
+    getSapCloudServiceName,
     getCfApps,
     downloadAppContent,
     validateSmartTemplateApplication,
@@ -178,51 +179,7 @@ export class CFServicesPrompter {
         promptOptions?: CfServicesPromptOptions
     ): Promise<CFServicesQuestion[]> {
         if (this.isCfLoggedIn) {
-            try {
-                this.businessServices = await getMtaServices(mtaProjectPath, this.logger);
-            } catch (e) {
-                // A brand-new MTA (no mta.yaml yet) or an MTA without a service definition has no
-                // business services; fall back to binding a live CF service instance instead.
-                this.businessServices = [];
-                this.logger.log(`No business services found in MTA project: ${e.message}`);
-            }
-
-            // Load the live CF service instances up front: they are both the reachability check for
-            // an MTA-declared business service and the fallback picker when none is reachable.
-            try {
-                this.serviceInstances = await getAdpServiceInstances(cfConfig.space.GUID, this.logger);
-            } catch (e) {
-                this.serviceInstances = [];
-                this.logger.log(`Could not load CF service instances: ${e.message}`);
-            }
-
-            // Show only the MTA-declared business service that is actually reachable (exists among the
-            // live service instances) as a read-only label. Its discovery side-effects can't be driven
-            // by a label's validate, so resolve them eagerly here.
-            const reachable = this.businessServices.filter((service) =>
-                this.serviceInstances.some((instance) => instance.name === service)
-            );
-            if (reachable.length >= 1) {
-                this.reachableBusinessService = reachable[0];
-                this.singleServiceResult = await this.discoverBusinessServiceApps(reachable[0] ?? '', cfConfig);
-            }
-
-            // Detect an existing approuter eagerly so `showSolutionNamePrompt` is set before any prompt's
-            // `when` runs. Yeoman-UI does not guarantee the approuter prompt's `when` (which used to set
-            // this flag) executes before the business-solution-name prompt's `when` reads it.
-            let modules: string[] = [];
-            try {
-                modules = getModuleNames(mtaProjectPath);
-            } catch (e) {
-                // Brand-new MTA has no mta.yaml yet, treat it as having no modules / no existing approuter.
-                this.logger.log(`No mta.yaml found for approuter detection at ${mtaProjectPath}: ${e.message}`);
-            }
-            this.hasExistingApprouter = hasApprouter(modules);
-            if (this.hasExistingApprouter) {
-                this.approuter = getApprouterType(mtaProjectPath);
-            } else {
-                this.showSolutionNamePrompt = true;
-            }
+            await this.loadCfState(mtaProjectPath, cfConfig);
         }
 
         const keyedPrompts: Record<cfServicesPromptNames, CFServicesQuestion> = {
@@ -241,6 +198,104 @@ export class CFServicesPrompter {
             .map(([_, question]) => question);
 
         return questions;
+    }
+
+    /**
+     * Loads the CF state the prompts depend on before any prompt's `when`/`validate`/`choices` runs.
+     *
+     * Ordered: the reachability resolution needs both the MTA business services and the live service
+     * instances, so those load first; approuter detection is independent and runs last.
+     *
+     * @param {string} mtaProjectPath - MTA project path.
+     * @param {CfConfig} cfConfig - CF config service instance.
+     * @returns {Promise<void>} Resolves once all eager state has been loaded.
+     */
+    private async loadCfState(mtaProjectPath: string, cfConfig: CfConfig): Promise<void> {
+        await this.loadBusinessServices(mtaProjectPath);
+        await this.loadServiceInstances(cfConfig);
+        await this.resolveReachableBusinessService(cfConfig);
+        this.detectExistingApprouter(mtaProjectPath);
+
+        if (!this.reachableBusinessService && this.serviceInstances.length > 0) {
+            await this.getAdaptableInstances(cfConfig);
+        }
+    }
+
+    /**
+     * Loads the business services declared in the MTA project into `this.businessServices`.
+     *
+     * @param {string} mtaProjectPath - MTA project path.
+     * @returns {Promise<void>} Resolves once the business services have been loaded.
+     */
+    private async loadBusinessServices(mtaProjectPath: string): Promise<void> {
+        try {
+            this.businessServices = await getMtaServices(mtaProjectPath, this.logger);
+        } catch (e) {
+            // A brand-new MTA (no mta.yaml yet) or an MTA without a service definition has no
+            // business services; fall back to binding a live CF service instance instead.
+            this.businessServices = [];
+            this.logger.log(`No business services found in MTA project: ${e.message}`);
+        }
+    }
+
+    /**
+     * Loads the live CF service instances up front into `this.serviceInstances`: they are both the
+     * reachability check for an MTA-declared business service and the fallback picker when none is reachable.
+     *
+     * @param {CfConfig} cfConfig - CF config service instance.
+     * @returns {Promise<void>} Resolves once the service instances have been loaded.
+     */
+    private async loadServiceInstances(cfConfig: CfConfig): Promise<void> {
+        try {
+            this.serviceInstances = await getAdpServiceInstances(cfConfig.space.GUID, this.logger);
+        } catch (e) {
+            this.serviceInstances = [];
+            this.logger.log(`Could not load CF service instances: ${e.message}`);
+        }
+    }
+
+    /**
+     * Resolves the MTA-declared business service that is actually reachable (exists among the live
+     * service instances) and eagerly discovers its apps.
+     *
+     * Only the reachable service is shown, as a read-only label; its discovery side-effects can't be
+     * driven by a label's `validate`, so they are resolved here. Depends on `loadBusinessServices` and
+     * `loadServiceInstances` having run first.
+     *
+     * @param {CfConfig} cfConfig - CF config service instance.
+     * @returns {Promise<void>} Resolves once the reachable business service has been resolved.
+     */
+    private async resolveReachableBusinessService(cfConfig: CfConfig): Promise<void> {
+        const reachable = this.businessServices.filter((service) =>
+            this.serviceInstances.some((instance) => instance.name === service)
+        );
+        if (reachable.length >= 1) {
+            this.reachableBusinessService = reachable[0];
+            this.singleServiceResult = await this.discoverBusinessServiceApps(reachable[0] ?? '', cfConfig);
+        }
+    }
+
+    /**
+     * Detects an existing approuter eagerly so `showSolutionNamePrompt` is set before any prompt's
+     * `when` runs. Yeoman-UI does not guarantee the approuter prompt's `when` (which used to set this
+     * flag) executes before the business-solution-name prompt's `when` reads it.
+     *
+     * @param {string} mtaProjectPath - MTA project path.
+     */
+    private detectExistingApprouter(mtaProjectPath: string): void {
+        let modules: string[] = [];
+        try {
+            modules = getModuleNames(mtaProjectPath);
+        } catch (e) {
+            // Brand-new MTA has no mta.yaml yet, treat it as having no modules / no existing approuter.
+            this.logger.log(`No mta.yaml found for approuter detection at ${mtaProjectPath}: ${e.message}`);
+        }
+        this.hasExistingApprouter = hasApprouter(modules);
+        if (this.hasExistingApprouter) {
+            this.approuter = getApprouterType(mtaProjectPath);
+        } else {
+            this.showSolutionNamePrompt = true;
+        }
     }
 
     /**
@@ -421,32 +476,45 @@ export class CFServicesPrompter {
 
     /**
      * Live service instances filtered to those FDC reports as having at least one cloud-adaptable app.
-     * Best-effort and memoised: a failed lookup or an all-non-adaptable result falls back to the full list
-     * so the picker never empties, and the FDC call runs at most once per prompter.
+     * Best-effort and memoised: the FDC call runs at most once per prompter. When FDC confirms none are
+     * adaptable, or the lookup fails, the list is emptied so the picker shows an error rather than
+     * offering instances that cannot be adapted.
      *
      * @param {CfConfig} cfConfig - CF config service instance.
-     * @returns {Promise<CfServiceInstanceChoice[]>} The adaptable (or, on fallback, full) service instances.
+     * @returns {Promise<CfServiceInstanceChoice[]>} The adaptable instances, or `[]` when none are adaptable or the lookup fails.
      */
     private async getAdaptableInstances(cfConfig: CfConfig): Promise<CfServiceInstanceChoice[]> {
         if (this.adaptableInstances) {
             return this.adaptableInstances;
         }
 
-        let result = this.serviceInstances;
+        let result: CfServiceInstanceChoice[] = [];
         try {
-            const adaptable = await getAdaptableBusinessServices(
-                this.serviceInstances.map((instance) => instance.name),
-                cfConfig,
-                this.logger
+            const resolved = await Promise.all(
+                this.serviceInstances.map(async (instance) => {
+                    try {
+                        return { instance, cloudService: await getSapCloudServiceName(instance.guid, this.logger) };
+                    } catch (e) {
+                        this.logger.log(`Could not resolve sap.cloud.service for '${instance.name}': ${e.message}`);
+                        return { instance, cloudService: undefined as string | undefined };
+                    }
+                })
             );
-            const filtered = this.serviceInstances.filter((instance) => adaptable.has(instance.name));
-            if (filtered.length > 0) {
-                result = filtered;
-            } else {
-                this.logger.log('FDC reported no adaptable service instances; showing the full list.');
+
+            const cloudServiceNames = resolved
+                .map((entry) => entry.cloudService)
+                .filter((name): name is string => !!name);
+            const adaptable = await getAdaptableBusinessServices(cloudServiceNames, cfConfig, this.logger);
+
+            result = resolved
+                .filter((entry) => !!entry.cloudService && adaptable.has(entry.cloudService))
+                .map((entry) => entry.instance);
+
+            if (result.length === 0) {
+                this.logger.log('FDC reported no adaptable service instances');
             }
         } catch (e) {
-            this.logger.log(`Could not determine adaptable service instances; showing all: ${e.message}`);
+            this.logger.log(`Could not determine adaptable service instances: ${e.message}`);
         }
 
         this.adaptableInstances = result;
@@ -472,10 +540,15 @@ export class CFServicesPrompter {
                 getServiceInstanceChoices(await this.getAdaptableInstances(cfConfig)),
             when: (answers: CfServicesAnswers) =>
                 this.isCfLoggedIn && !this.reachableBusinessService && !!(this.approuter || answers.approuter),
-            additionalMessages: () =>
-                this.serviceInstances.length === 0
-                    ? { message: t('error.noServiceInstancesFound'), severity: Severity.error }
-                    : undefined,
+            additionalMessages: () => {
+                if (this.serviceInstances.length === 0) {
+                    return { message: t('error.noServiceInstancesFound'), severity: Severity.error };
+                }
+                if (this.adaptableInstances?.length === 0) {
+                    return { message: t('error.noAdaptableServiceInstancesFound'), severity: Severity.error };
+                }
+                return undefined;
+            },
             validate: async (instance: CfServiceInstanceChoice) => {
                 if (!instance) {
                     return t('error.serviceInstanceHasToBeSelected');

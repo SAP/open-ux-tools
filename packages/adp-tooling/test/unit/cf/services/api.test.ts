@@ -13,6 +13,7 @@ const mockGetProjectNameForXsSecurity = jest.fn() as jest.Mock;
 const mockCfGetServiceKeys = jest.fn<typeof realCfTools.cfGetServiceKeys>();
 const mockCfCreateServiceKey = jest.fn<typeof realCfTools.cfCreateServiceKey>();
 const mockCfGetAvailableOrgs = jest.fn<typeof realCfTools.cfGetAvailableOrgs>();
+const mockCfGetAuthToken = jest.fn<typeof realCfTools.cfGetAuthToken>();
 const mockCFToolsCliExecute = jest.fn<typeof realCfTools.execute>();
 
 const realFs = await import('node:fs');
@@ -33,6 +34,7 @@ jest.unstable_mockModule('@sap/cf-tools', () => ({
     cfGetServiceKeys: mockCfGetServiceKeys,
     cfCreateServiceKey: mockCfCreateServiceKey,
     cfGetAvailableOrgs: mockCfGetAvailableOrgs,
+    cfGetAuthToken: mockCfGetAuthToken,
     Cli: { execute: mockCFToolsCliExecute }
 }));
 
@@ -59,6 +61,7 @@ jest.unstable_mockModule('../../../../src/cf/project', () => ({
 const {
     getAdpServiceInstances,
     getBusinessServiceInfo,
+    getSapCloudServiceName,
     getFDCApps,
     getAdaptableBusinessServices,
     getCfUi5AppInfo,
@@ -90,6 +93,7 @@ describe('CF Services API', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockCfGetAuthToken.mockResolvedValue('bearer test-token');
     });
 
     describe('getBusinessServiceInfo', () => {
@@ -157,6 +161,35 @@ describe('CF Services API', () => {
             const result = await getBusinessServiceInfo(businessService, config, mockLogger);
 
             expect(result).toBeNull();
+        });
+    });
+
+    describe('getSapCloudServiceName', () => {
+        test('returns the sap.cloud.service from existing service-key credentials', async () => {
+            mockGetServiceKeys.mockResolvedValue([
+                { credentials: { 'sap.cloud.service': 'sap.cloud.psm.service', uaa: {}, uri: '', endpoints: {} } }
+            ]);
+
+            const result = await getSapCloudServiceName('instance-guid', mockLogger);
+
+            expect(result).toBe('sap.cloud.psm.service');
+            expect(mockGetServiceKeys).toHaveBeenCalledWith('instance-guid', 'updated_at', mockLogger);
+        });
+
+        test('returns undefined when the instance has no service key', async () => {
+            mockGetServiceKeys.mockResolvedValue([]);
+
+            const result = await getSapCloudServiceName('instance-guid', mockLogger);
+
+            expect(result).toBeUndefined();
+        });
+
+        test('returns undefined when the key carries no sap.cloud.service', async () => {
+            mockGetServiceKeys.mockResolvedValue([{ credentials: { uaa: {}, uri: '', endpoints: {} } }]);
+
+            const result = await getSapCloudServiceName('instance-guid', mockLogger);
+
+            expect(result).toBeUndefined();
         });
     });
 
@@ -235,8 +268,8 @@ describe('CF Services API', () => {
             const result = await getAdpServiceInstances(spaceGuid, mockLogger);
 
             expect(result).toEqual([
-                { name: 'inst-a', service: 'abap', servicePlan: 'standard' },
-                { name: 'inst-b', service: 'hana', servicePlan: 'hdi-shared' }
+                { name: 'inst-a', guid: 'inst-a-guid', service: 'abap', servicePlan: 'standard' },
+                { name: 'inst-b', guid: 'inst-b-guid', service: 'hana', servicePlan: 'hdi-shared' }
             ]);
             expect(mockRequestCfApi).toHaveBeenCalledWith(expect.stringContaining(`space_guids=${spaceGuid}`));
         });
@@ -395,6 +428,19 @@ describe('CF Services API', () => {
 
             expect(result.size).toBe(0);
             expect(mockAxios.get).not.toHaveBeenCalled();
+        });
+
+        test('should log the raw FDC response for diagnosis', async () => {
+            mockAxios.get.mockResolvedValue({
+                status: 200,
+                data: { 'svc-a': { hasAdaptableApps: true } }
+            });
+
+            await getAdaptableBusinessServices(['svc-a'], config, mockLogger);
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('{"svc-a":{"hasAdaptableApps":true}}')
+            );
         });
 
         test('should de-duplicate names and drop falsy entries before requesting', async () => {
@@ -656,7 +702,7 @@ describe('CF Services API', () => {
     });
 
     describe('getFDCRequestArguments', () => {
-        test('should return correct arguments for public cloud in BAS environment', () => {
+        test('should return correct arguments for public cloud in BAS environment', async () => {
             const config: CfConfig = {
                 org: { GUID: 'test-org-guid', Name: 'test-org' },
                 space: { GUID: 'test-space-guid', Name: 'test-space' },
@@ -666,7 +712,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(true);
 
-            const result = getFDCRequestArguments(config);
+            const result = await getFDCRequestArguments(config);
 
             expect(result.url).toBe(
                 'https://ui5-flexibility-design-and-configuration.cert.cfapps.us10.hana.ondemand.com'
@@ -676,7 +722,7 @@ describe('CF Services API', () => {
             expect(result.options.headers!['Authorization']).toBeUndefined();
         });
 
-        test('should return correct arguments for public cloud in non-BAS environment', () => {
+        test('should return correct arguments for public cloud in non-BAS environment', async () => {
             const config: CfConfig = {
                 org: { GUID: 'test-org-guid', Name: 'test-org' },
                 space: { GUID: 'test-space-guid', Name: 'test-space' },
@@ -686,7 +732,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(false);
 
-            const result = getFDCRequestArguments(config);
+            const result = await getFDCRequestArguments(config);
 
             expect(result.url).toBe('https://ui5-flexibility-design-and-configuration.cfapps.eu10.hana.ondemand.com');
             expect(result.options.withCredentials).toBe(true);
@@ -694,7 +740,7 @@ describe('CF Services API', () => {
             expect(result.options.headers!['Authorization']).toBe('Bearer test-token');
         });
 
-        test('should return correct arguments for private cloud', () => {
+        test('should return correct arguments for private cloud', async () => {
             const config: CfConfig = {
                 org: { GUID: 'test-org-guid', Name: 'test-org' },
                 space: { GUID: 'test-space-guid', Name: 'test-space' },
@@ -704,7 +750,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(false);
 
-            const result = getFDCRequestArguments(config);
+            const result = await getFDCRequestArguments(config);
 
             expect(result.url).toBe(
                 'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.private.cf.example.com'
@@ -714,7 +760,7 @@ describe('CF Services API', () => {
             expect(result.options.headers!['Authorization']).toBe('Bearer test-token');
         });
 
-        test('should return correct arguments for China region', () => {
+        test('should return correct arguments for China region', async () => {
             const config: CfConfig = {
                 org: { GUID: 'test-org-guid', Name: 'test-org' },
                 space: { GUID: 'test-space-guid', Name: 'test-space' },
@@ -724,7 +770,7 @@ describe('CF Services API', () => {
 
             mockIsAppStudio.mockReturnValue(false);
 
-            const result = getFDCRequestArguments(config);
+            const result = await getFDCRequestArguments(config);
 
             expect(result.url).toBe('https://ui5-flexibility-design-and-configuration.sapui5flex.cf.apps.example.cn');
             expect(result.options.withCredentials).toBe(true);
