@@ -1,5 +1,35 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.3.90
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.46 → 1.0.47
+- @sap-ux/fe-fpm-writer 1.3.26 → 1.3.27
+- @sap-ux/fiori-elements-writer 3.1.87 → 3.1.88
+- @sap-ux/fiori-freestyle-writer 3.0.130 → 3.0.131
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/launch-config 1.0.26 → 1.0.27
+- @sap-ux/odata-service-inquirer 3.2.28 → 3.2.29
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/ui5-application-inquirer 1.0.51 → 1.0.52
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/annotation-generator 1.0.34 → 1.0.35
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.3.89
 
 ### Patch Changes
