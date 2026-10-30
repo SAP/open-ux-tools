@@ -1,8 +1,7 @@
 import { t } from '../utils/i18n.js';
 import type { FioriStep } from './yeomanUiStepConfig.js';
-// Import shared constants from fiori-generator-shared
-import { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
-export { ApiHubType, SapSystemSourceType };
+// Re-export shared constants from fiori-generator-shared
+export { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';
