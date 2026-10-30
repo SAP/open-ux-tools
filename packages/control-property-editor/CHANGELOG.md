@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 1.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
 ## 1.0.11
 
 ### Patch Changes

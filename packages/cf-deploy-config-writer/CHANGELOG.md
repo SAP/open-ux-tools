@@ -1,5 +1,20 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/yaml 1.0.2 → 1.0.3
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.1.12
 
 ### Patch Changes

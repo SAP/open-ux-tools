@@ -1,5 +1,22 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.58
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-inquirer 1.0.53 → 1.0.54
+- @sap-ux/cf-deploy-config-writer 1.1.12 → 1.1.13
+- @sap-ux/deploy-config-generator-shared 1.0.46 → 1.0.47
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.0.57
 
 ### Patch Changes

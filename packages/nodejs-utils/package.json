@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "description": "Nodejs utility wrappers",
     "type": "module",
     "repository": {
