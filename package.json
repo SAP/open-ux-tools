@@ -27,7 +27,7 @@
         "eslint-plugin-sonarjs": "4.0.3",
         "globals": "17.13.0",
         "husky": "8.0.3",
-        "jest": "30.4.2",
+        "jest": "30.5.2",
         "jest-sonar": "0.2.16",
         "npm-run-all2": "9.0.3",
         "nx": "22.7.12",
