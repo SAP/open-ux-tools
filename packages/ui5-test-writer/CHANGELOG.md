@@ -1,5 +1,24 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.7
+- @sap-ux/preview-middleware 1.2.31 → 1.2.32
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.19.4
 
 ### Patch Changes
