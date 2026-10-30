@@ -1502,10 +1502,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(runnerPath).toBeDefined();
 
             const content = dumped[runnerPath!].contents as string;
-            // The page-definition object passed to `new ListReport(...)` should set contextPath;
-            // entitySet is emitted as an empty string because the runtime type marks both as required.
+            // The page-definition object passed to `new ListReport(...)` should set contextPath only.
             expect(content).toContain('contextPath: "/');
-            expect(content).toContain('entitySet: ""');
+            expect(content).not.toContain('entitySet: ""');
         });
 
         it('generates TypeScript filter tests for LROPv4 app', async () => {
@@ -1691,27 +1690,28 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opJourneyPath).toBeDefined();
             const content = dumped[opJourneyPath!].contents as string;
 
-            // ─── Type-only imports for the @sapui5/types casts ───
+            // ─── Type-only imports ───
             expect(content).toContain('import type { Given, When, Then }');
-            expect(content).toContain('import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI"');
-            expect(content).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+            expect(content).not.toContain('import type { FieldIdentifier }');
+            expect(content).not.toContain('import type { FormIdentifier }');
 
             // ─── Header facets (same shape as JS) ───
             expect(content).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
             expect(content).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
             expect(content).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
 
-            // ─── iCheckFieldInFieldGroup with FieldIdentifier cast (TS adaptation) ───
+            // ─── iCheckFieldInFieldGroup (no cast needed without @sapui5/types workaround) ───
             expect(content).toContain('iCheckFieldInFieldGroup');
             expect(content).toContain('fieldGroup: "Names"');
             expect(content).toContain('field: "AirlineName"');
             expect(content).toContain('field: "CustomerName"');
             expect(content).toContain('field: "carrier"');
             expect(content).toContain('targetAnnotation: "Contact"');
-            expect(content).toContain('} as unknown as FieldIdentifier);');
+            expect(content).not.toContain('} as unknown as FieldIdentifier);');
 
-            // ─── iCheckMicroChart with empty 2nd arg (TS adaptation) ───
-            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            // ─── iCheckMicroChart with single arg ───
+            expect(content).toContain('iCheckMicroChart("Supplement Price")');
+            expect(content).not.toContain('iCheckMicroChart("Supplement Price", "")');
 
             // ─── Header actions (from PR #4632) ───
             expect(content).toContain(
@@ -1724,22 +1724,22 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).not.toContain('Check body sections of the Object Page');
             expect(content).toContain('opaTest("Check the BookingDetails section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
-            expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
+            expect(content).toContain('iCheckSection({ section: "BookingDetails" })');
             expect(content).toContain('iGoToSection({ section: "BookingDetails", subSection: "BookingData" })');
-            expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
-            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
+            expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
+            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(content).toContain('opaTest("Check the FlightData section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "FlightData" })');
-            expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
+            expect(content).toContain('iCheckSection({ section: "FlightData" })');
             expect(content).toContain('opaTest("Check the PriceData section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "PriceData" })');
-            expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
+            expect(content).toContain('iCheckSection({ section: "PriceData" })');
 
             // ─── Header Contact Card (OP-8) ───
             expect(content).toContain(
-                'onHeader().iClickLink({ property: "carrier/Contact" } as unknown as FieldIdentifier)'
+                'onHeader().iClickLink({ property: "carrier/Contact" })'
             );
-            expect(content).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
+            expect(content).toContain('onDialog({} as unknown as DialogIdentifier).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── Section actions (table action with dynamic enabled) ───
             expect(content).toContain(
@@ -1749,16 +1749,16 @@ export type Then = Opa5 & BaseArrangements & {
                 'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: false }, { enabled: true })'
             );
 
-            // ─── onForm with FormIdentifier cast (TS adaptation) ───
+            // ─── onForm without FormIdentifier cast ───
             expect(content).toContain(
-                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "BookingId" })'
+                'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
             );
             expect(content).toContain(
-                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "FlightDate" })'
+                'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
             );
             // OP-7: body-section form Contact Card
             expect(content).toContain(
-                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iClickLink({ property: "_Customer/Contact" })'
+                'onForm({ section: "BookingData" }).iClickLink({ property: "_Customer/Contact" })'
             );
 
             // ─── Sub-section table columns ───
@@ -1830,7 +1830,7 @@ export type Then = Opa5 & BaseArrangements & {
             );
             expect(journeyPath).toBeDefined();
             const content = dumped[journeyPath!].contents as string;
-            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            expect(content).toContain('iCheckMicroChart("Supplement Price")');
             expect(content).toContain(
                 'opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then)'
             );
@@ -2608,18 +2608,18 @@ describe('checkbox-group fields (FXUBRQ34-12809)', () => {
 
     it('omits the unused FormIdentifier import when a section has only checkbox-group fields (TS)', () => {
         const journey = renderObjectPageJourney('latest', 'ts', [...checkBoxFields]);
-        // All field assertions are commented out, so the FormIdentifier type is never used.
+        // All field assertions are commented out, so FormIdentifier is never used.
         expect(journey).not.toContain('import type { FormIdentifier }');
         expect(journey).toContain(
-            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
         );
     });
 
-    it('keeps the FormIdentifier import when a checkbox-group section also has a live field (TS)', () => {
+    it('keeps no FormIdentifier import (no cast needed) when a checkbox-group section also has a live field (TS)', () => {
         const journey = renderObjectPageJourney('latest', 'ts', [liveField, ...checkBoxFields]);
-        expect(journey).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+        expect(journey).not.toContain('import type { FormIdentifier }');
         expect(journey).toContain(
-            'onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "AddressTimeZone" })'
+            'onForm({ section: "GeneralInformation2" }).iCheckField({ property: "AddressTimeZone" })'
         );
     });
 });
