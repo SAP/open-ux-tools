@@ -50,7 +50,7 @@ export type TemplateFileName = (typeof TemplateFileName)[keyof typeof TemplateFi
 export const templatesDirPath = join(currentDir, '..', 'templates');
 
 // SapUiLibs - replaces @sap/ux-app-templates types
-export { SapUiLibs } from './template-types.js';
+export { SapUiLibs, PROJECT_TYPE } from './template-types.js';
 
 // Public API - Main classes
 export { ProjectMigrator, type MigrateOptions } from './ProjectMigrator.js';

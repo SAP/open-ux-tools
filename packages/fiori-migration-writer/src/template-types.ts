@@ -1,3 +1,14 @@
+// Project types - sync with app-gen PROJECT_TYPE
+export const PROJECT_TYPE = {
+    WorklistV2: 'V2_WORKLIST',
+    ListReportObjectPageV2: 'V2_LIST_REPORT',
+    AnalyticalListPageV2: 'V2_ANALYTICAL',
+    ListReportObjectPageV4: 'V4_LIST_REPORT',
+    OverviewPageV2: 'V2_OVERVIEW',
+    ListReportObjectPage: 'LIST_REPORT_OBJECT_PAGE',
+    AnalyticalListPage: 'ANALYTICAL_LIST_PAGE'
+};
+
 // Common base libraries for V2 Smart Template applications
 const V2_SMART_TEMPLATE_BASE_LIBS =
     'sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app';
