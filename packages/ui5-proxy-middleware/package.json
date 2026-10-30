@@ -42,7 +42,7 @@
         "dotenv": "18.0.8",
         "http-proxy-middleware": "3.0.7",
         "https-proxy-agent": "7.0.6",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
@@ -54,7 +54,7 @@
         "express": "4.22.1",
         "nock": "14.0.16",
         "supertest": "7.2.2",
-        "yaml": "2.9.0"
+        "yaml": "2.9.1"
     },
     "engines": {
         "node": ">=22.x"
