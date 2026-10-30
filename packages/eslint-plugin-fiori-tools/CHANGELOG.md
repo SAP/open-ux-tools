@@ -1,5 +1,17 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.18.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Features
+
+- migrate sap-eslint-disable-count, sap-no-console-log, sap-no-upload, sap-no-core-model-usage, sap-not-localized, sap-concatenated-strings, sap-unescaped-write, sap-browser-api-error, sap-controller-hook-missing-callback-signature, sap-controller-hook-name-convention, and sap-controller-hook-bad-callback-signature rules from eslint-plugin-fiori-custom [[9fe7bdb](https://github.com/SAP/open-ux-tools/commit/9fe7bdb0c5b9af8873411823166f854ddc8d49fa)]
+
 ## 10.17.7
 
 ### Patch Changes
