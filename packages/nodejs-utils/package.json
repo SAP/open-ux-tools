@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "description": "Nodejs utility wrappers",
     "type": "module",
     "repository": {
@@ -29,7 +29,7 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "fast-glob": "3.3.3",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "read-package-up": "12.0.0",
         "semver": "7.8.5"
     },

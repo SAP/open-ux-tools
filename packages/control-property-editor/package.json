@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
@@ -25,8 +25,8 @@
         "lint:fix": "eslint --fix"
     },
     "devDependencies": {
-        "@fluentui/react": "8.125.6",
-        "@fluentui/react-hooks": "8.10.2",
+        "@fluentui/react": "8.125.8",
+        "@fluentui/react-hooks": "8.10.3",
         "@jest/globals": "30.4.1",
         "@reduxjs/toolkit": "1.6.1",
         "@sap-ux/ui-components": "workspace:*",
@@ -42,7 +42,7 @@
         "eslint": "9.39.1",
         "eslint-plugin-react": "7.37.5",
         "http-proxy-middleware": "3.0.7",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "jest-environment-jsdom": "30.5.2",
         "jest-scss-transform": "1.0.4",
         "npm-run-all2": "9.0.3",

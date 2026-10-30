@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
-    "version": "10.18.0",
+    "version": "10.18.1",
     "description": "Custom linting plugin for Fiori tools apps",
     "type": "module",
     "repository": {
@@ -52,8 +52,8 @@
         "@types/estree": "1.0.9",
         "@types/semver": "7.8.0",
         "@typescript-eslint/rule-tester": "8.61.1",
-        "@xml-tools/ast": "5.0.5",
-        "@xml-tools/parser": "1.0.11",
+        "@xml-tools/ast": "5.0.6",
+        "@xml-tools/parser": "1.0.12",
         "cross-env": "10.1.0",
         "esbuild": "0.28.2",
         "eslint": "9.39.1",
@@ -63,7 +63,7 @@
         "requireindex": "^1.2.0",
         "semver": "7.8.5",
         "synckit": "0.11.12",
-        "yaml": "2.9.0"
+        "yaml": "2.9.1"
     },
     "peerDependencies": {
         "eslint": "^9 || ^10",

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/telemetry",
-    "version": "2.0.13",
+    "version": "2.0.14",
     "description": "Library for sending usage telemetry data",
     "type": "module",
     "repository": {
@@ -37,7 +37,7 @@
         "applicationinsights": "3.16.0",
         "axios": "1.20.0",
         "performance-now": "2.1.0",
-        "yaml": "2.9.0"
+        "yaml": "2.9.1"
     },
     "devDependencies": {
         "@jest/globals": "30.4.1",

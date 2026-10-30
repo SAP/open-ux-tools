@@ -1,5 +1,22 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 3.0.131
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.46 → 1.0.47
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.7
+- @sap-ux/ui5-test-writer 1.19.4 → 1.19.5
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+
 ## 3.0.130
 
 ### Patch Changes

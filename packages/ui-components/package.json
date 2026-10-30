@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "3.0.18",
+    "version": "3.0.19",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "type": "module",
@@ -34,7 +34,7 @@
         "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
-        "@fluentui/react": "8.125.6",
+        "@fluentui/react": "8.125.8",
         "react-movable": "3.4.1",
         "react-select": "5.10.2",
         "react-virtualized": "9.22.6",
@@ -58,8 +58,8 @@
         "@testing-library/react": "12.1.5",
         "@types/react": "16.14.69",
         "@types/react-dom": "16.9.25",
-        "@types/react-virtualized": "9.22.3",
-        "@types/sanitize-html": "2.16.1",
+        "@types/react-virtualized": "9.22.4",
+        "@types/sanitize-html": "2.16.2",
         "@types/uuid": "11.0.0",
         "babel-jest": "30.4.1",
         "babel-loader": "10.1.1",

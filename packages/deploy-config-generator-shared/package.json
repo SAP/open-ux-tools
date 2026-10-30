@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-config-generator-shared",
     "description": "Commonly used shared functionality and types to support the deploy config generator.",
-    "version": "1.0.46",
+    "version": "1.0.47",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -33,7 +33,7 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@vscode-logging/logger": "2.0.10",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
