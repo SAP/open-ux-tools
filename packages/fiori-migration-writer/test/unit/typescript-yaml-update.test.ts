@@ -8,7 +8,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Mock enableTypescript at module level BEFORE importing anything else
 jest.unstable_mockModule('@sap-ux/ui5-application-writer', () => ({
+    generate: jest.fn().mockResolvedValue(undefined),
     enableTypescript: jest.fn().mockResolvedValue(undefined),
+    isTypescriptEnabled: jest.fn().mockResolvedValue(false),
     ui5TSSupport: {
         middleware: {
             name: 'ui5-tooling-transpile-middleware',
@@ -19,8 +21,13 @@ jest.unstable_mockModule('@sap-ux/ui5-application-writer', () => ({
             beforeTask: 'generateComponentPreload'
         }
     },
-    // Add other exports as needed
-    getManifestVersion: jest.fn()
+    addEslintFeature: jest.fn(),
+    getManifestVersion: jest.fn(),
+    compareUI5VersionGte: jest.fn().mockReturnValue(true),
+    ui5LtsVersion_1_120: '1.120.0',
+    ui5LtsVersion_1_71: '1.71.0',
+    processDestinationPath: jest.fn(),
+    getTemplateVersionPath: jest.fn()
 }));
 
 // Import after mocking
