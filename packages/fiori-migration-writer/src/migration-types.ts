@@ -7,18 +7,13 @@ import type { Editor } from 'mem-fs-editor';
 // Import CapRuntime from fiori-generator-shared
 import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
 
+// Import and re-export ODataVersion from axios-extension (single source of truth)
+import { ODataVersion } from '@sap-ux/axios-extension';
+export { ODataVersion };
+
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
-
-/**
- * OData versions supported by the catalog service
- */
-export const ODataVersion = {
-    v2: '2',
-    v4: '4'
-} as const;
-export type ODataVersion = (typeof ODataVersion)[keyof typeof ODataVersion];
 
 /**
  * package.json script entries (commands and tasks)
