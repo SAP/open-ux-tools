@@ -77,5 +77,10 @@
         "pnpm": "11.22.0",
         "node": ">=22.22.2"
     },
-    "packageManager": "pnpm@11.22.0"
+    "packageManager": "pnpm@11.22.0",
+    "pnpm": {
+        "overrides": {
+            "@types/estree": "1.0.9"
+        }
+    }
 }
