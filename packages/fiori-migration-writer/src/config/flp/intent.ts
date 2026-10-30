@@ -4,7 +4,7 @@
 
 import { fileExists } from '../../utils/index.js';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../../project-spec-types.js';
 import type { ImportProjectInfo } from '../../types.js';
 import { MigrationTypes } from '../../utils/constants.js';
@@ -22,18 +22,18 @@ import { MigrationTypes } from '../../utils/constants.js';
  * @param FEVersion
  * @param isSAPApp
  */
-export function checkFlpSandboxAvailability(
-    fs: Editor,
+export async function checkFlpSandboxAvailability(
+    fs: MemFsEditor,
     rootPath: string,
     webappPath: string,
     FEVersion: string | undefined,
     isSAPApp: boolean
-): boolean {
+): Promise<boolean> {
     const testFlpSandboxHtml = 'test/flpSandbox.html';
     const flpSandboxPath = join(rootPath, webappPath, testFlpSandboxHtml);
 
     return (
-        fileExists(fs, flpSandboxPath) ||
+        (await fileExists(fs, flpSandboxPath)) ||
         FEVersion === FioriElementsVersion.v2 ||
         FEVersion === FioriElementsVersion.v4 ||
         isSAPApp
@@ -99,15 +99,15 @@ export function generateAppMockIntent(
  * @param projectInfo
  * @param semanticObject
  */
-export function prepareFlpConfiguration(
-    fs: Editor,
+export async function prepareFlpConfiguration(
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     semanticObject: string
-): {
+): Promise<{
     flpSandboxAvailable: boolean;
     appIntent: string;
     appMockIntent: string;
-} {
+}> {
     const {
         rootPath,
         webappPath,
@@ -119,7 +119,7 @@ export function prepareFlpConfiguration(
     } = projectInfo;
 
     // Check FLP sandbox availability
-    const flpSandboxAvailable = checkFlpSandboxAvailability(fs, rootPath, webappPath, FEVersion, isSAPApp);
+    const flpSandboxAvailable = await checkFlpSandboxAvailability(fs, rootPath, webappPath, FEVersion, isSAPApp);
 
     // Generate app intents
     const appIntent = generateAppIntent(projectInfo, semanticObject, flpSandboxAvailable, flpSandboxFlpIntent);

@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
 import { LAUNCH_JSON_FILE } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { updateLaunchJSON } from './writer.js';
 
 /**
@@ -14,9 +14,9 @@ import { updateLaunchJSON } from './writer.js';
  * @param fs - optional, the memfs editor instance.
  * @returns memfs editor instance.
  */
-export async function deleteLaunchConfig(rootFolder: string, index: number, fs?: Editor): Promise<Editor> {
+export async function deleteLaunchConfig(rootFolder: string, index: number, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const launchJSONPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJSONPath)) {

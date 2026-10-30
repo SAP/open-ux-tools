@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { lt, valid } from 'semver';
@@ -35,10 +35,10 @@ export const MIN_VERSION = '1.94.0';
  * If a minUI5Version is set and it is smaller than the minimum required, increase it.
  *
  * @param {Manifest} manifest - content of the mnaifest.json
- * @param {Editor} fs - the mem-fs editor instance
+ * @param {MemFsEditor} fs - the mem-fs editor instance
  * @param {string} manifestPath - path to the manifest.json file
  */
-function adaptMinUI5Version(manifest: Manifest, fs: Editor, manifestPath: string) {
+function adaptMinUI5Version(manifest: Manifest, fs: MemFsEditor, manifestPath: string) {
     const minUI5VersionArray = getMinUI5VersionAsArray(manifest, true);
     if (minUI5VersionArray?.length > 0) {
         let update = false;
@@ -77,12 +77,12 @@ function adaptMinUI5Version(manifest: Manifest, fs: Editor, manifestPath: string
  *
  * @param {string} basePath - the base path
  * @param {FPMConfig} config - the FPM configuration
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
-export async function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor): Promise<Editor> {
+export async function enableFPM(basePath: string, config: FPMConfig = {}, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);

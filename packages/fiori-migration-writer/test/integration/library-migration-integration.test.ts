@@ -156,15 +156,7 @@ describe('Library Migration Integration Tests', () => {
         });
 
         // Commit changes to disk
-        await new Promise<void>((resolve, reject) => {
-            fs.commit((err) => {
-                if (err && err.length > 0) {
-                    reject(err[0]);
-                } else {
-                    resolve();
-                }
-            });
-        });
+        await fs.commit();
 
         // Assert: Verify migration succeeded
         if (!result) {
@@ -281,15 +273,7 @@ describe('Library Migration Integration Tests', () => {
         });
 
         // Commit changes to disk
-        await new Promise<void>((resolve, reject) => {
-            fs.commit((err) => {
-                if (err && err.length > 0) {
-                    reject(err[0]);
-                } else {
-                    resolve();
-                }
-            });
-        });
+        await fs.commit();
 
         if (!result) {
             console.log('Monorepo migration failed:', JSON.stringify(messages, null, 2));

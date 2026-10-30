@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';
@@ -171,7 +171,7 @@ function insertBeforePosition(content: string, position: number, newEntries: str
 export function addPagesToJourneyRunner(
     pages: OpaPageWriteInfo[],
     testOutDirPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     dotFileExtension: DotFileExtension = DotFileExtension.JS,
     log?: Logger
 ): boolean {

@@ -65,7 +65,11 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
     const testFlpSandboxHtml = 'test/flpSandbox.html';
 
     // Prepare FLP sandbox configuration and intents
-    const { flpSandboxAvailable, appIntent, appMockIntent } = prepareFlpConfiguration(fs, projectInfo, semanticObject);
+    const { flpSandboxAvailable, appIntent, appMockIntent } = await prepareFlpConfiguration(
+        fs,
+        projectInfo,
+        semanticObject
+    );
 
     // Generate URL parameters for different scenarios
     const urlParam = buildUrlParam(sapClientParam, disableCacheParam);
@@ -92,7 +96,7 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
         ...devDependencies
     };
 
-    const packageJson: PackageJsonMigrate = generatePackageJsonConfig(fs, {
+    const packageJson: PackageJsonMigrate = await generatePackageJsonConfig(fs, {
         projectInfo,
         moduleName,
         moduleDescription,

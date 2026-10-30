@@ -1,6 +1,6 @@
 import type { I18nBundle } from '../../types.js';
 import { propertiesToI18nEntry } from '../../transformer/properties/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile } from '../../utils/index.js';
 
 /**
@@ -10,7 +10,7 @@ import { readFile } from '../../utils/index.js';
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns i18n bundle or exception
  */
-export async function getPropertiesI18nBundle(i18nFilePath: string, fs?: Editor): Promise<I18nBundle> {
+export async function getPropertiesI18nBundle(i18nFilePath: string, fs?: MemFsEditor): Promise<I18nBundle> {
     const bundle: I18nBundle = {};
     const content = await readFile(i18nFilePath, fs);
     const ast = propertiesToI18nEntry(content, i18nFilePath);

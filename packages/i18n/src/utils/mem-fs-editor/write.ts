@@ -1,5 +1,5 @@
 import { promises } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Write data to a file.
@@ -9,7 +9,7 @@ import type { Editor } from 'mem-fs-editor';
  * @param fs optional `mem-fs-editor` instance. If provided, `write` api of `mem-fs-editor` is used.
  * @returns string or void
  */
-export async function writeFile(filePath: string, content: string, fs?: Editor): Promise<string | void> {
+export async function writeFile(filePath: string, content: string, fs?: MemFsEditor): Promise<string | void> {
     if (fs) {
         return fs.write(filePath, content);
     }

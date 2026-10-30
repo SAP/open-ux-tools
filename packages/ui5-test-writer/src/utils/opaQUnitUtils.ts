@@ -5,7 +5,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
 import { MAX_FILE_CONTENT_LENGTH } from './fileWritingUtils.js';
@@ -96,7 +96,7 @@ const LAUNCH_URL_REGEX = /\.toUrl\s*\([^)]+\)\s*\+\s*'([^']+)'/;
  * @param fs - mem-fs-editor instance used to read the file
  * @returns the html target string, or undefined if not found
  */
-export function readHtmlTargetFromQUnitJs(testPath: string, fs: Editor): string | undefined {
+export function readHtmlTargetFromQUnitJs(testPath: string, fs: MemFsEditor): string | undefined {
     try {
         const integrationDir = join(testPath, 'integration');
         let filePath = join(integrationDir, 'opaTests.qunit.js');
@@ -138,7 +138,7 @@ export function readHtmlTargetFromQUnitJs(testPath: string, fs: Editor): string 
  *   cannot be read or updated
  * @returns true if the file was written, false otherwise
  */
-export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: Editor, log?: Logger): boolean {
+export function addPathsToQUnitJs(filePaths: string[], projectPath: string, fs: MemFsEditor, log?: Logger): boolean {
     try {
         const filePath = join(projectPath, OPA_QUNIT_FILE);
         const content = fs.read(filePath);

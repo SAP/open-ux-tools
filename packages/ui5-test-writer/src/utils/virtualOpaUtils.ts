@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
 import type {
@@ -47,7 +47,7 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
 export async function addVirtualTestConfig(
     basePath: string,
     testFrameworks: PreviewMiddlewareTestConfig[],
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const yamlPath = join(basePath, FileName.Ui5MockYaml);
     if (!fs.exists(yamlPath)) {

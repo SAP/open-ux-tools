@@ -2,7 +2,7 @@ import { join, dirname, sep } from 'node:path';
 import { existsSync, promises } from 'node:fs';
 import type { CdsEnvironment } from '../types.js';
 import { getI18nConfiguration } from './config.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Normalize file pth.
@@ -104,7 +104,12 @@ export function getCapI18nFiles(root: string, env: CdsEnvironment, filePaths: st
  * @param fs optional `mem-fs-editor` instance. If provided, a new folder is not created, even if it does not exist
  * @returns i18n folder path
  */
-export async function getCapI18nFolder(root: string, path: string, env: CdsEnvironment, fs?: Editor): Promise<string> {
+export async function getCapI18nFolder(
+    root: string,
+    path: string,
+    env: CdsEnvironment,
+    fs?: MemFsEditor
+): Promise<string> {
     const { folders } = getI18nConfiguration(env);
     let i18nFolderPath = resolveCapI18nFolderForFile(root, env, path);
     if (!i18nFolderPath) {

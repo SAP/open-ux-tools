@@ -8,7 +8,7 @@ import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target.js';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type {
     ApiHubConfig,
     CfDeployConfigPromptOptions,
@@ -41,7 +41,7 @@ import type { DeployConfigOptions, DeployConfigSubGenPromptOptions, Target } fro
  * @returns - deployment configuration answers
  */
 export async function getSubGenPrompts(
-    fs: Editor,
+    fs: MemFsEditor,
     options: DeployConfigOptions,
     {
         launchDeployConfigAsSubGenerator,

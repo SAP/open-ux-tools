@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import { hasUI5CliV3 } from '@sap-ux/project-access';
 
@@ -9,7 +9,7 @@ import { hasUI5CliV3 } from '@sap-ux/project-access';
  * @param fs - the memfs editor instance
  * @param addMockServer true if the mocksever middleware needs to be added as well
  */
-export function updatePackageJson(path: string, fs: Editor, addMockServer: boolean): void {
+export function updatePackageJson(path: string, fs: MemFsEditor, addMockServer: boolean): void {
     const packageJson = JSON.parse(fs.read(path)) as Package;
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     if (!hasUI5CliV3(packageJson.devDependencies)) {

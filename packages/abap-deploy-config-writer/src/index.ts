@@ -7,7 +7,7 @@ import { getDeployConfig, updateBaseConfig } from './config.js';
 import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file.js';
 import { UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION } from './constants.js';
 import type { DeployConfigOptions } from './types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { updateScripts } from './scripts.js';
 
@@ -24,12 +24,12 @@ async function generate(
     basePath: string,
     abapDeployConfig: AbapDeployConfig,
     options?: DeployConfigOptions,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     const abapConfig = cloneDeep(abapDeployConfig);
 
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     // base config

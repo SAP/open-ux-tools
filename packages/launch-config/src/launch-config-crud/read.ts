@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types/index.js';
 import { LAUNCH_JSON_FILE } from '../types/index.js';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 
@@ -14,7 +14,7 @@ import type { Logger } from '@sap-ux/logger';
  * @param memFs - optional, the memfs editor instance.
  * @returns {string | undefined} path to the launch config file.
  */
-export async function getLaunchJSONFilePath(rootFolder: string, memFs?: Editor): Promise<string | undefined> {
+export async function getLaunchJSONFilePath(rootFolder: string, memFs?: MemFsEditor): Promise<string | undefined> {
     const launchConfigPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (memFs) {
         return memFs.exists(launchConfigPath) ? launchConfigPath : undefined;
@@ -35,7 +35,7 @@ export async function getLaunchJSONFilePath(rootFolder: string, memFs?: Editor):
  * @param memFs - optional, the memfs editor instance.
  * @returns {string[]} list of launch.json files.
  */
-export async function getLaunchJSONFilePaths(rootFolders: string | string[], memFs?: Editor): Promise<string[]> {
+export async function getLaunchJSONFilePaths(rootFolders: string | string[], memFs?: MemFsEditor): Promise<string[]> {
     const roots = Array.isArray(rootFolders) ? rootFolders : [rootFolders];
     const launchConfigFiles: string[] = [];
     for (const rootFolder of roots) {
@@ -54,7 +54,7 @@ export async function getLaunchJSONFilePaths(rootFolders: string | string[], mem
  * @param memFs - optional, the memfs editor instance.
  * @returns {LaunchConfig[] | undefined} list of launch configs.
  */
-export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Promise<LaunchConfig[] | undefined> {
+export async function getLaunchConfigs(rootFolder: string, memFs?: MemFsEditor): Promise<LaunchConfig[] | undefined> {
     const launchJsonPath = await getLaunchJSONFilePath(rootFolder, memFs);
     let launchJsonString: string;
     let launchJson: LaunchJSON | undefined;
@@ -82,7 +82,10 @@ export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Prom
  * @param memFs - optional, the memfs editor instance.
  * @returns {LaunchConfigInfo[]} list of launch configs.
  */
-export async function getAllLaunchConfigs(rootFolder: string | string[], memFs?: Editor): Promise<LaunchConfigInfo[]> {
+export async function getAllLaunchConfigs(
+    rootFolder: string | string[],
+    memFs?: MemFsEditor
+): Promise<LaunchConfigInfo[]> {
     const launchConfigList: LaunchConfigInfo[] = [];
     const roots = Array.isArray(rootFolder) ? rootFolder : [rootFolder];
     const configFiles = await getLaunchJSONFilePaths(roots, memFs);
@@ -122,7 +125,7 @@ export async function getAllLaunchConfigs(rootFolder: string | string[], memFs?:
 export async function getLaunchConfigByName(
     launchConfigPath: string,
     name: string,
-    options?: { memFs?: Editor; logger?: Logger }
+    options?: { memFs?: MemFsEditor; logger?: Logger }
 ): Promise<LaunchConfig> {
     let launchJsonString;
     let launchJson;

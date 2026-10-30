@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists, deleteFile } from '../utils/index.js';
 import { createDirectory, doesDirectoryExists } from '../utils/file-system-utils.js';
 import { DirName } from '../project-spec-types.js';
@@ -15,7 +15,7 @@ import type { ImportProjectInfo } from '../types.js';
  * @param hasDataSource - Whether project has a data source
  */
 export async function setupMigrationDirectories(
-    fs: Editor,
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     rootPath: string,
     hasDataSource: boolean
@@ -24,7 +24,7 @@ export async function setupMigrationDirectories(
         await createDirectory(join(rootPath, projectInfo.webappPath, DirName.LocalService), fs);
     }
     const webAppPath = join(rootPath, projectInfo.webappPath);
-    if (doesDirectoryExists(webAppPath, fs)) {
+    if (doesDirectoryExists(fs, webAppPath)) {
         await createDirectory(join(rootPath, projectInfo.webappPath, DirName.Test), fs);
     }
 }
@@ -36,10 +36,10 @@ export async function setupMigrationDirectories(
  * @param fs - mem-fs editor
  * @param rootPath - Root path of the project
  */
-export function removePackageLock(fs: Editor, rootPath: string): void {
+export async function removePackageLock(fs: MemFsEditor, rootPath: string): Promise<void> {
     try {
         const packageLockPath = join(rootPath, 'package-lock.json');
-        if (fileExists(fs, packageLockPath)) {
+        if (await fileExists(fs, packageLockPath)) {
             deleteFile(fs, packageLockPath);
         }
     } catch (error: unknown) {

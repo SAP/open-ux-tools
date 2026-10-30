@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readDirectory, readFile } from '../file/index.js';
 import { existsSync } from 'node:fs';
 
@@ -10,7 +10,7 @@ import { existsSync } from 'node:fs';
  * @param memFs - optional mem-fs-editor instance.
  * @returns A promise that resolves to an array of flex change files.
  */
-export async function readFlexChanges(changesPath: string, memFs?: Editor): Promise<{ [key: string]: string }> {
+export async function readFlexChanges(changesPath: string, memFs?: MemFsEditor): Promise<{ [key: string]: string }> {
     const changes: { [key: string]: string } = {};
     if (existsSync(changesPath)) {
         const files = await readDirectory(changesPath);

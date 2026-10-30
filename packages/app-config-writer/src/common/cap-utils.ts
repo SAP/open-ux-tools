@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -16,7 +16,7 @@ export function writeCdsWatchScript(
     capRoot: string,
     scriptKey: string,
     openPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     logger?: ToolsLogger
 ): void {
     const packageJsonPath = join(capRoot, FileName.Package);

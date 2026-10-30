@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import os from 'node:os';
 import { join } from 'node:path';
 import { coerce, minor } from 'semver';
@@ -66,7 +66,7 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
  * @param minUI5Version - minimal required UI5 version
  * @param fs - the memfs editor instance
  */
-export function addExtensionTypes(basePath: string, minUI5Version: string | undefined, fs: Editor) {
+export function addExtensionTypes(basePath: string, minUI5Version: string | undefined, fs: MemFsEditor) {
     const version = minor(coerce(minUI5Version) ?? '1.108.0');
     const path = join(basePath, '/webapp/ext/sap.fe.d.ts');
     if (version < 108 && version !== 102 && !fs.exists(path)) {
@@ -78,10 +78,10 @@ export function addExtensionTypes(basePath: string, minUI5Version: string | unde
  * Gets manifest path.
  *
  * @param {string} basePath the base path
- * @param {Editor} fs the memfs editor instance
+ * @param {MemFsEditor} fs the memfs editor instance
  * @returns {Manifest | undefined} path to manifest file
  */
-export async function getManifestPath(basePath: string, fs: Editor): Promise<string> {
+export async function getManifestPath(basePath: string, fs: MemFsEditor): Promise<string> {
     return join(await getWebappPath(basePath, fs), 'manifest.json');
 }
 
@@ -89,11 +89,11 @@ export async function getManifestPath(basePath: string, fs: Editor): Promise<str
  * Gets content and path of the manifest.
  *
  * @param {string} basePath the base path
- * @param {Editor} fs the memfs editor instance
+ * @param {MemFsEditor} fs the memfs editor instance
  * @param {boolean} [validate] validate if 'manifest.json' file exists - throw error if file does not exist
  * @returns {Manifest | undefined} The content and path of the manifest
  */
-export async function getManifest(basePath: string, fs: Editor, validate = true): Promise<ManifestData> {
+export async function getManifest(basePath: string, fs: MemFsEditor, validate = true): Promise<ManifestData> {
     const path = await getManifestPath(basePath, fs);
     if (validate && !fs.exists(path)) {
         throw new Error(`Invalid project folder. Cannot find required file ${path}`);
@@ -114,7 +114,12 @@ export async function getManifest(basePath: string, fs: Editor, validate = true)
  * @param logger - optional logger for parse errors
  * @returns true if the id is available, false if it is already in use.
  */
-export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string, logger?: Logger): boolean {
+export function isElementIdAvailable(
+    fs: MemFsEditor,
+    viewOrFragmentPath: string,
+    id: string,
+    logger?: Logger
+): boolean {
     const xmlContent = fs.read(viewOrFragmentPath).toString();
     try {
         const xmlDocument = new DOMParser(getDOMParserOptions(undefined, () => {})).parseFromString(

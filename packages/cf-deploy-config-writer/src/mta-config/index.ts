@@ -34,7 +34,7 @@ import {
 import LoggerHelper from '../logger-helper.js';
 import { sync } from 'hasbin';
 import { t } from '../i18n.js';
-import { type Editor } from 'mem-fs-editor';
+import { type MemFsEditor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
 
@@ -164,7 +164,7 @@ export function validateMtaConfig(config: CFBaseConfig): void {
  * @param fs Reference to a mem-fs editor
  * @deprecated This function is deprecated and will be removed in future releases
  */
-async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
+async function createCAPMTAAppFrontend(config: CAPConfig, fs: MemFsEditor): Promise<void> {
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     renderTemplateToDisk(`frontend/${FileName.MtaYaml}`, join(config.mtaPath, FileName.MtaYaml), {
         id: `${config.mtaId.slice(0, MAX_MTA_ID_LENGTH)}`,
@@ -184,7 +184,7 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
  * @param fs Reference to a mem-fs editor
  * @throws {Error} If service key retrieval fails for ABAP service binding
  */
-async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
+async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: MemFsEditor): Promise<void> {
     await mtaInstance.addStandaloneRouter(true);
     if (cfConfig.addConnectivityService) {
         await mtaInstance.addConnectivityResource();
@@ -225,7 +225,7 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
  * @param config Writer configuration
  * @param fs Reference to a mem-fs editor
  */
-export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
+export async function addRoutingConfig(config: CFBaseConfig, fs: MemFsEditor): Promise<void> {
     const mtaConfigInstance = await getMtaConfig(config.mtaPath);
     if (mtaConfigInstance) {
         if (config.routerType === RouterModuleType.Standard) {
@@ -245,7 +245,7 @@ export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promis
  * @param fs Reference to a mem-fs editor
  * @throws {Error} If CDS command execution fails when generating mta.yaml
  */
-export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<void> {
+export async function generateCAPMTA(config: CAPConfig, fs: MemFsEditor): Promise<void> {
     if (config.routerType === RouterModuleType.AppFront) {
         await createCAPMTAAppFrontend(config, fs);
     } else {

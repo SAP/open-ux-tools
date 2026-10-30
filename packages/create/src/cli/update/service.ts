@@ -23,6 +23,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { create as createStore } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
+import type { VinylMemFsEditorFile } from 'mem-fs-editor';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
@@ -316,7 +317,7 @@ async function updateService(
             }
         };
 
-        const memStore = createStore();
+        const memStore = createStore<VinylMemFsEditorFile>();
         const fs = createEditor(memStore);
         // updateMiddlewares = false: refresh metadata.xml, annotation files and manifest dataSources only.
         // The ui5*.yaml middlewares are intentionally left untouched by a metadata re-sync.
@@ -324,7 +325,7 @@ async function updateService(
 
         await traceChanges(fs);
         if (!simulate) {
-            await new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
+            await fs.commit();
             logger.info('Metadata updated.');
         }
     } catch (error) {

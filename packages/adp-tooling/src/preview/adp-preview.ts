@@ -26,7 +26,7 @@ import type {
     OperationType,
     CommonAdditionalChangeInfoProperties
 } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
     addXmlFragment,
@@ -357,7 +357,7 @@ export class AdpPreview {
      *
      * @param {string} type - The type of change request.
      * @param {CommonChangeProperties} change - An object containing properties common to all change types.
-     * @param {Editor} fs - An instance of an editor interface for file system operations.
+     * @param {MemFsEditor} fs - An instance of an editor interface for file system operations.
      * @param {Logger} logger - An instance of a logging interface for message logging.
      * @param {CommonAdditionalChangeInfoProperties} [additionalChangeInfo] - An optional object containing extended change properties.
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
@@ -365,7 +365,7 @@ export class AdpPreview {
     async onChangeRequest(
         type: OperationType,
         change: CommonChangeProperties,
-        fs: Editor,
+        fs: MemFsEditor,
         logger: Logger,
         additionalChangeInfo?: CommonAdditionalChangeInfoProperties
     ): Promise<void> {

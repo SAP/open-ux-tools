@@ -2,7 +2,7 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor as MemFsEditor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type http from 'node:http';
 import type { Request, Response, Router, NextFunction } from 'express';
@@ -154,7 +154,7 @@ export class FlpSandbox {
      * @param logger logger instance
      */
     constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
-        this.fs = create(createStorage());
+        this.fs = create(createStorage<VinylMemFsEditorFile>());
         this.logger = logger;
         this.project = project;
         this.utils = utils;
@@ -940,7 +940,8 @@ export class FlpSandbox {
                 this.logger
             );
             if (success) {
-                this.fs.commit(() => this.sendResponse(res, 'text/plain', 200, message ?? ''));
+                await this.fs.commit();
+                this.sendResponse(res, 'text/plain', 200, message ?? '');
             } else {
                 this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
             }
@@ -1302,7 +1303,8 @@ export class FlpSandbox {
 
             const appAccess = await createApplicationAccess(projectRoot, this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
-            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
+            await this.fs.commit();
+            this.sendResponse(res, 'text/plain', 201, `Files were updated/created`);
         } catch (error) {
             this.logger.error(`Files could not be created/updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
@@ -1361,7 +1363,8 @@ export class FlpSandbox {
                 annotation: entry.comment ?? entry.annotation
             }));
             await createPropertiesI18nEntries(filePath, entries);
-            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
+            await this.fs.commit();
+            this.sendResponse(res, 'text/plain', 201, `i18n file updated.`);
         } catch (error) {
             this.logger.error(`File could not be updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import {
     getFclConfig,
     extendPageJSON,
@@ -52,6 +52,6 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export async function generate(basePath: string, data: ListReport, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, data: ListReport, fs?: MemFsEditor): Promise<MemFsEditor> {
     return extendPageJSON(basePath, data, enhanceData, 'page/list/manifest.json', fs);
 }

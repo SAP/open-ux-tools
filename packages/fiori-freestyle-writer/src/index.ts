@@ -9,13 +9,13 @@ import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaul
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { getTemplateVersionPath, processDestinationPath } from './utils.js';
+import { getTemplateVersionPath } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests.js';
 import type { Logger } from '@sap-ux/logger';
 import { addVirtualTestConfig } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { BasicAppSettings, FreestyleApp } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -29,7 +29,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * @param log - optional logger
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor, log?: Logger): Promise<Editor> {
+async function generate<T>(
+    basePath: string,
+    data: FreestyleApp<T>,
+    fs?: MemFsEditor,
+    log?: Logger
+): Promise<MemFsEditor> {
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -73,8 +78,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         },
         undefined,
         {
-            globOptions: { ignore, dot: true },
-            processDestinationPath: processDestinationPath
+            globOptions: { ignore, dot: true } as any
         }
     );
     fs.copyTpl(
@@ -88,33 +92,20 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         ffApp,
         undefined,
         {
-            globOptions: { ignore, dot: true },
-            processDestinationPath: processDestinationPath
+            globOptions: { ignore, dot: true } as any
         }
     );
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
-        fs.copyTpl(
-            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`),
-            viewTarget,
-            ffApp,
-            undefined,
-            {
-                processDestinationPath: processDestinationPath
-            }
-        );
+        fs.copyTpl(join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`), viewTarget, ffApp);
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
         fs.copyTpl(
             join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/Controller.${ext}`),
             controllerTarget,
-            ffApp,
-            undefined,
-            {
-                processDestinationPath: processDestinationPath
-            }
+            ffApp
         );
     }
 

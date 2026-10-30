@@ -1,5 +1,5 @@
 import type { Answers, Question } from 'inquirer';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
 import { getAnswer } from './utils.js';
@@ -39,7 +39,7 @@ export class PromptsAPI {
      * @param appId app id in CAP project
      * @param options additional prompt context options.
      */
-    constructor(fs: Editor, project: Project | undefined, appId = '', options?: PromptContextOptions) {
+    constructor(fs: MemFsEditor, project: Project | undefined, appId = '', options?: PromptContextOptions) {
         this.context = {
             fs,
             project: project,
@@ -61,10 +61,10 @@ export class PromptsAPI {
     public static async init(
         projectPath: string,
         appId?: string,
-        fs?: Editor,
+        fs?: MemFsEditor,
         options?: PromptContextOptions
     ): Promise<PromptsAPI> {
-        fs = fs ?? create(createStorage());
+        fs = fs ?? create(createStorage<VinylMemFsEditorFile>());
         await initI18n();
         const project = projectPath ? await getProject(projectPath) : undefined;
 
@@ -176,7 +176,7 @@ export class PromptsAPI {
     public async submitAnswers<N extends SupportedPrompts['type']>(
         type: N,
         answers: NarrowPrompt<typeof type>['answers']
-    ): Promise<Editor> {
+    ): Promise<MemFsEditor> {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
             return this.context.fs;

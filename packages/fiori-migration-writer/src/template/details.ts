@@ -2,7 +2,7 @@
  * Helper functions for extracting template details from manifest and pom.xml
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { TemplateFileName } from '../index.js';
 import { readFile, fileExists } from '../utils/index.js';
 import type { Manifest, ManifestNamespace, FioriElementsVersion } from '../project-spec-types.js';
@@ -33,21 +33,21 @@ export interface TemplateDetailsExtractionResult {
  * @param getFloorPlan - Function to get floor plan from manifest
  * @returns Template details extraction result
  */
-export function extractTemplateDetails(
-    fs: Editor,
+export async function extractTemplateDetails(
+    fs: MemFsEditor,
     manifest: Manifest,
     projectRoot: string,
     mainService: string,
     existingAppVersion: string,
     getVersionFromManifest: (manifest: Manifest) => FioriElementsVersion | undefined,
     getFloorPlan: (manifest: Manifest, feVersion: FioriElementsVersion | undefined) => string
-): TemplateDetailsExtractionResult {
+): Promise<TemplateDetailsExtractionResult> {
     const feVersion = getVersionFromManifest(manifest);
     const isSAPApp = !feVersion ? isAppFreestyle(manifest, feVersion) : false;
     const floorPlan = !isSAPApp ? getFloorPlan(manifest, feVersion) : undefined;
 
     const mainServiceDatasource = extractMainServiceDatasource(manifest, mainService);
-    const { sapAppId, appVersion } = extractPomDetails(fs, manifest, projectRoot, existingAppVersion);
+    const { sapAppId, appVersion } = await extractPomDetails(fs, manifest, projectRoot, existingAppVersion);
 
     return {
         feVersion,
@@ -83,17 +83,17 @@ function extractMainServiceDatasource(manifest: Manifest, mainService: string): 
  * @param projectRoot
  * @param existingAppVersion
  */
-function extractPomDetails(
-    fs: Editor,
+async function extractPomDetails(
+    fs: MemFsEditor,
     manifest: Manifest,
     projectRoot: string,
     existingAppVersion: string
-): { sapAppId: string; appVersion: string } {
+): Promise<{ sapAppId: string; appVersion: string }> {
     let sapAppId = manifest['sap.app']?.id || '';
     let appVersion = existingAppVersion;
 
     const pomXmlPath = join(projectRoot, TemplateFileName.Pom);
-    if (!fileExists(fs, pomXmlPath)) {
+    if (!(await fileExists(fs, pomXmlPath))) {
         return { sapAppId, appVersion };
     }
 

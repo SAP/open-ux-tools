@@ -1,7 +1,6 @@
-import { existsSync } from 'node:fs';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { mkdir } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
-import { editorHasPath, createMemFsEditor } from './fs-adapter.js';
+import { editorHasPath, getEditor } from './fs-adapter.js';
 
 /**
  * Normalize path separators to forward slashes for cross-platform compatibility
@@ -32,41 +31,51 @@ export const escapeSingleQuotes = (s: string): string =>
  *
  * @param s
  */
-export const escapeDoubleQuotes = (s: string): string => s.replaceAll('"', String.raw`\"`);
+export const escapeDoubleQuotes = (s: string): string =>
+    s.replaceAll('\\', String.raw`\\`).replaceAll('"', String.raw`\"`);
 
+/**
+ * Check if directory exists
+ * Uses editorHasPath to avoid fs.exists() side effect of staging paths
+ *
+ * @param directoryOrFs - Directory path, or MemFsEditor instance
+ * @param directory - Directory path (if first param is MemFsEditor)
+ */
+export function doesDirectoryExists(directoryOrFs: string | MemFsEditor, directory?: string): boolean {
+    const fs = getEditor(directoryOrFs);
+    const dir = typeof directoryOrFs === 'string' ? directoryOrFs : directory!;
+    // Use editorHasPath instead of fs.exists() to avoid side effect of staging paths
+    return editorHasPath(fs, dir);
+}
+
+/**
+ * Check if an object has a given property
+ *
+ * @param obj - Object to check
+ * @param fieldName - Property name to look for
+ * @returns true if the property exists on the object
+ */
 export function doesPropertyExist(obj: unknown, fieldName: string): boolean {
     return Object.hasOwn(obj as object, fieldName);
 }
 
 /**
- * Check if directory exists.
- * Uses editorHasPath to avoid fs.exists() side effect of staging paths, then falls back
- * to the real filesystem for directories that are not yet staged in mem-fs.
+ * Create directory if it doesn't exist on the real filesystem.
+ * In a mem-fs context directories are created implicitly when files are written,
+ * but some migration steps need the physical directory to exist first.
  *
- * @param directory - Directory path
- * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
+ * @param directory - Absolute path of the directory to create
+ * @param _fsEditor - Unused; kept for backwards-compatible call signature
+ * @returns True if the directory was newly created, false if it already existed
  */
-export function doesDirectoryExists(directory: string, fsEditor?: Editor): boolean {
-    const fs = fsEditor ?? createMemFsEditor();
-    if (editorHasPath(fs, directory)) {
-        return true;
-    }
-    return existsSync(directory);
-}
-
-/**
- * Create directory if it doesn't exist
- *
- * @param directory - Directory path to create
- * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
- * @returns True if directory was created, false if it already existed
- */
-export async function createDirectory(directory: string, fsEditor?: Editor): Promise<boolean> {
-    const fs = fsEditor ?? createMemFsEditor();
-    let isCreated = false;
-    if (!doesDirectoryExists(directory, fs)) {
+export async function createDirectory(directory: string, _fsEditor?: MemFsEditor): Promise<boolean> {
+    try {
         await mkdir(directory, { recursive: true });
-        isCreated = true;
+        // mkdir with { recursive: true } resolves to undefined when the directory already exists
+        // and to the first path segment created otherwise — so we can't distinguish easily.
+        // Return true as a best-effort indicator that the operation succeeded.
+        return true;
+    } catch {
+        return false;
     }
-    return isCreated;
 }

@@ -3,7 +3,7 @@ import { stringify } from 'node:querystring';
 import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { satisfies } from 'semver';
 import {
     getPreviewMiddleware,
@@ -76,7 +76,7 @@ export async function getRTAUrl(
     basePath: string,
     query: string,
     yamlFileName: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<string | undefined> {
     let previewMiddleware: CustomMiddleware<PreviewConfigOptions> | undefined;
     try {

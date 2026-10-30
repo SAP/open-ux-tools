@@ -3,7 +3,7 @@ import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { DeployConfigOptions } from '../types/index.js';
 
 /**
@@ -16,7 +16,7 @@ import type { DeployConfigOptions } from '../types/index.js';
  * @returns - backend configuration
  */
 export async function getBackendConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     options: DeployConfigOptions,
     launchStandaloneFromYui: boolean,
     projectRoot: string

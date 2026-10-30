@@ -40,7 +40,8 @@ async function addSmartLinksConfig(basePath: string, simulate: boolean): Promise
         const fs = await generateSmartLinksConfig(basePath, config, logger);
         await traceChanges(fs);
         if (!simulate) {
-            fs.commit(() => logger.info(`SmartLinks configuration written.`));
+            await fs.commit();
+            logger.info(`SmartLinks configuration written.`);
         }
     } catch (error) {
         logger.error(`Error while executing add smartlinks-config '${(error as Error).message}'`);
