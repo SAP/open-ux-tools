@@ -10,7 +10,7 @@ import type {
     HasRootIntent,
     Ui5YamlContext
 } from '../types.js';
-import { FLOOR_PLAN, ODataVersion } from '../types.js';
+import { TemplateType, ODataVersion } from '../types.js';
 import { escapeDoubleQuotes } from '../utils/index.js';
 
 /**
@@ -24,7 +24,7 @@ export function createUi5YamlConfig(context: Ui5YamlContext): Ui5Yaml {
 
     // Add sap.fe.templates for OVP yaml libs
     const sapLibsTemp =
-        libraryConfig.sapLibs && projectInfo.floorPlan === FLOOR_PLAN.OverviewPageV2
+        libraryConfig.sapLibs && projectInfo.floorPlan === TemplateType.OverviewPage
             ? libraryConfig.sapLibs.concat(', sap.fe.templates')
             : libraryConfig.sapLibs;
 

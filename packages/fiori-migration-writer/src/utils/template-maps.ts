@@ -3,16 +3,16 @@ import { DirName, FileName } from '@sap-ux/project-access';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import type { TemplateMap } from '../types.js';
-import { FLOOR_PLAN, TemplateDataKey } from '../types.js';
+import { TemplateType, TemplateDataKey } from '../types.js';
 import { MigrationTypes } from './constants.js';
 
 export const packageJsonTmplName = `${FileName.Package}.tmpl`;
 
 export const propertyEditorTaskProjectTypes = [
-    FLOOR_PLAN.ListReportObjectPageV2,
-    FLOOR_PLAN.AnalyticalListPageV2,
-    FLOOR_PLAN.OverviewPageV2,
-    FLOOR_PLAN.WorklistV2
+    TemplateType.ListReportObjectPage,
+    TemplateType.AnalyticalListPage,
+    TemplateType.OverviewPage,
+    TemplateType.Worklist
 ];
 
 /**

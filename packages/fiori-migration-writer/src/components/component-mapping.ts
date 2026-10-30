@@ -1,5 +1,5 @@
 import type { ImportProjectInfo } from '../types.js';
-import { FLOOR_PLAN } from '../types.js';
+import { TemplateType, ODataVersion } from '../types.js';
 import { MigrationError } from '../utils/common.js';
 import { i18nText } from '../i18n.js';
 
@@ -24,7 +24,7 @@ export function getComponentMapping(projectInfo: ImportProjectInfo): {
     appMigratorSrcComponentToReplace?: string;
     semanticObject: string;
 } {
-    const { isSAPApp, uiAdaptation, floorPlan, flpSandboxMockFlpIntent } = projectInfo;
+    const { isSAPApp, uiAdaptation, floorPlan, flpSandboxMockFlpIntent, odataVersion } = projectInfo;
 
     // For SAP apps and UI adaptations, only set semantic object
     if (isSAPApp || uiAdaptation) {
@@ -37,27 +37,28 @@ export function getComponentMapping(projectInfo: ImportProjectInfo): {
     // Map floor plan to component
     let appMigratorSrcComponentToReplace: string;
 
-    switch (floorPlan) {
-        case FLOOR_PLAN.ListReportObjectPageV2:
-        case FLOOR_PLAN.AnalyticalListPageV2:
-        case FLOOR_PLAN.WorklistV2:
-            appMigratorSrcComponentToReplace = COMPONENT_MAPPINGS.v2LROP;
-            break;
+    // For V4 ListReportObjectPage, use FE component
+    if (floorPlan === TemplateType.ListReportObjectPage && odataVersion === ODataVersion.v4) {
+        appMigratorSrcComponentToReplace = COMPONENT_MAPPINGS.v4LROP;
+    } else {
+        switch (floorPlan) {
+            case TemplateType.ListReportObjectPage:
+            case TemplateType.AnalyticalListPage:
+            case TemplateType.Worklist:
+                appMigratorSrcComponentToReplace = COMPONENT_MAPPINGS.v2LROP;
+                break;
 
-        case FLOOR_PLAN.OverviewPageV2:
-            appMigratorSrcComponentToReplace = COMPONENT_MAPPINGS.v2OVP;
-            break;
+            case TemplateType.OverviewPage:
+                appMigratorSrcComponentToReplace = COMPONENT_MAPPINGS.v2OVP;
+                break;
 
-        case FLOOR_PLAN.ListReportObjectPageV4:
-            appMigratorSrcComponentToReplace = COMPONENT_MAPPINGS.v4LROP;
-            break;
-
-        default:
-            throw new MigrationError(
-                new Error(i18nText('ERROR_FLOOR_PLAN_NOT_SUPPORTED', { floorPlan })),
-                undefined,
-                true
-            );
+            default:
+                throw new MigrationError(
+                    new Error(i18nText('ERROR_FLOOR_PLAN_NOT_SUPPORTED', { floorPlan })),
+                    undefined,
+                    true
+                );
+        }
     }
 
     return {

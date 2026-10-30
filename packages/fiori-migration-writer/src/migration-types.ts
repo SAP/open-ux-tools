@@ -64,18 +64,8 @@ export const DatasourceType = {
 } as const;
 export type DatasourceType = (typeof DatasourceType)[keyof typeof DatasourceType];
 
-// Use string literals to avoid bundling issues with computed property keys
-// Single source of truth for floor plan types
-export const FLOOR_PLAN = {
-    WorklistV2: 'V2_WORKLIST',
-    ListReportObjectPageV2: 'V2_LIST_REPORT',
-    AnalyticalListPageV2: 'V2_ANALYTICAL',
-    ListReportObjectPageV4: 'V4_LIST_REPORT',
-    OverviewPageV2: 'V2_OVERVIEW',
-    ListReportObjectPage: 'LIST_REPORT_OBJECT_PAGE',
-    AnalyticalListPage: 'ANALYTICAL_LIST_PAGE'
-} as const;
-export type FloorPlan = (typeof FLOOR_PLAN)[keyof typeof FLOOR_PLAN];
+// Import and re-export TemplateType from fiori-elements-writer (single source of truth)
+export { TemplateType } from '@sap-ux/fiori-elements-writer';
 
 export type Backend = {
     source?: string;

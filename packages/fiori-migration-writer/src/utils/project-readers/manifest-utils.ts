@@ -11,7 +11,7 @@ import { readFile } from '../../utils/file-access.js';
 import type { Manifest } from '@sap-ux/project-access';
 import type { SapUi5RoutingTarget } from '../../project-spec-types.js';
 import { FioriElementsVersion } from '../../project-spec-types.js';
-import { FLOOR_PLAN } from '../../types.js';
+import { TemplateType } from '../../types.js';
 import { i18nText } from '../../i18n.js';
 
 /**
@@ -171,7 +171,7 @@ export class UnsupportedProjectError extends Error {
  *
  * @param manifest - Manifest object
  * @param feVersion - Fiori Elements version
- * @returns Floor plan identifier
+ * @returns Floor plan identifier (TemplateType value: 'lrop', 'alp', 'worklist', 'ovp')
  * @throws {UnsupportedProjectError} When project type is not suitable for migration
  */
 export function getFloorPlan(manifest: Manifest, feVersion: FioriElementsVersion | undefined): string {
@@ -179,7 +179,7 @@ export function getFloorPlan(manifest: Manifest, feVersion: FioriElementsVersion
 
     if (feVersion && feVersion === FioriElementsVersion.v2) {
         if (manifest?.['sap.ui.generic.app']?.pages) {
-            floorPlan = FLOOR_PLAN.ListReportObjectPageV2; // default
+            floorPlan = TemplateType.ListReportObjectPage; // default
 
             // check if ALP
 
@@ -189,23 +189,23 @@ export function getFloorPlan(manifest: Manifest, feVersion: FioriElementsVersion
                 const component = manifest['sap.ui.generic.app']?.pages?.[page]?.component;
 
                 if (component?.name === 'sap.suite.ui.generic.template.AnalyticalListPage') {
-                    floorPlan = FLOOR_PLAN.AnalyticalListPageV2;
+                    floorPlan = TemplateType.AnalyticalListPage;
                 } else if (
                     component?.name === 'sap.suite.ui.generic.template.ListReport' &&
                     component?.settings?.isWorklist === true
                 ) {
-                    floorPlan = FLOOR_PLAN.WorklistV2;
+                    floorPlan = TemplateType.Worklist;
                 }
             });
         } else if (manifest['sap.ovp']) {
-            floorPlan = FLOOR_PLAN.OverviewPageV2;
+            floorPlan = TemplateType.OverviewPage;
         }
     }
     if (floorPlan) {
         return floorPlan;
     } else if (feVersion === FioriElementsVersion.v4) {
         // Don't throw message here it will be handled later in migration : 'Migration of OData V4 Projects is not currently supported';
-        return FLOOR_PLAN.ListReportObjectPageV4;
+        return TemplateType.ListReportObjectPage;
     } else {
         throw new UnsupportedProjectError(i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION'));
     }

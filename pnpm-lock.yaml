@@ -2900,6 +2900,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/fiori-elements-writer':
+        specifier: workspace:*
+        version: link:../fiori-elements-writer
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared

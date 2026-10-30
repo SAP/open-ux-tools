@@ -168,6 +168,7 @@ export async function processRegularProject(
         const intentDefaults = determineDefaultFlpIntents(
             floorPlan,
             isSAPApp,
+            odataVersion,
             flpSandboxFlpIntent,
             flpSandboxMockFlpIntent
         );
