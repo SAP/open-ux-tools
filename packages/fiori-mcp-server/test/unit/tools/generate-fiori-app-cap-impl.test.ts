@@ -1,10 +1,4 @@
 import { jest } from '@jest/globals';
-
-// These tests exercise general utilities; adaptation tasks have their own test suite.
-jest.unstable_mockModule('../../../src/utils/manifest-builder.js', () => ({
-    getMergedManifest: jest.fn(),
-    downloadAppResources: jest.fn()
-}));
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { GeneratorConfigCAPWithAPI } from '../../../src/tools/schemas/index.js';
