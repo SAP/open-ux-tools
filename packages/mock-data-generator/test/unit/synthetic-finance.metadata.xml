@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Independently authored synthetic schema for relationship, semantic and accounting tests. -->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+  <edmx:DataServices>
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="SyntheticFinance">
+      <EntityType Name="Bank">
+        <Key><PropertyRef Name="BankCountry"/><PropertyRef Name="BankID"/></Key>
+        <Property Name="BankCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="BankID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+        <Property Name="CreatedByUserFullName" Type="Edm.String" Nullable="false" MaxLength="80">
+          <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Synthetic bank record"/>
+        </Property>
+        <Property Name="RegionName" Type="Edm.String" Nullable="false" MaxLength="80">
+          <Annotation Term="com.sap.vocabularies.Common.v1.Label" String="Synthetic bank record"/>
+        </Property>
+        <Property Name="NumberOfPartnerLinks" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="NumberOfCompanyLinks" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="NumberOfBankAccounts" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="BankHasBankAccounts" Type="Edm.Boolean" Nullable="false"/>
+        <Property Name="OpaqueValue" Type="Edm.String" Nullable="false" MaxLength="20"/>
+        <NavigationProperty Name="Address" Type="SyntheticFinance.BankAddress" Nullable="false"/>
+        <NavigationProperty Name="StatementPolicy" Type="SyntheticFinance.StatementPolicy" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="BankAddress">
+        <Key><PropertyRef Name="BankCountry"/><PropertyRef Name="BankID"/></Key>
+        <Property Name="BankCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="BankID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+        <Property Name="City" Type="Edm.String" Nullable="false" MaxLength="80"/>
+      </EntityType>
+      <EntityType Name="StatementPolicy">
+        <Key><PropertyRef Name="BankCountry"/><PropertyRef Name="BankID"/></Key>
+        <Property Name="BankCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="BankID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+      </EntityType>
+      <EntityType Name="PartnerLink">
+        <Key><PropertyRef Name="LinkID"/></Key>
+        <Property Name="LinkID" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="BankCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="BankID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+        <NavigationProperty Name="Bank" Type="SyntheticFinance.Bank" Nullable="false">
+          <ReferentialConstraint Property="BankCountry" ReferencedProperty="BankCountry"/>
+          <ReferentialConstraint Property="BankID" ReferencedProperty="BankID"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="CompanyLink">
+        <Key><PropertyRef Name="LinkID"/></Key>
+        <Property Name="LinkID" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="BankCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="BankID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+        <Property Name="SchemeCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="SchemeID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+        <NavigationProperty Name="Bank" Type="SyntheticFinance.Bank" Nullable="false">
+          <ReferentialConstraint Property="BankCountry" ReferencedProperty="BankCountry"/>
+          <ReferentialConstraint Property="BankID" ReferencedProperty="BankID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="PaymentScheme" Type="SyntheticFinance.PaymentScheme" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="Branch">
+        <Key><PropertyRef Name="BranchID"/></Key>
+        <Property Name="BranchID" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="ParentCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="ParentBankID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+        <NavigationProperty Name="ParentBank" Type="SyntheticFinance.Bank" Nullable="false">
+          <ReferentialConstraint Property="ParentCountry" ReferencedProperty="BankCountry"/>
+          <ReferentialConstraint Property="ParentBankID" ReferencedProperty="BankID"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="PaymentScheme">
+        <Key><PropertyRef Name="SchemeCountry"/><PropertyRef Name="SchemeID"/></Key>
+        <Property Name="SchemeCountry" Type="Edm.String" Nullable="false" MaxLength="2"/>
+        <Property Name="SchemeID" Type="Edm.String" Nullable="false" MaxLength="8"/>
+      </EntityType>
+      <EntityType Name="Contact">
+        <Key><PropertyRef Name="ID"/></Key>
+        <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+        <Property Name="Email" Type="Edm.String" Nullable="false" MaxLength="80"/>
+      </EntityType>
+      <EntityContainer Name="Container">
+        <EntitySet Name="Banks" EntityType="SyntheticFinance.Bank">
+          <NavigationPropertyBinding Path="Address" Target="BankAddresses"/>
+          <NavigationPropertyBinding Path="StatementPolicy" Target="StatementPolicies"/>
+        </EntitySet>
+        <EntitySet Name="BankAddresses" EntityType="SyntheticFinance.BankAddress"/>
+        <EntitySet Name="StatementPolicies" EntityType="SyntheticFinance.StatementPolicy"/>
+        <EntitySet Name="PartnerLinks" EntityType="SyntheticFinance.PartnerLink">
+          <NavigationPropertyBinding Path="Bank" Target="Banks"/>
+        </EntitySet>
+        <EntitySet Name="CompanyLinks" EntityType="SyntheticFinance.CompanyLink">
+          <NavigationPropertyBinding Path="Bank" Target="Banks"/>
+          <NavigationPropertyBinding Path="PaymentScheme" Target="PaymentSchemes"/>
+        </EntitySet>
+        <EntitySet Name="Branches" EntityType="SyntheticFinance.Branch">
+          <NavigationPropertyBinding Path="ParentBank" Target="Banks"/>
+        </EntitySet>
+        <EntitySet Name="PaymentSchemes" EntityType="SyntheticFinance.PaymentScheme"/>
+        <EntitySet Name="Contacts" EntityType="SyntheticFinance.Contact"/>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

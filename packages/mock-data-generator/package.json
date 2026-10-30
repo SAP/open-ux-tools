@@ -1,0 +1,62 @@
+{
+    "name": "@sap-ux/mock-data-generator",
+    "description": "Generate context-aware, structurally valid mock data for SAP services",
+    "version": "0.0.0",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/mock-data-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues"
+    },
+    "type": "module",
+    "license": "Apache-2.0",
+    "main": "dist/public.js",
+    "types": "dist/public.d.ts",
+    "bin": {
+        "mockgen": "./dist/cli.js"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/public.d.ts",
+            "import": "./dist/public.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build && tsc -p test/tsconfig.json",
+        "check-types": "tsc -p test/tsconfig.json",
+        "check:package": "node scripts/check-package.mjs",
+        "check:release": "node scripts/check-package.mjs --release",
+        "check:realism": "node scripts/realism-sweep.mjs",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,md,ts}' '!resources/models/**' --ignore-path ../../.prettierignore",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "README.md",
+        "docs",
+        "dist",
+        "resources",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "fast-xml-parser": "5.10.1",
+        "i18next": "26.3.6",
+        "onnxruntime-node": "1.24.3"
+    },
+    "devDependencies": {
+        "@jest/globals": "30.4.1",
+        "cldr-bcp47": "49.0.0",
+        "libphonenumber-js": "1.13.15"
+    },
+    "engines": {
+        "node": ">=22.x"
+    }
+}
