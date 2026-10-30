@@ -2903,6 +2903,9 @@ importers:
       '@sap-ux/fiori-elements-writer':
         specifier: workspace:*
         version: link:../fiori-elements-writer
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n

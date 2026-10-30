@@ -1,15 +1,12 @@
 import type { FioriElementsVersion, SapAppSourceTemplate } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { CdsUi5PluginInfo, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
-// Import CapRuntime from fiori-generator-shared
-import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
-
-// Import and re-export ODataVersion from axios-extension (single source of truth)
-import { ODataVersion } from '@sap-ux/axios-extension';
-export { ODataVersion };
+// Import types from shared packages - DO NOT re-export
+// Import directly from the source package where you need them
+import type { CapRuntime, ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -318,11 +315,7 @@ export interface Credentials {
  * Use CapRuntime from @sap-ux/fiori-generator-shared directly
  */
 export type CapType = CapRuntime;
-export const ApiHubType = {
-    apiHub: 'API_HUB',
-    apiHubEnterprise: 'API_HUB_ENTERPRISE'
-} as const;
-export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
+
 /**
  * Defines the api hub service properties or enterprise and non-enterprise versions
  */
@@ -339,13 +332,6 @@ export interface CapService {
     capType?: CapType; // CAP implementation type,
     capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
 }
-
-export const SapSystemSourceType = {
-    SCP: 'SCP',
-    ON_PREM: 'ON_PREM',
-    S4HC: 'S4HC'
-} as const;
-export type SapSystemSourceType = (typeof SapSystemSourceType)[keyof typeof SapSystemSourceType];
 
 export interface Service {
     host: string;
