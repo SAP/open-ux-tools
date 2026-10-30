@@ -15,11 +15,12 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
+<%_ const needsSortOrder = startLR && ((defaultSortOrder && defaultSortOrder.length > 0) || (tabs && tabs.some(function(tab) { return tab.defaultSortOrder && tab.defaultSortOrder.length > 0; }))); -%>
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>,
+    "./pages/JourneyRunner"<% if (needsSortOrder) { %>,
     "sap/ui/core/library"<% } %>
-], function (opaTest, runner<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>, coreLibrary<% } %>) {
+], function (opaTest, runner<% if (needsSortOrder) { %>, coreLibrary<% } %>) {
     "use strict";
 
     function journey() {
@@ -49,11 +50,11 @@ sap.ui.define([
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
         opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
-            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
+            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation()
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField({ property: "<%- property %>" });
+                .and.iAddAdaptationFilterField({ property: "<%- property %>" })
             <%_ }); -%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
+                .and.iConfirmFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- property %>" });
             <%_ }); -%>
@@ -77,43 +78,95 @@ sap.ui.define([
         // });
 
 <%_ if (tabs && tabs.length > 0) { -%>
-        opaTest("Check table columns and actions per tab", function (Given, When, Then) {
-            <%_ tabs.forEach(function(tab) { _%>
+<%_ tabs.forEach(function(tab) { -%>
+        /// View "<%- tab.key %>" ///
+<%_ if (tab.createButton.visible && !isALP) { -%>
+        opaTest(<%- JSON.stringify("Check the create button in view " + tab.key) %>, function (Given, When, Then) {
             When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
-            <%_ if (tab.createButton.visible && !isALP) { _%>
             Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckCreate({ visible: true });
             // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressCreate();
-            <%_ } _%>
-            <%_ if (tab.deleteButton.visible) { _%>
+        });
+
+<%_ } -%>
+<%_ if (tab.deleteButton.visible) { -%>
+        opaTest(<%- JSON.stringify("Check the delete button in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
             // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressDelete();
             Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckDelete({ visible: true });
+        });
+
+<%_ } -%>
+<%_ tab.toolBarActions.forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+        opaTest(<%- JSON.stringify("Check the " + item.label + " action in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            <%_ if (item.menuActions) { _%>
+            <%_ if (item.splitButton) { _%>
+            // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>");
+            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
+            <%_ } else { _%>
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>");
+            When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteAction("<%- item.label %>");
+            <%_ item.menuActions.forEach(function(menuAction) { _%>
+            <%_ if (menuAction.visible) { _%>
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckMenuAction("<%- menuAction.label %>");
+            // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iExecuteMenuAction("<%- menuAction.label %>");
             <%_ } _%>
-            <%_ tab.toolBarActions.forEach(function(item) { _%>
-            <%_ if (item.visible) { _%>
+            <%_ }); _%>
+            <%_ } _%>
+            <%_ } else { _%>
             // When.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
             <%_ } _%>
-            <%_ }); _%>
-            <%_ if (Object.keys(tab.tableColumns).length > 0) { _%>
+        });
+
+<%_ } -%>
+<%_ }); -%>
+<%_ if (Object.keys(tab.tableColumns).length > 0) { -%>
+        opaTest(<%- JSON.stringify("Check table columns in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
             Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckColumns(undefined, <%- JSON.stringify(tab.tableColumns) %>);
-            <%_ } _%>
-            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
+        });
+
+<%_ } -%>
+<%_ if (tab.defaultSortOrder && tab.defaultSortOrder.length > 0) { -%>
+        opaTest(<%- JSON.stringify("Check default sort order from PresentationVariant in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            <%_ tab.defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
             <%_ }); -%>
         });
+
+<%_ } -%>
+        opaTest(<%- JSON.stringify("Check table rows in view " + tab.key) %>, function (Given, When, Then) {
+            When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+            <%_ if (!hideFilterBar) { -%>
+            // Populate the table so the row check has data.
+            When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
+            <%_ } -%>
+            Then.onThe<%- startLR%>Generated.onTable("<%- tab.key %>").iCheckRows();
+        });
+
+<%_ }); -%>
 <%_ } else { -%>
-<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-        opaTest("Check table columns and actions", function (Given, When, Then) {
-            <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-            <%_ if (createButton.visible && !isALP) { _%>
+<%_ if (createButton.visible && !isALP) { -%>
+        opaTest("Check the create button", function (Given, When, Then) {
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
-            <%_ } _%>
-            <%_ if (deleteButton.visible) { _%>
+        });
+
+<%_ } -%>
+<%_ if (deleteButton.visible) { -%>
+        opaTest("Check the delete button", function (Given, When, Then) {
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
-            <%_ } _%>
-            <%_ toolBarActions.forEach(function(item) { _%>
-            <%_ if (item.visible) { _%>
+        });
+
+<%_ } -%>
+<%_ (toolBarActions || []).forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+        opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (Given, When, Then) {
             <%_ if (item.menuActions) { _%>
             <%_ if (item.splitButton) { _%>
             // "<%- item.label %>" is a split menu button (has a default action); its drop-down cannot be opened via the test API, so its menu items are not checked. Pressing it triggers the default action:
@@ -133,24 +186,33 @@ sap.ui.define([
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
             <%_ } _%>
-            <%_ } _%>
-            <%_ }); -%>
-            <%_ } -%>
-            <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-            <%_ } -%>
         });
-<%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-        opaTest("Check text annotation for columns", function (Given, When, Then) {
-            <%_ textAnnotationColumns.forEach(function(column) { _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            <%_ }); -%>
-        });
-<%_ } -%>
-<%_ } -%>
 
+<%_ } -%>
+<%_ }); -%>
+<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
+        opaTest("Check table columns", function (Given, When, Then) {
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+        });
+
+<%_ } -%>
+<%_ } -%>
+<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
+        opaTest("Check default sort order from PresentationVariant", function (Given, When, Then) {
+            <%_ defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
+<%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
+        opaTest("Check default filter values from SelectionVariant", function (Given, When, Then) {
+            <%_ defaultFilterValues.forEach(function(filter) { _%>
+            Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: <%- JSON.stringify(filter.property) %> }, <%- filter.value2 !== undefined ? JSON.stringify([filter.value, filter.value2]) : JSON.stringify(filter.value) %><%- filter.operator ? ', ' + JSON.stringify(filter.operator) : '' %>);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
 <%_ if (startLR) { -%>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data

@@ -1,5 +1,47 @@
 # @sap-ux/backend-proxy-middleware
 
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+
+## 1.0.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+
+## 1.0.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+
+## 1.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+
 ## 1.0.14
 
 ### Patch Changes

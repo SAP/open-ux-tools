@@ -1,5 +1,88 @@
 # @sap-ux/preview-middleware
 
+## 1.2.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.68 → 1.0.69
+
+## 1.2.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+- @sap-ux/system-access 1.0.17 → 1.0.18
+
+## 1.2.29
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
+## 1.2.28
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/bas-sdk 3.13.10 → 3.13.16 [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+- @sap-ux/system-access 1.0.16 → 1.0.17
+
+## 1.2.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.63 → 1.0.64
+- @sap-ux/system-access 1.0.14 → 1.0.15
+
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/adp-tooling 1.0.62 → 1.0.63
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.2.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.61 → 1.0.62
+
 ## 1.2.23
 
 ### Patch Changes

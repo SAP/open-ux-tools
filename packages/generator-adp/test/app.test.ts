@@ -62,6 +62,7 @@ const mockGetOrCreateServiceInstanceKeys = jest.fn<typeof realAdpTooling.getOrCr
 const mockStoreCredentials = jest.fn<typeof realAdpTooling.storeCredentials>();
 const mockGetSupportedProject = jest.fn<typeof realAdpTooling.getSupportedProject>();
 const mockGetCfBaseAppInbounds = jest.fn<typeof realAdpTooling.getCfBaseAppInbounds>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>().mockResolvedValue(false);
 const mockGetPackageInfo = jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' });
 const mockInstallDependencies = jest.fn().mockResolvedValue(undefined);
 const mockSendTelemetry = jest.fn().mockResolvedValue(undefined);
@@ -171,6 +172,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     storeCredentials: mockStoreCredentials,
     getSupportedProject: mockGetSupportedProject,
     getCfBaseAppInbounds: mockGetCfBaseAppInbounds,
+    isAuthRequired: mockIsAuthRequired,
     // generateCf calls adjustMtaYaml which internally requires '../services/api.js' via CJS.
     // jest.unstable_mockModule cannot intercept relative CJS requires inside compiled dist packages,
     // so the real generateCf would invoke live CF APIs. The mock avoids that.
@@ -439,7 +441,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
             mockValidateUI5VersionExists.mockReturnValue(true);
             jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
-            jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
             jest.spyOn(SystemLookup.prototype, 'getSystemByName').mockResolvedValue({
                 Name: 'SystemA',
                 Client: '010',
@@ -752,6 +753,10 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             const changeContent = JSON.parse(fs.readFileSync(changeFilePath, 'utf8'));
             expect(changeContent).toMatchSnapshot();
+
+            expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                expect.objectContaining({ wereKeyUserChangesImported: true })
+            );
         });
 
         it('should not call writeResult when json input has no id', async () => {
@@ -881,6 +886,10 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(fs.existsSync(changesDir)).toBe(true);
                 const changeFiles = fs.readdirSync(changesDir).filter((file) => file.endsWith('.annotation_change'));
                 expect(changeFiles.length).toBeGreaterThan(0);
+
+                expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                    expect.objectContaining({ wereKeyUserChangesImported: true })
+                );
             });
 
             it('should generate a project without key user changes when the JSON input file is missing', async () => {
@@ -901,6 +910,31 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(fs.existsSync(join(projectFolder, 'webapp', 'manifest.appdescr_variant'))).toBe(true);
                 expect(fs.existsSync(join(projectFolder, 'webapp', 'changes'))).toBe(false);
                 expect(mockWriteResult).toHaveBeenCalledWith(id, projectFolder);
+                expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                    expect.objectContaining({ wereKeyUserChangesImported: false })
+                );
+            });
+
+            it('should report no key user changes imported when the JSON input has an empty array', async () => {
+                const id = `adp-app-test-empty-${process.pid}`;
+                tempFileIds.push(id);
+                fs.writeFileSync(join(tmpdir(), `${id}.txt`), JSON.stringify({ keyUserChanges: [] }));
+
+                const jsonInput: JsonInput = {
+                    ...baseJsonInput,
+                    projectName: 'tmp.empty.app',
+                    id
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: jsonTmpOutputDir })
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                expect(mockCreateTelemetryData).toHaveBeenCalledWith(
+                    expect.objectContaining({ wereKeyUserChangesImported: false })
+                );
             });
 
             it('should write a failure result when the JSON input file is corrupt', async () => {

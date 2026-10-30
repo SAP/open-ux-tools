@@ -8,7 +8,7 @@
     "rootDir": "src",
     "outDir": "generators",
     "module": "commonjs",
-    "moduleResolution": "node"
+    "moduleResolution": "node10", "ignoreDeprecations": "6.0"
   },
   "exclude": [
     "dist",

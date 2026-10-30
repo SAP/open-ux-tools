@@ -27,7 +27,9 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawn: jest.fn(),
     spawnSync: jest.fn(),
     execSync: jest.fn(),
-    exec: jest.fn()
+    exec: jest.fn(),
+    execFile: jest.fn(),
+    execFileSync: jest.fn()
 }));
 jest.unstable_mockModule('prompts', () => ({
     default: jest.fn(),

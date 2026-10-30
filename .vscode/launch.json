@@ -644,7 +644,9 @@
             },
             "cwd": "${workspaceFolder}/packages/adp-tooling",
             "env": {
-                "UX_DEBUG": "false"
+                "UX_DEBUG": "false",
+                "NODE_OPTIONS": "--experimental-vm-modules",
+                "FIORI_TOOLS_DISABLE_SECURE_STORE": "true"
             }
         },
         {

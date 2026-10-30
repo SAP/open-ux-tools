@@ -16,7 +16,11 @@ export type OPAGenerationOptions = {
     scriptName?: string;
     /** The appID. If not specified, will be read from the manifest in sap.app/id. */
     appID?: string;
-    /** The name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used. */
+    /**
+     * The html target used for the launchUrl in the OPA journey file. If not specified, it is derived
+     * from the app's `test/flpSandbox.html` (e.g. `test/flpSandbox.html#<appIntent>`), falling back to
+     * `index.html` when no FLP sandbox is present.
+     */
     htmlTarget?: string;
     /** When true, OPA harness files are served virtually; skip writing them to disk. */
     useVirtualPreviewEndpoints?: boolean;
@@ -75,6 +79,7 @@ export type FEV4ManifestTarget = {
             entitySet?: string;
             contextPath?: string;
             hideFilterBar?: boolean;
+            defaultTemplateAnnotationPath?: string;
             navigation?: {
                 [id: string]: {
                     detail?: {
@@ -86,6 +91,7 @@ export type FEV4ManifestTarget = {
                 paths?: Array<{
                     key?: string;
                     entitySet?: string;
+                    annotationPath?: string;
                     template?: string;
                     primary?: unknown[];
                     secondary?: unknown[];
@@ -125,6 +131,21 @@ export interface FFOPAConfig {
     useVirtualPreviewEndpoints?: boolean;
 }
 
+export type SortOrderItem = {
+    property: string;
+    descending: boolean;
+};
+
+export type FilterDefaultValue = {
+    property: string;
+    /** Low value of the EQ/LE/GE/LT/GT/NE range, normalized (IsDigitSequence zero-padded to maxLength). */
+    value: string;
+    /** High value for BT (between) ranges. */
+    value2?: string;
+    /** MDC condition operator string (e.g. 'EQ', 'BT', 'LE'). Omitted for EQ (default). */
+    operator?: string;
+};
+
 export type ObjectPageNavigationParent = {
     name: string;
     navigationProperty: string;
@@ -142,6 +163,7 @@ export type SectionFormField = {
     connectedFields?: string;
     fieldGroup?: string;
     targetAnnotation?: string;
+    checkBoxGroup?: boolean;
 };
 
 export type TableColumn = {
@@ -155,12 +177,17 @@ export type ContactCardField = {
 };
 
 /**
- * A table column whose bound property carries both a `Common.Text` annotation and a
- * `UI.TextArrangement` annotation. `textProperty` is the text/description property the
- * column can be sorted by (the `Common.Text` target, e.g. "CustomerName").
+ * A table column whose bound property carries a `Common.Text` annotation. `columnProperty` is the
+ * column's own (code) property; `textProperty` is the text target. Both are asserted independently.
+ * When columns share one text target, only the first emits the text-property test; the rest set
+ * `skipTextPropertyTest` but still assert their own code column. `textPropertyNotSortable` marks a
+ * nav-path target in an AnalyticalTable view (cannot sort across a navigation); skipped in the sort test only.
  */
 export type TextAnnotationColumn = {
+    columnProperty: string;
     textProperty: string;
+    skipTextPropertyTest?: boolean;
+    textPropertyNotSortable?: boolean;
 };
 
 export type BodySubSectionFeatureData = {
@@ -224,6 +251,9 @@ export type ListReportTab = {
     toolBarActions: ActionButtonState[];
     createButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
     deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
+    textAnnotationColumns: TextAnnotationColumn[];
+    columnPersonalizationSupported?: boolean;
+    defaultSortOrder?: SortOrderItem[];
 };
 
 export type ListReportFeatures = {
@@ -247,6 +277,11 @@ export type ListReportFeatures = {
      * annotation; used to generate sort-order tests against the text/description property.
      */
     textAnnotationColumns?: TextAnnotationColumn[];
+    /**
+     * Whether the table exposes column personalization (the "Columns" adaptation dialog).
+     * Absent/true means enabled (the Fiori elements default).
+     */
+    columnPersonalizationSupported?: boolean;
     isALP?: boolean;
     /**
      * Non-custom tab keys (`views.paths[].key`) for multi-tab List Reports; empty for
@@ -262,6 +297,8 @@ export type ListReportFeatures = {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
     };
+    defaultSortOrder?: SortOrderItem[];
+    defaultFilterValues?: FilterDefaultValue[];
 };
 
 export interface ActionButtonState {
@@ -284,6 +321,12 @@ export interface ActionButtonState {
      * For example: "_it/__OperationControl/deductDiscount"
      */
     dynamicPath?: string;
+    /**
+     * Set when the action has no `Core.OperationAvailable` annotation and is bound to a single
+     * instance: it is disabled with no selection and becomes enabled once a row is selected. Unlike
+     * `'dynamic'`, this flip is deterministic, so the generated test can assert both states.
+     */
+    selectionEnables?: boolean;
     /**
      * The invocation grouping type if specified (e.g., "Isolated", "ChangeSet").
      */

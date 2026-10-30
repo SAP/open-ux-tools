@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
-    "version": "10.15.0",
+    "version": "10.18.0",
     "description": "Custom linting plugin for Fiori tools apps",
     "type": "module",
     "repository": {
@@ -28,7 +28,8 @@
     },
     "dependencies": {
         "@typescript-eslint/eslint-plugin": "8.61.1",
-        "@typescript-eslint/parser": "8.61.1"
+        "@typescript-eslint/parser": "8.61.1",
+        "comment-parser": "1.4.9"
     },
     "devDependencies": {
         "@babel/core": "8.0.1",
@@ -39,7 +40,7 @@
         "@eslint/js": "10.0.1",
         "@eslint/json": "0.14.0",
         "@eslint/plugin-kit": "0.6.1",
-        "@humanwhocodes/momoa": "^3.3.9",
+        "@humanwhocodes/momoa": "^3.3.13",
         "@jest/globals": "30.4.1",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
@@ -48,7 +49,8 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@sap-ux/i18n": "workspace:*",
-        "@types/semver": "7.7.1",
+        "@types/estree": "1.0.9",
+        "@types/semver": "7.8.0",
         "@typescript-eslint/rule-tester": "8.61.1",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
@@ -56,7 +58,7 @@
         "esbuild": "0.28.2",
         "eslint": "9.39.1",
         "eslint-plugin-eslint-plugin": "7.3.2",
-        "globals": "17.6.0",
+        "globals": "17.13.0",
         "lodash": "4.18.1",
         "requireindex": "^1.2.0",
         "semver": "7.8.5",

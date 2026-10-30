@@ -54,7 +54,16 @@ const adpTools = [
 
         The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
 
-        Optional parameters: targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
+        Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
+
+        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
+        which type they want — in that case pass their choice through on the first call. When the selected system
+        AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
+        unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
+        you receive 'InputRequired', ask the user which type they want, then call this tool again with
+        projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
+        it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
+        Passing a projectType the system or application cannot support returns status 'Error'.
 
         Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
         changes from LREP (using the same system) and include them in the generated
@@ -261,7 +270,7 @@ export const tools = [
         1. Examine the inputSchema below to understand the EXACT structure required
         2. The input MUST match the schema type 'GeneratorConfigOData' with these TOP-LEVEL properties:
            - floorplan (must be: 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_WORKLIST', 'FE_FEOP', 'FE_FPM', 'FF_SIMPLE', required)
-           - project (object, required) — includes name, title, description, targetFolder, ui5Version, enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
+           - project (object, required) — includes name, title, description, targetFolder, ui5Version (optional), enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
            - service (object, optional)
            - entityConfig (object, optional)
         3. DO NOT create properties like "config", or any other structure - use ONLY the properties defined in inputSchema
@@ -284,7 +293,7 @@ export const tools = [
 
         3. Generate the application once the config is complete and valid.
 
-        Example of CORRECT input structure:
+        Example of CORRECT input structure (ui5Version is optional — omit to let the MCP server resolve the latest stable version from ui5.sap.com):
         {
           "floorplan": "FE_LROP",
           "project": {
@@ -292,7 +301,6 @@ export const tools = [
             "title": "My Travel App",
             "description": "Travel management application",
             "targetFolder": "/home/user/projects",
-            "ui5Version": "1.136.7",
             "enableTypeScript": false,
             "namespace": "com.mycompany"
           },

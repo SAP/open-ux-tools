@@ -36,10 +36,30 @@ const mockedService = {
     getAll: jest.fn<any>().mockResolvedValue([]),
     partialUpdate: jest.fn<any>().mockResolvedValue(undefined)
 };
-const actualStore = await import('@sap-ux/store');
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    ...actualStore,
-    getService: jest.fn().mockResolvedValue(mockedService)
+    getService: jest.fn().mockResolvedValue(mockedService),
+    isSystemNameInUse: jest.fn().mockResolvedValue(false),
+    SystemType: { AbapCloud: 'AbapCloud', AbapOnPrem: 'OnPrem', Generic: 'Generic' },
+    AuthenticationType: {
+        Basic: 'basic',
+        ReentranceTicket: 'reentranceTicket',
+        OAuth2RefreshToken: 'oauth2',
+        OAuth2ClientCredential: 'oauth2ClientCredential'
+    },
+    ConnectionType: { AbapCatalog: 'abap_catalog', GenericHost: 'generic_host', ODataService: 'odata_service' },
+    BackendSystem: class BackendSystem {
+        constructor(args: Record<string, unknown>) {
+            Object.assign(this, args);
+        }
+    },
+    BackendSystemKey: class BackendSystemKey {
+        constructor(args: Record<string, unknown>) {
+            Object.assign(this, args);
+        }
+        getId() {
+            return (this as any).url + ((this as any).client ? '/' + (this as any).client : '');
+        }
+    }
 }));
 
 // Mock i18n to return translated text

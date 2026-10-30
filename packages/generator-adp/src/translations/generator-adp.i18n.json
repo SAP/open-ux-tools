@@ -59,6 +59,9 @@
         "importKeyUserChangesLabel": "Import Key User Changes",
         "keyUserAdaptationLabel": "Context-Based Adaptation",
         "keyUserAdaptationBreadcrumb": "Adaptation",
+        "keyUserRestrictedViewsLabel": "⚠️ At least one imported change has a restricted view. The restriction cannot be kept in the adaptation project, so the affected views will be imported as non-restricted. Key users can restrict them again after the adaptation project has been deployed. For more information, see the",
+        "keyUserRestrictedViewsDocLink": "documentation: https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/importing-key-user-changes",
+        "keyUserRestrictedViewsLinkText": "SAP Help Portal.",
         "targetEnvLabel": "Environment",
         "targetEnvTooltip": "Select the target environment for your Adaptation Project.",
         "targetEnvBreadcrumb": "Target Environment",
@@ -96,7 +99,8 @@
         "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project."
     },
     "warnings": {
-        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies."
+        "passwordStoreWarning": "Passwords are stored in your operating system's credential manager and are protected by its security policies.",
+        "authenticationFailedUpdateCredentialsMessage": "Authentication failed. Please try updating the credentials."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",

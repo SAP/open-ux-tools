@@ -1,5 +1,285 @@
 # @sap-ux/create
 
+## 1.5.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.68 → 1.0.69
+- @sap-ux/fiori-migration-writer 0.0.9 → 0.0.10
+- @sap-ux/flp-config-inquirer 1.0.68 → 1.0.69
+- @sap-ux/preview-middleware 1.2.30 → 1.2.31
+- @sap-ux/app-config-writer 1.1.30 → 1.1.30
+- @sap-ux/ui5-test-writer 1.19.3 → 1.19.4
+
+## 1.5.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 0.0.8 → 0.0.9
+
+## 1.5.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade diff 8.0.4 → 9.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-migration-writer 0.0.7 → 0.0.8
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/abap-deploy-config-inquirer 2.0.54 → 2.0.55
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+- @sap-ux/app-config-writer 1.1.29 → 1.1.30
+- @sap-ux/flp-config-inquirer 1.0.67 → 1.0.68
+- @sap-ux/preview-middleware 1.2.29 → 1.2.30
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/abap-deploy-config-writer 1.0.33 → 1.0.34
+- @sap-ux/cap-config-writer 1.0.45 → 1.0.46
+- @sap-ux/mockserver-config-writer 1.0.23 → 1.0.24
+- @sap-ux/project-input-validator 1.0.24 → 1.0.25
+- @sap-ux/ui5-test-writer 1.19.2 → 1.19.3
+
+## 1.5.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+- @sap-ux/preview-middleware 1.2.28 → 1.2.29
+- @sap-ux/fiori-migration-writer 0.0.6 → 0.0.7
+- @sap-ux/flp-config-inquirer 1.0.66 → 1.0.67
+- @sap-ux/app-config-writer 1.1.29 → 1.1.29
+- @sap-ux/ui5-test-writer 1.19.1 → 1.19.2
+
+## 1.5.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 0.0.5 → 0.0.6
+
+## 1.5.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/preview-middleware 1.2.27 → 1.2.28
+- @sap-ux/ui5-test-writer 1.19.0 → 1.19.1
+- @sap-ux/abap-deploy-config-inquirer 2.0.53 → 2.0.54
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+- @sap-ux/app-config-writer 1.1.28 → 1.1.29
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/fiori-migration-writer 0.0.4 → 0.0.5
+- @sap-ux/flp-config-inquirer 1.0.65 → 1.0.66
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.16 → 1.0.17
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+- @sap-ux/cap-config-writer 1.0.44 → 1.0.45
+- @sap-ux/abap-deploy-config-writer 1.0.32 → 1.0.33
+
+## 1.5.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.18.3 → 1.19.0
+- @sap-ux/fiori-migration-writer 0.0.4 → 0.0.4
+
+## 1.5.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.18.2 → 1.18.3
+
+## 1.5.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 0.0.3 → 0.0.4
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Features
+
+- Add `migrate` CLI command for converting WebIDE projects to Fiori tools format
+
+    **New Command: `sap-ux migrate`**
+    Migrate legacy WebIDE Fiori projects (SAP Web IDE, Build Work Zone, etc.) to modern Fiori tools format with UI5 tooling support.
+    Features:
+    - Interactive migration prompts for missing configuration
+    - Path validation with security checks
+    - Support for destination, hostname, SAP client, UI5 version overrides
+    - Comprehensive error handling and user feedback
+    - Full test coverage (293 test cases)
+      Usage:
+
+    ```sh
+    npx @sap-ux/create@latest migrate /path/to/project --destination MY_SYSTEM
+    ```
+
+    Migration includes:
+    - neo-app.json → ui5.yaml conversion
+    - UI5 dependencies in package.json
+    - Backend proxy configuration
+    - Launch configuration for testing
+    - TypeScript setup (if applicable)
+      Depends on @sap-ux/fiori-migration-writer package. [[4576e3a](https://github.com/SAP/open-ux-tools/commit/4576e3a0ff7b421483ad004bd7556a75a1c9c3e3)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/fiori-migration-writer 0.0.2 → 0.0.3
+- @sap-ux/flp-config-inquirer 1.0.64 → 1.0.65
+- @sap-ux/preview-middleware 1.2.26 → 1.2.27
+- @sap-ux/abap-deploy-config-inquirer 2.0.52 → 2.0.53
+- @sap-ux/app-config-writer 1.1.27 → 1.1.28
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/abap-deploy-config-writer 1.0.31 → 1.0.32
+- @sap-ux/mockserver-config-writer 1.0.22 → 1.0.23
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/cap-config-writer 1.0.43 → 1.0.44
+- @sap-ux/ui5-test-writer 1.18.1 → 1.18.2
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
+## 1.4.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/adp-tooling 1.0.63 → 1.0.64
+- @sap-ux/abap-deploy-config-inquirer 2.0.51 → 2.0.52
+- @sap-ux/app-config-writer 1.1.26 → 1.1.27
+- @sap-ux/flp-config-inquirer 1.0.63 → 1.0.64
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/preview-middleware 1.2.25 → 1.2.26
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/cap-config-writer 1.0.42 → 1.0.43
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+- @sap-ux/ui5-test-writer 1.18.0 → 1.18.1
+- @sap-ux/abap-deploy-config-writer 1.0.30 → 1.0.31
+
+## 1.4.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.17.0 → 1.18.0
+
+## 1.4.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.16.3 → 1.17.0
+
+## 1.4.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.16.2 → 1.16.3
+
+## 1.4.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/abap-deploy-config-writer 1.0.29 → 1.0.30
+- @sap-ux/adp-tooling 1.0.62 → 1.0.63
+- @sap-ux/app-config-writer 1.1.25 → 1.1.26
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/cap-config-writer 1.0.41 → 1.0.42
+- @sap-ux/flp-config-inquirer 1.0.62 → 1.0.63
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/mockserver-config-writer 1.0.21 → 1.0.22
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/preview-middleware 1.2.24 → 1.2.25
+- @sap-ux/project-input-validator 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.14 → 1.0.14
+- @sap-ux/ui5-test-writer 1.16.1 → 1.16.2
+- @sap-ux/abap-deploy-config-inquirer 2.0.50 → 2.0.51
+
+## 1.4.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.61 → 1.0.62
+- @sap-ux/flp-config-inquirer 1.0.61 → 1.0.62
+- @sap-ux/preview-middleware 1.2.23 → 1.2.24
+- @sap-ux/app-config-writer 1.1.25 → 1.1.25
+- @sap-ux/ui5-test-writer 1.16.0 → 1.16.1
+
+## 1.4.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.15.7 → 1.16.0
+
+## 1.4.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.15.6 → 1.15.7
+
 ## 1.4.10
 
 ### Patch Changes

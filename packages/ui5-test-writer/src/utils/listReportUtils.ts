@@ -10,8 +10,10 @@ import type {
     ButtonState,
     FEV4ManifestTarget,
     FilterBarItem,
+    FilterDefaultValue,
     ListReportFeatures,
     ListReportTab,
+    SortOrderItem,
     TextAnnotationColumn
 } from '../types.js';
 import {
@@ -28,10 +30,13 @@ import {
     extractContactCardColumnsFromTableNode,
     extractTableColumnsFromTableNode,
     extractTextAnnotationColumnsFromNode,
+    extractTextAnnotationColumnsFromTableNode,
+    extractBoundColumnPropertiesFromTableNode,
     resolvePrimaryTableNode,
     resolveViewTableNodes
 } from './tableUtils.js';
-import type { ConvertedMetadata, EntitySet } from '@sap-ux/vocabularies-types';
+import type { TextAnnotationColumnCandidate } from './tableUtils.js';
+import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 import { parse, merge } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import {
@@ -45,11 +50,19 @@ import {
 } from './actionUtils.js';
 import type { PageWithModelV4 } from '@sap/ux-specification/dist/types/src/parser/application.js';
 import type { Manifest } from '@sap-ux/project-access';
-import type { DataFieldForAction } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
+import type {
+    DataFieldForAction,
+    PresentationVariantType,
+    SelectionVariantType,
+    SelectOptionType
+} from '@sap-ux/vocabularies-types/vocabularies/UI.js';
+import type { EntityTypeAnnotations_UI as EntityTypeAnnotationsUI } from '@sap-ux/vocabularies-types/vocabularies/UI_Edm.js';
 import { t } from '../i18n.js';
 
 export { checkButtonVisibility, safeCheckEditVisibility } from './actionUtils.js';
 export { safeCheckButtonVisibility };
+
+const SUPPORTED_OPERATORS = new Set(['EQ', 'BT', 'LE', 'GE', 'LT', 'GT', 'NE']);
 
 /**
  * Builds a button state object from button visibility result.
@@ -152,6 +165,361 @@ export function isALPFromManifest(manifest: Manifest, targetKey?: string): boole
 }
 
 /**
+ * Returns the `defaultTemplateAnnotationPath` from the manifest target's settings, if present.
+ *
+ * @param manifest - the application manifest
+ * @param targetKey - the routing target key for the List Report page
+ * @returns the annotation path string, or undefined if not configured
+ */
+function getDefaultTemplateAnnotationPath(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined
+): string | undefined {
+    if (!manifest || !targetKey) {
+        return undefined;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as FEV4ManifestTarget | undefined;
+    return target?.options?.settings?.defaultTemplateAnnotationPath;
+}
+
+/**
+ * Resolves raw text-annotation candidates into the template shape, deduplicating the text-property test
+ * per text target. Each candidate asserts its own code column and text target independently; when columns
+ * share a text target, only the first emits the text-property test (the rest set `skipTextPropertyTest`).
+ *
+ * @param candidates - raw candidates (one table or one tab)
+ * @param isAnalyticalTable - true when the view renders an AnalyticalTable, which cannot sort nav-path targets
+ * @returns the text-annotation columns to emit tests for
+ */
+function buildTextAnnotationColumns(
+    candidates: TextAnnotationColumnCandidate[],
+    isAnalyticalTable = false
+): TextAnnotationColumn[] {
+    const seenTextProperties = new Set<string>();
+    return candidates.map((candidate) => {
+        const skipTextPropertyTest = seenTextProperties.has(candidate.textProperty);
+        seenTextProperties.add(candidate.textProperty);
+        // An AnalyticalTable can only sort properties of the aggregated entity, not a nav-path target.
+        const textPropertyNotSortable = isAnalyticalTable && candidate.textProperty.includes('/');
+        return {
+            columnProperty: candidate.columnProperty,
+            textProperty: candidate.textProperty,
+            skipTextPropertyTest,
+            textPropertyNotSortable
+        };
+    });
+}
+
+/**
+ * Derives text-annotation candidates for a view by reading each bound column's `Common.Text` target off
+ * the shared entity type. Fallback for secondary multi-tab views, where `@sap/ux-specification` resolves
+ * `properties.text` only on the primary view but the annotation is in metadata for every view.
+ *
+ * @param columnProperties - the view's bound column property names (in column order)
+ * @param convertedMetadata - converted OData metadata, source of the `Common.Text` target
+ * @param entitySet - entity set backing the view (undefined yields no candidates)
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationCandidatesFromMetadata(
+    columnProperties: string[],
+    convertedMetadata: ConvertedMetadata,
+    entitySet: string | undefined
+): TextAnnotationColumnCandidate[] {
+    if (!entitySet) {
+        return [];
+    }
+    const resolvedEntitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySet);
+    const entityProperties = resolvedEntitySet?.entityType?.entityProperties;
+    if (!entityProperties) {
+        return [];
+    }
+    const candidates: TextAnnotationColumnCandidate[] = [];
+    for (const columnProperty of columnProperties) {
+        const property = entityProperties.find((p) => p.name === columnProperty);
+        const text = property?.annotations?.Common?.Text;
+        // `Common.Text` is a path expression at runtime; vocabularies-types widens it, so narrow via a guard.
+        const textPath =
+            text && typeof text === 'object' && 'type' in text && text.type === 'Path' && typeof text.path === 'string'
+                ? text.path
+                : undefined;
+        // "None" (any casing) is the spec-model sentinel for "no text annotation".
+        if (!textPath || textPath.toLowerCase() === 'none') {
+            continue;
+        }
+        candidates.push({ columnProperty, textProperty: textPath });
+    }
+    return candidates;
+}
+
+/**
+ * Resolves the PresentationVariant and SelectionVariant from the entity type annotations,
+ * following the fallback chain: qualified SPV/PV (via annotationPath) → unqualified SPV → unqualified PV/SV.
+ *
+ * @param entityType - the converted entity type to read annotations from
+ * @param annotationPath - optional full annotation path string (e.g. `UI.SelectionPresentationVariant#VAR2`)
+ * @returns the resolved presentationVariant and selectionVariant objects, or undefined for each if not found
+ */
+function resolveVariantAnnotation(
+    entityType: EntityType,
+    annotationPath?: string
+): { presentationVariant: PresentationVariantType | undefined; selectionVariant: SelectionVariantType | undefined } {
+    const ui = entityType.annotations.UI;
+    if (!ui) {
+        return { presentationVariant: undefined, selectionVariant: undefined };
+    }
+    if (annotationPath) {
+        return resolveVariantFromPath(ui, annotationPath);
+    }
+    const spv = ui.SelectionPresentationVariant;
+    if (spv) {
+        return { presentationVariant: spv.PresentationVariant, selectionVariant: spv.SelectionVariant };
+    }
+    return { presentationVariant: ui.PresentationVariant, selectionVariant: ui.SelectionVariant };
+}
+
+/**
+ * Resolves a variant annotation from a qualified annotationPath string.
+ *
+ * @param ui - the UI annotation map from the entity type
+ * @param annotationPath - the full annotation path (e.g. `UI.SelectionPresentationVariant#VAR2`)
+ * @returns the resolved presentationVariant and selectionVariant objects
+ */
+function resolveVariantFromPath(
+    ui: EntityTypeAnnotationsUI,
+    annotationPath: string
+): { presentationVariant: PresentationVariantType | undefined; selectionVariant: SelectionVariantType | undefined } {
+    const hashIndex = annotationPath.indexOf('#');
+    const qualifier = hashIndex >= 0 ? annotationPath.slice(hashIndex + 1) : undefined;
+    const term = annotationPath.slice(annotationPath.lastIndexOf('.') + 1, hashIndex >= 0 ? hashIndex : undefined);
+    const key = qualifier ? `${term}#${qualifier}` : term;
+    switch (term) {
+        case 'SelectionPresentationVariant': {
+            const spv = ui[key as 'SelectionPresentationVariant'];
+            return { presentationVariant: spv?.PresentationVariant, selectionVariant: spv?.SelectionVariant };
+        }
+        case 'PresentationVariant':
+            return { presentationVariant: ui[key as 'PresentationVariant'], selectionVariant: undefined };
+        case 'SelectionVariant': {
+            // A bare SV has no PV of its own; fall back to the unqualified PV for sort assertions.
+            const fallbackPV = ui.SelectionPresentationVariant?.PresentationVariant ?? ui.PresentationVariant;
+            return { presentationVariant: fallbackPV, selectionVariant: ui[key as 'SelectionVariant'] };
+        }
+        default:
+            return { presentationVariant: undefined, selectionVariant: undefined };
+    }
+}
+
+/**
+ * Extracts default sort order items from a PresentationVariant on the given entity set.
+ *
+ * @param convertedMetadata - converted OData metadata
+ * @param entitySetName - the entity set name
+ * @param annotationPath - optional annotationPath from the tab's view config (multi-tab)
+ * @returns array of sort order items, empty if no PV or no SortOrder defined
+ */
+export function getDefaultSortOrder(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    annotationPath?: string
+): SortOrderItem[] {
+    const entitySet = convertedMetadata.entitySets.find((es) => es.name === entitySetName);
+    const entityType = entitySet?.entityType as EntityType | undefined;
+    if (!entityType) {
+        return [];
+    }
+    const { presentationVariant } = resolveVariantAnnotation(entityType, annotationPath);
+    const sortOrder = presentationVariant?.SortOrder;
+    if (!sortOrder?.length) {
+        return [];
+    }
+    return sortOrder.flatMap((entry) => {
+        const property = entry.Property?.value;
+        if (!property) {
+            return [];
+        }
+        const desc = entry.Descending;
+        const descending = typeof desc === 'boolean' ? desc : desc?.valueOf?.() === true;
+        return [{ property, descending: !!descending }];
+    });
+}
+
+/**
+ * Extracts default filter values from a SelectionVariant on the given entity set (single-table LR only).
+ * Only Sign=I ranges are included. IsDigitSequence properties are zero-padded to maxLength.
+ * Supports EQ, BT, LE, GE, LT, GT, NE operators.
+ *
+ * @param convertedMetadata - converted OData metadata
+ * @param entitySetName - the entity set name
+ * @param annotationPath - optional annotationPath from the tab's view config (multi-tab)
+ * @returns array of filter default values, empty if no SV or no applicable ranges
+ */
+export function getDefaultFilterValues(
+    convertedMetadata: ConvertedMetadata,
+    entitySetName: string,
+    annotationPath?: string
+): FilterDefaultValue[] {
+    const entitySet = convertedMetadata.entitySets.find((es) => es.name === entitySetName);
+    const entityType = entitySet?.entityType as EntityType | undefined;
+    if (!entityType) {
+        return [];
+    }
+    const { selectionVariant } = resolveVariantAnnotation(entityType, annotationPath);
+    const selectOptions = selectionVariant?.SelectOptions;
+    if (!selectOptions?.length) {
+        return [];
+    }
+    return selectOptions.flatMap((option) => extractFilterItem(option, entityType));
+}
+
+/**
+ * Zero-pads a filter value to the property's maxLength when the property has Common.IsDigitSequence.
+ *
+ * @param val - the raw Low value from the SelectionRangeType
+ * @param propertyName - the OData property name
+ * @param entityType - the entity type to look up property metadata
+ * @returns the normalized value, zero-padded if the property is a digit sequence
+ */
+function normalizeFilterValue(val: string, propertyName: string, entityType: EntityType): string {
+    const prop = entityType.entityProperties.find((p) => p.name === propertyName);
+    const isDigitSeq = prop?.annotations.Common?.IsDigitSequence?.valueOf() === true;
+    const maxLength = prop?.maxLength;
+    return isDigitSeq && maxLength ? val.padStart(maxLength, '0') : val;
+}
+
+/**
+ * Extracts a single FilterDefaultValue from one SelectOptionType entry, or empty if no applicable range.
+ *
+ * @param selectOption - a SelectOptionType entry from the converted metadata
+ * @param entityType - the entity type to look up property metadata for normalization
+ * @returns array with one FilterDefaultValue if an applicable range is found, empty otherwise
+ */
+function extractFilterItem(selectOption: SelectOptionType, entityType: EntityType): FilterDefaultValue[] {
+    const propertyName = selectOption.PropertyName?.value;
+    if (!propertyName) {
+        return [];
+    }
+    const result: FilterDefaultValue[] = [];
+    for (const range of selectOption.Ranges ?? []) {
+        const sign = range.Sign?.split('/').pop();
+        const operator = range.Option?.split('/').pop();
+        if (sign !== 'I' || !operator || !SUPPORTED_OPERATORS.has(operator)) {
+            continue;
+        }
+        const low = range.Low != null ? String(range.Low) : undefined;
+        const high = range.High != null ? String(range.High) : undefined;
+        if (low === undefined || (operator === 'BT' && high === undefined)) {
+            continue;
+        }
+        const value = normalizeFilterValue(low, propertyName, entityType);
+        const item: FilterDefaultValue = { property: propertyName, value, ...(operator !== 'EQ' && { operator }) };
+        if (operator === 'BT') {
+            item.value2 = normalizeFilterValue(high ?? '', propertyName, entityType);
+        }
+        result.push(item);
+    }
+    return result;
+}
+
+/**
+ * Builds a single FilterBarItem, resolving i18n labels for custom filter fields via OData metadata.
+ *
+ * @param entry - the raw filter field entry with property name and description
+ * @param entry.property - the OData property name of the filter field
+ * @param entry.description - the rendered label of the filter field
+ * @param customFilterFieldProperties - set of property names declared as custom filter fields in the manifest
+ * @param convertedMetadata - optional converted OData metadata for label resolution
+ * @param entitySetName - the entity set name for metadata lookup
+ * @returns the resolved FilterBarItem
+ */
+function buildFilterBarItem(
+    entry: { property: string; description: string },
+    customFilterFieldProperties: Set<string>,
+    convertedMetadata: ConvertedMetadata | undefined,
+    entitySetName: string | undefined
+): FilterBarItem {
+    const custom = customFilterFieldProperties.has(entry.property);
+    let description = entry.description;
+    if (
+        custom &&
+        typeof description === 'string' &&
+        description.startsWith('{i18n>') &&
+        convertedMetadata &&
+        entitySetName
+    ) {
+        const resolved = getPropertyLabelFromMetadata(convertedMetadata, entitySetName, entry.property);
+        if (resolved) {
+            description = resolved;
+        }
+    }
+    return { property: entry.property, description, custom };
+}
+
+/**
+ * Parses and converts OData metadata, extracting button visibility, semantic key properties, and toolbar actions.
+ *
+ * @param metadata - raw metadata XML string
+ * @param entitySetName - the entity set name
+ * @param toolbarActions - raw toolbar action names to resolve
+ * @param log - optional logger
+ * @param annotationXmls - annotation XML documents to merge
+ * @returns converted metadata and extracted features, or empty defaults if parsing fails
+ */
+function convertMetadataFeatures(
+    metadata: string | undefined,
+    entitySetName: string | undefined,
+    toolbarActions: string[],
+    log: Logger | undefined,
+    annotationXmls: string[]
+): {
+    convertedMetadata: ConvertedMetadata | undefined;
+    buttonVisibility: ReturnType<typeof safeCheckButtonVisibility> | undefined;
+    semanticKeyProperties: string[] | undefined;
+    toolBarActions: ActionButtonState[];
+} {
+    if (!metadata || !entitySetName) {
+        return {
+            convertedMetadata: undefined,
+            buttonVisibility: undefined,
+            semanticKeyProperties: undefined,
+            toolBarActions: []
+        };
+    }
+    try {
+        // Merge local annotation files with the service metadata before converting. Each source must be parsed
+        // with a distinct fileId; otherwise merge treats them as the same file and later `Annotations` blocks
+        // overwrite (rather than complement) the metadata's property-level annotations.
+        const parsedAnnotations = annotationXmls.map((xml, index) => parse(xml, `annotationFile${index}`));
+        const rawMetadata = parsedAnnotations.length
+            ? merge(parse(metadata, 'metadata'), ...parsedAnnotations)
+            : parse(metadata);
+        const convertedMetadata = convert(rawMetadata);
+        // IsActionCritical is an annotation-only term surfaced by the merge above; read it off the
+        // already-converted metadata rather than re-parsing.
+        const criticalActions = collectCriticalActionNames(convertedMetadata);
+        return {
+            convertedMetadata,
+            buttonVisibility: safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log),
+            semanticKeyProperties: safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log),
+            toolBarActions: safeCheckActionButtonStates(
+                convertedMetadata,
+                entitySetName,
+                toolbarActions,
+                log,
+                criticalActions
+            )
+        };
+    } catch (error) {
+        log?.debug(`Failed to parse metadata: ${error instanceof Error ? error.message : String(error)}`);
+        return {
+            convertedMetadata: undefined,
+            buttonVisibility: undefined,
+            semanticKeyProperties: undefined,
+            toolBarActions: []
+        };
+    }
+}
+
+/**
  * Gets List Report features from the page model using ux-specification.
  *
  * @param listReportPage - the List Report page containing the tree model with feature definitions
@@ -174,67 +542,23 @@ export function getListReportFeatures(
     const filterFieldEntries = getFilterFieldItems(listReportPage.model, log);
     const customFilterFieldProperties = getCustomFilterFieldProperties(manifest, listReportPage.name);
 
-    let buttonVisibility: ReturnType<typeof safeCheckButtonVisibility> | undefined;
-    let semanticKeyProperties: string[] | undefined;
-    let toolBarActions: ReturnType<typeof safeCheckActionButtonStates> = [];
-    let convertedMetadata: ConvertedMetadata | undefined;
+    const {
+        convertedMetadata,
+        buttonVisibility,
+        semanticKeyProperties,
+        toolBarActions: metadataActions
+    } = convertMetadataFeatures(metadata, listReportPage.entitySet, toolbarActions, log, annotationXmls);
 
-    if (metadata && listReportPage.entitySet) {
-        const entitySetName = listReportPage.entitySet;
-        try {
-            // Merge local annotation files (e.g. UI.TextArrangement defined only in annotation.xml)
-            // with the service metadata before converting. Each source must be parsed with a distinct
-            // fileId; otherwise merge treats them as the same file and later `Annotations` blocks
-            // overwrite (rather than complement) the metadata's property-level annotations.
-            const parsedAnnotations = annotationXmls.map((xml, index) => parse(xml, `annotationFile${index}`));
-            const rawMetadata = parsedAnnotations.length
-                ? merge(parse(metadata, 'metadata'), ...parsedAnnotations)
-                : parse(metadata);
-            convertedMetadata = convert(rawMetadata);
-            // IsActionCritical is an annotation-only term surfaced by the merge above; read it off the
-            // already-converted metadata rather than re-parsing.
-            const criticalActions = collectCriticalActionNames(convertedMetadata);
-            buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySetName, log);
-            semanticKeyProperties = safeGetSemanticKeyProperties(convertedMetadata, entitySetName, log);
-            toolBarActions = safeCheckActionButtonStates(
-                convertedMetadata,
-                entitySetName,
-                toolbarActions,
-                log,
-                criticalActions
-            );
-        } catch (error) {
-            log?.debug(`Failed to parse metadata: ${error instanceof Error ? error.message : String(error)}`);
-        }
-    }
-
-    // Custom (manifest-declared) and menu (drop-down) toolbar actions have no OData counterpart in
-    // `safeCheckActionButtonStates` (which matches annotation actions by name). extractCustomToolBarActions
-    // adds custom actions (matched by label) and menu buttons with their child actions, without
-    // duplicating the annotation-backed actions already captured above.
+    let toolBarActions = metadataActions;
     toolBarActions = toolBarActions.concat(
         extractCustomToolBarActions(listReportPage.model, resolveLabel, convertedMetadata)
     );
 
     // Custom filter fields are matched by rendered label, so resolve unresolved i18n
     // placeholders via the property's OData `@Common.Label`.
-    const filterBarItems: FilterBarItem[] = filterFieldEntries.map((entry) => {
-        const custom = customFilterFieldProperties.has(entry.property);
-        let description = entry.description;
-        if (
-            custom &&
-            typeof description === 'string' &&
-            description.startsWith('{i18n>') &&
-            convertedMetadata &&
-            listReportPage.entitySet
-        ) {
-            const resolved = getPropertyLabelFromMetadata(convertedMetadata, listReportPage.entitySet, entry.property);
-            if (resolved) {
-                description = resolved;
-            }
-        }
-        return { property: entry.property, description, custom };
-    });
+    const filterBarItems: FilterBarItem[] = filterFieldEntries.map((entry) =>
+        buildFilterBarItem(entry, customFilterFieldProperties, convertedMetadata, listReportPage.entitySet)
+    );
 
     const filterBarProperties = filterBarItems.map((item) => item.property);
     const missingKeys =
@@ -247,19 +571,26 @@ export function getListReportFeatures(
                   )
             : undefined;
 
-    // Columns with a text annotation only get a sort-order test when their bound property also
-    // carries a UI.TextArrangement annotation (checked against the merged metadata), and the text
-    // (sort target) property is not hidden — a hidden property is not a sortable column.
+    // A maintained text annotation emits sort tests for both the code column and its text target.
     const meta = convertedMetadata;
+    const isAnalyticalTable = getViewTableType(manifest, listReportPage.name) === 'AnalyticalTable';
     const textAnnotationColumns: TextAnnotationColumn[] = meta
-        ? extractTextAnnotationColumnsFromNode(listReportPage.model.root)
-              .filter(
-                  (candidate) =>
-                      hasTextArrangement(meta, listReportPage.entitySet, candidate.columnProperty) &&
-                      !isHiddenProperty(meta, listReportPage.entitySet, candidate.textProperty)
-              )
-              .map((candidate) => ({ textProperty: candidate.textProperty }))
+        ? buildTextAnnotationColumns(extractTextAnnotationColumnsFromNode(listReportPage.model.root), isAnalyticalTable)
         : [];
+
+    const tabs = getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log);
+    const entitySet = listReportPage.entitySet ?? '';
+    const singleTableAnnotationPath = !tabs.length
+        ? getDefaultTemplateAnnotationPath(manifest, listReportPage.name)
+        : undefined;
+    const defaultSortOrder =
+        convertedMetadata && !tabs.length
+            ? getDefaultSortOrder(convertedMetadata, entitySet, singleTableAnnotationPath)
+            : [];
+    const defaultFilterValues =
+        convertedMetadata && !tabs.length
+            ? getDefaultFilterValues(convertedMetadata, entitySet, singleTableAnnotationPath)
+            : [];
 
     return {
         name: listReportPage.name,
@@ -270,13 +601,20 @@ export function getListReportFeatures(
         contactCardColumns: extractContactCardColumnsFromNode(listReportPage.model.root),
         toolBarActions,
         textAnnotationColumns,
+        columnPersonalizationSupported: isColumnPersonalizationEnabled(
+            manifest,
+            listReportPage.name,
+            listReportPage.contextPath
+        ),
         isALP: manifest ? isALPFromManifest(manifest, listReportPage.name) : false,
         tableIdentifiers: getTableIdentifiers(manifest, listReportPage.name),
-        tabs: getListReportTabs(listReportPage, convertedMetadata, manifest, resolveLabel, log),
+        tabs,
         semanticKey: {
             semanticKeyProperties,
             missingFromFilterBar: missingKeys?.length ? missingKeys : undefined
-        }
+        },
+        ...(defaultSortOrder.length && { defaultSortOrder }),
+        ...(defaultFilterValues.length && { defaultFilterValues })
     };
 }
 
@@ -409,6 +747,7 @@ export function getListReportTabs(
     }
     const viewNodes = resolveViewTableNodes(listReportPage.model.root);
     const nodeByKey = new Map(viewNodes.map((entry) => [entry.key, entry.node]));
+    const criticalActions = collectCriticalActionNames(convertedMetadata);
     const tabs: ListReportTab[] = [];
     views.forEach((view, index) => {
         // Match the spec-model view node by key; fall back to model order (both lists exclude custom tabs).
@@ -422,7 +761,13 @@ export function getListReportTabs(
         let deleteButton = buildButtonState();
         if (convertedMetadata && entitySet) {
             const actionNames = getToolBarActionItems(getToolBarActionsFromTableNode(tableNode));
-            toolBarActions = safeCheckActionButtonStates(convertedMetadata, entitySet, actionNames, log);
+            toolBarActions = safeCheckActionButtonStates(
+                convertedMetadata,
+                entitySet,
+                actionNames,
+                log,
+                criticalActions
+            );
             const buttonVisibility = safeCheckButtonVisibilityFromMetadata(convertedMetadata, entitySet, log);
             createButton = buildButtonState(buttonVisibility?.create);
             deleteButton = buildButtonState(buttonVisibility?.delete);
@@ -430,6 +775,26 @@ export function getListReportTabs(
         toolBarActions = toolBarActions.concat(
             extractCustomToolBarActionsFromTableNode(tableNode, resolveLabel, convertedMetadata)
         );
+        // Secondary tabs yield no spec-model candidates (only the primary view resolves `properties.text`),
+        // so fall back to the shared entity type's `Common.Text` metadata.
+        let textAnnotationColumns: TextAnnotationColumn[] = [];
+        if (convertedMetadata) {
+            let candidates = extractTextAnnotationColumnsFromTableNode(tableNode);
+            if (candidates.length === 0) {
+                candidates = extractTextAnnotationCandidatesFromMetadata(
+                    extractBoundColumnPropertiesFromTableNode(tableNode),
+                    convertedMetadata,
+                    entitySet
+                );
+            }
+            const isAnalyticalTable =
+                getViewTableType(manifest, listReportPage.name, view.annotationPath) === 'AnalyticalTable';
+            textAnnotationColumns = buildTextAnnotationColumns(candidates, isAnalyticalTable);
+        }
+        const defaultSortOrder =
+            convertedMetadata && entitySet
+                ? getDefaultSortOrder(convertedMetadata, entitySet, view.annotationPath)
+                : [];
         tabs.push({
             key: view.key,
             entitySet,
@@ -437,7 +802,14 @@ export function getListReportTabs(
             contactCardColumns: extractContactCardColumnsFromTableNode(tableNode),
             toolBarActions,
             createButton,
-            deleteButton
+            deleteButton,
+            textAnnotationColumns,
+            columnPersonalizationSupported: isViewColumnPersonalizationEnabled(
+                manifest,
+                listReportPage.name,
+                view.annotationPath
+            ),
+            ...(defaultSortOrder.length && { defaultSortOrder })
         });
     });
     return tabs;
@@ -540,6 +912,158 @@ export function getCustomFilterFieldProperties(
 }
 
 /**
+ * Finds the LineItem control-configuration entry for the default table.
+ *
+ * @param controlConfiguration - the target's `options.settings.controlConfiguration`
+ * @param contextPath - the page's context path (e.g. `/Travel`), used to match CAP-style prefixed keys
+ * @returns the matched LineItem control-configuration value, or undefined if it cannot be identified
+ */
+function findDefaultTableLineItemConfig(
+    controlConfiguration: Record<string, unknown>,
+    contextPath?: string
+): { tableSettings?: { personalization?: boolean | Record<string, unknown> } } | undefined {
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const isLineItemKey = (key: string): boolean => {
+        const segment = key.substring(key.lastIndexOf('/') + 1);
+        return segment === lineItemTerm || segment.startsWith(`${lineItemTerm}#`);
+    };
+    const lineItemKeys = Object.keys(controlConfiguration).filter(isLineItemKey);
+
+    let key: string | undefined;
+    if (lineItemKeys.length === 1) {
+        key = lineItemKeys[0];
+    } else if (contextPath) {
+        // Multiple LineItem keys: only resolve when exactly one is scoped to this page's context path.
+        const bareUnderContext = `${contextPath}/${lineItemTerm}`;
+        if (controlConfiguration[bareUnderContext]) {
+            key = bareUnderContext;
+        } else {
+            const underContext = lineItemKeys.filter((candidate) => candidate.startsWith(`${contextPath}/`));
+            key = underContext.length === 1 ? underContext[0] : undefined;
+        }
+    }
+
+    return key
+        ? (controlConfiguration[key] as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        : undefined;
+}
+
+/**
+ * Determines whether the List Report table exposes column personalization (the "Columns" adaptation dialog).
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param contextPath - the page's context path, used to resolve CAP-style prefixed LineItem keys
+ * @returns true if the column-adaptation dialog is available for the table
+ */
+export function isColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    contextPath?: string
+): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        | {
+              options?: {
+                  settings?: {
+                      controlConfiguration?: Record<string, unknown>;
+                  };
+              };
+          }
+        | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemConfig = findDefaultTableLineItemConfig(controlConfiguration, contextPath);
+    return interpretColumnPersonalization(lineItemConfig?.tableSettings?.personalization);
+}
+
+/**
+ * Interprets a `tableSettings.personalization` manifest value: a boolean is used directly; an object
+ * enables personalization only when `column === true`; `null`/`undefined` is the Fiori elements default (enabled).
+ *
+ * @param personalization - the raw `tableSettings.personalization` value
+ * @returns true if column personalization is enabled
+ */
+function interpretColumnPersonalization(personalization: boolean | Record<string, unknown> | undefined): boolean {
+    if (typeof personalization === 'boolean') {
+        return personalization;
+    }
+    if (typeof personalization === 'object' && personalization !== null) {
+        return personalization.column === true;
+    }
+    return true;
+}
+
+/**
+ * Resolves column personalization for a single multi-tab view, selecting the LineItem entry by the
+ * view's `annotationPath` qualifier and falling back to the unqualified `@…UI.v1.LineItem`.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param annotationPath - the view's `annotationPath` (its SV/SPV qualifier source)
+ * @returns true if the column-adaptation dialog is available for that view's table
+ */
+export function isViewColumnPersonalizationEnabled(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    annotationPath?: string
+): boolean {
+    if (!manifest || !targetKey) {
+        return true;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        { options?: { settings?: { controlConfiguration?: Record<string, unknown> } } } | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return true;
+    }
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const hashIndex = annotationPath?.indexOf('#') ?? -1;
+    const qualifier = hashIndex >= 0 ? annotationPath?.slice(hashIndex + 1) : undefined;
+    const entry =
+        (qualifier && controlConfiguration[`${lineItemTerm}#${qualifier}`]) ?? controlConfiguration[lineItemTerm];
+    const tableSettings = (entry as { tableSettings?: { personalization?: boolean | Record<string, unknown> } })
+        ?.tableSettings;
+    return interpretColumnPersonalization(tableSettings?.personalization);
+}
+
+/**
+ * Resolves a view's MDC table type (e.g. `GridTable`, `AnalyticalTable`, `ResponsiveTable`) from the
+ * manifest, using the same qualifier matching as {@link isViewColumnPersonalizationEnabled}.
+ *
+ * @param manifest - the application manifest (may be undefined)
+ * @param targetKey - routing target key of the List Report page
+ * @param annotationPath - the view's `annotationPath` (its SV/SPV qualifier source)
+ * @returns the configured table type, or undefined when none is set (MDC default is ResponsiveTable)
+ */
+export function getViewTableType(
+    manifest: Manifest | undefined,
+    targetKey: string | undefined,
+    annotationPath?: string
+): string | undefined {
+    if (!manifest || !targetKey) {
+        return undefined;
+    }
+    const target = manifest['sap.ui5']?.routing?.targets?.[targetKey] as
+        { options?: { settings?: { controlConfiguration?: Record<string, unknown> } } } | undefined;
+    const controlConfiguration = target?.options?.settings?.controlConfiguration;
+    if (!controlConfiguration || typeof controlConfiguration !== 'object') {
+        return undefined;
+    }
+    const lineItemTerm = '@com.sap.vocabularies.UI.v1.LineItem';
+    const hashIndex = annotationPath?.indexOf('#') ?? -1;
+    const qualifier = hashIndex >= 0 ? annotationPath?.slice(hashIndex + 1) : undefined;
+    const entry =
+        (qualifier && controlConfiguration[`${lineItemTerm}#${qualifier}`]) ?? controlConfiguration[lineItemTerm];
+    const type = (entry as { tableSettings?: { type?: unknown } })?.tableSettings?.type;
+    return typeof type === 'string' ? type : undefined;
+}
+
+/**
  * Determines the non-custom tab keys for a multi-tab List Report, used to target a specific
  * table via `onTable("<key>")`. Custom tabs (backed by an app fragment) are skipped as they
  * typically host no queryable table.
@@ -600,7 +1124,7 @@ export function getTableIdentifiers(manifest: Manifest | undefined, targetKey: s
 export function getListReportViews(
     manifest: Manifest | undefined,
     targetKey: string | undefined
-): { key: string; entitySet?: string }[] {
+): { key: string; entitySet?: string; annotationPath?: string }[] {
     if (!manifest || !targetKey) {
         return [];
     }
@@ -609,7 +1133,7 @@ export function getListReportViews(
     if (!Array.isArray(paths)) {
         return [];
     }
-    const views: { key: string; entitySet?: string }[] = [];
+    const views: { key: string; entitySet?: string; annotationPath?: string }[] = [];
     for (const path of paths) {
         if (
             path &&
@@ -617,7 +1141,7 @@ export function getListReportViews(
             path.key.length > 0 &&
             !(typeof path.template === 'string' && path.template.length > 0)
         ) {
-            views.push({ key: path.key, entitySet: path.entitySet });
+            views.push({ key: path.key, entitySet: path.entitySet, annotationPath: path.annotationPath });
         }
     }
     return views;
@@ -673,55 +1197,6 @@ export function isHiddenFilter(
     // metadata), so it is always truthy — `Boolean(x)` / `!== undefined` would treat an explicit
     // `HiddenFilter: false` as hidden. Coerce via `valueOf()` to read the underlying boolean.
     return property?.annotations?.UI?.HiddenFilter?.valueOf() === true;
-}
-
-/**
- * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.TextArrangement`
- * annotation nested on its `@com.sap.vocabularies.Common.v1.Text` annotation.
- *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property has a text arrangement annotation
- */
-export function hasTextArrangement(
-    convertedMetadata: ConvertedMetadata,
-    entitySetName: string | undefined,
-    propertyName: string
-): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // TextArrangement is a nested annotation on the Common.Text term (see vocabularies-types Common.Text).
-    return property?.annotations?.Common?.Text?.annotations?.UI?.TextArrangement !== undefined;
-}
-
-/**
- * Returns true if the property carries a `@com.sap.vocabularies.UI.v1.Hidden` annotation.
- * A hidden property is not exposed as a sortable column in the sort dialog, so it cannot be
- * used as a sort target.
- *
- * @param convertedMetadata - already-converted OData metadata (metadata merged with local annotations)
- * @param entitySetName - name of the entity set that owns the property (undefined → false)
- * @param propertyName - name of the property to inspect
- * @returns true if the property is hidden
- */
-export function isHiddenProperty(
-    convertedMetadata: ConvertedMetadata,
-    entitySetName: string | undefined,
-    propertyName: string
-): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    const entitySet = convertedMetadata.entitySets.find((es: EntitySet) => es.name === entitySetName);
-    const property = entitySet?.entityType?.entityProperties?.find((p) => p.name === propertyName);
-    // The converted `@UI.Hidden` value is a Boolean wrapper object (it carries annotation metadata),
-    // so it is always truthy — coerce via `valueOf()` to read the underlying boolean and treat an
-    // explicit `Hidden: false` as not hidden.
-    return property?.annotations?.UI?.Hidden?.valueOf() === true;
 }
 
 /**

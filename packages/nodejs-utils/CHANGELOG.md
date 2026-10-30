@@ -1,5 +1,29 @@
 # @sap-ux/nodejs-utils
 
+## 1.0.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade read-package-up 11.0.0 → 12.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+
+## 1.0.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+
 ## 1.0.10
 
 ### Patch Changes

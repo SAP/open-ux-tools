@@ -1,0 +1,45 @@
+{
+  "name": "namespace1.alp",
+  "version": "0.0.1",
+  "private": true,
+  "sapux": true,
+  "description": "This is my new Fiori elements application",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "scripts": {
+    "start_old": "ui5 serve --open test/flpSandbox.html#masterDetail-display --",
+    "build_old": "rimraf dist && ui5 build -a --include-task=generateCachebusterInfo",
+    "deploy_old": "echo to create a deployment config execute 'npx fiori add deploy-config'",
+    "start-mock_old": "ui5 serve --open test/flpSandboxMockServer.html#masterDetail-display --",
+    "start-local_old": "fiori run --config ./ui5-local.yaml --open \"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\"",
+    "start-noflp_old": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "start-variants-management_old": "fiori run --open \"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\"",
+    "deploy-config_old": "fiori add deploy-config",
+    "start": "fiori run --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#masterDetail-display\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\"",
+    "start-noflp": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "start-variants-management": "fiori run --open \"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\"",
+    "build": "ui5 build -a --clean-dest --include-task=generateCachebusterInfo",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
+    "start-mock": "fiori run --open \"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\""
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-consistent"
+    ]
+  },
+  "devDependencies": {
+    "@ui5/cli": "^4.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "6.0.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "1.2.9"
+  },
+  "sapuxLayer": "CUSTOMER_BASE"
+}

@@ -1,5 +1,73 @@
 # @sap-ux/axios-extension
 
+## 2.1.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Bug Fixes
+
+- Normalize ADT schema workspace to array to support older ABAP systems (e.g. ABAP 731) that return a single workspace object instead of an array [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+## 2.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+
+## 2.1.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+
+## 2.1.1
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Catch ParseError from xmldom 0.9 in getTransportRequestList to prevent unhandled exception on malformed XML responses [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Handle key-user changes with restricted views when importing them into an adaptation project — strip restrictions that cannot be represented in ADP, load the changes in the CLI (where the list prompt validation does not run) and warn in the terminal when imported changes have restricted views, and log in telemetry whether the user chose to import key-user changes [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
 ## 2.1.0
 
 ### Minor Changes

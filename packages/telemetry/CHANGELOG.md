@@ -1,5 +1,46 @@
 # @sap-ux/telemetry
 
+## 2.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+
+## 2.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+
+## 2.0.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 2.0.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+
 ## 2.0.9
 
 ### Patch Changes

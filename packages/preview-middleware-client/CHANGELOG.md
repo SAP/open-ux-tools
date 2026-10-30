@@ -1,5 +1,27 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.31
+
+## 1.2.30
+
+## 1.2.29
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.2.28
+
+## 1.2.27
+
+## 1.2.26
+
+## 1.2.25
+
+## 1.2.24
+
 ## 1.2.23
 
 ## 1.2.22

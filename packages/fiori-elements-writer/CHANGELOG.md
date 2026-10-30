@@ -1,5 +1,183 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.87
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.19.3 → 1.19.4
+
+## 3.1.86
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade read-package-up 11.0.0 → 12.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+- @sap-ux/annotation-generator 1.0.33 → 1.0.34
+- @sap-ux/cap-config-writer 1.0.45 → 1.0.46
+- @sap-ux/fe-fpm-writer 1.3.25 → 1.3.26
+- @sap-ux/ui5-test-writer 1.19.2 → 1.19.3
+
+## 3.1.85
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.19.1 → 1.19.2
+
+## 3.1.84
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.19.0 → 1.19.1
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+- @sap-ux/cap-config-writer 1.0.44 → 1.0.45
+
+## 3.1.83
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.18.3 → 1.19.0
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+- @sap-ux/fe-fpm-writer 1.3.25 → 1.3.25
+
+## 3.1.82
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.18.2 → 1.18.3
+
+## 3.1.81
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.6
+- @sap-ux/annotation-generator 1.0.32 → 1.0.33
+- @sap-ux/fe-fpm-writer 1.3.24 → 1.3.25
+- @sap-ux/cap-config-writer 1.0.43 → 1.0.44
+- @sap-ux/ui5-test-writer 1.18.1 → 1.18.2
+
+## 3.1.80
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.23 → 1.3.24
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/cap-config-writer 1.0.42 → 1.0.43
+- @sap-ux/ui5-test-writer 1.18.0 → 1.18.1
+
+## 3.1.79
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.17.0 → 1.18.0
+
+## 3.1.78
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/annotation-generator 1.0.31 → 1.0.32
+- @sap-ux/fe-fpm-writer 1.3.22 → 1.3.23
+
+## 3.1.77
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.16.3 → 1.17.0
+
+## 3.1.76
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.16.2 → 1.16.3
+
+## 3.1.75
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.5
+- @sap-ux/annotation-generator 1.0.30 → 1.0.31
+- @sap-ux/cap-config-writer 1.0.41 → 1.0.42
+- @sap-ux/fe-fpm-writer 1.3.21 → 1.3.22
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/ui5-test-writer 1.16.1 → 1.16.2
+
+## 3.1.74
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.20 → 1.3.21
+
+## 3.1.73
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.16.0 → 1.16.1
+
+## 3.1.72
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.15.7 → 1.16.0
+
+## 3.1.71
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.15.6 → 1.15.7
+
 ## 3.1.70
 
 ### Patch Changes

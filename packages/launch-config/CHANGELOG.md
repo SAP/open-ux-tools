@@ -1,5 +1,35 @@
 # @sap-ux/launch-config
 
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+
+## 1.0.25
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade yargs-parser 21.1.1 → 22.0.0 and mime-types 2.1.35 → 3.0.2 [[b896e07](https://github.com/SAP/open-ux-tools/commit/b896e07534ac03b2a227bfec4664d88ecc228857)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+
 ## 1.0.23
 
 ### Patch Changes

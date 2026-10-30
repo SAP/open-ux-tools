@@ -1,5 +1,37 @@
 # @sap-ux/odata-service-writer
 
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/mockserver-config-writer 1.0.23 → 1.0.24
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/mockserver-config-writer 1.0.22 → 1.0.23
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/mockserver-config-writer 1.0.21 → 1.0.22
+
 ## 1.0.24
 
 ### Patch Changes

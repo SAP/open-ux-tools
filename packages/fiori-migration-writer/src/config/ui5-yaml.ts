@@ -1,0 +1,218 @@
+/**
+ * Helper functions for generating UI5 YAML files during migration
+ * (ui5.yaml, ui5-local.yaml, ui5-mock.yaml)
+ *
+ * Uses modern @sap-ux/ui5-config API via adapter layer instead of EJS templates.
+ */
+
+import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
+import { updateFile } from '../utils/index.js';
+import { TemplateFileName } from '../index.js';
+import type { TemplateData, NeoappDestination, Message, Ui5MockYaml } from '../types.js';
+import { MigrationTypes } from '../utils/constants.js';
+import {
+    generateUI5YamlContent,
+    generateUI5LocalYamlContent,
+    generateUI5MockYamlContent
+} from '../adapters/ui5-config-adapter.js';
+
+/**
+ * Configuration for generating UI5 YAML files
+ */
+export interface UI5YamlGenerationConfig {
+    templateData: TemplateData;
+    neoappDestinations?: NeoappDestination[];
+    messages: Message[];
+    destination?: string;
+    firstNeoAppDestination?: string;
+    webappPath: string;
+    setUI5version: boolean;
+    rootPath: string;
+    strict?: boolean;
+}
+
+/**
+ * Configuration for generating UI5 local YAML files
+ */
+export interface UI5LocalYamlGenerationConfig {
+    templateData: TemplateData;
+    neoappDestinations?: NeoappDestination[];
+    messages: Message[];
+    destination?: string;
+    firstNeoAppDestination?: string;
+    webappPath: string;
+    rootPath: string;
+    strict?: boolean;
+}
+
+/**
+ * Configuration for generating UI5 mock YAML files
+ */
+export interface UI5MockYamlGenerationConfig {
+    templateData: TemplateData;
+    webappPath: string;
+    setUI5version: boolean;
+    rootPath: string;
+    hasDataSource: boolean;
+}
+
+/**
+ * Configuration for generating all UI5 YAML files
+ */
+export interface UI5YamlAllFilesConfig {
+    templateData: TemplateData;
+    neoappDestinations?: NeoappDestination[];
+    messages: Message[];
+    destination?: string;
+    firstNeoAppDestination?: string;
+    webappPath: string;
+    setUI5version: boolean;
+    rootPath: string;
+    hasDataSource: boolean;
+    strict?: boolean;
+}
+
+/**
+ * Generate and write ui5.yaml file using modern @sap-ux/ui5-config API
+ *
+ * @param fs - mem-fs editor
+ * @param config - Configuration object containing all required parameters
+ */
+export async function generateAndWriteUI5Yaml(fs: Editor, config: UI5YamlGenerationConfig): Promise<void> {
+    const {
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        setUI5version,
+        rootPath,
+        strict = false
+    } = config;
+
+    const ui5YamlContent = await generateUI5YamlContent({
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        setUI5Version: setUI5version,
+        strict
+    });
+
+    updateFile(fs, join(rootPath, TemplateFileName.UI5Yaml), ui5YamlContent);
+}
+
+/**
+ * Generate and write ui5-local.yaml file using modern @sap-ux/ui5-config API
+ *
+ * @param fs - mem-fs editor
+ * @param config - Configuration object containing all required parameters
+ */
+export async function generateAndWriteUI5LocalYaml(fs: Editor, config: UI5LocalYamlGenerationConfig): Promise<void> {
+    const {
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        rootPath,
+        strict = false
+    } = config;
+    // Only generate for regular projects, not library or extension projects
+    if (templateData.project.type !== MigrationTypes.project) {
+        return;
+    }
+
+    const ui5LocalYamlContent = await generateUI5LocalYamlContent({
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        strict
+    });
+
+    updateFile(fs, join(rootPath, TemplateFileName.UI5LocalYaml), ui5LocalYamlContent);
+}
+
+/**
+ * Generate and write ui5-mock.yaml file if required using modern @sap-ux/ui5-config API
+ *
+ * @param fs - mem-fs editor
+ * @param config - Configuration object containing all required parameters
+ */
+export async function generateAndWriteUI5MockYaml(fs: Editor, config: UI5MockYamlGenerationConfig): Promise<void> {
+    const { templateData, webappPath, setUI5version, rootPath, hasDataSource } = config;
+    if (!hasDataSource) {
+        return;
+    }
+
+    // Only generate if mockdataRootPath is configured
+    if (!(templateData.ui5Yaml as Partial<Ui5MockYaml>)?.mockdataRootPath) {
+        return;
+    }
+
+    const ui5MockYamlContent = await generateUI5MockYamlContent(templateData, webappPath, setUI5version);
+
+    updateFile(fs, join(rootPath, TemplateFileName.UI5MockYaml), ui5MockYamlContent);
+}
+
+/**
+ * Generate all UI5 YAML files (ui5.yaml, ui5-local.yaml, ui5-mock.yaml)
+ * using modern @sap-ux/ui5-config API
+ *
+ * @param fs - mem-fs editor
+ * @param config - Configuration object containing all required parameters
+ */
+export async function generateAllUI5YamlFiles(fs: Editor, config: UI5YamlAllFilesConfig): Promise<void> {
+    const {
+        templateData,
+        neoappDestinations,
+        messages,
+        destination,
+        firstNeoAppDestination,
+        webappPath,
+        setUI5version,
+        rootPath,
+        hasDataSource,
+        strict = false
+    } = config;
+
+    // Generate all YAML files in parallel for better performance
+    await Promise.all([
+        generateAndWriteUI5Yaml(fs, {
+            templateData,
+            neoappDestinations,
+            messages,
+            destination,
+            firstNeoAppDestination,
+            webappPath,
+            setUI5version,
+            rootPath,
+            strict
+        }),
+        generateAndWriteUI5LocalYaml(fs, {
+            templateData,
+            neoappDestinations,
+            messages,
+            destination,
+            firstNeoAppDestination,
+            webappPath,
+            rootPath,
+            strict
+        }),
+        generateAndWriteUI5MockYaml(fs, {
+            templateData,
+            webappPath,
+            setUI5version,
+            rootPath,
+            hasDataSource
+        })
+    ]);
+}

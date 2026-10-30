@@ -1,5 +1,38 @@
 # @sap-ux/project-access
 
+## 2.3.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Bug Fixes
+
+- export PackageJson namespace to resolve typescript-eslint no-unused-vars [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
+## 2.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/i18n 1.0.5 → 1.0.6
+
+## 2.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support `fallbackLocale` in i18n path resolution and bundle reading. `I18nPropertiesPaths` now includes optional `sap.app.fallbackLocale` and per-model `fallbackLocalePath` fields. `getI18nPropertiesPaths` extracts the fallback locale from `sap.app.i18n` and `sap.ui5.models[key].settings`. `getI18nBundles` merges fallback locale entries into the primary bundle so keys defined only in the fallback file no longer trigger a "not available" warning. New `createI18nEntriesAtPath` export allows writing to a caller-specified properties file path. [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
 ## 2.2.2
 
 ### Patch Changes

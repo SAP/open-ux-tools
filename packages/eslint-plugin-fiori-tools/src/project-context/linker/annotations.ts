@@ -11,7 +11,15 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { IndexedAnnotation, ParsedService } from '../parser/index.js';
 import { buildAnnotationIndexKey } from '../parser/index.js';
-import { UI_COLLECTION_FACET, UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constants.js';
+import {
+    UI_FIELD_GROUP,
+    UI_LINE_ITEM,
+    UI_CHART,
+    UI_DATA_FIELD_FOR_ANNOTATION,
+    UI_COLLECTION_FACET,
+    UI_PRESENTATION_VARIANT,
+    UI_SELECTION_PRESENTATION_VARIANT
+} from '../../constants.js';
 
 /**
  * index - Index of annotation
@@ -22,7 +30,7 @@ import { UI_COLLECTION_FACET, UI_FIELD_GROUP, UI_LINE_ITEM } from '../../constan
 type SectionConfig = {
     index: number;
     referencedEntityType: string;
-    id: string;
+    id?: string;
     qualifier?: string;
     sectionLabel?: string;
 };
@@ -57,7 +65,10 @@ export type HeaderSectionNode = AnnotationBasedNode<'header-section', FieldGroup
 export type TableNode = AnnotationBasedNode<'table'>;
 export type FieldGroupNode = AnnotationBasedNode<'field-group'>;
 
-export type AnnotationNode = TableSectionNode | TableNode | HeaderSectionNode | FieldGroupNode;
+// NOSONAR - ChartNode provides semantic meaning for code readability
+export type ChartNode = AnnotationBasedNode<'chart'>;
+
+export type AnnotationNode = TableSectionNode | TableNode | HeaderSectionNode | FieldGroupNode | ChartNode;
 export type NodeLookup = {
     [K in AnnotationNode['type']]?: Extract<AnnotationNode, { type: K }>[];
 };
@@ -228,11 +239,241 @@ export function collectSections(
     return sections;
 }
 
+/**
+ * Resolves an annotation path string to a `ChartNode` if it points to a `UI.Chart` annotation.
+ *
+ * @param entityType - The entity type from which the path is relative.
+ * @param annotationPath - The raw annotation path (e.g. `to_History/@UI.Chart#MicroChart`).
+ * @param aliasInfo - Alias information for resolving namespace prefixes.
+ * @param service - The parsed OData service.
+ * @returns A `ChartNode` if the path resolves to a `UI.Chart`, or `undefined` otherwise.
+ */
+function resolveChartAnnotation(
+    entityType: string,
+    annotationPath: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService
+): ChartNode | undefined {
+    const fullyQualifiedPath = toFullyQualifiedPath(
+        aliasInfo.aliasMap,
+        '',
+        parsePath(`/${entityType}/${annotationPath}`)
+    );
+    const atIdx = fullyQualifiedPath.indexOf('@');
+    if (atIdx === -1) {
+        return undefined;
+    }
+    const [term, qualifier] = fullyQualifiedPath.substring(atIdx + 1).split('#');
+    if (term !== UI_CHART) {
+        return undefined;
+    }
+    const referencedEntityType = getReferencedEntityType(aliasInfo, entityType, annotationPath, service);
+    if (!referencedEntityType) {
+        return undefined;
+    }
+    const indexKey = buildAnnotationIndexKey(referencedEntityType, UI_CHART);
+    const indexedAnnotation = service.index.annotations[indexKey]?.[qualifier ?? 'undefined'];
+    if (!indexedAnnotation) {
+        return undefined;
+    }
+    return {
+        type: 'chart',
+        annotation: indexedAnnotation,
+        annotationPath: toFullyQualifiedPath(
+            aliasInfo.aliasMap,
+            aliasInfo.currentFileNamespace,
+            parsePath(annotationPath)
+        ),
+        children: []
+    };
+}
+
+/**
+ * Inspects a single record from a `UI.LineItem` collection and, if it is a
+ * `DataFieldForAnnotation` whose `Target` resolves to `UI.Chart`, pushes a
+ * `ChartNode` onto `charts` (deduped by annotation identity).
+ *
+ * @param record - The `Edm.Record` element to inspect.
+ * @param entityType - The entity type from which the annotation path is relative.
+ * @param aliasInfo - Alias information for namespace resolution.
+ * @param service - The parsed OData service.
+ * @param charts - Accumulator for collected chart nodes.
+ */
+function collectChartFromLineItemRecord(
+    record: Element,
+    entityType: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService,
+    charts: ChartNode[]
+): void {
+    if (getRecordType(aliasInfo, record) !== UI_DATA_FIELD_FOR_ANNOTATION) {
+        return;
+    }
+    const path = getTargetAnnotationPath(record);
+    if (!path) {
+        return;
+    }
+    const chartNode = resolveChartAnnotation(entityType, path, aliasInfo, service);
+    if (chartNode && !charts.some((c) => c.annotation === chartNode.annotation)) {
+        charts.push(chartNode);
+    }
+}
+
+/**
+ * Collects chart nodes referenced from a `UI.LineItem` table annotation via
+ * `DataFieldForAnnotation.Target` → `UI.Chart`.
+ *
+ * @param tableNode - The table annotation node (from `page.lookup['table']`).
+ * @param service - The parsed OData service.
+ * @returns Array of chart nodes referenced from the table.
+ */
+export function collectChartsFromTableNode(tableNode: TableNode, service: ParsedService): ChartNode[] {
+    const charts: ChartNode[] = [];
+    const entityType = tableNode.annotation.target;
+    const [collection] = elementsWithName(Edm.Collection, tableNode.annotation.top.value);
+    if (!collection) {
+        return charts;
+    }
+    const aliasInfo = service.artifacts.aliasInfo[tableNode.annotation.top.uri];
+    for (const record of elementsWithName(Edm.Record, collection)) {
+        collectChartFromLineItemRecord(record, entityType, aliasInfo, service, charts);
+    }
+    return charts;
+}
+
+/**
+ * Collects chart nodes referenced from a `UI.FieldGroup` annotation via the `Data` collection's
+ * `DataFieldForAnnotation.Target` → `UI.Chart`.
+ *
+ * @param fieldGroupNode - The field group annotation node (from `page.lookup['field-group']`).
+ * @param service - The parsed OData service.
+ * @returns Array of chart nodes referenced from the field group.
+ */
+export function collectChartsFromFieldGroupNode(fieldGroupNode: FieldGroupNode, service: ParsedService): ChartNode[] {
+    const charts: ChartNode[] = [];
+    const entityType = fieldGroupNode.annotation.target;
+    const [record] = elementsWithName(Edm.Record, fieldGroupNode.annotation.top.value);
+    if (!record) {
+        return charts;
+    }
+    const dataPropertyValue = elementsWithName(Edm.PropertyValue, record).find(
+        (pv) => getElementAttributeValue(pv, Edm.Property) === 'Data'
+    );
+    if (!dataPropertyValue) {
+        return charts;
+    }
+    const [collection] = elementsWithName(Edm.Collection, dataPropertyValue);
+    if (!collection) {
+        return charts;
+    }
+    const aliasInfo = service.artifacts.aliasInfo[fieldGroupNode.annotation.top.uri];
+    for (const dataRecord of elementsWithName(Edm.Record, collection)) {
+        collectChartFromLineItemRecord(dataRecord, entityType, aliasInfo, service, charts);
+    }
+    return charts;
+}
+
 const findContentByName = (content: ElementChild[], name: string): ElementChild | undefined =>
     content.find((c) => (c as Element).name === name);
 
-const getElementText = (element: ElementChild): string | undefined =>
+export const getElementText = (element: ElementChild): string | undefined =>
     (element as Element).content?.find((c) => c.type === 'text')?.text;
+
+/**
+ * Searches a `UI.PresentationVariant` annotation's `Visualizations` collection for the first
+ * visualization that Fiori Elements recognises (`UI.LineItem` or `UI.Chart`).
+ *
+ * Extracts the record from the indexed annotation and delegates to {@link findLineItemInPvRecord}.
+ *
+ * @param pvAnnotation - The indexed `UI.PresentationVariant` annotation to inspect.
+ * @param pvAliasInfo - Alias information for the file that contains the PresentationVariant.
+ * @returns The fully-qualified annotation path and an optional qualifier when the first recognised
+ *   visualization is a `UI.LineItem`, or `undefined` otherwise.
+ */
+function findLineItemInVisualization(
+    pvAnnotation: IndexedAnnotation,
+    pvAliasInfo: AliasInformation
+): { path: string; qualifier: string | undefined } | undefined {
+    const [pvRecord] = elementsWithName(Edm.Record, pvAnnotation.top.value);
+    if (!pvRecord) {
+        return undefined;
+    }
+    return findLineItemInPvRecord(pvRecord, pvAliasInfo);
+}
+
+/**
+ * Extracts the first recognised visualization path from an inline `UI.PresentationVariant` record.
+ *
+ * Used for `UI.SelectionPresentationVariant` where the `PresentationVariant` property is always an
+ * inline Record (never separately indexed).
+ *
+ * Unknown visualization types are skipped; the search stops at the first recognised term
+ * (`UI.LineItem` or `UI.Chart`). This mirrors Fiori Elements' own resolution order:
+ * `[CardItem, LineItem]` produces a table, `[CardItem, Chart, LineItem]` produces a chart.
+ *
+ * @param pvRecord - The `UI.PresentationVariantType` Record element to inspect.
+ * @param pvAliasInfo - Alias information for the file that contains the record.
+ * @returns The fully-qualified annotation path and optional qualifier when the first recognised
+ *   visualization is a `UI.LineItem`, or `undefined` otherwise.
+ */
+function findLineItemInPvRecord(
+    pvRecord: Element,
+    pvAliasInfo: AliasInformation
+): { path: string; qualifier: string | undefined } | undefined {
+    const vizPropValue = getPropertyValueElement(pvRecord, 'Visualizations');
+    if (!vizPropValue) {
+        return undefined;
+    }
+    const [vizCollection] = elementsWithName(Edm.Collection, vizPropValue);
+    if (!vizCollection) {
+        return undefined;
+    }
+    for (const vizElement of elementsWithName(Edm.AnnotationPath, vizCollection)) {
+        const vizPath = getElementText(vizElement);
+        if (!vizPath) {
+            continue;
+        }
+        const atIdx = vizPath.indexOf('@');
+        if (atIdx === -1) {
+            continue;
+        }
+        const [termAlias, qualifier] = vizPath.substring(atIdx + 1).split('#');
+        const fullyQualifiedTerm = toFullyQualifiedName(
+            pvAliasInfo.aliasMap,
+            pvAliasInfo.currentFileNamespace,
+            parseIdentifier(termAlias)
+        );
+        if (fullyQualifiedTerm === UI_LINE_ITEM) {
+            const qualifierSuffix = qualifier ? `#${qualifier}` : '';
+            return {
+                path: `${vizPath.substring(0, atIdx + 1)}${fullyQualifiedTerm}${qualifierSuffix}`,
+                qualifier
+            };
+        }
+        if (fullyQualifiedTerm === UI_CHART) {
+            return undefined;
+        }
+        // Unknown term — skip and check next visualization
+    }
+    return undefined;
+}
+
+/**
+ * Extracts the section label from a `UI.ReferenceFacet` record's `Label` property value.
+ *
+ * @param record - The `UI.ReferenceFacet` Record element to inspect.
+ * @returns The label string, or `undefined` if no label is present.
+ */
+function getSectionLabelFromRecord(record: Element): string | undefined {
+    const propValues = elementsWithName(Edm.PropertyValue, record);
+    const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
+    let sectionLabel = propValue ? getElementAttribute(propValue, Edm.String)?.value : undefined;
+    if (!sectionLabel) {
+        const textContent = findContentByName(propValue?.content ?? [], Edm.String);
+        sectionLabel = textContent ? getElementText(textContent) : undefined;
+    }
+    return sectionLabel;
+}
 
 /**
  * Process a single reference facet record and create a table or header section if applicable.
@@ -260,7 +501,7 @@ function processReferenceFacetRecord(
     const id = getId(record);
     const annotationPath = getTargetAnnotationPath(record);
 
-    if (!id || !annotationPath) {
+    if (!annotationPath) {
         return undefined;
     }
 
@@ -282,13 +523,7 @@ function processReferenceFacetRecord(
     const [, _annotationPath] = fullyQualifiedPath.split('@');
     const [term, qualifier] = _annotationPath.split('#');
 
-    const propValues = elementsWithName(Edm.PropertyValue, record);
-    const propValue = propValues.find((p) => p.attributes.Property?.value === 'Label');
-    let sectionLabel = propValue ? getElementAttribute(propValue, Edm.String)?.value : undefined;
-    if (!sectionLabel) {
-        const textContent = findContentByName(propValue?.content ?? [], Edm.String);
-        sectionLabel = textContent ? getElementText(textContent) : undefined;
-    }
+    const sectionLabel = getSectionLabelFromRecord(record);
     if (term === UI_LINE_ITEM) {
         return createTableSection(
             facets,
@@ -309,7 +544,88 @@ function processReferenceFacetRecord(
         );
     }
 
+    if (term === UI_PRESENTATION_VARIANT) {
+        const pvKey = buildAnnotationIndexKey(referencedEntityType, UI_PRESENTATION_VARIANT);
+        const pvAnnotation = service.index.annotations[pvKey]?.[qualifier ?? 'undefined'];
+        if (!pvAnnotation) {
+            return undefined;
+        }
+        const pvAliasInfo = service.artifacts.aliasInfo[pvAnnotation.top.uri];
+        const lineItemViz = findLineItemInVisualization(pvAnnotation, pvAliasInfo);
+        if (!lineItemViz) {
+            return undefined;
+        }
+        const navPrefix = annotationPath.substring(0, annotationPath.indexOf('@'));
+        return createTableSection(
+            facets,
+            { index, referencedEntityType, qualifier: lineItemViz.qualifier, sectionLabel, id },
+            `${navPrefix}${lineItemViz.path}`,
+            aliasInfo,
+            service
+        );
+    }
+
+    if (term === UI_SELECTION_PRESENTATION_VARIANT) {
+        return createTableSectionFromSpv(
+            facets,
+            { index, referencedEntityType, qualifier, sectionLabel, id },
+            annotationPath,
+            aliasInfo,
+            service
+        );
+    }
+
     return undefined;
+}
+
+/**
+ * Resolve a `UI.SelectionPresentationVariant` target to a `TableSectionNode` by following
+ * the inline `PresentationVariant` property to its first `UI.LineItem` visualization.
+ *
+ * @param facets - The facets annotation being processed.
+ * @param config - Section configuration derived from the `UI.ReferenceFacet` record.
+ * @param annotationPath - The raw annotation path from the facet's `Target` property.
+ * @param aliasInfo - Alias information for the file that contains the facet.
+ * @param service - The parsed OData service.
+ * @returns A `TableSectionNode`, or `undefined` if the SPV cannot be resolved to a `UI.LineItem`.
+ */
+function createTableSectionFromSpv(
+    facets: IndexedAnnotation,
+    config: SectionConfig,
+    annotationPath: string,
+    aliasInfo: AliasInformation,
+    service: ParsedService
+): TableSectionNode | undefined {
+    const spvKey = buildAnnotationIndexKey(config.referencedEntityType, UI_SELECTION_PRESENTATION_VARIANT);
+    const spvAnnotation = service.index.annotations[spvKey]?.[config.qualifier ?? 'undefined'];
+    if (!spvAnnotation) {
+        return undefined;
+    }
+    const spvAliasInfo = service.artifacts.aliasInfo[spvAnnotation.top.uri];
+    const [spvRecord] = elementsWithName(Edm.Record, spvAnnotation.top.value);
+    if (!spvRecord) {
+        return undefined;
+    }
+    const pvPropValue = getPropertyValueElement(spvRecord, 'PresentationVariant');
+    if (!pvPropValue) {
+        return undefined;
+    }
+    const [pvRecord] = elementsWithName(Edm.Record, pvPropValue);
+    if (!pvRecord) {
+        return undefined;
+    }
+    const lineItemViz = findLineItemInPvRecord(pvRecord, spvAliasInfo);
+    if (!lineItemViz) {
+        return undefined;
+    }
+    const navPrefix = annotationPath.substring(0, annotationPath.indexOf('@'));
+    return createTableSection(
+        facets,
+        { ...config, qualifier: lineItemViz.qualifier },
+        `${navPrefix}${lineItemViz.path}`,
+        aliasInfo,
+        service
+    );
 }
 
 /**
@@ -533,8 +849,36 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
     if (!entity) {
         return undefined;
     }
+    const resolved = resolveNavigationProperties(entity, segments);
+    if (resolved) {
+        return resolved;
+    }
+    // Fallback: when entity set content doesn't carry nav properties directly (e.g. V4 metadata
+    // where nav props live on the entity type), resolve through the structured type instead.
+    const structuredType = entity.structuredType;
+    if (!structuredType) {
+        return;
+    }
+    const entityType = service.artifacts.metadataService.getMetadataElement(structuredType);
+    return entityType ? resolveNavigationProperties(entityType, segments) : undefined;
+}
 
-    return resolveNavigationProperties(entity, segments);
+export function getEntityTypeForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
+    if (!contextPath.startsWith('/')) {
+        return;
+    }
+    const path = contextPath.substring(1);
+    const [entityTypeName, ...segments] = path.split('/');
+    if (!entityTypeName) {
+        return;
+    }
+    const entityType =
+        service.index.entityTypes[entityTypeName] ??
+        service.index.entityTypes[entityTypeName.split('.').pop() ?? entityTypeName];
+    if (!entityType) {
+        return undefined;
+    }
+    return resolveNavigationProperties(entityType, segments);
 }
 
 /**
@@ -543,7 +887,7 @@ export function getEntityForContextPath(contextPath: string, service: ParsedServ
  * @param root - The starting metadata element
  * @param segments - Array of navigation property names to traverse
  */
-function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
+export function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
     if (segments.length === 0) {
         return root;
     }
@@ -570,12 +914,36 @@ export interface ObjectPageLike {
 }
 
 /**
- * Links an object page header section with its field group annotation.
- * Used by both FE v2 and v4 linkers.
+ * Collects chart nodes from a page's linked table and field-group lookup entries and adds them
+ * to `page.lookup['chart']`. Must be called after the table and field-group linker steps so
+ * that only charts actually displayed on the page are collected.
  *
- * @param section - Header section node to link
- * @param page - The object page being linked
+ * @param page - Object with a `lookup` map; satisfied by both LR and OP page types.
+ * @param page.lookup - Object holding page elements.
+ * @param service - The parsed OData service.
  */
+export function collectPageCharts(
+    page: { lookup: { [key: string]: any[] | undefined } },
+    service: ParsedService
+): void {
+    for (const tableEntry of (page.lookup['table'] ?? []) as Array<{ annotation?: TableNode }>) {
+        if (tableEntry.annotation) {
+            for (const chartNode of collectChartsFromTableNode(tableEntry.annotation, service)) {
+                page.lookup['chart'] ??= [];
+                page.lookup['chart']!.push({ type: 'chart', annotation: chartNode, configuration: {}, children: [] });
+            }
+        }
+    }
+    for (const fieldGroupEntry of (page.lookup['field-group'] ?? []) as Array<{ annotation?: FieldGroupNode }>) {
+        if (fieldGroupEntry.annotation) {
+            for (const chartNode of collectChartsFromFieldGroupNode(fieldGroupEntry.annotation, service)) {
+                page.lookup['chart'] ??= [];
+                page.lookup['chart']!.push({ type: 'chart', annotation: chartNode, configuration: {}, children: [] });
+            }
+        }
+    }
+}
+
 export function collectHeaderSections(section: HeaderSectionNode, page: ObjectPageLike): void {
     if (section.type !== 'header-section') {
         return;

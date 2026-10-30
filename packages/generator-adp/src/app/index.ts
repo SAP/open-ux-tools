@@ -344,7 +344,10 @@ export default class extends Generator {
                     this.logger
                 );
                 const keyUserQuestions = this.keyUserPrompter.getPrompts({
-                    keyUserSystem: { default: this.configAnswers.system }
+                    keyUserSystem: { default: this.configAnswers.system },
+                    keyUserSystemValidationCli: { hide: !this.isCli },
+                    keyUserAdaptationValidationCli: { hide: !this.isCli },
+                    keyUserRestrictedViewsLabel: { hide: this.isCli }
                 });
                 await this.prompt(keyUserQuestions);
             }
@@ -491,6 +494,12 @@ export default class extends Generator {
                 });
         }
 
+        if (this.isCli && this.keyUserPrompter?.detectRestrictedViews()) {
+            this.logger.warn(
+                `${t('prompts.keyUserRestrictedViewsLabel')} ${t('prompts.keyUserRestrictedViewsDocLink')}`
+            );
+        }
+
         if (this.isCli || this.isCfEnv || this.shouldCreateExtProject) {
             return;
         }
@@ -546,7 +555,10 @@ export default class extends Generator {
             wasFlpConfigDone: this.attributeAnswers?.addFlpConfig ?? false,
             wasTypeScriptChosen: this.attributeAnswers?.enableTypeScript ?? false,
             wasDeployConfigDone: this.attributeAnswers?.addDeployConfig ?? false,
-            wasExtProjectGenerated: this.shouldCreateExtProject ?? false
+            wasExtProjectGenerated: this.shouldCreateExtProject ?? false,
+            wereKeyUserChangesImported: this.jsonInput
+                ? !!this.jsonInputFile?.keyUserChanges?.length
+                : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {
             telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';

@@ -1,5 +1,41 @@
 # @sap-ux/ui-prompting
 
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- Allow consumers to prevent translation callout focus restoration on accept so external file pickers retain focus. [[b824f0e](https://github.com/SAP/open-ux-tools/commit/b824f0e18aa129fd8d15828b25c5762d3234359b)]
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.17 → 3.0.18
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.16 → 3.0.17
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.15 → 3.0.16
+
 ## 1.0.16
 
 ### Patch Changes

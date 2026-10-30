@@ -1,5 +1,131 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.85
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.73 → 1.0.74
+- @sap-ux/odata-service-inquirer 3.2.28 → 3.2.28
+
+## 1.0.84
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.27 → 3.2.28
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/abap-deploy-config-sub-generator 1.0.72 → 1.0.73
+- @sap-ux/deploy-config-generator-shared 1.0.45 → 1.0.46
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/cf-deploy-config-sub-generator 1.0.56 → 1.0.57
+
+## 1.0.83
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-26
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.71 → 1.0.72
+- @sap-ux/odata-service-inquirer 3.2.27 → 3.2.27
+
+## 1.0.82
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/abap-deploy-config-sub-generator 1.0.70 → 1.0.71
+- @sap-ux/cf-deploy-config-sub-generator 1.0.55 → 1.0.56
+- @sap-ux/deploy-config-generator-shared 1.0.44 → 1.0.45
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/odata-service-inquirer 3.2.26 → 3.2.27
+
+## 1.0.81
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/odata-service-inquirer 3.2.25 → 3.2.26
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/deploy-config-generator-shared 1.0.43 → 1.0.44
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/abap-deploy-config-sub-generator 1.0.69 → 1.0.70
+- @sap-ux/cf-deploy-config-sub-generator 1.0.54 → 1.0.55
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.0.80
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.68 → 1.0.69
+- @sap-ux/deploy-config-generator-shared 1.0.42 → 1.0.43
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/odata-service-inquirer 3.2.24 → 3.2.25
+- @sap-ux/cf-deploy-config-sub-generator 1.0.53 → 1.0.54
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
+## 1.0.79
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/abap-deploy-config-sub-generator 1.0.67 → 1.0.68
+- @sap-ux/cf-deploy-config-sub-generator 1.0.52 → 1.0.53
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/odata-service-inquirer 3.2.23 → 3.2.24
+- @sap-ux/deploy-config-generator-shared 1.0.41 → 1.0.42
+
+## 1.0.78
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.66 → 1.0.67
+- @sap-ux/odata-service-inquirer 3.2.23 → 3.2.23
+
+## 1.0.77
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.51 → 1.0.52
+
 ## 1.0.76
 
 ### Patch Changes

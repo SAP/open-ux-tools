@@ -1,0 +1,17 @@
+{
+  "name": "multi_destination_ovp",
+  "version": "0.0.1",
+  "description": "",
+  "devDependencies": {
+    "@ui5/cli": "1.13.0",
+    "@sap/ui5-builder-webide-extension": "1.0.x"
+  },
+  "scripts": {
+    "build": "ui5 build --clean-dest --include-task=generateCachebusterInfo"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ui5-builder-webide-extension"
+    ]
+  }
+}

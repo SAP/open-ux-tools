@@ -1,0 +1,12 @@
+{
+    "name": "@sap-ux/fiori-tools-plugin",
+    "version": "1.16.7",
+    "private": true,
+    "description": "Coding agent plugin assets (skills) for SAP Fiori Tools",
+    "scripts": {
+        "lint": "node ./scripts/lint-skills.mjs"
+    },
+    "devDependencies": {
+        "@microsoft/vally": "0.18.0"
+    }
+}

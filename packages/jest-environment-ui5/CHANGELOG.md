@@ -1,5 +1,17 @@
 # Change Log
 
+## 6.0.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade jest-environment-jsdom ^29.7.0 → 30.5.2 [[1510874](https://github.com/SAP/open-ux-tools/commit/1510874113644504b53d073aa7b3695effea8178)]
+
 ## 6.0.1
 
 ### Patch Changes
