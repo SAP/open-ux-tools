@@ -10,8 +10,8 @@
             "filterEntityType": "Filter Entity Type",
             "navigationEntity": "Navigation Entity",
             "sapSystemType": {
-                "onPrem": "ABAP On-Premise",
-                "abapCloud": "ABAP Cloud"
+                "ON_PREM": "ABAP On-Premise",
+                "ABAP_CLOUD": "ABAP Cloud"
             },
             "datasourceType": {
                 "sapSystem": "SAP System",
