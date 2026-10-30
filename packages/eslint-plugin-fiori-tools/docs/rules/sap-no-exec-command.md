@@ -16,9 +16,7 @@ document.execCommand(cmd, false, args);
 document['execCommand'](cmd, false, args);
 ```
 
-## Bug report
+## Bug Report
 
 In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
-
-## Further Reading
 

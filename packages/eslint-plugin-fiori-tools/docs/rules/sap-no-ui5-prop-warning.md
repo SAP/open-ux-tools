@@ -24,3 +24,7 @@ In such a case you can disable the check in your coding like this:
 /* eslint-enable sap-no-ui5-prop-warning*/
 
 ```
+
+## Bug Report
+
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
