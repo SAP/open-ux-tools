@@ -4,7 +4,7 @@
 import { join } from 'node:path';
 import { parse } from 'yaml';
 import type { Editor } from 'mem-fs-editor';
-import { DirName, FileName } from '../../project-spec-types.js';
+import { DirName, FileName } from '@sap-ux/project-access';
 import { fileExists, readJSON } from '../../index.js';
 import { readFile } from '../../utils/file-access.js';
 import { sapWattCommonSetting } from '../../types.js';
@@ -69,7 +69,7 @@ async function resolveFromCheProjectJson(fs: Editor, projectRoot: string): Promi
  */
 function resolveFromUi5Yaml(fs: Editor, projectRoot: string): string | undefined {
     try {
-        const yamlContent = readFile(fs, join(projectRoot, FileName.UI5Yaml));
+        const yamlContent = readFile(fs, join(projectRoot, FileName.Ui5Yaml));
         return parse(yamlContent)?.resources?.configuration?.paths?.webapp;
     } catch (error: unknown) {
         // File not found or invalid YAML, skip

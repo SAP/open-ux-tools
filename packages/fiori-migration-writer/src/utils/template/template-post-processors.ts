@@ -1,7 +1,7 @@
 import type { Data } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { TemplateFileName } from '../../index.js';
-import { FileName } from '../../project-spec-types.js';
+import { FileName } from '@sap-ux/project-access';
 import { handleGitIgnoreFile, handlePackageJsonFile, handleLocateReuseLibsFile } from '../template-generators/index.js';
 
 // Package.json template name

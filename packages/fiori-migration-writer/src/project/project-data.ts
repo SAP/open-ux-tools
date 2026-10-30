@@ -41,15 +41,26 @@ export function prepareSanitizedNames(
  * Generate unique SAP UI libraries string
  *
  * @param isSAPApp
- * @param floorPlan
+ * @param floorPlan - TemplateType value (e.g., 'lrop', 'worklist', 'alp', 'ovp')
  * @param sapLibs
+ * @param odataVersion - OData version to distinguish V2 vs V4 library requirements
  */
 export function generateSapUiLibsString(
     isSAPApp: boolean,
     floorPlan: string,
-    sapLibs: string
+    sapLibs: string,
+    odataVersion?: ODataVersion
 ): { sapUiLibs: string; baseUiLibsStr: string } {
-    const baseUiLibsStr: string = isSAPApp ? SapUiLibs.SAPApp : SapUiLibs[floorPlan] || SapUiLibs.generic;
+    let baseUiLibsStr: string;
+
+    if (isSAPApp) {
+        baseUiLibsStr = SapUiLibs.SAPApp;
+    } else if (floorPlan === 'lrop' && odataVersion === ODataVersion.v4) {
+        // For V4 ListReportObjectPage, use FE templates instead of smart templates
+        baseUiLibsStr = 'sap.m, sap.ushell, sap.fe.templates';
+    } else {
+        baseUiLibsStr = SapUiLibs[floorPlan] || SapUiLibs.generic;
+    }
 
     const sapUiLibs = baseUiLibsStr
         .concat(sapLibs ? ',' + sapLibs : '')
@@ -201,7 +212,8 @@ export function prepareProjectAndServiceData(
         floorPlan = '',
         sapLibs = '',
         sapClient,
-        ui5Version
+        ui5Version,
+        odataVersion
     } = projectInfo;
 
     // Prepare sanitized names
@@ -209,7 +221,7 @@ export function prepareProjectAndServiceData(
         prepareSanitizedNames(moduleName, namespace);
 
     // Generate SAP UI libs string
-    const { sapUiLibs, baseUiLibsStr } = generateSapUiLibsString(isSAPApp, floorPlan, sapLibs);
+    const { sapUiLibs, baseUiLibsStr } = generateSapUiLibsString(isSAPApp, floorPlan, sapLibs, odataVersion);
 
     // Get project UI5 version
     const projectUI5Version = getUI5Version(ui5Version || '');

@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import type { FioriElementsVersion } from '../project-spec-types.js';
 import type { Editor } from 'mem-fs-editor';
-import { DirName } from '../project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import { TemplateFileName } from '../index.js';
 import { trueCasePath } from 'true-case-path';
 import { getBaseTemplatesMap, isGenerateIndex } from '../utils/index.js';

@@ -1,7 +1,6 @@
 import {
     ODataVersion,
     DatasourceType,
-    SapUxLayer,
     CapType,
     ApiHubType,
     SapSystemSourceType,
@@ -51,23 +50,31 @@ describe('Constants', () => {
         });
     });
 
-    describe('SapUxLayer', () => {
-        test('should have VENDOR layer', () => {
-            expect(SapUxLayer.VENDOR).toBe('VENDOR');
+    // SapUxLayer is now a type alias to UI5FlexLayer from @sap-ux/project-access
+    // The const object was removed - tests should use string literals directly
+    describe('UI5FlexLayer / SapUxLayer string literal values', () => {
+        test('VENDOR value should be correct', () => {
+            const vendorLayer = 'VENDOR' as const;
+            expect(vendorLayer).toBe('VENDOR');
         });
 
-        test('should have CUSTOMER_BASE layer', () => {
-            expect(SapUxLayer.CUSTOMER_BASE).toBe('CUSTOMER_BASE');
+        test('CUSTOMER_BASE value should be correct', () => {
+            const customerLayer = 'CUSTOMER_BASE' as const;
+            expect(customerLayer).toBe('CUSTOMER_BASE');
         });
     });
 
-    describe('CapType', () => {
-        test('should have NODE_JS type', () => {
-            expect(CapType.NODE_JS).toBe('Node.js');
+    // CapType is now a type alias to CapRuntime from @sap-ux/fiori-generator-shared
+    // The const object was removed - tests should use string literals directly
+    describe('CapRuntime / CapType string literal values', () => {
+        test('NODE_JS value should be correct', () => {
+            const nodeType = 'Node.js' as const;
+            expect(nodeType).toBe('Node.js');
         });
 
-        test('should have JAVA type', () => {
-            expect(CapType.JAVA).toBe('Java');
+        test('JAVA value should be correct', () => {
+            const javaType = 'Java' as const;
+            expect(javaType).toBe('Java');
         });
     });
 

@@ -5,7 +5,8 @@ import {
     prepareProjectAndServiceData,
     prepareSanitizedNames
 } from '../../../src/project/project-data.js';
-import { DatasourceType, ODataVersion, type ImportProjectInfo } from '../../../src/migration-types.js';
+import { DatasourceType, TemplateType, type ImportProjectInfo } from '../../../src/migration-types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
 
 function createProjectInfo(overrides: Partial<ImportProjectInfo> = {}): ImportProjectInfo {
     return {
@@ -20,7 +21,7 @@ function createProjectInfo(overrides: Partial<ImportProjectInfo> = {}): ImportPr
         appVersion: '1.0.0',
         sapClient: '100',
         backends: [],
-        floorPlan: 'V2_LIST_REPORT',
+        floorPlan: TemplateType.ListReportObjectPage,
         namespace: 'example namespace',
         baseUri: 'https://example.test',
         mainService: 'MainService',
@@ -51,13 +52,20 @@ describe('project data', () => {
     });
 
     it('selects base libraries and removes duplicate additional libraries', () => {
-        expect(generateSapUiLibsString(false, 'V2_LIST_REPORT', 'sap.m, custom.library, sap.m')).toEqual({
+        expect(
+            generateSapUiLibsString(
+                false,
+                TemplateType.ListReportObjectPage,
+                'sap.m, custom.library, sap.m',
+                ODataVersion.v2
+            )
+        ).toEqual({
             sapUiLibs:
                 'sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app, custom.library',
             baseUiLibsStr:
                 'sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app'
         });
-        expect(generateSapUiLibsString(true, 'V2_LIST_REPORT', '')).toMatchObject({
+        expect(generateSapUiLibsString(true, TemplateType.ListReportObjectPage, '', ODataVersion.v2)).toMatchObject({
             sapUiLibs: 'sap.f, sap.m, sap.ui.comp, sap.ui.core, sap.ui.generic.app, sap.ui.table, sap.ushell'
         });
     });

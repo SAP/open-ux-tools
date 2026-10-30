@@ -3,8 +3,8 @@
  */
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { DirName, FileName } from '../../project-spec-types.js';
-import type { Manifest } from '../../project-spec-types.js';
+import { DirName, FileName } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import { readJSON } from '../../index.js';
 
 /**

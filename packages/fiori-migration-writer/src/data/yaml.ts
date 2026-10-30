@@ -1,4 +1,4 @@
-import { DirName } from '../project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import { FIORI_TOOLS_PROXY, FIORI_TOOLS_APPRELOAD } from '../utils/index.js';
 
 /**

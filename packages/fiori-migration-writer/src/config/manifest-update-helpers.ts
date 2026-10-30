@@ -1,4 +1,4 @@
-import { DirName } from '../project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import type { TemplateData } from '../types.js';
 
 /**

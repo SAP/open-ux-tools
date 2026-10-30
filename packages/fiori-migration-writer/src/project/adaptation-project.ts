@@ -1,7 +1,7 @@
 /**
  * Helper functions for processing adaptation project configuration
  */
-import type { Package } from '../project-spec-types.js';
+import type { Package } from '@sap-ux/project-access';
 import type { ImportProjectInfo, NeoappDestination } from '../types.js';
 
 /**

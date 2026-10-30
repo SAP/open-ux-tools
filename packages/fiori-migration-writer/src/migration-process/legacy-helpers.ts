@@ -2,7 +2,7 @@ import { join, relative, sep } from 'node:path';
 import { access, readdir } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { DirName } from '../project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import { TemplateFileName } from '../index.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
 import { hasStore, type EditorWithStore } from '../types/mem-fs-types.js';

@@ -6,7 +6,7 @@
 import { basename, join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { fileExists, readJSON } from '../../index.js';
-import type { Manifest } from '../../project-spec-types.js';
+import type { Manifest } from '@sap-ux/project-access';
 import { sapWattCommonSetting } from '../../types.js';
 
 /**

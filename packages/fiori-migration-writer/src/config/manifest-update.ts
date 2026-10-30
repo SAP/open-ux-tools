@@ -5,7 +5,8 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readJSON, updateJSON, fileExists } from '../utils/index.js';
-import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
+import type { Manifest } from '@sap-ux/project-access';
+import type { SapAppSourceTemplate } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { getSourceTemplate, MigrationError } from '../utils/common.js';
 import { adaptMinUI5Version } from './manifest.js';

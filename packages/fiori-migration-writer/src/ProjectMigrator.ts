@@ -1,8 +1,8 @@
-import { FioriElementsVersion, FileName } from './project-spec-types.js';
+import { FioriElementsVersion } from './project-spec-types.js';
+import { FileName, getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { determineMessage, readFile, updateFile, fileExists } from './utils/index.js';
 import { createMemFsEditor, loadProjectIntoEditor } from './utils/fs-adapter.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
-import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { join } from 'node:path';
@@ -396,7 +396,7 @@ export class ProjectMigrator {
             return messages;
         }
         // Check and update ui5*.yaml files sequentially - order doesn't matter but list is small
-        for (const yamlName of [FileName.UI5LocalYaml, FileName.UI5MockYaml]) {
+        for (const yamlName of [FileName.Ui5LocalYaml, FileName.Ui5MockYaml]) {
             const yamlPath = join(rootPath, yamlName);
 
             if (fileExists(fs, yamlPath)) {

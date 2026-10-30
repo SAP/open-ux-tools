@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { fileExists, deleteFile } from '../utils/index.js';
 import { createDirectory, doesDirectoryExists } from '../utils/file-system-utils.js';
-import { DirName } from '../project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import type { ImportProjectInfo } from '../types.js';
 
 /**

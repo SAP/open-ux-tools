@@ -1,13 +1,10 @@
 import { t } from '../utils/i18n.js';
 import type { FioriStep } from './yeomanUiStepConfig.js';
+// Re-export shared constants from fiori-generator-shared
+export { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';
-
-export const enum SapSystemSourceType {
-    ABAP_CLOUD = 'abapCloud',
-    ON_PREM = 'onPrem'
-}
 
 export const PLATFORMS = {
     VSCODE: {
@@ -35,11 +32,6 @@ export const SAP_CLIENT_KEY = 'sap-client';
 
 export const API_HUB_API_KEY = 'API_HUB_API_KEY';
 export const API_HUB_TYPE = 'API_HUB_TYPE';
-
-export const enum ApiHubType {
-    apiHub = 'API_HUB',
-    apiHubEnterprise = 'API_HUB_ENTERPRISE'
-}
 
 export const STEP_FLOORPLAN = 'FLOORPLAN';
 export const STEP_DATASOURCE_AND_SERVICE = 'DATASOURCE_AND_SERVICE';

@@ -5,7 +5,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
 import { applyTemplates } from '../../../src/template/template-helpers.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';
-import { DirName } from '../../../src/project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import { TemplateFileName, initI18n, fileExists, writeFile } from '../../../src/index.js';
 import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 import type { TemplateData, TemplateMap } from '../../../src/types.js';

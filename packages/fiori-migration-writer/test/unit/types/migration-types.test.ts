@@ -1,18 +1,12 @@
-import {
-    ApiHubType,
-    CapType,
-    DatasourceType,
-    neoAppJsonRouteTargetTypes,
-    ODataVersion,
-    SapSystemSourceType,
-    SapUxLayer,
-    TemplateDataKey
-} from '../../../src/migration-types.js';
+import { DatasourceType, neoAppJsonRouteTargetTypes, TemplateDataKey } from '../../../src/migration-types.js';
+import { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
+import { ODataVersion } from '@sap-ux/axios-extension';
 
 describe('migration type constants', () => {
-    it('preserves the public OData and SAP UX values', () => {
+    it('preserves the public OData values', () => {
         expect(ODataVersion).toEqual({ v2: '2', v4: '4' });
-        expect(SapUxLayer).toEqual({ VENDOR: 'VENDOR', CUSTOMER_BASE: 'CUSTOMER_BASE' });
+        // SapUxLayer const was removed - it's now just a type alias to UI5FlexLayer
+        // Tests for the values moved to constants.test.ts using string literals
     });
 
     it('preserves datasource and route target values', () => {
@@ -28,19 +22,22 @@ describe('migration type constants', () => {
         expect(neoAppJsonRouteTargetTypes).toEqual({ application: 'application', destination: 'destination' });
     });
 
-    it('preserves template, CAP, API Hub, and SAP system values', () => {
+    it('preserves template, API Hub, and SAP system values', () => {
         expect(TemplateDataKey).toEqual({
             project: 'project',
             service: 'service',
             ui5Yaml: 'ui5Yaml',
             packageJson: 'packageJson'
         });
-        expect(CapType).toEqual({ NODE_JS: 'Node.js', JAVA: 'Java' });
+        // CapType const was removed - it's now just a type alias to CapRuntime
+        // Tests for the values moved to constants.test.ts using string literals
         expect(ApiHubType).toEqual({ apiHub: 'API_HUB', apiHubEnterprise: 'API_HUB_ENTERPRISE' });
+        // SapSystemSourceType now includes values from both fiori-migration-writer and fiori-app-sub-generator
         expect(SapSystemSourceType).toEqual({
             SCP: 'SCP',
             ON_PREM: 'ON_PREM',
-            S4HC: 'S4HC'
+            S4HC: 'S4HC',
+            ABAP_CLOUD: 'ABAP_CLOUD'
         });
     });
 });

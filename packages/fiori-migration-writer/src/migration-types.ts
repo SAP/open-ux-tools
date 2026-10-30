@@ -1,21 +1,17 @@
-import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
+import type { FioriElementsVersion, SapAppSourceTemplate } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { CdsUi5PluginInfo, Manifest } from '@sap-ux/project-access';
+import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+
+// Import types from shared packages - DO NOT re-export
+// Import directly from the source package where you need them
+import type { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
 
-/**
- * OData versions supported by the catalog service
- */
-export const ODataVersion = {
-    v2: '2',
-    v4: '4'
-} as const;
-export type ODataVersion = (typeof ODataVersion)[keyof typeof ODataVersion];
 /**
  * package.json script entries (commands and tasks)
  */
@@ -24,6 +20,10 @@ export type Script = {
     command: string;
 };
 
+/**
+ * SAP UX Layer values for flex changes
+ * Exported as const object for backward compatibility with tools-suite
+ */
 export const SapUxLayer = {
     VENDOR: 'VENDOR',
     CUSTOMER_BASE: 'CUSTOMER_BASE'
@@ -65,7 +65,15 @@ export const DatasourceType = {
 } as const;
 export type DatasourceType = (typeof DatasourceType)[keyof typeof DatasourceType];
 
-// Use string literals to avoid bundling issues with computed property keys
+// Import and re-export TemplateType from fiori-elements-writer (single source of truth)
+export { TemplateType } from '@sap-ux/fiori-elements-writer';
+
+/**
+ * Legacy floor plan constants for backward compatibility with tools-suite
+ *
+ * @deprecated Use TemplateType from @sap-ux/fiori-elements-writer instead
+ * These map to the old V2/V4-specific floor plan identifiers
+ */
 export const FLOOR_PLAN = {
     WorklistV2: 'V2_WORKLIST',
     ListReportObjectPageV2: 'V2_LIST_REPORT',
@@ -74,6 +82,13 @@ export const FLOOR_PLAN = {
     OverviewPageV2: 'V2_OVERVIEW'
 } as const;
 export type FloorPlan = (typeof FLOOR_PLAN)[keyof typeof FLOOR_PLAN];
+
+/**
+ * Legacy project type constants for backward compatibility
+ *
+ * @deprecated Use FLOOR_PLAN instead (they are identical)
+ */
+export const PROJECT_TYPE = FLOOR_PLAN;
 
 export type Backend = {
     source?: string;
@@ -294,6 +309,18 @@ export interface Project {
 /**
  * User credentials for authentication.
  *
+ * NOTE: This interface is duplicated across multiple @sap-ux packages:
+ * - @sap-ux/abap-deploy-config-inquirer
+ * - @sap-ux/fiori-app-sub-generator
+ * - @sap-ux/fiori-migration-writer (this package)
+ * - @sap-ux/generator-adp
+ * Additionally, @sap-ux/system-access exports BasicAuth as a similar type.
+ *
+ * A shared @sap-ux/auth-types package would eliminate this duplication,
+ * but would require coordinating changes across all consuming packages.
+ * For now, each package maintains its own Credentials interface to avoid
+ * circular dependencies and maintain independence.
+ *
  * SECURITY: This interface contains sensitive authentication data.
  * The `password` field must NEVER be logged, included in error messages,
  * or transmitted to telemetry systems.
@@ -309,16 +336,16 @@ export interface Credentials {
      */
     password?: string;
 }
+/**
+ * CAP runtime implementation types
+ * Exported as const object for backward compatibility with tools-suite
+ */
 export const CapType = {
     NODE_JS: 'Node.js',
     JAVA: 'Java'
 } as const;
 export type CapType = (typeof CapType)[keyof typeof CapType];
-export const ApiHubType = {
-    apiHub: 'API_HUB',
-    apiHubEnterprise: 'API_HUB_ENTERPRISE'
-} as const;
-export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
+
 /**
  * Defines the api hub service properties or enterprise and non-enterprise versions
  */
@@ -335,13 +362,6 @@ export interface CapService {
     capType?: CapType; // CAP implementation type,
     capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
 }
-
-export const SapSystemSourceType = {
-    SCP: 'SCP',
-    ON_PREM: 'ON_PREM',
-    S4HC: 'S4HC'
-} as const;
-export type SapSystemSourceType = (typeof SapSystemSourceType)[keyof typeof SapSystemSourceType];
 
 export interface Service {
     host: string;

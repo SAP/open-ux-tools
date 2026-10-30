@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { stat, readdir, access } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
-import { DirName, FileName } from '../project-spec-types.js';
+import { DirName, FileName } from '@sap-ux/project-access';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { editorHasPath } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';

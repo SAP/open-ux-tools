@@ -1,7 +1,7 @@
 /**
  * Helper functions for processing reuse library projects
  */
-import type { Manifest, Package } from '../project-spec-types.js';
+import type { Manifest, Package } from '@sap-ux/project-access';
 import type { ImportProjectInfo, ProjectFolder } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 

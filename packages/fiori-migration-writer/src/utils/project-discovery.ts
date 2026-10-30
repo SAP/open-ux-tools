@@ -2,7 +2,7 @@ import { basename, dirname, join, sep } from 'node:path';
 import fg from 'fast-glob';
 import type { Editor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
-import { DirName, FileName } from '../project-spec-types.js';
+import { DirName, FileName } from '@sap-ux/project-access';
 import { isFioriToolsProject, findAllManifest } from './project-access-adapters.js';
 import type { ProjectAppPath, ProjectFolder } from '../types.js';
 import { isProjectFolderArray } from '../types/project-folder.js';
