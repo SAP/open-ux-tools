@@ -11,6 +11,7 @@
 "@sap-ux/cap-config-writer": patch
 "@sap-ux/cf-deploy-config-sub-generator": patch
 "@sap-ux/cf-deploy-config-writer": patch
+"@sap-ux/control-property-editor": patch
 "@sap-ux/create": patch
 "@sap-ux/deploy-config-sub-generator": patch
 "@sap-ux/fe-fpm-writer": patch
@@ -36,6 +37,8 @@
 "@sap-ux/ui5-library-sub-generator": patch
 "@sap-ux/ui5-library-writer": patch
 "@sap-ux/ui5-test-writer": patch
+"@sap-ux-private/control-property-editor-common": patch
+"@sap-ux-private/preview-middleware-client": patch
 ---
 
 BUMP: Upgrade mem-fs 2 → 6, mem-fs-editor 9 → 12
