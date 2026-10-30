@@ -83,6 +83,7 @@ const mockAxios = { get: mockAxiosGet, post: mockAxiosPost } as any;
 describe('CF Services API', () => {
     const mockLogger = {
         log: jest.fn(),
+        info: jest.fn(),
         error: jest.fn(),
         debug: jest.fn()
     } as unknown as ToolsLogger;
@@ -438,7 +439,7 @@ describe('CF Services API', () => {
 
             await getAdaptableBusinessServices(['svc-a'], config, mockLogger);
 
-            expect(mockLogger.error).toHaveBeenCalledWith(
+            expect(mockLogger.info).toHaveBeenCalledWith(
                 expect.stringContaining('{"svc-a":{"hasAdaptableApps":true}}')
             );
         });
