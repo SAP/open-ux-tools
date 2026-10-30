@@ -44,7 +44,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "dotenv": "18.0.8",
         "hasbin": "1.2.3",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {

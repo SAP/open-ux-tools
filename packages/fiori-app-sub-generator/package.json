@@ -53,7 +53,7 @@
         "@sap-ux/ui5-application-inquirer": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "@sap/service-provider-apis": "2.13.2",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "inquirer": "8.2.7",
         "lodash": "4.18.1",
         "mem-fs": "2.1.0",
