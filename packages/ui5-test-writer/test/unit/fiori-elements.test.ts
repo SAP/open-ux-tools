@@ -1736,10 +1736,10 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).toContain('iCheckSection({ section: "PriceData" })');
 
             // ─── Header Contact Card (OP-8) ───
+            expect(content).toContain('onHeader().iClickLink({ property: "carrier/Contact" })');
             expect(content).toContain(
-                'onHeader().iClickLink({ property: "carrier/Contact" })'
+                'onDialog({} as unknown as DialogIdentifier).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
             );
-            expect(content).toContain('onDialog({} as unknown as DialogIdentifier).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── Section actions (table action with dynamic enabled) ───
             expect(content).toContain(
@@ -1750,12 +1750,8 @@ export type Then = Opa5 & BaseArrangements & {
             );
 
             // ─── onForm without FormIdentifier cast ───
-            expect(content).toContain(
-                'onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })'
-            );
-            expect(content).toContain(
-                'onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })'
-            );
+            expect(content).toContain('onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })');
+            expect(content).toContain('onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })');
             // OP-7: body-section form Contact Card
             expect(content).toContain(
                 'onForm({ section: "BookingData" }).iClickLink({ property: "_Customer/Contact" })'
