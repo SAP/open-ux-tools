@@ -1,8 +1,8 @@
 import { join, dirname } from 'node:path';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
-import { readUi5Config, getVariant, ManifestService } from '@sap-ux/adp-tooling';
-import type { AbapTarget } from '@sap-ux/system-access';
+import { getAdpConfig, getVariant, ManifestService } from '@sap-ux/adp-tooling';
+import type { AdpPreviewConfigWithTarget } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import prettifyXml from 'prettify-xml';
@@ -23,16 +23,16 @@ export type ODataMetadataEntry = {
 /**
  * Resolves the target system from `ui5.yaml` and returns an ABAP service provider for it.
  *
+ * Uses the shared `getAdpConfig` reader so the full `AbapTarget` is passed through unchanged —
+ * this covers both the `fiori-tools-preview` and `preview-middleware` middleware and preserves
+ * the `destination` field used to connect in SAP Business Application Studio.
+ *
  * @param appPath - Adaptation project root.
  * @returns ABAP service provider for the configured target.
  */
 async function getProvider(appPath: string): Promise<AbapServiceProvider> {
-    const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
-    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
-        'fiori-tools-preview'
-    )?.configuration?.adp?.target;
-    const abapTarget: AbapTarget = { url: target?.url ?? '', client: target?.client ?? '' };
-    return createAbapServiceProvider(abapTarget, { ignoreCertErrors: false }, false, logger);
+    const { target } = await getAdpConfig<AdpPreviewConfigWithTarget>(appPath, 'ui5.yaml');
+    return createAbapServiceProvider(target, { ignoreCertErrors: false }, false, logger);
 }
 
 /**

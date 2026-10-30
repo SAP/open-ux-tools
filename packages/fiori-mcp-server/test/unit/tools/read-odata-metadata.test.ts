@@ -16,11 +16,11 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     }
 }));
 
-const mockReadUi5Config = jest.fn<any>();
+const mockGetAdpConfig = jest.fn<any>();
 const mockGetVariant = jest.fn<any>().mockResolvedValue({ id: 'customer.app.variant' });
 const mockInitMergedManifest = jest.fn<any>();
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
-    readUi5Config: mockReadUi5Config,
+    getAdpConfig: mockGetAdpConfig,
     getVariant: mockGetVariant,
     ManifestService: {
         initMergedManifest: mockInitMergedManifest
@@ -74,11 +74,7 @@ describe('readODataMetadataAdp', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockPrettifyXml.mockImplementation((xml: string) => `<formatted>${xml}</formatted>`);
-        mockReadUi5Config.mockResolvedValue({
-            findCustomMiddleware: jest.fn<any>().mockReturnValue({
-                configuration: { adp: { target: { url: 'http://host', client: '100' } } }
-            })
-        });
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'http://host', client: '100' } });
     });
 
     function setupProvider(
@@ -148,12 +144,8 @@ describe('readODataMetadataAdp', () => {
         expect(mockLoggerWarn).toHaveBeenCalledWith(expect.stringContaining('Failed to format XML'));
     });
 
-    test('passes url and client from ui5.yaml to createAbapServiceProvider', async () => {
-        mockReadUi5Config.mockResolvedValue({
-            findCustomMiddleware: jest.fn<any>().mockReturnValue({
-                configuration: { adp: { target: { url: 'http://myhost', client: '200' } } }
-            })
-        });
+    test('passes the url/client target from ui5.yaml through to createAbapServiceProvider', async () => {
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'http://myhost', client: '200' } });
         setupProvider({});
 
         await readODataMetadataAdp({ appPath: APP_PATH });
@@ -166,19 +158,27 @@ describe('readODataMetadataAdp', () => {
         );
     });
 
-    test('defaults url and client to empty strings when middleware is not configured', async () => {
-        mockReadUi5Config.mockResolvedValue({
-            findCustomMiddleware: jest.fn<any>().mockReturnValue(undefined)
-        });
+    test('passes a destination target (BAS) through unchanged to createAbapServiceProvider', async () => {
+        mockGetAdpConfig.mockResolvedValue({ target: { destination: 'MY_DEST' } });
         setupProvider({});
 
         await readODataMetadataAdp({ appPath: APP_PATH });
 
         expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
-            { url: '', client: '' },
-            expect.anything(),
-            expect.anything(),
+            { destination: 'MY_DEST' },
+            { ignoreCertErrors: false },
+            false,
             expect.anything()
         );
+    });
+
+    test('rejects when no ADP configuration is found in ui5.yaml', async () => {
+        mockGetAdpConfig.mockRejectedValue(new Error('No system configuration found in ui5.yaml'));
+        setupProvider({});
+
+        await expect(readODataMetadataAdp({ appPath: APP_PATH })).rejects.toThrow(
+            'No system configuration found in ui5.yaml'
+        );
+        expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
     });
 });
