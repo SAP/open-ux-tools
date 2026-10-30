@@ -1,12 +1,12 @@
 import type { FioriElementsVersion, SapAppSourceTemplate } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo, Manifest } from '@sap-ux/project-access';
 import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 // Import types from shared packages - DO NOT re-export
 // Import directly from the source package where you need them
-import type { CapRuntime, ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
+import type { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -70,6 +70,7 @@ export { TemplateType } from '@sap-ux/fiori-elements-writer';
 
 /**
  * Legacy floor plan constants for backward compatibility with tools-suite
+ *
  * @deprecated Use TemplateType from @sap-ux/fiori-elements-writer instead
  * These map to the old V2/V4-specific floor plan identifiers
  */
@@ -84,6 +85,7 @@ export type FloorPlan = (typeof FLOOR_PLAN)[keyof typeof FLOOR_PLAN];
 
 /**
  * Legacy project type constants for backward compatibility
+ *
  * @deprecated Use FLOOR_PLAN instead (they are identical)
  */
 export const PROJECT_TYPE = FLOOR_PLAN;
