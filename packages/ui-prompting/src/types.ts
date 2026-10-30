@@ -5,7 +5,7 @@ import type {
     ListQuestion,
     GuiOptions as BaseGuiOptions
 } from '@sap-ux/inquirer-common';
-import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
+import type { I18nBundle, TranslationEntry, UITranslationInputProps } from '@sap-ux/ui-components';
 import type { SapTextType } from '@sap-ux/i18n';
 
 export { Answers };
@@ -183,4 +183,5 @@ export interface TranslationProps<T extends TranslationEntry = TranslationEntry>
      * Array of pending question.
      */
     pendingQuestions?: string[];
+    translationInputProps?: Pick<UITranslationInputProps<T>, 'preventFocusRestoreOnAccept'>;
 }
