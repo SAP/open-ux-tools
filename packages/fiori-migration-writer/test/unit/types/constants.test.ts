@@ -54,12 +54,12 @@ describe('Constants', () => {
     // The const object was removed - tests should use string literals directly
     describe('UI5FlexLayer / SapUxLayer string literal values', () => {
         test('VENDOR value should be correct', () => {
-            const vendorLayer: 'VENDOR' = 'VENDOR';
+            const vendorLayer = 'VENDOR' as const;
             expect(vendorLayer).toBe('VENDOR');
         });
 
         test('CUSTOMER_BASE value should be correct', () => {
-            const customerLayer: 'CUSTOMER_BASE' = 'CUSTOMER_BASE';
+            const customerLayer = 'CUSTOMER_BASE' as const;
             expect(customerLayer).toBe('CUSTOMER_BASE');
         });
     });
@@ -68,12 +68,12 @@ describe('Constants', () => {
     // The const object was removed - tests should use string literals directly
     describe('CapRuntime / CapType string literal values', () => {
         test('NODE_JS value should be correct', () => {
-            const nodeType: 'Node.js' = 'Node.js';
+            const nodeType = 'Node.js' as const;
             expect(nodeType).toBe('Node.js');
         });
 
         test('JAVA value should be correct', () => {
-            const javaType: 'Java' = 'Java';
+            const javaType = 'Java' as const;
             expect(javaType).toBe('Java');
         });
     });
