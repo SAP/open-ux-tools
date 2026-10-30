@@ -192,6 +192,7 @@ overrides:
     moment: '>=2.31.0'
     '@storybook/builder-webpack5>webpack-dev-middleware': '>=7.4.5'
     '@grpc/grpc-js': '>=1.14.5'
+    '@types/estree': '1.0.9'
 
 pnpm:
     saveExact: true

@@ -1,5 +1,18 @@
 # @sap-ux/annotation-generator
 
+## 1.0.35
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.5 → 1.1.6
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.0.34
 
 ### Patch Changes

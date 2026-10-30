@@ -1,4 +1,3 @@
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { Resource } from '@ui5/fs';
 import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types/index.js';
 
