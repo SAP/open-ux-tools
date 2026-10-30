@@ -4,29 +4,28 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { formatXml, logger, writeContextMetadata } from '../utils/index.js';
+import { formatXml, logger, persistMetadata } from '../utils/index.js';
+import type { PersistedMetadata } from '../utils/index.js';
 import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
 type Ui5Model = ManifestNamespace.Model & Record<string, unknown>;
 
-/** A single OData data source entry with its merged manifest metadata, URL, and bound model. */
+/** A single OData data source entry with its id, URL, bound model, and inline/file-referenced metadata or a per-service error. */
 export type ODataMetadataEntry = {
     id: string;
     url: string;
-    metadata: string;
     model?: Ui5Model;
-};
+} & (PersistedMetadata | { error: string });
 
 /**
- * Resolves the target system from `ui5.yaml` and returns an ABAP service provider for it.
+ * Resolves the target ABAP system from `ui5.yaml` and returns a service provider for it.
+ * Only meaningful for ABAP (on-premise / S/4) adaptation projects — CF projects have no
+ * ABAP backend and never reach this.
  *
  * @param appPath - Adaptation project root.
  * @returns ABAP service provider for the configured target.
  */
-async function getProvider(appPath: string): Promise<AbapServiceProvider | undefined> {
-    if (await isCFEnvironment(appPath)) {
-        return undefined;
-    }
+async function getAbapProvider(appPath: string): Promise<AbapServiceProvider> {
     const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
     const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
         'fiori-tools-preview'
@@ -36,65 +35,62 @@ async function getProvider(appPath: string): Promise<AbapServiceProvider | undef
 }
 
 /**
- * Resolves OData data sources from the merged app descriptor and fetches their EDMX metadata
- * from the connected ABAP system. Optionally persists each result as a local XML file for
- * agent context consumption.
+ * Resolves the OData data sources from a merged app descriptor and returns one entry per source,
+ * each resolved to its metadata by `resolveMetadata`.
  *
- * For Cloud Foundry (CF) adaptation projects there is no ABAP service provider to proxy the
- * `$metadata` request, so the EDMX cannot be fetched. In that
- * case the data sources are still listed from the merged manifest built by `getMergedManifest`
- * with an empty `metadata` string, and nothing is written to disk. Callers needing the bound
- * entity type for a CF project should rely on the editor's runtime model context instead.
- *
- * @param params Input parameters including `appPath` and the optional `saveLocal` flag.
- * @returns One entry per OData data source: id, service URL, formatted metadata XML, and bound model.
+ * @param manifest Merged app descriptor.
+ * @param resolveMetadata Produces the metadata portion of an entry for a given data-source URI.
+ * @returns One entry per OData data source: id, service URL, bound model, and its resolved metadata.
  */
-export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ReadODataMetadataOutput> {
-    const { appPath, saveLocal = false } = params;
-
-    const abapProvider = await getProvider(appPath);
-    const manifest = await getMergedManifest(appPath);
-    return readODataMetadata(manifest, appPath, saveLocal, abapProvider);
+async function buildEntries(
+    manifest: Manifest,
+    resolveMetadata: (uri: string) => Promise<PersistedMetadata | { error: string }>
+): Promise<ODataMetadataEntry[]> {
+    const modelsByDataSource = getModelsByDataSource(manifest);
+    const dataSources = manifest['sap.app']?.dataSources ?? {};
+    return Promise.all(
+        Object.entries(dataSources)
+            .filter(([, dataSource]) => dataSource.type === 'OData')
+            .map(async ([name, dataSource]) => ({
+                id: name,
+                url: dataSource.uri,
+                model: modelsByDataSource.get(name),
+                ...(await resolveMetadata(dataSource.uri))
+            }))
+    );
 }
 
 /**
- * Resolves OData data sources from the merged app descriptor and fetches their EDMX metadata
- * when an ABAP provider is available. Optionally persists fetched metadata as a local XML file.
+ * Resolves OData data sources from the merged app descriptor and returns their EDMX metadata.
  *
- * @param manifest Merged app descriptor.
- * @param appPath Adaptation project root.
- * @param saveLocal Whether to persist each result under `webapp/.context`.
- * @param abapProvider ABAP service provider; omitted for CF projects, which return empty metadata.
- * @returns One entry per OData data source: id, service URL, formatted metadata XML, and bound model.
+ * - ABAP (on-premise / S/4) projects: each data source's EDMX is fetched from the connected
+ *   ABAP system and persisted under `.context` keyed by the service URI — small services inline,
+ *   large ones spilled to a file (`{ metadataFile, sizeBytes }`). A per-service fetch failure
+ *   becomes a `{ error }` entry without failing the others.
+ * - Cloud Foundry (CF) projects: there is no ABAP backend to proxy `$metadata`, so each data
+ *   source is listed with an empty `metadata` string and nothing is written to disk. Callers
+ *   needing the bound entity type for a CF project should rely on the editor's runtime model context.
+ *
+ * @param params Input parameters including `appPath`.
+ * @returns One entry per OData data source: id, service URL, bound model, and inline/file-referenced metadata or a per-service error.
  */
-async function readODataMetadata(
-    manifest: Manifest,
-    appPath: string,
-    saveLocal: boolean,
-    abapProvider?: AbapServiceProvider
-): Promise<ReadODataMetadataOutput> {
-    const modelsByDataSource = getModelsByDataSource(manifest);
-    const dataSources = manifest['sap.app']?.dataSources ?? {};
-    const entries: ODataMetadataEntry[] = await Promise.all(
-        Object.entries(dataSources)
-            .filter(([, dataSource]) => dataSource.type === 'OData')
-            .map(async ([name, dataSource]) => {
-                let metadata = '';
-                if (abapProvider) {
-                    const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
-                    metadata = formatXml(rawMetadata);
-                    if (saveLocal) {
-                        writeContextMetadata(appPath, name, metadata);
-                    }
-                }
-                return {
-                    id: name,
-                    url: dataSource.uri,
-                    metadata,
-                    model: modelsByDataSource.get(name)
-                };
-            })
-    );
+export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ReadODataMetadataOutput> {
+    const { appPath } = params;
+    const manifest = await getMergedManifest(appPath);
+
+    if (await isCFEnvironment(appPath)) {
+        return { entries: await buildEntries(manifest, async () => ({ metadata: '' })) };
+    }
+
+    const abapProvider = await getAbapProvider(appPath);
+    const entries = await buildEntries(manifest, async (uri) => {
+        try {
+            const rawMetadata = await abapProvider.service(uri).metadata();
+            return persistMetadata(appPath, uri, formatXml(rawMetadata));
+        } catch (error) {
+            return { error: error instanceof Error ? error.message : String(error) };
+        }
+    });
     return { entries };
 }
 

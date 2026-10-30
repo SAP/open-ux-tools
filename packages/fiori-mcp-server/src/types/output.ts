@@ -114,12 +114,17 @@ export const LookupUi5DocumentationOutputSchema = zod
     })
     .catchall(zod.unknown());
 
-export const ODataMetadataEntrySchema = zod.object({
+const oDataMetadataEntryCommon = {
     id: zod.string(),
     url: zod.string(),
-    metadata: zod.string(),
     model: zod.record(zod.string(), zod.unknown()).optional()
-});
+};
+
+export const ODataMetadataEntrySchema = zod.union([
+    zod.object({ ...oDataMetadataEntryCommon, metadata: zod.string() }),
+    zod.object({ ...oDataMetadataEntryCommon, metadataFile: zod.string(), sizeBytes: zod.number() }),
+    zod.object({ ...oDataMetadataEntryCommon, error: zod.string() })
+]);
 
 export const ReadODataMetadataOutputSchema = zod.object({
     entries: zod.array(ODataMetadataEntrySchema)

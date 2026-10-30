@@ -233,12 +233,6 @@ export const ReadODataMetadataInputSchema = zod.object({
         .string()
         .describe(
             'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
-        ),
-    saveLocal: zod
-        .boolean()
-        .optional()
-        .describe(
-            'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
         )
 });
 

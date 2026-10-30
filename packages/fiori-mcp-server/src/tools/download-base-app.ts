@@ -3,10 +3,10 @@ import type { DownloadAppResourcesInput, DownloadAppResourcesOutput } from '../t
 
 /**
  * Downloads the base app resources of the adaptation project
- * The tools automatically identitfy the correct platform for the adaptation project
+ * The tools automatically identify the correct platform for the adaptation project
  * Available platforms include Cloud Foundry (CF) and ABAP.
  *
- * @param params Input parameters including `appPath` and the optional `saveLocal` flag.
+ * @param params Input parameters including `appPath`.
  * @returns Files of the Base App of the Adaptation Project
  */
 export async function downloadBaseApp(params: DownloadAppResourcesInput): Promise<DownloadAppResourcesOutput> {

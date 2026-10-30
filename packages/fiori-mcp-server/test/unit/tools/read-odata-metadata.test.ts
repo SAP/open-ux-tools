@@ -3,14 +3,17 @@ import { jest } from '@jest/globals';
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockFormatXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
-const mockWriteContextMetadata = jest.fn<any>(
-    (appPath: string, name: string) => `${appPath}/.context/${name}-metadata.xml`
+// Mirrors the real persistMetadata: inline when small, spill to a file reference when large.
+const mockPersistMetadata = jest.fn<any>((appPath: string, uri: string, formatted: string) =>
+    formatted.length < 100_000
+        ? { metadata: formatted }
+        : { metadataFile: `${appPath}/.context/${uri}-metadata.xml`, sizeBytes: formatted.length }
 );
 
 const mockGetMergedManifest = jest.fn<() => Promise<object>>();
 jest.unstable_mockModule('../../../src/utils', () => ({
     formatXml: mockFormatXml,
-    writeContextMetadata: mockWriteContextMetadata,
+    persistMetadata: mockPersistMetadata,
     logger: {
         warn: mockLoggerWarn,
         info: mockLoggerInfo,
@@ -33,6 +36,7 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
 }));
 
 const { readODataMetadataAdp } = await import('../../../src/tools/read-odata-metadata.js');
+const { ReadODataMetadataOutputSchema } = await import('../../../src/types/output.js');
 
 const APP_PATH = '/tmp/myapp';
 
@@ -95,20 +99,25 @@ describe('readODataMetadataAdp', () => {
         expect(result.entries[0].model).toEqual(model);
     });
 
-    test('writes metadata file when saveLocal is true', async () => {
+    test('persists metadata keyed by the data-source URI and returns it inline when small', async () => {
         setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
 
-        await readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true });
+        const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(mockWriteContextMetadata).toHaveBeenCalledWith(APP_PATH, 'mainService', expect.any(String));
+        expect(mockPersistMetadata).toHaveBeenCalledWith(APP_PATH, '/sap/opu/odata/main', expect.any(String));
+        expect(result.entries[0]).toHaveProperty('metadata');
+        expect(ReadODataMetadataOutputSchema.safeParse(result).success).toBe(true);
     });
 
-    test('does not write file when saveLocal is false (default)', async () => {
-        setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
+    test('spills large metadata to a file reference instead of returning it inline', async () => {
+        const provider = setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
+        provider.service.mockReturnValue({ metadata: jest.fn<any>().mockResolvedValue('x'.repeat(200_000)) });
 
-        await readODataMetadataAdp({ appPath: APP_PATH });
+        const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(mockWriteContextMetadata).not.toHaveBeenCalled();
+        expect(result.entries[0]).toHaveProperty('metadataFile');
+        expect(result.entries[0]).not.toHaveProperty('metadata');
+        expect(ReadODataMetadataOutputSchema.safeParse(result).success).toBe(true);
     });
 
     test('passes url and client from ui5.yaml to createAbapServiceProvider', async () => {
@@ -172,14 +181,41 @@ describe('readODataMetadataAdp', () => {
         expect(result.entries[1].model).toBeUndefined();
     });
 
-    test('propagates metadata errors without writing a context file', async () => {
+    test('returns a per-service error entry without persisting when metadata() fails', async () => {
         const provider = setupProvider({ main: { type: 'OData', uri: '/odata/main' } });
         const error = new Error('Metadata unavailable');
         provider.service.mockReturnValue({ metadata: jest.fn<() => Promise<string>>().mockRejectedValue(error) });
 
-        await expect(readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true })).rejects.toThrow(error);
+        const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(mockWriteContextMetadata).not.toHaveBeenCalled();
+        expect(result.entries[0]).toEqual({
+            id: 'main',
+            url: '/odata/main',
+            model: undefined,
+            error: 'Metadata unavailable'
+        });
+        expect(mockPersistMetadata).not.toHaveBeenCalled();
+        expect(ReadODataMetadataOutputSchema.safeParse(result).success).toBe(true);
+    });
+
+    test('one failing service does not fail the others', async () => {
+        const provider = setupProvider({
+            good: { type: 'OData', uri: '/odata/good' },
+            bad: { type: 'OData', uri: '/odata/bad' }
+        });
+        provider.service.mockImplementation((uri: string) => ({
+            metadata:
+                uri === '/odata/bad'
+                    ? jest.fn<any>().mockRejectedValue(new Error('boom'))
+                    : jest.fn<any>().mockResolvedValue('<edmx/>')
+        }));
+
+        const result = await readODataMetadataAdp({ appPath: APP_PATH });
+
+        expect(result.entries).toHaveLength(2);
+        expect(result.entries.find((e) => e.id === 'good')).toHaveProperty('metadata');
+        expect(result.entries.find((e) => e.id === 'bad')).toHaveProperty('error', 'boom');
+        expect(ReadODataMetadataOutputSchema.safeParse(result).success).toBe(true);
     });
 
     describe('Cloud Foundry projects', () => {
@@ -239,12 +275,12 @@ describe('readODataMetadataAdp', () => {
             expect(result.entries[0].model).toEqual(model);
         });
 
-        test('does not attempt to fetch or write metadata for CF even when saveLocal is true', async () => {
+        test('does not attempt to fetch or write metadata for CF', async () => {
             setupCfProvider({ mainService: { type: 'OData', uri: '/odata/v4/main/' } });
 
-            await readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true });
+            await readODataMetadataAdp({ appPath: APP_PATH });
 
-            expect(mockWriteContextMetadata).not.toHaveBeenCalled();
+            expect(mockPersistMetadata).not.toHaveBeenCalled();
         });
     });
 });

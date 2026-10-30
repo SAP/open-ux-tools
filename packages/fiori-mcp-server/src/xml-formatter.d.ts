@@ -5,6 +5,7 @@ declare module 'xml-formatter' {
         collapseContent?: boolean;
         ignoredPaths?: string[];
         forceSelfClosingEmptyTag?: boolean;
+        throwOnFailure?: boolean;
     }
     function formatXml(xml: string, options?: XMLFormatterOptions): string;
     export default formatXml;

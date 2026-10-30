@@ -18,7 +18,7 @@ import {
 } from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 
 const SITE = 'http://localhost:8080/test/adaptation-editor.html';
 const FRAME = 'preview';
@@ -270,6 +270,59 @@ describe('rta/commands', () => {
             expect('metadata' in entry && entry.metadata).toContain('edmx:Edmx');
         });
 
+        test.each([199, 300, 401, 500])('rejects HTTP %s even when the body is EDMX', async (status) => {
+            transport.fetchViaContext.mockResolvedValue({ ...xmlResp, status });
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toEqual({
+                url: 'api/svc/',
+                error: expect.stringContaining('status ' + status)
+            });
+        });
+
+        test.each([200, 500])('rejects an XML error document with HTTP %s', async (status) => {
+            transport.fetchViaContext.mockResolvedValue({
+                status,
+                contentType: 'application/xml',
+                body: '<?xml version="1.0"?><error><message>Backend failure</message></error>'
+            });
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toEqual({ url: 'api/svc/', error: expect.any(String) });
+        });
+
+        test.each(['<?xml version="1.0"?><error><!-- <edmx:Edmx/> --></error>', '<error><edmx:Edmx/></error>'])(
+            'rejects an XML document whose root is not Edmx: %s',
+            async (body) => {
+                transport.fetchViaContext.mockResolvedValue({ ...xmlResp, body });
+                const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+                expect(out.entries[0]).toEqual({ url: 'api/svc/', error: expect.any(String) });
+            }
+        );
+
+        test.each([
+            '<m:Edmx xmlns:m="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0"><m:DataServices/></m:Edmx>',
+            '<Edmx xmlns="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0"><DataServices/></Edmx>',
+            '<?xml version="1.0"?><!-- metadata --><edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0"><edmx:DataServices/></edmx:Edmx>'
+        ])('accepts EDMX with different namespaces and XML preambles: %s', async (body) => {
+            transport.fetchViaContext.mockResolvedValue({ ...xmlResp, body });
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toEqual({ url: 'api/svc/', metadata: expect.stringContaining('Edmx') });
+        });
+
+        test('keeps a successful entry when another service returns an XML backend error', async () => {
+            transport.fetchViaContext
+                .mockResolvedValueOnce({
+                    status: 500,
+                    contentType: 'application/xml',
+                    body: '<?xml version="1.0"?><error>Backend failure</error>'
+                })
+                .mockResolvedValueOnce(xmlResp);
+            const out = await getODataMetadata(transport, SITE, ['api/failing/', 'api/working/'], APP);
+            expect(out.entries).toEqual([
+                { url: 'api/failing/', error: expect.any(String) },
+                { url: 'api/working/', metadata: expect.stringContaining('edmx:Edmx') }
+            ]);
+        });
+
         test('maps a text/html login response to a per-entry error', async () => {
             transport.fetchViaContext.mockResolvedValue({
                 status: 200,
@@ -339,6 +392,26 @@ describe('rta/commands', () => {
             }
         });
 
+        test('bounds the filename for a very long URI so the write does not exceed the name limit', async () => {
+            const dir = mkdtempSync(join(tmpdir(), 'md-'));
+            try {
+                const longUri = `api/${'segment/'.repeat(40)}svc/`; // ~320 chars
+                transport.fetchViaContext.mockResolvedValue({
+                    status: 200,
+                    contentType: 'application/xml',
+                    body: bigEdmx
+                });
+                const out = await getODataMetadata(transport, SITE, [longUri], dir);
+                const entry = out.entries[0] as { url: string; metadataFile: string; sizeBytes: number };
+                expect(entry).toHaveProperty('metadataFile');
+                expect(entry).not.toHaveProperty('error');
+                expect(basename(entry.metadataFile).length).toBeLessThanOrEqual(255);
+                expect(readFileSync(entry.metadataFile, 'utf-8')).toContain('edmx:Edmx');
+            } finally {
+                rmSync(dir, { recursive: true, force: true });
+            }
+        });
+
         test('sanitises the URI into a safe filename under .context (no path escape)', async () => {
             const dir = mkdtempSync(join(tmpdir(), 'md-'));
             try {
@@ -351,6 +424,33 @@ describe('rta/commands', () => {
                 const entry = out.entries[0] as { metadataFile: string };
                 expect(entry.metadataFile).not.toMatch(/[$]/);
                 expect(entry.metadataFile.startsWith(join(dir, '.context'))).toBe(true);
+            } finally {
+                rmSync(dir, { recursive: true, force: true });
+            }
+        });
+
+        test('preserves separate large metadata files for URIs with the same sanitised name', async () => {
+            const dir = mkdtempSync(join(tmpdir(), 'md-'));
+            try {
+                transport.fetchViaContext
+                    .mockResolvedValueOnce({ ...xmlResp, body: bigEdmx.replace('xxxxx', 'first') })
+                    .mockResolvedValueOnce({ ...xmlResp, body: bigEdmx.replace('xxxxxx', 'second') });
+                const out = await getODataMetadata(transport, SITE, ['/api/a-b/', '/api/a_b/'], dir);
+                const [first, second] = out.entries;
+                if (!('metadataFile' in first) || !('metadataFile' in second)) {
+                    throw new Error('Expected both services to return metadata files');
+                }
+                expect(first.metadataFile).not.toBe(second.metadataFile);
+                expect(readFileSync(first.metadataFile, 'utf-8')).toContain('first');
+                expect(readFileSync(second.metadataFile, 'utf-8')).toContain('second');
+
+                transport.fetchViaContext.mockResolvedValueOnce({
+                    ...xmlResp,
+                    body: bigEdmx.replace('xxxxx', 'first')
+                });
+                const retry = await getODataMetadata(transport, SITE, ['/api/a-b/'], dir);
+                expect(retry.entries[0]).toHaveProperty('metadataFile', first.metadataFile);
+                expect(readFileSync(second.metadataFile, 'utf-8')).toContain('second');
             } finally {
                 rmSync(dir, { recursive: true, force: true });
             }

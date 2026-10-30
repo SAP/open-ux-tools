@@ -1,6 +1,6 @@
 import { isNeedsUserAction } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
-import { formatXml, writeContextMetadata } from '../../../utils/index.js';
+import { formatXml, persistMetadata } from '../../../utils/index.js';
 import type {
     ActionsCatalog,
     EditorPage,
@@ -308,43 +308,16 @@ function buildMetadataUrl(site: string, uri: string): string {
 }
 
 /**
- * Maximum formatted-EDMX length (characters) returned inline in a step result.
- * Larger metadata is written to disk instead, so a multi-megabyte service
- * document cannot overflow the model's token budget.
- */
-const INLINE_METADATA_MAX_CHARS = 100_000;
-
-/**
- * Derives a filesystem-safe base name from an OData URI, so two URIs map to
- * distinct files and no path separator or special character can escape the
- * target directory.
- *
- * @param uri OData data-source URI.
- * @returns A sanitised base name (letters, digits, underscores).
- */
-function safeName(uri: string): string {
-    return uri.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'service';
-}
-
-/**
- * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the
- * authenticated browser context registered for `site`. CF projects have no ABAP
- * provider, so this is the way to obtain real EDMX — the fetch rides the
- * approuter session held by the `start`ed editor.
- *
- * Each entry is independent: a login-page/non-XML response or a failed fetch
- * becomes a per-entry `error` rather than failing the whole batch. A missing
- * session (no `start`) surfaces as the transport's thrown error on the first URI.
- *
- * EDMX under {@link INLINE_METADATA_MAX_CHARS} is returned inline as `metadata`.
- * Larger EDMX is written to `<appPath>/webapp/.context/<name>-metadata.xml` and
- * returned as `{ metadataFile, sizeBytes }`; if no `appPath` is given it cannot
- * be saved and the entry is an `error` (never inlined, which would overflow).
+ * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
+ * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
+ * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
+ * `error`, small EDMX is returned inline as `metadata`, and large EDMX is spilled to `.context`
+ * as `{ metadataFile, sizeBytes }` (see `persistMetadata`).
  *
  * @param transport Transport whose `fetchViaContext` carries the auth cookies.
  * @param site Editor URL returned by `start`; its origin is the fetch target.
  * @param uris OData data-source URIs (the `entries[].url` from `read_odata_metadata_adp`).
- * @param appPath Adaptation project root; large metadata is saved under its `webapp/.context`.
+ * @param appPath Adaptation project root; large metadata is saved under its `.context`.
  * @returns One entry per URI: inline `metadata`, a `metadataFile` reference, or an `error`.
  */
 export async function getODataMetadata(
@@ -360,8 +333,12 @@ export async function getODataMetadata(
                     site,
                     buildMetadataUrl(site, uri)
                 );
+                if (status < 200 || status >= 300) {
+                    return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
+                }
                 const isXml = contentType.toLowerCase().includes('xml');
-                const looksEdmx = /<edmx:|<\?xml/i.test(body);
+                // Only an Edmx document root qualifies; declarations, comments, and nested tags do not.
+                const looksEdmx = /^(?:\s|<\?[\s\S]*?\?>|<!--[\s\S]*?-->)*<(?:[A-Za-z_][\w.-]*:)?Edmx[\s/>]/.test(body);
                 if (!isXml || !looksEdmx) {
                     return {
                         url: uri,
@@ -369,11 +346,7 @@ export async function getODataMetadata(
                     };
                 }
                 const formatted = formatXml(body);
-                if (formatted.length < INLINE_METADATA_MAX_CHARS) {
-                    return { url: uri, metadata: formatted };
-                }
-                const metadataFile = writeContextMetadata(appPath, safeName(uri), formatted);
-                return { url: uri, metadataFile, sizeBytes: Buffer.byteLength(formatted) };
+                return { url: uri, ...persistMetadata(appPath, uri, formatted) };
             } catch (error) {
                 return { url: uri, error: error instanceof Error ? error.message : String(error) };
             }

@@ -158,15 +158,16 @@ const adpTools = [
         This tool:
         - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
         - Lists the OData data sources of the merged app descriptor, each with its id, service URL, and bound UI5 model
-        - For ABAP (on-premise / CloudReady) projects: connects to the SAP system and returns the real EDMX metadata for each data source
-        - For Cloud Foundry (CF) projects: there is NO ABAP service provider to proxy the \`$metadata\` request, so each entry is returned with an EMPTY \`metadata\` string. Empty \`metadata\` on a CF project is the expected result, NOT a successful fetch — do not parse it as an EDMX document.
+        - For ABAP (on-premise / CloudReady) projects: connects to the SAP system, fetches the real EDMX metadata for each data source, and persists it under \`<appPath>/.context\`. Each entry is one of: \`{ id, url, model, metadata }\` (EDMX inline for small services), \`{ id, url, model, metadataFile, sizeBytes }\` (EDMX too large to inline — written to \`.context\` and referenced by path; read that file), or \`{ id, url, model, error }\` (that service's metadata fetch failed; the other services are unaffected).
+        - For Cloud Foundry (CF) projects: there is NO ABAP service provider to proxy the \`$metadata\` request, so each entry is returned with an EMPTY \`metadata\` string and nothing is written to disk. Empty \`metadata\` on a CF project is the expected result, NOT a successful fetch — do not parse it as an EDMX document.
+
+        Note: for ABAP projects this tool writes metadata files under \`<appPath>/.context\`; it is not purely read-only.
 
         To obtain the real EDMX for a CF project, call the \`run_rta_workflow_step\` tool's \`get_odata_metadata\` step (after \`start\`), passing the \`entries[].url\` values returned here; it fetches the metadata through the editor's authenticated browser session. For the bound entity type alone, the \`get_context\` step's runtime model context is usually sufficient.
 
         Use this tool when you need to read the OData metadata for an Adaptation Project.`,
         annotations: {
             title: 'Read OData Metadata for Adaptation Project',
-            readOnlyHint: true,
             idempotentHint: true,
             openWorldHint: false
         },
