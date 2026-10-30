@@ -108,7 +108,7 @@ function findAnchor(table: UI5Element): string {
             const segments = macroTable.metaPath.split('/');
             segments.pop();
             const path = segments.join('/');
-                return `${path}/${getLineItemAnnotation(macroTable)}`;
+                return `${path}/${getLineItemAnnotation(macroTable as unknown as UI5Element)}`;
             })();
         if (!metaPath) {
             return '';

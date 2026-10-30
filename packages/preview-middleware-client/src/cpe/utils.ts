@@ -89,7 +89,7 @@ export async function getLibrary(controlName: string): Promise<string> {
 export function getRootControlFromComponentContainer(container?: ComponentContainer): XMLView | undefined {
     if (container) {
         const componentId = container.getComponent();
-        const component = getComponent(componentId);
+        const component = componentId ? getComponent(componentId) : undefined;
         if (component instanceof UIComponent) {
             const rootControl = component.getRootControl();
             if (rootControl instanceof XMLView) {
