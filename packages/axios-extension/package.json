@@ -37,7 +37,7 @@
         "adm-zip": "0.6.1",
         "open": "8.4.2",
         "qs": "6.16.0",
-        "xpath": "0.0.34",
+        "xpath": "0.0.35",
         "@xmldom/xmldom": "0.9.12",
         "https-proxy-agent": "7.0.6",
         "http-proxy-agent": "7.0.2",
