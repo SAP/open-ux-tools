@@ -7,8 +7,8 @@ Plugin distribution assets for the SAP Fiori MCP server, enabling AI coding assi
 | Asset | Purpose |
 |---|---|
 | `.claude-plugin/plugin.json` | Claude Code plugin manifest |
-| `.github/plugin/plugin.json` | GitHub Awesome Copilot plugin manifest |
-| `.mcp.json` | MCP server launch config (pinned version) |
+| `plugin.json` | GitHub Awesome Copilot plugin manifest |
+| `.mcp.json` → `mcp.json` | MCP server launch config (pinned version) |
 | `skills/` | Seven skills loaded by Claude Code and Awesome Copilot |
 
 ## Skills
@@ -48,10 +48,10 @@ copilot plugin install sap-ux-fiori-tools@awesome-copilot
 
 ## Version Alignment
 
-Plugin versions in `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` are independent of the MCP server version.
+Plugin versions in `.claude-plugin/plugin.json` and `plugin.json` are independent of the MCP server version.
 
 **Automated** — on each `@sap-ux/fiori-mcp-server` npm release, two scripts run in CI:
 - `packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs` — updates `server.json` and the pinned server version in `.mcp.json`
-- `plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs` — patch-bumps the plugin `version` in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.github/plugin/plugin.json`
+- `plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs` — patch-bumps the plugin `version` in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `plugin.json`
 
-**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `.github/plugin/plugin.json` by hand as part of the same commit.
+**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `plugin.json` by hand as part of the same commit.
