@@ -14,7 +14,7 @@
     "scripts": {
         "build": "npm-run-all -l -p build:type-check build:component",
         "build:type-check": "tsc --noEmit",
-        "build:component": "ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
+        "build:component": "rimraf dist && ui5 build --exclude-task minify --exclude-task generateComponentPreload",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
@@ -37,7 +37,7 @@
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@ui5/cli": "4.0.71",
-        "eslint-plugin-jsdoc": "62.8.1",
+        "eslint-plugin-jsdoc": "65.4.2",
         "npm-run-all2": "9.0.3",
         "@jest/globals": "30.4.1",
         "ui5-tooling-transpile": "3.11.3",
