@@ -1,11 +1,9 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
-// Import UI5FlexLayer and alias as SapUxLayer for backwards compatibility
-import type { UI5FlexLayer } from '@sap-ux/project-access';
 // Import CapRuntime from fiori-generator-shared
 import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
 
