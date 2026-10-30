@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+
 ## 1.1.11
 
 ### Patch Changes

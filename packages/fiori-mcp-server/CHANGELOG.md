@@ -1,5 +1,33 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.15.19
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
+## 1.15.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated fast-xml-parser dependencies [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
 ## 1.15.17
 
 ### Patch Changes

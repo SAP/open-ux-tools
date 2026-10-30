@@ -28,9 +28,9 @@ var a = jQuery.sap;
 a.globalEval( "var newVar = true;" );
 ```
 
-## Bug report
+## Bug Report
 
-In case you detect a problem with this check, please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading
 

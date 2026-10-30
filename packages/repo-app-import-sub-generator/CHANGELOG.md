@@ -1,5 +1,41 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.92
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.86 → 3.1.87
+- @sap-ux/fiori-freestyle-writer 3.0.129 → 3.0.130
+- @sap-ux/odata-service-inquirer 3.2.28 → 3.2.28
+
+## 1.2.91
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Bug Fixes
+
+- Support app download on older ABAP systems — retry app list fetch without sap.app/sourceTemplate/id for both flows, and fall back to ADT FileStoreService when ABAP_REPOSITORY_SRV is unavailable [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/odata-service-inquirer 3.2.27 → 3.2.28
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-freestyle-writer 3.0.128 → 3.0.129
+- @sap-ux/fiori-elements-writer 3.1.85 → 3.1.86
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/abap-deploy-config-writer 1.0.33 → 1.0.34
+- @sap-ux/launch-config 1.0.25 → 1.0.26
+- @sap-ux/project-input-validator 1.0.24 → 1.0.25
+
 ## 1.2.90
 
 ### Patch Changes

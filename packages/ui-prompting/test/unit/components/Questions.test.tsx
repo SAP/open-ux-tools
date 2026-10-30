@@ -1,7 +1,9 @@
+import { jest } from '@jest/globals';
 import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { Questions } from '../../../src/components';
+import { Question as RealQuestion } from '../../../src/components/Question/Question';
+import { useTranslation } from '../../../src/context/TranslationContext';
 import { PromptsLayoutType, TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../src/types';
 import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../src';
@@ -9,6 +11,20 @@ import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading, translationInputSelectors } from '../utils';
 import { SapShortTextType } from '@sap-ux/i18n';
+
+jest.unstable_mockModule('../../../src/components/Question/Question', () => ({
+    Question: (questionProps: React.ComponentProps<typeof RealQuestion>) => {
+        const { translationInputProps } = useTranslation();
+        return (
+            <>
+                <RealQuestion {...questionProps} />
+                <span data-testid="focus-setting">{String(translationInputProps?.preventFocusRestoreOnAccept)}</span>
+            </>
+        );
+    }
+}));
+
+const { Questions } = await import('../../../src/components/Questions/Questions');
 
 describe('Questions', () => {
     initIcons();
@@ -33,6 +49,24 @@ describe('Questions', () => {
         const rootElement = document.querySelector('.prompt-entries-wrapper');
         return rootElement?.getAttribute('id') ?? undefined;
     };
+
+    it('forwards and updates input options through the translation provider', () => {
+        const promptQuestions = [{ type: 'input' as const, name: 'title', message: 'Title' }];
+        const { getByTestId, rerender } = render(
+            <Questions questions={promptQuestions} translationProps={{ bundle: {} }} />
+        );
+        expect(getByTestId('focus-setting').textContent).toBe('undefined');
+
+        for (const preventFocusRestoreOnAccept of [true, false]) {
+            rerender(
+                <Questions
+                    questions={promptQuestions}
+                    translationProps={{ bundle: {}, translationInputProps: { preventFocusRestoreOnAccept } }}
+                />
+            );
+            expect(getByTestId('focus-setting').textContent).toBe(String(preventFocusRestoreOnAccept));
+        }
+    });
 
     it('Render questions component - empty question array, SingleColumn layout', async () => {
         render(<Questions {...props} />);
