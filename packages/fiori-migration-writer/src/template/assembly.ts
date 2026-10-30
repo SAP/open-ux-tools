@@ -1,7 +1,7 @@
 /**
  * Helper functions for template assembly and configuration creation
  */
-import { FileName } from '../project-spec-types.js';
+import { FileName } from '@sap-ux/project-access';
 import type { PackageJsonMigrate, TemplateData, Ui5Yaml, TemplateAssemblyContext } from '../types.js';
 import { readManifest, MigrationError, devDependencies, ui5Dependencies, v4MockServerDep } from '../utils/index.js';
 import { buildUrlParam, disableCacheParam } from '../utils/common.js';

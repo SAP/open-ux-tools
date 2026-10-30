@@ -1,4 +1,4 @@
-import type { Manifest } from '../project-spec-types.js';
+import type { Manifest } from '@sap-ux/project-access';
 
 /**
  * Adapts minUI5Version in manifest by removing 'snapshot' from version strings

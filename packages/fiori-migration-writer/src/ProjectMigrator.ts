@@ -1,8 +1,8 @@
-import { FioriElementsVersion, FileName } from './project-spec-types.js';
+import { FioriElementsVersion } from './project-spec-types.js';
+import { FileName, getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { determineMessage, readFile, updateFile, fileExists } from './utils/index.js';
 import { createMemFsEditor, loadProjectIntoEditor } from './utils/fs-adapter.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
-import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { join } from 'node:path';

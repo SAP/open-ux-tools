@@ -1,5 +1,6 @@
 import { join } from 'node:path';
-import { DirName, FileName, FioriElementsVersion } from '../project-spec-types.js';
+import { DirName, FileName } from '@sap-ux/project-access';
+import { FioriElementsVersion } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import type { TemplateMap } from '../types.js';
 import { FLOOR_PLAN, TemplateDataKey } from '../types.js';

@@ -1,7 +1,7 @@
 /**
  * Helper functions for processing neo-app configuration and determining OData version
  */
-import type { ManifestNamespace } from '../project-spec-types.js';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import type { NeoappDestination } from '../types.js';
 import { ODataVersion } from '../types.js';

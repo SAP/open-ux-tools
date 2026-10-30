@@ -8,8 +8,8 @@ import {
     getCommonV4TemplatesMap,
     fileExists
 } from '../utils/index.js';
+import { DirName } from '@sap-ux/project-access';
 import type { FioriElementsVersion } from '../project-spec-types.js';
-import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import type { ImportProjectInfo, TemplateData } from '../types.js';
 import { TemplateDataKey } from '../types.js';

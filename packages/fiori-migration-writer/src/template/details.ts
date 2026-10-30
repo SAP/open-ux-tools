@@ -5,7 +5,8 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { TemplateFileName } from '../index.js';
 import { readFile, fileExists } from '../utils/index.js';
-import type { Manifest, ManifestNamespace, FioriElementsVersion } from '../project-spec-types.js';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import type { FioriElementsVersion } from '../project-spec-types.js';
 import { xmlToJson } from '../utils/service.js';
 import { isAppFreestyle } from '../utils/common.js';
 

@@ -4,7 +4,7 @@
 import { join } from 'node:path';
 import { parse } from 'yaml';
 import type { Editor } from 'mem-fs-editor';
-import { DirName, FileName } from '../../project-spec-types.js';
+import { DirName, FileName } from '@sap-ux/project-access';
 import { fileExists, readJSON } from '../../index.js';
 import { readFile } from '../../utils/file-access.js';
 import { sapWattCommonSetting } from '../../types.js';

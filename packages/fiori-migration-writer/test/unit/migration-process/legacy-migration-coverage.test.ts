@@ -3,7 +3,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { validateRootDirectory, buildLegacyPaths, tryGitMove } from '../../../src/migration-process/legacy-helpers.js';
-import { DirName } from '../../../src/project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import { TemplateFileName } from '../../../src/index.js';
 import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 

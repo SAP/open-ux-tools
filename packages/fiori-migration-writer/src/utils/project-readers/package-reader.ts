@@ -3,7 +3,7 @@
  */
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { FileName } from '../../project-spec-types.js';
+import { FileName } from '@sap-ux/project-access';
 import { readJSON } from '../../index.js';
 
 /**

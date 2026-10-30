@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readFile, updateFile, generateTemplate, updateThemeAttribute, fileExists } from '../utils/index.js';
-import { DirName } from '../project-spec-types.js';
+import { DirName } from '@sap-ux/project-access';
 import { TemplateFileName, templatesDirPath } from '../index.js';
 import { MigrationTypes } from '../utils/constants.js';
 import type { TemplateData, TemplateMap } from '../types.js';

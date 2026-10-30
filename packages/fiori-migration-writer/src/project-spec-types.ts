@@ -1,13 +1,8 @@
 /**
- * Types that were previously imported from @sapux/project-spec (SAP-internal package).
- * These are inlined here to make the package open-source compatible.
+ * Types specific to fiori-migration-writer.
+ * For types from @sap-ux/project-access (Manifest, FileName, DirName, etc.),
+ * import them directly from that package instead of re-exporting through here.
  */
-
-// Re-export types from @sap-ux/project-access
-export type { Manifest, ManifestNamespace, Package } from '@sap-ux/project-access';
-
-// Re-export const objects (values + types) from @sap-ux/project-access
-export { FileName, DirName } from '@sap-ux/project-access';
 
 /**
  * Fiori Elements versions

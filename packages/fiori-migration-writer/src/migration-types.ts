@@ -1,6 +1,6 @@
-import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
+import type { FioriElementsVersion, SapAppSourceTemplate } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
@@ -30,12 +30,8 @@ export type Script = {
 
 /**
  * SAP UX Layer values for flex changes
- * Re-exported from @sap-ux/project-access as UI5FlexLayer
+ * Use UI5FlexLayer from @sap-ux/project-access directly
  */
-export const SapUxLayer = {
-    VENDOR: 'VENDOR',
-    CUSTOMER_BASE: 'CUSTOMER_BASE'
-} as const;
 export type SapUxLayer = UI5FlexLayer;
 
 /** package.json interface */

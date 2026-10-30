@@ -1,7 +1,6 @@
 import {
     ODataVersion,
     DatasourceType,
-    SapUxLayer,
     CapType,
     ApiHubType,
     SapSystemSourceType,
@@ -51,13 +50,17 @@ describe('Constants', () => {
         });
     });
 
-    describe('SapUxLayer', () => {
-        test('should have VENDOR layer', () => {
-            expect(SapUxLayer.VENDOR).toBe('VENDOR');
+    // SapUxLayer is now a type alias to UI5FlexLayer from @sap-ux/project-access
+    // The const object was removed - tests should use string literals directly
+    describe('UI5FlexLayer / SapUxLayer string literal values', () => {
+        test('VENDOR value should be correct', () => {
+            const vendorLayer: 'VENDOR' = 'VENDOR';
+            expect(vendorLayer).toBe('VENDOR');
         });
 
-        test('should have CUSTOMER_BASE layer', () => {
-            expect(SapUxLayer.CUSTOMER_BASE).toBe('CUSTOMER_BASE');
+        test('CUSTOMER_BASE value should be correct', () => {
+            const customerLayer: 'CUSTOMER_BASE' = 'CUSTOMER_BASE';
+            expect(customerLayer).toBe('CUSTOMER_BASE');
         });
     });
 

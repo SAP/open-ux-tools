@@ -1,7 +1,7 @@
 /**
  * Helper functions for processing regular (non-reuse, non-extension, non-adaptation) projects
  */
-import type { ManifestNamespace } from '../project-spec-types.js';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getMinUI5VersionAsArray } from '@sap-ux/project-access';
 import type { Backend, ImportProjectInfo, Message, NeoappDestination, RegularProjectContext } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';

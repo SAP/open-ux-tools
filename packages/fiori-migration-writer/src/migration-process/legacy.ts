@@ -8,7 +8,7 @@ import type { Editor } from 'mem-fs-editor';
 import { readFile, updateFile, readJSON, updateJSON, fileExists } from '../utils/index.js';
 import { editorHasPath } from '../utils/fs-adapter.js';
 import { TemplateFileName } from '../index.js';
-import { FileName } from '../project-spec-types.js';
+import { FileName } from '@sap-ux/project-access';
 import { legacyPath, getFFTestSuiteMap, MigrationError } from '../utils/common.js';
 import { ProjectAccess } from '../utils/Project.js';
 import { hasStore } from '../types/mem-fs-types.js';
