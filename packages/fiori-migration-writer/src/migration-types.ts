@@ -22,9 +22,13 @@ export type Script = {
 
 /**
  * SAP UX Layer values for flex changes
- * Use UI5FlexLayer from @sap-ux/project-access directly
+ * Exported as const object for backward compatibility with tools-suite
  */
-export type SapUxLayer = UI5FlexLayer;
+export const SapUxLayer = {
+    VENDOR: 'VENDOR',
+    CUSTOMER_BASE: 'CUSTOMER_BASE'
+} as const;
+export type SapUxLayer = (typeof SapUxLayer)[keyof typeof SapUxLayer];
 
 /** package.json interface */
 export interface PackageJson {
@@ -63,6 +67,26 @@ export type DatasourceType = (typeof DatasourceType)[keyof typeof DatasourceType
 
 // Import and re-export TemplateType from fiori-elements-writer (single source of truth)
 export { TemplateType } from '@sap-ux/fiori-elements-writer';
+
+/**
+ * Legacy floor plan constants for backward compatibility with tools-suite
+ * @deprecated Use TemplateType from @sap-ux/fiori-elements-writer instead
+ * These map to the old V2/V4-specific floor plan identifiers
+ */
+export const FLOOR_PLAN = {
+    WorklistV2: 'V2_WORKLIST',
+    ListReportObjectPageV2: 'V2_LIST_REPORT',
+    AnalyticalListPageV2: 'V2_ANALYTICAL',
+    ListReportObjectPageV4: 'V4_LIST_REPORT',
+    OverviewPageV2: 'V2_OVERVIEW'
+} as const;
+export type FloorPlan = (typeof FLOOR_PLAN)[keyof typeof FLOOR_PLAN];
+
+/**
+ * Legacy project type constants for backward compatibility
+ * @deprecated Use FLOOR_PLAN instead (they are identical)
+ */
+export const PROJECT_TYPE = FLOOR_PLAN;
 
 export type Backend = {
     source?: string;
@@ -311,10 +335,14 @@ export interface Credentials {
     password?: string;
 }
 /**
- * CAP runtime implementation type
- * Use CapRuntime from @sap-ux/fiori-generator-shared directly
+ * CAP runtime implementation types
+ * Exported as const object for backward compatibility with tools-suite
  */
-export type CapType = CapRuntime;
+export const CapType = {
+    NODE_JS: 'Node.js',
+    JAVA: 'Java'
+} as const;
+export type CapType = (typeof CapType)[keyof typeof CapType];
 
 /**
  * Defines the api hub service properties or enterprise and non-enterprise versions
