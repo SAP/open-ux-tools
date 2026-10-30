@@ -22,9 +22,10 @@ export const TranslationProvider = <T extends TranslationEntry>(props: Translati
         () => ({
             bundle: props.bundle,
             onEvent: handleEvent,
-            pendingQuestions: props.pendingQuestions
+            pendingQuestions: props.pendingQuestions,
+            translationInputProps: props.translationInputProps
         }),
-        [props.bundle, handleEvent, props.pendingQuestions]
+        [props.bundle, handleEvent, props.pendingQuestions, props.translationInputProps]
     );
     return <TranslationContext.Provider value={value}>{props.children}</TranslationContext.Provider>;
 };

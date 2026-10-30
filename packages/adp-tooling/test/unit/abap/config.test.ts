@@ -10,7 +10,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 const { SystemLookup } = await import('../../../src/source/systems.js');
-const { getProviderConfig } = await import('../../../src/abap/config.js');
+const { SystemNotFoundError, getProviderConfig } = await import('../../../src/abap/config.js');
 import type { RequestOptions } from '../../../src/abap/config.js';
 
 const logger = {
@@ -66,11 +66,12 @@ describe('getProviderConfig', () => {
         });
     });
 
-    it('should throw an error if system details are not found in VS Code', async () => {
+    it('should throw a SystemNotFoundError if system details are not found in VS Code', async () => {
         const system = 'NonExisting';
         mockIsAppStudio.mockReturnValue(false);
         getSystemByNameSpy.mockResolvedValue(undefined);
 
+        await expect(getProviderConfig(system, logger)).rejects.toThrow(SystemNotFoundError);
         await expect(getProviderConfig(system, logger)).rejects.toThrow(
             `No system details found for system: ${system}`
         );

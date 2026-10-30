@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 1.0.69
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
 ## 1.0.68
 
 ### Patch Changes
