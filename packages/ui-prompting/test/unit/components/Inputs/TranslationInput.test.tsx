@@ -7,6 +7,15 @@ import { SapShortTextType } from '@sap-ux/i18n';
 import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../../src/types';
 
 const mockUseTranslation = jest.fn();
+const realUiComponents = await import('@sap-ux/ui-components');
+const mockTranslationInput = jest.fn<typeof realUiComponents.UITranslationInput>((inputProps) => (
+    <realUiComponents.UITranslationInput {...inputProps} />
+));
+
+jest.unstable_mockModule('@sap-ux/ui-components', () => ({
+    ...realUiComponents,
+    UITranslationInput: mockTranslationInput
+}));
 
 jest.unstable_mockModule('../../../../src/context/TranslationContext', () => ({
     useTranslation: mockUseTranslation,
@@ -57,6 +66,20 @@ describe('TranslationInput', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    it.each([true, false, undefined])('forwards preventFocusRestoreOnAccept=%s', (preventFocusRestoreOnAccept) => {
+        mockUseTranslation.mockReturnValue({
+            bundle: {},
+            translationInputProps: { preventFocusRestoreOnAccept }
+        });
+
+        render(<TranslationInput {...props} />);
+
+        expect(mockTranslationInput).toHaveBeenLastCalledWith(
+            expect.objectContaining({ preventFocusRestoreOnAccept }),
+            expect.anything()
+        );
     });
 
     it('Render translation input without value', () => {

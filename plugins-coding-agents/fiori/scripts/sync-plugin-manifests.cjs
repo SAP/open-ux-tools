@@ -13,7 +13,7 @@ const pluginRoot = path.join(__dirname, '..');
 const pluginPkgPath = path.join(pluginRoot, 'package.json');
 const claudePluginJsonPath = path.join(pluginRoot, '.claude-plugin', 'plugin.json');
 const claudeMarketplaceJsonPath = path.join(pluginRoot, '.claude-plugin', 'marketplace.json');
-const awesomeCopilotPluginJsonPath = path.join(pluginRoot, '.github', 'plugin', 'plugin.json');
+const awesomeCopilotPluginJsonPath = path.join(pluginRoot, 'plugin.json');
 
 function deepEqual(a, b) {
     if (a === b) return true;
@@ -42,7 +42,7 @@ try {
             console.warn(
                 `⚠️  Metadata drift detected in field "${field}":\n` +
                 `   .claude-plugin/plugin.json: ${JSON.stringify(claudePluginJson[field])}\n` +
-                `   .github/plugin/plugin.json: ${JSON.stringify(awesomeCopilotPluginJson[field])}\n` +
+                `   plugin.json: ${JSON.stringify(awesomeCopilotPluginJson[field])}\n` +
                 `   Update both files manually to keep them in sync.`
             );
         }
@@ -68,7 +68,7 @@ try {
         throw new Error(
             `Plugin manifest versions are out of sync:\n` +
             `  .claude-plugin/plugin.json: ${claudePluginJson.version}\n` +
-            `  .github/plugin/plugin.json: ${awesomeCopilotPluginJson.version}\n` +
+            `  plugin.json: ${awesomeCopilotPluginJson.version}\n` +
             `  Manually align both files before running the release.`
         );
     }
@@ -89,7 +89,7 @@ try {
     }
 
     fs.writeFileSync(awesomeCopilotPluginJsonPath, JSON.stringify(awesomeCopilotPluginJson, null, 4) + '\n');
-    console.log(`Updated .github/plugin/plugin.json to version ${pluginVersion}`);
+    console.log(`Updated plugin.json to version ${pluginVersion}`);
 } catch (e) {
     console.error(`Error: ${e.message}`);
     process.exit(1);
