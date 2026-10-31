@@ -49,6 +49,11 @@
     "bin": {
         "fiori-mcp": "./dist/index.js"
     },
+    "dependencies": {
+        "@sap-ux/fe-fpm-writer": "workspace:*",
+        "@sap-ux/fiori-annotation-api": "workspace:*",
+        "@sap-ux/vocabularies-types": "0.16.0"
+    },
     "devDependencies": {
         "@huggingface/transformers": "4.2.0",
         "@jest/globals": "30.5.2",
@@ -63,7 +68,6 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/edmx-parser": "0.10.0",
         "@sap-ux/feature-toggle": "workspace:*",
-        "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/logger": "workspace:*",
@@ -80,7 +84,6 @@
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.16.0",
         "@sap/ux-specification": "1.144.5",
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",

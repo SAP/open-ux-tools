@@ -120,7 +120,8 @@ describe('FioriFunctionalityServer', () => {
             'generate_fiori_app_cap',
             'list_functionality',
             'get_functionality_details',
-            'execute_functionality'
+            'execute_functionality',
+            'add_building_block'
             // ADP tools are omitted — they require SAP_FIORI_MCP_ADP_TOOLS=true
         ]);
     });
@@ -370,7 +371,8 @@ describe('FioriFunctionalityServer', () => {
                 'generate_fiori_app_cap',
                 'list_functionality',
                 'get_functionality_details',
-                'execute_functionality'
+                'execute_functionality',
+                'add_building_block'
                 // ADP tools are omitted — they require SAP_FIORI_MCP_ADP_TOOLS=true
             ]);
         });
@@ -511,6 +513,29 @@ describe('FioriFunctionalityServer', () => {
                 { tool: 'list_sap_systems', mcpClientName: 'unknown-client', mcpClientVersion: 'unknown-version' },
                 undefined
             );
+        });
+
+        test('add_building_block returns a structured error (not a throw) on invalid input', async () => {
+            new FioriFunctionalityServer();
+            const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+            const result = await onRequestCB({
+                params: {
+                    name: 'add_building_block',
+                    arguments: {
+                        appPath: '/app',
+                        viewOrFragmentPath: 'webapp/ext/main/Main.view.xml',
+                        aggregationPath: '/mvc:View/content',
+                        // missing the required `id` — Zod validation must fail
+                        buildingBlockData: { buildingBlockType: 'table' }
+                    }
+                }
+            });
+            expect(result.structuredContent).toEqual({
+                status: 'error',
+                modifiedFiles: [],
+                message: expect.stringContaining('Invalid add_building_block input')
+            });
+            expect(result.content).toEqual([{ type: 'text', text: JSON.stringify(result.structuredContent) }]);
         });
 
         test('download_odata_service_metadata', async () => {

@@ -2743,6 +2743,16 @@ importers:
         version: 5.2.14
 
   packages/fiori-mcp-server:
+    dependencies:
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
+      '@sap-ux/fiori-annotation-api':
+        specifier: workspace:*
+        version: link:../fiori-annotation-api
+      '@sap-ux/vocabularies-types':
+        specifier: 0.16.0
+        version: 0.16.0
     devDependencies:
       '@huggingface/transformers':
         specifier: 4.2.0
@@ -2783,9 +2793,6 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
-      '@sap-ux/fiori-annotation-api':
-        specifier: workspace:*
-        version: link:../fiori-annotation-api
       '@sap-ux/fiori-docs-embeddings':
         specifier: workspace:*
         version: link:../fiori-docs-embeddings
@@ -2834,9 +2841,6 @@ importers:
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
-      '@sap-ux/vocabularies-types':
-        specifier: 0.16.0
-        version: 0.16.0
       '@sap/ux-specification':
         specifier: 1.144.5
         version: 1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)

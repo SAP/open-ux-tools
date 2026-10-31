@@ -26,6 +26,7 @@ import {
     runRtaWorkflowStep,
     readODataMetadataAdp,
     lookupUi5Documentation,
+    addBuildingBlock,
     tools,
     adpToolNames
 } from './tools/index.js';
@@ -44,8 +45,10 @@ import type {
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
     ReadODataMetadataInput,
-    LookupUi5DocumentationInput
+    LookupUi5DocumentationInput,
+    AddBuildingBlockInput
 } from './types/index.js';
+import { AddBuildingBlockInputSchema } from './types/input.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
 
@@ -64,6 +67,7 @@ type ToolArgs =
     | RunRtaWorkflowStepInput
     | ReadODataMetadataInput
     | LookupUi5DocumentationInput
+    | AddBuildingBlockInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
@@ -230,6 +234,32 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
 
 - If a SAP system or service URL is involved, call \`download_odata_service_metadata\` first and pass ALL fields it returns into the generator config.
 
+## Adding a Building Block to a Fiori app
+
+When the user asks to add a Table, Chart, FilterBar, Field, Form, notes editor, custom column, custom filter, or any other Building Block:
+
+DO NOT read view XML files and write XML manually — this produces incorrect output.
+DO NOT use write_file or edit_file to modify view or fragment XML for building blocks.
+ALWAYS use \`add_building_block\` — it calls the same generator as the SAP Page Editor.
+
+Workflow:
+1. If app path is unknown → call \`list_fiori_apps\`
+2. Let \`add_building_block\` discover the target: call it with only appPath to list the view/fragment files, then
+   again with the chosen viewOrFragmentPath to get the valid aggregationPath options — do NOT read XML or guess
+3. If unsure which metaPath annotation to use → call \`search_docs\`
+4. Call \`add_building_block\` with appPath, viewOrFragmentPath, aggregationPath, and buildingBlockData
+
+Natural language → buildingBlockType:
+  table/list/line items → table | chart/graph/analytics → chart | filter bar/search → filter-bar
+  notes/rich text → rich-text-editor | custom column → custom-column | button/action → action
+  field/property → field | form/details → form | custom filter → custom-filter-field
+
+metaPath is required for table, chart, filter-bar, field, form — NOT needed for custom-* types and action. rich-text-editor uses targetProperty (e.g. /Products/description), not metaPath.
+
+For Table, FilterBar and Form on an OData app, \`add_building_block\` auto-writes the required UI annotation shell (UI.LineItem / UI.SelectionFields / UI.FieldGroup) when it is missing. On CAP projects the annotation must already exist in a .cds file.
+
+Manual XML authoring will produce broken output — wrong namespaces, missing manifest.json entries, hallucinated attributes. \`add_building_block\` is the only correct path.
+
 ## Other available tools
 
 - \`list_sap_systems\` — list available SAP backends/destinations
@@ -273,6 +303,15 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     } else {
                         telemetryProperties.functionalityId = functionalityId as string;
                     }
+                }
+                if (
+                    args &&
+                    'buildingBlockData' in args &&
+                    args.buildingBlockData &&
+                    typeof args.buildingBlockData === 'object' &&
+                    'buildingBlockType' in args.buildingBlockData
+                ) {
+                    telemetryProperties.buildingBlockType = args.buildingBlockData.buildingBlockType as string;
                 }
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
@@ -327,6 +366,24 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     case 'execute_functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalityInput);
                         break;
+                    case 'add_building_block': {
+                        const parsed = AddBuildingBlockInputSchema.safeParse(args);
+                        if (!parsed.success) {
+                            const issues = parsed.error.issues
+                                .map((i) => `${i.path.join('.')}: ${i.message}`)
+                                .join('; ');
+                            // Return a structured error (not a throw) so the client receives the declared
+                            // AddBuildingBlockOutput shape and can self-correct — acceptance criterion S2.
+                            result = {
+                                status: 'error',
+                                modifiedFiles: [],
+                                message: `Invalid add_building_block input — ${issues}`
+                            };
+                            break;
+                        }
+                        result = await addBuildingBlock(parsed.data);
+                        break;
+                    }
                     default:
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);

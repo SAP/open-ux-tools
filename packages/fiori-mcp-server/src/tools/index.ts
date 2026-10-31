@@ -20,6 +20,7 @@ export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 export { readODataMetadataAdp } from './read-odata-metadata.js';
 export { lookupUi5Documentation } from './lookup-ui5-documentation/index.js';
+export { addBuildingBlock } from './add-building-block.js';
 
 const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
 
@@ -399,6 +400,59 @@ export const tools = [
         },
         inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
+    },
+    {
+        name: 'add_building_block',
+        description: `PREFERRED TOOL for adding SAP Fiori Elements Building Blocks. ALWAYS use this tool when adding a Table, Chart, FilterBar, Field, Form, or any other Building Block to a Fiori app view or fragment — do NOT edit XML files directly.
+Calls \`@sap-ux/fe-fpm-writer\` \`generateBuildingBlock()\` and writes the result to disk, using the same generator as the SAP Page Editor. This guarantees correct XML output and automatically handles manifest dependencies.
+
+For end-to-end guidance (annotation setup, routing, prerequisites), use the \`sap-fiori-building-blocks\` skill if available.
+
+## Natural language → buildingBlockType mapping
+"table" / "list" / "line items"          → table
+"chart" / "graph" / "analytics"          → chart
+"filter bar" / "search bar" / "filters"  → filter-bar
+"field" / "property" / "single value"    → field
+"form" / "details section"               → form
+"page" / "custom page layout"            → page
+"notes" / "rich text" / "text editor"    → rich-text-editor
+"custom column" / "extra column"         → custom-column
+"custom filter" / "custom search field"  → custom-filter-field
+"custom form field" / "custom detail"    → custom-form-field
+"button" / "action" / "toolbar button"   → action
+
+## metaPath — when to set it and when NOT to
+Standard BBs (table, chart, filter-bar, field, form) REQUIRE a metaPath annotation path.
+  - table / custom-column  → @com.sap.vocabularies.UI.v1.LineItem
+  - chart                  → @com.sap.vocabularies.UI.v1.Chart
+  - filter-bar             → @com.sap.vocabularies.UI.v1.SelectionFields
+  - field / form           → annotation path for the specific property or FieldGroup
+rich-text-editor uses targetProperty (e.g. /Products/description), NOT metaPath. Do NOT set metaPath for rich-text-editor.
+Custom BBs (custom-column, custom-filter-field, custom-form-field, action) do NOT use metaPath.
+Call search_docs if unsure which annotation path to use.
+
+## Finding viewOrFragmentPath and aggregationPath — let the tool discover them
+Do NOT read the view file or guess the XPath. The tool discovers both for you:
+1. Call with only appPath (omit viewOrFragmentPath and aggregationPath) → returns status "needs_input" with
+   insertionPoints listing the available view/fragment files.
+2. Call again adding the chosen viewOrFragmentPath (still omit aggregationPath) → returns status "needs_input"
+   with insertionPoints[0].aggregationPaths — the valid XPath options for that file (e.g. "/mvc:View/content").
+3. Call again with both viewOrFragmentPath and the chosen aggregationPath → inserts the building block.
+You may skip straight to step 3 if you already know both values.
+
+Call list_fiori_apps first if the app path is not known.
+
+IMPORTANT: When adding multiple building blocks, call this tool once per building block in sequence — do NOT call it in parallel. Each call reads the view file from disk; parallel calls will not see each other's writes and may produce duplicate element IDs.
+
+Annotations: for Table, FilterBar, and Form on an OData app, the tool automatically writes the required UI annotation shell (UI.LineItem / UI.SelectionFields / UI.FieldGroup) when it does not already exist — you do not need to create it first. CAP (CDS) annotations are out of scope: on a CAP project the annotation must already exist in a .cds file before calling this tool.`,
+        annotations: {
+            title: 'Add Building Block',
+            readOnlyHint: false,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.AddBuildingBlockInputSchema),
+        outputSchema: convertToSchema(Output.AddBuildingBlockOutputSchema)
     },
     ...(adpToolsEnabled ? adpTools : [])
 ] as Tool[];
