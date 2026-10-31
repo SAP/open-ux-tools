@@ -17,12 +17,9 @@
 
 import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
-<%_
-const usesFilterFieldIdentifier =
-    !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
--%>
-<% if (usesFilterFieldIdentifier) { -%>
-import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
+<%_ const usesDialogIdentifier = (tabs && tabs.some(function(tab) { return tab.contactCardColumns && tab.contactCardColumns.length > 0; })) || (contactCardColumns && contactCardColumns.length > 0); -%>
+<% if (usesDialogIdentifier) { -%>
+import type { DialogIdentifier } from "sap/fe/test/api/BaseAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
 <%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (defaultSortOrder && defaultSortOrder.length > 0) || (tabs && tabs.some(function(tab) { return (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) || (tab.defaultSortOrder && tab.defaultSortOrder.length > 0); }))); -%>
@@ -48,7 +45,7 @@ function journey() {
     opaTest("Check filter bar", function (_Given: Given, _When: When, Then: Then) {
         <%_ filterBarItems.forEach(function(item) { _%>
         <%_ if (item.custom) { _%>
-        Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item.description %>" as unknown as FilterFieldIdentifier);
+        Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item.description %>");
         <%_ } else { _%>
         Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- item.property %>" });
         <%_ } _%>
@@ -262,7 +259,7 @@ function journey() {
         <%_ tab.contactCardColumns.forEach(function(column) { _%>
         // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
         When.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iClickLink(0, "<%- column.property %>");
-        Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+        Then.onThe<%- startLR %>Generated.onDialog({} as unknown as DialogIdentifier).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
         <%_ }); _%>
     });
 

@@ -18,9 +18,9 @@ function journey() {
         <% if (!hideFilterBar) { %>
         When.onThe<%- startLR%>Generated.onFilterBar().iExecuteSearch();
         <%} %>
-        Then.onThe<%- startLR%>Generated.onTable("").iCheckRows();
+        Then.onThe<%- startLR%>Generated.onTable().iCheckRows();
 <% if (navigatedOP) { %>
-        When.onThe<%- startLR%>Generated.onTable("").iPressRow(0);
+        When.onThe<%- startLR%>Generated.onTable().iPressRow(0);
         Then.onThe<%- navigatedOP%>Generated.iSeeThisPage();
 <%} %>
     });
