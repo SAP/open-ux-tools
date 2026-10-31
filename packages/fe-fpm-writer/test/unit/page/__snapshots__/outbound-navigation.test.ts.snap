@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`OutboundNavigation generate adds outbound navigation with crossNavigation to sap.app and sap.ui5 1`] = `
+Object {
+  "sap.app": Object {
+    "crossNavigation": Object {
+      "outbounds": Object {
+        "ProductsOutbound": Object {
+          "action": "display",
+          "semanticObject": "ProductSO",
+        },
+      },
+    },
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "options": Object {
+            "settings": Object {
+              "navigation": Object {
+                "Products": Object {
+                  "detail": Object {
+                    "outbound": "ProductsOutbound",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`OutboundNavigation generate adds outbound navigation without crossNavigation (sap.ui5 only) 1`] = `
+Object {
+  "options": Object {
+    "settings": Object {
+      "navigation": Object {
+        "Products": Object {
+          "detail": Object {
+            "outbound": "ProductsOutbound",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`OutboundNavigation generate does not replace navigation for a different entity 1`] = `
+Object {
+  "Customers": Object {
+    "detail": Object {
+      "outbound": "ExistingOutbound",
+    },
+  },
+  "Products": Object {
+    "detail": Object {
+      "outbound": "ProductsOutbound",
+    },
+  },
+}
+`;
+
+exports[`OutboundNavigation generate replaces existing outbound navigation for the same entity 1`] = `
+Object {
+  "sap.app": Object {
+    "crossNavigation": Object {
+      "outbounds": Object {
+        "NewOutboundKey": Object {
+          "action": "manage",
+          "semanticObject": "ProductSO",
+        },
+      },
+    },
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "options": Object {
+            "settings": Object {
+              "navigation": Object {
+                "Products": Object {
+                  "detail": Object {
+                    "outbound": "NewOutboundKey",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
