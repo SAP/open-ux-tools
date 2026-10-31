@@ -43,7 +43,7 @@
         "yamljs": "0.3.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@types/archiver": "7.0.0",
         "@types/minimist": "1.2.5",
         "@types/prompts": "2.4.9",

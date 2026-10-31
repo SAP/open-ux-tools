@@ -62,7 +62,7 @@
         "yaml": "2.9.1"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@types/ejs": "3.1.5",
         "@types/fs-extra": "11.0.4",
