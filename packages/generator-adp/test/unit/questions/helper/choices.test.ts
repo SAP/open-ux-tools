@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import type { AdaptationDescriptor } from '@sap-ux/axios-extension';
-import type { CFApp, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
+import type { CFApp, CfServiceInstanceChoice, Endpoint, SourceApplication } from '@sap-ux/adp-tooling';
 
 jest.unstable_mockModule('../../../../src/utils/i18n', () => ({
     t: jest.fn((key: string) => key),
@@ -12,6 +12,7 @@ const { AppRouterType } = await import('@sap-ux/adp-tooling');
 const {
     getApplicationChoices,
     getCFAppChoices,
+    getServiceInstanceChoices,
     getAppRouterChoices,
     getAdaptationChoices,
     getKeyUserSystemChoices,
@@ -139,6 +140,42 @@ describe('Choices Helper Functions', () => {
 
         test('should handle empty array', () => {
             const result = getCFAppChoices([]);
+            expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('getServiceInstanceChoices', () => {
+        const mockInstance: CfServiceInstanceChoice = {
+            name: 'my-instance',
+            service: 'hana',
+            servicePlan: 'hdi-shared'
+        };
+        const mockInstance2: CfServiceInstanceChoice = {
+            name: 'other-instance',
+            service: 'xsuaa',
+            servicePlan: 'application'
+        };
+
+        test('should map an instance to its name, keeping the instance as the value', () => {
+            const result = getServiceInstanceChoices([mockInstance]);
+
+            expect(result).toHaveLength(1);
+            expect(result[0]).toEqual({
+                value: mockInstance,
+                name: 'my-instance'
+            });
+        });
+
+        test('should map multiple instances', () => {
+            const result = getServiceInstanceChoices([mockInstance, mockInstance2]);
+
+            expect(result).toHaveLength(2);
+            expect(result[0].name).toBe('my-instance');
+            expect(result[1].name).toBe('other-instance');
+        });
+
+        test('should handle empty array', () => {
+            const result = getServiceInstanceChoices([]);
             expect(result).toHaveLength(0);
         });
     });

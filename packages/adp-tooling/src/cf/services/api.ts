@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import axios from 'axios';
 import * as path from 'node:path';
 import type { AxiosRequestConfig } from 'axios';
-import { Cli } from '@sap/cf-tools';
+import { Cli, cfGetAuthToken } from '@sap/cf-tools';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -18,6 +18,7 @@ import type {
     GetServiceInstanceParams,
     ServiceInstance,
     CfServiceInstance,
+    CfServiceInstanceChoice,
     MtaYaml,
     ServiceInfo,
     CfUi5AppInfo,
@@ -49,6 +50,99 @@ const PARAM_MAP: Map<string, string> = new Map([
 ]);
 
 /**
+ * Service offerings that must not be offered as bindable ADP service instances.
+ */
+const EXCLUDED_SERVICE_OFFERINGS = new Set(['destination', 'xsuaa', 'html5-apps-repo']);
+
+/**
+ * A CF v3 service_plan resource as returned in the `included` block of an expanded query.
+ */
+interface CfIncludedServicePlan {
+    guid: string;
+    name: string;
+    relationships: {
+        service_offering: {
+            data: {
+                guid: string;
+            };
+        };
+    };
+}
+
+/**
+ * A CF v3 service_offering resource as returned in the `included` block of an expanded query.
+ */
+interface CfIncludedServiceOffering {
+    guid: string;
+    name: string;
+}
+
+/**
+ * CF v3 service_instances response with expanded service_plan and service_offering fields.
+ */
+interface CfServiceInstancesExpandedResponse extends CfAPIResponse<CfServiceInstance> {
+    included?: {
+        service_plans?: CfIncludedServicePlan[];
+        service_offerings?: CfIncludedServiceOffering[];
+    };
+}
+
+/**
+ * Lists the live managed CF service instances in a space that can be bound to an ADP project.
+ *
+ * Uses CF v3 field expansion to resolve each instance's plan name and offering name in a single
+ * call, then filters out offerings that are not meaningful ADP bindings (destination, xsuaa,
+ * html5-apps-repo).
+ *
+ * @param {string} spaceGuid - The space GUID to scope the query to.
+ * @param {ToolsLogger} [logger] - Optional logger.
+ * @returns {Promise<CfServiceInstanceChoice[]>} The bindable service instances with offering + plan.
+ */
+export async function getAdpServiceInstances(
+    spaceGuid: string,
+    logger?: ToolsLogger
+): Promise<CfServiceInstanceChoice[]> {
+    try {
+        const uri =
+            `/v3/service_instances?type=managed&space_guids=${spaceGuid}` +
+            `&fields[service_plan]=name,guid,relationships.service_offering` +
+            `&fields[service_plan.service_offering]=name,guid&per_page=1000`;
+        const json = await requestCfApi<CfServiceInstancesExpandedResponse>(uri);
+
+        const plansByGuid = new Map<string, CfIncludedServicePlan>(
+            (json.included?.service_plans ?? []).map((plan) => [plan.guid, plan])
+        );
+        const offeringsByGuid = new Map<string, CfIncludedServiceOffering>(
+            (json.included?.service_offerings ?? []).map((offering) => [offering.guid, offering])
+        );
+
+        const instances: CfServiceInstanceChoice[] = [];
+        for (const instance of json.resources ?? []) {
+            const plan = plansByGuid.get(instance.relationships?.service_plan?.data?.guid ?? '');
+            const offering = offeringsByGuid.get(plan?.relationships?.service_offering?.data?.guid ?? '');
+            const offeringName = offering?.name ?? '';
+
+            if (!offeringName || EXCLUDED_SERVICE_OFFERINGS.has(offeringName)) {
+                continue;
+            }
+
+            instances.push({
+                name: instance.name,
+                guid: instance.guid,
+                service: offeringName,
+                servicePlan: plan?.name ?? ''
+            });
+        }
+
+        return instances.sort((a, b) => a.name.localeCompare(b.name));
+    } catch (e) {
+        const errorMessage = t('error.failedToGetAdpServiceInstances', { error: e.message });
+        logger?.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+}
+
+/**
  * Get the business service info.
  *
  * @param {string} businessService - The business service.
@@ -73,12 +167,30 @@ export async function getBusinessServiceInfo(
 }
 
 /**
+ * Reads the `sap.cloud.service` business-service name from a service instance's existing service-key
+ * credentials. Read-only: it only reads existing keys and never creates one, so it is safe to call
+ * across many instances (e.g. to pre-filter the picker). Returns `undefined` when the instance has no
+ * service key yet or the key carries no `sap.cloud.service`.
+ *
+ * @param {string} serviceInstanceGuid - The service instance GUID.
+ * @param {ToolsLogger} [logger] - The logger.
+ * @returns {Promise<string | undefined>} The `sap.cloud.service` value, or `undefined` if unavailable.
+ */
+export async function getSapCloudServiceName(
+    serviceInstanceGuid: string,
+    logger?: ToolsLogger
+): Promise<string | undefined> {
+    const keys = await getServiceKeys(serviceInstanceGuid, 'updated_at', logger);
+    return keys[0]?.credentials?.['sap.cloud.service'] as string | undefined;
+}
+
+/**
  * Get the FDC request arguments.
  *
  * @param {CfConfig} cfConfig - The CF config.
- * @returns {RequestArguments} The request arguments.
+ * @returns {Promise<RequestArguments>} The request arguments.
  */
-export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
+export async function getFDCRequestArguments(cfConfig: CfConfig): Promise<RequestArguments> {
     const fdcUrl = 'https://ui5-flexibility-design-and-configuration.';
     const cfApiEndpoint = `https://api.cf.${cfConfig.url}`;
     const endpointParts = /https:\/\/api\.cf(?:\.([^-.]*)(-\d+)?(\.hana\.ondemand\.com)|(.*))/.exec(cfApiEndpoint);
@@ -111,7 +223,11 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     }
 
     if (!isBAS || !endpointParts?.[3]) {
-        options.headers!['Authorization'] = `Bearer ${cfConfig.token}`;
+        // Fetch a fresh token via the CF CLI rather than the static `cfConfig.token` read from
+        // ~/.cf/config.json at startup, which expires (~60 min) and causes 401s on the FDC calls.
+        // `cfGetAuthToken` returns a `bearer <jwt>`-prefixed string, so strip any existing scheme.
+        const token = (await cfGetAuthToken())?.replace(/^bearer\s+/i, '') ?? '';
+        options.headers!['Authorization'] = `Bearer ${token}`;
     }
 
     return {
@@ -129,7 +245,7 @@ export function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
  * @returns {Promise<CFApp[]>} The FDC apps.
  */
 export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
     logger?.log(`App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
@@ -151,6 +267,66 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
 }
 
 /**
+ * Returns the subset of the given business-service names that expose at least one cloud-adaptable app,
+ * per the FDC `/api/business-service/info` endpoint. A service is adaptable when one of its apps has
+ * `sap.fiori/cloudDevAdaptationStatus` set to `released`. Names are sent in batches of 100 (endpoint cap).
+ *
+ * @param {string[]} serviceNames - The `sap.cloud.service` business-service names to check.
+ * @param {CfConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} [logger] - The logger.
+ * @returns {Promise<Set<string>>} The subset of names that have at least one adaptable app.
+ */
+export async function getAdaptableBusinessServices(
+    serviceNames: string[],
+    cfConfig: CfConfig,
+    logger?: ToolsLogger
+): Promise<Set<string>> {
+    const unique = [...new Set(serviceNames.filter(Boolean))];
+    const adaptable = new Set<string>();
+    if (unique.length === 0) {
+        return adaptable;
+    }
+
+    const requestArguments = await getFDCRequestArguments(cfConfig);
+    const batches: string[][] = [];
+    for (let i = 0; i < unique.length; i += 100) {
+        batches.push(unique.slice(i, i + 100));
+    }
+
+    await Promise.all(
+        batches.map(async (batch) => {
+            const params = batch.map((name) => `serviceName=${encodeURIComponent(name)}`).join('&');
+            const url = `${requestArguments.url}/api/business-service/info?${params}`;
+
+            try {
+                const response = await axios.get<Record<string, { hasAdaptableApps?: boolean }>>(
+                    url,
+                    requestArguments.options
+                );
+
+                if (response.status !== 200) {
+                    throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
+                }
+
+                const data = response.data ?? {};
+                logger?.info(`FDC adaptable lookup for [${batch.join(', ')}] returned: ${JSON.stringify(data)}`);
+
+                for (const [name, info] of Object.entries(data)) {
+                    if (info?.hasAdaptableApps) {
+                        adaptable.add(name);
+                    }
+                }
+            } catch (error) {
+                logger?.error(`Getting adaptable business services failed. Request url: ${url}. ${error}`);
+                throw new Error(t('error.failedToGetAdaptableBusinessServices', { error: error.message }));
+            }
+        })
+    );
+
+    return adaptable;
+}
+
+/**
  * Get ui5AppInfo.json from FDC service.
  *
  * @param {string} appId - The application ID.
@@ -165,7 +341,7 @@ export async function getCfUi5AppInfo(
     cfConfig: CfConfig,
     logger?: ToolsLogger
 ): Promise<CfUi5AppInfo> {
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
     const url = `${requestArguments.url}/api/business-service/ui5appinfo?appId=${encodeURIComponent(
@@ -206,7 +382,7 @@ export async function getCfBaseAppInbounds(
     logger?: ToolsLogger,
     lang: string = 'en'
 ): Promise<ManifestNamespace.Inbound | undefined> {
-    const requestArguments = getFDCRequestArguments(cfConfig);
+    const requestArguments = await getFDCRequestArguments(cfConfig);
 
     const params = new URLSearchParams({ appId, appHostId, 'sap-language': lang });
     const url = `${requestArguments.url}/api/business-service/inbounds?${params}`;
