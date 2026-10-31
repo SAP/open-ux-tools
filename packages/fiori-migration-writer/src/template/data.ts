@@ -145,7 +145,7 @@ export interface AddV4MockMiddlewareConfig {
     projectInfo: ImportProjectInfo;
     projectData: Partial<ProjectMigrate>;
     ui5Version: string | undefined;
-    ui5SnapshotUrl: string;
+    ui5SnapshotUrl?: string;
     ui5VersionRequestInfo: any;
     ui5Yaml: Ui5Yaml;
 }

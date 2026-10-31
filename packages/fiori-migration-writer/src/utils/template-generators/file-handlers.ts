@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import { readFile, fileExists, readJSON, deleteFile } from '../file-access.js';
 import { createMemFsEditor } from '../fs-adapter.js';
+import { commitFileSystemChanges } from '../../files/file-system.js';
 import mergeWith from 'lodash/mergeWith.js';
 import { MigrationTypes } from '../constants.js';
 
@@ -129,7 +130,7 @@ export async function handlePackageJsonFile(
     // When we created the editor ourselves, persist staged side effects (e.g. Gruntfile.js deletion).
     // When the caller passed an editor, they own the commit (migration flow commits once at the end).
     if (ownsEditor) {
-        await new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
+        await commitFileSystemChanges(fs);
     }
 
     return JSON.stringify(mergedContent, null, 2);
