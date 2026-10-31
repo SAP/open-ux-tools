@@ -1,6 +1,7 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AdaptationProjectType, ServiceProvider } from '@sap-ux/axios-extension';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Authentication } from '@sap-ux/btp-utils';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -229,8 +230,9 @@ export interface TransportAnswers {
     transportConfigError?: string;
     transportConfigNeedsCreds?: boolean;
     /**
-     *  Tracks that credential fields (username/password) should remain visible
-     * throughout the authentication flow.
+     * Tracks that credential fields should remain visible throughout the authentication flow.
+     * Not reset by validateCredentials (unlike transportConfigNeedsCreds, which becomes false
+     * after successful auth so downstream questions appear). Required for YUI re-evaluation.
      */
     areCredentialFieldsVisible?: boolean;
     transportList?: TransportListItem[];
@@ -256,6 +258,7 @@ export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers
     clientChoice?: string;
     username?: string;
     isAbapCloud?: boolean;
+    destinationAuthType?: Authentication;
     packageInputChoice?: PackageInputChoices;
     packageManual?: string;
     packageAutocomplete?: string;
