@@ -1,9 +1,9 @@
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
 import type {
     ActionsCatalog,
+    ApplicationInfo,
     EditorPage,
     ElementContext,
-    InteractiveElement,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction
@@ -60,11 +60,20 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
+ * @param agentName Optional driver name adopted by the status reporter (e.g. `"Joule"`).
  * @returns `{ rtaStarted: true }` once RTA has started.
  */
-export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<{ rtaStarted: boolean }> {
+export async function startRta(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    agentName?: string
+): Promise<{ rtaStarted: boolean }> {
     const name = action('startRTA');
-    return unwrap(name, await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, {}, page.frameId));
+    const payload = agentName !== undefined ? { agentName } : {};
+    return unwrap(
+        name,
+        await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, payload, page.frameId)
+    );
 }
 
 /**
@@ -151,20 +160,40 @@ export async function saveChanges(transport: FrontendActionTransport, page: Edit
 }
 
 /**
- * Switches the running RTA instance to visualization mode.
+ * Returns metadata about the running application (manifest + Flex runtime info).
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns `{ visualizationStarted: true }` once visualization mode is active.
+ * @returns Application id, backend system/client, title and version.
  */
-export async function startVisualization(
+export async function getApplicationInfo(
     transport: FrontendActionTransport,
     page: EditorPage
-): Promise<{ visualizationStarted: boolean }> {
-    const name = action('startVisualization');
+): Promise<ApplicationInfo> {
+    const name = action('getApplicationInfo');
+    return unwrap(name, await transport.callFrontendAction<ApplicationInfo>(page.site, name, {}, page.frameId));
+}
+
+/**
+ * Signals the end of a driver conversation so the page can drop its blocking
+ * status overlay. Best-effort on the page side; the optional `reason` is
+ * purely informational.
+ *
+ * @param transport Transport used to deliver the call.
+ * @param page Target editor page.
+ * @param reason Optional informational reason (e.g. `"done"`, `"cancelled"`).
+ * @returns `{ cleaned: true }` once the overlay has been removed.
+ */
+export async function cleanup(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    reason?: string
+): Promise<{ cleaned: boolean }> {
+    const name = action('cleanup');
+    const payload = reason !== undefined ? { reason } : {};
     return unwrap(
         name,
-        await transport.callFrontendAction<{ visualizationStarted: boolean }>(page.site, name, {}, page.frameId)
+        await transport.callFrontendAction<{ cleaned: boolean }>(page.site, name, payload, page.frameId)
     );
 }
 
@@ -184,33 +213,23 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
 }
 
 /**
- * Returns currently-applicable registered page actions plus a best-effort
- * scan of press-able controls in the live view (root view, static area,
- * open dialogs/popovers).
- *
- * `interactiveTruncated` is set to `true` when the scanner hit its internal
- * cap; in that case some press-able controls were omitted from `interactive`.
+ * Returns the registered page actions currently applicable to the running app.
+ * Page actions are pre-adaptation navigation operations (load a table, open a
+ * row, scroll to a section, go back) contributed through the page's action
+ * registry. Each action's `isValid` is evaluated on the page before inclusion.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns Registered actions, interactive elements, and an optional truncation flag.
+ * @returns The currently-applicable registered actions.
  */
 export async function getPageActions(
     transport: FrontendActionTransport,
     page: EditorPage
-): Promise<{
-    registered: RegisteredPageAction[];
-    interactive: InteractiveElement[];
-    interactiveTruncated?: true;
-}> {
+): Promise<{ registered: RegisteredPageAction[] }> {
     const name = action('getPageActions');
     return unwrap(
         name,
-        await transport.callFrontendAction<{
-            registered: RegisteredPageAction[];
-            interactive: InteractiveElement[];
-            interactiveTruncated?: true;
-        }>(page.site, name, {}, page.frameId)
+        await transport.callFrontendAction<{ registered: RegisteredPageAction[] }>(page.site, name, {}, page.frameId)
     );
 }
 
@@ -231,29 +250,4 @@ export async function callPageAction(
 ): Promise<PageActionRunResult> {
     const name = action('callPageAction');
     return unwrap(name, await transport.callFrontendAction<PageActionRunResult>(page.site, name, { id }, page.frameId));
-}
-
-/**
- * Triggers a real user-gesture click on the control with `controlId` and
- * waits best-effort for the page to settle. The page probes a handful of
- * observable signals (registered-action set, ObjectPage selected section,
- * focus, open dialogs, location hash) at 200 / 400 / 800 ms after the
- * click; the result `note` describes the change or reports
- * `"no observable state change"`.
- *
- * @param transport Transport used to deliver the call.
- * @param page Target editor page.
- * @param controlId DOM/UI5 id of the element to press.
- * @returns The page-action run result.
- */
-export async function pressInteractive(
-    transport: FrontendActionTransport,
-    page: EditorPage,
-    controlId: string
-): Promise<PageActionRunResult> {
-    const name = action('pressInteractive');
-    return unwrap(
-        name,
-        await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
-    );
 }
