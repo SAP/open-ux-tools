@@ -13,6 +13,7 @@ sap.ui.define([
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
 			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
