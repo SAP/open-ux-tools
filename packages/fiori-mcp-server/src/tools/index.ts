@@ -19,6 +19,7 @@ export { openAdaptationEditor } from './open-adaptation-editor.js';
 export { adpControllerExtension } from './adp-controller-extension/index.js';
 export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
 export { readODataMetadataAdp } from './read-odata-metadata.js';
+export { downloadBaseApp } from './download-base-app.js';
 export { lookupUi5Documentation } from './lookup-ui5-documentation/index.js';
 
 const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
@@ -130,16 +131,17 @@ const adpTools = [
         description: `Drives Runtime Authoring (RTA) in the SAP Fiori adaptation editor through a dispatched step protocol. Each call advances one step of the workflow; steps must be called in sequence. \`site\` is the editor URL from \`open_adaptation_editor\` — pass it on every step.
 
         Steps:
-        - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
+        - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`), \`appPath\` (required, top-level — absolute path to the adaptation project root, the same path used to open the editor; it identifies the project so an authenticated CF session is reused per project and ABAP projects skip session handling). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
         - **get_overlays** — site + optional frameId. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
         - **get_context** — site + optional frameId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
         - **call_action** — site + optional frameId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
         - **save** — site + optional frameId. Returns \`{ saved: boolean }\`.
         - **stop** — site + optional frameId. Closes the page for the given site; if no pages remain open, the browser shuts down. Returns \`{ stopped: true }\`.
-        - **restart** — site + optional frameId. Closes the current page, reloads the editor (picks up files written since \`start\`), and returns \`{ site, frameId?, rtaStarted: true }\`. Use this instead of \`stop\`+\`start\` when you need the editor to reload mid-workflow (e.g. after writing fragment files for validation).
+        - **restart** — site + optional frameId + \`appPath\` (required, top-level, same as \`start\`). Closes the current page, reloads the editor (picks up files written since \`start\`), and returns \`{ site, frameId?, rtaStarted: true }\`. Use this instead of \`stop\`+\`start\` when you need the editor to reload mid-workflow (e.g. after writing fragment files for validation).
         - **get_page_actions** — site + optional frameId. Returns \`{ registered: RegisteredPageAction[], interactive: InteractiveElement[] }\`. Use BEFORE \`get_overlays\` to drive page-level navigation (Filter Bar search, row press, section scroll, back). \`registered\` is filtered to currently-applicable high-level actions; \`interactive\` is a best-effort scan of press-able controls (root view + static area + open dialogs).
         - **call_page_action** — site + optional frameId, payload: \`{ id: string }\`. Invokes a registered action; returns \`{ result: PageActionRunResult }\`. Result is \`{ status: "ok" }\` on success or \`{ status: "needs_user_action", reason }\` if a precondition cannot be met.
-        - **press_interactive** — site + optional frameId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.`,
+        - **press_interactive** — site + optional frameId, payload: \`{ controlId: string }\`. Triggers a real user-gesture click on the named control and waits best-effort for the page to settle. Returns \`{ result: PageActionRunResult }\`.
+        - **get_odata_metadata** — site + optional frameId + \`appPath\` (required, top-level), payload: \`{ uris: string[] }\`. Fetches real OData \`$metadata\` (EDMX) for the given data-source URIs through the editor's authenticated session — the way to get real metadata for a Cloud Foundry adaptation project, where \`read_odata_metadata_adp\` returns empty EDMX. Pass the \`entries[].url\` values from \`read_odata_metadata_adp\`. Requires a prior \`start\`. Returns \`{ entries: Array<{ url, metadata } | { url, metadataFile, sizeBytes } | { url, error }> }\`; metadata larger than ~100 KB is written to \`<appPath>/webapp/.context/\` and returned as \`metadataFile\` (read it from disk) instead of inline.`,
         annotations: {
             title: 'Run RTA Workflow Step',
             readOnlyHint: false,
@@ -155,18 +157,40 @@ const adpTools = [
 
         This tool:
         - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
-        - Connects to the SAP system and retrieves the OData metadata
-        - Returns the OData metadata of the merged app descriptor for the Adaptation Project
+        - Lists the OData data sources of the merged app descriptor, each with its id, service URL, and bound UI5 model
+        - For ABAP (on-premise / CloudReady) projects: connects to the SAP system, fetches the real EDMX metadata for each data source, and persists it under \`<appPath>/.context\`. Each entry is one of: \`{ id, url, model, metadata }\` (EDMX inline for small services), \`{ id, url, model, metadataFile, sizeBytes }\` (EDMX too large to inline — written to \`.context\` and referenced by path; read that file), or \`{ id, url, model, error }\` (that service's metadata fetch failed; the other services are unaffected).
+        - For Cloud Foundry (CF) projects: there is NO ABAP service provider to proxy the \`$metadata\` request, so each entry is returned with an EMPTY \`metadata\` string and nothing is written to disk. Empty \`metadata\` on a CF project is the expected result, NOT a successful fetch — do not parse it as an EDMX document.
+
+        Note: for ABAP projects this tool writes metadata files under \`<appPath>/.context\`; it is not purely read-only.
+
+        To obtain the real EDMX for a CF project, call the \`run_rta_workflow_step\` tool's \`get_odata_metadata\` step (after \`start\`), passing the \`entries[].url\` values returned here; it fetches the metadata through the editor's authenticated browser session. For the bound entity type alone, the \`get_context\` step's runtime model context is usually sufficient.
 
         Use this tool when you need to read the OData metadata for an Adaptation Project.`,
         annotations: {
             title: 'Read OData Metadata for Adaptation Project',
-            readOnlyHint: true,
             idempotentHint: true,
             openWorldHint: false
         },
         inputSchema: convertToSchema(Input.ReadODataMetadataInputSchema),
         outputSchema: convertToSchema(Output.ReadODataMetadataOutputSchema)
+    },
+    {
+        name: 'download_base_app_adp',
+        description: `Downloads the base app resources for the specified Adaptation Project.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Connects to the SAP system and downloads the base app resources
+        - Returns the downloaded base app resources for the Adaptation Project
+
+        Use this tool when you need to download the base app resources for an Adaptation Project.`,
+        annotations: {
+            title: 'Download Base App Resources for Adaptation Project',
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.DownloadAppResourcesInputSchema),
+        outputSchema: convertToSchema(Output.DownloadAppResourcesOutputSchema)
     }
 ] as Tool[];
 

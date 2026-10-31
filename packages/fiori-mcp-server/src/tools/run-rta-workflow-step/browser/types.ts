@@ -8,6 +8,15 @@ export interface FrontendActionResult<T = unknown> {
 }
 
 /**
+ * Raw HTTP response surface returned by {@link FrontendActionTransport.fetchViaContext}.
+ */
+export interface FetchViaContextResult {
+    status: number;
+    contentType: string;
+    body: string;
+}
+
+/**
  * Transport that delivers Joule frontend action calls to the running
  * adaptation editor. The `rta/` layer depends on this interface, not on the
  * concrete Playwright implementation, so a fake transport can be injected
@@ -21,6 +30,12 @@ export interface FrontendActionTransport {
         payload?: Record<string, unknown>,
         frameId?: string
     ): Promise<FrontendActionResult<TReturn>>;
+    /**
+     * Issue an authenticated GET through the browser context registered for
+     * `site`, reusing its approuter session cookies. Throws when no session is
+     * registered for `site`.
+     */
+    fetchViaContext(site: string, url: string): Promise<FetchViaContextResult>;
     /** Close the page registered for `site`, if any. */
     disconnectSite(site: string): Promise<void>;
     /** Close every registered page and the underlying transport (browser). */

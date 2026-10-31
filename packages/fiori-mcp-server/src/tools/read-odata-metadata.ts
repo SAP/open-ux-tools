@@ -1,32 +1,31 @@
-import { join, dirname } from 'node:path';
-import { mkdirSync, writeFileSync } from 'node:fs';
-
-import { readUi5Config, getVariant, ManifestService } from '@sap-ux/adp-tooling';
+import { readUi5Config, isCFEnvironment, getMergedManifest } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import prettifyXml from 'prettify-xml';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { logger } from '../utils/index.js';
+import { formatXml, logger, persistMetadata } from '../utils/index.js';
+import type { PersistedMetadata } from '../utils/index.js';
 import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
-type Ui5Model = { dataSource?: string } & Record<string, unknown>;
+type Ui5Model = ManifestNamespace.Model & Record<string, unknown>;
 
-/** A single OData data source entry with its merged manifest metadata, URL, and bound model. */
+/** A single OData data source entry with its id, URL, bound model, and inline/file-referenced metadata or a per-service error. */
 export type ODataMetadataEntry = {
     id: string;
     url: string;
-    metadata: string;
     model?: Ui5Model;
-};
+} & (PersistedMetadata | { error: string });
 
 /**
- * Resolves the target system from `ui5.yaml` and returns an ABAP service provider for it.
+ * Resolves the target ABAP system from `ui5.yaml` and returns a service provider for it.
+ * Only meaningful for ABAP (on-premise / S/4) adaptation projects — CF projects have no
+ * ABAP backend and never reach this.
  *
  * @param appPath - Adaptation project root.
  * @returns ABAP service provider for the configured target.
  */
-async function getProvider(appPath: string): Promise<AbapServiceProvider> {
+async function getAbapProvider(appPath: string): Promise<AbapServiceProvider> {
     const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
     const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
         'fiori-tools-preview'
@@ -36,73 +35,78 @@ async function getProvider(appPath: string): Promise<AbapServiceProvider> {
 }
 
 /**
- * Resolves OData data sources from the merged app descriptor and fetches their EDMX metadata
- * from the connected ABAP system. Optionally persists each result as a local XML file for
- * agent context consumption.
+ * Resolves the OData data sources from a merged app descriptor and returns one entry per source,
+ * each resolved to its metadata by `resolveMetadata`.
  *
- * @param params Input parameters including `appPath` and the optional `saveLocal` flag.
- * @returns One entry per OData data source: id, service URL, formatted metadata XML, and bound model.
+ * @param manifest Merged app descriptor.
+ * @param resolveMetadata Produces the metadata portion of an entry for a given data-source URI.
+ * @returns One entry per OData data source: id, service URL, bound model, and its resolved metadata.
  */
-export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ReadODataMetadataOutput> {
-    const { appPath, saveLocal = false } = params;
-    const abapProvider = await getProvider(appPath);
-    const variant = await getVariant(appPath);
-    const manifestService = await ManifestService.initMergedManifest(abapProvider, appPath, variant, logger);
-
-    const manifest = manifestService.getManifest();
-    const ui5Models = (manifest['sap.ui5']?.models ?? {}) as Record<string, Ui5Model>;
-    const modelsByDataSource = new Map(
-        Object.values(ui5Models)
-            .filter((model): model is Ui5Model & { dataSource: string } => Boolean(model.dataSource))
-            .map((model) => [model.dataSource, model])
-    );
-
-    const dataSources = manifestService.getManifestDataSources();
-    const entries: ODataMetadataEntry[] = await Promise.all(
+async function buildEntries(
+    manifest: Manifest,
+    resolveMetadata: (uri: string) => Promise<PersistedMetadata | { error: string }>
+): Promise<ODataMetadataEntry[]> {
+    const modelsByDataSource = getModelsByDataSource(manifest);
+    const dataSources = manifest['sap.app']?.dataSources ?? {};
+    return Promise.all(
         Object.entries(dataSources)
             .filter(([, dataSource]) => dataSource.type === 'OData')
-            .map(async ([name, dataSource]) => {
-                const rawMetadata = await abapProvider.service(dataSource.uri).metadata();
-                const formattedMetadata = formatXml(rawMetadata);
-                if (saveLocal) {
-                    writeLocalMetadata(appPath, name, formattedMetadata);
-                }
-                return {
-                    id: name,
-                    url: dataSource.uri,
-                    metadata: formattedMetadata,
-                    model: modelsByDataSource.get(name)
-                };
-            })
+            .map(async ([name, dataSource]) => ({
+                id: name,
+                url: dataSource.uri,
+                model: modelsByDataSource.get(name),
+                ...(await resolveMetadata(dataSource.uri))
+            }))
     );
+}
+
+/**
+ * Resolves OData data sources from the merged app descriptor and returns their EDMX metadata.
+ *
+ * - ABAP (on-premise / S/4) projects: each data source's EDMX is fetched from the connected
+ *   ABAP system and persisted under `.context` keyed by the service URI — small services inline,
+ *   large ones spilled to a file (`{ metadataFile, sizeBytes }`). A per-service fetch failure
+ *   becomes a `{ error }` entry without failing the others.
+ * - Cloud Foundry (CF) projects: there is no ABAP backend to proxy `$metadata`, so each data
+ *   source is listed with an empty `metadata` string and nothing is written to disk. Callers
+ *   needing the bound entity type for a CF project should rely on the editor's runtime model context.
+ *
+ * @param params Input parameters including `appPath`.
+ * @returns One entry per OData data source: id, service URL, bound model, and inline/file-referenced metadata or a per-service error.
+ */
+export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ReadODataMetadataOutput> {
+    const { appPath } = params;
+    const manifest = await getMergedManifest(appPath);
+
+    if (await isCFEnvironment(appPath)) {
+        return { entries: await buildEntries(manifest, async () => ({ metadata: '' })) };
+    }
+
+    const abapProvider = await getAbapProvider(appPath);
+    const entries = await buildEntries(manifest, async (uri) => {
+        try {
+            const rawMetadata = await abapProvider.service(uri).metadata();
+            return persistMetadata(appPath, uri, formatXml(rawMetadata));
+        } catch (error) {
+            return { error: error instanceof Error ? error.message : String(error) };
+        }
+    });
     return { entries };
 }
 
 /**
- * Writes formatted OData metadata to `webapp/.context/<name>-metadata.xml` so agents can read
- * it as context without fetching from the ABAP system on every invocation.
+ * Builds a lookup from data source name to the UI5 model bound to it, from the manifest's
+ * `sap.ui5.models`.
  *
- * @param appPath Adaptation project root directory.
- * @param name Data source name; used as the file basename.
- * @param metadata Formatted XML content to persist.
+ * @param manifest Merged app descriptor's manifest.
+ * @returns Map of data source name to its bound UI5 model.
  */
-function writeLocalMetadata(appPath: string, name: string, metadata: string): void {
-    const metadataPath = join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
-    mkdirSync(dirname(metadataPath), { recursive: true });
-    writeFileSync(metadataPath, metadata, 'utf-8');
-}
-
-/**
- * Pretty-prints an XML string using `prettify-xml`.
- *
- * @param xml Raw XML content.
- * @returns Indented XML; returns the input unchanged if formatting fails.
- */
-function formatXml(xml: string): string {
-    try {
-        return prettifyXml(xml, { indent: 4 });
-    } catch (error) {
-        logger.warn(`Failed to format XML: ${(error as Error).message}`);
-        return xml;
+function getModelsByDataSource(manifest: Manifest): Map<string, Ui5Model> {
+    const modelsByDataSource = new Map<string, Ui5Model>();
+    for (const model of Object.values(manifest['sap.ui5']?.models ?? {})) {
+        if (typeof model.dataSource === 'string' && model.dataSource) {
+            modelsByDataSource.set(model.dataSource, { ...model });
+        }
     }
+    return modelsByDataSource;
 }

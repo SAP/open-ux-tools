@@ -27,7 +27,8 @@ import {
     readODataMetadataAdp,
     lookupUi5Documentation,
     tools,
-    adpToolNames
+    adpToolNames,
+    downloadBaseApp
 } from './tools/index.js';
 import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
@@ -43,8 +44,9 @@ import type {
     OpenAdaptationEditorInput,
     AdpControllerExtensionInput,
     RunRtaWorkflowStepInput,
-    ReadODataMetadataInput,
-    LookupUi5DocumentationInput
+    DownloadAppResourcesInput,
+    LookupUi5DocumentationInput,
+    ReadODataMetadataInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -62,12 +64,16 @@ type ToolArgs =
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
-    | ReadODataMetadataInput
+    | DownloadAppResourcesInput
     | LookupUi5DocumentationInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
 
+/**
+ *
+ * @param requested
+ */
 function negotiateProtocolVersion(requested: string): string {
     if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
         return requested;
@@ -314,6 +320,9 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                         break;
                     case 'read_odata_metadata_adp':
                         result = await readODataMetadataAdp(args as ReadODataMetadataInput);
+                        break;
+                    case 'download_base_app_adp':
+                        result = await downloadBaseApp(args as DownloadAppResourcesInput);
                         break;
                     case 'lookup_ui5_documentation':
                         result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
