@@ -1,11 +1,10 @@
 export {
     FrontendActionError,
-    callPageAction,
+    describeUi,
     executeAction,
+    executeUfaAction,
     getElementContext,
     getOverlays,
-    getPageActions,
-    pressInteractive,
     saveChanges,
     startRta,
     startVisualization,
@@ -17,10 +16,10 @@ export type {
     ActionsCatalog,
     AggregationsByClass,
     AvailableModel,
+    DescribeUiResult,
     EditorPage,
     ElementContext,
-    InteractiveElement,
+    ExecuteUfaActionResult,
     Overlay,
-    PageActionRunResult,
-    RegisteredPageAction
+    UiElementNode
 } from './types.js';

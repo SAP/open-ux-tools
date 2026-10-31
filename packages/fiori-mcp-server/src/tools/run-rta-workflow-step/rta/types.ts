@@ -144,48 +144,32 @@ export interface ElementContext {
 export type ActionsCatalog = Record<string, Action>;
 
 /**
- * One entry in the registered-action list returned by `getPageActions`.
- * `isValid` is evaluated server-side (in the page) before inclusion, so
- * everything in this list is currently applicable.
+ * One node in the UI element tree returned by `describeUi`.
  */
-export interface RegisteredPageAction {
-    /** Stable id of the action. */
+export interface UiElementNode {
+    /** UI5 control id. Pass this as `elementId` to `executeUfaAction`. */
     id: string;
-    /** Contributor layer. */
-    layer: 'framework' | 'app';
-    /** Human-readable label. */
-    label: string;
-    /** Description for the LLM, including parameter docs (PoC: zero-arg). */
-    description: string;
+    /** Fully-qualified UI5 control type, e.g. `sap.m.Button`. */
+    type: string;
+    /** Visible label / text / aria-label resolved for the control. */
+    label?: string;
+    /** Child nodes in the element tree. */
+    children?: UiElementNode[];
 }
 
 /**
- * One entry in the interactive-element list returned by `getPageActions`.
- * Best-effort scan of the live DOM (root view + static area + open dialogs);
- * the LLM can call `press_interactive` with the `controlId` to trigger it.
+ * Result of the `describeUI` Unified Frontend Action: the root node of the
+ * current UI element tree. `describe_ui` returns this directly as `uiTree`, so
+ * callers inspect `uiTree.id`, `uiTree.children`, etc.
  */
-export interface InteractiveElement {
-    /** UI5 element id where available, otherwise the DOM id. */
-    controlId: string;
-    /** `tagName`, e.g. `BUTTON` or `ui5-button`. */
-    controlType: string;
-    /** Visible label / text / aria-label / placeholder / title. */
-    label: string;
-    /** Coarse classification used by the LLM to decide press vs. type. */
-    kind: 'button' | 'input' | 'listItem' | 'tab' | 'link' | 'other';
-}
+export type DescribeUiResult = UiElementNode;
 
 /**
- * Result envelope of `callPageAction` / `pressInteractive`. The page-action
- * surface uses HITL via `needs_user_action`: if a precondition failed (e.g.
- * mandatory filter not set) the LLM should surface `reason` to the user.
+ * Result of the `executeAction` Unified Frontend Action.
  */
-export interface PageActionRunResult {
-    status: 'ok' | 'needs_user_action';
-    /** Set when `status === 'ok'`. PoC: optional informational note (e.g. "no observable state change"). */
-    note?: string;
-    /** Set when `status === 'needs_user_action'`. */
-    reason?: string;
-    /** Set when `status === 'ok'`. PoC actions don't return data; reserved for future use. */
-    data?: unknown;
+export interface ExecuteUfaActionResult {
+    /** Whether the action was executed successfully end-to-end. */
+    isSuccess: boolean;
+    /** Free-form payload returned by the action (action-specific shape). */
+    result?: unknown;
 }

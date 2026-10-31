@@ -236,6 +236,8 @@ function cleanupKeyUserChangesFile(filePath: string | undefined): void {
 }
 
 /**
+ 
+/**
  * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
  * @param params - Input parameters for the adaptation project generation.
@@ -341,6 +343,7 @@ export async function generateAdaptationProject(
         }
 
         const projectPath = join(finalTargetFolder, jsonInput.projectName);
+
         return {
             status: 'Success',
             message: `Adaptation project generated successfully at ${projectPath}.`,

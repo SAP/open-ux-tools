@@ -1,16 +1,17 @@
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
 import type {
     ActionsCatalog,
+    DescribeUiResult,
     EditorPage,
     ElementContext,
-    InteractiveElement,
+    ExecuteUfaActionResult,
     Overlay,
-    PageActionRunResult,
-    RegisteredPageAction
+    UiElementNode
 } from './types.js';
 
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
+const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions';
 
 /**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
@@ -184,76 +185,65 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
 }
 
 /**
- * Returns currently-applicable registered page actions plus a best-effort
- * scan of press-able controls in the live view (root view, static area,
- * open dialogs/popovers).
- *
- * `interactiveTruncated` is set to `true` when the scanner hit its internal
- * cap; in that case some press-able controls were omitted from `interactive`.
+ * Returns a hierarchical tree of the current UI elements via the Unified
+ * Frontend Action `describeUI`. Each node carries a UI5 control id, type,
+ * label, and children. Use the `id` values as `elementId` in `executeUfaAction`.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns Registered actions, interactive elements, and an optional truncation flag.
+ * @param rootElementId Optional UI5 control id to scope the tree to a subtree.
+ * @returns The UI element tree rooted at the given element (or the page root).
  */
-export async function getPageActions(
+export async function describeUi(
     transport: FrontendActionTransport,
-    page: EditorPage
-): Promise<{
-    registered: RegisteredPageAction[];
-    interactive: InteractiveElement[];
-    interactiveTruncated?: true;
-}> {
-    const name = action('getPageActions');
-    return unwrap(
-        name,
-        await transport.callFrontendAction<{
-            registered: RegisteredPageAction[];
-            interactive: InteractiveElement[];
-            interactiveTruncated?: true;
-        }>(page.site, name, {}, page.frameId)
-    );
+    page: EditorPage,
+    rootElementId?: string
+): Promise<DescribeUiResult> {
+    const name = `${UFA_PREFIX}.describeUI`;
+    const params: Record<string, unknown> = {};
+    if (rootElementId !== undefined) {
+        params.rootElementId = rootElementId;
+    }
+    // ActionHelpers.describeUI returns the UI element tree directly; the transport
+    // normalizes it into the Flex envelope, so `unwrap` yields the root node (and
+    // throws FrontendActionError if the runtime reported a failure, e.g. root not found).
+    return unwrap(name, await transport.callFrontendAction<UiElementNode>(page.site, name, params, page.frameId));
 }
 
 /**
- * Invokes a registered page action by id. The action's `isValid` is
- * re-checked before `run()`; a stale "valid" from a previous
- * `getPageActions` falls through as `needs_user_action`.
+ * Executes a Unified Frontend Action (UFA) on the running app. The primary
+ * use-case is navigation: pass `actionName: "press"` and `elementId` set to a
+ * UI5 control id (as returned by `describeUi`) to trigger a click.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @param id Action id, e.g. `loadData`.
- * @returns The page-action run result.
+ * @param actionName UFA action name, e.g. `"press"`.
+ * @param elementId Optional UI5 control id to target.
+ * @param actionParameters Optional free-form key/value parameters for the action.
+ * @returns `{ isSuccess, result }` — `isSuccess` is `false` when the action could not run.
  */
-export async function callPageAction(
+export async function executeUfaAction(
     transport: FrontendActionTransport,
     page: EditorPage,
-    id: string
-): Promise<PageActionRunResult> {
-    const name = action('callPageAction');
-    return unwrap(name, await transport.callFrontendAction<PageActionRunResult>(page.site, name, { id }, page.frameId));
-}
-
-/**
- * Triggers a real user-gesture click on the control with `controlId` and
- * waits best-effort for the page to settle. The page probes a handful of
- * observable signals (registered-action set, ObjectPage selected section,
- * focus, open dialogs, location hash) at 200 / 400 / 800 ms after the
- * click; the result `note` describes the change or reports
- * `"no observable state change"`.
- *
- * @param transport Transport used to deliver the call.
- * @param page Target editor page.
- * @param controlId DOM/UI5 id of the element to press.
- * @returns The page-action run result.
- */
-export async function pressInteractive(
-    transport: FrontendActionTransport,
-    page: EditorPage,
-    controlId: string
-): Promise<PageActionRunResult> {
-    const name = action('pressInteractive');
-    return unwrap(
-        name,
-        await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
-    );
+    actionName: string,
+    elementId?: string,
+    actionParameters?: Record<string, unknown>
+): Promise<ExecuteUfaActionResult> {
+    const name = `${UFA_PREFIX}.executeAction`;
+    const params: Record<string, unknown> = { actionName };
+    if (elementId !== undefined) {
+        params.elementId = elementId;
+    }
+    if (actionParameters !== undefined) {
+        params.actionParameters = actionParameters;
+    }
+    // A failed press is not exceptional — the caller decides what to do — so read the
+    // normalized envelope directly instead of unwrapping (which would throw). On success
+    // the raw UFA result is in `payload`; on failure the transport puts the reason in
+    // `error`, so surface that (the skill tells callers to report it to the user).
+    const result = await transport.callFrontendAction<unknown>(page.site, name, params, page.frameId);
+    return {
+        isSuccess: result.isSuccess,
+        result: result.isSuccess ? result.payload : (result.error ?? result.payload)
+    };
 }

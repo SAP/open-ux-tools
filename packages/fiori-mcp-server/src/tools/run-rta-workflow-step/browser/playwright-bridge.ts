@@ -26,23 +26,89 @@ interface PageRPC {
 }
 
 /**
- * Shape of the Joule webclient bridge as exposed on the editor page's
- * `window` object. Only the surface we use is typed.
+ * AMD module paths of the two frontend-action APIs on the running UI5 page.
+ *   - Flex RTA actions (`start`, `getOverlaysInformation`, `callAction`, …) live
+ *     on `sap/ui/rta/api/FrontendActionsAPI` and return the Flex envelope
+ *     `{ isSuccess, payload, error }`.
+ *   - Generic Unified Frontend Actions (`describeUI`, `executeAction`, …) live on
+ *     `sap/ui/joule/frontend/util/ActionHelpers` and return raw results (a UI tree,
+ *     or `{ success, error? }`). Requiring this module directly avoids the Joule
+ *     webclient bridge — and therefore the `sap-ui-xx-initializeJoule` URL flag
+ *     that would otherwise be needed to register that bridge.
  */
-interface WebclientBridgeWindow {
-    sapdas?: {
-        webclientBridge?: {
-            getFrontendActions?: () => Array<{
-                frontend_action_name: string;
-                function: (arg: unknown) => unknown;
-            }>;
-        };
-    };
+const FLEX_ACTIONS_MODULE = 'sap/ui/rta/api/FrontendActionsAPI';
+const UFA_ACTIONS_MODULE = 'sap/ui/joule/frontend/util/ActionHelpers';
+const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions.';
+const FLEX_RE = /^com\.sap\.ui\.flex\.(.+)\.v\d+$/;
+
+/**
+ * Resolves a frontend-action contract name to the UI5 module that implements it
+ * and the bare method to call on that module.
+ *
+ * `com.sap.ui.flex.startRTA.v1` → `{ module: FrontendActionsAPI, method: 'startRTA', ufa: false }`
+ * `com.sap.ui.unified.frontend.actions.describeUI` → `{ module: ActionHelpers, method: 'describeUI', ufa: true }`
+ *
+ * @param actionName Fully-qualified contract name.
+ * @returns The module path, method name, and whether it is a UFA action.
+ */
+export function resolveAction(actionName: string): { module: string; method: string; ufa: boolean } {
+    if (actionName.startsWith(UFA_PREFIX)) {
+        return { module: UFA_ACTIONS_MODULE, method: actionName.slice(UFA_PREFIX.length), ufa: true };
+    }
+    const flex = FLEX_RE.exec(actionName);
+    if (flex) {
+        return { module: FLEX_ACTIONS_MODULE, method: flex[1], ufa: false };
+    }
+    // Unknown shape — try it verbatim against the Flex API and let the page report
+    // "method not available" rather than guessing a module here.
+    return { module: FLEX_ACTIONS_MODULE, method: actionName, ufa: false };
 }
 
 /**
- * Wraps a Playwright `Page` in an RPC handle that invokes Joule frontend
- * actions through `window.sapdas.webclientBridge.getFrontendActions()`.
+ * Normalizes the raw value returned by a frontend-action method into the Flex
+ * `{ isSuccess, payload, error }` envelope.
+ *
+ * Flex actions (`isUfa === false`) already return that envelope, so the raw value
+ * is passed through. UFA actions (`ActionHelpers`) return raw results instead: a
+ * mutation returns `{ success: boolean, error?/message? }` and a describe returns
+ * raw data (e.g. a UI tree). A `{ success: false }` result becomes
+ * `{ isSuccess: false, error }` (reason preserved from `error`/`message`); anything
+ * else becomes `{ isSuccess: true, payload: <raw> }`.
+ *
+ * Kept at module scope (rather than inside the browser `evaluate` closure) so it
+ * runs in Node and is directly unit-testable.
+ *
+ * @param raw The value returned by the action method.
+ * @param isUfa Whether the action is a UFA action needing normalization.
+ * @returns The Flex result envelope.
+ */
+export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendActionResult {
+    if (!isUfa) {
+        // Flex actions already return the { isSuccess, payload, error } envelope.
+        return raw as FrontendActionResult;
+    }
+    const r = raw as { success?: boolean; error?: unknown; message?: unknown } | undefined;
+    if (r && typeof r === 'object' && r.success === false) {
+        const message =
+            (typeof r.error === 'string' && r.error) ||
+            (typeof r.message === 'string' && r.message) ||
+            'UFA action failed';
+        return { isSuccess: false, payload: null, error: { code: 'UFA_ACTION_FAILED', message } };
+    }
+    return { isSuccess: true, payload: raw, error: null };
+}
+
+/**
+ * Wraps a Playwright `Page` in an RPC handle that invokes frontend actions by
+ * `sap.ui.require`-ing the implementing module on the page and calling the
+ * method directly — no `window.sapdas.webclientBridge`, so no dependency on the
+ * `sap-ui-xx-initializeJoule` flag.
+ *
+ * Flex actions already return the `{ isSuccess, payload, error }` envelope. UFA
+ * actions (`ActionHelpers`) return raw results, so this layer normalizes them
+ * into the same envelope: a `{ success: false, error }` result becomes
+ * `{ isSuccess: false, error }`; anything else becomes `{ isSuccess: true,
+ * payload: <raw> }`. Callers therefore see one consistent shape.
  *
  * @param page The Playwright page to wrap.
  * @param context The BrowserContext that owns the page; closed together with the page on `rpc.close()`.
@@ -77,34 +143,49 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
             executionContext = matched;
         }
 
-        // Wait up to 60 s for the bridge to be registered (RTA needs time to start).
+        const { module, method, ufa } = resolveAction(actionName);
+
+        // Wait up to 60 s for the UI5 loader to be present (RTA needs time to start).
+        // This is just `sap.ui.require` — not the Joule bridge — so it is satisfied
+        // without the sap-ui-xx-initializeJoule flag.
         await (executionContext as Page | Frame).waitForFunction(
-            () =>
-                !!(
-                    window as unknown as {
-                        sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } };
-                    }
-                ).sapdas?.webclientBridge?.getFrontendActions,
+            () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
             undefined,
             { timeout: 60000 }
         );
 
         const response = await executionContext.evaluate(
-            async ({ name, p }: { name: string; p: Record<string, unknown> }) => {
-                const bridge = (window as unknown as WebclientBridgeWindow).sapdas?.webclientBridge;
-                if (!bridge?.getFrontendActions) {
-                    throw new Error('window.sapdas.webclientBridge.getFrontendActions is not available on the page');
+            async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
+                const require = (
+                    window as unknown as {
+                        sap?: {
+                            ui?: {
+                                require?: (
+                                    deps: string[],
+                                    cb: (api: unknown) => void,
+                                    errback: (err: unknown) => void
+                                ) => void;
+                            };
+                        };
+                    }
+                ).sap?.ui?.require;
+                if (!require) {
+                    throw new Error('sap.ui.require is not available on the page');
                 }
-                const actions = bridge.getFrontendActions();
-                const entry = actions.find((a) => a.frontend_action_name === name);
-                if (!entry) {
-                    throw new Error(`Frontend action "${name}" not registered`);
+                const api = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                    require([mod], (loaded) => resolve(loaded as Record<string, unknown>), reject);
+                });
+                const method = api[fn];
+                if (typeof method !== 'function') {
+                    throw new Error(`Frontend action "${fn}" is not available on ${mod}`);
                 }
-                return await entry.function(p);
+                // Return the raw method result; normalization into the Flex envelope
+                // happens in Node (normalizeUfaResult) so that pure logic stays testable.
+                return await (method as (arg: unknown) => unknown).call(api, p);
             },
-            { name: actionName, p: payload }
+            { mod: module, fn: method, p: payload }
         );
-        return response as FrontendActionResult<TReturn>;
+        return normalizeUfaResult(response, ufa) as FrontendActionResult<TReturn>;
     };
 
     const close = async (): Promise<void> => {
@@ -179,14 +260,14 @@ async function startBrowser(): Promise<Browser> {
 }
 
 /**
- * Invokes a Joule frontend action on the page hosting `site`. Reuses an
- * existing page if one is registered for the site; otherwise opens a new
- * one. Throws on transport / lookup failures; returns the frontend action
- * result envelope (including `isSuccess === false` payloads) for the caller to inspect.
+ * Invokes a frontend action (Flex or UFA) on the page hosting `site` by
+ * requiring the implementing UI5 module (`FrontendActionsAPI` or `ActionHelpers`)
+ * on the page. Reuses an existing page if one is registered for the site;
+ * otherwise opens a new one.
  *
  * @param site URL to load (typically the adaptation editor URL).
- * @param actionName Frontend action identifier, e.g. `com.sap.ui.flex.startRTA.v1`.
- * @param payload Object payload forwarded to the frontend action function.
+ * @param actionName Frontend action contract name, e.g. `com.sap.ui.flex.startRTA.v1`.
+ * @param payload Object payload forwarded to the frontend action.
  * @param frameId Optional frame element id to scope the call to an iframe.
  * @returns The frontend action result envelope.
  */
