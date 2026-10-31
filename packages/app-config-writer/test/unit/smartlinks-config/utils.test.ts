@@ -181,14 +181,14 @@ describe('utils', () => {
         test('Connection error - status 404', async () => {
             nock(config.target.url)
                 .get(() => true)
-                .query(params)
+                .query({ ...params, 'sap-client': config.target.client })
                 .reply(404);
             try {
                 await sendRequest(config, loggerMock);
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock.mock.calls.length).toBe(1);
-                expect(debugMock.mock.calls[0][0]).toContain(`Request failed. Error:`);
+                expect(debugMock.mock.calls[0][0]).toContain(`Request failed.`);
                 expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
             }
         });
