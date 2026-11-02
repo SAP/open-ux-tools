@@ -289,7 +289,12 @@ describe('rta/commands', () => {
             expect(out.entries[0]).toEqual({ url: 'api/svc/', error: expect.any(String) });
         });
 
-        test.each(['<?xml version="1.0"?><error><!-- <edmx:Edmx/> --></error>', '<error><edmx:Edmx/></error>'])(
+        test.each([
+            '<?xml version="1.0"?><error><!-- <edmx:Edmx/> --></error>',
+            '<error><edmx:Edmx/></error>',
+            '<?xml version="1.0" <edmx:Edmx/>',
+            '<!-- unterminated <edmx:Edmx/>'
+        ])(
             'rejects an XML document whose root is not Edmx: %s',
             async (body) => {
                 transport.fetchViaContext.mockResolvedValue({ ...xmlResp, body });

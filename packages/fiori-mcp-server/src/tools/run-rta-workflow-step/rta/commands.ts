@@ -1,6 +1,7 @@
 import { isNeedsUserAction } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
 import { formatXml, persistMetadata } from '../../../utils/index.js';
+import { buildMetadataUrl, looksLikeEdmx } from './odata-metadata.js';
 import type {
     ActionsCatalog,
     EditorPage,
@@ -281,40 +282,6 @@ export async function pressInteractive(
 }
 
 /**
- * Builds the `$metadata` URL for an OData data-source `uri` against the editor
- * `site` origin. Relative, leading-slash, and trailing-slash URIs all resolve
- * to `<site-origin>/<uri>$metadata`; a URI that already ends in `$metadata` is
- * left as-is (no duplication).
- *
- * Pins the host to the editor origin: an absolute or protocol-relative `uri`
- * that resolves to a foreign origin is rejected, so the authenticated browser
- * context can never be aimed at an off-origin host (SSRF guard).
- *
- * @param site Editor URL (localhost); only its origin is used.
- * @param uri OData data-source URI from the manifest (usually relative).
- * @returns Absolute `$metadata` URL on the site origin.
- * @throws Error when `uri` resolves to an origin other than the site origin.
- */
-function buildMetadataUrl(site: string, uri: string): string {
-    const origin = new URL(site).origin;
-    const resolved = new URL(uri, `${origin}/`);
-    if (resolved.origin !== origin) {
-        throw new Error(`Refusing to fetch OData metadata from a foreign origin: ${resolved.origin}`);
-    }
-    if (!resolved.pathname.endsWith('/$metadata')) {
-        resolved.pathname = `${resolved.pathname.replace(/\/+$/, '')}/$metadata`;
-    }
-    return resolved.toString();
-}
-
-/**
- * Matches a document whose root element is `Edmx` (optionally namespace-prefixed), after skipping any
- * leading whitespace, XML declarations, and comments.
- */
-const EDMX_ROOT_RE =
-    /^\s*(?:<\?[^?]*(?:\?(?!>)[^?]*)*\?>\s*|<!--[^-]*(?:-(?!->)[^-]*)*-->\s*)*<(?:[A-Za-z_][\w.-]*:)?Edmx[\s/>]/;
-
-/**
  * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
  * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
  * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
@@ -344,7 +311,7 @@ export async function getODataMetadata(
                     return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
                 }
                 const isXml = contentType.toLowerCase().includes('xml');
-                const looksEdmx = EDMX_ROOT_RE.test(body);
+                const looksEdmx = looksLikeEdmx(body);
                 if (!isXml || !looksEdmx) {
                     return {
                         url: uri,
