@@ -168,6 +168,7 @@ const adpTools = [
         Use this tool when you need to read the OData metadata for an Adaptation Project.`,
         annotations: {
             title: 'Read OData Metadata for Adaptation Project',
+            destructiveHint: true,
             idempotentHint: true,
             openWorldHint: false
         },
@@ -186,6 +187,7 @@ const adpTools = [
         Use this tool when you need to download the base app resources for an Adaptation Project.`,
         annotations: {
             title: 'Download Base App Resources for Adaptation Project',
+            destructiveHint: true,
             idempotentHint: true,
             openWorldHint: false
         },
