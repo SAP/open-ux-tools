@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 2.1.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade proxy-from-env 1.1.0 → 2.1.0 [[641aebd](https://github.com/SAP/open-ux-tools/commit/641aebd17bd88af4257d45bc89c675eee0d997ac)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
 ## 2.1.4
 
 ### Patch Changes
