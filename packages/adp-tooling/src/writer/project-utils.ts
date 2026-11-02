@@ -1,7 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readFileSync, existsSync } from 'node:fs';
-import ejs from 'ejs';
 import type { MemFsEditor } from 'mem-fs-editor';
 
 import { getTemplatePath } from '../templates.js';
@@ -128,12 +127,7 @@ export function writeTemplateToFolder(
         });
         const gitignoreTmplSrc = join(baseTmplPath, 'project', 'gitignore.tmpl');
         if (existsSync(gitignoreTmplSrc)) {
-            const rendered = ejs.render(
-                readFileSync(gitignoreTmplSrc, 'utf-8'),
-                { ...data, typesPackage, typesVersion },
-                { filename: gitignoreTmplSrc }
-            );
-            fs.write(join(projectPath, '.gitignore'), rendered);
+            fs.write(join(projectPath, '.gitignore'), readFileSync(gitignoreTmplSrc, 'utf-8'));
         }
 
         if (data.options?.enableTypeScript) {

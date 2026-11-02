@@ -67,7 +67,7 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: MemFs
             fs.copy(sourcePath, destPath);
         } else {
             const rawContents = readFileSync(sourcePath, 'utf-8');
-            fs.write(destPath, ejs.render(rawContents, libInput, { filename: sourcePath }));
+            fs.write(destPath, ejs.render(rawContents, libInput, { filename: sourcePath })); // NOSONAR - template path is internal, never user-supplied
         }
     }
 

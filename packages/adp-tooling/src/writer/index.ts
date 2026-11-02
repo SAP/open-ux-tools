@@ -1,6 +1,5 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import ejs from 'ejs';
 import { create as createStorage } from 'mem-fs';
 import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 
@@ -100,8 +99,7 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Me
         globOptions: { dot: true }
     });
     const gitignoreSrc = join(tmplPath, 'gitignore.tmpl');
-    const rendered = ejs.render(readFileSync(gitignoreSrc, 'utf-8'), fullConfig, { filename: gitignoreSrc });
-    fs.write(join(basePath, '.gitignore'), rendered);
+    fs.write(join(basePath, '.gitignore'), readFileSync(gitignoreSrc, 'utf-8'));
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {

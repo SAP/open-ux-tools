@@ -2,7 +2,6 @@ import { gte, coerce } from 'semver';
 import { type UI5, type TemplateOptions } from './types.js';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import ejs from 'ejs';
 import { FileName } from '@sap-ux/project-access';
 import type { MemFsEditor } from 'mem-fs-editor';
 
@@ -113,7 +112,6 @@ export function copyTemplates(options: {
     const gitignoreTmpl = join(tmplPath, 'core', 'gitignore.tmpl');
     const skipGitignore = ignore.some((p) => p.includes('gitignore.tmpl'));
     if (!skipGitignore) {
-        const rendered = ejs.render(readFileSync(gitignoreTmpl, 'utf-8'), templateOptions, { filename: gitignoreTmpl });
-        fs.write(join(basePath, '.gitignore'), rendered);
+        fs.write(join(basePath, '.gitignore'), readFileSync(gitignoreTmpl, 'utf-8'));
     }
 }
