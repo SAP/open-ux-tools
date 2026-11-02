@@ -29,6 +29,34 @@ Array [
     ],
   },
   Object {
+    "description": "Define the default creation mode that is used for all tables, unless a specific creation mode has been set.",
+    "functionalityId": Array [
+      "settings",
+      "defaultCreationMode",
+    ],
+  },
+  Object {
+    "description": "Defines the default layout options of the table popins. A separate layout options of the table popins can be set for each responsive table in the application.",
+    "functionalityId": Array [
+      "settings",
+      "defaultPopinLayout",
+    ],
+  },
+  Object {
+    "description": "Enables lazy loading for sections in object pages. If a specific object page defines its own \`enableLazyLoading\` property, that page-level setting overrides this application-level setting.",
+    "functionalityId": Array [
+      "settings",
+      "enableLazyLoading",
+    ],
+  },
+  Object {
+    "description": "Disables strict filtering. Strict filtering requires users to enter a single value in the unit of measure field when filtering for measure field values.",
+    "functionalityId": Array [
+      "settings",
+      "disableStrictUomFiltering",
+    ],
+  },
+  Object {
     "description": "Defines the title for the application.",
     "functionalityId": Array [
       "settings",
@@ -95,12 +123,94 @@ Array [
     ],
   },
   Object {
+    "description": "Hidden draft features.",
+    "functionalityId": Array [
+      "settings",
+      "hideDraft",
+    ],
+  },
+  Object {
+    "description": "All features related to draft handling can be hidden from the UI while the draft functionality remains active in the background. To achieve this, enable the 'Hide Draft' property.",
+    "functionalityId": Array [
+      "settings",
+      "hideDraft",
+      "enabled",
+    ],
+  },
+  Object {
+    "description": "Determines whether to stay on the current page after saving an object.
+To ensure a consistent experience, set this and 'Stay On Current Page After Cancel' to the same value.",
+    "functionalityId": Array [
+      "settings",
+      "hideDraft",
+      "stayOnCurrentPageAfterSave",
+    ],
+  },
+  Object {
+    "description": "Determines whether to stay on the current page after canceling an object.
+To ensure a consistent experience, set this and 'Stay On Current Page After Save' to the same value.",
+    "functionalityId": Array [
+      "settings",
+      "hideDraft",
+      "stayOnCurrentPageAfterCancel",
+    ],
+  },
+  Object {
+    "description": "Controls the visibility of the 'Create Next' button.",
+    "functionalityId": Array [
+      "settings",
+      "hideDraft",
+      "hideCreateNext",
+    ],
+  },
+  Object {
     "description": "variantManagement defines how the variant management of page personalizations is controlled.
 - None - No variant management by default.
 - Control - Individual personalizations for each control.",
     "functionalityId": Array [
       "TravelList",
       "variantManagement",
+    ],
+  },
+  Object {
+    "description": "Inline edit allows users to directly edit a field or a group of fields in the active version without switching the entire object to draft. Inline edit supports the same features as the regular edit mode.",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "inlineEdit",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are inline editable.
+If empty or undefined, all fields within the page are inline editable except for fields specified in 'Disabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "enabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are not inline editable.
+If empty or undefined, all fields within the page are not inline editable except for those specified in 'Enabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "disabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of arrays of fields which are edited inline together.
+Fields specified in 'Connected Fields' must not be included in 'Enabled Fields' or 'Disabled Fields'.
+May contain direct properties, navigation properties, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "connectedFields",
     ],
   },
   Object {
@@ -161,14 +271,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "You can define how many items can be selected at a time using the selectionLimit.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "selectionLimit",
-    ],
-  },
-  Object {
     "description": "Defines whether the Export button is displayed in the table toolbar. The default value is true.",
     "functionalityId": Array [
       "TravelList",
@@ -177,11 +279,27 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Determines whether the content density for ui.table is condensed.",
+    "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
     "functionalityId": Array [
       "TravelList",
       "table",
-      "condensedTableLayout",
+      "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
+    "description": "Determines the visibility of the Copy to Clipboard button. By default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "disableCopyToClipboard",
+    ],
+  },
+  Object {
+    "description": "Mass edit allows users to simultaneously change multiple objects that share the same editable properties.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "enableMassEdit",
     ],
   },
   Object {
@@ -257,6 +375,41 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
+    "description": "enableMassEdit",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "enableMassEdit",
+    ],
+  },
+  Object {
+    "description": "Define how changes using mass edit are applied. The default mode for mass edit is 'ChangeSet' on object pages and 'Isolated' on list report pages.
+
+- ChangeSet: Grouped for all objects within the same request.
+- Isolated: Separately for each object (as an individual OData change set in the same request).",
+    "functionalityId": Array [
+      "table",
+      "enableMassEdit",
+      "operationGroupingMode",
+    ],
+  },
+  Object {
+    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog. If empty or undefined, all fields within the page appear in the edit dialog except for read-only fields and fields specified in 'Disabled Fields'.",
+    "functionalityId": Array [
+      "table",
+      "enableMassEdit",
+      "visibleFields",
+    ],
+  },
+  Object {
+    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table. If empty or undefined, all fields within the page appear in the edit dialog except for fields specified in 'Visible Fields'. If 'Visible Fields' are defined, this field is ignored.",
+    "functionalityId": Array [
+      "table",
+      "enableMassEdit",
+      "ignoredFields",
+    ],
+  },
+  Object {
     "description": "Enables single selection for a bound action.",
     "functionalityId": Array [
       "TravelList",
@@ -265,6 +418,28 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "actions",
       "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "enableOnSelect",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createDraftTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "priority",
     ],
   },
   Object {
@@ -309,6 +484,28 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "actions",
       "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
       "enableOnSelect",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.createActiveTravel::Collection::com.sap.gateway.srvd.dmo.ui_travel_uuid_um.v0001.TravelType",
+      "priority",
     ],
   },
   Object {
@@ -353,6 +550,28 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "actions",
       "DataFieldForAction",
       "enableOnSelect",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "toolBar",
+      "actions",
+      "DataFieldForAction",
+      "priority",
     ],
   },
   Object {
@@ -413,6 +632,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::TravelID",
+      "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -434,6 +663,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::AgencyID",
       "availability",
+    ],
+  },
+  Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::AgencyID",
+      "widthIncludingColumnHeader",
     ],
   },
   Object {
@@ -461,6 +700,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::CustomerID",
+      "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -482,6 +731,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::BeginDate",
       "availability",
+    ],
+  },
+  Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::BeginDate",
+      "widthIncludingColumnHeader",
     ],
   },
   Object {
@@ -509,6 +768,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::EndDate",
+      "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -533,6 +802,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::TotalPrice",
+      "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -554,6 +833,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::TravelStatus",
       "availability",
+    ],
+  },
+  Object {
+    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::TravelStatus",
+      "widthIncludingColumnHeader",
     ],
   },
   Object {
@@ -563,6 +852,13 @@ Hidden: the column is neither available in the table nor in adaptation.",
     "functionalityId": Array [
       "TravelObjectPage",
       "variantManagement",
+    ],
+  },
+  Object {
+    "description": "Enable lazy loading for sections in an object page.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "enableLazyLoading",
     ],
   },
   Object {
@@ -587,6 +883,46 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "TravelObjectPage",
       "header",
       "anchorBarVisible",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "header",
+      "actions",
+      "EditAction",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "header",
+      "actions",
+      "EditAction",
+      "priority",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "header",
+      "actions",
+      "DeleteAction",
+      "overflowGroup",
+    ],
+  },
+  Object {
+    "description": "Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.",
+    "functionalityId": Array [
+      "TravelObjectPage",
+      "header",
+      "actions",
+      "DeleteAction",
+      "priority",
     ],
   },
   Object {
