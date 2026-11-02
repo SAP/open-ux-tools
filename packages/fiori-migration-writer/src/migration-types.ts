@@ -284,17 +284,14 @@ export interface Project extends BaseProjectConfig {
 /**
  * User credentials for authentication.
  *
- * NOTE: This interface is duplicated across multiple @sap-ux packages:
+ * NOTE: This interface is intentionally duplicated across @sap-ux packages for security isolation:
  * - @sap-ux/abap-deploy-config-inquirer
  * - @sap-ux/fiori-app-sub-generator
  * - @sap-ux/fiori-migration-writer (this package)
  * - @sap-ux/generator-adp
- * Additionally, @sap-ux/system-access exports BasicAuth as a similar type.
  *
- * A shared @sap-ux/auth-types package would eliminate this duplication,
- * but would require coordinating changes across all consuming packages.
- * For now, each package maintains its own Credentials interface to avoid
- * circular dependencies and maintain independence.
+ * Each package maintains its own Credentials interface to ensure security boundaries
+ * and avoid accidental credential leakage through shared types.
  *
  * SECURITY: This interface contains sensitive authentication data.
  * The `password` field must NEVER be logged, included in error messages,
