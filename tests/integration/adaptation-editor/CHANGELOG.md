@@ -1,5 +1,15 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/yaml 1.0.2 → 1.0.3
+- @sap-ux-private/playwright 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.0.29
 
 ### Patch Changes
