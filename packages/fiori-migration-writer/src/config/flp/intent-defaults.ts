@@ -1,7 +1,8 @@
 /**
  * Helper functions for determining default FLP intents based on floor plan
  */
-import { TemplateType, ODataVersion } from '../../types.js';
+import { TemplateType } from '@sap-ux/fiori-elements-writer';
+import { ODataVersion } from '@sap-ux/axios-extension';
 
 /**
  * Determine default FLP intents (flpSandboxFlpIntent and flpSandboxMockFlpIntent)

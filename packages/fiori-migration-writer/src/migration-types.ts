@@ -37,9 +37,6 @@ export const DatasourceType = {
 } as const;
 export type DatasourceType = (typeof DatasourceType)[keyof typeof DatasourceType];
 
-// Import and re-export TemplateType from fiori-elements-writer (single source of truth)
-export { TemplateType } from '@sap-ux/fiori-elements-writer';
-
 /**
  * Legacy floor plan constants for backward compatibility with tools-suite
  *

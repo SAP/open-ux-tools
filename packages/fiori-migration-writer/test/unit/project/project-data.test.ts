@@ -5,7 +5,8 @@ import {
     prepareProjectAndServiceData,
     prepareSanitizedNames
 } from '../../../src/project/project-data.js';
-import { DatasourceType, TemplateType, type ImportProjectInfo } from '../../../src/migration-types.js';
+import { DatasourceType, type ImportProjectInfo } from '../../../src/migration-types.js';
+import { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { ODataVersion } from '@sap-ux/axios-extension';
 
 function createProjectInfo(overrides: Partial<ImportProjectInfo> = {}): ImportProjectInfo {
