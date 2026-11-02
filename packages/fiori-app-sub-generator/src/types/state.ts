@@ -1,7 +1,7 @@
 import type { AuthenticationType } from '@sap-ux/store';
-import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
+import type { ExternalService } from '@sap-ux/axios-extension';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { TableSelectionMode } from '@sap-ux/fiori-elements-writer';
 import type {
     CapService,
@@ -10,9 +10,13 @@ import type {
     OdataServiceAnswers,
     OdataVersion
 } from '@sap-ux/odata-service-inquirer';
-import type { ApiHubType, SapSystemSourceType } from '../types/constants.js';
-import type { Script } from './common.js';
-import type { AppGenInfo, BasePackageJsonConfig, BaseProjectConfig, BaseServiceConfig, Floorplan } from '@sap-ux/fiori-generator-shared';
+import type {
+    AppGenInfo,
+    BasePackageJsonConfig,
+    BaseProjectConfig,
+    BaseServiceConfig,
+    Floorplan
+} from '@sap-ux/fiori-generator-shared';
 
 // Re-export ApiHubConfig from BaseServiceConfig for backward compatibility
 export type { ApiHubConfig } from '@sap-ux/fiori-generator-shared';
@@ -104,7 +108,11 @@ export interface CapServiceCdsInfoInternal extends CapService {
  * Extends BasePackageJsonConfig. Note: app-sub-generator requires all start commands (non-optional)
  * while migration-writer allows them to be optional.
  */
-export interface PackageJson extends Omit<BasePackageJsonConfig, 'startCommand' | 'startLocalCommand' | 'startNoFlpCommand' | 'startVariantsCommand'> {
+export interface PackageJson
+    extends Omit<
+        BasePackageJsonConfig,
+        'startCommand' | 'startLocalCommand' | 'startNoFlpCommand' | 'startVariantsCommand'
+    > {
     /** NPM script command to start the application (required for app generation) */
     startCommand: string;
 

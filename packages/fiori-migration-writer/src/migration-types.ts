@@ -1,20 +1,17 @@
 import type { FioriElementsVersion, SapAppSourceTemplate } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
+import type { CdsUi5PluginInfo, Manifest } from '@sap-ux/project-access';
+import type { ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { CapService as BaseCapService } from '@sap-ux/cap-config-writer';
 
 // Import types from shared packages - DO NOT re-export
 // Import directly from the source package where you need them
 import type {
-    ApiHubType,
     BasePackageJsonConfig,
     BaseProjectConfig,
     BaseServiceConfig,
-    CapRuntime,
-    SapSystemSourceType,
-    Script
+    CapRuntime
 } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
