@@ -308,6 +308,13 @@ function buildMetadataUrl(site: string, uri: string): string {
 }
 
 /**
+ * Matches a document whose root element is `Edmx` (optionally namespace-prefixed), after skipping any
+ * leading whitespace, XML declarations, and comments.
+ */
+const EDMX_ROOT_RE =
+    /^\s*(?:<\?[^?]*(?:\?(?!>)[^?]*)*\?>\s*|<!--[^-]*(?:-(?!->)[^-]*)*-->\s*)*<(?:[A-Za-z_][\w.-]*:)?Edmx[\s/>]/;
+
+/**
  * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
  * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
  * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
@@ -337,8 +344,7 @@ export async function getODataMetadata(
                     return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
                 }
                 const isXml = contentType.toLowerCase().includes('xml');
-                // Only an Edmx document root qualifies; declarations, comments, and nested tags do not.
-                const looksEdmx = /^(?:\s|<\?[\s\S]*?\?>|<!--[\s\S]*?-->)*<(?:[A-Za-z_][\w.-]*:)?Edmx[\s/>]/.test(body);
+                const looksEdmx = EDMX_ROOT_RE.test(body);
                 if (!isXml || !looksEdmx) {
                     return {
                         url: uri,
