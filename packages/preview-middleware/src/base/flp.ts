@@ -1,4 +1,3 @@
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -16,7 +15,7 @@ import { createRequire } from 'node:module';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareUtils } from '@ui5/server';
 import {
     getWebappPath,

@@ -5,11 +5,13 @@ on:
     push:
         branches: [main]
         paths:
-            - 'plugins-coding-agents/fiori/.github/plugin/plugin.json'
+            - 'plugins-coding-agents/fiori/plugin.json'
 
 jobs:
     notify:
-        if: github.repository == 'SAP/open-ux-tools'
+        # Disabled — tracking issues are not how Awesome Copilot plugin updates work.
+        # Kept as reference; will be updated to auto-create update PRs on github/awesome-copilot.
+        if: false
         runs-on: ubuntu-latest
         permissions:
             contents: read

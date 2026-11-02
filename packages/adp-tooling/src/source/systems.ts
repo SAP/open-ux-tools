@@ -1,11 +1,11 @@
-import { getService, SystemType } from '@sap-ux/store';
-import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { getService, SystemType } from '@sap-ux/store';
 
-import type { Endpoint } from '../types.js';
 import { type AbapServiceProvider, AdaptationProjectType, isAxiosError } from '@sap-ux/axios-extension';
 import { t } from '../i18n.js';
+import type { Endpoint } from '../types.js';
 
 export enum SupportedProject {
     ON_PREM = 'onPremise',
@@ -82,6 +82,8 @@ export const transformBackendSystem = (system: BackendSystem): Endpoint => ({
  * including their names, authentication requirements, and specific details.
  */
 export class SystemLookup {
+    private readonly BASIC_AUTH_TYPE = 'BasicAuthentication';
+
     private systems: Endpoint[];
 
     /**
@@ -150,23 +152,22 @@ export class SystemLookup {
     }
 
     /**
-     * Determines whether a system requires authentication based on environment.
+     * Checks whether the given system is configured for Basic authentication.
      *
-     * @param {string} system - The system name or URL.
-     * @returns {Promise<boolean>} A promise that resolves to true if authentication is required, false otherwise.
+     * In BAS this checks that the destination's `Authentication` field is `'BasicAuthentication'`.
+     * Outside BAS (VSCode on-prem) this checks that the system type is `AbapOnPrem` and that
+     * non-empty username and password credentials are stored.
+     *
+     * @param {string} system - The system name or URL to look up.
+     * @returns {Promise<boolean>} `true` if Basic auth is configured for the system.
      */
-    public async getSystemRequiresAuth(system: string): Promise<boolean> {
-        const found = await this.getSystemByName(system);
-
+    async isBasicAuthConfigured(system: string): Promise<boolean> {
+        const systemEndpoint = await this.getSystemByName(system);
         if (isAppStudio()) {
-            return found?.Authentication === 'NoAuthentication';
-        } else {
-            if (!found) {
-                return true;
-            }
-            const isOnPrem = found.SystemType === SystemType.AbapOnPrem;
-            const hasMissingCredentials = !found.Credentials?.username || !found.Credentials?.password;
-            return isOnPrem && hasMissingCredentials;
+            return systemEndpoint?.Authentication === this.BASIC_AUTH_TYPE;
         }
+        const { username, password } = systemEndpoint?.Credentials ?? {};
+        const hasCredentials = !!username && !!password;
+        return systemEndpoint?.SystemType === SystemType.AbapOnPrem && hasCredentials;
     }
 }
