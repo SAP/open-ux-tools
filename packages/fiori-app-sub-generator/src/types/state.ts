@@ -108,11 +108,10 @@ export interface CapServiceCdsInfoInternal extends CapService {
  * Extends BasePackageJsonConfig. Note: app-sub-generator requires all start commands (non-optional)
  * while migration-writer allows them to be optional.
  */
-export interface PackageJson
-    extends Omit<
-        BasePackageJsonConfig,
-        'startCommand' | 'startLocalCommand' | 'startNoFlpCommand' | 'startVariantsCommand'
-    > {
+export interface PackageJson extends Omit<
+    BasePackageJsonConfig,
+    'startCommand' | 'startLocalCommand' | 'startNoFlpCommand' | 'startVariantsCommand'
+> {
     /** NPM script command to start the application (required for app generation) */
     startCommand: string;
 
