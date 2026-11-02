@@ -1,6 +1,6 @@
-import { chmod, mkdir, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, open, rename, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { join } from 'node:path';
 import { type BrowserContext } from 'playwright-core';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
@@ -132,6 +132,35 @@ export function buildContextOptions(site: string): { viewport: null; storageStat
 }
 
 /**
+ * Writes `data` to `file` with owner-only (`0o600`) permissions and no exposure window.
+ *
+ * The content is written to a uniquely-named temp file opened with `O_CREAT | O_EXCL`
+ * (so it never inherits a looser mode from a pre-existing file), tightened to `0o600`,
+ * then atomically renamed over `file`. A concurrent reader therefore sees either the
+ * previous complete file or the new one — never a partially-written or world-readable
+ * intermediate. The temp file is removed if any step fails.
+ *
+ * @param file Destination path.
+ * @param data File contents.
+ */
+async function writeFileSecure(file: string, data: string): Promise<void> {
+    const tmp = `${file}.${randomBytes(6).toString('hex')}.tmp`;
+    try {
+        const handle = await open(tmp, 'wx', 0o600);
+        try {
+            await handle.writeFile(data);
+        } finally {
+            await handle.close();
+        }
+        await chmod(tmp, 0o600);
+        await rename(tmp, file);
+    } catch (error) {
+        await rm(tmp, { force: true });
+        throw error;
+    }
+}
+
+/**
  * Snapshots an authenticated context's storage state under its project key —
  * always in memory, and additionally to disk when `PLAYWRIGHT_SESSION_STATE_PATH`
  * is set. Only CF projects are snapshotted; an ABAP (or unregistered) site is a
@@ -153,14 +182,13 @@ export async function persistSessionState(site: string, context: BrowserContext)
         const dir = sessionDir();
         if (dir) {
             // The state holds live session cookies (credential material). Write it
-            // ourselves with restrictive modes — owner-only dir (0o700) and file
-            // (0o600) — rather than Playwright's default world-readable write. The
-            // explicit chmod also tightens an already-existing file (writeFile's
-            // mode only applies on create).
+            // owner-only (dir 0o700, file 0o600) via a fresh temp file + atomic rename
+            // so the real file is never momentarily readable and a concurrent reader
+            // always sees a complete file — never Playwright's default world-readable
+            // write, and never a stale file re-opened at a looser mode.
             await mkdir(dir, { recursive: true, mode: 0o700 });
             const file = join(dir, sessionFileName(projectKey));
-            await writeFile(file, JSON.stringify(state), { mode: 0o600 });
-            await chmod(file, 0o600);
+            await writeFileSecure(file, JSON.stringify(state));
         }
     } catch (error) {
         logger.warn(`Failed to persist RTA session state: ${error instanceof Error ? error.message : String(error)}`);
