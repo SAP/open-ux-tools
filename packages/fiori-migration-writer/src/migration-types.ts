@@ -1,12 +1,12 @@
 import type { FioriElementsVersion, SapAppSourceTemplate } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo, Manifest } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 // Import types from shared packages - DO NOT re-export
 // Import directly from the source package where you need them
-import type { ApiHubType, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
+import type { ApiHubType, CapRuntime, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -19,16 +19,6 @@ export type Script = {
     name: string;
     command: string;
 };
-
-/**
- * SAP UX Layer values for flex changes
- * Exported as const object for backward compatibility with tools-suite
- */
-export const SapUxLayer = {
-    VENDOR: 'VENDOR',
-    CUSTOMER_BASE: 'CUSTOMER_BASE'
-} as const;
-export type SapUxLayer = (typeof SapUxLayer)[keyof typeof SapUxLayer];
 
 /** package.json interface */
 export interface PackageJson {
@@ -50,7 +40,7 @@ export interface PackageJson {
     localStartFile?: string; // relative path to local start html
     runTasks?: Script[];
     enableEslint: boolean;
-    sapuxLayer?: SapUxLayer;
+    sapuxLayer?: UI5FlexLayer;
 }
 
 // Common constants defs used throughout
@@ -72,8 +62,12 @@ export { TemplateType } from '@sap-ux/fiori-elements-writer';
  * Legacy floor plan constants for backward compatibility with tools-suite
  *
  * @deprecated Use TemplateType from @sap-ux/fiori-elements-writer instead
- * These map to the old V2/V4-specific floor plan identifiers
+ *
+ * These map to the old V2/V4-specific floor plan identifiers.
+ * Must remain exported for tools-suite (@sap/ux-app-migrator) backward compatibility.
+ * SonarCloud deprecation warnings are expected and acceptable.
  */
+// sonar-disable-next-block typescript:S1874
 export const FLOOR_PLAN = {
     WorklistV2: 'V2_WORKLIST',
     ListReportObjectPageV2: 'V2_LIST_REPORT',
@@ -81,13 +75,18 @@ export const FLOOR_PLAN = {
     ListReportObjectPageV4: 'V4_LIST_REPORT',
     OverviewPageV2: 'V2_OVERVIEW'
 } as const;
+// sonar-disable-next-line typescript:S1874
 export type FloorPlan = (typeof FLOOR_PLAN)[keyof typeof FLOOR_PLAN];
 
 /**
- * Legacy project type constants for backward compatibility
+ * Legacy project type constants for backward compatibility with tools-suite
  *
  * @deprecated Use FLOOR_PLAN instead (they are identical)
+ *
+ * Must remain exported for tools-suite backward compatibility.
+ * SonarCloud deprecation warning is expected and acceptable.
  */
+// sonar-disable-next-line typescript:S1874
 export const PROJECT_TYPE = FLOOR_PLAN;
 
 export type Backend = {
@@ -336,15 +335,6 @@ export interface Credentials {
      */
     password?: string;
 }
-/**
- * CAP runtime implementation types
- * Exported as const object for backward compatibility with tools-suite
- */
-export const CapType = {
-    NODE_JS: 'Node.js',
-    JAVA: 'Java'
-} as const;
-export type CapType = (typeof CapType)[keyof typeof CapType];
 
 /**
  * Defines the api hub service properties or enterprise and non-enterprise versions
@@ -359,7 +349,7 @@ export interface CapService {
     serviceName: string;
     appPath?: string; // Optional custom CAP app folder
     serviceCdsPath?: string; // relative path to cap service cds file
-    capType?: CapType; // CAP implementation type,
+    capType?: CapRuntime; // CAP implementation type,
     capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
 }
 
