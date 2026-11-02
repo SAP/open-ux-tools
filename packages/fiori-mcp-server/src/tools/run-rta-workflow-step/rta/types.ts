@@ -191,16 +191,10 @@ export interface PageActionRunResult {
 }
 
 /**
- * One OData data source's metadata result. On success `metadata` holds the
- * formatted EDMX; on failure `error` explains why (login page, non-XML, or a
- * failed fetch) without sinking the rest of the batch.
- */
-/**
  * One OData data source's metadata result:
  * - `{ url, metadata }` — formatted EDMX returned inline (small enough to fit).
  * - `{ url, metadataFile, sizeBytes }` — EDMX too large to return inline; written
- *   to `<appPath>/webapp/.context/` and referenced by path so it never overflows
- *   the model.
+ *   to `<appPath>/.context/` and referenced by path so it never overflows the model.
  * - `{ url, error }` — login page / non-XML / failed fetch, or too large with no
  *   `appPath` to save it under.
  */
