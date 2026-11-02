@@ -25,8 +25,8 @@
         "lint:fix": "eslint --fix"
     },
     "devDependencies": {
-        "@fluentui/react": "8.125.8",
-        "@fluentui/react-hooks": "8.10.3",
+        "@fluentui/react": "8.125.10",
+        "@fluentui/react-hooks": "8.10.4",
         "@jest/globals": "30.5.2",
         "@reduxjs/toolkit": "1.6.1",
         "@sap-ux/ui-components": "workspace:*",
@@ -34,7 +34,7 @@
         "@testing-library/react": "12.1.5",
         "@testing-library/dom": "9.3.4",
         "@types/react-dom": "16.9.25",
-        "@types/react-redux": "7.1.34",
+        "@types/react-redux": "7.1.35",
         "@types/redux-logger": "3.0.13",
         "@types/remote-redux-devtools": "0.5.8",
         "@types/source-map-support": "0.5.10",
