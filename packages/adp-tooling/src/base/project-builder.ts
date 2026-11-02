@@ -1,5 +1,5 @@
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
+import type { ReaderCollection } from '@ui5/fs';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import { readUi5Config, extractCfBuildTask } from './helper.js';
 

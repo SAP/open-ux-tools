@@ -1,5 +1,21 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 1.0.52
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/ui5-library-reference-inquirer 1.0.51 → 1.0.52
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/project-access 2.3.2 → 2.3.3
+- @sap-ux/ui5-library-reference-writer 1.0.24 → 1.0.25
+
 ## 1.0.51
 
 ### Patch Changes

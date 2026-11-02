@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 1.0.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/yaml 1.0.2 → 1.0.3
+
 ## 1.0.10
 
 ### Patch Changes

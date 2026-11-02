@@ -1,5 +1,14 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.18 → 3.0.19
+- @sap-ux/ui-prompting 1.0.20 → 1.0.21
+
 ## 1.1.16
 
 ### Patch Changes
