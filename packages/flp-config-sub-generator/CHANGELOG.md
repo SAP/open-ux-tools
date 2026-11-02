@@ -1,5 +1,19 @@
 # @sap-ux/flp-config-sub-generator
 
+## 1.0.79
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/app-config-writer 1.1.31 → 1.1.32
+- @sap-ux/flp-config-inquirer 1.0.71 → 1.0.72
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/deploy-config-generator-shared 1.0.47 → 1.0.48
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
 ## 1.0.78
 
 ### Patch Changes
