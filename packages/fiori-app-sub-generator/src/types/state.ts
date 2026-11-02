@@ -12,7 +12,7 @@ import type {
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants.js';
 import type { Script } from './common.js';
-import type { AppGenInfo, BaseProjectConfig, BaseServiceConfig, Floorplan } from '@sap-ux/fiori-generator-shared';
+import type { AppGenInfo, BasePackageJsonConfig, BaseProjectConfig, BaseServiceConfig, Floorplan } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ApiHubConfig from BaseServiceConfig for backward compatibility
 export type { ApiHubConfig } from '@sap-ux/fiori-generator-shared';
@@ -98,27 +98,24 @@ export interface CapServiceCdsInfoInternal extends CapService {
     capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
 }
 
-/** package.json interface */
-export interface PackageJson {
-    name: string;
-    description: string;
+/**
+ * Package.json configuration for app generation.
+ *
+ * Extends BasePackageJsonConfig. Note: app-sub-generator requires all start commands (non-optional)
+ * while migration-writer allows them to be optional.
+ */
+export interface PackageJson extends Omit<BasePackageJsonConfig, 'startCommand' | 'startLocalCommand' | 'startNoFlpCommand' | 'startVariantsCommand'> {
+    /** NPM script command to start the application (required for app generation) */
     startCommand: string;
+
+    /** NPM script command to start the application locally (required for app generation) */
     startLocalCommand: string;
+
+    /** NPM script command to start without FLP (required for app generation) */
     startNoFlpCommand: string;
+
+    /** NPM script command to start with variants management (required for app generation) */
     startVariantsCommand: string;
-    addMockCommand?: boolean;
-    sapClientParam?: string;
-    flpAppId?: string; // Identifies the application in FLP => SemanticObject-Action
-    devDependencies: {
-        [key: string]: string;
-    };
-    ui5Dependencies: string[];
-    sapux?: boolean;
-    startFile?: string; // relative path to start html
-    localStartFile?: string; // relative path to local start html
-    runTasks?: Script[];
-    enableEslint: boolean;
-    sapuxLayer?: UI5FlexLayer;
 }
 
 export interface State {

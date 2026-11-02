@@ -9,10 +9,12 @@ import type { CapService as BaseCapService } from '@sap-ux/cap-config-writer';
 // Import directly from the source package where you need them
 import type {
     ApiHubType,
+    BasePackageJsonConfig,
     BaseProjectConfig,
     BaseServiceConfig,
     CapRuntime,
-    SapSystemSourceType
+    SapSystemSourceType,
+    Script
 } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
@@ -20,35 +22,11 @@ export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
 
 /**
- * package.json script entries (commands and tasks)
+ * Package.json configuration for migration.
+ *
+ * Extends BasePackageJsonConfig. Migration allows all start commands to be optional.
  */
-export type Script = {
-    name: string;
-    command: string;
-};
-
-/** package.json interface */
-export interface PackageJson {
-    name: string;
-    description: string;
-    startCommand?: string;
-    startLocalCommand?: string;
-    startNoFlpCommand?: string;
-    startVariantsCommand?: string;
-    addMockCommand?: boolean;
-    sapClientParam?: string;
-    flpAppId?: string; // Identifies the application in FLP => SemanticObject-Action
-    devDependencies: {
-        [key: string]: string;
-    };
-    ui5Dependencies: string[];
-    sapux?: boolean;
-    startFile?: string; // relative path to start html
-    localStartFile?: string; // relative path to local start html
-    runTasks?: Script[];
-    enableEslint: boolean;
-    sapuxLayer?: UI5FlexLayer;
-}
+export interface PackageJson extends BasePackageJsonConfig {}
 
 // Common constants defs used throughout
 export const DatasourceType = {

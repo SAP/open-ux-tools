@@ -2,5 +2,6 @@ export * from './app-gen.js';
 export * from './cap.js';
 export * from './environment.js';
 export * from './headless.js';
+export * from './package-json.js';
 export * from './project.js';
 export * from './service.js';
