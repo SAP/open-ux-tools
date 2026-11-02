@@ -723,49 +723,27 @@ describe('CF Services API', () => {
             expect(result.options.headers!['Authorization']).toBeUndefined();
         });
 
-        test('should return correct arguments for public cloud in non-BAS environment', async () => {
-            const config: CfConfig = {
-                org: { GUID: 'test-org-guid', Name: 'test-org' },
-                space: { GUID: 'test-space-guid', Name: 'test-space' },
-                url: 'eu10.hana.ondemand.com',
-                token: 'test-token'
-            };
-
-            mockIsAppStudio.mockReturnValue(false);
-
-            const result = await getFDCRequestArguments(config);
-
-            expect(result.url).toBe('https://ui5-flexibility-design-and-configuration.cfapps.eu10.hana.ondemand.com');
-            expect(result.options.withCredentials).toBe(true);
-            expect(result.options.headers!['Content-Type']).toBe('application/json');
-            expect(result.options.headers!['Authorization']).toBe('Bearer test-token');
-        });
-
-        test('should return correct arguments for private cloud', async () => {
-            const config: CfConfig = {
-                org: { GUID: 'test-org-guid', Name: 'test-org' },
-                space: { GUID: 'test-space-guid', Name: 'test-space' },
-                url: 'private.cf.example.com',
-                token: 'test-token'
-            };
-
-            mockIsAppStudio.mockReturnValue(false);
-
-            const result = await getFDCRequestArguments(config);
-
-            expect(result.url).toBe(
+        test.each([
+            [
+                'public cloud in non-BAS environment',
+                'eu10.hana.ondemand.com',
+                'https://ui5-flexibility-design-and-configuration.cfapps.eu10.hana.ondemand.com'
+            ],
+            [
+                'private cloud',
+                'private.cf.example.com',
                 'https://ui5-flexibility-design-and-configuration.sapui5flex.cfapps.private.cf.example.com'
-            );
-            expect(result.options.withCredentials).toBe(true);
-            expect(result.options.headers!['Content-Type']).toBe('application/json');
-            expect(result.options.headers!['Authorization']).toBe('Bearer test-token');
-        });
-
-        test('should return correct arguments for China region', async () => {
+            ],
+            [
+                'China region',
+                'cf.example.cn',
+                'https://ui5-flexibility-design-and-configuration.sapui5flex.cf.apps.example.cn'
+            ]
+        ])('should return correct arguments for %s', async (_scenario, url, expectedUrl) => {
             const config: CfConfig = {
                 org: { GUID: 'test-org-guid', Name: 'test-org' },
                 space: { GUID: 'test-space-guid', Name: 'test-space' },
-                url: 'cf.example.cn',
+                url,
                 token: 'test-token'
             };
 
@@ -773,7 +751,7 @@ describe('CF Services API', () => {
 
             const result = await getFDCRequestArguments(config);
 
-            expect(result.url).toBe('https://ui5-flexibility-design-and-configuration.sapui5flex.cf.apps.example.cn');
+            expect(result.url).toBe(expectedUrl);
             expect(result.options.withCredentials).toBe(true);
             expect(result.options.headers!['Content-Type']).toBe('application/json');
             expect(result.options.headers!['Authorization']).toBe('Bearer test-token');
