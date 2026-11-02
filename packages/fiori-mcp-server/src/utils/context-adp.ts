@@ -34,12 +34,10 @@ export function writeContextMetadata(appPath: string, name: string, metadata: st
 }
 
 /**
- * Derives a filesystem-safe base name from an OData URI, so two URIs map to
- * distinct files and no path separator or special character can escape the
- * target directory. The readable part is the last few path segments (the
- * identifying tail of the service), and a truncated SHA-256 of the full URI keeps
- * names unique even when those tails collide (e.g. `/api/a-b/` vs `/api/a_b/`).
- * Using only the tail also bounds the name, so a long URI cannot cause `ENAMETOOLONG`.
+ * Derives a filesystem-safe base name from an OData URI: the last few path
+ * segments (the readable, identifying tail) plus a truncated SHA-256 of the full
+ * URI. The hash keeps names unique when tails collide (`/api/a-b/` vs `/api/a_b/`),
+ * and using only the tail bounds the length so a long URI cannot cause `ENAMETOOLONG`.
  *
  * @param uri OData data-source URI.
  * @returns A sanitised base name (trailing segments) with a truncated SHA-256 hash of the original URI.
@@ -52,10 +50,10 @@ function safeName(uri: string): string {
 }
 
 /**
- * Decides whether formatted metadata fits inline or must be spilled to disk, keyed
- * by its OData URI. Metadata under {@link INLINE_METADATA_MAX_CHARS} is returned
- * inline; larger metadata is written to `<appPath>/.context/<safe-uri>-metadata.xml`
- * and returned as a `{ metadataFile, sizeBytes }` reference.
+ * Decides whether formatted metadata fits inline or must be spilled to disk.
+ * Metadata under {@link INLINE_METADATA_MAX_CHARS} is returned inline; larger
+ * metadata is written to `<appPath>/.context/` and returned as a
+ * `{ metadataFile, sizeBytes }` reference keyed by its (unique) OData URI.
  *
  * @param appPath Adaptation project root directory.
  * @param uri OData data-source URI (the stable, unique key for the metadata).

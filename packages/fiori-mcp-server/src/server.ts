@@ -71,8 +71,11 @@ type ToolArgs =
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
 
 /**
+ * Picks a protocol version to report back: the requested one if supported, else
+ * the fallback, else the newest supported version.
  *
- * @param requested
+ * @param requested Protocol version the client asked for.
+ * @returns The negotiated protocol version.
  */
 function negotiateProtocolVersion(requested: string): string {
     if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {

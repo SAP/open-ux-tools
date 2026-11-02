@@ -55,15 +55,10 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
 }
 
 /**
- * Resolves how to launch the editor for the given project. The launch mechanism
- * is the same for ABAP and Cloud Foundry (CF) — `resolveFioriBin`, which starts
- * the server (reading the project's `ui5.yaml`, including the CF proxy
- * middleware) without opening a browser; the browser is opened later by the
- * `start` RTA step. CF differs only in two respects: it needs a prior build so
- * the approuter can serve `dist/` (when missing, a `reason` is returned so the
- * caller fails fast with guidance instead of starting a server that cannot
- * serve the app), and it needs a longer startup timeout because the embedded
- * approuter and service-key resolution take significantly longer to come up.
+ * Resolves how to launch the editor for a project. The mechanism is the same for
+ * ABAP and CF (`resolveFioriBin`); CF differs only in needing a prior build (when
+ * `dist/` is missing, a `reason` is returned so the caller fails fast) and a
+ * longer startup timeout for the embedded approuter.
  *
  * @param appPath - Absolute path to the adaptation project root.
  * @returns A launch config, or `{ reason }` when CF prerequisites are not met.
