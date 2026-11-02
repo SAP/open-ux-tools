@@ -27,15 +27,7 @@ import type { FetchViaContextResult, FrontendActionResult, FrontendActionTranspo
 // Wherever a comment below says "bridge" it means that webclient bridge, never
 // this module.
 
-/**
- * Outcome of classifying a freshly-navigated editor page:
- * - `ready` — the app is reachable (webclient bridge present, login completed,
- *   or a slow-but-valid app); the caller proceeds to persist/register.
- * - `login-timed-out` — a backend login page was served and login did NOT
- *   complete within the budget; the caller tears down and returns the login
- *   signal. (A login page where the human DID sign in resolves to `ready`.)
- * - `error` — the editor served an HTTP error; the caller tears down and throws.
- */
+/** Outcome of classifying a freshly-navigated editor page. */
 type EditorReadiness = { outcome: 'ready' | 'login-timed-out' } | { outcome: 'error'; status: number | undefined };
 
 // Module-scope singleton state.

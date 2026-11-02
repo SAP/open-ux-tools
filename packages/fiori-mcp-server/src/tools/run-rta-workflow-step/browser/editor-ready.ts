@@ -1,13 +1,10 @@
 import { type Page } from 'playwright-core';
 
-// Editor-readiness detection via the control-property-editor's own postMessage
-// signal. The adaptation editor shell (top page) hosts the Fiori app in a
-// `preview` iframe; when the app and all preview-side services have finished
-// initializing, the iframe dispatches an `app-loaded` external action to the
-// parent window (see control-property-editor-common `appLoaded` /
-// `startPostMessageCommunication`). Awaiting that signal is the deterministic
-// equivalent of "the app is fully up", so a following `startRTA` does not race
-// a half-booted RuntimeAuthoring.
+// Editor-readiness detection via the control-property-editor's `app-loaded`
+// postMessage signal. The editor shell hosts the app in a `preview` iframe; once
+// the app and its preview-side services finish booting, the iframe posts an
+// `app-loaded` action to the parent. Awaiting it means a following `startRTA`
+// does not race a half-booted RuntimeAuthoring.
 
 /** Envelope type used by the editor's postMessage channel. */
 const POST_MESSAGE_ACTION_TYPE = 'post-message-action';
@@ -31,18 +28,15 @@ export interface AppLoadedListenerConfig {
 /**
  * The browser-side listener body, as a self-contained function.
  *
- * This runs in the page, not in Node: {@link installAppLoadedListener} hands it to
- * Playwright's `addInitScript`, which serializes it with `.toString()` and re-parses
- * it in the browser. It therefore MUST NOT reference anything from module scope
- * (imports, top-level consts, other functions) — every input arrives via its single
- * `config` argument, and it uses only browser globals (`window`). It is a named
- * top-level function (not an inline closure) purely so it can be invoked directly
- * from unit tests against a fake `window`.
+ * Runs in the page, not Node: {@link installAppLoadedListener} passes it to
+ * `addInitScript`, which serializes it with `.toString()`. It therefore MUST NOT
+ * reference module scope — every input arrives via `config` and it uses only
+ * browser globals. It is top-level (not an inline closure) so unit tests can call
+ * it against a fake `window`.
  *
- * On the top window it seeds `window[flag] = false`, then on every `message` event
- * rejects cross-origin senders first — so a frame from another origin can never spoof
- * the app-loaded flag — and flips `window[flag] = true` on a same-origin message whose
- * envelope and action type match.
+ * Installs only on the top window: seeds `window[flag] = false`, then flips it to
+ * `true` on a same-origin message whose envelope and action type match (cross-origin
+ * senders are rejected first, so another origin cannot spoof the flag).
  *
  * @param config Envelope/action types to match and the flag property to set.
  */
@@ -66,11 +60,10 @@ export function appLoadedListenerScript(config: AppLoadedListenerConfig): void {
 }
 
 /**
- * Installs a `message` listener on the page that flips {@link APP_LOADED_FLAG}
- * to `true` when the preview iframe posts its `app-loaded` action to the parent.
- * Uses `addInitScript`, so the listener is present on the top page before any
- * navigation or message — a signal fired during boot is never missed. Safe to
- * call once per page, before `page.goto`.
+ * Installs a `message` listener that flips {@link APP_LOADED_FLAG} to `true` when
+ * the preview iframe posts its `app-loaded` action. Uses `addInitScript` so the
+ * listener is present before any navigation — a signal fired during boot is never
+ * missed. Call once per page, before `page.goto`.
  *
  * @param page The editor page to instrument.
  */

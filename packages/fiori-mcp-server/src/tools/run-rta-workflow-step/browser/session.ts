@@ -11,15 +11,11 @@ import { originKey } from './origin.js';
 // Session state shared across the browser driver.
 //   `siteMeta` — site origin → { projectKey, isCf }. Rewritten by every `start`
 //      (via registerSite), so the project currently running on a reused port
-//      always wins; a previous project's metadata can never be served to a new
-//      one. It is the bridge from "I only have `site` here" (deeper context-build
-//      code) to "which project is this, and is it CF".
-//   `sessionByProject` — projectKey (the adaptation project's appPath) → saved
-//      login state { authOrigin?, storageState? }. Keyed by PROJECT, not by port,
-//      so two projects sharing a port (one stopped, the next started) never
-//      cross-contaminate cookies. `storageState` survives `disconnectSite` so an
-//      authenticated login is reused across re-`start` of the SAME project.
-//      ABAP projects are never stored here (see the isCf hard-skip below).
+//      always wins and a previous project's metadata is never served to a new one.
+//   `sessionByProject` — projectKey (the project's appPath) → saved login state.
+//      Keyed by PROJECT, not port, so two projects sharing a port never cross-
+//      contaminate cookies. Survives `disconnectSite` so a login is reused across
+//      re-`start` of the SAME project. ABAP projects are never stored (isCf skip).
 const siteMeta: Map<string, SiteMeta> = new Map();
 const sessionByProject: Map<string, SessionState> = new Map();
 
@@ -45,11 +41,10 @@ interface SessionState {
 }
 
 /**
- * Records, for a site, which adaptation project is being started on it and
- * whether that project is Cloud Foundry. Called by `start` before the first
- * context is built. Overwrites any metadata a previous project left on this
- * site (e.g. after stop→start on a reused port), so the current project always
- * wins. `appPath` is the project's root; it doubles as the session key.
+ * Records which adaptation project is being started on a site and whether it is
+ * Cloud Foundry. Called by `start` before the first context is built. Overwrites
+ * any metadata a previous project left on this site (stop→start on a reused port),
+ * so the current project always wins. `appPath` doubles as the session key.
  *
  * @param site Editor URL being started.
  * @param appPath Adaptation project root (identity + session key).
@@ -92,13 +87,11 @@ function cfProjectKey(site: string): string | undefined {
 }
 
 /**
- * Maps a session key (the project's appPath) to a short, filesystem-safe, and
- * human-recognisable file name for on-disk persistence. Combines the project's
- * last path segment (sanitised, so a human can tell which project a file belongs
- * to) with a truncated SHA-256 of the full key (so two projects that share a last
- * segment never collide onto the same file — which would cross-seed their
- * sessions). The same project always maps to the same file (overwritten on
- * refresh); different projects always map to different files.
+ * Maps a session key (the project's appPath) to a short, filesystem-safe,
+ * human-recognisable file name. The sanitised last path segment keeps it readable;
+ * a truncated SHA-256 of the full key keeps two projects that share a last segment
+ * from colliding onto one file (which would cross-seed their sessions). Same project
+ * → same file (overwritten on refresh).
  *
  * @param key Session key (a project path).
  * @returns A `<sanitised-last-segment>-<8-hex>.json` file name.
@@ -112,9 +105,8 @@ export function sessionFileName(key: string): string {
 /**
  * Builds the `newContext` options for a site, seeding storage state from the
  * project's prior authenticated session when available. Only CF projects are
- * ever seeded: an ABAP project (or an unregistered site) always gets a plain
- * context. The session is keyed by project, so a different project reusing the
- * same port is never seeded from the previous project's cookies.
+ * seeded; an ABAP or unregistered site gets a plain context. Keyed by project, so
+ * a different project reusing the same port is never seeded from stale cookies.
  *
  * @param site Editor URL.
  * @returns Context options with an optional `storageState` seed.

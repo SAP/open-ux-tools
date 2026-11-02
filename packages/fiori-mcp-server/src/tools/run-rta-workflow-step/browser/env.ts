@@ -13,8 +13,8 @@ function truthyEnv(value: string | undefined): boolean {
 }
 
 /**
- * Whether the browser should launch headless. Default is headed (`false`),
- * matching the pre-existing behaviour; `PLAYWRIGHT_HEADLESS=true|1` opts in.
+ * Whether the browser should launch headless. Default is headed (`false`);
+ * `PLAYWRIGHT_HEADLESS=true|1` opts in.
  *
  * @returns `true` when headless mode is requested.
  */
@@ -24,8 +24,8 @@ export function isHeadless(): boolean {
 
 /**
  * Optional directory for cross-restart session persistence. When set, each
- * origin's storage state is also written to / read from a file in this
- * directory. Unset ⇒ in-memory only (no disk footprint).
+ * origin's storage state is also written to / read from a file here. Unset ⇒
+ * in-memory only.
  *
  * @returns The configured directory, or `undefined`.
  */
@@ -38,10 +38,9 @@ export function sessionDir(): string | undefined {
 const DEFAULT_LOGIN_WAIT_MS = 120_000;
 
 /**
- * How long `start` keeps the browser window open and polls for the webclient
- * bridge while a human completes an interactive backend login (CF XSUAA / ABAP
- * reentrance). `PLAYWRIGHT_LOGIN_WAIT_MS` overrides the default; a non-positive
- * or unparseable value falls back to the default.
+ * How long `start` keeps the window open and polls for the webclient bridge while
+ * a human completes an interactive backend login. `PLAYWRIGHT_LOGIN_WAIT_MS`
+ * overrides the default; a non-positive or unparseable value falls back to it.
  *
  * @returns The login wait budget in milliseconds.
  */
@@ -54,10 +53,9 @@ export function loginWaitMs(): number {
 const DEFAULT_APP_LOADED_WAIT_MS = 60_000;
 
 /**
- * How long `start` waits for the adaptation editor's `app-loaded` signal (the
- * preview iframe finished booting) before proceeding to `startRTA`.
- * `PLAYWRIGHT_APP_LOADED_WAIT_MS` overrides the default; a non-positive or
- * unparseable value falls back to the default.
+ * How long `start` waits for the editor's `app-loaded` signal (preview iframe
+ * booted) before `startRTA`. `PLAYWRIGHT_APP_LOADED_WAIT_MS` overrides the
+ * default; a non-positive or unparseable value falls back to it.
  *
  * @returns The app-loaded wait budget in milliseconds.
  */

@@ -25,11 +25,10 @@ export const LOGIN_WAIT_MESSAGE =
     'there. The "start" step is waiting and will continue automatically once you are signed in.';
 
 /**
- * Reserved payload the browser driver returns from a `start`/`restart` call when the
- * editor URL served a backend login page (CF XSUAA / ABAP reentrance) instead
- * of the app, so the webclient bridge never injected. It rides a successful
- * (`isSuccess: true`) envelope so `unwrap` does not throw — "needs login" is
- * deliberately distinct from a genuine action failure (`isSuccess: false`).
+ * Reserved payload the browser driver returns from `start`/`restart` when the
+ * editor URL served a backend login page instead of the app. It rides a
+ * successful (`isSuccess: true`) envelope so `unwrap` does not throw — "needs
+ * login" is distinct from a genuine action failure.
  */
 export interface NeedsUserActionPayload {
     __needsUserAction: 'backend_login_required';
@@ -51,19 +50,9 @@ export function isNeedsUserAction(value: unknown): value is NeedsUserActionPaylo
 }
 
 /**
- * Probes once (bounded) for the Joule webclient bridge on the page. Resolves
- * `true` when the bridge appears within {@link BRIDGE_PROBE_MS}, `false` on
- * timeout — without throwing.
- *
- * @param page The page just navigated to the editor URL.
- * @returns `true` if the webclient bridge is present.
- */
-/**
  * Resolves the frame whose iframe element has `id === frameId`, or `undefined`
- * when `frameId` is omitted or no such frame exists yet (e.g. the editor iframe
- * has not been created — as on a bare login page). The adaptation editor serves
- * the app inside the `preview` iframe, so the webclient bridge lives on that
- * frame's window, not the top-level page's.
+ * when `frameId` is omitted or no such frame exists. The editor runs inside the
+ * `preview` iframe, so the webclient bridge lives on that frame's window.
  *
  * @param page The editor page.
  * @param frameId The iframe element id to resolve (e.g. `preview`).
@@ -84,11 +73,9 @@ async function resolveFrame(page: Page, frameId: string | undefined): Promise<Fr
 }
 
 /**
- * Probes once (bounded) for the Joule webclient bridge. When `frameId` resolves
- * to an existing iframe (where the editor actually runs), the probe checks that
- * frame's window; otherwise it checks the top-level page. Resolves `true` when
- * the bridge appears within {@link BRIDGE_PROBE_MS}, `false` on timeout — without
- * throwing.
+ * Probes once (bounded) for the Joule webclient bridge. Checks the `frameId`
+ * iframe's window when it resolves, else the top-level page. Resolves `true` when
+ * the bridge appears within {@link BRIDGE_PROBE_MS}, `false` on timeout — never throws.
  *
  * @param page The page just navigated to the editor URL.
  * @param frameId Optional iframe element id hosting the editor (e.g. `preview`).
@@ -114,14 +101,11 @@ export async function probeBridge(page: Page, frameId?: string): Promise<boolean
 }
 
 /**
- * Keeps the (already-open) login window alive and polls for the webclient bridge
- * while a human completes the interactive login, up to `budgetMs`. Each poll is
- * a bounded {@link probeBridge} ({@link BRIDGE_PROBE_MS}) against the editor
- * iframe (`frameId`); the moment the bridge appears — i.e. the user has signed in
- * and the approuter served the app into that frame — it resolves `true`. Resolves
- * `false` if the budget elapses without the bridge. Never throws and never closes
- * the page; the caller owns teardown. The caller gates on the editor's
- * `app-loaded` signal afterwards, so this only needs to detect "logged in".
+ * Keeps the open login window alive and polls {@link probeBridge} while a human
+ * logs in, up to `budgetMs`. Resolves `true` the moment the bridge appears (login
+ * done, app served into the frame), `false` if the budget elapses. Never throws
+ * and never closes the page — the caller owns teardown and gates on `app-loaded`
+ * afterwards, so this only detects "logged in".
  *
  * @param page The page sitting on the backend login screen.
  * @param budgetMs Total time to wait for login before giving up.
