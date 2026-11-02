@@ -12,7 +12,10 @@ import type {
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants.js';
 import type { Script } from './common.js';
-import type { AppGenInfo, BaseProjectConfig, Floorplan } from '@sap-ux/fiori-generator-shared';
+import type { AppGenInfo, BaseProjectConfig, BaseServiceConfig, Floorplan } from '@sap-ux/fiori-generator-shared';
+
+// Re-export ApiHubConfig from BaseServiceConfig for backward compatibility
+export type { ApiHubConfig } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Project configuration for Fiori app generation.
@@ -40,44 +43,47 @@ export interface Credentials {
 
 /**
  * Fiori sub app generators internal representation of a service.
- * May be possible to replace this type with `@sap-ux/odata-service-inquirer` `service` type in future.
  *
+ * Extends BaseServiceConfig with app-generation-specific properties.
+ * May be possible to replace this type with `@sap-ux/odata-service-inquirer` `service` type in future.
  */
-export interface Service {
+export interface Service extends Omit<BaseServiceConfig, 'version' | 'source'> {
+    /** Service host URL (optional for app generation) */
     host?: string;
-    client?: string;
+
+    /** Destination name for the service */
     destinationName?: string;
-    servicePath?: string; // url path of odata or cap service
-    serviceId?: string; // id of the service
-    edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
-    annotations?: Annotations[];
-    version?: OdataVersion; // Not present for FF no datasource template flow
+
+    /** Service ID */
+    serviceId?: string;
+
+    /** EDMX metadata (optional since Fiori Freestyle can be generated without datasource) */
+    edmx?: string;
+
+    /** OData version - uses OdataVersion from odata-service-inquirer */
+    version?: OdataVersion;
+
     /**
-     * While the required type `CapServiceCdsInfo` mandates `cdsUi5PluginInfo` when writing to cap config, this information is not intially available.
-     * So we make it optional here.
+     * CAP service information.
+     * While the required type `CapServiceCdsInfo` mandates `cdsUi5PluginInfo` when writing to cap config,
+     * this information is not initially available, so we make it optional here.
      */
     capService?: Omit<CapServiceCdsInfo, 'cdsUi5PluginInfo'> & { cdsUi5PluginInfo?: CdsUi5PluginInfo };
+
+    /** Data source type - uses DatasourceType enum from odata-service-inquirer */
     source: DatasourceType;
-    sapSystemSource?: SapSystemSourceType;
-    localEdmxFilePath?: string;
+
     /**
      * Connected system information, used for preview settings and deploy configurations
      */
     connectedSystem?: OdataServiceAnswers['connectedSystem'];
-    /**
-     * Only used by adaptors to specify the authentication type, use `connectedSystem.destination.Authentication` instead
-     */
-    destinationAuthType?: string;
-    apiHubConfig?: ApiHubConfig;
-    ignoreCertError?: boolean;
-    /**
-     * Value list references for the service when the user opts to download value helps.
-     */
+
     /**
      * Downloaded external service metadata including value helps with their metadata content.
      * Populated when user opts to download value help metadata during generation.
      */
     valueListMetadata?: ExternalService[];
+
     /**
      * Can be set by adaptors if preview settings have been determined
      */
@@ -85,14 +91,6 @@ export interface Service {
         scp?: boolean;
         authenticationType?: AuthenticationType;
     };
-}
-
-/**
- * Defines the api hub service properties or enterprise and non-enterprise versions
- */
-export interface ApiHubConfig {
-    apiHubKey: string;
-    apiHubType: ApiHubType;
 }
 
 // @deprecated Use { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';

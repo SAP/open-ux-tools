@@ -7,7 +7,13 @@ import type { CapService as BaseCapService } from '@sap-ux/cap-config-writer';
 
 // Import types from shared packages - DO NOT re-export
 // Import directly from the source package where you need them
-import type { ApiHubType, BaseProjectConfig, CapRuntime, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
+import type {
+    ApiHubType,
+    BaseProjectConfig,
+    BaseServiceConfig,
+    CapRuntime,
+    SapSystemSourceType
+} from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -335,14 +341,6 @@ export interface Credentials {
 }
 
 /**
- * Defines the api hub service properties or enterprise and non-enterprise versions
- */
-export interface ApiHubConfig {
-    apiHubKey: string;
-    apiHubType: ApiHubType;
-}
-
-/**
  * CAP service configuration for migration.
  *
  * Extends base CapService from cap-config-writer with migration-specific properties.
@@ -361,23 +359,32 @@ export interface CapService extends BaseCapService {
     capCdsInfo?: CdsUi5PluginInfo;
 }
 
-export interface Service {
+/**
+ * Service configuration for migration.
+ *
+ * Extends BaseServiceConfig with migration-specific properties.
+ */
+export interface Service extends Omit<BaseServiceConfig, 'source'> {
+    /** Service host (required for migration) */
     host: string;
-    client?: string;
+
+    /** Whether this is a SAP Cloud Platform service */
     scp?: boolean;
+
+    /** Destination name */
     destination?: string;
+
+    /** Destination instance */
     destinationInstance?: string;
-    servicePath?: string; // url path of odata or cap service
+
+    /** EDMX metadata (required for migration) */
     edmx: string;
-    annotations?: Annotations[];
-    version?: ODataVersion; // Not present for FF no datasource template flow
+
+    /** CAP service configuration */
     capService?: CapService;
+
+    /** Data source type - uses migration-specific DatasourceType */
     source: DatasourceType;
-    sapSystemSource?: SapSystemSourceType; // Only used by README
-    localEdmxFilePath?: string; // Only used by README
-    destinationAuthType?: string;
-    apiHubConfig?: ApiHubConfig;
-    ignoreCertError?: boolean;
 }
 
 /** README.txt base definition */

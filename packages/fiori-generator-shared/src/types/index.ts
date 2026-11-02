@@ -3,3 +3,4 @@ export * from './cap.js';
 export * from './environment.js';
 export * from './headless.js';
 export * from './project.js';
+export * from './service.js';
