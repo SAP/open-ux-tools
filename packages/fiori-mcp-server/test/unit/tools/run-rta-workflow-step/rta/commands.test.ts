@@ -294,14 +294,11 @@ describe('rta/commands', () => {
             '<error><edmx:Edmx/></error>',
             '<?xml version="1.0" <edmx:Edmx/>',
             '<!-- unterminated <edmx:Edmx/>'
-        ])(
-            'rejects an XML document whose root is not Edmx: %s',
-            async (body) => {
-                transport.fetchViaContext.mockResolvedValue({ ...xmlResp, body });
-                const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
-                expect(out.entries[0]).toEqual({ url: 'api/svc/', error: expect.any(String) });
-            }
-        );
+        ])('rejects an XML document whose root is not Edmx: %s', async (body) => {
+            transport.fetchViaContext.mockResolvedValue({ ...xmlResp, body });
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            expect(out.entries[0]).toEqual({ url: 'api/svc/', error: expect.any(String) });
+        });
 
         test.each([
             '<m:Edmx xmlns:m="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0"><m:DataServices/></m:Edmx>',
