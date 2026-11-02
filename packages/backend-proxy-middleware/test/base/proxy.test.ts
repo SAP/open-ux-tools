@@ -562,8 +562,8 @@ describe('proxy', () => {
             expect(options.ws).toBe(true);
             expect(options.xfwd).toBe(true);
             expect(options.secure).toBe(true);
-            delete process.env.npm_config_proxy;
-            delete process.env.npm_config_https_proxy;
+            delete process.env.http_proxy;
+            delete process.env.https_proxy;
         });
 
         test('generate proxy middleware inside of BAS with minimal parameters', async () => {
@@ -747,8 +747,8 @@ describe('proxy', () => {
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options.agent).toBeUndefined();
-            delete process.env.npm_config_proxy;
-            delete process.env.npm_config_https_proxy;
+            delete process.env.http_proxy;
+            delete process.env.https_proxy;
             process.env.no_proxy = noProxyConfig;
         });
 
@@ -764,8 +764,8 @@ describe('proxy', () => {
 
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options.agent).toBeUndefined();
-            delete process.env.npm_config_proxy;
-            delete process.env.npm_config_https_proxy;
+            delete process.env.http_proxy;
+            delete process.env.https_proxy;
             process.env.no_proxy = noProxyConfig;
         });
 
@@ -780,8 +780,8 @@ describe('proxy', () => {
             };
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options.agent).toBeUndefined();
-            delete process.env.npm_config_proxy;
-            delete process.env.npm_config_https_proxy;
+            delete process.env.http_proxy;
+            delete process.env.https_proxy;
             process.env.no_proxy = noProxyConfig;
         });
     });

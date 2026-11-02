@@ -36,8 +36,8 @@
     "devDependencies": {
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
-        "@xml-tools/ast": "5.0.5",
-        "@xml-tools/parser": "1.0.11",
+        "@xml-tools/ast": "5.0.6",
+        "@xml-tools/parser": "1.0.12",
         "chevrotain": "7.1.1",
         "npm-run-all2": "9.0.3",
         "prettier": "3.9.10"
