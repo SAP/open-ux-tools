@@ -12,30 +12,25 @@ import type {
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants.js';
 import type { Script } from './common.js';
-import type { AppGenInfo, Floorplan } from '@sap-ux/fiori-generator-shared';
+import type { AppGenInfo, BaseProjectConfig, Floorplan } from '@sap-ux/fiori-generator-shared';
 
-export interface Project {
-    targetFolder: string;
-    addDeployConfig?: boolean;
-    addFlpConfig?: boolean;
-    name: string;
-    namespace?: string;
-    title: string;
-    description: string;
-    enableVirtualEndpoints?: boolean; // whether to use virtual endpoints for preview
-    ui5Theme: string;
-    ui5Version: string;
-    ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
-    localUI5Version: string;
-    sapux?: boolean;
-    skipAnnotations?: boolean;
+/**
+ * Project configuration for Fiori app generation.
+ *
+ * Extends BaseProjectConfig with app-generator-specific properties.
+ */
+export interface Project extends BaseProjectConfig {
+    /** Whether to use virtual endpoints for preview */
+    enableVirtualEndpoints?: boolean;
+
+    /** Whether to enable ESLint (optional for app generation) */
     enableEslint?: boolean;
+
+    /** Whether to enable TypeScript (optional for app generation) */
     enableTypeScript?: boolean;
-    formEntry?: boolean;
-    flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
-    minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
-    manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
-    addCdsUi5Plugin?: boolean; // add cds ui5 plugin to the project (will also enable npm workspaces)
+
+    /** Whether to add cds ui5 plugin to the project (will also enable npm workspaces) */
+    addCdsUi5Plugin?: boolean;
 }
 
 export interface Credentials {

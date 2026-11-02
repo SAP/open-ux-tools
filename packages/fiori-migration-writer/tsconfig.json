@@ -26,6 +26,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../cap-config-writer"
+    },
+    {
       "path": "../eslint-plugin-fiori-tools"
     },
     {

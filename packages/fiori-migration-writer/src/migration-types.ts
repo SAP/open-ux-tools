@@ -3,10 +3,11 @@ import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { CdsUi5PluginInfo, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { CapService as BaseCapService } from '@sap-ux/cap-config-writer';
 
 // Import types from shared packages - DO NOT re-export
 // Import directly from the source package where you need them
-import type { ApiHubType, CapRuntime, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
+import type { ApiHubType, BaseProjectConfig, CapRuntime, SapSystemSourceType } from '@sap-ux/fiori-generator-shared';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -280,28 +281,25 @@ export type MigratableFolder = {
 
 export const sapWattCommonSetting = 'sap.watt.common.setting';
 
-export interface Project {
-    targetFolder: string;
-    addDeployConfig?: boolean;
-    addFlpConfig?: boolean;
-    name: string;
-    namespace?: string;
-    title: string;
-    description: string;
-    ui5Theme: string;
-    ui5Version: string;
-    ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
-    localUI5Version: string;
-    sapux?: boolean;
-    skipAnnotations?: boolean;
+/**
+ * Project configuration for Fiori migration.
+ *
+ * Extends BaseProjectConfig with migration-specific properties.
+ */
+export interface Project extends BaseProjectConfig {
+    /** Whether to enable code assist features */
     enableCodeAssist: boolean;
+
+    /** Whether to enable ESLint (required for migration) */
     enableEslint: boolean;
+
+    /** Whether to enable TypeScript (required for migration) */
     enableTypeScript: boolean;
+
+    /** Manifest version */
     manifestVersion: string;
-    formEntry?: boolean;
-    flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
-    minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
-    manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
+
+    /** Whether to enable NPM workspaces */
     enableNPMWorkspaces?: boolean;
 }
 
@@ -344,13 +342,23 @@ export interface ApiHubConfig {
     apiHubType: ApiHubType;
 }
 
-export interface CapService {
-    projectPath: string; // The CAP Project Root
-    serviceName: string;
-    appPath?: string; // Optional custom CAP app folder
-    serviceCdsPath?: string; // relative path to cap service cds file
-    capType?: CapRuntime; // CAP implementation type,
-    capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
+/**
+ * CAP service configuration for migration.
+ *
+ * Extends base CapService from cap-config-writer with migration-specific properties.
+ */
+export interface CapService extends BaseCapService {
+    /** Optional custom CAP app folder */
+    appPath?: string;
+
+    /** Relative path to cap service cds file */
+    serviceCdsPath?: string;
+
+    /** CAP implementation type */
+    capType?: CapRuntime;
+
+    /** Has min @sap/cds version, NPM Workspaces and cds plugin configured */
+    capCdsInfo?: CdsUi5PluginInfo;
 }
 
 export interface Service {
