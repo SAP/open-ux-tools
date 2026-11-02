@@ -49,6 +49,14 @@ export class PatchedHttpsProxyAgent<Uri extends string> extends HttpsProxyAgent<
  * @returns Partial axios request config with proxy agents, or an empty object.
  */
 export function getProxyAgentConfig(url: string, agentOptions?: AgentOptions): Partial<AxiosRequestConfig> {
+    // proxy-from-env@2 no longer reads npm_config_*; promote legacy .npmrc proxy into standard vars.
+    if (!process.env.http_proxy && !process.env.HTTP_PROXY && !process.env.https_proxy && !process.env.HTTPS_PROXY) {
+        const legacyNpmProxy = process.env.npm_config_proxy || process.env.npm_config_https_proxy;
+        if (legacyNpmProxy) {
+            process.env.http_proxy = legacyNpmProxy;
+            process.env.https_proxy = legacyNpmProxy;
+        }
+    }
     const localProxy = getProxyForUrl(url);
     if (localProxy && !isAppStudio()) {
         // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
