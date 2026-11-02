@@ -33,7 +33,7 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "axios": "1.20.0",
         "npm-run-all2": "9.0.3",
         "prettier": "3.9.10",

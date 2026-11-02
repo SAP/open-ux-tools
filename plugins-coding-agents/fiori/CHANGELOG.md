@@ -1,5 +1,13 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
 ## 1.16.8
 
 ### Patch Changes

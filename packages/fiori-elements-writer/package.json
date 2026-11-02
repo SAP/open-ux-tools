@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-elements-writer",
     "description": "SAP Fiori elements application writer",
-    "version": "3.1.88",
+    "version": "3.1.89",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -50,7 +50,7 @@
         "semver": "7.8.5"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@types/ejs": "3.1.5",
