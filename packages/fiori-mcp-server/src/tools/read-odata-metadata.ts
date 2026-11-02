@@ -79,7 +79,7 @@ export async function readODataMetadataAdp(params: ReadODataMetadataInput): Prom
     const manifest = await getMergedManifest(appPath);
 
     if (await isCFEnvironment(appPath)) {
-        return { entries: await buildEntries(manifest, async () => ({ metadata: '' })) };
+        return { entries: await buildEntries(manifest, () => Promise.resolve({ metadata: '' })) };
     }
 
     const abapProvider = await getAbapProvider(appPath);
