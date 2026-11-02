@@ -43,7 +43,7 @@
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "npm-run-all2": "9.0.3",
+        "npm-run-all2": "9.0.4",
         "@sap-ux/odata-entity-model": "workspace:*"
     },
     "engines": {
