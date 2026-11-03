@@ -183,6 +183,20 @@ describe('isCfJsonInput', () => {
         expect(isCfJsonInput({ ...validBusinessServiceInput, mtaMode: 'bogus' })).toBe(false);
     });
 
+    it('should return true for both supported approuter literals', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'Managed HTML5 Application Runtime' })).toBe(
+            true
+        );
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'Standalone HTML5 Application Runtime' })).toBe(
+            true
+        );
+    });
+
+    it('should return false when approuter is not an allowed literal', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'Managed' })).toBe(false);
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'bogus-router' })).toBe(false);
+    });
+
     it('should return false when an optional field has the wrong type', () => {
         expect(isCfJsonInput({ ...validBusinessServiceInput, projectName: 123 })).toBe(false);
         expect(isCfJsonInput({ ...validBusinessServiceInput, id: 123 })).toBe(false);

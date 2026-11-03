@@ -1,5 +1,6 @@
 import type { CfJsonInput, JsonInput, JsonInputFile } from '../app/types.js';
 import { MtaMode, TargetEnv } from '../app/types.js';
+import { AppRouterType } from '@sap-ux/adp-tooling';
 
 /**
  * Type guard for a string values.
@@ -76,17 +77,22 @@ export function isCfJsonInput(value: unknown): value is CfJsonInput {
     const isValidMtaMode =
         value.mtaMode === undefined || value.mtaMode === MtaMode.New || value.mtaMode === MtaMode.Existing;
 
+    const isValidApprouter =
+        value.approuter === undefined ||
+        value.approuter === AppRouterType.MANAGED ||
+        value.approuter === AppRouterType.STANDALONE;
+
     return (
         isOptionalString(value.id) &&
         isOptionalString(value.applicationTitle) &&
         isOptionalString(value.businessService) &&
         isOptionalString(value.serviceInstanceName) &&
-        isOptionalString(value.approuter) &&
         isOptionalString(value.businessSolutionName) &&
         isOptionalString(value.mtaId) &&
         isOptionalString(value.targetFolder) &&
         isOptionalString(value.projectName) &&
         isOptionalString(value.namespace) &&
+        isValidApprouter &&
         isValidMtaMode
     );
 }
