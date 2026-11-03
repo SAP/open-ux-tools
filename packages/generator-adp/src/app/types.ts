@@ -2,9 +2,10 @@ import type Generator from 'yeoman-generator';
 import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Manifest } from '@sap-ux/project-access';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AdaptationDescriptor, AdaptationProjectType, KeyUserChangeContent } from '@sap-ux/axios-extension';
-import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
+import type { AttributesAnswers, ConfigAnswers, FlexLayer, AppRouterType } from '@sap-ux/adp-tooling';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -320,7 +321,7 @@ export interface ExtensionProjectData {
 }
 
 /**
- * CLI JSON for the adaptation project generator.
+ * CLI JSON for the adaptation project generator (ABAP target).
  *
  * When `id` is set, `{tmpdir}/{id}.txt` may also be loaded (see `readJsonInputFile`).
  */
@@ -329,6 +330,10 @@ export interface JsonInput {
      * Orchestrator correlation id. Keys the result file and `{tmpdir}/{id}.txt`.
      */
     id?: string;
+    /**
+     * Target environment. Absent is treated as `ABAP` for backwards compatibility.
+     */
+    targetEnv?: typeof TargetEnv.ABAP;
     system: string;
     client?: string;
     username?: string;
@@ -339,6 +344,96 @@ export interface JsonInput {
     projectName?: string;
     namespace?: string;
     projectType?: AdaptationProjectType;
+}
+
+/**
+ * CLI JSON for the adaptation project generator (Cloud Foundry target).
+ *
+ * Selected by `targetEnv: 'CF'`. The `application` field carries the CF base-app id, matched within
+ * the apps discovered for the chosen business service / service instance. Exactly one of
+ * `businessService` or `serviceInstanceName` must be provided.
+ */
+export interface CfJsonInput {
+    /**
+     * Orchestrator correlation id. Keys the result file.
+     */
+    id?: string;
+    /**
+     * Target environment discriminator. Always `CF` for this shape.
+     */
+    targetEnv: typeof TargetEnv.CF;
+    /**
+     * CF base-app id to adapt. Matched against the apps discovered for the business service.
+     */
+    application: string;
+    /**
+     * Title for the generated adaptation project.
+     */
+    applicationTitle?: string;
+    /**
+     * Name of the MTA-declared business service to adapt. Mutually exclusive with `serviceInstanceName`.
+     */
+    businessService?: string;
+    /**
+     * Name of a live CF service instance to bind and adapt. Mutually exclusive with `businessService`.
+     */
+    serviceInstanceName?: string;
+    /**
+     * Approuter type to configure. Defaults to the managed HTML5 application runtime.
+     */
+    approuter?: AppRouterType;
+    /**
+     * Optional business solution name (reuse library prefix).
+     */
+    businessSolutionName?: string;
+    /**
+     * Whether to scaffold a new MTA (`new`) or reuse an existing one (`existing`). Defaults to `existing`.
+     */
+    mtaMode?: MtaMode;
+    /**
+     * The MTA project id/name to create (new-MTA mode only).
+     */
+    mtaId?: string;
+    /**
+     * For `existing` MTA mode, the absolute path to the MTA root (the folder containing `mta.yaml`).
+     * For `new` MTA mode, the parent folder the new MTA folder is created in.
+     */
+    targetFolder?: string;
+    /**
+     * Name of the generated adaptation project (sub-module) folder.
+     */
+    projectName?: string;
+    /**
+     * Namespace for the generated adaptation project.
+     */
+    namespace?: string;
+}
+
+/**
+ * Base-app values required to build the CF writer config, sourced either from the interactive
+ * `CFServicesPrompter` or from the headless JSON discovery.
+ */
+export interface CfArtifactInputs {
+    /**
+     * The base app manifest.
+     */
+    manifest?: Manifest;
+    /**
+     * HTML5 repo runtime service instance GUID.
+     */
+    html5RepoRuntimeGuid?: string;
+    /**
+     * Business service instance GUID.
+     */
+    serviceInstanceGuid?: string;
+    /**
+     * Backend URLs derived from the service keys.
+     */
+    backendUrls?: string[];
+    /**
+     * OAuth paths extracted from the base app's xs-app.json.
+     */
+    oauthPaths?: string[];
 }
 
 /**

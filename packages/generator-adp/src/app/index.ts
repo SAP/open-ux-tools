@@ -28,7 +28,16 @@ import {
     loadCfConfig,
     storeCredentials,
     getDefaultProjectName,
-    getOrCreateServiceInstanceKeys
+    getOrCreateServiceInstanceKeys,
+    getAdpServiceInstances,
+    getBusinessServiceInfo,
+    getCfApps,
+    downloadAppContent,
+    getBackendUrlsFromServiceKeys,
+    getOAuthPathsFromXsApp,
+    validateSmartTemplateApplication,
+    validateODataEndpoints,
+    AppRouterType
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -42,7 +51,15 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
+import type {
+    CfConfig,
+    CfServicesAnswers,
+    CfServiceInstanceChoice,
+    CFApp,
+    AttributesAnswers,
+    ConfigAnswers,
+    UI5Version
+} from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
 import { getPackageInfo, installDependencies } from '../utils/deps.js';
@@ -51,6 +68,7 @@ import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
 import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
+import { isCfJsonInput } from '../utils/type-guards.js';
 import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
     getDeployPage,
@@ -77,6 +95,8 @@ import {
     type AdpGeneratorOptions,
     type AttributePromptOptions,
     type JsonInput,
+    type CfJsonInput,
+    type CfArtifactInputs,
     type JsonInputFile,
     type OptionalPromptsConfig,
     type ProjectLocationAnswers
@@ -142,9 +162,10 @@ export default class extends Generator {
     private cfPrompter: CFServicesPrompter;
     /**
      * JSON object representing the complete adaptation project configuration,
-     * passed as a CLI argument.
+     * passed as a CLI argument. Either the ABAP ({@link JsonInput}) or Cloud Foundry
+     * ({@link CfJsonInput}) shape, selected by the `targetEnv` discriminator.
      */
-    private readonly jsonInput?: JsonInput;
+    private readonly jsonInput?: JsonInput | CfJsonInput;
     /**
      * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
      */
@@ -189,6 +210,27 @@ export default class extends Generator {
      * CF config.
      */
     private cfConfig: CfConfig;
+    /**
+     * Base app manifest resolved for the CF flow (headless or interactive). Used for telemetry and
+     * writer config when no `cfPrompter` is available (JSON input).
+     */
+    private cfManifest?: Manifest;
+    /**
+     * HTML5 repo runtime GUID discovered for the headless CF flow.
+     */
+    private cfHtml5RepoRuntimeGuid?: string;
+    /**
+     * Business service instance GUID discovered for the headless CF flow.
+     */
+    private cfServiceInstanceGuid?: string;
+    /**
+     * Backend URLs derived from the service keys for the headless CF flow.
+     */
+    private cfBackendUrls?: string[];
+    /**
+     * OAuth paths extracted from the base app's xs-app.json for the headless CF flow.
+     */
+    private cfOAuthPaths?: string[];
     /**
      * Indicates if the current project is an MTA project.
      */
@@ -390,13 +432,13 @@ export default class extends Generator {
         try {
             this.toolsId = uuidv4();
             if (this.jsonInput) {
-                await this._initFromJson();
+                await this._initFromJsonInput(this.jsonInput);
             }
 
             this._collectTelemetryData();
 
             if (this.isCfEnv) {
-                await this._generateAdpProjectArtifactsCF();
+                await this._generateAdpProjectArtifactsCF(this._getCfArtifactInputs());
                 return;
             }
 
@@ -561,7 +603,7 @@ export default class extends Generator {
                 : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {
-            telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
+            telemetryData.baseAppTechnicalName = (this.cfManifest ?? this.cfPrompter?.manifest)?.['sap.app']?.id ?? '';
             telemetryData.projectType = 'cf';
             telemetryData.cfServiceOffering = this.cfServicesAnswers?.serviceInstance?.service ?? '';
         } else {
@@ -701,27 +743,42 @@ export default class extends Generator {
     }
 
     /**
-     * Generates the ADP project artifacts for the CF environment.
+     * Collects the base-app values the CF writer config needs, sourced from the interactive
+     * `cfPrompter`. In the headless (JSON) flow the prompter is absent and `_initFromJsonCf`
+     * supplies these values directly; see `_generateAdpProjectArtifactsCF`.
+     *
+     * @returns {CfArtifactInputs} The base-app values required to build the CF writer config.
      */
-    private async _generateAdpProjectArtifactsCF(): Promise<void> {
+    private _getCfArtifactInputs(): CfArtifactInputs {
+        return {
+            manifest: this.cfManifest ?? this.cfPrompter?.manifest,
+            html5RepoRuntimeGuid: this.cfManifest ? this.cfHtml5RepoRuntimeGuid : this.cfPrompter?.html5RepoRuntimeGuid,
+            serviceInstanceGuid: this.cfManifest ? this.cfServiceInstanceGuid : this.cfPrompter?.serviceInstanceGuid,
+            backendUrls: this.cfManifest ? this.cfBackendUrls : this.cfPrompter?.backendUrls,
+            oauthPaths: this.cfManifest ? this.cfOAuthPaths : this.cfPrompter?.oauthPaths
+        };
+    }
+
+    /**
+     * Generates the ADP project artifacts for the CF environment.
+     *
+     * @param {CfArtifactInputs} inputs - Base-app values (manifest + derived GUIDs/URLs) sourced
+     * either from the interactive prompter or the headless JSON discovery.
+     */
+    private async _generateAdpProjectArtifactsCF(inputs: CfArtifactInputs): Promise<void> {
         const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
         this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(publicVersions) });
 
-        const manifest = this.cfPrompter.manifest;
+        const { manifest, html5RepoRuntimeGuid, serviceInstanceGuid, backendUrls, oauthPaths } = inputs;
         if (!manifest) {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
-        const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
-        const backendUrls = this.cfPrompter.backendUrls;
-        const oauthPaths = this.cfPrompter.oauthPaths;
-
         // In new-MTA / no-existing-service modes the businessService prompt is hidden; use the
         // selected live service instance name to resolve/create the service keys instead.
-        const businessServiceName =
-            this.cfServicesAnswers.businessService || this.cfServicesAnswers.serviceInstance?.name || '';
+        const { businessService, serviceInstance } = this.cfServicesAnswers;
+        const businessServiceName = businessService?.trim() ? businessService : (serviceInstance?.name ?? '');
         const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
                 names: [businessServiceName]
@@ -735,7 +792,7 @@ export default class extends Generator {
             cfConfig: this.cfConfig,
             layer: this.layer,
             manifest,
-            html5RepoRuntimeGuid,
+            html5RepoRuntimeGuid: html5RepoRuntimeGuid ?? '',
             serviceInstanceGuid,
             backendUrls,
             oauthPaths,
@@ -795,15 +852,30 @@ export default class extends Generator {
     }
 
     /**
+     * Dispatches JSON-driven (headless) initialization to the ABAP or Cloud Foundry path based on the
+     * JSON shape.
+     *
+     * @param {JsonInput | CfJsonInput} jsonInput - The parsed JSON input.
+     */
+    private async _initFromJsonInput(jsonInput: JsonInput | CfJsonInput): Promise<void> {
+        if (isCfJsonInput(jsonInput)) {
+            await this._initFromJsonCf(jsonInput);
+        } else {
+            await this._initFromJson();
+        }
+    }
+
+    /**
      * Initialize the project generator from a json.
      */
     private async _initFromJson(): Promise<void> {
-        if (!this.jsonInput) {
+        if (!this.jsonInput || isCfJsonInput(this.jsonInput)) {
             return;
         }
+        const jsonInput: JsonInput = this.jsonInput;
 
-        if (this.jsonInput.id) {
-            this.jsonInputFile = await readJsonInputFile(this.jsonInput.id);
+        if (jsonInput.id) {
+            this.jsonInputFile = await readJsonInputFile(jsonInput.id);
         }
 
         const {
@@ -817,7 +889,7 @@ export default class extends Generator {
             targetFolder = '/home/user/projects',
             projectName = getDefaultProjectName(targetFolder, `${baseApplicationName}.variant`),
             namespace = getDefaultNamespace(projectName, this.isCustomerBase)
-        } = this.jsonInput;
+        } = jsonInput;
 
         await validateJsonInput(this.systemLookup, this.isCustomerBase, {
             projectName,
@@ -873,6 +945,153 @@ export default class extends Generator {
             ui5Version: '',
             enableTypeScript: false
         };
+    }
+
+    /**
+     * Initialize a Cloud Foundry adaptation project generation from JSON (headless).
+     *
+     * Mirrors the interactive CF flow (`_promptForCfProjectPath` + `_promptForCfEnvironment` +
+     * `CFServicesPrompter`) without any prompts: validates the CF session, resolves the MTA project
+     * path, runs the CF discovery for the chosen business service / service instance, matches the
+     * requested base app, downloads its manifest and derives the writer inputs. Throws a clear error
+     * on any failure so the headless flow reports a structured `Failure:` result rather than hanging.
+     *
+     * @param {CfJsonInput} jsonInput - The parsed CF JSON input.
+     */
+    private async _initFromJsonCf(jsonInput: CfJsonInput): Promise<void> {
+        this.isCfEnv = true;
+        this.targetEnv = TargetEnv.CF;
+
+        if (!this.cfInstalled) {
+            throw new Error(t('error.cfNotInstalled'));
+        }
+        this.isCfLoggedIn = await isLoggedInCf(this.cfConfig, this.logger);
+        if (!this.isCfLoggedIn) {
+            throw new Error(t('error.cfNotLoggedIn'));
+        }
+
+        const {
+            application: baseApplicationName,
+            applicationTitle,
+            businessService,
+            serviceInstanceName,
+            approuter = AppRouterType.MANAGED,
+            businessSolutionName,
+            mtaMode = MtaMode.Existing,
+            mtaId,
+            targetFolder = process.cwd(),
+            projectName: requestedProjectName,
+            namespace: requestedNamespace
+        } = jsonInput;
+
+        const projectPath = this._resolveCfProjectPath(mtaMode, targetFolder, mtaId);
+        this.destinationRoot(projectPath);
+
+        const serviceName = businessService ?? serviceInstanceName ?? '';
+        const serviceInfo = await getBusinessServiceInfo(serviceName, this.cfConfig, this.logger);
+        if (!serviceInfo) {
+            throw new Error(t('error.businessServiceDoesNotExist'));
+        }
+
+        const serviceInstance = await this._resolveCfServiceInstance(businessService, serviceInstanceName);
+
+        const apps: CFApp[] = await getCfApps(serviceInfo.serviceKeys, this.cfConfig, this.logger);
+        const baseApp = apps.find((app) => app.appId === baseApplicationName);
+        if (!baseApp) {
+            throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
+        }
+
+        const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
+            this.cfConfig.space.GUID,
+            baseApp,
+            this.logger
+        );
+        await validateSmartTemplateApplication(manifest);
+        await validateODataEndpoints(entries, serviceInfo.serviceKeys, this.logger);
+
+        this.cfManifest = manifest;
+        this.cfHtml5RepoRuntimeGuid = serviceInstanceGuid;
+        this.cfServiceInstanceGuid = serviceInfo.serviceInstance?.guid;
+        this.cfBackendUrls = getBackendUrlsFromServiceKeys(serviceInfo.serviceKeys);
+        this.cfOAuthPaths = getOAuthPathsFromXsApp(entries);
+
+        this.cfServicesAnswers = {
+            approuter,
+            baseApp,
+            ...(businessService ? { businessService } : {}),
+            ...(serviceInstance ? { serviceInstance } : {}),
+            ...(businessSolutionName ? { businessSolutionName } : {})
+        };
+
+        const projectName = this.attributeAnswersProjectName(baseApplicationName, requestedProjectName);
+        this.attributeAnswers = {
+            projectName,
+            title: applicationTitle ?? '',
+            namespace: requestedNamespace ?? getDefaultNamespace(projectName, this.isCustomerBase),
+            targetFolder: projectPath,
+            ui5Version: '',
+            enableTypeScript: false
+        };
+
+        this.publicVersions = await fetchPublicVersions(this.logger);
+    }
+
+    /**
+     * Resolves the destination MTA project path for the headless CF flow.
+     *
+     * For `new` MTA mode the new MTA folder is created inside `targetFolder` under `mtaId`; for
+     * `existing` mode `targetFolder` must already be an MTA project (contain `mta.yaml`).
+     *
+     * @param {MtaMode} mtaMode - The MTA mode.
+     * @param {string} targetFolder - The target folder (MTA root for existing, parent for new).
+     * @param {string} [mtaId] - The MTA id/name for new-MTA mode.
+     * @returns {string} The resolved absolute project path.
+     */
+    private _resolveCfProjectPath(mtaMode: MtaMode, targetFolder: string, mtaId?: string): string {
+        if (mtaMode === MtaMode.New) {
+            if (!mtaId) {
+                throw new Error(t('error.mtaIdRequired'));
+            }
+            return join(targetFolder, mtaId);
+        }
+        if (!isMtaProject(targetFolder)) {
+            throw new Error(t('error.mtaProjectNotFound', { path: targetFolder }));
+        }
+        return fs.realpathSync(targetFolder, 'utf-8');
+    }
+
+    /**
+     * Resolves the live CF service instance to bind when adapting via a service-instance name. Returns
+     * `undefined` for the business-service branch (no existing-service binding is written).
+     *
+     * @param {string} [businessService] - The business service name, when provided.
+     * @param {string} [serviceInstanceName] - The live service instance name, when provided.
+     * @returns {Promise<CfServiceInstanceChoice | undefined>} The matched service instance, or `undefined`.
+     */
+    private async _resolveCfServiceInstance(
+        businessService?: string,
+        serviceInstanceName?: string
+    ): Promise<CfServiceInstanceChoice | undefined> {
+        if (businessService || !serviceInstanceName) {
+            return undefined;
+        }
+        const instances = await getAdpServiceInstances(this.cfConfig.space.GUID, this.logger);
+        const instance = instances.find((inst) => inst.name === serviceInstanceName);
+        if (!instance) {
+            throw new Error(t('error.serviceInstanceNotFound', { name: serviceInstanceName }));
+        }
+        return instance;
+    }
+
+    /**
+     * Derives the project (sub-module) name for the CF flow from JSON input or a default.
+     *
+     * @param {string} baseApplicationName - The base app id, used to derive a default name.
+     * @param {string} [requested] - The explicit project name from JSON input, when provided.
+     * @returns {string} The project name.
+     */
+    private attributeAnswersProjectName(baseApplicationName: string, requested?: string): string {
+        return requested ?? getDefaultProjectName(process.cwd(), `${baseApplicationName}.variant`);
     }
 
     /**

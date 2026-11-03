@@ -75,4 +75,28 @@ describe('parseJsonInput', () => {
             })
         );
     });
+
+    it('should route to the CF shape when targetEnv is CF', () => {
+        const cfInput = {
+            targetEnv: 'CF',
+            application: 'base.app.id',
+            businessService: 'my-business-service',
+            projectName: 'app.variant'
+        };
+        expect(parseJsonInput(JSON.stringify(cfInput), logger)).toEqual(cfInput);
+    });
+
+    it('should return undefined for a CF targetEnv that fails CF validation', () => {
+        const invalidCf = {
+            targetEnv: 'CF',
+            application: 'base.app.id'
+            // neither businessService nor serviceInstanceName
+        };
+        expect(parseJsonInput(JSON.stringify(invalidCf), logger)).toBeUndefined();
+    });
+
+    it('should treat absent targetEnv as ABAP (backwards compatible)', () => {
+        const abapInput = { system: 'system', application: 'application' };
+        expect(parseJsonInput(JSON.stringify(abapInput), logger)).toEqual(abapInput);
+    });
 });
