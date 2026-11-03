@@ -41,7 +41,7 @@ interface ParsedMacroMember {
     description: string;
     expectedAnnotations?: string;
     sinceVersion?: string;
-    /** Present when @deprecated appears in the JSDoc; contains the description if provided. */
+    /** Set when the member's JSDoc carries a deprecation tag; contains the description if provided. */
     deprecated?: string;
 }
 
@@ -88,7 +88,7 @@ function extractPrecedingJsDoc(src: string, pos: number): string {
  * @returns The tag value, or undefined if absent
  */
 function extractJsDocTag(jsDoc: string, tag: string): string | undefined {
-    const regex = new RegExp(`@${tag}\\s+([^\\n@]+)`, 'i');
+    const regex = new RegExp(String.raw`@${tag}\s+([^\n@]+)`, 'i');
     const match = regex.exec(jsDoc);
     return match ? match[1].trim() : undefined;
 }
@@ -108,8 +108,8 @@ function extractDeprecatedDescription(jsDoc: string): string | undefined {
 }
 
 /**
- * Strips all JSDoc tag lines (@public, @private, @since, @deprecated, @alias, etc.)
- * from a JSDoc string, leaving only the prose description.
+ * Strips all JSDoc tag lines (those starting with an `@`, such as public, private,
+ * since, deprecated and alias) from a JSDoc string, leaving only the prose description.
  *
  * @param jsDoc - Raw JSDoc inner text
  */
@@ -160,6 +160,55 @@ function parseIsRequired(decoratorArgs: string): boolean {
 }
 
 /**
+ * Finds the index of the `)` that matches the `(` at `openParenIdx`, accounting for nesting.
+ *
+ * @param src - Full source text
+ * @param openParenIdx - Index of the opening `(`
+ * @returns Index of the matching `)`, or -1 when the parentheses are unbalanced
+ */
+function findMatchingCloseParen(src: string, openParenIdx: number): number {
+    let parenDepth = 0;
+    for (let i = openParenIdx; i < src.length; i++) {
+        if (src[i] === '(') {
+            parenDepth++;
+        } else if (src[i] === ')') {
+            parenDepth--;
+            if (parenDepth === 0) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+/**
+ * Builds a ParsedMacroMember from a decorator kind, member name, decorator arguments and JSDoc.
+ *
+ * @param kind - The decorator kind
+ * @param name - The member name
+ * @param decoratorArgs - Raw text between the decorator parentheses
+ * @param jsDoc - The member's JSDoc inner text
+ */
+function buildMacroMember(
+    kind: ParsedMacroMember['kind'],
+    name: string,
+    decoratorArgs: string,
+    jsDoc: string
+): ParsedMacroMember {
+    const isProperty = kind === 'property';
+    return {
+        kind,
+        name,
+        type: kind === 'event' ? 'event' : parseDecoratorType(decoratorArgs),
+        required: isProperty ? parseIsRequired(decoratorArgs) : false,
+        description: removeJsDocTags(jsDoc),
+        expectedAnnotations: isProperty ? parseExpectedAnnotations(decoratorArgs) : undefined,
+        sinceVersion: extractJsDocTag(jsDoc, 'since'),
+        deprecated: extractDeprecatedDescription(jsDoc)
+    };
+}
+
+/**
  * Parses a TypeScript source file and returns all @public @property / @event / @aggregation members.
  *
  * @param src - Full source file text
@@ -178,23 +227,11 @@ function parseMacroSourceFile(src: string, alias: string): ParsedMacro {
     let match: RegExpExecArray | null;
 
     while ((match = decoratorRegex.exec(src)) !== null) {
-        const kind = match[1] as 'property' | 'event' | 'aggregation';
+        const kind = match[1] as ParsedMacroMember['kind'];
 
         // Walk forward from the opening `(` to find its matching `)`
         const openParenIdx = match.index + match[0].length - 1;
-        let parenDepth = 0;
-        let closeParenIdx = -1;
-        for (let i = openParenIdx; i < src.length; i++) {
-            if (src[i] === '(') {
-                parenDepth++;
-            } else if (src[i] === ')') {
-                parenDepth--;
-                if (parenDepth === 0) {
-                    closeParenIdx = i;
-                    break;
-                }
-            }
-        }
+        const closeParenIdx = findMatchingCloseParen(src, openParenIdx);
         if (closeParenIdx === -1) {
             continue;
         }
@@ -207,23 +244,13 @@ function parseMacroSourceFile(src: string, alias: string): ParsedMacro {
         if (!nameMatch) {
             continue;
         }
-        const memberName = nameMatch[1];
 
         const jsDoc = extractPrecedingJsDoc(src, match.index);
         if (!/@public\b/.test(jsDoc)) {
             continue;
         }
 
-        members.push({
-            kind,
-            name: memberName,
-            type: kind === 'event' ? 'event' : parseDecoratorType(decoratorArgs),
-            required: kind === 'property' ? parseIsRequired(decoratorArgs) : false,
-            description: removeJsDocTags(jsDoc),
-            expectedAnnotations: kind === 'property' ? parseExpectedAnnotations(decoratorArgs) : undefined,
-            sinceVersion: extractJsDocTag(jsDoc, 'since'),
-            deprecated: extractDeprecatedDescription(jsDoc)
-        });
+        members.push(buildMacroMember(kind, nameMatch[1], decoratorArgs, jsDoc));
     }
 
     return { alias, classDescription, members };
@@ -253,7 +280,8 @@ function renderMacroChunk(parsedMacro: ParsedMacro): string {
     let out = SECTION_SEPARATOR;
     out += `**TITLE**: ${alias} — Building Block API\n\n`;
     out += `**TAGS**: ${tags}\n\n`;
-    out += `**INTRODUCTION**: ${classDescription || `Building block API for ${alias}.`}\n\n`;
+    const introduction = classDescription || `Building block API for ${alias}.`;
+    out += `**INTRODUCTION**: ${introduction}\n\n`;
 
     for (const member of members) {
         const requiredLabel = member.required ? 'required' : 'optional';
@@ -282,6 +310,25 @@ class FeMacrosDocBuilder {
     }
 
     /**
+     * Reads a macro source file, returning its contents, or undefined when the file does not exist.
+     * Non-ENOENT errors are rethrown.
+     *
+     * @param filePath - Absolute path to the source file
+     */
+    private async readSourceFile(filePath: string): Promise<string | undefined> {
+        try {
+            return await fs.readFile(filePath, 'utf-8');
+        } catch (err) {
+            const code = (err as NodeJS.ErrnoException).code;
+            if (code === 'ENOENT') {
+                this.logger.warn(`Source file not found, skipping: ${filePath}`);
+                return undefined;
+            }
+            throw err;
+        }
+    }
+
+    /**
      * Parses sap.fe.macros decorator metadata and writes a markdown documentation file.
      * Skips silently if the sap.fe git repository has not been cloned locally.
      */
@@ -302,21 +349,20 @@ class FeMacrosDocBuilder {
             throw err;
         }
 
+        // Read all source files up front so the processing loop below stays await-free.
+        const sources = await Promise.all(
+            SOURCE_FILES.map(async (sourceFile) => ({
+                sourceFile,
+                src: await this.readSourceFile(path.join(macrosSrcPath, sourceFile.relPath))
+            }))
+        );
+
         let markdown = '\n';
         let chunkCount = 0;
 
-        for (const sourceFile of SOURCE_FILES) {
-            const filePath = path.join(macrosSrcPath, sourceFile.relPath);
-            let src: string;
-            try {
-                src = await fs.readFile(filePath, 'utf-8');
-            } catch (err) {
-                const code = (err as NodeJS.ErrnoException).code;
-                if (code === 'ENOENT') {
-                    this.logger.warn(`Source file not found, skipping: ${filePath}`);
-                    continue;
-                }
-                throw err;
+        for (const { sourceFile, src } of sources) {
+            if (src === undefined) {
+                continue;
             }
 
             const parsedMacro = parseMacroSourceFile(src, sourceFile.alias);

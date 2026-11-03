@@ -190,12 +190,16 @@ describe('FeMacrosDocBuilder', () => {
             expect(written).toContain('### contextPath (string) [optional]');
         });
 
-        it('should render expectedAnnotations when present', async () => {
+        it.each([
+            ['expectedAnnotations when present', 'expectedAnnotations: com.sap.vocabularies.UI.v1.LineItem'],
+            ['the class description in the INTRODUCTION', 'A simple macro.'],
+            ['the section separator between chunks', '--------------------------------']
+        ])('should render %s', async (_label, expected) => {
             const builder = new FeMacrosDocBuilder();
             await builder.build();
 
             const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
-            expect(written).toContain('expectedAnnotations: com.sap.vocabularies.UI.v1.LineItem');
+            expect(written).toContain(expected);
         });
 
         it('should exclude @private members', async () => {
@@ -206,14 +210,6 @@ describe('FeMacrosDocBuilder', () => {
             expect(written).not.toContain('hidden');
         });
 
-        it('should include the class description in the INTRODUCTION', async () => {
-            const builder = new FeMacrosDocBuilder();
-            await builder.build();
-
-            const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
-            expect(written).toContain('A simple macro.');
-        });
-
         it('should include the alias in TITLE and TAGS', async () => {
             const builder = new FeMacrosDocBuilder();
             await builder.build();
@@ -222,14 +218,6 @@ describe('FeMacrosDocBuilder', () => {
             expect(written).toContain('**TITLE**: sap.fe.macros.FilterBar — Building Block API');
             expect(written).toContain('building block');
             expect(written).toContain('macro');
-        });
-
-        it('should separate chunks with the section separator', async () => {
-            const builder = new FeMacrosDocBuilder();
-            await builder.build();
-
-            const written = (mockFs.writeFile as jest.Mock).mock.calls[0][1] as string;
-            expect(written).toContain('--------------------------------');
         });
     });
 

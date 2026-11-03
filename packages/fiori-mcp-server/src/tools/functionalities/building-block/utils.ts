@@ -100,7 +100,7 @@ export const AGGREGATION_CHILD_TYPES = new Set<BuildingBlockType>(
  * @param appPath - Absolute path to the Fiori app root
  * @returns Array of absolute paths to .view.xml and .fragment.xml files
  */
-export async function getViewAndFragmentPaths(appPath: string): Promise<string[]> {
+export function getViewAndFragmentPaths(appPath: string): Promise<string[]> {
     const store = create();
     const fs = createEditor(store);
     return getFragmentAndViewFiles(appPath, fs);

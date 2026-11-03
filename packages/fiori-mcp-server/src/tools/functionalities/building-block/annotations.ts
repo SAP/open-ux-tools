@@ -35,7 +35,7 @@ type RawSchema = { schema: { entitySets: RawEntitySet[]; annotations: Record<str
  */
 function entitySetFromContextPath(contextPath: string): string {
     const segments = contextPath.split('/').filter(Boolean);
-    return segments[segments.length - 1] ?? contextPath;
+    return segments.at(-1) ?? contextPath;
 }
 
 /**
