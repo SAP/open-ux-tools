@@ -57,7 +57,9 @@ export function requireObject(payload: Record<string, unknown> | undefined, key:
 }
 
 /**
- * Reads `key` from `payload` and asserts it is an array of non-empty strings.
+ * Reads `key` from `payload` and asserts it is a non-empty array of non-empty strings.
+ * An empty array is rejected: a step that calls this needs at least one value, so an
+ * empty array is a caller mistake that should fail fast rather than no-op.
  *
  * @param payload The step payload, possibly undefined.
  * @param key Property name to read.
@@ -65,8 +67,12 @@ export function requireObject(payload: Record<string, unknown> | undefined, key:
  */
 export function requireStringArray(payload: Record<string, unknown> | undefined, key: string): string[] {
     const value = payload?.[key];
-    if (!Array.isArray(value) || value.some((item) => typeof item !== 'string' || item.length === 0)) {
-        throw new Error(`payload.${key} is required and must be an array of non-empty strings`);
+    if (
+        !Array.isArray(value) ||
+        value.length === 0 ||
+        value.some((item) => typeof item !== 'string' || item.length === 0)
+    ) {
+        throw new Error(`payload.${key} is required and must be a non-empty array of non-empty strings`);
     }
     return value as string[];
 }

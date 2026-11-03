@@ -325,5 +325,17 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 runRtaWorkflowStep({ step: 'get_odata_metadata', site: SITE, payload: { uris: 'x' } })
             ).rejects.toThrow(/uris/i);
         });
+
+        test('rejects when payload.uris is an empty array (fail fast, no silent no-op)', async () => {
+            await expect(
+                runRtaWorkflowStep({
+                    step: 'get_odata_metadata',
+                    site: SITE,
+                    appPath: '/tmp/app',
+                    payload: { uris: [] }
+                })
+            ).rejects.toThrow(/uris/i);
+            expect(mockGetODataMetadata).not.toHaveBeenCalled();
+        });
     });
 });

@@ -62,19 +62,25 @@ describe('assertions', () => {
 
         test('throws when value is not an array', () => {
             expect(() => requireStringArray({ key: 'string' }, 'key')).toThrow(
-                'payload.key is required and must be an array of non-empty strings'
+                'payload.key is required and must be a non-empty array of non-empty strings'
+            );
+        });
+
+        test('throws when the array is empty', () => {
+            expect(() => requireStringArray({ key: [] }, 'key')).toThrow(
+                'payload.key is required and must be a non-empty array of non-empty strings'
             );
         });
 
         test('throws when the array contains an empty string', () => {
             expect(() => requireStringArray({ key: ['a', ''] }, 'key')).toThrow(
-                'payload.key is required and must be an array of non-empty strings'
+                'payload.key is required and must be a non-empty array of non-empty strings'
             );
         });
 
         test('throws when the array contains a non-string item', () => {
             expect(() => requireStringArray({ key: ['a', 42] } as Record<string, unknown>, 'key')).toThrow(
-                'payload.key is required and must be an array of non-empty strings'
+                'payload.key is required and must be a non-empty array of non-empty strings'
             );
         });
     });
