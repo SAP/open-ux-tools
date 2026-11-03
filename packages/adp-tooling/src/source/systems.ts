@@ -19,9 +19,16 @@ export enum SupportedProject {
  * @param provider - The ABAP service provider.
  * @returns {Promise<SupportedProject>} The supported project types.
  */
-export async function getSupportedProject(provider: AbapServiceProvider): Promise<SupportedProject> {
+export async function getSupportedProject(
+    provider: AbapServiceProvider,
+    logger?: ToolsLogger
+): Promise<SupportedProject> {
+    logger?.info(`Check adaptation project types`);
     try {
         const layerdRepositoryService = provider.getLayeredRepository();
+        if (logger) {
+            layerdRepositoryService.log = logger;
+        }
         const { adaptationProjectTypes } = await layerdRepositoryService.getSystemInfo();
 
         const hasCloudReady = adaptationProjectTypes?.includes(AdaptationProjectType.CLOUD_READY);
@@ -37,6 +44,7 @@ export async function getSupportedProject(provider: AbapServiceProvider): Promis
     } catch (error) {
         // Handle the case where the API is not available and continue to standard onPremise flow.
         if (isAxiosError(error) && [404, 405].includes(error.response?.status ?? 0)) {
+            logger?.info(`Falling back to onPremise due to unavailable API.`);
             return SupportedProject.ON_PREM;
         }
         throw error;
@@ -113,6 +121,7 @@ export class SystemLookup {
      */
     private async loadSystems(): Promise<Endpoint[]> {
         try {
+            this.logger?.debug('Try to list systems...');
             let endpoints: Endpoint[] = [];
             if (isAppStudio()) {
                 const destinations = await listDestinations({
@@ -129,6 +138,9 @@ export class SystemLookup {
             return endpoints;
         } catch (e) {
             this.logger?.error(`Failed to fetch systems list. Reason: ${e.message}`);
+            if (isAxiosError(e) && e.config) {
+                this.logger?.error(`Failed for request URL: ${e.config.url}`);
+            }
             throw new Error(e.message);
         }
     }
