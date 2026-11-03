@@ -148,14 +148,11 @@ async function loadSession(): Promise<typeof SessionModule> {
 }
 
 /**
- * Whether `dir`'s filesystem actually enforces POSIX file permissions. Some
- * filesystems (certain Docker/overlay/network mounts, non-POSIX temp dirs)
- * silently ignore `chmod`, leaving the creation-default mode (`0o666`). On those
- * the production `chmod(0o600)` is a no-op through no fault of the code, so the
- * on-disk-mode assertion would spuriously fail there. Probe once per call.
+ * Whether `dir`'s filesystem enforces POSIX file permissions. Some mounts ignore
+ * mode bits, where the on-disk-mode assertion would spuriously fail. Probe once per call.
  *
  * @param dir Directory to probe (the test's own temp dir).
- * @returns `true` when a 0o600 chmod is reflected back by statSync.
+ * @returns `true` when a 0o600 mode is reflected back by statSync.
  */
 function fsHonorsChmod(dir: string): boolean {
     const probe = join(dir, '.chmod-probe');

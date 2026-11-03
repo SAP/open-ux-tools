@@ -1,4 +1,4 @@
-import { chmod, mkdir, open, rename, rm } from 'node:fs/promises';
+import { mkdir, open, rename, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { createHash, randomBytes } from 'node:crypto';
 import { join } from 'node:path';
@@ -132,13 +132,9 @@ export function buildContextOptions(site: string): { viewport: null; storageStat
 }
 
 /**
- * Writes `data` to `file` with owner-only (`0o600`) permissions and no exposure window.
- *
- * The content is written to a uniquely-named temp file opened with `O_CREAT | O_EXCL`
- * (so it never inherits a looser mode from a pre-existing file), tightened to `0o600`,
- * then atomically renamed over `file`. A concurrent reader therefore sees either the
- * previous complete file or the new one — never a partially-written or world-readable
- * intermediate. The temp file is removed if any step fails.
+ * Writes `data` to `file` with owner-only (`0o600`) permissions. Writes to a temp
+ * file opened `O_CREAT | O_EXCL` at `0o600`, then atomically renames it over `file`,
+ * so a reader never sees a partial or world-readable intermediate. The temp file is removed on failure.
  *
  * @param file Destination path.
  * @param data File contents.
@@ -152,7 +148,6 @@ async function writeFileSecure(file: string, data: string): Promise<void> {
         } finally {
             await handle.close();
         }
-        await chmod(tmp, 0o600);
         await rename(tmp, file);
     } catch (error) {
         await rm(tmp, { force: true });
