@@ -1,4 +1,12 @@
-import { resolveWithinApp, resolveBasePath, versionRequirementsNote, toDisplayName, BB_TYPE_MIN_UI5_VERSION } from '../../../../../src/tools/functionalities/building-block/utils.js';
+import {
+    resolveWithinApp,
+    resolveBasePath,
+    toAppRelativePath,
+    versionRequirementsNote,
+    toDisplayName,
+    BB_TYPE_MIN_UI5_VERSION
+} from '../../../../../src/tools/functionalities/building-block/utils.js';
+import { join } from 'node:path';
 import type { Appdetails } from '../../../../../src/types/index.js';
 
 describe('resolveWithinApp', () => {
@@ -33,12 +41,35 @@ describe('resolveBasePath', () => {
             appId: 'myapp',
             applicationAccess: { project: { root: '/project' } }
         } as unknown as Appdetails;
-        expect(resolveBasePath(project)).toBe('/project/myapp');
+        expect(resolveBasePath(project)).toBe(join('/project', 'myapp'));
     });
 
     test('falls back to the project root when applicationAccess is absent', () => {
         const project = { root: '/project', appId: 'myapp' } as Appdetails;
         expect(resolveBasePath(project)).toBe('/project');
+    });
+});
+
+describe('toAppRelativePath', () => {
+    test('strips the app prefix and returns a POSIX relative path', () => {
+        expect(toAppRelativePath('/project/app', '/project/app/webapp/ext/Main.view.xml')).toBe(
+            'webapp/ext/Main.view.xml'
+        );
+    });
+
+    test('normalizes Windows separators on both sides before stripping', () => {
+        // find() yields native (backslash) paths on Windows and the base may use a different separator;
+        // the result must still come back as a clean POSIX relative path.
+        expect(toAppRelativePath('D:\\project\\app', 'D:\\project\\app\\webapp\\Main.view.xml')).toBe(
+            'webapp/Main.view.xml'
+        );
+        expect(toAppRelativePath('D:\\project/app', 'D:\\project\\app\\webapp\\Main.view.xml')).toBe(
+            'webapp/Main.view.xml'
+        );
+    });
+
+    test('returns the original path unchanged when the file is outside the app', () => {
+        expect(toAppRelativePath('/project/app', '/other/place/Main.view.xml')).toBe('/other/place/Main.view.xml');
     });
 });
 

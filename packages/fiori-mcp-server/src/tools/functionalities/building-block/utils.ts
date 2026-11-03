@@ -8,7 +8,7 @@ import {
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
 import { create } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { isAbsolute, relative, resolve } from 'node:path';
+import { isAbsolute, join, relative, resolve } from 'node:path';
 import type { Appdetails } from '../../../types/index.js';
 
 /** Resolved application access — narrowed from Appdetails which allows undefined. */
@@ -30,7 +30,26 @@ export type ApplicationAccess = NonNullable<Appdetails['applicationAccess']>;
  */
 export function resolveBasePath(project: Appdetails): string {
     const appAccess = project.applicationAccess as { project: { root: string } } | undefined;
-    return appAccess ? `${appAccess.project.root}/${project.appId}` : project.root;
+    return appAccess ? join(appAccess.project.root, project.appId) : project.root;
+}
+
+/**
+ * Returns `file` as a POSIX-style path relative to `appPath` when it lives inside the app,
+ * otherwise returns `file` unchanged.
+ *
+ * File enumeration yields OS-native separators (backslashes on Windows) while `appPath` may use a
+ * different separator, so a direct `startsWith(appPath + '/')` check fails on Windows and leaves the
+ * path absolute. Both sides are normalized to forward slashes before the prefix is stripped, so the
+ * comparison — and the returned path shown to the LLM — are correct on every platform.
+ *
+ * @param appPath - Absolute application base path
+ * @param file - Absolute file path discovered under the app
+ * @returns POSIX-style path relative to `appPath` when inside the app, else the original `file`
+ */
+export function toAppRelativePath(appPath: string, file: string): string {
+    const appPosix = appPath.replaceAll('\\', '/');
+    const filePosix = file.replaceAll('\\', '/');
+    return filePosix.startsWith(appPosix + '/') ? filePosix.slice(appPosix.length + 1) : file;
 }
 
 /**

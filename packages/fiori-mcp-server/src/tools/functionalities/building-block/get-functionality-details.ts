@@ -13,7 +13,8 @@ import {
     annotationShellTypeNames,
     versionRequirementsNote,
     aggregationParentMacroMappingNote,
-    resolveBasePath
+    resolveBasePath,
+    toAppRelativePath
 } from './utils.js';
 
 /**
@@ -147,7 +148,7 @@ function buildFileXPathMap(
             const { inputChoices } = getXPathStringsForXmlFile(file, fs);
             const xpaths = Object.values(inputChoices);
             if (xpaths.length > 0) {
-                const relativePath = file.startsWith(appPath + '/') ? file.slice(appPath.length + 1) : file;
+                const relativePath = toAppRelativePath(appPath, file);
                 result.push({ file: relativePath, xpaths });
             }
         } catch (e) {
@@ -185,9 +186,7 @@ function formatInsertionPointsNote(fileXPathMap: FileXPathEntry[], viewFiles: st
         );
     }
     if (viewFiles.length > 0) {
-        const relativeFiles = viewFiles
-            .map((f) => (f.startsWith(appPath + '/') ? f.slice(appPath.length + 1) : f))
-            .join(', ');
+        const relativeFiles = viewFiles.map((f) => toAppRelativePath(appPath, f)).join(', ');
         return `View/fragment files found but no XPaths could be parsed: ${relativeFiles}. Provide viewOrFragmentPath and aggregationPath manually.`;
     }
     return 'No view/fragment files found in the app — provide viewOrFragmentPath and aggregationPath manually.';
