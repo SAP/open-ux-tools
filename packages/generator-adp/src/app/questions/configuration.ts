@@ -723,7 +723,7 @@ export class ConfigPrompter {
 
         if (this.selectedProjectType === AdaptationProjectType.CLOUD_READY) {
             try {
-                this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider);
+                this.baseApplicationInbounds = await getBaseAppInbounds(app.id, this.provider, this.logger);
             } catch (error) {
                 return t('error.fetchBaseInboundsFailed', { error: error.message });
             }
@@ -770,7 +770,7 @@ export class ConfigPrompter {
             }
 
             this.telemetryCollector.startTiming('applicationListLoadingTime');
-            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.supportedProject);
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.supportedProject, this.logger);
             this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
             this.telemetryCollector.endTiming('applicationListLoadingTime');
             this.isLoginSuccessful = true;
@@ -831,12 +831,15 @@ export class ConfigPrompter {
             }
 
             this.telemetryCollector.startTiming('applicationListLoadingTime');
-            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.supportedProject);
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase, this.supportedProject, this.logger);
             this.telemetryCollector.setBatch({ numberOfApplications: this.targetApps.length });
             this.telemetryCollector.endTiming('applicationListLoadingTime');
 
             return true;
         } catch (e) {
+            if (isAxiosError(e) && e.config) {
+                this.logger?.error(`Failed for request URL: ${e.config.url}`);
+            }
             return e.message;
         }
     }
@@ -848,6 +851,7 @@ export class ConfigPrompter {
      * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
     private async validateAppData(app: SourceApplication): Promise<boolean | string> {
+        this.logger.debug(`Validating application data for app with id: ${app.id}`);
         try {
             // Reset the flag when we are selecting a new application from the list.
             this.isApplicationSupported = false;
@@ -861,7 +865,7 @@ export class ConfigPrompter {
             }
             this.isApplicationSupported = true;
         } catch (e) {
-            this.logger.debug(`Application failed validation. Reason: ${e.message}`);
+            this.logger.debug(`Application validation failed. Reason: ${e.message}`);
             return e.message;
         }
 
@@ -887,14 +891,16 @@ export class ConfigPrompter {
      * @returns A promise that resolves when system data is fetched.
      */
     private async loadSystemData(): Promise<void> {
+        this.logger.info(`Try to load system data.`);
         try {
             // Do not include the ato settings retreival in the parallel calls because we need to first login
             // before executing any other call. A provider works like this - with the first api call it authenticates the user.
+            this.logger.info(`Try to determine system type.`);
             this.selectedSystemType = (await this.provider.isAbapCloud()) ? SystemType.CLOUD_READY : SystemType.ON_PREM;
-
+            this.logger.info(`selectedSystemType: ${this.selectedSystemType}`);
             const [supportedProject, flexUICapability] = await Promise.all([
-                getSupportedProject(this.abapProvider),
-                getFlexUICapability(this.abapProvider, this.isCustomerBase)
+                getSupportedProject(this.abapProvider, this.logger),
+                getFlexUICapability(this.abapProvider, this.isCustomerBase, this.logger)
             ]);
 
             this.supportedProject = supportedProject;
@@ -923,8 +929,10 @@ export class ConfigPrompter {
      */
     private async loadUI5Versions(): Promise<void> {
         let version: string | undefined;
+        this.logger.info(`Try to loadUI5Versions.`);
         try {
             version = await getSystemUI5Version(this.abapProvider, this.logger);
+            this.logger.info(`version: ${version}`);
         } catch (error) {
             this.logger.debug(`Could not fetch the system UI5 version: ${error.message}.`);
         }
@@ -940,6 +948,7 @@ export class ConfigPrompter {
      * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
      */
     private async handleSystemDataValidation(): Promise<boolean | string> {
+        this.logger.info(`Starting system validation.`);
         try {
             await this.loadSystemData();
             await this.loadUI5Versions();
@@ -950,7 +959,10 @@ export class ConfigPrompter {
 
             return true;
         } catch (e) {
-            this.logger.debug(`Validating system failed. Reason: ${e.message}`);
+            if (isAxiosError(e) && e.config) {
+                this.logger.error(`Failed for request URL: ${e.config.url}`);
+            }
+            this.logger.error(`Validating system failed. Reason: ${e.message}`);
             return e.message;
         }
     }

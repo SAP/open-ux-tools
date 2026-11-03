@@ -23,8 +23,10 @@ const FILTER = {
  */
 export async function getFlexUICapability(
     provider: AbapServiceProvider,
-    isCustomerBase: boolean
+    isCustomerBase: boolean,
+    logger: ToolsLogger
 ): Promise<FlexUICapability> {
+    logger.debug(`Fetching Flex UI capability adt discovery service.`);
     if (!isCustomerBase) {
         return {
             isDtaFolderDeploymentSupported: true,
@@ -40,6 +42,7 @@ export async function getFlexUICapability(
 
     const isDtaFolderDeploymentSupported = response.data.includes(FILTER.term);
     const isUIFlexSupported = response.data.includes(FILTER.scheme);
+    logger.debug(`isDtaFolderDeploymentSupported: ${isDtaFolderDeploymentSupported}, isUIFlexSupported: ${isUIFlexSupported}`);
 
     return { isDtaFolderDeploymentSupported, isUIFlexSupported };
 }
@@ -61,6 +64,9 @@ export async function getSystemUI5Version(
         const ui5VersionService = provider.getUI5VersionService();
         return await ui5VersionService.getUI5Version();
     } catch (error) {
+        if (error.isAxiosError(error) && error.config) {
+            logger.debug(`Failed for request URL: ${error.config.url}`);
+        }
         logger.debug(
             `Could not fetch the system UI5 version: ${error.message}. Try to fetch the UI5 version with the adt api.`
         );
@@ -78,8 +84,10 @@ export async function getSystemUI5Version(
  */
 export async function getBaseAppInbounds(
     appId: string,
-    provider: AbapServiceProvider
+    provider: AbapServiceProvider,
+    logger: ToolsLogger
 ): Promise<ManifestNamespace.Inbound | undefined> {
+    logger.debug(`Fetching inbounds for appId: ${appId}`);
     const lrepService = provider.getLayeredRepository();
     const inbounds = (await lrepService.getSystemInfo(undefined, undefined, appId)).inbounds as Inbound[];
 

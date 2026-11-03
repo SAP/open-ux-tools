@@ -179,6 +179,7 @@ export class SourceManifest {
      * @returns {Promise<Manifest>} A promise that resolves once the manifest has been fetched and parsed.
      */
     private async loadManifest(): Promise<Manifest> {
+        this.logger?.debug(`Loading manifest for app '${this.appId}'.`);
         const url = this.manifestUrl ?? (await this.loadManifestUrl());
 
         try {

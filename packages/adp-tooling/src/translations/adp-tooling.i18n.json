@@ -106,6 +106,7 @@
         "failedToFindManifestJsonInHtml5Repo": "Failed to find the `manifest.json` file in the application content from HTML5 repository. Ensure the `manifest.json` file exists and try again.",
         "noUaaCredentialsFoundForHtml5Repo": "No UAA credentials found for the HTML5 repository. Ensure the UAA credentials exist and try again.",
         "failedToDownloadAppContent": "Failed to download the application content from the HTML5 repository for the space: {{spaceGuid}} and app: {{appName}} ({{appHostId}}). Error: {{error}}",
+        "noAppHostIds": "No `appHostIds` were provided. At least one `appHostId` is required.",
         "tooManyAppHostIds": "Too many `appHostIds` provided. The maximum is 100 but {{appHostIdsLength}} were found. Reduce the `appHostIds` and try again.",
         "failedToGetAuthKey": "Failed to retrieve the OAuth token from the HTML5 repository. Error: {{error}}",
         "failedToDownloadZipFromHtml5Repo": "Failed to download the zip file from the HTML5 repository. Error: {{error}}",
