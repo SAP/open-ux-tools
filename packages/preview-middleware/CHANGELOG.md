@@ -1,5 +1,22 @@
 # @sap-ux/preview-middleware
 
+## 1.2.35
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Some Actions don't work in the Outline of the Adaptation Project [[8a15549](https://github.com/SAP/open-ux-tools/commit/8a15549a21b324a74b27e69ebb57da2f81ead0aa)]
+
+#### Release Date
+
+2026-11-03
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/system-access 1.0.19 → 1.0.20
+
 ## 1.2.34
 
 ### Patch Changes
