@@ -1,5 +1,21 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
 ## 1.16.9
 
 ### Patch Changes
