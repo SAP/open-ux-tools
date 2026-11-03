@@ -64,6 +64,7 @@ type ToolArgs =
     | OpenAdaptationEditorInput
     | AdpControllerExtensionInput
     | RunRtaWorkflowStepInput
+    | ReadODataMetadataInput
     | DownloadAppResourcesInput
     | LookupUi5DocumentationInput
     | Record<string, unknown>;
