@@ -391,7 +391,13 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.CheckboxGroup]: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
                     <path
                         d="M15 12.5C15.2761 12.5 15.5 12.7239 15.5 13C15.5 13.2761 15.2761 13.5 15 13.5L6 13.5C5.72386 13.5 5.5 13.2761 5.5 13C5.5 12.7239 5.72386 12.5 6 12.5L15 12.5Z"
                         fill={COLORS.default}
