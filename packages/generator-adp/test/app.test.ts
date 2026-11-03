@@ -1441,13 +1441,16 @@ describe('Adaptation Project Generator Integration Test', () => {
             });
 
             it('should fail fast when a new MTA is requested without an mtaId', async () => {
+                const cleanParent = join(cfTestOutputDir, 'new-no-mtaid-parent');
+                fs.mkdirSync(cleanParent, { recursive: true });
+
                 const jsonInput = {
                     id: 'orchestrator-id',
                     targetEnv: 'CF',
                     application: baseApp.appId,
                     businessService: 'test-service',
                     mtaMode: 'new',
-                    targetFolder: cfTestOutputDir
+                    targetFolder: cleanParent
                 };
 
                 const runContext = yeomanTest
@@ -1458,6 +1461,31 @@ describe('Adaptation Project Generator Integration Test', () => {
                 await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
 
                 expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', `Failure: ${t('error.mtaIdRequired')}`);
+                expect(mockGenerateCf).not.toHaveBeenCalled();
+            });
+
+            it('should reject an mtaId that attempts path traversal', async () => {
+                const cleanParent = join(cfTestOutputDir, 'traversal-parent');
+                fs.mkdirSync(cleanParent, { recursive: true });
+
+                const jsonInput = {
+                    id: 'orchestrator-id',
+                    targetEnv: 'CF',
+                    application: baseApp.appId,
+                    businessService: 'test-service',
+                    mtaMode: 'new',
+                    mtaId: '../outside',
+                    targetFolder: cleanParent
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+
+                expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', `Failure: ${t('error.mtaIdInvalid')}`);
                 expect(mockGenerateCf).not.toHaveBeenCalled();
             });
 
@@ -1483,7 +1511,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
                 expect(mockWriteResult).toHaveBeenCalledWith(
                     'orchestrator-id',
-                    `Failure: ${t('error.mtaProjectNotFound', { path: emptyDir })}`
+                    `Failure: ${t('error.projectDoesNotExistMta')}`
                 );
                 expect(mockGenerateCf).not.toHaveBeenCalled();
             });

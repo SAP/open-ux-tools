@@ -87,7 +87,12 @@ import { getPrompts } from './questions/attributes.js';
 import { CFServicesPrompter } from './questions/cf-services.js';
 import { ConfigPrompter } from './questions/configuration.js';
 import { getDefaultNamespace } from './questions/helper/default-values.js';
-import { validateJsonInput } from './questions/helper/validators.js';
+import {
+    validateJsonInput,
+    validateMtaId,
+    validateProjectPath,
+    assertValidationPassed
+} from './questions/helper/validators.js';
 import {
     TargetEnv,
     MtaMode,
@@ -949,13 +954,10 @@ export default class extends Generator {
     }
 
     /**
-     * Initialize a Cloud Foundry adaptation project generation from JSON (headless).
+     * Initializes a Cloud Foundry adaptation project from JSON input (headless, no prompts).
      *
-     * Mirrors the interactive CF flow (`_promptForCfProjectPath` + `_promptForCfEnvironment` +
-     * `CFServicesPrompter`) without any prompts: validates the CF session, resolves the MTA project
-     * path, runs the CF discovery for the chosen business service / service instance, matches the
-     * requested base app, downloads its manifest and derives the writer inputs. Throws a clear error
-     * on any failure so the headless flow reports a structured `Failure:` result rather than hanging.
+     * Validates the CF session, resolves the MTA project path, discovers the business service /
+     * service instance and base app, downloads the base app manifest and derives the writer inputs.
      *
      * @param {CfJsonInput} jsonInput - The parsed CF JSON input.
      */
@@ -1038,10 +1040,10 @@ export default class extends Generator {
     }
 
     /**
-     * Resolves the destination MTA project path for the headless CF flow.
+     * Validates the MTA inputs and resolves the destination project path for the headless CF flow.
      *
-     * For `new` MTA mode the new MTA folder is created inside `targetFolder` under `mtaId`; for
-     * `existing` mode `targetFolder` must already be an MTA project (contain `mta.yaml`).
+     * For `new` MTA mode the folder is created inside `targetFolder` under `mtaId`; for `existing`
+     * mode `targetFolder` is the MTA root.
      *
      * @param {MtaMode} mtaMode - The MTA mode.
      * @param {string} targetFolder - The target folder (MTA root for existing, parent for new).
@@ -1049,15 +1051,16 @@ export default class extends Generator {
      * @returns {string} The resolved absolute project path.
      */
     private _resolveCfProjectPath(mtaMode: MtaMode, targetFolder: string, mtaId?: string): string {
+        assertValidationPassed(validateProjectPath(targetFolder, this.logger, mtaMode, this.cfConfig));
+
         if (mtaMode === MtaMode.New) {
             if (!mtaId) {
                 throw new Error(t('error.mtaIdRequired'));
             }
+            assertValidationPassed(validateMtaId(mtaId, targetFolder));
             return join(targetFolder, mtaId);
         }
-        if (!isMtaProject(targetFolder)) {
-            throw new Error(t('error.mtaProjectNotFound', { path: targetFolder }));
-        }
+
         return fs.realpathSync(targetFolder, 'utf-8');
     }
 

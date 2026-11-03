@@ -136,7 +136,6 @@
         "mtaIdAlreadyExists": "A folder with this name already exists in the selected location. Please choose a different MTA project name.",
         "businessServiceDoesNotExist": "The service chosen does not exist in cockpit or the user is not member of the needed space.",
         "mtaIdRequired": "An MTA project name, `mtaId`, is required when creating a new MTA project.",
-        "mtaProjectNotFound": "No MTA project, `mta.yaml` file, was found at the provided path: {{path}}.",
         "serviceInstanceNotFound": "The Cloud Foundry service instance could not be found: {{name}}.",
         "businessSolutionNameInvalid": "Invalid business solution name. Only lowercase letters, numbers, dots (.), underscores (_), and hyphens (-) are allowed. The name must contain at least one letter or number.",
         "cfLoginCannotBeDetected": "CF Login cannot be detected as an extension in Visual Studio Code. For more information, see (link not yet available).",

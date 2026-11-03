@@ -66,8 +66,7 @@ export function isCfJsonInput(value: unknown): value is CfJsonInput {
         return false;
     }
 
-    // Exactly one of businessService / serviceInstanceName must be a non-empty string: the two drive
-    // different discovery branches and an empty value would trigger an unscoped service lookup.
+    // Exactly one of businessService / serviceInstanceName must be a non-empty string.
     const hasBusinessService = isNonEmptyString(value.businessService);
     const hasServiceInstance = isNonEmptyString(value.serviceInstanceName);
     if (hasBusinessService === hasServiceInstance) {
