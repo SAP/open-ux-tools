@@ -25,9 +25,10 @@ const mockGetOverlays = jest.fn<any>();
 const mockGetElementContext = jest.fn<any>();
 const mockExecuteAction = jest.fn<any>();
 const mockSaveChanges = jest.fn<any>();
+const mockGetApplicationInfo = jest.fn<any>();
+const mockCleanup = jest.fn<any>();
 const mockGetPageActions = jest.fn<any>();
 const mockCallPageAction = jest.fn<any>();
-const mockPressInteractive = jest.fn<any>();
 
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.js', () => ({
     startRta: mockStartRta,
@@ -35,9 +36,10 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
     getElementContext: mockGetElementContext,
     executeAction: mockExecuteAction,
     saveChanges: mockSaveChanges,
+    getApplicationInfo: mockGetApplicationInfo,
+    cleanup: mockCleanup,
     getPageActions: mockGetPageActions,
     callPageAction: mockCallPageAction,
-    pressInteractive: mockPressInteractive,
     FrontendActionError: class FrontendActionError extends Error {
         code: string;
         constructor(name: string, code: string, msg: string) {
@@ -72,8 +74,25 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 frameId: FRAME
             });
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
-            expect(mockStartRta).toHaveBeenCalled();
+            expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, undefined);
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
+        });
+
+        test('forwards agentName from payload to startRta', async () => {
+            mockStartRta.mockResolvedValue({ rtaStarted: true });
+            await runRtaWorkflowStep({
+                step: 'start',
+                site: SITE,
+                frameId: FRAME,
+                payload: { agentName: 'Joule' }
+            });
+            expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, 'Joule');
+        });
+
+        test('throws when payload.agentName is present but empty', async () => {
+            await expect(runRtaWorkflowStep({ step: 'start', site: SITE, payload: { agentName: '' } })).rejects.toThrow(
+                'payload.agentName must be a non-empty string when provided'
+            );
         });
 
         test('throws when site is missing', async () => {
@@ -143,18 +162,11 @@ describe('runRtaWorkflowStep dispatcher', () => {
     });
 
     describe('get_page_actions step', () => {
-        test('returns registered and interactive lists', async () => {
+        test('returns the registered list', async () => {
             const registered = [{ id: 'loadData', layer: 'framework', label: 'Load', description: '' }];
-            const interactive = [{ controlId: 'btn1', controlType: 'sap.m.Button', label: 'Go', kind: 'button' }];
-            mockGetPageActions.mockResolvedValue({ registered, interactive });
+            mockGetPageActions.mockResolvedValue({ registered });
             const result = await runRtaWorkflowStep({ step: 'get_page_actions', site: SITE });
-            expect(result).toMatchObject({ registered, interactive });
-        });
-
-        test('includes interactiveTruncated when set', async () => {
-            mockGetPageActions.mockResolvedValue({ registered: [], interactive: [], interactiveTruncated: true });
-            const result = (await runRtaWorkflowStep({ step: 'get_page_actions', site: SITE })) as any;
-            expect(result.interactiveTruncated).toBe(true);
+            expect(result).toEqual({ registered });
         });
     });
 
@@ -178,23 +190,33 @@ describe('runRtaWorkflowStep dispatcher', () => {
         });
     });
 
-    describe('press_interactive step', () => {
-        test('calls pressInteractive with the controlId from payload', async () => {
-            const runResult = { status: 'ok' as const, note: 'focus moved' };
-            mockPressInteractive.mockResolvedValue(runResult);
-            const result = (await runRtaWorkflowStep({
-                step: 'press_interactive',
-                site: SITE,
-                payload: { controlId: 'btn1' }
-            })) as any;
-            expect(mockPressInteractive).toHaveBeenCalled();
-            expect(result.result).toEqual(runResult);
+    describe('get_application_info step', () => {
+        test('calls getApplicationInfo and wraps the result', async () => {
+            const applicationInfo = {
+                appId: 'my.app',
+                system: 'U1Y',
+                client: '120',
+                appTitle: 'My App',
+                appVersion: '1.0.0'
+            };
+            mockGetApplicationInfo.mockResolvedValue(applicationInfo);
+            const result = await runRtaWorkflowStep({ step: 'get_application_info', site: SITE });
+            expect(result).toEqual({ applicationInfo });
+        });
+    });
+
+    describe('cleanup step', () => {
+        test('calls cleanup without a reason and returns cleaned flag', async () => {
+            mockCleanup.mockResolvedValue({ cleaned: true });
+            const result = await runRtaWorkflowStep({ step: 'cleanup', site: SITE });
+            expect(mockCleanup).toHaveBeenCalledWith(expect.anything(), expect.anything(), undefined);
+            expect(result).toEqual({ cleaned: true });
         });
 
-        test('throws when payload.controlId is missing', async () => {
-            await expect(runRtaWorkflowStep({ step: 'press_interactive', site: SITE, payload: {} })).rejects.toThrow(
-                'payload.controlId is required'
-            );
+        test('forwards reason from payload', async () => {
+            mockCleanup.mockResolvedValue({ cleaned: true });
+            await runRtaWorkflowStep({ step: 'cleanup', site: SITE, payload: { reason: 'done' } });
+            expect(mockCleanup).toHaveBeenCalledWith(expect.anything(), expect.anything(), 'done');
         });
     });
 

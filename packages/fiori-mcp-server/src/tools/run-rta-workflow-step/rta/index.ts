@@ -1,14 +1,14 @@
 export {
     FrontendActionError,
     callPageAction,
+    cleanup,
     executeAction,
+    getApplicationInfo,
     getElementContext,
     getOverlays,
     getPageActions,
-    pressInteractive,
     saveChanges,
     startRta,
-    startVisualization,
     stopRta
 } from './commands.js';
 export type {
@@ -16,10 +16,10 @@ export type {
     ActionParameter,
     ActionsCatalog,
     AggregationsByClass,
+    ApplicationInfo,
     AvailableModel,
     EditorPage,
     ElementContext,
-    InteractiveElement,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction

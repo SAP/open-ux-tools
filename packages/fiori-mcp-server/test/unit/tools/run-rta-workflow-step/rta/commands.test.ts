@@ -5,14 +5,14 @@ import type {
 import {
     FrontendActionError,
     callPageAction,
+    cleanup,
     executeAction,
+    getApplicationInfo,
     getElementContext,
     getOverlays,
     getPageActions,
-    pressInteractive,
     saveChanges,
     startRta,
-    startVisualization,
     stopRta
 } from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
 
@@ -51,11 +51,22 @@ describe('rta/commands', () => {
         transport = createFakeTransport();
     });
 
-    test('startRta calls com.sap.ui.flex.startRTA.v1 with empty payload', async () => {
+    test('startRta calls com.sap.ui.flex.startRTA.v1 with empty payload when no agentName', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(ok({ rtaStarted: true }));
         const result = await startRta(transport, { site: SITE, frameId: FRAME });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.startRTA.v1', {}, FRAME);
         expect(result).toEqual({ rtaStarted: true });
+    });
+
+    test('startRta forwards agentName in the payload when provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ rtaStarted: true }));
+        await startRta(transport, { site: SITE, frameId: FRAME }, 'Joule');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.flex.startRTA.v1',
+            { agentName: 'Joule' },
+            FRAME
+        );
     });
 
     test('getOverlays calls getOverlaysInformation', async () => {
@@ -128,16 +139,41 @@ describe('rta/commands', () => {
         );
     });
 
-    test('startVisualization calls startVisualization with empty payload', async () => {
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ visualizationStarted: true }));
-        const result = await startVisualization(transport, { site: SITE });
+    test('getApplicationInfo calls getApplicationInfo with empty payload', async () => {
+        const info = {
+            appId: 'my.app',
+            system: 'U1Y',
+            client: '120',
+            appTitle: 'My App',
+            appVersion: '1.0.0'
+        };
+        transport.callFrontendAction.mockResolvedValueOnce(ok(info));
+        const result = await getApplicationInfo(transport, { site: SITE });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
-            'com.sap.ui.flex.startVisualization.v1',
+            'com.sap.ui.flex.getApplicationInfo.v1',
             {},
             undefined
         );
-        expect(result).toEqual({ visualizationStarted: true });
+        expect(result).toEqual(info);
+    });
+
+    test('cleanup calls cleanup with empty payload when no reason', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ cleaned: true }));
+        const result = await cleanup(transport, { site: SITE });
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.cleanup.v1', {}, undefined);
+        expect(result).toEqual({ cleaned: true });
+    });
+
+    test('cleanup forwards reason in the payload when provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ cleaned: true }));
+        await cleanup(transport, { site: SITE, frameId: FRAME }, 'done');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.flex.cleanup.v1',
+            { reason: 'done' },
+            FRAME
+        );
     });
 
     test('an isSuccess=false result throws a FrontendActionError carrying the code', async () => {
@@ -168,12 +204,10 @@ describe('rta/commands', () => {
 
     test('getPageActions calls getPageActions action', async () => {
         const registered = [{ id: 'loadData', layer: 'framework', label: 'Load Data', description: '' }];
-        const interactive = [{ controlId: 'btn1', controlType: 'sap.m.Button', label: 'Go', kind: 'button' }];
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ registered, interactive }));
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ registered }));
         const result = await getPageActions(transport, { site: SITE, frameId: FRAME });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.getPageActions.v1', {}, FRAME);
         expect(result.registered).toEqual(registered);
-        expect(result.interactive).toEqual(interactive);
     });
 
     test('callPageAction calls callPageAction action with id', async () => {
@@ -185,19 +219,6 @@ describe('rta/commands', () => {
             'com.sap.ui.flex.callPageAction.v1',
             { id: 'loadData' },
             undefined
-        );
-        expect(result).toEqual(runResult);
-    });
-
-    test('pressInteractive calls pressInteractive action with controlId', async () => {
-        const runResult = { status: 'ok' as const, note: 'registered actions changed' };
-        transport.callFrontendAction.mockResolvedValueOnce(ok(runResult));
-        const result = await pressInteractive(transport, { site: SITE, frameId: FRAME }, 'btn1');
-        expect(transport.callFrontendAction).toHaveBeenCalledWith(
-            SITE,
-            'com.sap.ui.flex.pressInteractive.v1',
-            { controlId: 'btn1' },
-            FRAME
         );
         expect(result).toEqual(runResult);
     });

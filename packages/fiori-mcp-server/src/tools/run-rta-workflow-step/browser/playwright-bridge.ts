@@ -25,24 +25,26 @@ interface PageRPC {
     close(): Promise<void>;
 }
 
+// AMD module path of the Flex frontend-actions API on the running UI5 page.
+const FRONTEND_ACTIONS_API_MODULE = 'sap/ui/rta/api/FrontendActionsAPI';
+
 /**
- * Shape of the Joule webclient bridge as exposed on the editor page's
- * `window` object. Only the surface we use is typed.
+ * Derives the frontend-action method name from its stable contract name.
+ * The API object exposes each action as `FrontendActionsAPI.<name>`, while
+ * {@link #getAvailableFrontendActions} tags it `com.sap.ui.flex.<name>.v1`.
+ *
+ * @param actionName Contract name, e.g. `com.sap.ui.flex.startRTA.v1`.
+ * @returns The bare method name, e.g. `startRTA`.
  */
-interface WebclientBridgeWindow {
-    sapdas?: {
-        webclientBridge?: {
-            getFrontendActions?: () => Array<{
-                frontend_action_name: string;
-                function: (arg: unknown) => unknown;
-            }>;
-        };
-    };
+function toMethodName(actionName: string): string {
+    const match = /^com\.sap\.ui\.flex\.(.+)\.v\d+$/.exec(actionName);
+    return match ? match[1] : actionName;
 }
 
 /**
- * Wraps a Playwright `Page` in an RPC handle that invokes Joule frontend
- * actions through `window.sapdas.webclientBridge.getFrontendActions()`.
+ * Wraps a Playwright `Page` in an RPC handle that invokes Flex frontend
+ * actions by `sap.ui.require`-ing `sap/ui/rta/api/FrontendActionsAPI` on the
+ * page and calling the corresponding method directly.
  *
  * @param page The Playwright page to wrap.
  * @param context The BrowserContext that owns the page; closed together with the page on `rpc.close()`.
@@ -77,32 +79,41 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
             executionContext = matched;
         }
 
-        // Wait up to 60 s for the bridge to be registered (RTA needs time to start).
+        // Wait up to 60 s for the UI5 loader to be present (RTA needs time to start).
         await (executionContext as Page | Frame).waitForFunction(
-            () =>
-                !!(
-                    window as unknown as {
-                        sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } };
-                    }
-                ).sapdas?.webclientBridge?.getFrontendActions,
+            () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
             undefined,
             { timeout: 60000 }
         );
 
         const response = await executionContext.evaluate(
-            async ({ name, p }: { name: string; p: Record<string, unknown> }) => {
-                const bridge = (window as unknown as WebclientBridgeWindow).sapdas?.webclientBridge;
-                if (!bridge?.getFrontendActions) {
-                    throw new Error('window.sapdas.webclientBridge.getFrontendActions is not available on the page');
+            async ({ module, method, p }: { module: string; method: string; p: Record<string, unknown> }) => {
+                const require = (
+                    window as unknown as {
+                        sap?: {
+                            ui?: {
+                                require?: (
+                                    deps: string[],
+                                    cb: (api: unknown) => void,
+                                    errback: (err: unknown) => void
+                                ) => void;
+                            };
+                        };
+                    }
+                ).sap?.ui?.require;
+                if (!require) {
+                    throw new Error('sap.ui.require is not available on the page');
                 }
-                const actions = bridge.getFrontendActions();
-                const entry = actions.find((a) => a.frontend_action_name === name);
-                if (!entry) {
-                    throw new Error(`Frontend action "${name}" not registered`);
+                const api = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                    require([module], (loaded) => resolve(loaded as Record<string, unknown>), reject);
+                });
+                const fn = api[method];
+                if (typeof fn !== 'function') {
+                    throw new Error(`Frontend action "${method}" is not available on ${module}`);
                 }
-                return await entry.function(p);
+                return await (fn as (arg: unknown) => unknown).call(api, p);
             },
-            { name: actionName, p: payload }
+            { module: FRONTEND_ACTIONS_API_MODULE, method: toMethodName(actionName), p: payload }
         );
         return response as FrontendActionResult<TReturn>;
     };
@@ -179,14 +190,14 @@ async function startBrowser(): Promise<Browser> {
 }
 
 /**
- * Invokes a Joule frontend action on the page hosting `site`. Reuses an
+ * Invokes a Flex frontend action on the page hosting `site`. Reuses an
  * existing page if one is registered for the site; otherwise opens a new
  * one. Throws on transport / lookup failures; returns the frontend action
  * result envelope (including `isSuccess === false` payloads) for the caller to inspect.
  *
  * @param site URL to load (typically the adaptation editor URL).
- * @param actionName Frontend action identifier, e.g. `com.sap.ui.flex.startRTA.v1`.
- * @param payload Object payload forwarded to the frontend action function.
+ * @param actionName Frontend action contract name, e.g. `com.sap.ui.flex.startRTA.v1`.
+ * @param payload Object payload forwarded to the frontend action method.
  * @param frameId Optional frame element id to scope the call to an iframe.
  * @returns The frontend action result envelope.
  */

@@ -1,11 +1,12 @@
 import {
     callPageAction,
+    cleanup,
     executeAction,
     FrontendActionError,
+    getApplicationInfo,
     getElementContext,
     getOverlays,
     getPageActions,
-    pressInteractive,
     saveChanges,
     startRta
 } from './rta/index.js';
@@ -43,6 +44,25 @@ function requireObject(payload: Record<string, unknown> | undefined, key: string
         throw new Error(`payload.${key} is required and must be an object`);
     }
     return value as Record<string, unknown>;
+}
+
+/**
+ * Reads `key` from `payload` as an optional string. Returns `undefined` when
+ * the key is absent; throws when present but not a non-empty string.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The string value, or `undefined` when the key is absent.
+ */
+function optionalString(payload: Record<string, unknown> | undefined, key: string): string | undefined {
+    const value = payload?.[key];
+    if (value === undefined) {
+        return undefined;
+    }
+    if (typeof value !== 'string' || value.length === 0) {
+        throw new Error(`payload.${key} must be a non-empty string when provided`);
+    }
+    return value;
 }
 
 /**
@@ -91,7 +111,8 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
                 await defaultTransport.disconnectSite(site);
-                const result = await startRta(defaultTransport, { site, frameId });
+                const agentName = optionalString(input.payload, 'agentName');
+                const result = await startRta(defaultTransport, { site, frameId }, agentName);
                 return { site, frameId, ...result };
             }
             case 'get_overlays': {
@@ -118,6 +139,15 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const ok = await saveChanges(defaultTransport, { site, frameId });
                 return { saved: ok };
             }
+            case 'get_application_info': {
+                const applicationInfo = await getApplicationInfo(defaultTransport, { site, frameId });
+                return { applicationInfo };
+            }
+            case 'cleanup': {
+                const reason = optionalString(input.payload, 'reason');
+                const { cleaned } = await cleanup(defaultTransport, { site, frameId }, reason);
+                return { cleaned };
+            }
             case 'stop': {
                 await defaultTransport.disconnectSite(site);
                 if (isRegistryEmpty()) {
@@ -132,24 +162,15 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { site, frameId, ...result };
             }
             case 'get_page_actions': {
-                const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
+                const { registered } = await getPageActions(defaultTransport, {
                     site,
                     frameId
                 });
-                return {
-                    registered,
-                    interactive,
-                    ...(interactiveTruncated && { interactiveTruncated })
-                };
+                return { registered };
             }
             case 'call_page_action': {
                 const id = requireString(input.payload, 'id');
                 const result = await callPageAction(defaultTransport, { site, frameId }, id);
-                return { result };
-            }
-            case 'press_interactive': {
-                const controlId = requireString(input.payload, 'controlId');
-                const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
                 return { result };
             }
             default:
