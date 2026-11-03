@@ -80,7 +80,7 @@ describe('assertions', () => {
     });
 
     describe('requireSite', () => {
-        test.each(['http://localhost:8080', 'https://localhost:8080', 'http://127.0.0.1:3000'])(
+        test.each(['http://localhost:8080', 'https://localhost:8080', 'http://127.0.0.1:3000', 'http://[::1]:8080'])(
             'accepts valid loopback URL %s',
             (site) => {
                 expect(requireSite(site)).toBe(site);
@@ -104,7 +104,7 @@ describe('assertions', () => {
         });
 
         test.each(['http://example.com', 'http://192.168.1.1'])('throws when host is not loopback: %s', (site) => {
-            expect(() => requireSite(site)).toThrow('site must point to localhost or 127.0.0.1');
+            expect(() => requireSite(site)).toThrow('site must point to localhost, 127.0.0.1 or ::1');
         });
     });
 });

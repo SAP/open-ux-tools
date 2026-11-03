@@ -1,4 +1,5 @@
 import { type Frame, type Page } from 'playwright-core';
+import { isLoopbackHost } from './origin.js';
 
 // Backend login / IdP page detection. A CF editor URL may redirect to an XSUAA
 // login page instead of serving the app, in which case the Joule webclient bridge never injects.
@@ -148,7 +149,7 @@ export function isBackendLoginPage(url: string, title: string, bodyText: string)
     } catch {
         return false;
     }
-    const offLoopback = host !== 'localhost' && host !== '127.0.0.1';
+    const offLoopback = !isLoopbackHost(host);
     const markerHit =
         LOGIN_PAGE_MARKERS.test(url) || LOGIN_PAGE_MARKERS.test(title) || LOGIN_PAGE_MARKERS.test(bodyText);
     return offLoopback || markerHit;

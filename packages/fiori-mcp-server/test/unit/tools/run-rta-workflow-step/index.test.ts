@@ -108,7 +108,7 @@ describe('runRtaWorkflowStep dispatcher', () => {
         test('throws when site points to an external host', async () => {
             await expect(
                 runRtaWorkflowStep({ step: 'start', site: 'https://attacker.example.com/editor' })
-            ).rejects.toThrow('localhost or 127.0.0.1');
+            ).rejects.toThrow('site must point to localhost, 127.0.0.1 or ::1');
         });
 
         test('accepts 127.0.0.1 as a valid site host', async () => {

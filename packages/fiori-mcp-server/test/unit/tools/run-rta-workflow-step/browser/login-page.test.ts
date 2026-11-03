@@ -1,6 +1,10 @@
 import { jest } from '@jest/globals';
 import { type Page } from 'playwright-core';
-import { isNeedsUserAction, waitForLogin } from '../../../../../src/tools/run-rta-workflow-step/browser/login-page.js';
+import {
+    isBackendLoginPage,
+    isNeedsUserAction,
+    waitForLogin
+} from '../../../../../src/tools/run-rta-workflow-step/browser/login-page.js';
 
 describe('isNeedsUserAction', () => {
     test('returns true for the reserved backend-login payload', () => {
@@ -80,5 +84,31 @@ describe('waitForLogin', () => {
         const iterations = waitForFunction.mock.calls.length;
         expect(iterations).toBeGreaterThan(1);
         expect(iterations).toBeLessThanOrEqual(Math.ceil(50_000 / BRIDGE_PROBE_MS) + 1);
+    });
+});
+
+describe('isBackendLoginPage', () => {
+    test.each([
+        'http://localhost:8080/test/adaptation-editor.html',
+        'http://127.0.0.1:8080/test/adaptation-editor.html',
+        'http://[::1]:8080/test/adaptation-editor.html'
+    ])('a loopback editor page with no login markers is not a login page: %s', (url) => {
+        expect(isBackendLoginPage(url, 'Adaptation Editor', 'app content')).toBe(false);
+    });
+
+    test('an off-loopback host is treated as an IdP redirect', () => {
+        expect(isBackendLoginPage('https://idp.example.com/saml2/login', '', '')).toBe(true);
+    });
+
+    test.each([
+        ['url marker', 'http://localhost:8080/oauth/authorize', '', ''],
+        ['title marker', 'http://localhost:8080/', 'Sign in', ''],
+        ['body marker', 'http://localhost:8080/', '', 'please logon to continue']
+    ])('a login marker on a loopback host still flags a login page (%s)', (_label, url, title, body) => {
+        expect(isBackendLoginPage(url, title, body)).toBe(true);
+    });
+
+    test('an unparseable URL is not classified as a login page', () => {
+        expect(isBackendLoginPage('not-a-url', '', '')).toBe(false);
     });
 });

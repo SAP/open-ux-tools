@@ -41,7 +41,10 @@ class FakePage extends EventEmitter {
     public gotoResponse: { status: () => number } | null;
     public readonly url = jest.fn(() => this.currentUrl);
     public readonly title = jest.fn(async () => '');
+    private closed = false;
+    public readonly isClosed = jest.fn(() => this.closed);
     public readonly close = jest.fn(async () => {
+        this.closed = true;
         this.emit('close');
     });
     private readonly frameList: FakeFrame[];
