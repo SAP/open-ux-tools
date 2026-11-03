@@ -1,5 +1,52 @@
 # @sap-ux/launch-config
 
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Release Date
+
+2026-10-30
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+
+## 1.0.25
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade yargs-parser 21.1.1 → 22.0.0 and mime-types 2.1.35 → 3.0.2 [[b896e07](https://github.com/SAP/open-ux-tools/commit/b896e07534ac03b2a227bfec4664d88ecc228857)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.0.24
 
 ### Patch Changes

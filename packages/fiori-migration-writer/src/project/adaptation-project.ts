@@ -87,6 +87,7 @@ export async function processAdaptationProject(config: ProcessAdaptationProjectC
                 ui5Version,
                 isFioriToolsProject,
                 destination,
+                targetMockHtmlFile: 'test/flpSandboxMockServer.html',
                 ...neoAppData
             };
             if (neoAppData?.destination) {

@@ -23,7 +23,8 @@
     "target": "ES2023",
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "types": ["node", "jest"]
   },
   "references": [
     {

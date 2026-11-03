@@ -270,7 +270,7 @@ export const tools = [
         1. Examine the inputSchema below to understand the EXACT structure required
         2. The input MUST match the schema type 'GeneratorConfigOData' with these TOP-LEVEL properties:
            - floorplan (must be: 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_WORKLIST', 'FE_FEOP', 'FE_FPM', 'FF_SIMPLE', required)
-           - project (object, required) — includes name, title, description, targetFolder, ui5Version, enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
+           - project (object, required) — includes name, title, description, targetFolder, ui5Version (optional), enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
            - service (object, optional)
            - entityConfig (object, optional)
         3. DO NOT create properties like "config", or any other structure - use ONLY the properties defined in inputSchema
@@ -293,7 +293,7 @@ export const tools = [
 
         3. Generate the application once the config is complete and valid.
 
-        Example of CORRECT input structure:
+        Example of CORRECT input structure (ui5Version is optional — omit to let the MCP server resolve the latest stable version from ui5.sap.com):
         {
           "floorplan": "FE_LROP",
           "project": {
@@ -301,7 +301,6 @@ export const tools = [
             "title": "My Travel App",
             "description": "Travel management application",
             "targetFolder": "/home/user/projects",
-            "ui5Version": "1.148.12",
             "enableTypeScript": false,
             "namespace": "com.mycompany"
           },

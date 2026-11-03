@@ -102,7 +102,12 @@ export function showBusinessSolutionNameQuestion(
     showSolutionNamePrompt: boolean,
     businessService: string | undefined
 ): boolean {
-    return isCFLoggedIn && answers.approuter === AppRouterType.MANAGED && showSolutionNamePrompt && !!businessService;
+    return (
+        isCFLoggedIn &&
+        (answers.approuter ?? AppRouterType.MANAGED) === AppRouterType.MANAGED &&
+        showSolutionNamePrompt &&
+        !!businessService
+    );
 }
 
 /**
@@ -114,7 +119,7 @@ export function showBusinessSolutionNameQuestion(
  * @returns {boolean} True if the base app prompt should be shown, otherwise false.
  */
 export function shouldShowBaseAppPrompt(answers: CfServicesAnswers, isCFLoggedIn: boolean, apps: CFApp[]): boolean {
-    return isCFLoggedIn && !!answers.businessService && !!apps.length;
+    return isCFLoggedIn && (!!answers.businessService || !!answers.serviceInstance) && !!apps.length;
 }
 
 /**

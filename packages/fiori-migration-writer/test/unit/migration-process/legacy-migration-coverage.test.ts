@@ -5,6 +5,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { validateRootDirectory, buildLegacyPaths, tryGitMove } from '../../../src/migration-process/legacy-helpers.js';
 import { DirName } from '../../../src/project-spec-types.js';
 import { TemplateFileName } from '../../../src/index.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -132,7 +133,7 @@ describe('Legacy Migration Helpers - Coverage Tests', () => {
             const mockRootPath = testOutputDir;
             const mockPaths = buildLegacyPaths(mockRootPath, 'src/main');
 
-            await expect(tryGitMove(mockRootPath, mockPaths)).resolves.toBeUndefined();
+            await expect(tryGitMove(createMemFsEditor(), mockRootPath, mockPaths)).resolves.toBeUndefined();
         });
     });
 

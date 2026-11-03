@@ -18,7 +18,8 @@
       "node",
       "jest"
     ],
-    "importsNotUsedAsValues": "remove"
+    "noUncheckedSideEffectImports": false,
+    "allowArbitraryExtensions": true
   },
   "references": [
     {

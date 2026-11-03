@@ -1,7 +1,9 @@
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import type { Manifest } from '../project-spec-types.js';
 import { FileName, FioriElementsVersion } from '../project-spec-types.js';
 import { fileExists, readJSON } from './file-access.js';
+import { createMemFsEditor } from './fs-adapter.js';
 import semver from 'semver';
 import { distVar } from './constants.js';
 import { stripSpaces } from './file-system-utils.js';
@@ -42,16 +44,19 @@ export function checkManifestUI5Version(manifestUI5Version: string): string {
  * @param rootPath
  * @param webappPath
  * @param uiAdaptation
+ * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  */
 export async function readManifest(
     rootPath: string,
     webappPath: string,
-    uiAdaptation?: any
+    uiAdaptation?: any,
+    fsEditor?: Editor
 ): Promise<Manifest | undefined> {
+    const fs = fsEditor ?? createMemFsEditor();
     const manifestPath = join(rootPath, webappPath, FileName.Manifest);
     let manifestJSON: Manifest | undefined;
-    if (uiAdaptation === undefined && (await fileExists(manifestPath))) {
-        manifestJSON = await readJSON(manifestPath);
+    if (uiAdaptation === undefined && fileExists(fs, manifestPath)) {
+        manifestJSON = await readJSON(fs, manifestPath);
     }
     return manifestJSON;
 }

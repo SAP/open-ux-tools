@@ -1,6 +1,7 @@
 import { resolve, normalize } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import type { Data, Options } from 'ejs';
+import type { Editor } from 'mem-fs-editor';
 import { readFile } from '../file-access.js';
 
 // esbuild minifies closure-captured variable names, including the `escapeFn` that
@@ -36,6 +37,7 @@ function validateTemplatePath(templateRoot: string, templateName: string): strin
  * Reads the template file and optionally renders it using EJS.
  * If rendering is disabled, returns the raw file content.
  *
+ * @param fs - mem-fs editor
  * @param templateRoot - Root directory containing templates
  * @param fullTemplateName - Full path to template file relative to templateRoot
  * @param templateData - Data to use for template rendering
@@ -45,6 +47,7 @@ function validateTemplatePath(templateRoot: string, templateName: string): strin
  * @throws Error if template path contains path traversal
  */
 export function renderTemplate(
+    fs: Editor,
     templateRoot: string,
     fullTemplateName: string,
     templateData: Data,
@@ -53,7 +56,7 @@ export function renderTemplate(
 ): string {
     // Validate path to prevent directory traversal attacks
     const safePath = validateTemplatePath(templateRoot, fullTemplateName);
-    const templateFile = readFile(safePath);
+    const templateFile = readFile(fs, safePath);
 
     return isRendered ? (render(templateFile, templateData, { ...DEFAULT_EJS_OPTS, ...opts }) as string) : templateFile;
 }

@@ -1,4 +1,5 @@
 import type { ImportProjectInfo } from '../types.js';
+import type { Editor } from 'mem-fs-editor';
 import { readManifest } from '../utils/common.js';
 import { getExcludedThemes } from '../utils/UI5Theme.js';
 
@@ -6,11 +7,13 @@ import { getExcludedThemes } from '../utils/UI5Theme.js';
  * Gets supported themes for the project, excluding deprecated themes.
  * Adds 'sap_bluecrystal' if not present and prefixes all with 'themelib_'.
  *
+ * @param fs - mem-fs editor
  * @param projectInfo - Project information containing root path and theme settings
  * @param ui5Version - UI5 version to determine excluded themes
  * @returns Array of supported theme names with 'themelib_' prefix
  */
 export async function getSupportedThemes(
+    fs: Editor,
     projectInfo: ImportProjectInfo,
     ui5Version: string | undefined
 ): Promise<string[]> {
@@ -18,7 +21,7 @@ export async function getSupportedThemes(
 
     // Try to read the manifest and extract supported themes
     try {
-        const manifest = await readManifest(projectInfo.rootPath, projectInfo.webappPath, projectInfo.uiAdaptation);
+        const manifest = await readManifest(projectInfo.rootPath, projectInfo.webappPath, projectInfo.uiAdaptation, fs);
 
         // Get supported themes, filtering out deprecated ones
         supportedThemes =

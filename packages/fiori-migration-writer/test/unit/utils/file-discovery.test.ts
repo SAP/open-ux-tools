@@ -2,6 +2,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import type { ProjectFolder } from '../../../src/types.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -32,7 +33,7 @@ describe('file-discovery', () => {
             await writeFile(join(proj1, 'package.json'), JSON.stringify({ name: 'proj1' }));
             await writeFile(join(proj2, 'package.json'), JSON.stringify({ name: 'proj2' }));
 
-            const roots = await findAllProjectRoots([testOutputDir]);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir]);
             expect(roots).toHaveLength(2);
             expect(roots).toContain(proj1);
             expect(roots).toContain(proj2);
@@ -53,7 +54,7 @@ describe('file-discovery', () => {
             );
             await writeFile(join(proj2, 'package.json'), JSON.stringify({ name: 'regular' }));
 
-            const roots = await findAllProjectRoots([testOutputDir], true);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir], true);
             expect(roots).toHaveLength(1);
             expect(roots[0]).toBe(proj1);
         });
@@ -71,7 +72,7 @@ describe('file-discovery', () => {
                 })
             );
 
-            const roots = await findAllProjectRoots([testOutputDir], true);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir], true);
             expect(roots).toHaveLength(1);
             expect(roots[0]).toBe(proj);
         });
@@ -89,7 +90,7 @@ describe('file-discovery', () => {
                 })
             );
 
-            const roots = await findAllProjectRoots([testOutputDir], true);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir], true);
             expect(roots).toHaveLength(1);
             expect(roots[0]).toBe(proj);
         });
@@ -107,7 +108,7 @@ describe('file-discovery', () => {
                 })
             );
 
-            const roots = await findAllProjectRoots([testOutputDir], true);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir], true);
             expect(roots).toHaveLength(1);
             expect(roots[0]).toBe(proj);
         });
@@ -122,7 +123,7 @@ describe('file-discovery', () => {
             // Write invalid JSON
             await writeFile(join(invalidProj, 'package.json'), '{ invalid json }');
 
-            const roots = await findAllProjectRoots([testOutputDir], true);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir], true);
             // Should only find the valid project (covers line 65-68: catch block)
             expect(roots).toHaveLength(1);
             expect(roots[0]).toBe(validProj);
@@ -130,7 +131,7 @@ describe('file-discovery', () => {
 
         test('should handle non-existent paths gracefully', async () => {
             const nonExistent = join(testOutputDir, 'does-not-exist');
-            const roots = await findAllProjectRoots([nonExistent]);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [nonExistent]);
             // Should return empty array (covers line 73-76: catch block)
             expect(roots).toHaveLength(0);
         });
@@ -141,7 +142,7 @@ describe('file-discovery', () => {
             await writeFile(join(proj, 'package.json'), JSON.stringify({ name: 'proj' }));
 
             // Pass the same path twice
-            const roots = await findAllProjectRoots([testOutputDir, testOutputDir]);
+            const roots = await findAllProjectRoots(createMemFsEditor(), [testOutputDir, testOutputDir]);
             // Should deduplicate
             expect(roots).toHaveLength(1);
             expect(roots[0]).toBe(proj);
@@ -170,7 +171,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             expect(libs[0].value.type).toBe(ReuseLibType.LIBRARY);
             expect(libs[0].value.name).toBe('my.lib');
@@ -200,7 +201,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             expect(libs[0].value.type).toBe(ReuseLibType.COMPONENT);
             expect(libs[0].value.name).toBe('my.component');
@@ -236,7 +237,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             // libRoot should be project root (where package.json is), not manifest directory
             expect(libs[0].value.libRoot).toBe(projectRoot);
@@ -267,7 +268,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             expect(libs[0].value.libRoot).toBe(projectRoot);
         });
@@ -296,7 +297,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             expect(libs[0].value.libRoot).toBe(projectRoot);
         });
@@ -325,7 +326,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             expect(libs[0].value.libRoot).toBe(projectRoot);
         });
@@ -360,7 +361,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             // Should find innermost package.json (packageRoot), not monorepo root
             expect(libs[0].value.libRoot).toBe(packageRoot);
@@ -387,7 +388,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             // Should not include applications
             expect(libs).toHaveLength(0);
         });
@@ -413,7 +414,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(1);
             // Name should be basename of manifest directory
             expect(libs[0].value.name).toBe('fallback-lib');
@@ -442,7 +443,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             // Should only find valid lib (covers line 140-143: catch block)
             expect(libs).toHaveLength(1);
             expect(libs[0].value.name).toBe('valid');
@@ -457,7 +458,7 @@ describe('file-discovery', () => {
                 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             // Should return empty array (covers line 145-148: catch block)
             expect(libs).toHaveLength(0);
         });
@@ -482,7 +483,7 @@ describe('file-discovery', () => {
                 { uri: { fsPath: ws2, scheme: 'file' }, name: 'ws2', index: 1 }
             ];
 
-            const libs = await getReuseLibs(folders);
+            const libs = await getReuseLibs(createMemFsEditor(), folders);
             expect(libs).toHaveLength(2);
             expect(libs.map((l) => l.value.name).sort()).toEqual(['ws1.lib1', 'ws2.lib2']);
         });

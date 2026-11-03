@@ -1,5 +1,76 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.62
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.14 → 2.0.15
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/ui-service-inquirer 1.0.61 → 1.0.62
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.0.61
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/ui-service-inquirer 1.0.60 → 1.0.61
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/system-access 1.0.18 → 1.0.19
+
+## 1.0.60
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/ui-service-inquirer 1.0.59 → 1.0.60
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/telemetry 2.0.12 → 2.0.13
+
+## 1.0.59
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/system-access 1.0.16 → 1.0.17
+- @sap-ux/telemetry 2.0.11 → 2.0.12
+- @sap-ux/ui-service-inquirer 1.0.58 → 1.0.59
+
+## 1.0.58
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/telemetry 2.0.10 → 2.0.11
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/ui-service-inquirer 1.0.57 → 1.0.58
+
 ## 1.0.57
 
 ### Patch Changes
