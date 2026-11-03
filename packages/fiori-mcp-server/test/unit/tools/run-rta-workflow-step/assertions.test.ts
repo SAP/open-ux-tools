@@ -1,5 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { requireAppPath, requireObject, requireSite, requireString, requireStringArray } from '../../../../src/tools/run-rta-workflow-step/assertions.js';
+import {
+    requireAppPath,
+    requireObject,
+    requireSite,
+    requireString,
+    requireStringArray
+} from '../../../../src/tools/run-rta-workflow-step/assertions.js';
 
 describe('assertions', () => {
     describe('requireString', () => {
@@ -7,14 +13,11 @@ describe('assertions', () => {
             expect(requireString({ key: 'value' }, 'key')).toBe('value');
         });
 
-        test.each([undefined, null, '', 0, false, {}, []])(
-            'throws when value is %j',
-            (val) => {
-                expect(() => requireString({ key: val } as Record<string, unknown>, 'key')).toThrow(
-                    'payload.key is required and must be a non-empty string'
-                );
-            }
-        );
+        test.each([undefined, null, '', 0, false, {}, []])('throws when value is %j', (val) => {
+            expect(() => requireString({ key: val } as Record<string, unknown>, 'key')).toThrow(
+                'payload.key is required and must be a non-empty string'
+            );
+        });
 
         test('throws when key is absent', () => {
             expect(() => requireString({}, 'missing')).toThrow(
@@ -45,14 +48,11 @@ describe('assertions', () => {
             expect(requireObject({ key: obj }, 'key')).toBe(obj);
         });
 
-        test.each([undefined, null, '', 0, []])(
-            'throws when value is %j',
-            (val) => {
-                expect(() => requireObject({ key: val } as Record<string, unknown>, 'key')).toThrow(
-                    'payload.key is required and must be an object'
-                );
-            }
-        );
+        test.each([undefined, null, '', 0, []])('throws when value is %j', (val) => {
+            expect(() => requireObject({ key: val } as Record<string, unknown>, 'key')).toThrow(
+                'payload.key is required and must be an object'
+            );
+        });
     });
 
     describe('requireStringArray', () => {
@@ -103,11 +103,8 @@ describe('assertions', () => {
             expect(() => requireSite('ftp://localhost:21')).toThrow('site must be an http:// or https:// URL');
         });
 
-        test.each(['http://example.com', 'http://192.168.1.1'])(
-            'throws when host is not loopback: %s',
-            (site) => {
-                expect(() => requireSite(site)).toThrow('site must point to localhost or 127.0.0.1');
-            }
-        );
+        test.each(['http://example.com', 'http://192.168.1.1'])('throws when host is not loopback: %s', (site) => {
+            expect(() => requireSite(site)).toThrow('site must point to localhost or 127.0.0.1');
+        });
     });
 });
