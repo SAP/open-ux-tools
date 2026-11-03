@@ -118,10 +118,39 @@ export function writeOpaTestFiles(baseTmplPath: string, projectPath: string, dat
         fs.copyTpl(tmplPath, projectPath, data, undefined, {
             globOptions: { dot: true }
         });
-    } catch (e) {
-        throw new Error(`Could not write OPA test files. Reason: ${e.message}`);
+    } catch (error) {
+        throw new Error(`Could not write OPA test files. Reason: ${error.message}`);
     }
 }
+
+/**
+ * Copies mock server template files into the project output directory.
+ *
+ * Reads all files under `<baseTmplPath>/mockServer/` and writes them to
+ * `projectPath`, expanding any EJS template variables using `data`.
+ *
+ * @param {string} baseTmplPath - The root path of the templates folder.
+ * @param {string} projectPath - The root path of the project.
+ * @param {AdpWriterConfig} data - The data to be populated in the template files.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @returns {void}
+ */
+export function writeMockServerFiles(
+    baseTmplPath: string,
+    projectPath: string,
+    data: AdpWriterConfig,
+    fs: Editor
+): void {
+    const tmplPath = join(baseTmplPath, 'mockServer', '**/*.*');
+    try {
+        fs.copyTpl(tmplPath, projectPath, data, undefined, {
+            globOptions: { dot: true }
+        });
+    } catch (error) {
+        throw new Error(`Could not write Mock server files. Reason: ${error.message}`);
+    }
+}
+
 /**
  * @param {string} baseTmplPath - The root path of the templates folder.
  * @param {string} projectPath - The root path of the project.

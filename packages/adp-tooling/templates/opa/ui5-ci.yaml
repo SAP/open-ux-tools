@@ -15,13 +15,13 @@ server:
             - /resources
             - /test-resources
           url: <%- ui5.frameworkUrl %>
-          version: <%- ui5.version %>
+          version: <%- ui5.version %><% if (options?.addMockServer) { %>
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mockFolder: ./webapp/localService/
         watch: true
-      mountPath: /
+      mountPath: /<% } %>
 builder:
   customTasks:
     - name: app-variant-bundler-build

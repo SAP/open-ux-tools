@@ -165,6 +165,12 @@ export interface AdpWriterConfig {
          * Automatically set for VENDOR-layer (internal developer) projects.
          */
         addOpaTests?: boolean;
+
+        /**
+         * Optional: if set to true then mock server template files will be generated,
+         * enabling local development against mock data without a live backend.
+         */
+        addMockServer?: boolean;
     };
     /**
      * Optional: Key-user changes to be written to the project.
