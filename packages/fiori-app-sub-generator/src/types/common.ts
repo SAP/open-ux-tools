@@ -3,13 +3,8 @@ import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquir
 import type { FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
 import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-generator';
 
-/**
- * package.json script entries (commands and tasks)
- */
-export type Script = {
-    name: string;
-    command: string;
-};
+// Re-export Script from shared package
+export type { Script } from '@sap-ux/fiori-generator-shared';
 
 /**
  * workspace folder
