@@ -12,6 +12,16 @@ export function isString(value: unknown): value is string {
 }
 
 /**
+ * Type guard for a non-empty string (ignoring surrounding whitespace).
+ *
+ * @param {unknown} value - The value being checked.
+ * @returns {boolean} True if the value is a string with non-whitespace content.
+ */
+export function isNonEmptyString(value: unknown): value is string {
+    return isString(value) && value.trim().length > 0;
+}
+
+/**
  * Type guard for an adaptation project configuration json.
  *
  * @param {unknown} value - The value being checked.
@@ -39,9 +49,9 @@ export function isJsonInput(value: unknown): value is JsonInput {
 /**
  * Type guard for a Cloud Foundry adaptation project configuration json.
  *
- * Requires `targetEnv === 'CF'`, an `application` (the CF base-app id) and at least one of
- * `businessService` or `serviceInstanceName`. All other fields are optional and, when present,
- * must be of the expected type.
+ * Requires `targetEnv === 'CF'`, a non-empty `application` (the CF base-app id) and exactly one
+ * non-empty of `businessService` or `serviceInstanceName`. All other fields are optional and, when
+ * present, must be of the expected type.
  *
  * @param {unknown} value - The value being checked.
  * @returns {boolean} True if the value conforms to the CfJsonInput interface.
@@ -51,11 +61,15 @@ export function isCfJsonInput(value: unknown): value is CfJsonInput {
         return false;
     }
 
-    if (value.targetEnv !== TargetEnv.CF || !isString(value.application)) {
+    if (value.targetEnv !== TargetEnv.CF || !isNonEmptyString(value.application)) {
         return false;
     }
 
-    if (!isString(value.businessService) && !isString(value.serviceInstanceName)) {
+    // Exactly one of businessService / serviceInstanceName must be a non-empty string: the two drive
+    // different discovery branches and an empty value would trigger an unscoped service lookup.
+    const hasBusinessService = isNonEmptyString(value.businessService);
+    const hasServiceInstance = isNonEmptyString(value.serviceInstanceName);
+    if (hasBusinessService === hasServiceInstance) {
         return false;
     }
 

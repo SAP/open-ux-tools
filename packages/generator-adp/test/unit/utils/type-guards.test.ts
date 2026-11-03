@@ -158,6 +158,27 @@ describe('isCfJsonInput', () => {
         expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id' })).toBe(false);
     });
 
+    it('should return false when both businessService and serviceInstanceName are provided', () => {
+        expect(
+            isCfJsonInput({
+                targetEnv: 'CF',
+                application: 'base.app.id',
+                businessService: 'svc',
+                serviceInstanceName: 'inst'
+            })
+        ).toBe(false);
+    });
+
+    it('should return false when the service name is an empty or whitespace-only string', () => {
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', businessService: '' })).toBe(false);
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', businessService: '   ' })).toBe(false);
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', serviceInstanceName: '' })).toBe(false);
+    });
+
+    it('should return false when application is an empty string', () => {
+        expect(isCfJsonInput({ targetEnv: 'CF', application: '', businessService: 'svc' })).toBe(false);
+    });
+
     it('should return false when mtaMode is not an allowed literal', () => {
         expect(isCfJsonInput({ ...validBusinessServiceInput, mtaMode: 'bogus' })).toBe(false);
     });
