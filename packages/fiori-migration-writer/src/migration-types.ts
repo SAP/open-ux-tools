@@ -1,7 +1,7 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
@@ -9,34 +9,14 @@ export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
 
 /**
- * OData versions supported by the catalog service
- */
-export const ODataVersion = {
-    v2: '2',
-    v4: '4'
-} as const;
-export type ODataVersion = (typeof ODataVersion)[keyof typeof ODataVersion];
-/**
  * package.json script entries (commands and tasks)
+ *
+ * @deprecated Not used by the migration writer. Will be removed in a future release.
  */
 export type Script = {
     name: string;
     command: string;
 };
-
-/**
- * SAP UX layer for adaptation projects
- *
- * @deprecated Use UI5FlexLayer from @sap-ux/project-access instead
- */
-export const SapUxLayer = {
-    VENDOR: 'VENDOR',
-    CUSTOMER_BASE: 'CUSTOMER_BASE'
-} as const;
-/**
- * @deprecated Use UI5FlexLayer from @sap-ux/project-access instead
- */
-export type SapUxLayer = UI5FlexLayer;
 
 /** package.json interface */
 export interface PackageJson {
@@ -58,7 +38,7 @@ export interface PackageJson {
     localStartFile?: string; // relative path to local start html
     runTasks?: Script[];
     enableEslint: boolean;
-    sapuxLayer?: SapUxLayer;
+    sapuxLayer?: UI5FlexLayer;
 }
 
 // Common constants defs used throughout
@@ -96,17 +76,10 @@ export type NeoappDestination = {
     entryPath?: string;
 };
 
-export interface BackendConfig {
-    path: string;
-    url?: string;
-    client?: string;
-    destination?: string;
-    destinationInstance?: string;
-    pathPrefix?: string;
-}
-
-// NOTE: EntityConfig duplicates types from @sap-ux/app-gen-core
-// Consolidate when app-gen-core types are published to @sap-ux scope - track in package migration roadmap
+/**
+ * @deprecated Not used by the migration writer. Use EntityConfig from @sap-ux/fiori-elements-writer
+ * if an entity configuration is needed.
+ */
 export interface EntityConfig {
     mainEntity?: { entityName: string; type?: any };
     filterEntityType?: string;
@@ -305,6 +278,8 @@ export interface Project {
  * SECURITY: This interface contains sensitive authentication data.
  * The `password` field must NEVER be logged, included in error messages,
  * or transmitted to telemetry systems.
+ *
+ * @deprecated Not used by the migration writer. Will be removed in a future release.
  */
 export interface Credentials {
     /** Username for authentication */
@@ -329,12 +304,17 @@ export const ApiHubType = {
 export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
 /**
  * Defines the api hub service properties or enterprise and non-enterprise versions
+ *
+ * @deprecated Not used by the migration writer. Will be removed in a future release.
  */
 export interface ApiHubConfig {
     apiHubKey: string;
     apiHubType: ApiHubType;
 }
 
+/**
+ * @deprecated Not used by the migration writer. Use CapService from @sap-ux/cap-config-writer instead.
+ */
 export interface CapService {
     projectPath: string; // The CAP Project Root
     serviceName: string;
@@ -370,7 +350,11 @@ export interface Service {
     ignoreCertError?: boolean;
 }
 
-/** README.txt base definition */
+/**
+ * README.txt base definition
+ *
+ * @deprecated Not used by the migration writer. Will be removed in a future release.
+ */
 export interface ReadMe {
     genDate: string;
     genPlatform: string;
