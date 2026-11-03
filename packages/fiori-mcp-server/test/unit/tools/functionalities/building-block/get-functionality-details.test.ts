@@ -8,9 +8,8 @@ jest.unstable_mockModule('../../../../../src/utils/index.js', () => ({
     resolveApplication: mockResolveApplication
 }));
 
-const { getFunctionalityDetails, ADD_BUILDING_BLOCK_FUNCTIONALITY } = await import(
-    '../../../../../src/tools/functionalities/building-block/get-functionality-details.js'
-);
+const { getFunctionalityDetails, ADD_BUILDING_BLOCK_FUNCTIONALITY } =
+    await import('../../../../../src/tools/functionalities/building-block/get-functionality-details.js');
 
 describe('ADD_BUILDING_BLOCK_FUNCTIONALITY descriptor', () => {
     test('is keyed by the add-building-block id and points the LLM at search_docs', () => {

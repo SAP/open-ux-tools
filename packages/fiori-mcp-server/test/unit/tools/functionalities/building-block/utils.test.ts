@@ -93,7 +93,9 @@ describe('BB_TYPE_MIN_UI5_VERSION', () => {
 
 describe('versionRequirementsNote', () => {
     test('lists the real RTE and Page minimums from the writer constants', () => {
-        expect(versionRequirementsNote).toContain('Types requiring UI5 >= 1.117.0: RichTextEditor, RichTextEditorButtonGroups.');
+        expect(versionRequirementsNote).toContain(
+            'Types requiring UI5 >= 1.117.0: RichTextEditor, RichTextEditorButtonGroups.'
+        );
         expect(versionRequirementsNote).toContain('Types requiring UI5 >= 1.136.0: Page (basic).');
         expect(versionRequirementsNote).toContain('Types requiring UI5 >= 1.145.0: Page (full layout).');
     });

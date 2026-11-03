@@ -34,9 +34,8 @@ jest.unstable_mockModule('../../../../../src/utils/index.js', () => ({
     resolveApplication: mockResolveApplication
 }));
 
-const { executeFunctionality } = await import(
-    '../../../../../src/tools/functionalities/building-block/execute-functionality.js'
-);
+const { executeFunctionality } =
+    await import('../../../../../src/tools/functionalities/building-block/execute-functionality.js');
 
 const tableParams = {
     viewOrFragmentPath: 'webapp/ext/Main.view.xml',

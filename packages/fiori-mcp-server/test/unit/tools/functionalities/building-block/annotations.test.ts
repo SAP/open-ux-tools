@@ -17,9 +17,8 @@ jest.unstable_mockModule('../../../../../src/page-editor-api/index.js', () => ({
     getServiceName: mockGetServiceName
 }));
 
-const { writeAnnotationShell, ANNOTATION_SHELL_TERMS } = await import(
-    '../../../../../src/tools/functionalities/building-block/annotations.js'
-);
+const { writeAnnotationShell, ANNOTATION_SHELL_TERMS } =
+    await import('../../../../../src/tools/functionalities/building-block/annotations.js');
 
 const applicationAccess = { project: { root: '/app', projectType: 'EDMXBackend' } } as any;
 const fs = {} as any;
