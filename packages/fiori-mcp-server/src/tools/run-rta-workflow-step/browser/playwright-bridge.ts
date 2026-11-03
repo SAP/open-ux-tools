@@ -280,28 +280,33 @@ async function classifyEditorReadiness(
 }
 
 /**
- * Invokes a Joule frontend action on the page hosting `site`. Reuses an
- * existing page if one is registered for the site; otherwise opens a new
- * one. Throws on transport / lookup failures; returns the frontend action
- * result envelope (including `isSuccess === false` payloads) for the caller to inspect.
+ * Invokes a Joule frontend action on the page hosting `site`, reusing a registered
+ * page or (only when `allowOpen`) opening a new one. Returns the result envelope;
+ * throws on transport/lookup failures.
  *
  * @param site URL to load (typically the adaptation editor URL).
  * @param actionName Frontend action identifier, e.g. `com.sap.ui.flex.startRTA.v1`.
  * @param payload Object payload forwarded to the frontend action function.
  * @param frameId Optional frame element id to scope the call to an iframe.
+ * @param allowOpen Open a page when none is registered (the `start`/`restart` path);
+ * otherwise reject. Defaults to `false`.
  * @returns The frontend action result envelope.
  */
 export async function callFrontendAction<TReturn = unknown>(
     site: string,
     actionName: string,
     payload: Record<string, unknown> = {},
-    frameId?: string
+    frameId?: string,
+    allowOpen = false
 ): Promise<FrontendActionResult<TReturn>> {
-    const activeBrowser = await startBrowser();
     const key = originKey(site);
     let rpc = connectionRegistry.get(key);
 
     if (!rpc) {
+        if (!allowOpen) {
+            throw new Error('No active editor session for this site. Run the "start" step first.');
+        }
+        const activeBrowser = await startBrowser();
         const context = await activeBrowser.newContext(buildContextOptions(site));
         const page: Page = await context.newPage();
 

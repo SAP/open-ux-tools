@@ -60,7 +60,7 @@ describe('rta/commands', () => {
     test('startRta calls com.sap.ui.flex.startRTA.v1 with empty payload', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(ok({ rtaStarted: true }));
         const result = await startRta(transport, { site: SITE, frameId: FRAME });
-        expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.startRTA.v1', {}, FRAME);
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.startRTA.v1', {}, FRAME, true);
         expect(result).toEqual({ rtaStarted: true });
     });
 

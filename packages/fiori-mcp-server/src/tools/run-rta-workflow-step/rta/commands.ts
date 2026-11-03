@@ -46,7 +46,27 @@ export class FrontendActionError extends Error {
 const action = (name: string): string => `${ACTION_PREFIX}.${name}.${ACTION_VERSION}`;
 
 /**
+ * Raised when a first editor call lands on a backend login page (CF XSUAA / ABAP
+ * reentrance) instead of the app. The browser driver encodes this as a reserved
+ * `backend_login_required` sentinel payload on an otherwise-successful envelope;
+ * {@link unwrap} decodes it centrally so any step — not just `start` — surfaces the
+ * login prompt rather than returning the sentinel as a mistyped result.
+ */
+export class BackendLoginRequiredError extends Error {
+    /**
+     * @param guidance Human-readable instruction for completing the interactive login.
+     */
+    constructor(public readonly guidance: string) {
+        super(guidance);
+        this.name = 'BackendLoginRequiredError';
+    }
+}
+
+/**
  * Returns the result payload on success; throws `FrontendActionError` on failure.
+ * A reserved `backend_login_required` sentinel payload is decoded here and raised as
+ * {@link BackendLoginRequiredError}, so every caller surfaces the login prompt instead
+ * of treating the sentinel as a valid `T`.
  *
  * @param actionName Fully-qualified action name, used in the error message.
  * @param result Frontend action result envelope.
@@ -56,6 +76,9 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
     if (!result.isSuccess) {
         const code = result.error?.code ?? 'GENERIC_ERROR';
         throw new FrontendActionError(actionName, code, result.error?.message);
+    }
+    if (isNeedsUserAction(result.payload)) {
+        throw new BackendLoginRequiredError(result.payload.message);
     }
     return result.payload as T;
 }
@@ -83,11 +106,19 @@ export interface StartRtaResult {
  */
 export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<StartRtaResult> {
     const name = action('startRTA');
-    const payload = unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId));
-    if (isNeedsUserAction(payload)) {
-        return { rtaStarted: false, needsUserAction: payload.__needsUserAction, message: payload.message };
+    try {
+        // `start`/`restart` is the only path allowed to open a fresh editor page.
+        unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId, true));
+        return { rtaStarted: true };
+    } catch (error) {
+        // `unwrap` decodes the backend-login sentinel into this error for every
+        // caller; `start` is the one that treats it as a benign retry signal
+        // (prompt the user to log in) rather than a hard failure.
+        if (error instanceof BackendLoginRequiredError) {
+            return { rtaStarted: false, needsUserAction: 'backend_login_required', message: error.guidance };
+        }
+        throw error;
     }
-    return { rtaStarted: true };
 }
 
 /**

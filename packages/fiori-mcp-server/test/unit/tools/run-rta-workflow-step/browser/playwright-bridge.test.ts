@@ -138,7 +138,22 @@ function setupBrowser(pages: FakePage[]): { browser: FakeBrowser; pages: FakePag
     return { browser, pages };
 }
 
+/**
+ * Loads the bridge module. These tests exercise the page-opening path (the
+ * `start`/`restart` flow), so `callFrontendAction` is wrapped to default
+ * `allowOpen` to `true` — matching how `startRta` invokes it in production.
+ * The session-required rejection is covered by its own test that calls the real
+ * module directly with `allowOpen` left at its default.
+ */
 async function loadPlaywrightBridge(): Promise<typeof PlaywrightBridgeModule> {
+    const mod = await import('../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge');
+    const callFrontendAction: typeof mod.callFrontendAction = (site, actionName, payload, frameId, allowOpen = true) =>
+        mod.callFrontendAction(site, actionName, payload, frameId, allowOpen);
+    return { ...mod, callFrontendAction };
+}
+
+/** Loads the real bridge module without the open-by-default wrapper. */
+async function loadPlaywrightBridgeRaw(): Promise<typeof PlaywrightBridgeModule> {
     return import('../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge');
 }
 
@@ -194,6 +209,19 @@ describe('browser/playwright-bridge', () => {
         expect(result).toEqual({ isSuccess: true, payload: { rtaStarted: true }, error: null });
 
         await fs.stopBrowser();
+    });
+
+    test('a non-start first call (allowOpen omitted) is rejected without launching a browser', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+
+        const fs = await loadPlaywrightBridgeRaw();
+        // No registered session + allowOpen defaulting to false → fail fast.
+        await expect(fs.callFrontendAction(SITE_A, 'com.sap.ui.flex.getOverlaysInformation.v1', {})).rejects.toThrow(
+            /Run the "start" step first/
+        );
+        // The guard runs before startBrowser, so Chromium is never launched.
+        expect(launchMock).not.toHaveBeenCalled();
     });
 
     test('reuses page on second callFrontendAction for same site', async () => {
