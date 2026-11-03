@@ -1,7 +1,9 @@
 import { getVariant, readUi5Config } from './helper.js';
+import { isCFEnvironment } from './cf.js';
 import type { AdpPreviewConfig } from '../types.js';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { createReader, createWorkspace } from '@ui5/fs/resourceFactory';
+import type { UI5Config } from '@sap-ux/ui5-config';
 import path, { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -78,6 +80,40 @@ async function getAdaptationWorkspace(
 }
 
 /**
+ * Resolves the `@ui5/task-adaptation` build configuration for a project, routed
+ * by environment the same way the rest of the ADP flow routes it ({@link isCFEnvironment}):
+ *
+ * - CF: the `app-variant-bundler-build` task carries the build configuration
+ *   (module/space/org/...). Use it as-is — never stamp `type: 'abap'`.
+ * - ABAP with the bundler task (CloudReady / S/4 private): the task's own config
+ *   already carries `type: 'abap'`. Use it as-is.
+ * - ABAP without the bundler task (on-prem preview): derive the configuration from
+ *   the `fiori-tools-preview` middleware and mark it `type: 'abap'`.
+ *
+ * @param appPath - Absolute path to the project root.
+ * @param ui5Config - Parsed ui5.yaml for the project.
+ * @returns The build configuration to pass to the adaptation task.
+ */
+async function resolveBuildConfiguration(appPath: string, ui5Config: UI5Config): Promise<Record<string, unknown>> {
+    const buildTask = ui5Config.findCustomTask<Record<string, unknown>>('app-variant-bundler-build');
+
+    if (await isCFEnvironment(appPath)) {
+        return buildTask?.configuration ?? {};
+    }
+    if (buildTask) {
+        // ABAP CloudReady: the bundler config already carries its own `type: 'abap'`.
+        return buildTask.configuration ?? {};
+    }
+    // ABAP on-prem preview: no bundler task — fall back to the preview middleware.
+    const adpConfiguration = ui5Config.findCustomMiddleware<{ adp?: AdpPreviewConfig }>('fiori-tools-preview')
+        ?.configuration?.adp;
+    if (!adpConfiguration) {
+        throw new Error('Adaptation project has no fiori-tools-preview ADP configuration');
+    }
+    return { ...adpConfiguration, type: 'abap' };
+}
+
+/**
  * Runs an adaptation task with the project's build configuration and workspace.
  *
  * @param appPath - Absolute path to the project root.
@@ -92,17 +128,7 @@ async function runAdaptationTask<Name extends AdaptationTask>(
 ): Promise<TaskResults[Name]> {
     const { workspace, projectNamespace } = await getAdaptationWorkspace(appPath);
     const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
-    let configuration =
-        ui5Config.findCustomTask<Record<string, unknown>>('app-variant-bundler-build')?.configuration ?? {};
-
-    if (Object.keys(configuration).length === 0) {
-        const adpConfiguration = ui5Config.findCustomMiddleware<{ adp?: AdpPreviewConfig }>('fiori-tools-preview')
-            ?.configuration?.adp;
-        if (!adpConfiguration) {
-            throw new Error('Adaptation project has no fiori-tools-preview ADP configuration');
-        }
-        configuration = { ...adpConfiguration, type: 'abap' };
-    }
+    const configuration = await resolveBuildConfiguration(appPath, ui5Config);
 
     const taskAdaptation = await getTaskAdaptation(appPath);
     const task = taskAdaptation[taskName] ?? taskAdaptation.default?.[taskName];

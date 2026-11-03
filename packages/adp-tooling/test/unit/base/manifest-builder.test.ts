@@ -13,9 +13,11 @@ const ui5Config = {
 const readUi5Config = jest.fn<() => Promise<typeof ui5Config>>();
 const getVariant = jest.fn<() => Promise<{ id?: unknown }>>();
 const getWebappPath = jest.fn<() => Promise<string>>();
+const isCFEnvironment = jest.fn<() => Promise<boolean>>();
 
 const realHelper = await import('../../../src/base/helper.js');
 jest.unstable_mockModule('../../../src/base/helper.js', () => ({ ...realHelper, readUi5Config, getVariant }));
+jest.unstable_mockModule('../../../src/base/cf.js', () => ({ isCFEnvironment }));
 jest.unstable_mockModule('@sap-ux/project-access', () => ({ getWebappPath }));
 
 const { getMergedManifest, downloadAppResources } = await import('../../../src/base/manifest-builder.js');
@@ -52,6 +54,7 @@ describe('manifest-builder', () => {
         getVariant.mockResolvedValue({ id: 'customer.app' });
         getWebappPath.mockResolvedValue(resolve('test/test-output/webapp'));
         ui5Config.findCustomTask.mockReturnValue({ configuration });
+        isCFEnvironment.mockResolvedValue(false);
     });
 
     describe.each([
@@ -111,14 +114,10 @@ describe('manifest-builder', () => {
             await expect(invoke(appPath)).rejects.toBe(error);
         });
 
-        test.each([
-            { label: 'missing task', buildTask: undefined },
-            { label: 'missing configuration', buildTask: {} },
-            { label: 'empty configuration', buildTask: { configuration: {} } }
-        ])('uses ABAP preview configuration with $label', async ({ label, buildTask }) => {
-            ui5Config.findCustomTask.mockReturnValue(buildTask);
+        test('uses ABAP preview configuration when the bundler task is absent', async () => {
+            ui5Config.findCustomTask.mockReturnValue(undefined);
             const task = jest.fn<() => Promise<object>>().mockResolvedValue(result);
-            const appPath = mockTaskModule(name + '-abap-' + label, { [name]: task });
+            const appPath = mockTaskModule(name + '-abap-missing-task', { [name]: task });
 
             await expect(invoke(appPath)).resolves.toBe(result);
 
@@ -133,6 +132,82 @@ describe('manifest-builder', () => {
             );
             expect(abapConfiguration).not.toHaveProperty('type');
         });
+
+        test('CF project: uses the bundler task configuration as-is, no ABAP stamp', async () => {
+            isCFEnvironment.mockResolvedValue(true);
+            const cfConfig = { space: 'guid', destination: 'dest' };
+            ui5Config.findCustomTask.mockReturnValue({ configuration: cfConfig });
+            const task = jest.fn<() => Promise<object>>().mockResolvedValue(result);
+            const appPath = mockTaskModule(name + '-cf', { [name]: task });
+
+            await expect(invoke(appPath)).resolves.toBe(result);
+
+            // CF routes on isCFEnvironment — the ABAP middleware fallback must not run.
+            expect(ui5Config.findCustomMiddleware).not.toHaveBeenCalled();
+            expect(task).toHaveBeenCalledWith(
+                {
+                    workspace: expect.objectContaining({ byGlob: expect.any(Function) }),
+                    options: { configuration: cfConfig, projectNamespace: 'customer/app' }
+                },
+                name === 'downloadAppResources' ? join(appPath, '.context') : undefined
+            );
+            // CF config is passed through verbatim — no `type` is ever added.
+            const [[{ options }]] = task.mock.calls as [[{ options: { configuration: Record<string, unknown> } }]];
+            expect('type' in options.configuration).toBe(false);
+        });
+
+        test('CF project with a missing bundler configuration: passes an empty configuration', async () => {
+            isCFEnvironment.mockResolvedValue(true);
+            ui5Config.findCustomTask.mockReturnValue(undefined);
+            const task = jest.fn<() => Promise<object>>().mockResolvedValue(result);
+            const appPath = mockTaskModule(name + '-cf-no-task', { [name]: task });
+
+            await expect(invoke(appPath)).resolves.toBe(result);
+
+            // Still CF — never fall through to the ABAP middleware branch.
+            expect(ui5Config.findCustomMiddleware).not.toHaveBeenCalled();
+            expect(task).toHaveBeenCalledWith(
+                {
+                    workspace: expect.objectContaining({ byGlob: expect.any(Function) }),
+                    options: { configuration: {}, projectNamespace: 'customer/app' }
+                },
+                name === 'downloadAppResources' ? join(appPath, '.context') : undefined
+            );
+        });
+
+        test.each([
+            { label: 'no configuration property', buildTask: {}, expected: {} },
+            { label: 'empty configuration', buildTask: { configuration: {} }, expected: {} },
+            {
+                label: 'populated configuration (carries its own type)',
+                buildTask: { configuration: { type: 'abap', appName: 'base.app', target: { url: 'https://host' } } },
+                expected: { type: 'abap', appName: 'base.app', target: { url: 'https://host' } }
+            }
+        ])(
+            'ABAP CloudReady ($label): uses the present bundler task configuration as-is',
+            async ({ label, buildTask, expected }) => {
+                // Not CF, but the bundler task is present (ABAP CloudReady / S4 private).
+                ui5Config.findCustomTask.mockReturnValue(buildTask);
+                const task = jest.fn<() => Promise<object>>().mockResolvedValue(result);
+                const appPath = mockTaskModule(name + '-abap-cloudready-' + label, { [name]: task });
+
+                await expect(invoke(appPath)).resolves.toBe(result);
+
+                expect(readUi5Config).toHaveBeenCalledWith(appPath, 'ui5.yaml');
+                // A present bundler task owns the config — the ABAP middleware fallback must not run.
+                expect(ui5Config.findCustomMiddleware).not.toHaveBeenCalled();
+                expect(task).toHaveBeenCalledWith(
+                    {
+                        workspace: expect.objectContaining({ byGlob: expect.any(Function) }),
+                        options: { configuration: expected, projectNamespace: 'customer/app' }
+                    },
+                    name === 'downloadAppResources' ? join(appPath, '.context') : undefined
+                );
+                // Config is passed through verbatim — never stamped with a `type` the source lacked.
+                const [[{ options }]] = task.mock.calls as [[{ options: { configuration: Record<string, unknown> } }]];
+                expect('type' in options.configuration).toBe('type' in expected);
+            }
+        );
 
         test.each([undefined, { configuration: {} }])(
             'rejects missing ADP preview configuration: %j',
