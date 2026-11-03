@@ -4,7 +4,7 @@ import { create, type Editor } from 'mem-fs-editor';
 
 import { getManifestContent } from './manifest/index.js';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils.js';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, writeOpaTestFiles } from './project-utils.js';
 import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types.js';
 import { getApplicationType } from '../source/index.js';
 import { writeKeyUserChanges } from '../base/change-utils.js';
@@ -69,6 +69,10 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
     await writeKeyUserChanges(basePath, fullConfig, fs);
+
+    if (fullConfig.options?.addOpaTests) {
+        writeOpaTestFiles(templatePath, basePath, fullConfig, fs);
+    }
 
     return fs;
 }

@@ -160,6 +160,11 @@ export interface AdpWriterConfig {
          * Optional: path to the template files to be used for generation
          */
         templatePathOverwrite?: string;
+        /**
+         * Optional: if set to true then OPA5 test scaffolding and a ui5-mock.yaml will be generated.
+         * Automatically set for VENDOR-layer (internal developer) projects.
+         */
+        addOpaTests?: boolean;
     };
     /**
      * Optional: Key-user changes to be written to the project.

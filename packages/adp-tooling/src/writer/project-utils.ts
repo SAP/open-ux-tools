@@ -101,8 +101,28 @@ export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
 }
 
 /**
- * Writes a given project template files within a specified folder in the project directory.
+ * Writes OPA5 test scaffolding files and a ui5-mock.yaml for VENDOR-layer projects.
  *
+ * Files are sourced from the `opa/` template subtree so they are only written when
+ * this function is explicitly called, never by the general `project/**` glob.
+ *
+ * @param {string} baseTmplPath - The root path of the templates folder.
+ * @param {string} projectPath - The root path of the project.
+ * @param {AdpWriterConfig} data - The data to be populated in the template files.
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @returns {void}
+ */
+export function writeOpaTestFiles(baseTmplPath: string, projectPath: string, data: AdpWriterConfig, fs: Editor): void {
+    const tmplPath = join(baseTmplPath, 'opa', '**/*.*');
+    try {
+        fs.copyTpl(tmplPath, projectPath, data, undefined, {
+            globOptions: { dot: true }
+        });
+    } catch (e) {
+        throw new Error(`Could not write OPA test files. Reason: ${e.message}`);
+    }
+}
+/**
  * @param {string} baseTmplPath - The root path of the templates folder.
  * @param {string} projectPath - The root path of the project.
  * @param {AdpWriterConfig} data - The data to be populated in the template file.
