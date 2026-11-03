@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Bug Fixes
+
+- Avoid double padding in UITooltip callout [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
 ## 3.0.20
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/control-property-editor
 
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
 ## 1.0.14
 
 ### Patch Changes

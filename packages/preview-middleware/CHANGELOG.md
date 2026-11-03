@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 1.2.36
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
 ## 1.2.35
 
 ### Patch Changes
