@@ -322,7 +322,7 @@ const answers: ConfigAnswers & AttributesAnswers = {
 };
 
 const baseApp: CFApp = {
-    appId: 'test-app-id',
+    appId: 'test.app.id',
     appName: 'test-app-name',
     appVersion: 'test-app-version',
     serviceName: 'test-service-name',
@@ -1541,6 +1541,27 @@ describe('Adaptation Project Generator Integration Test', () => {
                     'orchestrator-id',
                     `Failure: ${t('error.serviceInstanceNotFound', { name: 'missing-instance' })}`
                 );
+                expect(mockGenerateCf).not.toHaveBeenCalled();
+            });
+
+            it('should reject an invalid projectName before generation', async () => {
+                const jsonInput = {
+                    id: 'orchestrator-id',
+                    targetEnv: 'CF',
+                    application: baseApp.appId,
+                    businessService: 'test-service',
+                    projectName: '../escape',
+                    mtaMode: 'existing',
+                    targetFolder: cfTestOutputDir
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+
                 expect(mockGenerateCf).not.toHaveBeenCalled();
             });
         });

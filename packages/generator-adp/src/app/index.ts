@@ -51,6 +51,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 import type {
     CfConfig,
     CfServicesAnswers,
@@ -1027,10 +1028,16 @@ export default class extends Generator {
         };
 
         const projectName = this.attributeAnswersProjectName(baseApplicationName, requestedProjectName);
+        const title = applicationTitle ?? manifest['sap.app']?.title ?? t('prompts.appTitleDefault');
+        const namespace = requestedNamespace ?? getDefaultNamespace(projectName, this.isCustomerBase);
+
+        assertValidationPassed(validateProjectName(projectName, projectPath, this.isCustomerBase, true));
+        assertValidationPassed(validateNamespaceAdp(namespace, projectName, this.isCustomerBase));
+
         this.attributeAnswers = {
             projectName,
-            title: applicationTitle ?? '',
-            namespace: requestedNamespace ?? getDefaultNamespace(projectName, this.isCustomerBase),
+            title,
+            namespace,
             targetFolder: projectPath,
             ui5Version: '',
             enableTypeScript: false
