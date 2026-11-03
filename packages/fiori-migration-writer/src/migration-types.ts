@@ -1,6 +1,6 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
@@ -24,11 +24,19 @@ export type Script = {
     command: string;
 };
 
+/**
+ * SAP UX layer for adaptation projects
+ *
+ * @deprecated Use UI5FlexLayer from @sap-ux/project-access instead
+ */
 export const SapUxLayer = {
     VENDOR: 'VENDOR',
     CUSTOMER_BASE: 'CUSTOMER_BASE'
 } as const;
-export type SapUxLayer = (typeof SapUxLayer)[keyof typeof SapUxLayer];
+/**
+ * @deprecated Use UI5FlexLayer from @sap-ux/project-access instead
+ */
+export type SapUxLayer = UI5FlexLayer;
 
 /** package.json interface */
 export interface PackageJson {
