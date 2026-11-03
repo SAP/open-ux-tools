@@ -102,10 +102,12 @@ export async function probeBridge(page: Page, frameId?: string): Promise<boolean
 
 /**
  * Keeps the open login window alive and polls {@link probeBridge} while a human
- * logs in, up to `budgetMs`. Resolves `true` the moment the bridge appears (login
- * done, app served into the frame), `false` if the budget elapses. Never throws
- * and never closes the page — the caller owns teardown and gates on `app-loaded`
- * afterwards, so this only detects "logged in".
+ * logs in, up to `budgetMs`. Resolves `true` the moment the bridge appears,
+ * `false` if the budget elapses. Never throws and never closes the page.
+ *
+ * On a live page each probe blocks for `BRIDGE_PROBE_MS`, so the loop paces itself.
+ * A closed page is the exception — its probe rejects instantly and can never
+ * recover, so we stop rather than poll a dead target for the whole budget.
  *
  * @param page The page sitting on the backend login screen.
  * @param budgetMs Total time to wait for login before giving up.
@@ -118,6 +120,10 @@ export async function waitForLogin(page: Page, budgetMs: number, frameId?: strin
     do {
         if (await probeBridge(page, frameId)) {
             return true;
+        }
+        // A closed page can never serve the bridge — stop instead of spinning.
+        if (page.isClosed()) {
+            return false;
         }
     } while (Date.now() < deadline);
     return false;
