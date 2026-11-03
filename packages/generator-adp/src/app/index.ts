@@ -1092,7 +1092,7 @@ export default class extends Generator {
      * @returns {string} The project name.
      */
     private attributeAnswersProjectName(baseApplicationName: string, requested?: string): string {
-        return requested ?? getDefaultProjectName(process.cwd(), `${baseApplicationName}.variant`);
+        return requested ?? getDefaultProjectName(this.destinationPath(), `${baseApplicationName}.variant`);
     }
 
     /**

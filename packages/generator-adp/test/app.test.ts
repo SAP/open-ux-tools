@@ -1295,6 +1295,39 @@ describe('Adaptation Project Generator Integration Test', () => {
                 );
             });
 
+            it('should derive the default project name against the resolved MTA root, not the cwd', async () => {
+                // Distinguish the fix from the bug: run from cfTestOutputDir (cwd) but target a DIFFERENT
+                // MTA root that already contains `<appId>.variant`. Deriving against the MTA root must
+                // yield `<appId>.variant2`; the old cwd-based code would wrongly return `<appId>.variant`.
+                const otherMtaRoot = join(cfTestOutputDir, 'other-mta-root');
+                fs.mkdirSync(join(otherMtaRoot, `${baseApp.appId}.variant`), { recursive: true });
+                fs.copyFileSync(join(__dirname, 'fixtures', 'mta-project', 'mta.yaml'), join(otherMtaRoot, 'mta.yaml'));
+
+                const jsonInput = {
+                    targetEnv: 'CF',
+                    application: baseApp.appId,
+                    businessService: 'test-service',
+                    mtaMode: 'existing',
+                    targetFolder: otherMtaRoot
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).resolves.not.toThrow();
+
+                expect(mockGenerateCf).toHaveBeenCalledWith(
+                    otherMtaRoot,
+                    expect.objectContaining({
+                        project: expect.objectContaining({ name: `${baseApp.appId}.variant2` })
+                    }),
+                    expect.any(Object),
+                    expect.any(Object)
+                );
+            });
+
             it('should resolve a live service instance for the serviceInstanceName branch', async () => {
                 mockGetAdpServiceInstances.mockResolvedValue([
                     { name: 'live-instance', guid: 'inst-guid', service: 'hana', servicePlan: 'hdi-shared' }
