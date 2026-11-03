@@ -29,6 +29,7 @@ export enum UiIcons {
     Chart = 'Chart',
     ChatBubbles = 'ChatBubbles',
     Check = 'Check',
+    CheckboxGroup = 'CheckboxGroup',
     Chevron = 'Chevron',
     ChevronDown = 'ChevronDown',
     Clear = 'Clear',
@@ -385,6 +386,38 @@ export function initIcons(): void {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M3 1H4V2H12V1H13V2H14C14.5523 2 15 2.44772 15 3V13C15 13.5523 14.5523 14 14 14H2C1.44772 14 1 13.5523 1 13V3C1 2.44772 1.44772 2 2 2H3V1ZM2 3V5H14V3H2ZM14 6H2V13H14V6Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.CheckboxGroup]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M15 12.5C15.2761 12.5 15.5 12.7239 15.5 13C15.5 13.2761 15.2761 13.5 15 13.5L6 13.5C5.72386 13.5 5.5 13.2761 5.5 13C5.5 12.7239 5.72386 12.5 6 12.5L15 12.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M15 7.5C15.2761 7.5 15.5 7.72386 15.5 8C15.5 8.27614 15.2761 8.5 15 8.5L6 8.5C5.72386 8.5 5.5 8.27614 5.5 8C5.5 7.72386 5.72386 7.5 6 7.5L15 7.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M15 2.5C15.2761 2.5 15.5 2.72386 15.5 3C15.5 3.27614 15.2761 3.5 15 3.5L6 3.5C5.72386 3.5 5.5 3.27614 5.5 3C5.5 2.72386 5.72386 2.5 6 2.5L15 2.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M3 11C3.55228 11 4 11.4477 4 12V14C4 14.5523 3.55228 15 3 15H1C0.447715 15 0 14.5523 0 14V12C0 11.4477 0.447715 11 1 11H3ZM1 12V14H3V12H1Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M3.14645 6.64651C3.34171 6.45125 3.65822 6.45125 3.85348 6.64651C4.04874 6.84177 4.04874 7.15828 3.85348 7.35354L1.85348 9.35354C1.65822 9.5488 1.34171 9.5488 1.14645 9.35354L0.146447 8.35354C-0.0488155 8.15828 -0.0488155 7.84177 0.146447 7.64651C0.341709 7.45125 0.658216 7.45125 0.853478 7.64651L1.49996 8.29299L3.14645 6.64651Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M3 1C3.55228 1 4 1.44772 4 2V4C4 4.55228 3.55228 5 3 5H1C0.447715 5 0 4.55228 0 4V2C0 1.44772 0.447715 1 1 1H3ZM1 2V4H3V2H1Z"
                         fill={COLORS.default}
                     />
                 </svg>
