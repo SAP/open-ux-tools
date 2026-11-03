@@ -1169,7 +1169,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
             expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
-                { names: ['my-instance'] },
+                { names: ['my-instance'], spaceGuids: [cfConfig.space.GUID] },
                 expect.any(Object)
             );
             expect(mockGenerateCf).toHaveBeenCalledWith(

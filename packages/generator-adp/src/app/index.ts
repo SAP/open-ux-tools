@@ -781,7 +781,8 @@ export default class extends Generator {
         const businessServiceName = businessService?.trim() ? businessService : (serviceInstance?.name ?? '');
         const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
-                names: [businessServiceName]
+                names: [businessServiceName],
+                spaceGuids: [this.cfConfig.space.GUID]
             },
             this.logger
         );
