@@ -1,5 +1,25 @@
 # @sap-ux/create
 
+## 1.5.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/preview-middleware 1.2.34 → 1.2.35
+- @sap-ux/abap-deploy-config-inquirer 2.0.57 → 2.0.58
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/app-config-writer 1.1.32 → 1.1.33
+- @sap-ux/fiori-migration-writer 0.0.13 → 0.0.14
+- @sap-ux/flp-config-inquirer 1.0.72 → 1.0.73
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/ui5-test-writer 1.19.7 → 1.19.8
+- @sap-ux/cap-config-writer 1.0.48 → 1.0.49
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+- @sap-ux/abap-deploy-config-writer 1.0.36 → 1.0.37
+
 ## 1.5.12
 
 ### Patch Changes

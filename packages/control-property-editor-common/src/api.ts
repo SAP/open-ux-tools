@@ -284,8 +284,9 @@ export enum MessageBarType {
 }
 
 export interface ContextMenuActionExecutionPayload {
-    controlId: string;
+    controlId: string | string[];
     actionName: string;
+    payload?: { key: string };
 }
 
 /**
@@ -474,14 +475,17 @@ interface ContextMenuItem {
     enabled: boolean;
     title: string;
     tooltip?: string;
+    submenu?: ContextMenuItem[];
 }
 
 export interface ContextMenu {
-    controlId: string;
+    controlId: string | string[];
     contextMenuItems: ContextMenuItem[];
 }
 
-export const requestControlContextMenu = createAsyncExternalAction<string, ContextMenu>('request-control-context-menu');
+export const requestControlContextMenu = createAsyncExternalAction<string | string[], ContextMenu>(
+    'request-control-context-menu'
+);
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
