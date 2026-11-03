@@ -15,6 +15,20 @@ import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
 
 /**
+ * Asserts `value` is a non-empty string; throws `message` otherwise.
+ *
+ * @param value The value to check.
+ * @param message Error message when the assertion fails.
+ * @returns The validated string.
+ */
+function assertNonEmptyString(value: unknown, message: string): string {
+    if (typeof value !== 'string' || value.length === 0) {
+        throw new Error(message);
+    }
+    return value;
+}
+
+/**
  * Reads `key` from `payload` and asserts it is a non-empty string. The Zod
  * schema declares `payload` as `record(string, unknown)` so the AI can pass
  * any shape; per-step required fields are validated here instead.
@@ -24,11 +38,7 @@ import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } fr
  * @returns The string value.
  */
 function requireString(payload: Record<string, unknown> | undefined, key: string): string {
-    const value = payload?.[key];
-    if (typeof value !== 'string' || value.length === 0) {
-        throw new Error(`payload.${key} is required and must be a non-empty string`);
-    }
-    return value;
+    return assertNonEmptyString(payload?.[key], `payload.${key} is required and must be a non-empty string`);
 }
 
 /**
@@ -39,12 +49,10 @@ function requireString(payload: Record<string, unknown> | undefined, key: string
  * @returns The validated appPath.
  */
 function requireAppPath(appPath: string | undefined): string {
-    if (typeof appPath !== 'string' || appPath.length === 0) {
-        throw new Error(
-            'appPath is required for this step. Pass the adaptation project root (the same appPath used to open the editor).'
-        );
-    }
-    return appPath;
+    return assertNonEmptyString(
+        appPath,
+        'appPath is required for this step. Pass the adaptation project root (the same appPath used to open the editor).'
+    );
 }
 
 /**
