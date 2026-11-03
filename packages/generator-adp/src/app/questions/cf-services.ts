@@ -569,6 +569,7 @@ export class CFServicesPrompter {
                 // The picker is FDC-filtered to services with adaptable apps, so an empty app list or a
                 // discovery failure here is a real error: the writer needs the selected base app's manifest.
                 try {
+                    this.logger.info(`Getting CF apps for business service: ${instance.name}`);
                     this.apps = await getCfApps(this.businessServiceInfo.serviceKeys, cfConfig, this.logger);
                     this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                     if (this.apps.length === 0) {

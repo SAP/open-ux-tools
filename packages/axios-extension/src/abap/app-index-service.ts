@@ -65,6 +65,7 @@ export abstract class AppIndexService extends Axios implements Service {
      * @returns {Promise<boolean>} - "true" for apps supporting manifest first which are apps with minUI5Version at least 1.30 and not scaffolding-based (i.e. dependency to sap.ca.scfld.md library), otherwise it returns "false".
      */
     public async getIsManiFirstSupported(appId: string): Promise<boolean> {
+        this.log.debug(`Checking if manifest first is supported for app with id: ${appId}.`);
         try {
             const params = {
                 'id': appId
@@ -74,8 +75,10 @@ export abstract class AppIndexService extends Axios implements Service {
 
             return isManiFirstSupported;
         } catch (error) {
+            if (isAxiosError(error) && error.config) {
+                this.log.error(`Failed for request URL: ${error.config.url}`);
+            }
             this.log.error(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
-            this.log.debug(error);
             throw error;
         }
     }
@@ -86,16 +89,17 @@ export abstract class AppIndexService extends Axios implements Service {
      * @returns {Promise<Ui5AppInfo>} App info.
      */
     public async getAppInfo(appId: string): Promise<Ui5AppInfo> {
+        this.log.debug(`Fetching app info for app with id: ${appId}.`);
         try {
             const response = await this.get('/ui5_app_info_json', { params: { id: appId } });
             return JSON.parse(response.data);
         } catch (error) {
             if (isAxiosError(error)) {
+                this.log.error(`Failed for request URL: ${error.config.url}`);
                 this.log.error(`Failed fetching ui5_app_info_json for app with id ${appId}.`);
             } else {
                 this.log.error(`Parsing error: ui5_app_info_json is not in expected format for app with id ${appId}.`);
             }
-            this.log.debug(error);
             throw error;
         }
     }
