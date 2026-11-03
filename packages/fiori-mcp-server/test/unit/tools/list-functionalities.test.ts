@@ -77,7 +77,8 @@ describe('listFunctionalities', () => {
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'add-building-block'
         ]);
     });
 
@@ -101,7 +102,8 @@ describe('listFunctionalities', () => {
         expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
             'delete-page',
-            'create-controller-extension'
+            'create-controller-extension',
+            'add-building-block'
         ]);
     });
 
@@ -110,7 +112,7 @@ describe('listFunctionalities', () => {
         const result = (await listFunctionalities({
             appPath
         })) as ListFunctionalitiesOutput;
-        expect(result.functionalities).toHaveLength(107);
+        expect(result.functionalities).toHaveLength(108);
         expect(result.functionalities).toMatchSnapshot();
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
@@ -134,7 +136,7 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         // Check
-        expect(result.functionalities).toHaveLength(107);
+        expect(result.functionalities).toHaveLength(108);
         expect(readAppMock).toHaveBeenCalledTimes(1);
         expect(getSpecificationMock).toHaveBeenCalledTimes(1);
         expect(mockGetSpecificationModuleFromCache).toHaveBeenCalledTimes(1);
@@ -164,7 +166,8 @@ describe('listFunctionalities', () => {
             expect(result.functionalities.map((f) => f.functionalityId)).toEqual([
                 'add-page',
                 'delete-page',
-                'create-controller-extension'
+                'create-controller-extension',
+                'add-building-block'
             ]);
         });
 

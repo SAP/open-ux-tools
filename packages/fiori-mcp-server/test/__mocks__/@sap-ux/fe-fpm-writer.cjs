@@ -6,6 +6,9 @@ module.exports = {
     createIdGenerator: async () => () => 'generated-id',
     getFragmentAndViewFiles: async () => [],
     getXPathStringsForXmlFile: () => ({ inputChoices: {} }),
+    MIN_UI5_VERSION_RICH_TEXT_EDITOR: '1.117.0',
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK: '1.136.0',
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT: '1.145.0',
     BuildingBlockType: {
         FilterBar: 'filter-bar',
         Chart: 'chart',

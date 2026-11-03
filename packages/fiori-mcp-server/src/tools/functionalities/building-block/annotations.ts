@@ -1,21 +1,14 @@
-import { BuildingBlockType } from '@sap-ux/fe-fpm-writer';
 import { FioriAnnotationService, ChangeType } from '@sap-ux/fiori-annotation-api';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI.js';
 import { convert } from '@sap-ux/annotation-converter';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { getServiceName } from '../page-editor-api/index.js';
-import { logger } from '../utils/index.js';
+import type { BuildingBlockType } from '@sap-ux/fe-fpm-writer';
+import { getServiceName } from '../../../page-editor-api/index.js';
+import { logger } from '../../../utils/index.js';
+import { ANNOTATION_SHELL_TERMS } from './utils.js';
 
-/**
- * Maps the building block types that need a UI annotation to render data at runtime to their OData term.
- * Only standard metadata-driven building blocks appear here; custom-* types and `action` carry no annotation.
- */
-export const ANNOTATION_SHELL_TERMS: Partial<Record<BuildingBlockType, UIAnnotationTerms>> = {
-    [BuildingBlockType.Table]: UIAnnotationTerms.LineItem,
-    [BuildingBlockType.FilterBar]: UIAnnotationTerms.SelectionFields,
-    [BuildingBlockType.Form]: UIAnnotationTerms.FieldGroup
-};
+export { ANNOTATION_SHELL_TERMS };
 
 /** Minimal building-block fields the annotation-shell writer needs. */
 export interface AnnotationShellInput {

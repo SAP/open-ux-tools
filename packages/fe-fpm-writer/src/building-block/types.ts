@@ -13,6 +13,8 @@ export type PageTemplateType = (typeof PageTemplateType)[keyof typeof PageTempla
 export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK = '1.136.0' as const;
 /** Minimum UI5 version required for full layout page building blocks. */
 export const MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT = '1.145.0' as const;
+/** Minimum UI5 version required for RichTextEditor and RichTextEditorButtonGroups building blocks. */
+export const MIN_UI5_VERSION_RICH_TEXT_EDITOR = '1.117.0' as const;
 
 /**
  * Building block type.

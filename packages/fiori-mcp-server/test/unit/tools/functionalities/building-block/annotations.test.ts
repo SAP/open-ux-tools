@@ -13,12 +13,13 @@ jest.unstable_mockModule('@sap-ux/annotation-converter', () => ({
     convert: mockConvert
 }));
 
-jest.unstable_mockModule('../../../src/page-editor-api/index.js', () => ({
+jest.unstable_mockModule('../../../../../src/page-editor-api/index.js', () => ({
     getServiceName: mockGetServiceName
 }));
 
-const { writeAnnotationShell, ANNOTATION_SHELL_TERMS } =
-    await import('../../../src/tools/building-block-annotations.js');
+const { writeAnnotationShell, ANNOTATION_SHELL_TERMS } = await import(
+    '../../../../../src/tools/functionalities/building-block/annotations.js'
+);
 
 const applicationAccess = { project: { root: '/app', projectType: 'EDMXBackend' } } as any;
 const fs = {} as any;
@@ -58,7 +59,7 @@ describe('writeAnnotationShell', () => {
     });
 
     test('skips (no term) for a building block type without an annotation shell', async () => {
-        const result = await writeAnnotationShell({ buildingBlockType: 'chart' }, applicationAccess, 'app', fs);
+        const result = await writeAnnotationShell({ buildingBlockType: 'chart' } as any, applicationAccess, 'app', fs);
 
         expect(result).toEqual({ written: 0 });
         expect(mockCreateService).not.toHaveBeenCalled();
@@ -66,7 +67,7 @@ describe('writeAnnotationShell', () => {
 
     test('skips when no entity set can be derived', async () => {
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', metaPath: '@com.sap.vocabularies.UI.v1.LineItem' },
+            { buildingBlockType: 'table', metaPath: '@com.sap.vocabularies.UI.v1.LineItem' } as any,
             applicationAccess,
             'app',
             fs
@@ -83,7 +84,7 @@ describe('writeAnnotationShell', () => {
         );
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' } as any,
             applicationAccess,
             'app',
             fs
@@ -127,7 +128,7 @@ describe('writeAnnotationShell', () => {
                 buildingBlockType: 'table',
                 contextPath: '/SalesOrder',
                 metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem'
-            },
+            } as any,
             applicationAccess,
             'app',
             fs
@@ -148,7 +149,7 @@ describe('writeAnnotationShell', () => {
         );
 
         await writeAnnotationShell(
-            { buildingBlockType: 'form', metaPath: 'SalesOrder/@com.sap.vocabularies.UI.v1.FieldGroup' },
+            { buildingBlockType: 'form', metaPath: 'SalesOrder/@com.sap.vocabularies.UI.v1.FieldGroup' } as any,
             applicationAccess,
             'app',
             fs
@@ -180,7 +181,7 @@ describe('writeAnnotationShell', () => {
         );
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' } as any,
             applicationAccess,
             'app',
             fs
@@ -210,7 +211,7 @@ describe('writeAnnotationShell', () => {
         );
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' } as any,
             applicationAccess,
             'app',
             fs
@@ -242,7 +243,7 @@ describe('writeAnnotationShell', () => {
         );
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem' },
+            { buildingBlockType: 'table', metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem' } as any,
             applicationAccess,
             'app',
             fs
@@ -262,7 +263,7 @@ describe('writeAnnotationShell', () => {
         );
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' } as any,
             applicationAccess,
             'app',
             fs
@@ -288,7 +289,7 @@ describe('writeAnnotationShell', () => {
         );
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' } as any,
             applicationAccess,
             'app',
             fs
@@ -301,7 +302,7 @@ describe('writeAnnotationShell', () => {
         mockCreateService.mockRejectedValue(new Error('service boom'));
 
         const result = await writeAnnotationShell(
-            { buildingBlockType: 'table', contextPath: '/SalesOrder' },
+            { buildingBlockType: 'table', contextPath: '/SalesOrder' } as any,
             applicationAccess,
             'app',
             fs

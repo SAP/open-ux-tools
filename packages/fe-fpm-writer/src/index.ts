@@ -42,7 +42,8 @@ export {
     PageTemplateType,
     PAGE_AGGREGATIONS,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
-    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT,
+    MIN_UI5_VERSION_RICH_TEXT_EDITOR
 } from './building-block/types.js';
 export type {
     BuildingBlock,

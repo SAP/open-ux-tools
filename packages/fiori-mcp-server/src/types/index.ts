@@ -14,8 +14,7 @@ import type {
     RunRtaWorkflowStepInputSchema,
     ReadODataMetadataInputSchema,
     DownloadAppResourcesInputSchema,
-    LookupUi5DocumentationInputSchema,
-    AddBuildingBlockInputSchema
+    LookupUi5DocumentationInputSchema
 } from './input.js';
 import type {
     ExecuteFunctionalityOutputSchema,
@@ -30,8 +29,7 @@ import type {
     AdpControllerExtensionOutputSchema,
     LookupUi5DocumentationOutputSchema,
     ReadODataMetadataOutputSchema,
-    DownloadAppResourcesOutputSchema,
-    AddBuildingBlockOutputSchema
+    DownloadAppResourcesOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -69,8 +67,6 @@ export type AdpControllerExtensionOutput = zod.infer<typeof AdpControllerExtensi
 export type LookupUi5DocumentationOutput = zod.infer<typeof LookupUi5DocumentationOutputSchema>;
 export type ReadODataMetadataOutput = zod.infer<typeof ReadODataMetadataOutputSchema>;
 export type DownloadAppResourcesOutput = zod.infer<typeof DownloadAppResourcesOutputSchema>;
-export type AddBuildingBlockInput = zod.infer<typeof AddBuildingBlockInputSchema>;
-export type AddBuildingBlockOutput = zod.infer<typeof AddBuildingBlockOutputSchema>;
 
 /**
  * Interface for functionality handlers
