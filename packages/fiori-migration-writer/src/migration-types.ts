@@ -1,6 +1,6 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
@@ -10,8 +10,6 @@ export { isProjectFolderArray } from './types/project-folder.js';
 
 /**
  * package.json script entries (commands and tasks)
- *
- * @deprecated Not used by the migration writer. Will be removed in a future release.
  */
 export type Script = {
     name: string;
@@ -76,10 +74,6 @@ export type NeoappDestination = {
     entryPath?: string;
 };
 
-/**
- * @deprecated Not used by the migration writer. Use EntityConfig from @sap-ux/fiori-elements-writer
- * if an entity configuration is needed.
- */
 export interface EntityConfig {
     mainEntity?: { entityName: string; type?: any };
     filterEntityType?: string;
@@ -218,7 +212,6 @@ export type TemplateMap = {
 export interface TemplateData<P extends ProjectMigrate = ProjectMigrate, S extends Service = Service> {
     project: Partial<P>;
     service: Partial<S>;
-    readMe?: Partial<ReadMe>; // Customisation point for readme.txt
     ui5Yaml?: Partial<Ui5Yaml> & Partial<Ui5MockYaml>; // Customisation point for ui5Yaml
     packageJson?: Partial<PackageJsonMigrate>; // Customisation point for package.json
     appId?: string;
@@ -302,28 +295,6 @@ export const ApiHubType = {
     apiHubEnterprise: 'API_HUB_ENTERPRISE'
 } as const;
 export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
-/**
- * Defines the api hub service properties or enterprise and non-enterprise versions
- *
- * @deprecated Not used by the migration writer. Will be removed in a future release.
- */
-export interface ApiHubConfig {
-    apiHubKey: string;
-    apiHubType: ApiHubType;
-}
-
-/**
- * @deprecated Not used by the migration writer. Use CapService from @sap-ux/cap-config-writer instead.
- */
-export interface CapService {
-    projectPath: string; // The CAP Project Root
-    serviceName: string;
-    appPath?: string; // Optional custom CAP app folder
-    serviceCdsPath?: string; // relative path to cap service cds file
-    capType?: CapType; // CAP implementation type,
-    capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
-}
-
 export const SapSystemSourceType = {
     SCP: 'SCP',
     ON_PREM: 'ON_PREM',
@@ -341,41 +312,11 @@ export interface Service {
     edmx: string;
     annotations?: Annotations[];
     version?: ODataVersion; // Not present for FF no datasource template flow
-    capService?: CapService;
     source: DatasourceType;
     sapSystemSource?: SapSystemSourceType; // Only used by README
     localEdmxFilePath?: string; // Only used by README
     destinationAuthType?: string;
-    apiHubConfig?: ApiHubConfig;
     ignoreCertError?: boolean;
-}
-
-/**
- * README.txt base definition
- *
- * @deprecated Not used by the migration writer. Will be removed in a future release.
- */
-export interface ReadMe {
-    genDate: string;
-    genPlatform: string;
-    dataSourceLabel: string;
-    metadataFilename?: string;
-    serviceUrl: string;
-    projectName: string;
-    projectTitle: string;
-    projectNamespace: string;
-    projectDescription: string;
-    ui5Theme: string;
-    projectUI5Version: string;
-    enableCodeAssist: boolean;
-    enableEslint: boolean;
-    enableTypeScript: boolean;
-    showMockDataInfo?: boolean;
-    genId: string;
-    genVersion: string;
-    templateLabel: string; // The template/floorplan selected
-    additionalEntries?: { label: string; value: string }[]; // Read me line entries
-    launchText?: string;
 }
 
 // Note that only ui5 properties supported by middleware proxy should go here
