@@ -120,6 +120,16 @@ describe('readODataMetadataAdp', () => {
         expect(mockWriteFileSync).toHaveBeenCalledWith(expectedPath, expect.any(String), 'utf-8');
     });
 
+    test('sanitizes a traversing data source name so the write stays inside appPath', async () => {
+        setupProvider({ '../../../tmp/evil': { type: 'OData', uri: '/sap/opu/odata/x' } });
+
+        await readODataMetadataAdp({ appPath: APP_PATH, saveLocal: true });
+
+        const writtenPath = mockWriteFileSync.mock.calls[0][0] as string;
+        expect(writtenPath).toBe(join(APP_PATH, 'webapp', '.context', 'evil-metadata.xml'));
+        expect(writtenPath.startsWith(join(APP_PATH, 'webapp', '.context'))).toBe(true);
+    });
+
     test('does not write file when saveLocal is false (default)', async () => {
         setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
 

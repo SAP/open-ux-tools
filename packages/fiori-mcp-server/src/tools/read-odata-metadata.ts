@@ -1,4 +1,4 @@
-import { join, dirname } from 'node:path';
+import { join, dirname, basename } from 'node:path';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 import { getAdpConfig, getVariant, ManifestService } from '@sap-ux/adp-tooling';
@@ -87,7 +87,8 @@ export async function readODataMetadataAdp(params: ReadODataMetadataInput): Prom
  * @param metadata Formatted XML content to persist.
  */
 function writeLocalMetadata(appPath: string, name: string, metadata: string): void {
-    const metadataPath = join(appPath, 'webapp', '.context', `${name}-metadata.xml`);
+    const safeName = basename(name).replace(/[^\w-]/g, '_');
+    const metadataPath = join(appPath, 'webapp', '.context', `${safeName}-metadata.xml`);
     mkdirSync(dirname(metadataPath), { recursive: true });
     writeFileSync(metadataPath, metadata, 'utf-8');
 }
