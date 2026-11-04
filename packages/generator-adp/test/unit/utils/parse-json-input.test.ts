@@ -25,7 +25,9 @@ describe('getFirstArg', () => {
 
 describe('parseJsonInput', () => {
     it('should return undefined if invalid json string is passed', () => {
-        expect(parseJsonInput('invalid json', logger)).toBeUndefined();
+        for (const jsonString of ['invalid json', '{"targetEnv":"CF",', '   ']) {
+            expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+        }
     });
 
     it('should return the adp json input in case the json string matches the expected format', () => {
@@ -45,11 +47,9 @@ describe('parseJsonInput', () => {
     });
 
     it('should return undefined in case the json does NOT match the expected format', () => {
-        const invalidJsonInput = {
-            system: 'system'
-        };
-        const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+        for (const invalidJsonInput of [null, [], {}, { system: 'system' }]) {
+            expect(parseJsonInput(JSON.stringify(invalidJsonInput), logger)).toBeUndefined();
+        }
     });
 
     it('should return the adp json input including optional id', () => {

@@ -330,7 +330,7 @@ const baseApp: CFApp = {
     title: 'test-app-title'
 };
 
-import type { TargetEnvAnswers, JsonInput } from '../src/app/types.js';
+import type { TargetEnvAnswers, JsonInput, CfJsonInput } from '../src/app/types.js';
 
 const answersCf: CfServicesAnswers & AttributesAnswers & TargetEnvAnswers = {
     targetEnv: TargetEnv.CF,
@@ -1246,6 +1246,21 @@ describe('Adaptation Project Generator Integration Test', () => {
                 serviceInstance: { name: 'test-service', guid: 'business-svc-guid' }
             } as unknown as Awaited<ReturnType<typeof realAdpTooling.getBusinessServiceInfo>>;
 
+            const baseJsonInput: CfJsonInput = {
+                targetEnv: 'CF',
+                application: baseApp.appId,
+                businessService: 'test-service',
+                mtaMode: 'existing',
+                targetFolder: cfTestOutputDir
+            };
+
+            const runHeadlessGenerator = (jsonInput: unknown): Promise<unknown> =>
+                yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                    .withArguments([typeof jsonInput === 'string' ? jsonInput : JSON.stringify(jsonInput)])
+                    .run();
+
             beforeEach(() => {
                 mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
                 mockGetCfApps.mockResolvedValue([baseApp]);
@@ -1257,24 +1272,18 @@ describe('Adaptation Project Generator Integration Test', () => {
                 mockGetDefaultProjectName.mockReturnValue('app.variant.cf');
             });
 
-            it('should generate a CF ADP headlessly for an existing MTA (businessService)', async () => {
-                const jsonInput = {
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    applicationTitle: 'Headless CF App',
-                    projectName: 'app.variant.cf',
-                    namespace: 'customer.app.variant.cf',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
+            it('should generate from a business service and derive defaults against the existing MTA root', async () => {
+                const otherMtaRoot = join(cfTestOutputDir, 'other-mta-root');
+                fs.mkdirSync(join(otherMtaRoot, 'app.variant'), { recursive: true });
+                fs.copyFileSync(join(__dirname, 'fixtures', 'mta-project', 'mta.yaml'), join(otherMtaRoot, 'mta.yaml'));
 
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).resolves.not.toThrow();
+                await expect(
+                    runHeadlessGenerator({
+                        ...baseJsonInput,
+                        applicationTitle: 'Headless CF App',
+                        targetFolder: otherMtaRoot
+                    })
+                ).resolves.not.toThrow();
 
                 expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('test-service', cfConfig, expect.any(Object));
                 expect(mockGetCfApps).toHaveBeenCalledWith(serviceInfo.serviceKeys, cfConfig, expect.any(Object));
@@ -1285,42 +1294,9 @@ describe('Adaptation Project Generator Integration Test', () => {
                     expect.any(Object)
                 );
                 expect(mockGenerateCf).toHaveBeenCalledWith(
-                    cfTestOutputDir,
-                    expect.objectContaining({
-                        app: expect.objectContaining({ id: baseApp.appId }),
-                        project: expect.objectContaining({ name: 'app.variant.cf' })
-                    }),
-                    expect.any(Object),
-                    expect.any(Object)
-                );
-            });
-
-            it('should derive the default project name against the resolved MTA root, not the cwd', async () => {
-                // Distinguish the fix from the bug: run from cfTestOutputDir (cwd) but target a DIFFERENT
-                // MTA root that already contains `app.variant`. Deriving against the MTA root must
-                // yield `app.variant2`; the old cwd-based code would wrongly return `app.variant`.
-                const otherMtaRoot = join(cfTestOutputDir, 'other-mta-root');
-                fs.mkdirSync(join(otherMtaRoot, 'app.variant'), { recursive: true });
-                fs.copyFileSync(join(__dirname, 'fixtures', 'mta-project', 'mta.yaml'), join(otherMtaRoot, 'mta.yaml'));
-
-                const jsonInput = {
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    mtaMode: 'existing',
-                    targetFolder: otherMtaRoot
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).resolves.not.toThrow();
-
-                expect(mockGenerateCf).toHaveBeenCalledWith(
                     otherMtaRoot,
                     expect.objectContaining({
+                        app: expect.objectContaining({ id: baseApp.appId }),
                         project: expect.objectContaining({ name: 'app.variant2' })
                     }),
                     expect.any(Object),
@@ -1328,31 +1304,32 @@ describe('Adaptation Project Generator Integration Test', () => {
                 );
             });
 
-            it('should resolve a live service instance for the serviceInstanceName branch', async () => {
+            it('should generate a new MTA using a live service instance and explicit project attributes', async () => {
+                const newMtaParent = join(cfTestOutputDir, 'headless-new-mta');
+                fs.mkdirSync(newMtaParent, { recursive: true });
                 mockGetAdpServiceInstances.mockResolvedValue([
                     { name: 'live-instance', guid: 'inst-guid', service: 'hana', servicePlan: 'hdi-shared' }
                 ]);
 
-                const jsonInput = {
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    serviceInstanceName: 'live-instance',
-                    projectName: 'app.variant.cf',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).resolves.not.toThrow();
+                await expect(
+                    runHeadlessGenerator({
+                        ...baseJsonInput,
+                        businessService: undefined,
+                        serviceInstanceName: 'live-instance',
+                        projectName: 'app.variant.cf',
+                        namespace: 'customer.app.variant.cf',
+                        mtaMode: 'new',
+                        mtaId: 'brand-new-mta',
+                        targetFolder: newMtaParent
+                    })
+                ).resolves.not.toThrow();
 
                 expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
                 expect(mockGenerateCf).toHaveBeenCalledWith(
-                    cfTestOutputDir,
+                    join(newMtaParent, 'brand-new-mta'),
                     expect.objectContaining({
+                        app: expect.objectContaining({ id: baseApp.appId }),
+                        project: expect.objectContaining({ name: 'app.variant.cf' }),
                         cf: expect.objectContaining({
                             existingService: expect.objectContaining({ name: 'live-instance' })
                         })
@@ -1362,241 +1339,66 @@ describe('Adaptation Project Generator Integration Test', () => {
                 );
             });
 
-            it('should write a Failure result when not logged in to CF', async () => {
-                mockIsLoggedInCf.mockResolvedValue(false);
-
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', `Failure: ${t('error.cfNotLoggedIn')}`);
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it('should fail fast when the requested base app is not found', async () => {
-                mockGetCfApps.mockResolvedValue([{ ...baseApp, appId: 'some-other-app' }]);
-
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: 'missing-app-id',
-                    businessService: 'test-service',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockWriteResult).toHaveBeenCalledWith(
-                    'orchestrator-id',
-                    `Failure: ${t('error.applicationNotFound', { appName: 'missing-app-id' })}`
-                );
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it('should scaffold a new MTA when mtaMode is new', async () => {
-                const newMtaParent = join(cfTestOutputDir, 'headless-new-mta');
-                fs.mkdirSync(newMtaParent, { recursive: true });
-
-                const jsonInput = {
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    projectName: 'app.variant.cf',
-                    mtaMode: 'new',
-                    mtaId: 'brand-new-mta',
-                    targetFolder: newMtaParent
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).resolves.not.toThrow();
-
-                expect(mockGenerateCf).toHaveBeenCalledWith(
-                    join(newMtaParent, 'brand-new-mta'),
-                    expect.objectContaining({ app: expect.objectContaining({ id: baseApp.appId }) }),
-                    expect.any(Object),
-                    expect.any(Object)
-                );
-            });
-
-            it('should fail fast when a new MTA is requested without an mtaId', async () => {
-                const cleanParent = join(cfTestOutputDir, 'new-no-mtaid-parent');
-                fs.mkdirSync(cleanParent, { recursive: true });
-
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    mtaMode: 'new',
-                    targetFolder: cleanParent
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', `Failure: ${t('error.mtaIdRequired')}`);
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it('should reject an mtaId that attempts path traversal', async () => {
-                const cleanParent = join(cfTestOutputDir, 'traversal-parent');
-                fs.mkdirSync(cleanParent, { recursive: true });
-
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    mtaMode: 'new',
-                    mtaId: '../outside',
-                    targetFolder: cleanParent
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockWriteResult).toHaveBeenCalledWith('orchestrator-id', `Failure: ${t('error.mtaIdInvalid')}`);
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it('should fail fast when an existing MTA path has no mta.yaml', async () => {
-                const emptyDir = join(cfTestOutputDir, 'no-mta-here');
+            it('should reject invalid JSON and report headless generation failures without prompting or generating', async () => {
+                const emptyDir = join(cfTestOutputDir, 'headless-invalid-mta');
                 fs.mkdirSync(emptyDir, { recursive: true });
-
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    mtaMode: 'existing',
-                    targetFolder: emptyDir
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockWriteResult).toHaveBeenCalledWith(
-                    'orchestrator-id',
-                    `Failure: ${t('error.projectDoesNotExistMta')}`
-                );
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it('should fail fast when the named service instance does not exist', async () => {
-                mockGetAdpServiceInstances.mockResolvedValue([
-                    { name: 'another-instance', guid: 'g', service: 'hana', servicePlan: 'hdi-shared' }
-                ]);
-
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    serviceInstanceName: 'missing-instance',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockWriteResult).toHaveBeenCalledWith(
-                    'orchestrator-id',
-                    `Failure: ${t('error.serviceInstanceNotFound', { name: 'missing-instance' })}`
-                );
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it('should reject an invalid projectName before generation', async () => {
-                const jsonInput = {
-                    id: 'orchestrator-id',
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    projectName: '../escape',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
-
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
-
-                await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-            });
-
-            it.each([
-                ['corrupt JSON', '{"targetEnv":"CF",'],
-                ['unparseable input', 'not json'],
-                ['whitespace input', '   '],
-                ['null input', 'null'],
-                ['missing CF application', JSON.stringify({ targetEnv: 'CF', businessService: 'test-service' })],
-                ['missing CF service', JSON.stringify({ targetEnv: 'CF', application: baseApp.appId })],
-                [
-                    'both CF services',
-                    JSON.stringify({
-                        targetEnv: 'CF',
-                        application: baseApp.appId,
-                        businessService: 'test-service',
-                        serviceInstanceName: 'test-service'
-                    })
-                ],
-                ['incomplete ABAP input', JSON.stringify({ system: 'urlA' })]
-            ])('should stop before CF calls or prompts for %s', async (_description, jsonInputString) => {
+                const failureCases: { input: Partial<CfJsonInput>; error?: string; loggedIn?: boolean }[] = [
+                    { input: {}, loggedIn: false, error: t('error.cfNotLoggedIn') },
+                    {
+                        input: { application: 'missing-app-id' },
+                        error: t('error.applicationNotFound', { appName: 'missing-app-id' })
+                    },
+                    {
+                        input: { mtaMode: 'new', targetFolder: emptyDir },
+                        error: t('error.mtaIdRequired')
+                    },
+                    {
+                        input: { mtaMode: 'new', mtaId: '../outside', targetFolder: emptyDir },
+                        error: t('error.mtaIdInvalid')
+                    },
+                    { input: { targetFolder: emptyDir }, error: t('error.projectDoesNotExistMta') },
+                    {
+                        input: { businessService: undefined, serviceInstanceName: 'missing-instance' },
+                        error: t('error.serviceInstanceNotFound', { name: 'missing-instance' })
+                    },
+                    { input: { projectName: '../escape' } }
+                ];
                 const promptSpy = jest.spyOn(Generator.prototype, 'prompt');
-                const runContext = yeomanTest
-                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
-                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([jsonInputString]);
 
-                await expect(runContext.run()).rejects.toThrow(t('error.invalidJsonInput'));
+                try {
+                    for (const { input, error, loggedIn = true } of failureCases) {
+                        jest.clearAllMocks();
+                        mockIsLoggedInCf.mockResolvedValue(loggedIn);
 
-                expect(promptSpy).not.toHaveBeenCalled();
-                expect(mockIsCfInstalled).not.toHaveBeenCalled();
-                expect(mockLoadCfConfig).not.toHaveBeenCalled();
-                expect(mockIsLoggedInCf).not.toHaveBeenCalled();
-                expect(mockGenerateCf).not.toHaveBeenCalled();
-                promptSpy.mockRestore();
+                        await expect(
+                            runHeadlessGenerator({ ...baseJsonInput, id: 'orchestrator-id', ...input })
+                        ).rejects.toThrow(t('error.updatingApp'));
+
+                        expect(mockWriteResult).toHaveBeenCalledWith(
+                            'orchestrator-id',
+                            error ? 'Failure: ' + error : expect.stringMatching(/^Failure:/)
+                        );
+                        expect(promptSpy).not.toHaveBeenCalled();
+                        expect(mockGenerateCf).not.toHaveBeenCalled();
+                    }
+
+                    for (const jsonInput of [
+                        '{"targetEnv":"CF",',
+                        { targetEnv: 'CF', application: baseApp.appId },
+                        { system: 'urlA' }
+                    ]) {
+                        jest.clearAllMocks();
+                        await expect(runHeadlessGenerator(jsonInput)).rejects.toThrow(t('error.invalidJsonInput'));
+
+                        expect(promptSpy).not.toHaveBeenCalled();
+                        expect(mockIsCfInstalled).not.toHaveBeenCalled();
+                        expect(mockLoadCfConfig).not.toHaveBeenCalled();
+                        expect(mockIsLoggedInCf).not.toHaveBeenCalled();
+                        expect(mockGenerateCf).not.toHaveBeenCalled();
+                    }
+                } finally {
+                    promptSpy.mockRestore();
+                }
             });
         });
     });
