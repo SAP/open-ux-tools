@@ -1,5 +1,81 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.49
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
+## 1.0.48
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[da67944](https://github.com/SAP/open-ux-tools/commit/da6794455b7a46311c194dbe659fd6cd74344282)]
+
+## 1.0.47
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components, @sap-ux/telemetry [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+## 1.0.46
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[641aebd](https://github.com/SAP/open-ux-tools/commit/641aebd17bd88af4257d45bc89c675eee0d997ac)]
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+## 1.0.45
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension and @sap-ux/project-access [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
 ## 1.0.44
 
 ### Patch Changes

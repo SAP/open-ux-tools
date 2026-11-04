@@ -5,7 +5,7 @@ import {
     defaultConnectLivereloadOpts
 } from '../base/index.js';
 import type { ReloaderConfig, HttpsOptions } from '../base/index.js';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';

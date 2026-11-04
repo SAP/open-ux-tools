@@ -11,7 +11,7 @@ import {
     downloadTypeConfig
 } from '../utils/constants.js';
 import { t } from '../utils/i18n.js';
-import { extractZip } from '../utils/download-utils.js';
+import { extractZip, hasQfaJson } from '../utils/download-utils.js';
 import { EventName } from '../telemetryEvents/index.js';
 import {
     getDefaultTargetFolder,
@@ -65,7 +65,8 @@ export default class extends Generator {
     private readonly vscode?: any;
     private readonly appRootPath: string;
     private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
-    private readonly downloadType: AppDownloadType;
+    private downloadType: AppDownloadType;
+    private readonly downloadTypeExplicit: boolean;
     private readonly prompts: Prompts;
     public options: RepoAppDownloadOptions;
     private projectPath: string;
@@ -89,6 +90,7 @@ export default class extends Generator {
         this.appRootPath = opts?.appRootPath ?? getDefaultTargetFolder(this.vscode) ?? this.destinationRoot();
         this.options = opts;
         this.downloadType = opts.data?.appDownloadType ?? AppDownloadType.ADTQuickDeploy;
+        this.downloadTypeExplicit = opts.data?.appDownloadType !== undefined;
 
         // Configure logging
         RepoAppDownloadLogger.configureLogging(
@@ -158,8 +160,15 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
+        // hasQfaJson() is the authoritative signal: qfa.json is only present in ADT Quick Deploy apps.
+        // When downloadType was not explicitly set (CLI invocation defaults to ADTQuickDeploy),
+        // use qfa.json presence to decide which flow to run.
+        const isAdtQuickDeploy =
+            this.downloadType === AppDownloadType.ADTQuickDeploy && (this.downloadTypeExplicit || hasQfaJson());
+        // Resolve the effective type so all post-writing phases (README, telemetry, success msg) are consistent.
+        this.downloadType = isAdtQuickDeploy ? AppDownloadType.ADTQuickDeploy : AppDownloadType.AbapRepository;
         try {
-            if (this.downloadType === AppDownloadType.AbapRepository) {
+            if (!isAdtQuickDeploy) {
                 await this._generateAbapRepositoryApp();
             } else {
                 await this._generateAdtQuickDeployApp();

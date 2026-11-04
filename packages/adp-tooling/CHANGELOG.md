@@ -1,5 +1,108 @@
 # @sap-ux/adp-tooling
 
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-04
+
+#### Features
+
+- Expose adaptation-project manifest builder API (`getMergedManifest`, `downloadAppResources`) for building the merged app descriptor and downloading base app resources via the project's `@ui5/task-adaptation` build.
+
+    FIX: Ignore `.context`, `.session`, and `.adp` in generated adaptation project gitignore templates (CF and onPremise), keeping both templates identical. [[a9c5247](https://github.com/SAP/open-ux-tools/commit/a9c524741838a50be7c24e1aeef36a55b5cb95b7)]
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.26 → 1.0.27
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.0.71
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-01
+
+#### Bug Fixes
+
+- Remove now-unnecessary eslint-disable comments for sonarjs/no-implicit-dependencies rule after eslint-plugin-sonarjs upgrade [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
+## 1.0.70
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.69
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
+## 1.0.68
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/project-input-validator 1.0.24 → 1.0.25
+
 ## 1.0.67
 
 ### Patch Changes

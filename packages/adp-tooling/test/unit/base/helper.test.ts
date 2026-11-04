@@ -5,7 +5,7 @@ import { readFileSync as realReadFileSync } from 'node:fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Editor, create } from 'mem-fs-editor';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';
 import type { DescriptorVariant } from '../../../src/types.js';

@@ -121,7 +121,7 @@ export { getUi5ThemeBasedOnUi5Version, updateThemeAttribute } from './utils/UI5T
 // Export directly from source to avoid circular dependency through utils/index.ts
 export { ProjectAccess } from './utils/Project.js';
 export { checkForMigration } from './utils/checkForMigration.js';
-export { MigrationTypes } from './utils/constants.js';
+export { MigrationTypes, postMigrationAction, distVar } from './utils/constants.js';
 
 // Public API - Compatibility layer for read-package-up
 export { readPackageUpAsync, type ReadResult } from './utils/read-package-up-compat.js';
