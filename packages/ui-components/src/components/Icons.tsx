@@ -2574,7 +2574,14 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.LinkingTo]: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-labelledby="titleId">
+                    <title id="titleId">Linking To</title>
                     <path
                         d="M4.66318 3H15V2H4.96456C4.91405 2.35307 4.81085 2.68915 4.66318 3Z"
                         fill={COLORS.default}
