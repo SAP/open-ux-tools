@@ -76,17 +76,17 @@ Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `
 
 **When to skip Step 2.** If `get_overlays` already returns the control the user named (the page is on the right view from the start), skip to Step 3. Navigation is for reaching the target, not for editing.
 
-The RTA flow assumes the control to edit is already on screen. For Fiori Elements apps this often isn't true on first load — a List Report shows no rows until the Filter Bar search is triggered; an Object Page is only reachable after picking a row. Drive that navigation through the UFA steps before reaching for `get_overlays`.
+The RTA flow assumes the control to edit is already on screen. For Fiori Elements apps this often isn't true on first load — a List Report shows no rows until the Filter Bar search is triggered; an Object Page is only reachable after picking a row. Drive that navigation through the Unified Frontend Actions (UFA) — the generic UI-introspection/interaction steps `describe_ui` and `execute_page_action` — before reaching for `get_overlays`.
 
 **Navigation flow (UFA):**
 
 1. Call `step: "describe_ui"` to get the current UI element tree. Each node has `id` (UI5 control id), `type`, `label`, and `children`.
-2. Identify the element id of the control to interact with (e.g. a "Go" button, a table row navigation cell, or a section link).
+2. Pick the element whose `type`/`label` matches the interaction the user's intent needs — the generic rule is "read the tree, choose the control that advances toward the target." (On Fiori Elements that is typically a search/"Go" button to load data, then a row to open its Object Page, then a section link — but treat these as examples, not a fixed script; match on what the tree actually shows.)
 3. Call `step: "execute_page_action"` with `payload: { actionName: "press", elementId: "<id>" }`.
 4. Call `describe_ui` again to confirm the navigation succeeded (new page/section is now on screen).
 5. Loop until the editing target is on screen, or the UI has not changed after a press (then ask the user).
 
-**Row navigation pattern.** To navigate from a List Report to an Object Page, load data first (press the "Go" / search button), then press a row navigation cell (look for `ColumnListItem` ids with `-imgNav` suffix in the `describe_ui` tree). After the press, call `describe_ui` again and check `window.location.hash` has changed to the entity key URL.
+**Heuristics for common Fiori Elements navigations (examples, not requirements).** List Report → Object Page usually means: load data first (press the search/"Go" button), then press a row's navigation cell — in the standard responsive table these cell ids often carry an `-imgNav` suffix, and a successful row press changes `window.location.hash` to the entity key. These are hints to speed up recognition in the tree, not mandatory steps; if the tree looks different, follow the tree.
 
 If `execute_page_action` returns `isSuccess: false`, surface the failure to the user and ask how to proceed.
 
@@ -118,7 +118,7 @@ Evidence required (one of):
 
 If neither is present, **do not proceed to action selection.** Resolution order:
 
-1. **Use UFA navigation.** Call `describe_ui` to find a "Go" / search button or equivalent trigger; press it via `execute_page_action` with `actionName: "press"` and the element's `id`. Re-run `get_overlays` and re-check the gate.
+1. **Use UFA navigation.** Call `describe_ui` and press whatever control in the tree triggers data loading for this view — on a Fiori Elements List Report that is typically the search/"Go" button, but choose based on what the tree shows. Press it via `execute_page_action` with `actionName: "press"` and the element's `id`, then re-run `get_overlays` and re-check the gate.
 2. **Fall back to asking** if no obvious trigger is visible in the UFA tree. Surface the situation to the user and ask them to trigger data loading manually.
 
 **The gate is unconditional.** It applies even when the change feels purely structural (adding a column, reordering, renaming, changing a header label). Do not reason about whether data "matters" for this particular change — if the target is a data-bound container and row-level overlays are absent, stop. The `actionIds` exposed by an overlay can differ based on data state, and a structurally-correct change against the wrong action variant is exactly the silent failure this skill is built to prevent. "This is just a structural edit, so the gate doesn't apply" is not a valid exception — it is the rationalization the gate exists to block.

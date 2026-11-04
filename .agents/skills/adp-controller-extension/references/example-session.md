@@ -4,7 +4,7 @@
 
 **User request:** "Add a custom button to the object page toolbar that shows a dialog with order details."
 
-This intent maps to **two actions** (see *Disambiguation by intent* in [rta-actions.md](rta-actions.md)): `CTX_ADDXML` for the button, then `CTX_EXTEND_CONTROLLER` for the press handler. The app starts on a List Report, so the Object Page toolbar isn't on screen yet — the page-action loop drives the navigation first.
+This intent maps to **two actions** (see *Disambiguation by intent* in [rta-actions.md](rta-actions.md)): `CTX_ADDXML` for the button, then `CTX_EXTEND_CONTROLLER` for the press handler. The app starts on a List Report, so the Object Page toolbar isn't on screen yet — the UFA navigation steps (`describe_ui` + `execute_page_action`) drive the navigation first.
 
 1. `start` with `{ site, frameId: "preview" }` → `{ site, frameId, rtaStarted: true }`
 2. `describe_ui` → inspect current UI tree; find the "Go" / search button id.

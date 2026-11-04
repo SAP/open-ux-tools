@@ -32,13 +32,12 @@ interface PageRPC {
  *     `{ isSuccess, payload, error }`.
  *   - Generic Unified Frontend Actions (`describeUI`, `executeAction`, …) live on
  *     `sap/ui/joule/frontend/util/ActionHelpers` and return raw results (a UI tree,
- *     or `{ success, error? }`). Requiring this module directly avoids the Joule
- *     webclient bridge — and therefore the `sap-ui-xx-initializeJoule` URL flag
- *     that would otherwise be needed to register that bridge.
+ *     or `{ success, error? }`).
  */
 const FLEX_ACTIONS_MODULE = 'sap/ui/rta/api/FrontendActionsAPI';
 const UFA_ACTIONS_MODULE = 'sap/ui/joule/frontend/util/ActionHelpers';
-const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions.';
+/** Prefix (trailing dot included) shared by every Unified Frontend Action contract name. */
+export const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions.';
 const FLEX_RE = /^com\.sap\.ui\.flex\.(.+)\.v\d+$/;
 
 /**
@@ -84,7 +83,9 @@ export function resolveAction(actionName: string): { module: string; method: str
  */
 export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendActionResult {
     if (!isUfa) {
-        // Flex actions already return the { isSuccess, payload, error } envelope.
+        // Flex actions (FrontendActionsAPI) already return the { isSuccess, payload, error }
+        // envelope verbatim, so the raw value IS a FrontendActionResult — the cast only
+        // restores the type the runtime API already guarantees.
         return raw as FrontendActionResult;
     }
     const r = raw as { success?: boolean; error?: unknown; message?: unknown } | undefined;
@@ -101,8 +102,7 @@ export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendAction
 /**
  * Wraps a Playwright `Page` in an RPC handle that invokes frontend actions by
  * `sap.ui.require`-ing the implementing module on the page and calling the
- * method directly — no `window.sapdas.webclientBridge`, so no dependency on the
- * `sap-ui-xx-initializeJoule` flag.
+ * method directly.
  *
  * Flex actions already return the `{ isSuccess, payload, error }` envelope. UFA
  * actions (`ActionHelpers`) return raw results, so this layer normalizes them
@@ -145,46 +145,55 @@ async function createPageRPC(page: Page, context: BrowserContext): Promise<PageR
 
         const { module, method, ufa } = resolveAction(actionName);
 
-        // Wait up to 60 s for the UI5 loader to be present (RTA needs time to start).
-        // This is just `sap.ui.require` — not the Joule bridge — so it is satisfied
-        // without the sap-ui-xx-initializeJoule flag.
+        // Wait up to 60 s for the UI5 loader (`sap.ui.require`) to be present; RTA
+        // needs time to start before the implementing modules can be required.
         await (executionContext as Page | Frame).waitForFunction(
             () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
             undefined,
             { timeout: 60000 }
         );
 
-        const response = await executionContext.evaluate(
-            async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
-                const require = (
-                    window as unknown as {
-                        sap?: {
-                            ui?: {
-                                require?: (
-                                    deps: string[],
-                                    cb: (api: unknown) => void,
-                                    errback: (err: unknown) => void
-                                ) => void;
+        let response: unknown;
+        try {
+            response = await executionContext.evaluate(
+                async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
+                    const require = (
+                        window as unknown as {
+                            sap?: {
+                                ui?: {
+                                    require?: (
+                                        deps: string[],
+                                        cb: (api: unknown) => void,
+                                        errback: (err: unknown) => void
+                                    ) => void;
+                                };
                             };
-                        };
+                        }
+                    ).sap?.ui?.require;
+                    if (!require) {
+                        throw new Error('sap.ui.require is not available on the page');
                     }
-                ).sap?.ui?.require;
-                if (!require) {
-                    throw new Error('sap.ui.require is not available on the page');
-                }
-                const api = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                    require([mod], (loaded) => resolve(loaded as Record<string, unknown>), reject);
-                });
-                const method = api[fn];
-                if (typeof method !== 'function') {
-                    throw new Error(`Frontend action "${fn}" is not available on ${mod}`);
-                }
-                // Return the raw method result; normalization into the Flex envelope
-                // happens in Node (normalizeUfaResult) so that pure logic stays testable.
-                return await (method as (arg: unknown) => unknown).call(api, p);
-            },
-            { mod: module, fn: method, p: payload }
-        );
+                    const api = await new Promise<Record<string, unknown>>((resolve, reject) => {
+                        require([mod], (loaded) => resolve(loaded as Record<string, unknown>), reject);
+                    });
+                    const fnImpl = api[fn];
+                    if (typeof fnImpl !== 'function') {
+                        throw new Error(`Frontend action "${fn}" is not available on ${mod}`);
+                    }
+                    // Return the raw method result; normalization into the Flex envelope
+                    // happens in Node (normalizeUfaResult) so that pure logic stays testable.
+                    return await (fnImpl as (arg: unknown) => unknown).call(api, p);
+                },
+                { mod: module, fn: method, p: payload }
+            );
+        } catch (error) {
+            // Any failure from the page (module not loaded, method missing, require
+            // unavailable, or the action throwing) is returned as a failure envelope so
+            // the command layer surfaces it as a FrontendActionError instead of letting a
+            // raw page exception escape as a fatal error.
+            const message = error instanceof Error ? error.message : String(error);
+            return { isSuccess: false, payload: null, error: { code: 'FRONTEND_ACTION_THREW', message } };
+        }
         return normalizeUfaResult(response, ufa) as FrontendActionResult<TReturn>;
     };
 

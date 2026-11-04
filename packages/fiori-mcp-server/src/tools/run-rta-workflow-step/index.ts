@@ -141,10 +141,17 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const rawElemId = input.payload?.['elementId'];
                 const elementId = rawElemId !== undefined ? String(rawElemId) : undefined;
                 const rawParams = input.payload?.['actionParameters'];
-                const actionParameters =
-                    typeof rawParams === 'object' && rawParams !== null && !Array.isArray(rawParams)
-                        ? (rawParams as Record<string, unknown>)
-                        : undefined;
+                // actionParameters is optional, but when present it must be a plain object.
+                // Reject anything else (array, primitive) rather than silently dropping it,
+                // so a malformed call surfaces an error instead of succeeding with its
+                // parameters quietly discarded.
+                if (
+                    rawParams !== undefined &&
+                    (typeof rawParams !== 'object' || rawParams === null || Array.isArray(rawParams))
+                ) {
+                    throw new Error('payload.actionParameters must be an object when provided');
+                }
+                const actionParameters = rawParams as Record<string, unknown> | undefined;
                 const ufaResult = await executeUfaAction(
                     defaultTransport,
                     { site, frameId },

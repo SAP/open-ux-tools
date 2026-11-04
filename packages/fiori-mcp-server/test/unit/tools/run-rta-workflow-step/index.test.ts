@@ -255,20 +255,15 @@ describe('runRtaWorkflowStep dispatcher', () => {
             );
         });
 
-        test('ignores a non-object actionParameters (e.g. array) and passes undefined', async () => {
-            mockExecuteUfaAction.mockResolvedValue({ isSuccess: true, result: undefined });
-            await runRtaWorkflowStep({
-                step: 'execute_page_action',
-                site: SITE,
-                payload: { actionName: 'press', elementId: 'btn1', actionParameters: ['not', 'an', 'object'] }
-            });
-            expect(mockExecuteUfaAction).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.anything(),
-                'press',
-                'btn1',
-                undefined
-            );
+        test('throws when actionParameters is not a plain object (e.g. an array)', async () => {
+            await expect(
+                runRtaWorkflowStep({
+                    step: 'execute_page_action',
+                    site: SITE,
+                    payload: { actionName: 'press', elementId: 'btn1', actionParameters: ['not', 'an', 'object'] }
+                })
+            ).rejects.toThrow('payload.actionParameters must be an object when provided');
+            expect(mockExecuteUfaAction).not.toHaveBeenCalled();
         });
     });
 });

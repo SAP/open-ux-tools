@@ -126,6 +126,21 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
+    test('returns a failure envelope (not a fatal throw) when the page evaluate rejects', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockRejectedValueOnce(new Error('Frontend action "describeUI" is not available on ...'));
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(SITE_A, 'com.sap.ui.unified.frontend.actions.describeUI', {});
+        // A page-side throw must be converted to a failure envelope so the command layer
+        // turns it into a FrontendActionError rather than letting it escape as fatal.
+        expect(result.isSuccess).toBe(false);
+        expect(result.error).toMatchObject({ code: 'FRONTEND_ACTION_THREW' });
+
+        await fs.stopBrowser();
+    });
+
     test('reuses page on second callFrontendAction for same site', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);

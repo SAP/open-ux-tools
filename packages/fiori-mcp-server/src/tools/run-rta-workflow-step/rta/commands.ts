@@ -1,4 +1,4 @@
-import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
+import { UFA_PREFIX, type FrontendActionResult, type FrontendActionTransport } from '../browser/index.js';
 import type {
     ActionsCatalog,
     DescribeUiResult,
@@ -11,7 +11,6 @@ import type {
 
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
-const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions';
 
 /**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
@@ -199,7 +198,7 @@ export async function describeUi(
     page: EditorPage,
     rootElementId?: string
 ): Promise<DescribeUiResult> {
-    const name = `${UFA_PREFIX}.describeUI`;
+    const name = `${UFA_PREFIX}describeUI`;
     const params: Record<string, unknown> = {};
     if (rootElementId !== undefined) {
         params.rootElementId = rootElementId;
@@ -229,7 +228,7 @@ export async function executeUfaAction(
     elementId?: string,
     actionParameters?: Record<string, unknown>
 ): Promise<ExecuteUfaActionResult> {
-    const name = `${UFA_PREFIX}.executeAction`;
+    const name = `${UFA_PREFIX}executeAction`;
     const params: Record<string, unknown> = { actionName };
     if (elementId !== undefined) {
         params.elementId = elementId;
