@@ -163,8 +163,13 @@ describe('ObjectPage', () => {
         });
 
         describe('navigation with defaultSection', () => {
-            test('FacetSection type', async () => {
-                const target = join(testDir, 'with-default-section-facet');
+            test.each([
+                { type: 'FacetSection', id: 'GeneralInformation' },
+                { type: 'FacetSubSection', id: 'TechnicalData' },
+                { type: 'CustomSection', id: 'MyCustomSection' },
+                { type: 'CustomSubSection', id: 'MyCustomSubSection' }
+            ] as const)('$type type', async ({ type, id }) => {
+                const target = join(testDir, `with-default-section-${type}`);
                 fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
                 await generate(
                     target,
@@ -174,82 +179,7 @@ describe('ObjectPage', () => {
                             sourcePage: 'RootEntityListReport',
                             navEntity: minimalInput.entity,
                             navKey: true,
-                            defaultSection: {
-                                type: 'FacetSection',
-                                id: 'GeneralInformation'
-                            }
-                        }
-                    },
-                    fs
-                );
-                expect(
-                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing
-                ).toMatchSnapshot();
-            });
-
-            test('FacetSubSection type', async () => {
-                const target = join(testDir, 'with-default-section-facet-sub');
-                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-                await generate(
-                    target,
-                    {
-                        ...minimalInput,
-                        navigation: {
-                            sourcePage: 'RootEntityListReport',
-                            navEntity: minimalInput.entity,
-                            navKey: true,
-                            defaultSection: {
-                                type: 'FacetSubSection',
-                                id: 'TechnicalData'
-                            }
-                        }
-                    },
-                    fs
-                );
-                expect(
-                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing
-                ).toMatchSnapshot();
-            });
-
-            test('CustomSection type', async () => {
-                const target = join(testDir, 'with-default-section-custom');
-                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-                await generate(
-                    target,
-                    {
-                        ...minimalInput,
-                        navigation: {
-                            sourcePage: 'RootEntityListReport',
-                            navEntity: minimalInput.entity,
-                            navKey: true,
-                            defaultSection: {
-                                type: 'CustomSection',
-                                id: 'MyCustomSection'
-                            }
-                        }
-                    },
-                    fs
-                );
-                expect(
-                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing
-                ).toMatchSnapshot();
-            });
-
-            test('CustomSubSection type', async () => {
-                const target = join(testDir, 'with-default-section-custom-sub');
-                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-                await generate(
-                    target,
-                    {
-                        ...minimalInput,
-                        navigation: {
-                            sourcePage: 'RootEntityListReport',
-                            navEntity: minimalInput.entity,
-                            navKey: true,
-                            defaultSection: {
-                                type: 'CustomSubSection',
-                                id: 'MyCustomSubSection'
-                            }
+                            defaultSection: { type, id }
                         }
                     },
                     fs
