@@ -2,4 +2,4 @@
 '@sap-ux/ui-components': patch
 ---
 
-Add a new LinkingTo icon to UiIcons
+FEAT: Add a new LinkingTo icon to UiIcons
