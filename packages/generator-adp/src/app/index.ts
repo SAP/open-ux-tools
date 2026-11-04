@@ -68,7 +68,7 @@ import { initI18n, t } from '../utils/i18n.js';
 import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
-import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput, isInvalidCfJsonInput } from '../utils/parse-json-input.js';
 import { isCfJsonInput } from '../utils/type-guards.js';
 import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
@@ -172,6 +172,10 @@ export default class extends Generator {
      * ({@link CfJsonInput}) shape, selected by the `targetEnv` discriminator.
      */
     private readonly jsonInput?: JsonInput | CfJsonInput;
+    /**
+     * True when the CLI argument selects the CF target environment but is not valid CF JSON.
+     */
+    private readonly invalidCfJsonInput: boolean = false;
     /**
      * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
      */
@@ -281,6 +285,7 @@ export default class extends Generator {
 
         const jsonInputString = getFirstArg(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
+        this.invalidCfJsonInput = !this.jsonInput && isInvalidCfJsonInput(jsonInputString);
 
         if (!this.jsonInput) {
             this.env.lookup({
@@ -302,6 +307,11 @@ export default class extends Generator {
         // Force the generator to overwrite existing files without additional prompting
         setYeomanEnvConflicterForce(this.env, this.options.force);
         await initI18n();
+
+        if (this.invalidCfJsonInput) {
+            throw new Error(t('error.invalidCfJsonInput'));
+        }
+
         this.isCli = isCli();
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;

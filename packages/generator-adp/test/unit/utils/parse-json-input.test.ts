@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { JsonInput } from '../../../src/app/types.js';
-import { getFirstArg, parseJsonInput } from '../../../src/utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput, isInvalidCfJsonInput } from '../../../src/utils/parse-json-input.js';
 
 const logger = {
     debug: jest.fn()
@@ -98,5 +98,38 @@ describe('parseJsonInput', () => {
     it('should treat absent targetEnv as ABAP (backwards compatible)', () => {
         const abapInput = { system: 'system', application: 'application' };
         expect(parseJsonInput(JSON.stringify(abapInput), logger)).toEqual(abapInput);
+    });
+});
+
+describe('isInvalidCfJsonInput', () => {
+    it('should return true for a CF targetEnv that fails CF validation', () => {
+        expect(
+            isInvalidCfJsonInput(
+                JSON.stringify({ targetEnv: 'CF', application: 'base.app.id' }) // no service field
+            )
+        ).toBe(true);
+        expect(
+            isInvalidCfJsonInput(
+                JSON.stringify({
+                    targetEnv: 'CF',
+                    application: 'base.app.id',
+                    businessService: 'svc',
+                    serviceInstanceName: 'inst' // both -> invalid
+                })
+            )
+        ).toBe(true);
+    });
+
+    it('should return false for valid CF JSON', () => {
+        expect(
+            isInvalidCfJsonInput(
+                JSON.stringify({ targetEnv: 'CF', application: 'base.app.id', businessService: 'svc' })
+            )
+        ).toBe(false);
+    });
+
+    it('should return false for non-CF or unparseable input', () => {
+        expect(isInvalidCfJsonInput(JSON.stringify({ system: 'system', application: 'application' }))).toBe(false);
+        expect(isInvalidCfJsonInput('not json')).toBe(false);
     });
 });

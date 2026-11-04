@@ -1564,6 +1564,28 @@ describe('Adaptation Project Generator Integration Test', () => {
 
                 expect(mockGenerateCf).not.toHaveBeenCalled();
             });
+
+            it('should fail loudly (no prompts) when CF JSON is invalid', async () => {
+                // Both service fields set -> fails isCfJsonInput; a headless CF caller must get an
+                // error, not an interactive fallback.
+                const jsonInput = {
+                    targetEnv: 'CF',
+                    application: baseApp.appId,
+                    businessService: 'test-service',
+                    serviceInstanceName: 'test-service',
+                    mtaMode: 'existing',
+                    targetFolder: cfTestOutputDir
+                };
+
+                const runContext = yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                    .withArguments([JSON.stringify(jsonInput)]);
+
+                await expect(runContext.run()).rejects.toThrow(t('error.invalidCfJsonInput'));
+
+                expect(mockGenerateCf).not.toHaveBeenCalled();
+            });
         });
     });
 });
