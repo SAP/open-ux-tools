@@ -66,7 +66,9 @@ export function deleteAppInfoSettings(fs?: Editor) {
     fs = getFsInstance(fs);
     if (fs.exists(appInfoFilePath)) {
         try {
-            fs.delete(appInfoFilePath);
+            // suppressErrors prevents globby from throwing ENOTDIR when the parent
+            // directory doesn't exist on disk (file exists only in-memory store).
+            fs.delete(appInfoFilePath, { globOptions: { suppressErrors: true } });
             fs.commit((err) => {
                 console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
             });

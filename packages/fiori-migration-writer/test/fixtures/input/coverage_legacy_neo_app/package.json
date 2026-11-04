@@ -1,0 +1,13 @@
+{
+  "name": "com.example.legacy.neo",
+  "version": "1.0.0",
+  "description": "Legacy NEO application with neo-app.json",
+  "private": true,
+  "scripts": {
+    "start": "ui5 serve"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3.0.0"
+  }
+}

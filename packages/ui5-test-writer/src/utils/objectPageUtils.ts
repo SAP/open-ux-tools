@@ -666,8 +666,10 @@ function extractFormFields(
                     fields.push({ property, connectedFields: qualifier });
                 });
             } else if (annotationParts.property === 'FieldGroup' && entityType) {
-                resolveFieldGroupInnerProperties(entityType, qualifier).forEach((property) => {
-                    fields.push({ property, fieldGroup: qualifier });
+                const innerProperties = resolveFieldGroupInnerProperties(entityType, qualifier);
+                const checkBoxGroup = isCheckBoxGroup(entityType, innerProperties);
+                innerProperties.forEach((property) => {
+                    fields.push({ property, fieldGroup: qualifier, ...(checkBoxGroup && { checkBoxGroup }) });
                 });
             }
             // ConnectedFields/FieldGroup without metadata: skip
@@ -727,6 +729,26 @@ function resolveFieldGroupInnerProperties(entityType: EntityType, qualifier: str
     ] as { Data?: { Value?: { path?: string } }[] } | undefined;
     const dataFields = annotation?.Data ?? [];
     return dataFields.map((dataField) => dataField?.Value?.path).filter((path): path is string => Boolean(path));
+}
+
+/**
+ * Determines whether a FieldGroup's inner properties render as a group of checkboxes.
+ *
+ * Fiori Elements renders a nested FieldGroup as a checkbox group when every inner field is boolean.
+ * Such members live inside a single FormElement and are not addressable by the sap.fe.test.api form API,
+ * so the generator must flag them to avoid emitting unpassable `iCheckField` steps.
+ *
+ * @param entityType - the entity type carrying the properties
+ * @param properties - the FieldGroup inner property paths
+ * @returns true when the group is non-empty and all inner properties are `Edm.Boolean`
+ */
+function isCheckBoxGroup(entityType: EntityType, properties: string[]): boolean {
+    return (
+        properties.length > 0 &&
+        properties.every(
+            (property) => entityType.entityProperties.find((p) => p.name === property)?.type === 'Edm.Boolean'
+        )
+    );
 }
 
 /**

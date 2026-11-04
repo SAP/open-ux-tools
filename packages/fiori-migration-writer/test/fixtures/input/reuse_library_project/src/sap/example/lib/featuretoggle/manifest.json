@@ -1,0 +1,62 @@
+{
+  "_version": "1.4.0",
+
+  "sap.app": {
+    "id": "sap.example.lib.featuretoggle",
+    "type": "library",
+    "embeds": [],
+    "i18n": "messagebundle.properties",
+    "applicationVersion": {
+      "version": "${project.version}"
+    },
+    "title": "{{title}}",
+    "description": "{{description}}",
+    "ach": "CA-GTF-FM",
+    "resources": "resources.json",
+    "offline": false,
+    "dataSources": {
+      "Feature": {
+        "uri": "/sap/opu/odata/SAP/CA_FM_FEATURE_TOGGLE_STATUS_SRV"
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": false
+    }
+  },
+
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.30.0",
+      "libs": {
+        "sap.ui.core": {
+          "minUI5Version": "1.30.0"
+        },
+        "sap.m": {},
+        "sap.ui.layout": {},
+        "sap.ushell": {},
+        "sap.collaboration": {},
+        "sap.ui.comp": {},
+        "sap.uxap": {}
+      }
+    },
+
+    "contentDensities": {
+      "compact": true,
+      "cozy": false
+    }
+  },
+
+  "sap.platform.abap": {
+    "_version": "1.1.0",
+    "uri": "/sap/bc/ui5_ui5/sap/FEATURETOGGLES1"
+  },
+  "sap.fiori": {
+    "registrationIds": ["F2443"],
+    "archeType": "reusecomponent"
+  }
+}

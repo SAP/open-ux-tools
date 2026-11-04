@@ -13,9 +13,8 @@ type ColumnModelItem = {
 };
 
 /**
- * A column that carries a text annotation in the spec model. `columnProperty` is the
- * column's own bound property (used to look up the `UI.TextArrangement` annotation in the
- * OData metadata); `textProperty` is the `Common.Text` target property (used as the sort name).
+ * A column carrying a `Common.Text` annotation. `columnProperty` is the column's own bound property;
+ * `textProperty` is the text target. A nav-path text target is valid; only a nav-path `columnProperty` is excluded.
  */
 export type TextAnnotationColumnCandidate = {
     columnProperty: string;
@@ -227,31 +226,71 @@ export function extractTextAnnotationColumnsFromNode(node: TreeAggregation): Tex
     if (!tableNode) {
         return [];
     }
+    return extractTextAnnotationColumnsFromTableNode(tableNode);
+}
+
+/**
+ * Returns the bound property names of a resolved table node's default-available columns, omitting
+ * nav-path and unidentifiable columns. Per-view column source for the metadata text-annotation fallback
+ * (only the primary view carries `properties.text`).
+ *
+ * @param tableNode - resolved 'table' aggregation node
+ * @returns ordered, de-duplicated list of bound column property names
+ */
+export function extractBoundColumnPropertiesFromTableNode(tableNode: TreeAggregation): string[] {
+    const columnsAggregation = getAggregations(tableNode)['columns'];
+    if (!columnsAggregation) {
+        return [];
+    }
+    const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
+    const properties: string[] = [];
+    const seen = new Set<string>();
+    Object.entries(columnItems).forEach(([columnKey, column]) => {
+        if (!isDefaultAvailableColumn(column)) {
+            return;
+        }
+        const columnProperty = getColumnIdentifier(column, columnKey);
+        if (!columnProperty || columnProperty.includes('/') || seen.has(columnProperty)) {
+            return;
+        }
+        seen.add(columnProperty);
+        properties.push(columnProperty);
+    });
+    return properties;
+}
+
+/**
+ * Extracts text-annotation columns from a resolved 'table' node (a single table or one multi-tab view).
+ *
+ * @param tableNode - resolved 'table' aggregation node
+ * @returns candidate columns with their bound property and the text annotation target property
+ */
+export function extractTextAnnotationColumnsFromTableNode(tableNode: TreeAggregation): TextAnnotationColumnCandidate[] {
     const columnsAggregation = getAggregations(tableNode)['columns'];
     if (!columnsAggregation) {
         return [];
     }
     const columnItems = getAggregations(columnsAggregation) as ColumnAggregations;
     const candidates: TextAnnotationColumnCandidate[] = [];
-    const seenTextProperties = new Set<string>();
+    const seenColumnProperties = new Set<string>();
     Object.entries(columnItems).forEach(([columnKey, column]) => {
         if (!isDefaultAvailableColumn(column)) {
             return;
         }
         const text = column.properties?.text;
-        if (text?.artifactType !== 'Annotation' || !text.value || text.value === 'none') {
-            return;
-        }
-        // A text target reached through a navigation property (e.g. "_DunningProcedure/DunningProcedure_Text")
-        // is not exposed as a sortable column in the sort dialog, so it cannot be used as a sort name.
-        if (text.value.includes('/')) {
+        // Spec-model sentinel "None" (any casing) means no text annotation is maintained.
+        if (text?.artifactType !== 'Annotation' || !text.value || text.value.toLowerCase() === 'none') {
             return;
         }
         const columnProperty = getColumnIdentifier(column, columnKey);
-        if (!columnProperty || seenTextProperties.has(text.value)) {
+        if (columnProperty?.includes('/')) {
             return;
         }
-        seenTextProperties.add(text.value);
+        // Distinct columns may share one text target; dedupe by code column.
+        if (!columnProperty || seenColumnProperties.has(columnProperty)) {
+            return;
+        }
+        seenColumnProperties.add(columnProperty);
         candidates.push({ columnProperty, textProperty: text.value });
     });
     return candidates;

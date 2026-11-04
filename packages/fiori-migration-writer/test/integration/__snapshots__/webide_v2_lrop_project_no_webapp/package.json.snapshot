@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate webide_v2_lrop_project_no_webapp 1`] = `
+"{
+  \\"name\\": \\"migration_test01\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"sapux\\": true,
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\",
+  \\"description\\": \\"\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"scripts\\": {
+    \\"start_old\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#SEPMRA_C_PD_Product-display\\\\\\"\\",
+    \\"start-local_old\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\\\\\\"\\",
+    \\"start-noflp_old\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-variants-management_old\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"build_old\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
+    \\"deploy_old\\": \\"fiori verify\\",
+    \\"deploy-config_old\\": \\"fiori add deploy-config\\",
+    \\"start-mock_old\\": \\"fiori run --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#SEPMRA_C_PD_Product-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\\\\\\"\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-mock\\": \\"fiori run --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#masterDetail-display\\\\\\"\\"
+  },
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^4.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"rimraf\\": \\"6.0.1\\"
+  }
+}"
+`;

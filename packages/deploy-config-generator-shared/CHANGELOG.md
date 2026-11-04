@@ -1,5 +1,95 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 1.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.26 → 1.2.27
+
+## 1.0.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+
+## 1.0.47
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+
+## 1.0.44
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-textdocument 1.0.12 → 1.0.15, vscode-languageserver-types 3.18.0 → 3.18.4, @vscode-logging/logger 2.0.9 → 2.0.10 [[35f731a](https://github.com/SAP/open-ux-tools/commit/35f731ae4482c014726fe6bbbfdcac497382715b)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+
+## 1.0.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+
+## 1.0.41
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+
 ## 1.0.40
 
 ### Patch Changes

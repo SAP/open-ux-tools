@@ -91,7 +91,7 @@ describe('getPrompts', () => {
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue({ success: true });
 
         const prompts = await getPrompts(appRootPath, undefined, undefined, true); // run as CLI
 
@@ -157,7 +157,7 @@ describe('getPrompts', () => {
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue({ success: true });
 
         const quickDeployedAppConfig = {
             appId: 'app1',
@@ -221,7 +221,7 @@ describe('getPrompts', () => {
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue({ success: true });
 
         const quickDeployedAppConfig = {
             serviceProviderInfo: mockServiceProvider
@@ -301,7 +301,7 @@ describe('getPrompts', () => {
         mockFormatAppChoices.mockReturnValue(emptyAppList);
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(emptyAppList);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue({ success: true });
 
         const prompts = await getPrompts(appRootPath);
 
@@ -316,7 +316,7 @@ describe('getPrompts', () => {
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
 
         mockFetchAppList.mockResolvedValue(appList);
-        mockDownloadApp.mockResolvedValue(undefined);
+        mockDownloadApp.mockResolvedValue({ success: true });
 
         const prompts = await getPrompts(appRootPath);
 
@@ -333,7 +333,7 @@ describe('getPrompts', () => {
         mockFormatAppChoices.mockReturnValue(appList);
         mockValidateFioriAppTargetFolder.mockResolvedValue(true);
         mockFetchAppList.mockResolvedValue(appList);
-        mockDownloadApp.mockResolvedValue(true);
+        mockDownloadApp.mockResolvedValue({ success: true });
         mockHasQfaJson.mockReturnValue(true);
 
         const prompts = await getPrompts(appRootPath);

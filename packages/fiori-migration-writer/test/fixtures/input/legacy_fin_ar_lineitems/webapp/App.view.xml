@@ -1,0 +1,8 @@
+<mvc:View 
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m" 
+	controllerName="fin.ar.lineitems.display.App" 
+	displayBlock="true" 
+	height="100%">
+	<App id="app" />
+</mvc:View>

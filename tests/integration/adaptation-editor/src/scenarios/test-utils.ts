@@ -260,7 +260,7 @@ export class ListReport {
             await test.step('Check `Define Conditions: Date Property` Dialog is open and click on value help button', async () => {
                 const dialog = this.frame.getByRole('dialog');
                 await expect(dialog.getByText('Define Conditions: Date Property')).toBeVisible();
-                await dialog.getByTitle('Open Picker').click();
+                await dialog.locator('[title="Open Picker"],[title="Show Value Help"]').first().click();
                 await this.checkCalendarDisplayed();
                 await this.frame
                     .getByRole('button', { name: 'Cancel' })

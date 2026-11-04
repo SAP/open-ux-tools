@@ -31,7 +31,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'creationRows'
@@ -90,7 +90,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -121,7 +121,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'badValue'
@@ -138,7 +138,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'creationRows'
@@ -236,7 +236,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -252,7 +252,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'createMode'
                         ],
                         value: 'creationRows'
@@ -269,7 +269,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -300,7 +300,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -331,7 +331,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'type'
                         ],
@@ -390,8 +390,8 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems'
-                            // here createMode is missing, report on parent e.g. SalesOrderItems
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem'
+                            // here createMode is missing, report on parent e.g. to_Product::com.sap.vocabularies.UI.v1.LineItem
                         ],
                         value: 'badValue'
                     }
@@ -411,7 +411,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                             'component',
                             'settings',
                             'sections',
-                            'SalesOrderItems'
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem'
                         ],
                         value: 'badValue'
                     }

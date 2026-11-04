@@ -180,7 +180,10 @@ describe('ui5-test-writer', () => {
             // The mock spec models used above do not populate the LR toolbar `actions` aggregation, so a
             // full generateOPAFiles run cannot exercise toolbar-action rendering. Render the real journey
             // template directly with a synthetic critical action to verify the generated test code.
-            const renderListReportJourney = (toolBarActions: Record<string, unknown>[]): string => {
+            const renderListReportJourney = (
+                toolBarActions: Record<string, unknown>[],
+                overrides: Record<string, unknown> = {}
+            ): string => {
                 const templatePath = join(__dirname, '../../templates/v4/latest/integration/ListReportJourney.js');
                 const outPath = join(__dirname, '../test-output/critical/ListReportJourney.gen.js');
                 const editor = create(createStorage());
@@ -202,7 +205,10 @@ describe('ui5-test-writer', () => {
                     textAnnotationColumns: [],
                     tableIdentifiers: [],
                     tabs: [],
-                    toolBarActions
+                    toolBarActions,
+                    defaultSortOrder: [],
+                    defaultFilterValues: [],
+                    ...overrides
                 });
                 return editor.read(outPath);
             };
@@ -240,7 +246,7 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('onTable(defaultTableId).iSelectRows(0)');
                 // The non-critical action's execute stays commented out.
                 expect(journey).toContain(
-                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction({ service: "NS", action: "Copy", unbound: false })'
+                    '// When.onTheTravelListGenerated.onTable(defaultTableId).iExecuteAction({ service: "NS", action: "Copy", unbound: false })'
                 );
             });
 
@@ -315,18 +321,69 @@ describe('ui5-test-writer', () => {
                 expect(journey).toContain('Deselect the row so the following actions start with an empty selection.');
             });
 
-            it('hoists a single filter-bar search before the action block for multiple critical actions', () => {
+            it('includes a filter-bar search in each critical action block to populate a selectable row', () => {
                 const journey = renderListReportJourney([
                     { label: 'Set To Booked', action: 'setToBooked', visible: true, enabled: false, isCritical: true },
                     { label: 'Set To New', action: 'setToNew', visible: true, enabled: false, isCritical: true }
                 ]);
-                // Scope to the actions test block; the separate "Navigate to ObjectPage" block has its own search.
-                const actionsBlock = journey.slice(
-                    journey.indexOf('Check table columns and actions'),
+                // Each critical action is now its own opaTest block that populates the table itself.
+                const bookedBlock = journey.slice(
+                    journey.indexOf('Check the Set To Booked action'),
+                    journey.indexOf('Check the Set To New action')
+                );
+                const newBlock = journey.slice(
+                    journey.indexOf('Check the Set To New action'),
                     journey.indexOf('Navigate to ObjectPage')
                 );
-                const searchCount = (actionsBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).length;
-                expect(searchCount).toBe(1);
+                expect(bookedBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).toHaveLength(1);
+                expect(newBlock.match(/onFilterBar\(\)\.iExecuteSearch\(\)/g) ?? []).toHaveLength(1);
+            });
+
+            it('asserts both selection states for a selection-driven (non-annotated bound) action', () => {
+                const journey = renderListReportJourney([
+                    {
+                        label: 'Approve',
+                        action: 'Approve',
+                        service: 'NS',
+                        unbound: false,
+                        visible: true,
+                        enabled: false,
+                        selectionEnables: true
+                    }
+                ]);
+                const block = journey.slice(
+                    journey.indexOf('Check the Approve action'),
+                    journey.indexOf('Navigate to ObjectPage')
+                );
+                // Disabled with no selection, enabled once a row is selected — no mock data needed.
+                expect(block).toContain(
+                    'iCheckAction({ service: "NS", action: "Approve", unbound: false }, { enabled: false })'
+                );
+                expect(block).toContain(
+                    'iCheckAction({ service: "NS", action: "Approve", unbound: false }, { enabled: true })'
+                );
+                expect(block).toContain('onFilterBar().iExecuteSearch()');
+                // One select to enable, one deselect to clean up.
+                expect(block.match(/onTable\(defaultTableId\)\.iSelectRows\(0\)/g) ?? []).toHaveLength(2);
+                expect(block).not.toContain('onMessageDialog');
+            });
+
+            it('splits columns and create/delete into their own opaTest blocks', () => {
+                const journey = renderListReportJourney(
+                    [{ label: 'Copy', action: 'Copy', visible: true, enabled: true, isCritical: false }],
+                    {
+                        createButton: { visible: true },
+                        deleteButton: { visible: true },
+                        tableColumns: { TravelID: { header: 'Travel ID' } }
+                    }
+                );
+                expect(journey).toContain('opaTest("Check the create button"');
+                expect(journey).toContain('opaTest("Check the delete button"');
+                expect(journey).toContain('opaTest("Check the Copy action"');
+                expect(journey).toContain('opaTest("Check table columns"');
+                // The single combined block title no longer exists.
+                expect(journey).not.toContain('Check table columns and actions');
+                expect(journey).not.toContain('Check table create and delete buttons');
             });
 
             it('validates the action parameter dialog for a parameterized action and cancels it', () => {
@@ -689,6 +746,11 @@ describe('ui5-test-writer', () => {
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('TravelList.gen.js'))).toBe(true);
                     // JourneyRunner.js written without .gen suffix (user-extendable)
                     expect(paths.some((p) => p.includes('pages') && p.endsWith('JourneyRunner.js'))).toBe(true);
+                    // launchUrl points at the FLP sandbox entry (from flpSandbox.html), not index.html
+                    const journeyRunnerPath = paths.find((p) => p.includes('pages') && p.endsWith('JourneyRunner.js'));
+                    const journeyRunner = dumped[journeyRunnerPath!].contents as string;
+                    expect(journeyRunner).toContain("'/test/flpSandbox.html#C_Arbankstatement-display'");
+                    expect(journeyRunner).not.toContain("'/index.html'");
                     // qunit harness + testsuite are produced
                     expect(paths.some((p) => p.endsWith('opaTests.qunit.js'))).toBe(true);
                     expect(paths.some((p) => p.endsWith('opaTests.qunit.html'))).toBe(true);
@@ -1970,13 +2032,15 @@ export type Then = Opa5 & BaseArrangements & {
 
         describe('text annotation sort-order test — JS', () => {
             // Inject a textAnnotationColumns entry on top of the real LR features so the generated
-            // journey exercises the new "Check text annotation for columns" opaTest and the
+            // journey exercises the new "Check the Sort options for columns with a Text annotation" opaTest and the
             // conditional coreLibrary import, across all three JS buckets.
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                     }
                     return features;
                 });
@@ -1986,11 +2050,14 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
                     .contents as string;
 
+            // The sort test (code column + text target + SortOrder.None reset) ships only in the `latest`
+            // bucket. An unspecified version resolves to the latest bucket. The latest UI5 keeps the code
+            // column separately sortable even when a Common.Text is present, so both the code column and the
+            // text target are asserted independently.
             it.each([
-                ['1.84', '1.120.0'],
-                ['1.148', '1.148.0'],
-                ['latest', undefined]
-            ])('bucket %s emits the sort-order test and coreLibrary import (JS)', async (_bucket, ui5Version) => {
+                ['unspecified version', undefined],
+                ['a newer version', '1.153.0']
+            ])('emits the sort-order test and coreLibrary import for %s (JS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
                 withTextAnnotationColumn();
@@ -2000,13 +2067,57 @@ export type Then = Opa5 & BaseArrangements & {
                 const content = lrJourneyContents();
                 expect(content).toContain('"sap/ui/core/library"');
                 expect(content).toContain('function (opaTest, runner, coreLibrary)');
-                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain('opaTest("Check the Sort options for columns with a Text annotation"');
                 expect(content).toContain(
                     'iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending)'
                 );
                 expect(content).toContain(
                     'iCheckSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.Ascending, true)'
                 );
+                // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, coreLibrary.SortOrder.None)');
+                // The code column is asserted independently of its Common.Text target.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending)');
+                expect(content).toContain(
+                    'iCheckSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.Ascending, true)'
+                );
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
+            });
+
+            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
+            // test; they still emit coreLibrary/SortOrder when a PresentationVariant has a SortOrder.
+            it.each([
+                ['1.84 bucket', '1.120.0'],
+                ['1.148 bucket', '1.148.0'],
+                ['1.148 bucket at 1.151.1', '1.151.1'],
+                ['1.148 bucket below 1.151.1', '1.151.0']
+            ])('omits the sort-order test and coreLibrary import for %s (JS)', async (_desc, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+            });
+
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test —
+            // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
+            // exists from 1.152.0.
+            it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.152.0' }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
             });
 
             it('omits the sort-order test and coreLibrary import when there is no text-annotated column', async () => {
@@ -2016,9 +2127,10 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, {}, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('"sap/ui/core/library"');
-                expect(content).not.toContain('coreLibrary');
-                expect(content).not.toContain('Check text annotation for columns');
+                // PresentationVariant with SortOrder is present in LROPv4 metadata, so coreLibrary is emitted
+                expect(content).toContain('"sap/ui/core/library"');
+                expect(content).toContain('iCheckSortOrder');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
             });
 
             afterEach(() => {
@@ -2029,12 +2141,15 @@ export type Then = Opa5 & BaseArrangements & {
         describe('text annotation sort-order test — TS', () => {
             // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
             // exercises the conditional `import { SortOrder } from "sap/ui/core/library"` and the
-            // "Check text annotation for columns" opaTest across all three TS buckets.
+            // "Check the Sort options for columns with a Text annotation" opaTest. New-style sort tests emitted only for the
+            // `latest` bucket (unspecified version or >= latest threshold).
             const withTextAnnotationColumn = () => {
                 getAppFeaturesMock.mockImplementationOnce(async (...args) => {
                     const features = await actualModelUtils.getAppFeatures(...args);
                     if (features.listReport) {
-                        features.listReport.textAnnotationColumns = [{ textProperty: 'CustomerName' }];
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
                     }
                     return features;
                 });
@@ -2044,11 +2159,14 @@ export type Then = Opa5 & BaseArrangements & {
                 fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.ts']
                     .contents as string;
 
+            // The sort test (code column + text target + SortOrder.None reset) ships only in the `latest`
+            // bucket. An unspecified version resolves to the latest bucket. The latest UI5 keeps the code
+            // column separately sortable even when a Common.Text is present, so both the code column and the
+            // text target are asserted independently.
             it.each([
-                ['1.84', '1.120.0'],
-                ['1.148', '1.148.0'],
-                ['latest', undefined]
-            ])('bucket %s emits the sort-order test and SortOrder import (TS)', async (_bucket, ui5Version) => {
+                ['unspecified version', undefined],
+                ['a newer version', '1.153.0']
+            ])('emits the sort-order test and SortOrder import for %s (TS)', async (_desc, ui5Version) => {
                 readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
                 const projectDir = prepareTestFiles('LROPv4');
                 withTextAnnotationColumn();
@@ -2062,9 +2180,56 @@ export type Then = Opa5 & BaseArrangements & {
 
                 const content = lrJourneyContents();
                 expect(content).toContain('import { SortOrder } from "sap/ui/core/library";');
-                expect(content).toContain('opaTest("Check text annotation for columns"');
+                expect(content).toContain('opaTest("Check the Sort options for columns with a Text annotation"');
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.Ascending)');
                 expect(content).toContain('iCheckSortOrder({ name: "CustomerName" }, SortOrder.Ascending, true)');
+                // Each iChangeSortOrder/iCheckSortOrder pair is followed by an iChangeSortOrder reset to SortOrder.None.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerName" }, SortOrder.None)');
+                // The code column is asserted independently of its Common.Text target.
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.Ascending)');
+                expect(content).toContain('iCheckSortOrder({ name: "CustomerID" }, SortOrder.Ascending, true)');
+                expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
+            });
+
+            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
+            // test; they still emit SortOrder when a PresentationVariant has a SortOrder.
+            it.each([
+                ['1.84 bucket', '1.120.0'],
+                ['1.148 bucket', '1.148.0'],
+                ['1.148 bucket at 1.151.1', '1.151.1'],
+                ['1.148 bucket below 1.151.1', '1.151.0']
+            ])('omits the sort-order test and SortOrder import for %s (TS)', async (_desc, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+            });
+
+            // The 1.152 bucket (UI5 1.152.x) must NOT emit the sort-order test —
+            // those ship only in `latest` — but it must still emit the column-adaptation test, whose API
+            // exists from 1.152.0.
+            it('omits the sort-order test but keeps the adaptation test for the 1.152 bucket (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(
+                    projectDir,
+                    { ui5Version: '1.152.0', enableTypeScript: true },
+                    metadata,
+                    fs
+                );
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
             });
 
             it('omits the sort-order test and SortOrder import when there is no text-annotated column', async () => {
@@ -2074,9 +2239,259 @@ export type Then = Opa5 & BaseArrangements & {
                 fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
 
                 const content = lrJourneyContents();
-                expect(content).not.toContain('sap/ui/core/library');
-                expect(content).not.toContain('SortOrder');
-                expect(content).not.toContain('Check text annotation for columns');
+                // PresentationVariant with SortOrder is present in LROPv4 metadata, so SortOrder is emitted
+                expect(content).toContain('sap/ui/core/library');
+                expect(content).toContain('iCheckSortOrder');
+                expect(content).not.toContain('Check the Sort options for columns with a Text annotation');
+            });
+
+            afterEach(() => {
+                getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
+            });
+        });
+
+        describe('column adaptation dialog test — JS', () => {
+            // Inject a textAnnotationColumns entry on top of the real LR features so the generated
+            // journey exercises the "Check the presence of the text columns for columns with a Text annotation" opaTest. The test uses the
+            // column-adaptation OPA API that only exists from UI5 1.152.0, so it is rendered only by
+            // the `1.152` and `latest` template buckets (ui5Version undefined/newest or >= 1.152.0).
+            const withTextAnnotationColumn = (columnPersonalizationSupported?: boolean) => {
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
+                        if (columnPersonalizationSupported !== undefined) {
+                            features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
+                        }
+                    }
+                    return features;
+                });
+            };
+
+            const lrJourneyContents = (): string =>
+                fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.js']
+                    .contents as string;
+
+            it.each([['1.152.0'], [undefined]])(
+                'emits the adaptation-dialog test for the 1.152/latest buckets (ui5Version %s, JS)',
+                async (ui5Version) => {
+                    readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                    const projectDir = prepareTestFiles('LROPv4');
+                    withTextAnnotationColumn();
+
+                    fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
+
+                    const content = lrJourneyContents();
+                    expect(content).toContain(
+                        'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                    );
+                    expect(content).toContain('iOpenColumnAdaptation()');
+                    expect(content).toContain('iAddAdaptationColumn({ name: "CustomerName" })');
+                    expect(content).toContain('iCheckAdaptationColumn({ name: "CustomerName" })');
+                    expect(content).toContain('iConfirmColumnAdaptation()');
+                }
+            );
+
+            it('adds a navigation-path text target to the adaptation dialog (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            {
+                                columnProperty: 'Customer',
+                                textProperty: '_CustomerDetail/CustomerName'
+                            }
+                        ];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+                // The navigation-path target is emitted even though it fails at runtime today — the service
+                // is expected to be adjusted to expose it as an adaptation column (per LoB guidance).
+                expect(content).toContain('iAddAdaptationColumn({ name: "_CustomerDetail/CustomerName" })');
+                expect(content).toContain('iConfirmColumnAdaptation()');
+            });
+
+            it('omits the adaptation-dialog test when column personalization is disabled (JS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn(false);
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
+
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
+            ])('%s omits the adaptation-dialog test (JS)', async (_bucket, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
+
+            it('omits the adaptation-dialog test when there is no text-annotated column', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+
+                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
+
+            afterEach(() => {
+                getAppFeaturesMock.mockImplementation(actualModelUtils.getAppFeatures);
+            });
+        });
+
+        describe('column adaptation dialog test — TS', () => {
+            // Same as the JS block above, but with enableTypeScript so the generated .gen.ts journey
+            // exercises the "Check the presence of the text columns for columns with a Text annotation" opaTest.
+            const withTextAnnotationColumn = (columnPersonalizationSupported?: boolean) => {
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            { columnProperty: 'CustomerID', textProperty: 'CustomerName' }
+                        ];
+                        if (columnPersonalizationSupported !== undefined) {
+                            features.listReport.columnPersonalizationSupported = columnPersonalizationSupported;
+                        }
+                    }
+                    return features;
+                });
+            };
+
+            const lrJourneyContents = (): string =>
+                fs!.dump()['test/test-output/LROPv4/webapp/test/integration/TravelListJourney.gen.ts']
+                    .contents as string;
+
+            it.each([['1.152.0'], [undefined]])(
+                'emits the adaptation-dialog test for the 1.152/latest buckets (ui5Version %s, TS)',
+                async (ui5Version) => {
+                    readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                    const projectDir = prepareTestFiles('LROPv4');
+                    withTextAnnotationColumn();
+
+                    fs = await generateOPAFiles(
+                        projectDir,
+                        { ...(ui5Version ? { ui5Version } : {}), enableTypeScript: true },
+                        metadata,
+                        fs
+                    );
+
+                    const content = lrJourneyContents();
+                    expect(content).toContain(
+                        'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                    );
+                    expect(content).toContain('iOpenColumnAdaptation()');
+                    expect(content).toContain('iAddAdaptationColumn({ name: "CustomerName" })');
+                    expect(content).toContain('iCheckAdaptationColumn({ name: "CustomerName" })');
+                    expect(content).toContain('iConfirmColumnAdaptation()');
+                }
+            );
+
+            it('adds a navigation-path text target to the adaptation dialog (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                getAppFeaturesMock.mockImplementationOnce(async (...args) => {
+                    const features = await actualModelUtils.getAppFeatures(...args);
+                    if (features.listReport) {
+                        features.listReport.textAnnotationColumns = [
+                            {
+                                columnProperty: 'Customer',
+                                textProperty: '_CustomerDetail/CustomerName'
+                            }
+                        ];
+                    }
+                    return features;
+                });
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).toContain(
+                    'opaTest("Check the presence of the text columns for columns with a Text annotation"'
+                );
+                expect(content).toContain('iOpenColumnAdaptation()');
+                // The navigation-path target is emitted even though it fails at runtime today — the service
+                // is expected to be adjusted to expose it as an adaptation column (per LoB guidance).
+                expect(content).toContain('iAddAdaptationColumn({ name: "_CustomerDetail/CustomerName" })');
+                expect(content).toContain('iConfirmColumnAdaptation()');
+            });
+
+            it('omits the adaptation-dialog test when column personalization is disabled (TS)', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn(false);
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
+
+            it.each([
+                ['1.84', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
+            ])('%s omits the adaptation-dialog test (TS)', async (_bucket, ui5Version) => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                withTextAnnotationColumn();
+
+                fs = await generateOPAFiles(projectDir, { ui5Version, enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
+                expect(content).not.toContain('iOpenColumnAdaptation');
+            });
+
+            it('omits the adaptation-dialog test when there is no text-annotated column', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+
+                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
+
+                const content = lrJourneyContents();
+                expect(content).not.toContain(
+                    'Check the presence of the text columns for columns with a Text annotation'
+                );
+                expect(content).not.toContain('iOpenColumnAdaptation');
             });
 
             afterEach(() => {
@@ -2126,6 +2541,86 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
+    });
+});
+
+describe('checkbox-group fields (FXUBRQ34-12809)', () => {
+    const buckets = ['1.84', '1.148', '1.152', 'latest'] as const;
+
+    const renderObjectPageJourney = (
+        bucket: string,
+        extension: 'js' | 'ts',
+        fields: Record<string, unknown>[]
+    ): string => {
+        const templatePath = join(__dirname, `../../templates/v4/${bucket}/integration/ObjectPageJourney.${extension}`);
+        const outPath = join(__dirname, `../test-output/checkbox/${bucket}/ObjectPageJourney.gen.${extension}`);
+        const editor = create(createStorage());
+        editor.copyTpl(templatePath, outPath, {
+            name: 'CustomerObjectPage',
+            hideFilterBar: false,
+            serviceUri: '/odata/v4/TestService/',
+            navigationParents: { parentLRName: undefined, parentOPs: [], parentLRTableIdentifier: '' },
+            headerTitle: undefined,
+            headerSections: [],
+            headerActions: [],
+            editButton: undefined,
+            bodySections: [
+                {
+                    id: 'GeneralInformation2',
+                    isTable: false,
+                    subSections: [],
+                    fields,
+                    contactCardFields: [],
+                    contactCardColumns: [],
+                    actions: [],
+                    tableColumns: {}
+                }
+            ]
+        });
+        return editor.read(outPath);
+    };
+
+    const liveField = { property: 'AddressTimeZone' };
+    const checkBoxFields = [
+        { property: 'PostingIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true },
+        { property: 'BusinessPartnerIsBlocked', fieldGroup: 'CheckBoxGroup', checkBoxGroup: true }
+    ];
+
+    it.each(buckets)('comments out checkbox-group members in every bucket (%s, JS)', (bucket) => {
+        const journey = renderObjectPageJourney(bucket, 'js', [liveField, ...checkBoxFields]);
+        const lines = journey.split('\n').map((line) => line.trim());
+        // The note is emitted exactly once for the consecutive checkbox-group block.
+        expect(
+            lines.filter((line) => line === '// Checkbox-group members cannot be addressed by sap.fe.test.api')
+        ).toHaveLength(1);
+        // Both checkbox members are present but commented out — never emitted as live steps.
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "BusinessPartnerIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+        const active = lines.filter((line) => !line.startsWith('//'));
+        expect(active.some((line) => line.includes('PostingIsBlocked'))).toBe(false);
+        // The non-checkbox field stays a live assertion.
+        expect(active.some((line) => line.includes('iCheckField({ property: "AddressTimeZone" })'))).toBe(true);
+    });
+
+    it('omits the unused FormIdentifier import when a section has only checkbox-group fields (TS)', () => {
+        const journey = renderObjectPageJourney('latest', 'ts', [...checkBoxFields]);
+        // All field assertions are commented out, so the FormIdentifier type is never used.
+        expect(journey).not.toContain('import type { FormIdentifier }');
+        expect(journey).toContain(
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+        );
+    });
+
+    it('keeps the FormIdentifier import when a checkbox-group section also has a live field (TS)', () => {
+        const journey = renderObjectPageJourney('latest', 'ts', [liveField, ...checkBoxFields]);
+        expect(journey).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+        expect(journey).toContain(
+            'onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "AddressTimeZone" })'
+        );
     });
 });
 

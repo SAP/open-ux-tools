@@ -1,0 +1,436 @@
+[{
+	"ProductID": "HT-1000",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1000.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "956.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Notebook Basic 15",
+	"Description": "Notebook Basic 15 with 1,7GHz - 15\" XGA - 1024MB DDR2 SDRAM - 40GB Hard Disc",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Notebooks",
+	"SupplierID": "100000000",
+	"SupplierName": "SAP",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1001",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1001.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "1249.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Notebook Basic 17",
+	"Description": "Notebook Basic 17 with 1,7GHz - 17\" XGA - 1024MB DDR2 SDRAM - 40GB Hard Disc",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Notebooks",
+	"SupplierID": "100000001",
+	"SupplierName": "Becker Berlin",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1002",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1002.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "1570.00",
+		"CurrencyCode": "USD"
+	},
+	"Name": "Notebook Basic 18",
+	"Description": "Notebook Basic 18 with 1,7GHz - 18\" LCD - 1024MB DDR2 SDRAM - 40GB Hard Disc",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Notebooks",
+	"SupplierID": "100000002",
+	"SupplierName": "DelBont Industries",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1003",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1003.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "1650.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Notebook Basic 19",
+	"Description": "Notebook Basic 19 with 1,7GHz - 19\" LCD - 1024MB DDR2 SDRAM - 40GB Hard Disc",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Notebooks",
+	"SupplierID": "100000003",
+	"SupplierName": "Talpa",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1010",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1010.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "1999.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Notebook Professional 15",
+	"Description": "Notebook Professional 15 with 2,3GHz - 15\" XGA - 2048MB DDR2 SDRAM - 40GB Hard Disc - DVD-Writer (DVD-R/+R/-RW/-RAM)",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Notebooks",
+	"SupplierID": "100000005",
+	"SupplierName": "TECUM",
+	"Supplier": {}
+}, {
+
+	"ProductID": "HT-1011",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1011.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "2299.00",
+		"CurrencyCode": "JPY"
+	},
+	"Name": "Notebook Professional 17",
+	"Description": "Notebook Professional 17 with 2,3GHz - 17\" XGA - 2048MB DDR2 SDRAM - 40GB Hard Disc - DVD-Writer (DVD-R/+R/-RW/-RAM)",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Notebooks",
+	"SupplierID": "100000006",
+	"SupplierName": "Asia High tech",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1020",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1020.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "129.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Easy Hand III",
+	"Description": "High resolution 320x320 transflective color screen - 16MB of memory - Infrared Port - Speaker - Stylus",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Handhelds",
+	"SupplierID": "100000007",
+	"SupplierName": "Laurent",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1021",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1021.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "149.00",
+		"CurrencyCode": "MXN"
+	},
+	"Name": "Easy Hand V",
+	"Description": "High resolution 320x320 transflective color screen - 32MB of memory - Infrared Port - Speaker - Stylus",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Handhelds",
+	"SupplierID": "100000008",
+	"SupplierName": "AVANTEL",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1022",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1022.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "205.00",
+		"CurrencyCode": "ARS"
+	},
+	"Name": "Easy Hand VII",
+	"Description": "High resolution 320x480 transflective color screen - 16MB of memory - Infrared Port - Speaker - Stylus",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Handhelds",
+	"SupplierID": "100000009",
+	"SupplierName": "Telecomunicaciones Star",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1023",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1023.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "239.00",
+		"CurrencyCode": "USD"
+	},
+	"Name": "Easy Power",
+	"Description": "High resolution 320x480 transflective color screen - 32MB of memory - Infrared Port - Speaker - Stylus",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Handhelds",
+	"SupplierID": "100000010",
+	"SupplierName": "Pear Computing Services",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1030",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1030.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "230.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Ergo Screen",
+	"Description": "17\" Optimum Resolution 1024 x 768 @ 85Hz, Max resolution 1280 x 960 @ 75Hz, Dot Pitch: 0.27mm",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Flat screens",
+	"SupplierID": "100000011",
+	"SupplierName": "Alpine Systems",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1031",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1031.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "285.00",
+		"CurrencyCode": "GBP"
+	},
+	"Name": "Easy Pixel",
+	"Description": "19\" Optimum Resolution 1280 x 960 @ 85Hz, Max resolution 1600 x 1200 @ 75Hz, Dot Pitch: 0.26mm",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Flat screens",
+	"SupplierID": "100000012",
+	"SupplierName": "New Line Design",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1032",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1032.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "345.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Beam Screen",
+	"Description": "21\" Optimum Resolution 1600 x 1200 @ 85Hz, Max resolution 1984 x 1488 @ 75Hz, Dot Pitch: 0.25mm",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Flat screens",
+	"SupplierID": "100000013",
+	"SupplierName": "HEPA Tec",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1035",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1035.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "399.00",
+		"CurrencyCode": "USD"
+	},
+	"Name": "Flat Basic 15",
+	"Description": "19\" Optimum Resolution 1600 x 1200 @ 85Hz, Max resolution 1984 x 1488 @ 75Hz, Dot Pitch: 0.24mm",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Flat screens",
+	"SupplierID": "100000014",
+	"SupplierName": "Anav Ideon",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1036",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1036.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "430.00",
+		"CurrencyCode": "CAD"
+	},
+	"Name": "Flat Future",
+	"Description": "21\" Optimum Resolution 1984 x 1488 @ 85Hz, Max resolution 1720 x 1280 @ 75Hz, Dot Pitch: 0.24mm",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Flat screens",
+	"SupplierID": "100000015",
+	"SupplierName": "Robert Brown Entertainment",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1037",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1037.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+
+		"Amount": "1430.00",
+		"CurrencyCode": "MXN"
+	},
+	"Name": "Flat X-large",
+	"Description": "23\" Optimum Resolution 2016 x 1512 @ 85Hz, Max resolution 2048 x 1536 @ 75Hz, Dot Pitch: 0.24mm",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Flat screens",
+	"SupplierID": "100000016",
+	"SupplierName": "Mexican Oil Trading Company",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1040",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1040.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "830.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Laser Professional Eco",
+	"Description": "Print 2400 dpi image quality color documents at speeds of up to 32 ppmÂ¹ (color) or 36 ppmÂ¹ (monochrome), letter/A4. Powerful 500 MHz processor, 512MB of memory",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Laser printers",
+	"SupplierID": "100000017",
+	"SupplierName": "Meliva",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1041",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1041.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "490.00",
+		"CurrencyCode": "ARS"
+	},
+	"Name": "Laser Basic",
+	"Description": "Up to 22 ppm color or 24 ppm monochrome letter, powerful 500 MHz processor and 128MB of memory",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Laser printers",
+	"SupplierID": "100000018",
+	"SupplierName": "Compostela",
+	"Supplier": {}
+}, {
+
+	"ProductID": "HT-1042",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1042.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "349.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Laser Allround",
+	"Description": "Print up to 25 ppm letter and 24 ppm A4 color or monochrome, with a first-page-out-time of less than 13 seconds for monochrome and less than 15 seconds for color",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Laser printers",
+	"SupplierID": "100000019",
+	"SupplierName": "Pateu",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1050",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1050.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "139.00",
+		"CurrencyCode": "RUB"
+	},
+	"Name": "Deskjet Super Color",
+	"Description": "1200 dpi x 1200 dpi - up to 19 ppm (mono) / up to 18 ppm (colour) - capacity: 80 sheets - Hi-Speed USB, Ethernet",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Ink jet printers",
+	"SupplierID": "100000020",
+	"SupplierName": "Russian Electronic Trading Company",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1051",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1051.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "99.00",
+		"CurrencyCode": "USD"
+	},
+	"Name": "Deskjet Mobile",
+	"Description": "1000 dpi x 1000 dpi - up to 15 ppm (mono) / up to 13 ppm (colour) - capacity: 40 sheets - Hi-Speed USB - excellent dimesions for the small office",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Ink jet printers",
+	"SupplierID": "100000021",
+	"SupplierName": "Florida Holiday Company",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1052",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1052.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "170.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Deskjet Super Highspeed",
+	"Description": "1200 dpi x 1200 dpi - up to 25 ppm (mono) / up to 24 ppm (colour) - capacity: 100 sheets - Hi-Speed USB2.0, Ethernet",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Ink jet printers",
+	"SupplierID": "100000022",
+	"SupplierName": "Quimica Madrilenos",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1055",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1055.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "99.00",
+		"CurrencyCode": "EUR"
+	},
+	"Name": "Multi Print",
+	"Description": "1000 dpi x 1000 dpi - up to 16 ppm (mono) / up to 15 ppm (colour)- capacity 80 sheets - scanner (216 x 297 mm, 1200dpi x 2400dpi)",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Multi function printers",
+	"SupplierID": "100000023",
+	"SupplierName": "GetrÃ¤nkegroÃŸhandel Janssen",
+	"Supplier": {}
+}, {
+	"ProductID": "HT-1056",
+	"ImageUrl": "/SAP/PUBLIC/BC/NWDEMO_MODEL/IMAGES/HT-1056.jpg",
+	"MimeType": "image/jpeg",
+	"Price": {
+		"Amount": "119.00",
+		"CurrencyCode": "JPY"
+	},
+	"Name": "Multi Color",
+	"Description": "1200 dpi x 1200 dpi - up to 25 ppm (mono) / up to 24 ppm (colour)- capacity 80 sheets - scanner (216 x 297 mm, 2400dpi x 4800dpi, high resolution)",
+	"CreatedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"ChangedAt": "Wed, 14th of August, 2013, 8:45 pm",
+	"CreatedByName": "Dr. Rogge-Mock",
+	"ChangedByName": "Dr. Rogge-Mock",
+	"Category": "Multi function printers",
+	"SupplierID": "100000024",
+	"SupplierName": "JaTeCo",
+	"Supplier": {}
+}]

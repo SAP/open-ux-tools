@@ -1,5 +1,100 @@
 # @sap-ux/fiori-generator-shared
 
+## 1.2.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.14 → 2.0.15
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+
+## 1.2.25
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.2.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/telemetry 2.0.12 → 2.0.13
+
+## 1.2.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/telemetry 2.0.11 → 2.0.12
+
+## 1.2.22
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-textdocument 1.0.12 → 1.0.15, vscode-languageserver-types 3.18.0 → 3.18.4, @vscode-logging/logger 2.0.9 → 2.0.10 [[35f731a](https://github.com/SAP/open-ux-tools/commit/35f731ae4482c014726fe6bbbfdcac497382715b)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/telemetry 2.0.10 → 2.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.2.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+
+## 1.2.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/telemetry 2.0.9 → 2.0.10
+
+## 1.2.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/telemetry 2.0.8 → 2.0.9
+
 ## 1.2.18
 
 ### Patch Changes

@@ -1,5 +1,114 @@
 # @sap-ux/inquirer-common
 
+## 1.0.53
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.26 → 1.2.27
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+
+## 1.0.52
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.14 → 2.0.15
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+
+## 1.0.51
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.50
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/telemetry 2.0.12 → 2.0.13
+
+## 1.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/telemetry 2.0.11 → 2.0.12
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+
+## 1.0.48
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/telemetry 2.0.10 → 2.0.11
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.0.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.20 → 1.2.21
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/fiori-generator-shared 1.2.19 → 1.2.20
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/telemetry 2.0.9 → 2.0.10
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-generator-shared 1.2.18 → 1.2.19
+- @sap-ux/odata-service-writer 1.0.23 → 1.0.24
+- @sap-ux/telemetry 2.0.8 → 2.0.9
+
 ## 1.0.44
 
 ### Patch Changes

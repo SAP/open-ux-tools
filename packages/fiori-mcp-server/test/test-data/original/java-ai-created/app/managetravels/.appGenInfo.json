@@ -10,7 +10,7 @@
     "appDescription": "A Fiori Elements application to manage travel bookings and expenses",
     "appNamespace": "com.company.managetravels",
     "ui5Theme": "sap_horizon",
-    "ui5Version": "1.136.7",
+    "ui5Version": "1.148.12",
     "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": false,

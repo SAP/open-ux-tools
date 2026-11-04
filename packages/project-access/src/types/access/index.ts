@@ -76,6 +76,15 @@ export interface ApplicationAccess extends BaseAccess {
      */
     createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[]): Promise<boolean>;
     /**
+     * Maintains new translation entries at a specific i18n properties file path.
+     * Use this when the target file is already known (e.g. chosen by the user from a picker).
+     *
+     * @param filePath absolute path to the target `.properties` file
+     * @param newEntries translation entries to write
+     * @returns boolean or exception
+     */
+    createI18nEntriesAtPath(filePath: string, newEntries: NewI18nEntry[]): Promise<boolean>;
+    /**
      * Return the application id of this app, which is the relative path from the project root
      * to the app root.
      *

@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import type { SystemLookup } from '@sap-ux/adp-tooling';
 import type {
     AbapServiceProvider,
     AdaptationDescriptor,
@@ -7,11 +8,11 @@ import type {
     KeyUserChangeContent
 } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SystemLookup } from '@sap-ux/adp-tooling';
 
 const mockIsAxiosError = jest.fn<typeof realAxiosExtension.isAxiosError>();
 const mockValidateEmptyString = jest.fn<typeof realProjectInputValidator.validateEmptyString>();
 const mockGetConfiguredProvider = jest.fn<typeof realAdpTooling.getConfiguredProvider>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>();
 const mockGetAdaptationChoices = jest.fn() as jest.Mock;
 const mockGetKeyUserSystemChoices = jest.fn() as jest.Mock;
 const mockGetKeyUserSystemAdditionalMessages = jest.fn() as jest.Mock;
@@ -25,7 +26,8 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
 const realAdpTooling = await import('@sap-ux/adp-tooling');
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
-    getConfiguredProvider: mockGetConfiguredProvider
+    getConfiguredProvider: mockGetConfiguredProvider,
+    isAuthRequired: mockIsAuthRequired
 }));
 
 jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages', () => ({
@@ -70,8 +72,7 @@ const systemLookup: SystemLookup = {
     getSystems: jest.fn().mockResolvedValue([
         { Name: 'SystemA', Client: '100', Url: '/systema', Authentication: 'NoAuthentication' },
         { Name: 'SystemB', Client: '200', Url: '/systemb', Authentication: 'Basic' }
-    ]),
-    getSystemRequiresAuth: jest.fn()
+    ])
 } as unknown as SystemLookup;
 
 const mockAdaptations: AdaptationDescriptor[] = [
@@ -99,7 +100,6 @@ const getSystemsMock = systemLookup.getSystems as jest.Mock;
 const getKeyUserDataMock = mockLayeredRepository.getKeyUserData as jest.Mock;
 const getFlexVersionsMock = mockLayeredRepository.getFlexVersions as jest.Mock;
 const listAdaptationsMock = mockLayeredRepository.listAdaptations as jest.Mock;
-const getSystemRequiresAuthMock = systemLookup.getSystemRequiresAuth as jest.Mock;
 
 describe('KeyUserImportPrompter', () => {
     const componentId = 'demoapps.rta';
@@ -112,6 +112,7 @@ describe('KeyUserImportPrompter', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsAuthRequired.mockResolvedValue(false);
         mockValidateEmptyString.mockReturnValue(true);
         mockGetAdaptationChoices.mockReturnValue([{ name: 'Default Adaptation', value: mockAdaptations[0] }]);
         mockGetKeyUserSystemChoices.mockReturnValue([
@@ -132,12 +133,15 @@ describe('KeyUserImportPrompter', () => {
     describe('getPrompts', () => {
         it('should return all prompts by default', () => {
             const prompts = prompter.getPrompts();
-            expect(prompts).toHaveLength(4);
+            expect(prompts).toHaveLength(7);
             expect(prompts.map((p) => p.name)).toEqual([
                 keyUserPromptNames.keyUserSystem,
+                keyUserPromptNames.keyUserSystemValidationCli,
                 keyUserPromptNames.keyUserUsername,
                 keyUserPromptNames.keyUserPassword,
-                keyUserPromptNames.keyUserAdaptation
+                keyUserPromptNames.keyUserAdaptation,
+                keyUserPromptNames.keyUserAdaptationValidationCli,
+                keyUserPromptNames.keyUserRestrictedViewsLabel
             ]);
         });
 
@@ -146,11 +150,128 @@ describe('KeyUserImportPrompter', () => {
                 [keyUserPromptNames.keyUserSystem]: { hide: true },
                 [keyUserPromptNames.keyUserPassword]: { hide: true }
             });
-            expect(prompts).toHaveLength(2);
+            expect(prompts).toHaveLength(5);
             expect(prompts.map((p) => p.name)).toEqual([
+                keyUserPromptNames.keyUserSystemValidationCli,
                 keyUserPromptNames.keyUserUsername,
-                keyUserPromptNames.keyUserAdaptation
+                keyUserPromptNames.keyUserAdaptation,
+                keyUserPromptNames.keyUserAdaptationValidationCli,
+                keyUserPromptNames.keyUserRestrictedViewsLabel
             ]);
+        });
+    });
+
+    describe('Restricted views label (detectRestrictedViews)', () => {
+        const answers = {
+            keyUserSystem: 'SystemA',
+            keyUserUsername: 'user',
+            keyUserPassword: 'pass',
+            keyUserAdaptation: mockAdaptations[0]
+        };
+
+        /**
+         * Populates the prompter's key-user changes via system validation, then returns the
+         * `when` result of the restricted-views label prompt (which calls `detectRestrictedViews`).
+         *
+         * @returns {Promise<boolean>} `true` if the label should be shown.
+         */
+        const resolveLabelWhen = async (): Promise<boolean> => {
+            getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
+            listAdaptationsMock.mockResolvedValue({ adaptations: mockAdaptations });
+
+            const systemPrompt = prompter['getSystemPrompt']();
+            await systemPrompt?.validate?.(defaultSystem, answers);
+
+            const labelPrompt = prompter
+                .getPrompts()
+                .find((p) => p.name === keyUserPromptNames.keyUserRestrictedViewsLabel);
+            const when = labelPrompt?.when as (() => boolean) | undefined;
+            return !!when?.();
+        };
+
+        it('should show the label when a change exists solely to restrict views', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [{ content: { changeType: 'updateVariant', content: { contexts: { role: ['someRole'] } } } }]
+            });
+
+            expect(await resolveLabelWhen()).toBe(true);
+        });
+
+        it('should show the label when a change carries a non-empty contexts.role alongside other content', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [
+                    {
+                        content: {
+                            changeType: 'propertyChange',
+                            contexts: { role: ['someRole'] },
+                            content: { property: 'visible' }
+                        }
+                    }
+                ]
+            });
+
+            expect(await resolveLabelWhen()).toBe(true);
+        });
+
+        it('should show the label when the restriction sits only on the nested inner content', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [
+                    {
+                        content: {
+                            changeType: 'propertyChange',
+                            content: { property: 'visible', contexts: { role: ['someRole'] } }
+                        }
+                    }
+                ]
+            });
+
+            expect(await resolveLabelWhen()).toBe(true);
+        });
+
+        it('should hide the label when no change carries a view restriction', async () => {
+            getKeyUserDataMock.mockResolvedValue({ contents: mockKeyUserChanges });
+
+            expect(await resolveLabelWhen()).toBe(false);
+        });
+    });
+
+    describe('CLI validation prompts', () => {
+        const getPromptWhen = (name: string): ((answers: unknown) => Promise<boolean>) => {
+            const prompt = prompter.getPrompts().find((p) => p.name === name);
+            return prompt?.when as (answers: unknown) => Promise<boolean>;
+        };
+
+        beforeEach(() => {
+            getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
+            listAdaptationsMock.mockResolvedValue({ adaptations: mockAdaptations });
+        });
+
+        it('should load the key-user changes via the system validation prompt (list validate does not run in CLI)', async () => {
+            getKeyUserDataMock.mockResolvedValue({
+                contents: [{ content: { changeType: 'updateVariant', content: { contexts: { role: ['someRole'] } } } }]
+            });
+
+            const when = getPromptWhen(keyUserPromptNames.keyUserSystemValidationCli);
+            const shown = await when({ keyUserSystem: defaultSystem });
+
+            expect(shown).toBe(false);
+            expect(prompter.changes).toHaveLength(1);
+            expect(prompter.detectRestrictedViews()).toBe(true);
+        });
+
+        it('should skip the system validation prompt when no system is selected', async () => {
+            const when = getPromptWhen(keyUserPromptNames.keyUserSystemValidationCli);
+
+            expect(await when({ keyUserSystem: '' })).toBe(false);
+            expect(getFlexVersionsMock).not.toHaveBeenCalled();
+        });
+
+        it('should throw from the system validation prompt when validation fails', async () => {
+            listAdaptationsMock.mockResolvedValue({ adaptations: [] });
+
+            const when = getPromptWhen(keyUserPromptNames.keyUserSystemValidationCli);
+
+            await expect(when({ keyUserSystem: defaultSystem })).rejects.toThrow();
         });
     });
 
@@ -202,13 +323,13 @@ describe('KeyUserImportPrompter', () => {
                 const result = await prompt?.validate?.(defaultSystem, answers);
 
                 expect(result).toBe(true);
-                expect(getSystemRequiresAuthMock).not.toHaveBeenCalled();
+                expect(mockIsAuthRequired).not.toHaveBeenCalled();
                 expect(mockGetConfiguredProvider).not.toHaveBeenCalled();
                 expect(prompter.changes).toEqual(mockKeyUserChanges);
             });
 
             it('should check auth requirement for non-default system', async () => {
-                getSystemRequiresAuthMock.mockResolvedValue(false);
+                mockIsAuthRequired.mockResolvedValue(false);
                 mockGetConfiguredProvider.mockResolvedValue(defaultProvider);
                 getFlexVersionsMock.mockResolvedValue({ versions: mockFlexVersions });
                 listAdaptationsMock.mockResolvedValue({ adaptations: mockAdaptations });
@@ -218,18 +339,18 @@ describe('KeyUserImportPrompter', () => {
                 const result = await prompt?.validate?.('SystemB', answers);
 
                 expect(result).toBe(true);
-                expect(getSystemRequiresAuthMock).toHaveBeenCalledWith('SystemB');
+                expect(mockIsAuthRequired).toHaveBeenCalledWith('SystemB', expect.anything());
                 expect(mockGetConfiguredProvider).toHaveBeenCalled();
             });
 
             it('should return true if auth is required (will show password prompt)', async () => {
-                getSystemRequiresAuthMock.mockResolvedValue(true);
+                mockIsAuthRequired.mockResolvedValue(true);
 
                 const prompt = prompter['getSystemPrompt']();
                 const result = await prompt?.validate?.('SystemB', answers);
 
                 expect(result).toBe(true);
-                expect(getSystemRequiresAuthMock).toHaveBeenCalledWith('SystemB');
+                expect(mockIsAuthRequired).toHaveBeenCalledWith('SystemB', expect.anything());
                 expect(mockGetConfiguredProvider).not.toHaveBeenCalled();
             });
 
@@ -245,7 +366,7 @@ describe('KeyUserImportPrompter', () => {
             });
 
             it('should return error message on exception', async () => {
-                getSystemRequiresAuthMock.mockRejectedValue(new Error('Connection failed'));
+                mockIsAuthRequired.mockRejectedValue(new Error('Connection failed'));
 
                 const prompt = prompter['getSystemPrompt']();
                 const result = await prompt?.validate?.('SystemB', answers);

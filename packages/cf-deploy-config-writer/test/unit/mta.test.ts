@@ -440,4 +440,64 @@ parameters:
         // Verify no undefined values
         expect(expectAfterYaml).not.toContain('ServiceInstanceName: undefined');
     });
+
+    it('Should cap generated service-names at 50 characters for a long MTA ID (issue #5257)', async () => {
+        // Given: a long (but valid, <128) MTA ID whose derived service-names would otherwise exceed
+        // the Cloud Foundry 50-character service instance name limit
+        const longMtaId = 'commigrosinvoiceapprovalinvoiceapproval'; // 39 chars
+        const mtaWithLongId = `_schema-version: '3.2'
+ID: ${longMtaId}
+version: 0.0.1
+modules: []
+resources:
+  - name: ${longMtaId}-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: ${longMtaId}-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+parameters:
+  enable-parallel-deployments: true`;
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`${OUTPUT_DIR_PREFIX}/app8/mta.yaml`]: mtaWithLongId
+            },
+            '/'
+        );
+
+        // When: a managed app router is added (generates destination + content and aligns service-names)
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/app8`);
+        await mtaConfig.addManagedAppRouter();
+        await mtaConfig.save();
+        const expectAfterYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app8/mta.yaml`, 'utf-8');
+
+        // Then: every generated service-name and ServiceInstanceName stays within the 50-char CF limit
+        const serviceNames = [...expectAfterYaml.matchAll(/service-name:\s*(\S+)/g)].map((match) => match[1]);
+        const serviceInstanceNames = [...expectAfterYaml.matchAll(/ServiceInstanceName:\s*(\S+)/g)].map(
+            (match) => match[1]
+        );
+        expect(serviceNames.length).toBeGreaterThan(0);
+        expect(serviceInstanceNames.length).toBeGreaterThan(0);
+        for (const name of [...serviceNames, ...serviceInstanceNames]) {
+            expect(name.length).toBeLessThanOrEqual(50);
+        }
+
+        // And: the capped names are present and the untruncated (53-char) names are not, so the
+        // destination-content references stay consistent with the created service instances
+        expect(expectAfterYaml).toContain('ServiceInstanceName: commigrosinvoiceapprovalinvoiceappro-html5-service');
+        expect(expectAfterYaml).toContain('ServiceInstanceName: commigrosinvoiceapprovalinvoiceappro-xsuaa-service');
+        expect(expectAfterYaml).not.toContain(`${longMtaId}-html5-service`);
+        expect(expectAfterYaml).not.toContain(`${longMtaId}-xsuaa-service`);
+
+        // And: each destination ServiceInstanceName matches an actual resource service-name
+        for (const instanceName of serviceInstanceNames) {
+            expect(serviceNames).toContain(instanceName);
+        }
+    });
 });

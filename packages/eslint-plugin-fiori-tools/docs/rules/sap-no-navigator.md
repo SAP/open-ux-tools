@@ -13,9 +13,7 @@ var name = navigator.appCodeName;
 
 Warning message: _navigator usage is forbidden, use `sap.ui.Device` API instead._
 
-## Bug report
+## Bug Report
 
 In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).
-
-## Further Reading
 

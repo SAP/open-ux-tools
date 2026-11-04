@@ -1,0 +1,10 @@
+{
+  "name": "com.example.complex.services",
+  "version": "1.0.0",
+  "description": "Complex service configuration test",
+  "private": true,
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3.0.0"
+  }
+}

@@ -1,5 +1,37 @@
 # @sap-ux/i18n
 
+## 1.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.4 → 1.0.5
+
+## 1.0.6
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-textdocument 1.0.12 → 1.0.15, vscode-languageserver-types 3.18.0 → 3.18.4, @vscode-logging/logger 2.0.9 → 2.0.10 [[35f731a](https://github.com/SAP/open-ux-tools/commit/35f731ae4482c014726fe6bbbfdcac497382715b)]
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.3 → 1.0.4
+
+## 1.0.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Features
+
+- export capPropertiesPath and getCapI18nFiles functions. [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
 ## 1.0.4
 
 ### Patch Changes

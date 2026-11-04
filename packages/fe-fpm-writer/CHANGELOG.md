@@ -1,5 +1,106 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.3.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.6 → 1.1.7
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.3.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.5 → 1.1.6
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.3.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-annotation-api 1.1.4 → 1.1.5
+
+## 1.3.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.3 → 1.1.4
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.3.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Replace \\bid regex boundary with negative lookbehind in isElementIdAvailable to prevent false positives on compound attributes like data-id [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.3.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.2 → 1.1.3
+
+## 1.3.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/fiori-annotation-api 1.1.1 → 1.1.2
+
+## 1.3.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- add stickySubheaderProvider to Page BB template to remove empty space between header and tab bar [[ce5ec7e](https://github.com/SAP/open-ux-tools/commit/ce5ec7e5b77e04ff2479007730c6e90a035b598a)]
+
+## 1.3.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-annotation-api 1.1.0 → 1.1.1
+
 ## 1.3.19
 
 ### Patch Changes

@@ -1,0 +1,34 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:smartForm="sap.ui.comp.smartform" xmlns:smartField="sap.ui.comp.smartfield" xmlns="sap.m">
+	<Dialog title="{i18n>CreateTaskDialogTitle}" class="sapUiSizeCompact" draggable="true">
+		<f:SimpleForm id="dialog" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3"
+			emptySpanL="4" emptySpanM="4" columnsL="1" columnsM="1" class="editableForm">
+			<f:content>
+				<smartField:SmartLabel labelFor="QualityTaskText" tooltip = "i18n>QualityTaskText" required = "true"/>
+				<smartField:SmartField value="{QualityTaskText}" id="QualityTaskText" mandatory="true" change="onValueChange"/>
+				
+				<smartField:SmartLabel labelFor="DefectInternalID"/>
+				<smartField:SmartField value="{DefectInternalID}" id="DefectInternalID" mandatory="false" change="onValueChange"/>
+				
+				<!-- needed to store the defect origin in the context of the dialog -->
+				<smartField:SmartLabel labelFor="QualityTaskOrigin"/>
+				<smartField:SmartField value="{QualityTaskOrigin}" id="QualityTaskOrigin" visible="false"/>
+
+                <smartField:SmartLabel labelFor="QualityTaskProcessor"/>
+                <smartField:SmartField value="{QualityTaskProcessor}"
+                                          id="QualityTaskProcessor"
+                                   mandatory="false"
+                                      change="onValueChange"
+                               showValueHelp="true"
+                               maxLength="10"/>
+
+			</f:content>
+		</f:SimpleForm>
+		<beginButton>
+			<Button text="{i18n>Save}" press="onCreateTaskPress"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>Cancel}" press="onCloseCreateDialog"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

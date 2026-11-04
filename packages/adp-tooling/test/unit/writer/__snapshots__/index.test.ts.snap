@@ -88,6 +88,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -212,6 +214,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -336,6 +340,8 @@ server:
           target:
             destination: DUMMY_DESTINATION
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -442,7 +448,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -500,6 +509,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -637,6 +648,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -773,6 +786,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -812,7 +827,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -870,6 +888,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -931,7 +951,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -989,6 +1012,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1050,7 +1075,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1137,6 +1165,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1193,7 +1223,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1277,6 +1310,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1331,7 +1366,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1389,6 +1427,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1445,7 +1485,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1535,6 +1578,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1602,7 +1647,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1692,6 +1740,8 @@ server:
           target:
             destination: DUMMY_DESTINATION
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1760,7 +1810,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1850,6 +1903,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1917,7 +1972,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -2032,6 +2090,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -2100,7 +2160,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -2167,6 +2230,8 @@ server:
             url: http://sap.example
             client: '000'
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:

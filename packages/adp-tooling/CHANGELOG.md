@@ -1,5 +1,199 @@
 # @sap-ux/adp-tooling
 
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.26 → 1.0.27
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.0.71
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-01
+
+#### Bug Fixes
+
+- Remove now-unnecessary eslint-disable comments for sonarjs/no-implicit-dependencies rule after eslint-plugin-sonarjs upgrade [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
+## 1.0.70
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.69
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
+## 1.0.68
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/project-input-validator 1.0.24 → 1.0.25
+
+## 1.0.67
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-26
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.0.66
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.16 → 1.0.17
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+
+## 1.0.65
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
+## 1.0.64
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Features
+
+- Handle key-user changes with restricted views when importing them into an adaptation project — strip restrictions that cannot be represented in ADP, load the changes in the CLI (where the list prompt validation does not run) and warn in the terminal when imported changes have restricted views, and log in telemetry whether the user chose to import key-user changes [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
+## 1.0.63
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/project-input-validator 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.0.62
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
+## 1.0.61
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.44 → 1.0.45
+- @sap-ux/odata-service-writer 1.0.23 → 1.0.24
+- @sap-ux/project-input-validator 1.0.21 → 1.0.22
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
 ## 1.0.60
 
 ### Patch Changes

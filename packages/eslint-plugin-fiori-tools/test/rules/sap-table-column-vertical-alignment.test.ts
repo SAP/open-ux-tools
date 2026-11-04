@@ -61,7 +61,7 @@ const getManifest = (
                           'component',
                           'settings',
                           'sections',
-                          'Products',
+                          'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                           'tableSettings',
                           'type'
                       ],
