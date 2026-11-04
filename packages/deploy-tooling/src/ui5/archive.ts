@@ -2,6 +2,7 @@ import ZipFile from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 // eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { DuplexCollection } from '@ui5/fs';
+import { isExcluded } from '../base/config.js';
 
 /**
  * Create an archive of files in the workspace.
@@ -24,7 +25,7 @@ export async function createUi5Archive(
     const resources = await workspace.byGlob(`${prefix}**/*`);
     for (const resource of resources) {
         const path = resource.getPath().replace(prefix, '');
-        if (exclude.some((pattern) => path.startsWith(pattern.startsWith('/') ? pattern.slice(1) : pattern))) {
+        if (isExcluded(path, exclude)) {
             logger.debug(`Excluding ${path}`);
             continue;
         }

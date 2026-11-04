@@ -158,4 +158,37 @@ describe('Archive Generation', () => {
         expect(entries).toContain('testXdir/file.js');
         expect(entries).toContain('keep/file.js');
     });
+
+    test('Create archive excludes glob file patterns (file glob and globstar)', async () => {
+        const globFiles: Partial<Resource>[] = [
+            {
+                getPath: () => `/resources/${projectName}/Component.js`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            },
+            {
+                getPath: () => `/resources/${projectName}/sub/dir/app.js.map`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            },
+            {
+                getPath: () => `/resources/${projectName}/Component.js.bak`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            },
+            {
+                getPath: () => `/resources/${projectName}/keep/app.js`,
+                getBuffer: () => Promise.resolve(Buffer.from(''))
+            }
+        ];
+        const mockGlobProject = { byGlob: jest.fn().mockResolvedValue(globFiles) };
+        const buffer = await createUi5Archive(nullLogger, mockGlobProject as any, projectName, [
+            '/Component.js',
+            '/**/*.map'
+        ]);
+        const entries = new AdmZip(buffer).getEntries().map((e) => e.entryName);
+        // File glob '/Component.js' is anchored — excludes the file but not 'Component.js.bak'
+        expect(entries).not.toContain('Component.js');
+        expect(entries).toContain('Component.js.bak');
+        // Globstar '/**/*.map' excludes a nested .map file (the coercion-to-prefix bug would have kept it)
+        expect(entries).not.toContain('sub/dir/app.js.map');
+        expect(entries).toContain('keep/app.js');
+    });
 });

@@ -185,14 +185,14 @@ describe('cli/config', () => {
             const merged = await mergeConfig(baseConfig, {
                 config: join(fixture, 'ui5-deploy-no-exclude.yaml')
             } as CliOptions);
-            expect(merged.exclude).toEqual(['/test/', '/localService/']);
+            expect(merged.exclude).toEqual(['/test/**', '/localService/**']);
         });
 
         test('configuration.exclude present: also merged with builder.resources.excludes from ui5.yaml', async () => {
             const merged = await mergeConfig({ ...baseConfig, exclude: ['/extra/'] }, {
                 config: join(fixture, 'ui5-deploy-no-exclude.yaml')
             } as CliOptions);
-            expect(merged.exclude).toEqual(['/extra/', '/test/', '/localService/']);
+            expect(merged.exclude).toEqual(['/extra/', '/test/**', '/localService/**']);
         });
 
         test('configuration.exclude absent: CLI options.exclude merged with derived excludes', async () => {
@@ -200,7 +200,7 @@ describe('cli/config', () => {
                 config: join(fixture, 'ui5-deploy-no-exclude.yaml'),
                 exclude: ['/extra/']
             } as CliOptions);
-            expect(merged.exclude).toEqual(['/extra/', '/test/', '/localService/']);
+            expect(merged.exclude).toEqual(['/extra/', '/test/**', '/localService/**']);
         });
 
         test('configuration.exclude absent, no config path: exclude is undefined', async () => {
@@ -208,9 +208,10 @@ describe('cli/config', () => {
             expect(merged.exclude).toBeUndefined();
         });
 
-        test('bad config path yields undefined exclude (no crash)', async () => {
+        test('missing config path yields undefined exclude and logs debug, not warn', async () => {
             const logger = new ToolsLogger({ transports: [new NullTransport()] });
             const warnSpy = jest.spyOn(logger, 'warn');
+            const debugSpy = jest.spyOn(logger, 'debug');
             const merged = await mergeConfig(
                 baseConfig,
                 {
@@ -219,7 +220,26 @@ describe('cli/config', () => {
                 logger
             );
             expect(merged.exclude).toBeUndefined();
+            expect(warnSpy).not.toHaveBeenCalled();
+            expect(debugSpy).toHaveBeenCalledTimes(1);
+        });
+
+        test('unreadable config path (not ENOENT) yields undefined exclude and logs warn', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            // Pointing at a directory makes readFile fail with EISDIR, i.e. an error that is not ENOENT
+            const merged = await mergeConfig(baseConfig, { config: fixture } as CliOptions, logger);
+            expect(merged.exclude).toBeUndefined();
             expect(warnSpy).toHaveBeenCalledTimes(1);
+        });
+
+        test('warns when an explicit configuration.exclude entry looks like a regular expression', async () => {
+            const logger = new ToolsLogger({ transports: [new NullTransport()] });
+            const warnSpy = jest.spyOn(logger, 'warn');
+            const merged = await mergeConfig({ ...baseConfig, exclude: ['.*\\.map$'] }, {} as CliOptions, logger);
+            expect(merged.exclude).toEqual(['.*\\.map$']);
+            expect(warnSpy).toHaveBeenCalledTimes(1);
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('looks like a regular expression'));
         });
     });
 });

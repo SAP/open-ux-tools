@@ -4,6 +4,7 @@ import ZipFile from 'adm-zip';
 import type { CliOptions } from '../types/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { Agent } from 'node:https';
+import { isExcluded } from '../base/config.js';
 
 /**
  * Get/read zip file from the given path.
@@ -61,11 +62,7 @@ function createArchiveFromFolder(logger: Logger, path: string, exclude: string[]
         const zip = new ZipFile();
         zip.addLocalFolder(path);
         for (const entry of zip.getEntries()) {
-            if (
-                exclude.some((pattern) =>
-                    entry.entryName.startsWith(pattern.startsWith('/') ? pattern.slice(1) : pattern)
-                )
-            ) {
+            if (isExcluded(entry.entryName, exclude)) {
                 logger.debug(`Excluding ${entry.entryName}`);
                 zip.deleteFile(entry.entryName);
             } else {

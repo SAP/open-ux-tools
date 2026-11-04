@@ -6,7 +6,7 @@ import { dirname, isAbsolute, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types/index.js';
 import { NAME } from '../types/index.js';
-import { readBuilderExcludes } from '../base/config.js';
+import { readBuilderExcludes, warnOnLegacyRegexExcludes } from '../base/config.js';
 export { readBuilderExcludes } from '../base/config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -192,6 +192,7 @@ export async function mergeConfig(
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
     config.lrep = options.lrep;
     const builderExcludes = options.config ? await readBuilderExcludes(options.config, logger) : [];
+    warnOnLegacyRegexExcludes([...(options.exclude ?? []), ...(taskConfig.exclude ?? [])], logger);
     const merged = [...new Set([...(options.exclude ?? []), ...(taskConfig.exclude ?? []), ...builderExcludes])];
     config.exclude = merged.length ? merged : undefined;
 
