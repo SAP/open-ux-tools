@@ -3,6 +3,7 @@ export {
     callPageAction,
     executeAction,
     getElementContext,
+    getODataMetadata,
     getOverlays,
     getPageActions,
     pressInteractive,
@@ -19,7 +20,9 @@ export type {
     AvailableModel,
     EditorPage,
     ElementContext,
+    GetODataMetadataResult,
     InteractiveElement,
+    ODataMetadataEntry,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction
