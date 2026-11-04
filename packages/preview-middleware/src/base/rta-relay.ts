@@ -84,7 +84,7 @@ function isValidActionBody(body: unknown): body is ActionBody {
  * @returns whether it is a well-formed result submission
  */
 function isValidResultBody(body: unknown): body is ResultBody {
-    if (!isObject(body) || typeof body.id !== 'string' || typeof body.clientId !== 'string') {
+    if (!isObject(body) || typeof body.id !== 'string' || body.id.length === 0 || typeof body.clientId !== 'string') {
         return false;
     }
     return body.error !== undefined
