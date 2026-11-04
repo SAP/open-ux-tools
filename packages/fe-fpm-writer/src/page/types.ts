@@ -26,7 +26,6 @@ export interface Navigation {
     defaultSection?: {
         type: 'FacetSection' | 'FacetSubSection' | 'CustomSection' | 'CustomSubSection';
         id: string;
-        label?: string;
     };
 }
 
