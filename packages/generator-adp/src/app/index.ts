@@ -1111,8 +1111,8 @@ export default class extends Generator {
      * @param {string} [requested] - The explicit project name from JSON input, when provided.
      * @returns {string} The project name.
      */
-    private attributeAnswersProjectName(baseApplicationName: string, requested?: string): string {
-        return requested ?? getDefaultProjectName(this.destinationPath(), `${baseApplicationName}.variant`);
+    private attributeAnswersProjectName(_baseApplicationName: string, requested?: string): string {
+        return requested ?? getDefaultProjectName(this.destinationPath());
     }
 
     /**

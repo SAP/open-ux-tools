@@ -1297,10 +1297,10 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             it('should derive the default project name against the resolved MTA root, not the cwd', async () => {
                 // Distinguish the fix from the bug: run from cfTestOutputDir (cwd) but target a DIFFERENT
-                // MTA root that already contains `<appId>.variant`. Deriving against the MTA root must
-                // yield `<appId>.variant2`; the old cwd-based code would wrongly return `<appId>.variant`.
+                // MTA root that already contains `app.variant`. Deriving against the MTA root must
+                // yield `app.variant2`; the old cwd-based code would wrongly return `app.variant`.
                 const otherMtaRoot = join(cfTestOutputDir, 'other-mta-root');
-                fs.mkdirSync(join(otherMtaRoot, `${baseApp.appId}.variant`), { recursive: true });
+                fs.mkdirSync(join(otherMtaRoot, 'app.variant'), { recursive: true });
                 fs.copyFileSync(join(__dirname, 'fixtures', 'mta-project', 'mta.yaml'), join(otherMtaRoot, 'mta.yaml'));
 
                 const jsonInput = {
@@ -1321,7 +1321,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(mockGenerateCf).toHaveBeenCalledWith(
                     otherMtaRoot,
                     expect.objectContaining({
-                        project: expect.objectContaining({ name: `${baseApp.appId}.variant2` })
+                        project: expect.objectContaining({ name: 'app.variant2' })
                     }),
                     expect.any(Object),
                     expect.any(Object)
