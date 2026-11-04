@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { generateBuildingBlock, BuildingBlockType } from '@sap-ux/fe-fpm-writer';
+import { generateBuildingBlock, BuildingBlockType, createIdGenerator } from '@sap-ux/fe-fpm-writer';
 import type { BuildingBlockConfig } from '@sap-ux/fe-fpm-writer';
 import type { ExecuteFunctionalityInput, ExecuteFunctionalityOutput } from '../../../types/index.js';
 import { resolveApplication, validateWithSchema, logger } from '../../../utils/index.js';
@@ -58,12 +58,20 @@ export async function executeFunctionality(input: ExecuteFunctionalityInput): Pr
 
     // Translate XML attribute names to TypeScript field names expected by generateBuildingBlock.
     const bbData = translateBuildingBlockInput(buildingBlockData as Record<string, unknown>);
-    // Use the LLM-provided id as the base; generateBuildingBlock creates its own internal ID generator
-    // via createIdGenerator({ basePath, fsEditor }) which correctly deduplicates against existing IDs.
-    const baseId = (bbData['id'] as string | undefined) ?? (bbData['buildingBlockType'] as string);
+
+    const store = createStorage();
+    const fs = createEditor(store);
+
+    // The writer uses buildingBlockData.id verbatim (it only substitutes a placeholder when id is empty) and
+    // never deduplicates it. An omitted id falls back to the bare building-block type string, so a second
+    // block of the same type added to the same view would produce a duplicate UI5 id. Seed an id generator
+    // from the target view and run the type-string default through it so repeated adds get unique ids
+    // (e.g. "table", then "table1"). An explicitly supplied id is respected as-is.
+    const generateId = await createIdGenerator({ basePath, fsEditor: fs });
+    const baseId = (bbData['id'] as string | undefined) ?? generateId(bbData['buildingBlockType'] as string);
 
     // Aggregation children require embededFragment.name / position defaults before passing to generateBuildingBlock.
-    const resolvedBbData = resolveAggregationChildDefaults(bbData, baseId);
+    const resolvedBbData = resolveAggregationChildDefaults(bbData, baseId, generateId);
 
     const config = {
         viewOrFragmentPath: normalizedViewPath,
@@ -74,8 +82,6 @@ export async function executeFunctionality(input: ExecuteFunctionalityInput): Pr
         ...(resolvedBbData['buildingBlockType'] === BuildingBlockType.Page && { replace: true })
     } as BuildingBlockConfig<never>;
 
-    const store = createStorage();
-    const fs = createEditor(store);
     await generateBuildingBlock(basePath, config, fs);
 
     // Write the UI annotation shell into the same mem-fs (Table, FilterBar, Form) when the project has

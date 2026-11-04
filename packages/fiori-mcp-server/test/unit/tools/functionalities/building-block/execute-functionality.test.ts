@@ -2,6 +2,9 @@ import { jest } from '@jest/globals';
 
 const mockResolveApplication = jest.fn<any>();
 const mockGenerateBuildingBlock = jest.fn<any>().mockResolvedValue(undefined);
+// Mirrors fe-fpm-writer's createIdGenerator: a function that returns a collision-safe id for a base id.
+// Defaults to pass-through; individual tests override it to simulate a collision bump.
+const mockGenerateId = jest.fn<any>((baseId: string) => baseId);
 
 const BuildingBlockType = {
     FilterBar: 'filter-bar',
@@ -22,6 +25,7 @@ jest.unstable_mockModule('@sap-ux/fe-fpm-writer', () => ({
     BuildingBlockType,
     generateBuildingBlock: mockGenerateBuildingBlock,
     getFragmentAndViewFiles: async () => [],
+    createIdGenerator: async () => mockGenerateId,
     getXPathStringsForXmlFile: () => ({ inputChoices: {} }),
     MIN_UI5_VERSION_RICH_TEXT_EDITOR: '1.117.0',
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK: '1.136.0',
@@ -46,6 +50,8 @@ const tableParams = {
 describe('building-block executeFunctionality', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        // Reset the id generator to pass-through (clearAllMocks keeps implementations, so re-establish it).
+        mockGenerateId.mockImplementation((baseId: string) => baseId);
         // Default: a project without applicationAccess so the annotation phase is skipped.
         mockResolveApplication.mockResolvedValue({ root: '/project', appId: 'app' });
     });
@@ -97,5 +103,33 @@ describe('building-block executeFunctionality', () => {
         } as any);
         const [, config] = mockGenerateBuildingBlock.mock.calls[0];
         expect(config.replace).toBe(true);
+    });
+
+    test('routes an omitted id through the id generator so repeated same-type adds stay unique', async () => {
+        // Simulate a view that already contains id="table" — the generator bumps the default to "table1".
+        mockGenerateId.mockReturnValue('table1');
+        await executeFunctionality({
+            functionalityId: 'add-building-block',
+            appPath: '/project/app',
+            parameters: tableParams
+        } as any);
+        // The bare type string is what gets deduplicated, and the unique result becomes the block id.
+        expect(mockGenerateId).toHaveBeenCalledWith('table');
+        const [, config] = mockGenerateBuildingBlock.mock.calls[0];
+        expect(config.buildingBlockData.id).toBe('table1');
+    });
+
+    test('respects an explicitly supplied id without routing it through the id generator', async () => {
+        await executeFunctionality({
+            functionalityId: 'add-building-block',
+            appPath: '/project/app',
+            parameters: {
+                ...tableParams,
+                buildingBlockData: { ...tableParams.buildingBlockData, id: 'myTable' }
+            }
+        } as any);
+        const [, config] = mockGenerateBuildingBlock.mock.calls[0];
+        expect(config.buildingBlockData.id).toBe('myTable');
+        expect(mockGenerateId).not.toHaveBeenCalledWith('table');
     });
 });
