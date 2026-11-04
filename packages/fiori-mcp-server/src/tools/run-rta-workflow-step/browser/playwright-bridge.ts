@@ -96,7 +96,12 @@ export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendAction
             'UFA action failed';
         return { isSuccess: false, payload: null, error: { code: 'UFA_ACTION_FAILED', message } };
     }
-    return { isSuccess: true, payload: raw, error: null };
+    // A mutation action (e.g. executeAction) returns just a `{ success: true }` status
+    // wrapper with no real return value — collapse that to a null payload rather than
+    // echoing the wrapper. A describe action returns actual data (e.g. the UI tree),
+    // which is kept as the payload.
+    const isBareSuccess = r !== undefined && typeof r === 'object' && r.success === true && Object.keys(r).length === 1;
+    return { isSuccess: true, payload: isBareSuccess ? null : raw, error: null };
 }
 
 /**

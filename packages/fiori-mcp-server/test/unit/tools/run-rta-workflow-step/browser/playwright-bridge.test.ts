@@ -486,9 +486,18 @@ describe('browser/playwright-bridge', () => {
             expect(fs.normalizeUfaResult(tree, true)).toEqual({ isSuccess: true, payload: tree, error: null });
         });
 
-        test('wraps a UFA { success: true } mutation result as a success envelope', async () => {
+        test('collapses a bare { success: true } mutation result to a null payload', async () => {
             const fs = await loadPlaywrightBridge();
-            const raw = { success: true };
+            expect(fs.normalizeUfaResult({ success: true }, true)).toEqual({
+                isSuccess: true,
+                payload: null,
+                error: null
+            });
+        });
+
+        test('keeps real data as payload even when a success flag is present', async () => {
+            const fs = await loadPlaywrightBridge();
+            const raw = { success: true, hash: '#Product-manage&/Products(1)' };
             expect(fs.normalizeUfaResult(raw, true)).toEqual({ isSuccess: true, payload: raw, error: null });
         });
 

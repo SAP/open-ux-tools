@@ -34,7 +34,7 @@ const fail = (code: string, message: string): FrontendActionResult<never> => ({
 // { isSuccess, payload, error } envelope as the Flex actions. `ok`/`fail` above
 // already model that envelope, so UFA tests use them directly:
 //   - describeUI success → ok(<tree>)                 (payload is the UI tree)
-//   - executeAction success → ok({ success: true })   (payload is the raw result)
+//   - executeAction success → ok(null)                (bare mutation success → null payload)
 //   - any failure → fail(code, message)               (isSuccess:false)
 
 interface FakeTransport extends FrontendActionTransport {
@@ -221,7 +221,8 @@ describe('rta/commands', () => {
     });
 
     test('executeUfaAction maps a successful press to isSuccess:true', async () => {
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ success: true }));
+        // The transport normalizes a bare mutation success to a null payload.
+        transport.callFrontendAction.mockResolvedValueOnce(ok(null));
         const result = await executeUfaAction(transport, { site: SITE, frameId: FRAME }, 'press', 'go-btn');
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
@@ -230,7 +231,7 @@ describe('rta/commands', () => {
             FRAME
         );
         expect(result.isSuccess).toBe(true);
-        expect(result.result).toEqual({ success: true });
+        expect(result.result).toBeNull();
     });
 
     test('executeUfaAction maps a failed press to isSuccess:false and surfaces the error reason', async () => {
