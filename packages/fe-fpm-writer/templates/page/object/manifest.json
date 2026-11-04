@@ -21,7 +21,7 @@
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
                                         "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>"<%if (navigation.defaultSection) { %>,
-                                        "targetControlId": "fe::<%- navigation.defaultSection.type %>::<%- navigation.defaultSection.id %>"<% } %>
+                                        "targetControlId": <%- JSON.stringify(`fe::${navigation.defaultSection.type}::${navigation.defaultSection.id}`) %><% } %>
                                     }
                                 }
                             }
