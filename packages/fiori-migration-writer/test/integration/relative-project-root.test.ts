@@ -1,5 +1,5 @@
 import { join, dirname, relative, isAbsolute } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { copy, remove } from 'fs-extra';
@@ -63,6 +63,10 @@ describe('Migration with relative project roots', () => {
         tempDir = join(tmpdir(), `relative-root-${Date.now()}-${Math.random().toString(36).slice(2)}`);
         projectPath = join(tempDir, 'project');
         await copy(FIXTURE, projectPath);
+        // Run from a sibling directory so the relative path never crosses drives (relative() returns an absolute path then)
+        const workDir = join(tempDir, 'cwd');
+        mkdirSync(workDir, { recursive: true });
+        process.chdir(workDir);
         relativeProjectPath = relative(process.cwd(), projectPath);
     });
 
