@@ -189,3 +189,23 @@ export interface PageActionRunResult {
     /** Set when `status === 'ok'`. PoC actions don't return data; reserved for future use. */
     data?: unknown;
 }
+
+/**
+ * One OData data source's metadata result:
+ * - `{ url, metadata }` — formatted EDMX returned inline (small enough to fit).
+ * - `{ url, metadataFile, sizeBytes }` — EDMX too large to return inline; written
+ *   to `<appPath>/.context/` and referenced by path so it never overflows the model.
+ * - `{ url, error }` — login page / non-XML / failed fetch, or too large with no
+ *   `appPath` to save it under.
+ */
+export type ODataMetadataEntry =
+    | { url: string; metadata: string }
+    | { url: string; metadataFile: string; sizeBytes: number }
+    | { url: string; error: string };
+
+/**
+ * Result of {@link getODataMetadata}: one entry per requested OData URI.
+ */
+export interface GetODataMetadataResult {
+    entries: ODataMetadataEntry[];
+}
