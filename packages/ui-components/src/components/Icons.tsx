@@ -2585,8 +2585,8 @@ export function initIcons(): void {
                     <path d="M15 14H1V15H15V14Z" fill={COLORS.default} />
                     <path
                         d="M2 2.91464C2.58261 2.70872 3 2.15311 3 1.5C3 0.67157 2.32843 0 1.5 0C0.67157 0 0 0.67157 0 1.5C0 2.15311 0.417389 2.70872 1 2.91464V5.5C1 5.63261 1.05267 5.75978 1.14645 5.85355L3.29291 8H1V9H4.5C4.77615 9 5 8.77614 5 8.5V5H4V7.29291L2 5.29289V2.91464ZM2 1.5C2 1.77614 1.77615 2 1.5 2C1.22385 2 1 1.77614 1 1.5C1 1.22386 1.22385 1 1.5 1C1.77615 1 2 1.22386 2 1.5Z"
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         fill={COLORS.default}
                     />
                 </svg>
