@@ -12,7 +12,15 @@ import {
 import { logger } from '../../utils/logger.js';
 import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
-import { requireAppPath, requireObject, requireSite, requireString, requireStringArray } from './assertions.js';
+import {
+    optionalObject,
+    optionalString,
+    requireAppPath,
+    requireObject,
+    requireSite,
+    requireString,
+    requireStringArray
+} from './assertions.js';
 
 /**
  * Runs one step of the RTA workflow. Dispatches by `input.step` and forwards
@@ -82,27 +90,14 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 return { site, frameId, ...result };
             }
             case 'describe_ui': {
-                const rawRootId = input.payload?.['rootElementId'];
-                const rootElementId = rawRootId !== undefined ? String(rawRootId) : undefined;
+                const rootElementId = optionalString(input.payload, 'rootElementId');
                 const uiTree = await describeUi(defaultTransport, { site, frameId }, rootElementId);
                 return { uiTree };
             }
             case 'execute_page_action': {
                 const actionName = requireString(input.payload, 'actionName');
-                const rawElemId = input.payload?.['elementId'];
-                const elementId = rawElemId !== undefined ? String(rawElemId) : undefined;
-                const rawParams = input.payload?.['actionParameters'];
-                // actionParameters is optional, but when present it must be a plain object.
-                // Reject anything else (array, primitive) rather than silently dropping it,
-                // so a malformed call surfaces an error instead of succeeding with its
-                // parameters quietly discarded.
-                if (
-                    rawParams !== undefined &&
-                    (typeof rawParams !== 'object' || rawParams === null || Array.isArray(rawParams))
-                ) {
-                    throw new Error('payload.actionParameters must be an object when provided');
-                }
-                const actionParameters = rawParams as Record<string, unknown> | undefined;
+                const elementId = optionalString(input.payload, 'elementId');
+                const actionParameters = optionalObject(input.payload, 'actionParameters');
                 const ufaResult = await executeUfaAction(
                     defaultTransport,
                     { site, frameId },

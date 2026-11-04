@@ -255,6 +255,13 @@ describe('runRtaWorkflowStep dispatcher', () => {
             await runRtaWorkflowStep({ step: 'describe_ui', site: SITE, payload: { rootElementId: 'tbl' } });
             expect(mockDescribeUi).toHaveBeenCalledWith(expect.anything(), expect.anything(), 'tbl');
         });
+
+        test('throws instead of coercing a non-string rootElementId to [object Object]', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'describe_ui', site: SITE, payload: { rootElementId: { nested: 'x' } } })
+            ).rejects.toThrow('payload.rootElementId must be a non-empty string when provided');
+            expect(mockDescribeUi).not.toHaveBeenCalled();
+        });
     });
 
     describe('execute_page_action step', () => {
@@ -327,6 +334,17 @@ describe('runRtaWorkflowStep dispatcher', () => {
                     payload: { actionName: 'press', elementId: 'btn1', actionParameters: ['not', 'an', 'object'] }
                 })
             ).rejects.toThrow('payload.actionParameters must be an object when provided');
+            expect(mockExecuteUfaAction).not.toHaveBeenCalled();
+        });
+
+        test('throws instead of coercing a non-string elementId to [object Object]', async () => {
+            await expect(
+                runRtaWorkflowStep({
+                    step: 'execute_page_action',
+                    site: SITE,
+                    payload: { actionName: 'press', elementId: { nested: 'x' } }
+                })
+            ).rejects.toThrow('payload.elementId must be a non-empty string when provided');
             expect(mockExecuteUfaAction).not.toHaveBeenCalled();
         });
     });

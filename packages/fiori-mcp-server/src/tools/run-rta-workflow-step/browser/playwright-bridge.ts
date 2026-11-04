@@ -6,7 +6,7 @@ import {
     isBackendLoginPage,
     LOGIN_REQUIRED_MESSAGE,
     LOGIN_WAIT_MESSAGE,
-    probeBridge,
+    probeUi5Loaded,
     waitForLogin,
     type NeedsUserActionPayload
 } from './login-page.js';
@@ -21,11 +21,11 @@ import type { FetchViaContextResult, FrontendActionResult, FrontendActionTranspo
 // runs frontend actions by evaluating into the page. It drives the browser — it
 // is not itself a "bridge".
 //
-// The one thing here that is literally a bridge is the editor's own in-page
-// object, `window.sapdas.webclientBridge` (SAP/Joule-injected), whose
-// `getFrontendActions()` we detect (readiness) and call (to start/drive RTA).
-// Wherever a comment below says "bridge" it means that webclient bridge, never
-// this module.
+// Frontend actions (Flex `FrontendActionsAPI` and UFA `ActionHelpers`) are reached
+// by `sap.ui.require`-ing the implementing UI5 module on the page and calling the
+// method directly — there is no Joule webclient bridge in this transport. Readiness
+// is therefore keyed off the UI5 loader (`sap.ui.require`) being present, not off
+// any injected bridge object.
 
 /** Outcome of classifying a freshly-navigated editor page. */
 type EditorReadiness = { outcome: 'ready' | 'login-timed-out' } | { outcome: 'error'; status: number | undefined };
@@ -220,7 +220,7 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
                     });
                     const fnImpl = api[fn];
                     if (typeof fnImpl !== 'function') {
-                        throw new Error(`Frontend action "${fn}" is not available on ${mod}`);
+                        throw new TypeError(`Frontend action "${fn}" is not available on ${mod}`);
                     }
                     // Return the raw method result; normalization into the Flex envelope
                     // happens in Node (normalizeUfaResult) so that pure logic stays testable.
@@ -341,8 +341,8 @@ function editorNotLoadedError(status: number | undefined, site: string): Error {
 
 /**
  * Classifies a navigated editor page without owning its teardown. Probes for the
- * webclient bridge (in the editor iframe); if absent, distinguishes a backend
- * login page from a hard HTTP error from a slow-but-valid app.
+ * UI5 loader (`sap.ui.require`, in the editor iframe); if absent, distinguishes a
+ * backend login page from a hard HTTP error from a slow-but-valid app.
  *
  * @param page The navigated editor page.
  * @param response The navigation response (for its HTTP status), or `null`.
@@ -354,7 +354,7 @@ async function classifyEditorReadiness(
     response: Awaited<ReturnType<Page['goto']>>,
     frameId: string | undefined
 ): Promise<EditorReadiness> {
-    if (await probeBridge(page, frameId)) {
+    if (await probeUi5Loaded(page, frameId)) {
         return { outcome: 'ready' };
     }
     const landedUrl = page.url();
