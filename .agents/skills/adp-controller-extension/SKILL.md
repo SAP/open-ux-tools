@@ -252,7 +252,7 @@ Call `step: "call_action"`, payload `{ controlId, actionId, actionPayload }`. On
 
 ### Step 10 — Loop for multiple changes
 
-If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `site`+`frameId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run Step 2 UFA navigation if a fresh navigation is needed (e.g. after `restart` lands back on the List Report, use `describe_ui` + `execute_page_action` to navigate back to the Object Page).
+If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `site`+`frameId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run Step 2 navigation if the next target is on a different view.
 A single change request can still require multiple operations and changes to be created.
 If a single request implies multiple operations (e.g. "add a button that calls a function" = fragment + controller extension), execute each as a separate iteration.
 
@@ -311,7 +311,7 @@ run_rta_workflow_step { step: "restart", site, frameId }
 → { site, frameId, rtaStarted: true }
 ```
 
-Store the returned `site` and `frameId`. Navigate back to the editing target (repeat Step 2 UFA navigation as needed — use `describe_ui` + `execute_page_action` to re-reach the Object Page if `restart` landed on the List Report) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
+Store the returned `site` and `frameId`. Navigate back to the editing target (repeat Step 2 navigation as needed — `restart` may reset the app to its initial view) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
 
 **Child overlay rule (hard rule).** For each control you added via `CTX_ADDXML`, you must find an overlay whose `controlId` matches that control's own id — not its parent's. The parent aggregation container appearing in `get_overlays` is **not** proof that the inserted child was accepted. If the parent is present but no overlay for the new control's id exists, the runtime silently rejected the fragment content (the change file was written and `call_action` returned `success: true`, but the control never rendered). This is a distinct failure state from "fragment not found."
 
