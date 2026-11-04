@@ -136,9 +136,25 @@ describe('getConfig', () => {
                 shouldSetMinVersion: true,
                 version: '1.135.0'
             },
-            options: { fioriTools: true, enableTypeScript: false },
+            options: { fioriTools: true, enableTypeScript: false, addMockServer: false, addOpaTests: false },
             keyUserChanges: []
         });
+    });
+
+    it('sets addOpaTests to true and addMockServer to false for VENDOR layer', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
+
+        expect(config.options?.addOpaTests).toBe(true);
+        expect(config.options?.addMockServer).toBe(false);
+    });
+
+    it('sets addOpaTests to false for CUSTOMER_BASE layer', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({ ...baseConfig, layer: FlexLayer.CUSTOMER_BASE });
+
+        expect(config.options?.addOpaTests).toBe(false);
+        expect(config.options?.addMockServer).toBe(false);
     });
 });
 
