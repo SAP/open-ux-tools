@@ -157,7 +157,6 @@ declare module '@ui5/server' {
 }
 
 declare module '@ui5/fs/resourceFactory' {
-    // eslint-disable-next-line sonarjs/no-implicit-dependencies -- References the ambient module declared above.
     import type { DuplexCollection, ReaderCollection } from '@ui5/fs';
 
     /**
