@@ -105,9 +105,27 @@ export const DocSearchInputSchema = zod.object({
         .describe('The search query for fiori elements, annotations, sapui5, fiori tools documentation')
 });
 
+/**
+ * Adaptation project types the caller may explicitly request. Mirrors the
+ * `AdaptationProjectType` values from `@sap-ux/axios-extension`.
+ */
+export const ADAPTATION_PROJECT_TYPES = ['cloudReady', 'onPremise'] as const;
+
 export const GenerateAdaptationProjectInputSchema = zod.object({
     system: zod.string().describe('The name of the SAP system (obtained from list_sap_systems)'),
     application: zod.string().describe('The application ID to adapt (e.g., sap.ui.demoapps.rta.fe)'),
+    projectType: zod
+        .enum(ADAPTATION_PROJECT_TYPES)
+        .optional()
+        .describe(
+            'The adaptation project type: \'cloudReady\' (shown to the user as "Cloud Ready") or ' +
+                '\'onPremise\' (shown to the user as "Classic"). ' +
+                'Leave this UNSET on the first call UNLESS the user has already stated which type they want — ' +
+                'in that case pass their choice through on the first call. If the selected system AND application ' +
+                "support both types and this is unset, the tool returns status 'InputRequired' without generating " +
+                'anything; when that happens, ask the user whether they want "Cloud Ready" or "Classic" and then ' +
+                'call this tool again with projectType set to their choice. Do NOT guess or default this value yourself.'
+        ),
     appPath: zod
         .string()
         .describe(
@@ -167,9 +185,10 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
         .enum(STEPS)
         .describe(
             'Which RTA workflow step to run. The first six steps map to the existing Joule RTA frontend ' +
-                'actions. The last three (get_page_actions, call_page_action, press_interactive) drive ' +
+                'actions. get_page_actions, call_page_action, press_interactive drive ' +
                 'pre-RTA navigation via registered high-level page actions and a best-effort interactive scan. ' +
-                'restart is a mid-workflow step that reloads the editor to pick up files written to disk.'
+                'restart is a mid-workflow step that reloads the editor to pick up files written to disk. ' +
+                'get_odata_metadata fetches real OData $metadata (EDMX) for CF projects via the authenticated session.'
         ),
     site: zod
         .string()
@@ -185,6 +204,16 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'an iframe with id "preview". Defaults to "preview" if omitted — always pass the value ' +
                 'echoed back by the "start" step to every subsequent step.'
         ),
+    appPath: zod
+        .string()
+        .optional()
+        .describe(
+            'Absolute path to the adaptation project root (the same appPath used to open the editor). ' +
+                'Required for the "start", "restart" and "get_odata_metadata" steps — it identifies the project ' +
+                'so an authenticated Cloud Foundry session is reused per project (ABAP projects skip session ' +
+                'handling), and large OData metadata is saved under <appPath>/webapp/.context instead of overflowing ' +
+                'the response. Ignored by the other steps.'
+        ),
     payload: zod
         .record(zod.string(), zod.unknown())
         .optional()
@@ -194,7 +223,8 @@ export const RunRtaWorkflowStepInputSchema = zod.object({
                 'call_action: { controlId: string, actionId: string, actionPayload: object }. ' +
                 'call_page_action: { id: string }. ' +
                 'press_interactive: { controlId: string }. ' +
-                'get_overlays / save / stop / restart / get_page_actions: omit.'
+                'get_odata_metadata: { uris: string[] } (the entries[].url values from read_odata_metadata_adp). ' +
+                'start / restart / get_overlays / save / stop / get_page_actions: omit.'
         )
 });
 
@@ -203,12 +233,14 @@ export const ReadODataMetadataInputSchema = zod.object({
         .string()
         .describe(
             'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
-        ),
-    saveLocal: zod
-        .boolean()
-        .optional()
+        )
+});
+
+export const DownloadAppResourcesInputSchema = zod.object({
+    appPath: zod
+        .string()
         .describe(
-            'Whether to save fetched metadata locally in the project under the "context" folder. Defaults to false.'
+            'Absolute path to the adaptation project root directory (where webapp/manifest.appdescr_variant resides).'
         )
 });
 

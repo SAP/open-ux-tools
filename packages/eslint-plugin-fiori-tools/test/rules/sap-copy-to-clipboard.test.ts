@@ -11,7 +11,8 @@ import {
     V4_MANIFEST_PATH,
     V2_MANIFEST,
     V2_MANIFEST_PATH,
-    V4_FACETS_ANNOTATIONS
+    V4_FACETS_ANNOTATIONS,
+    V4_PRESENTATION_VARIANT_ANNOTATIONS
 } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
@@ -22,6 +23,11 @@ const ruleTester = new RuleTester({
 const FACETSV4 = {
     filename: V4_ANNOTATIONS_PATH,
     code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_FACETS_ANNOTATIONS)
+};
+
+const PRESENTATION_VARIANT_V4 = {
+    filename: V4_ANNOTATIONS_PATH,
+    code: getAnnotationsAsXmlCode(V4_ANNOTATIONS, V4_PRESENTATION_VARIANT_ANNOTATIONS)
 };
 
 const TEST_NAME = 'sap-copy-to-clipboard';
@@ -52,7 +58,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            'Products',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'copy'
                         ],
@@ -93,6 +99,30 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createValidTest(
+            {
+                name: 'V4 - object page PresentationVariant section - disableCopyToClipboard false',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'disableCopyToClipboard'
+                        ],
+                        value: false
+                    }
+                ])
+            },
+            [PRESENTATION_VARIANT_V4]
         )
     ],
 
@@ -112,7 +142,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            'Products',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
                             'tableSettings',
                             'copy'
                         ],
@@ -122,7 +152,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 errors: [
                     {
                         message:
-                            '`copy` in the Products table must be correctly configured. If not set, the "Copy" button is displayed',
+                            '`copy` in the Products table must not be set to `false`, because this will hide the "Copy" button',
                         line: 154,
                         column: 23
                     }
@@ -138,7 +168,47 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                             'component',
                             'settings',
                             'sections',
-                            'Products',
+                            'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {}
+                    }
+                ])
+            },
+            []
+        ),
+        createInvalidTest(
+            {
+                name: 'V2 - list report - copy is false',
+                filename: V2_MANIFEST_PATH,
+                code: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
+                            'tableSettings',
+                            'copy'
+                        ],
+                        value: false
+                    }
+                ]),
+                errors: [
+                    {
+                        message:
+                            '`copy` in the table must not be set to `false`, because this will hide the "Copy" button'
+                    }
+                ],
+                output: getManifestAsCode(V2_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui.generic.app',
+                            'pages',
+                            'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                            'component',
+                            'settings',
                             'tableSettings'
                         ],
                         value: {}
@@ -171,7 +241,7 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 errors: [
                     {
                         message:
-                            '`disableCopyToClipboard` in the table must be correctly configured. If not set, the "Copy" button is displayed',
+                            '`disableCopyToClipboard` in the table must not be set to `true`, because this will hide the "Copy" button',
                         line: 127,
                         column: 21
                     }
@@ -197,6 +267,52 @@ ruleTester.run(TEST_NAME, copyToClipboardRule, {
                 ])
             },
             [FACETSV4]
+        ),
+        createInvalidTest(
+            {
+                name: 'V4 - object page PresentationVariant section - disableCopyToClipboard is true',
+                filename: V4_MANIFEST_PATH,
+                code: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'disableCopyToClipboard'
+                        ],
+                        value: true
+                    }
+                ]),
+                errors: [
+                    {
+                        message:
+                            '`disableCopyToClipboard` in the Incident Flows table must not be set to `true`, because this will hide the "Copy" button'
+                    }
+                ],
+                output: getManifestAsCode(V4_MANIFEST, [
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsObjectPage',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings'
+                        ],
+                        value: {}
+                    }
+                ])
+            },
+            [PRESENTATION_VARIANT_V4]
         )
     ]
 });

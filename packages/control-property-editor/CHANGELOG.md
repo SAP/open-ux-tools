@@ -1,5 +1,45 @@
 # @sap-ux/control-property-editor
 
+## 1.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
+## 1.0.14
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Some Actions don't work in the Outline of the Adaptation Project [[8a15549](https://github.com/SAP/open-ux-tools/commit/8a15549a21b324a74b27e69ebb57da2f81ead0aa)]
+
+## 1.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+## 1.0.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
 ## 1.0.11
 
 ### Patch Changes

@@ -1,0 +1,24 @@
+<html>
+<head>
+<title>TestSuite for Customer Line Items Coverage Analysis</title> -->
+<!--  Warning! The file name is fixed centrally! 
+For QUnit documentation, see https://qunitjs.com/
+-->
+</head>
+<body>
+    <script language="javascript">
+        /**
+         * Add test pages to this test suite function.
+         * Please order alphabetically
+         */
+        function suite() {
+            var suite = new top.jsUnitTestSuite();
+            var contextPath = "/" + window.location.pathname.split("/")[1];
+            suite.addTestPage(contextPath + "/test-resources/testsuite.unit.html");
+            suite.addTestPage(contextPath + "/test-resources/testsuite.unit.withenv.html");
+            return suite;
+        }
+        redirectToTestrunnerIfRequired();
+    </script>
+</body>
+</html>

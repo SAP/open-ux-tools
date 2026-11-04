@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.srvd_f4.dmo.i_priority.v0001" Alias="SAP__self" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="I_Priority" EntityType="com.sap.gateway.srvd_f4.dmo.i_priority.v0001.I_PriorityType"/>
+            </EntityContainer>
+            <EntityType Name="I_PriorityType">
+                <Key>
+                    <PropertyRef Name="Priority"/>
+                </Key>
+                <Property Name="Priority" Type="Edm.String" Nullable="false" MaxLength="1"/>
+                <Property Name="PriorityText" Type="Edm.String" MaxLength="60"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

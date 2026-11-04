@@ -200,9 +200,12 @@ export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
  */
 export enum keyUserPromptNames {
     keyUserSystem = 'keyUserSystem',
+    keyUserSystemValidationCli = 'keyUserSystemValidationCli',
     keyUserUsername = 'keyUserUsername',
     keyUserPassword = 'keyUserPassword',
-    keyUserAdaptation = 'keyUserAdaptation'
+    keyUserAdaptation = 'keyUserAdaptation',
+    keyUserAdaptationValidationCli = 'keyUserAdaptationValidationCli',
+    keyUserRestrictedViewsLabel = 'keyUserRestrictedViewsLabel'
 }
 
 export interface KeyUserSystemPromptOptions {
@@ -225,14 +228,21 @@ export interface KeyUserAdaptationPromptOptions {
     hide?: boolean;
 }
 
+export interface KeyUserRestrictedViewsLabelPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the key-user import inquirer & the prompts.
  */
 export type KeyUserImportPromptOptions = Partial<{
     [keyUserPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserPromptNames.keyUserSystemValidationCli]: CliValidationPromptOptions;
     [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
     [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
     [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+    [keyUserPromptNames.keyUserAdaptationValidationCli]: CliValidationPromptOptions;
+    [keyUserPromptNames.keyUserRestrictedViewsLabel]: KeyUserRestrictedViewsLabelPromptOptions;
 }>;
 
 export interface KeyUserImportAnswers {
@@ -254,7 +264,28 @@ export type TargetEnvAnswers = { targetEnv: TargetEnv };
 
 export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
 
-export type ProjectLocationAnswers = { projectLocation: string };
+/**
+ * MTA project mode selected on the CF Project Path page.
+ * `New` scaffolds a new MTA project folder; `Existing` reuses an existing MTA project.
+ */
+export const MtaMode = { New: 'new', Existing: 'existing' } as const;
+
+export type MtaMode = (typeof MtaMode)[keyof typeof MtaMode];
+
+export type ProjectLocationAnswers = {
+    /**
+     * Whether to create a new MTA project or use an existing one.
+     */
+    mtaMode?: MtaMode;
+    /**
+     * The MTA project ID/name to create (new-MTA mode only).
+     */
+    mtaId?: string;
+    /**
+     * The selected folder: the parent dir (new mode) or the MTA root (existing mode).
+     */
+    projectLocation: string;
+};
 
 export enum cfLoginPromptNames {
     cfLoggedInMainMessage = 'cfLoggedInMainMessage',

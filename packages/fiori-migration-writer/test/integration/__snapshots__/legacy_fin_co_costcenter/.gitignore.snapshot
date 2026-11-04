@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Legacy Folder Structure Migration should migrate project with src/main/webapp structure (CostCenter) 1`] = `
+"# Ignore Eclipse project and settings files
+.classpath
+.settings
+.project
+
+# Ignore target folders in projects
+target/
+
+# Ignore Intellij project and settings
+.idea/
+*.iml
+*.ipr
+
+# Ignore Visual Studio files and directories
+bin/
+obj/
+packages/
+*.pubxml
+*.user
+*.suo
+
+#Ignore OSX directory files
+.DS_Store
+UIAdaptation_index.html
+
+visual_ext_index.html
+/webapp/visual_ext_index.html
+fioriHtmlRunner.html
+.*/fioriHtmlRunner.html
+mock_preview_sapui5.html
+.*/mock_preview_sapui5.html
+sap-ui-cachebuster-info.json
+extended_runnable_file.html
+.*/extended_runnable_file.html
+/.user.project.json
+node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp"
+`;

@@ -34,7 +34,8 @@ describe('Tools schemas', () => {
             'open_adaptation_editor',
             'adp_controller_extension',
             'run_rta_workflow_step',
-            'read_odata_metadata_adp'
+            'read_odata_metadata_adp',
+            'download_base_app_adp'
         ];
         for (const name of adpOnlyNames) {
             expect(tools.find((t) => t.name === name)).toBeUndefined();

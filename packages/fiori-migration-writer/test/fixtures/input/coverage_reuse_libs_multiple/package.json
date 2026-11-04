@@ -1,0 +1,10 @@
+{
+  "name": "com.example.with.reuse",
+  "version": "1.0.0",
+  "description": "Application with multiple reuse libraries",
+  "private": true,
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3.0.0"
+  }
+}

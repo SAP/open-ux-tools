@@ -15,6 +15,7 @@ const mockCreateAnnotationI18nEntries = jest.fn<typeof i18nWriteType.createAnnot
 const mockCreateUI5I18nEntries = jest.fn<typeof i18nWriteType.createUI5I18nEntries>();
 const mockCreateManifestI18nEntries = jest.fn<typeof i18nWriteType.createManifestI18nEntries>();
 const mockCreateCapI18nEntries = jest.fn<typeof i18nWriteType.createCapI18nEntries>();
+const mockCreateI18nEntriesAtPath = jest.fn<typeof i18nWriteType.createI18nEntriesAtPath>();
 const mockGetSpecification = jest.fn<typeof specType.getSpecification>();
 const mockReadCapServiceMetadataEdmx = jest.fn<typeof capType.readCapServiceMetadataEdmx>();
 
@@ -23,7 +24,8 @@ jest.unstable_mockModule('../../src/project/i18n/write', () => ({
     createAnnotationI18nEntries: mockCreateAnnotationI18nEntries,
     createUI5I18nEntries: mockCreateUI5I18nEntries,
     createManifestI18nEntries: mockCreateManifestI18nEntries,
-    createCapI18nEntries: mockCreateCapI18nEntries
+    createCapI18nEntries: mockCreateCapI18nEntries,
+    createI18nEntriesAtPath: mockCreateI18nEntriesAtPath
 }));
 
 const realSpec = await import('../../src/project/specification.js');
@@ -249,6 +251,28 @@ describe('Test function createApplicationAccess()', () => {
             'i18n',
             memFs
         );
+    });
+
+    test('createI18nEntriesAtPath forwards project root and entries to standalone function (mocked)', async () => {
+        mockCreateI18nEntriesAtPath.mockResolvedValue(true);
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot);
+        const entries = [{ key: 'k1', value: 'v1' }];
+
+        await appAccess.createI18nEntriesAtPath('i18n/i18n.properties', entries);
+
+        expect(mockCreateI18nEntriesAtPath).toHaveBeenCalledWith(appRoot, 'i18n/i18n.properties', entries, undefined);
+    });
+
+    test('createI18nEntriesAtPath passes mem-fs-editor to standalone function (mocked)', async () => {
+        mockCreateI18nEntriesAtPath.mockResolvedValue(true);
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const entries = [{ key: 'k1', value: 'v1' }];
+
+        await appAccess.createI18nEntriesAtPath('i18n/i18n.properties', entries);
+
+        expect(mockCreateI18nEntriesAtPath).toHaveBeenCalledWith(appRoot, 'i18n/i18n.properties', entries, memFs);
     });
 
     test('Update package.json of standalone app (mocked)', async () => {

@@ -169,7 +169,8 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                 adp: {
                     target: config.target,
                     ignoreCertErrors: false
-                }
+                },
+                flp: { useNewSandbox: true }
             }
         }
     ]);
@@ -207,6 +208,7 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                     target: config.target,
                     ignoreCertErrors: false
                 },
+                flp: { useNewSandbox: true },
                 rta: {
                     editors: [
                         {
@@ -463,10 +465,10 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
         url: UI5_CDN_URL
     };
 
-    // Add backend-proxy-middleware-cf as the first middleware (after compression)
+    // Add fiori-tools-proxy-cf as the first middleware (after compression)
     ui5Config.addCustomMiddleware([
         {
-            name: 'backend-proxy-middleware-cf',
+            name: 'fiori-tools-proxy-cf',
             afterMiddleware: 'compression',
             configuration: {
                 authenticationMethod: 'route',
@@ -484,7 +486,7 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-appreload',
-            afterMiddleware: 'backend-proxy-middleware-cf',
+            afterMiddleware: 'fiori-tools-proxy-cf',
             configuration: {
                 port: 35729,
                 path: 'webapp',

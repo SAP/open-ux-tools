@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
+import type { IPopupRestoreFocusParams } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton/index.js';
 import { UICallout, UICalloutContentPadding } from '../UICallout/index.js';
 import { UiIcons } from '../Icons.js';
@@ -23,6 +24,15 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
      * @default false
      */
     invertedCalloutTheme?: boolean;
+    /**
+     * When true, skips callout focus restore after creating a new entry.
+     * Use this when the host dismisses the callout and immediately opens its own
+     * focus-taking UI (e.g. a dialog or QuickPick) so that focus restore does not
+     * steal focus from that UI.
+     *
+     * @default false
+     */
+    preventFocusRestoreOnAccept?: boolean;
 }
 
 /**
@@ -68,9 +78,11 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         onShowExistingEntry,
         busy,
         suggestion,
-        invertedCalloutTheme
+        invertedCalloutTheme,
+        preventFocusRestoreOnAccept
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
+    const acceptedRef = useRef(false);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
         if (suggestion.suggest?.type === SuggestValueType.Existing) {
@@ -90,11 +102,21 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                 onUpdateValue?.(suggestion.suggest.i18n ?? '');
             }
         }
-
+        acceptedRef.current = true;
         setCalloutVisible(false);
     }, [suggestion, onCreateNewEntry, onUpdateValue, value]);
     const onCancel = useCallback((): void => {
         setCalloutVisible(false);
+    }, []);
+    const onRestoreFocus = useCallback((params: IPopupRestoreFocusParams): void => {
+        const wasAccepted = acceptedRef.current;
+        acceptedRef.current = false;
+        if (wasAccepted) {
+            return;
+        }
+        if (params.containsFocus) {
+            params.originalElement?.focus();
+        }
     }, []);
 
     return (
@@ -120,6 +142,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                     setInitialFocus={true}
                     className={getCalloutClassNames(invertedCalloutTheme)}
                     onDismiss={onCancel}
+                    onRestoreFocus={preventFocusRestoreOnAccept ? onRestoreFocus : undefined}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
                         {suggestion.message}

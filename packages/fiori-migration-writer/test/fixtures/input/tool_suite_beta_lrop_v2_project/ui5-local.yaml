@@ -1,0 +1,36 @@
+specVersion: "4.0"
+metadata:
+  name: namespace1.tool_suite_beta_lrop_v2_project
+type: application
+framework:
+  name: SAPUI5
+  version: 1.65.0
+  libraries:
+    - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
+    - name: sap.f
+    - name: sap.ui.comp
+    - name: sap.ui.table
+    - name: sap.suite.ui.generic.template
+    - name: sap.ui.generic.app
+    - name: themelib_sap_belize
+    - name: themelib_sap_bluecrystal
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: namespace1.tool_suite_beta_lrop_v2_project
+        ui5Theme: sap_fiori_3
