@@ -379,7 +379,8 @@ export interface CfJsonInput {
      */
     serviceInstanceName?: string;
     /**
-     * Approuter type to configure. Defaults to the managed HTML5 application runtime.
+     * Approuter type to configure. When omitted, inherits the existing MTA router type or defaults
+     * to the managed HTML5 application runtime for a new MTA.
      */
     approuter?: AppRouterType;
     /**

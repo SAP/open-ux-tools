@@ -16,6 +16,7 @@ import type {
     CfServicesAnswers,
     ConfigAnswers,
     Language,
+    MtaYaml,
     SourceApplication,
     VersionDetail
 } from '@sap-ux/adp-tooling';
@@ -155,6 +156,11 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
+const realCfApi = await import('../../adp-tooling/dist/cf/services/api.js');
+jest.unstable_mockModule('../../adp-tooling/src/cf/services/api.js', () => ({
+    ...realCfApi,
+    createServices: mockCreateServicesApi
+}));
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     getConfiguredProvider: mockGetConfiguredProvider,
@@ -278,6 +284,7 @@ const { KeyUserImportPrompter } = await import('../src/app/questions/key-user.js
 const { TargetEnv, MtaMode } = await import('../src/app/types.js');
 const { EventName } = await import('../src/telemetry/index.js');
 const { initI18n, t } = await import('../src/utils/i18n.js');
+const { generateCf: generateCfWithMockedServices } = await import('../../adp-tooling/src/writer/cf.js');
 const { workspaceChoices } = await import('../src/utils/workspace.js');
 const { CFServicesPrompter } = await import('../src/app/questions/cf-services.js');
 
@@ -1272,6 +1279,58 @@ describe('Adaptation Project Generator Integration Test', () => {
                 mockGetDefaultProjectName.mockReturnValue('app.variant.cf');
             });
 
+            it('should preserve the standalone router in an existing MTA when approuter is omitted', async () => {
+                const mtaRoot = join(cfTestOutputDir, 'standalone-mta');
+                fs.mkdirSync(mtaRoot, { recursive: true });
+                fs.writeFileSync(
+                    join(mtaRoot, 'mta.yaml'),
+                    [
+                        "_schema-version: '3.3'",
+                        'ID: standalone-mta',
+                        'version: 1.0.0',
+                        'modules:',
+                        '  - name: standalone-mta-approuter',
+                        '    type: approuter.nodejs',
+                        '    path: standalone-mta-approuter',
+                        '    requires: []',
+                        'resources:',
+                        '  - name: test-service',
+                        '    type: org.cloudfoundry.existing-service',
+                        '    parameters:',
+                        '      service: hana',
+                        '      service-name: test-service'
+                    ].join('\n')
+                );
+                mockGetApprouterType.mockImplementationOnce(realAdpTooling.getApprouterType);
+                mockGenerateCf.mockImplementationOnce(generateCfWithMockedServices);
+
+                await runHeadlessGenerator({ ...baseJsonInput, mtaMode: undefined, targetFolder: mtaRoot });
+
+                const generatedMta = realAdpTooling.getYamlContent<MtaYaml>(join(mtaRoot, 'mta.yaml'));
+                expect(generatedMta.modules).toEqual(
+                    expect.arrayContaining([expect.objectContaining({ name: 'standalone-mta-approuter' })])
+                );
+                expect(generatedMta.modules?.some((module) => module.name.includes('destination-content'))).toBe(false);
+                expect(generatedMta.resources?.some((resource) => resource.parameters.service === 'destination')).toBe(
+                    false
+                );
+            });
+
+            it.each([AppRouterType.MANAGED, AppRouterType.STANDALONE])(
+                'should honor an explicit approuter choice: %s',
+                async (approuter) => {
+                    await runHeadlessGenerator({ ...baseJsonInput, approuter });
+
+                    expect(mockGetApprouterType).not.toHaveBeenCalled();
+                    expect(mockGenerateCf).toHaveBeenCalledWith(
+                        cfTestOutputDir,
+                        expect.objectContaining({ cf: expect.objectContaining({ approuter }) }),
+                        expect.any(Object),
+                        expect.any(Object)
+                    );
+                }
+            );
+
             it('should generate from a business service and derive defaults against the existing MTA root', async () => {
                 const otherMtaRoot = join(cfTestOutputDir, 'other-mta-root');
                 fs.mkdirSync(join(otherMtaRoot, 'app.variant'), { recursive: true });
@@ -1297,6 +1356,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                     otherMtaRoot,
                     expect.objectContaining({
                         app: expect.objectContaining({ id: baseApp.appId }),
+                        cf: expect.objectContaining({ approuter: AppRouterType.MANAGED }),
                         project: expect.objectContaining({ name: 'app.variant2' })
                     }),
                     expect.any(Object),
@@ -1325,12 +1385,14 @@ describe('Adaptation Project Generator Integration Test', () => {
                 ).resolves.not.toThrow();
 
                 expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
+                expect(mockGetApprouterType).not.toHaveBeenCalled();
                 expect(mockGenerateCf).toHaveBeenCalledWith(
                     join(newMtaParent, 'brand-new-mta'),
                     expect.objectContaining({
                         app: expect.objectContaining({ id: baseApp.appId }),
                         project: expect.objectContaining({ name: 'app.variant.cf' }),
                         cf: expect.objectContaining({
+                            approuter: AppRouterType.MANAGED,
                             existingService: expect.objectContaining({ name: 'live-instance' })
                         })
                     }),

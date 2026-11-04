@@ -14,6 +14,7 @@ import {
     generate,
     generateCf,
     getCfBaseAppInbounds,
+    getApprouterType,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
@@ -989,7 +990,7 @@ export default class extends Generator {
             applicationTitle,
             businessService,
             serviceInstanceName,
-            approuter = AppRouterType.MANAGED,
+            approuter,
             businessSolutionName,
             mtaMode = MtaMode.Existing,
             mtaId,
@@ -1000,6 +1001,8 @@ export default class extends Generator {
 
         const projectPath = this._resolveCfProjectPath(mtaMode, targetFolder, mtaId);
         this.destinationRoot(projectPath);
+        const resolvedApprouter =
+            approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
 
         const serviceName = businessService ?? serviceInstanceName ?? '';
         const serviceInfo = await getBusinessServiceInfo(serviceName, this.cfConfig, this.logger);
@@ -1030,7 +1033,7 @@ export default class extends Generator {
         this.cfOAuthPaths = getOAuthPathsFromXsApp(entries);
 
         this.cfServicesAnswers = {
-            approuter,
+            approuter: resolvedApprouter,
             baseApp,
             ...(businessService ? { businessService } : {}),
             ...(serviceInstance ? { serviceInstance } : {}),
