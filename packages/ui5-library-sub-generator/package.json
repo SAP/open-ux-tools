@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-sub-generator",
     "description": "Generator for creating UI5 libraries",
-    "version": "1.0.52",
+    "version": "1.0.55",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -38,12 +38,12 @@
         "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/ui5-library-inquirer": "workspace:*",
         "@sap-ux/ui5-library-writer": "workspace:*",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
-        "@jest/types": "30.4.1",
+        "@jest/globals": "30.5.2",
+        "@jest/types": "30.5.1",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-environment": "2.10.11",

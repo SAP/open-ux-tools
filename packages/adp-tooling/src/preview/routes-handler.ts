@@ -6,7 +6,7 @@ import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareUtils } from '@ui5/server';
 
 import type { ReaderCollection, Resource } from '@ui5/fs';

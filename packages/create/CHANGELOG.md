@@ -1,5 +1,101 @@
 # @sap-ux/create
 
+## 1.5.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.35 → 1.2.36
+- @sap-ux/app-config-writer 1.1.33 → 1.1.33
+- @sap-ux/ui5-test-writer 1.19.8 → 1.19.9
+
+## 1.5.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/preview-middleware 1.2.34 → 1.2.35
+- @sap-ux/abap-deploy-config-inquirer 2.0.57 → 2.0.58
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/app-config-writer 1.1.32 → 1.1.33
+- @sap-ux/fiori-migration-writer 0.0.13 → 0.0.14
+- @sap-ux/flp-config-inquirer 1.0.72 → 1.0.73
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/ui5-test-writer 1.19.7 → 1.19.8
+- @sap-ux/cap-config-writer 1.0.48 → 1.0.49
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+- @sap-ux/abap-deploy-config-writer 1.0.36 → 1.0.37
+
+## 1.5.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.33 → 1.2.34
+- @sap-ux/fiori-migration-writer 0.0.12 → 0.0.13
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/app-config-writer 1.1.31 → 1.1.32
+- @sap-ux/ui5-test-writer 1.19.6 → 1.19.7
+- @sap-ux/flp-config-inquirer 1.0.71 → 1.0.72
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/abap-deploy-config-inquirer 2.0.56 → 2.0.57
+- @sap-ux/cap-config-writer 1.0.47 → 1.0.48
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/abap-deploy-config-writer 1.0.35 → 1.0.36
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/mockserver-config-writer 1.0.25 → 1.0.26
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.26 → 1.0.27
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.5.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.70 → 1.0.71
+- @sap-ux/preview-middleware 1.2.32 → 1.2.33
+- @sap-ux/fiori-migration-writer 0.0.11 → 0.0.12
+- @sap-ux/flp-config-inquirer 1.0.70 → 1.0.71
+- @sap-ux/app-config-writer 1.1.31 → 1.1.31
+- @sap-ux/ui5-test-writer 1.19.5 → 1.19.6
+
+## 1.5.10
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-inquirer 2.0.55 → 2.0.56
+- @sap-ux/adp-tooling 1.0.69 → 1.0.70
+- @sap-ux/app-config-writer 1.1.30 → 1.1.31
+- @sap-ux/cap-config-writer 1.0.46 → 1.0.47
+- @sap-ux/fiori-migration-writer 0.0.10 → 0.0.11
+- @sap-ux/flp-config-inquirer 1.0.69 → 1.0.70
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/mockserver-config-writer 1.0.24 → 1.0.25
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/ui5-test-writer 1.19.4 → 1.19.5
+- @sap-ux/preview-middleware 1.2.31 → 1.2.32
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/abap-deploy-config-writer 1.0.34 → 1.0.35
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.5.9
 
 ### Patch Changes

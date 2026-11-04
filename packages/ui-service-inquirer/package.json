@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-inquirer",
     "description": "Generator for creating UI Service",
-    "version": "1.0.60",
+    "version": "1.0.63",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -41,11 +41,11 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
-        "i18next": "26.3.6",
+        "i18next": "26.5.11",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",

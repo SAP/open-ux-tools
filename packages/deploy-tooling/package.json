@@ -10,7 +10,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-tooling"
     },
-    "version": "1.0.54",
+    "version": "1.0.58",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -54,7 +54,7 @@
         "chalk": "5.6.2"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.4.9",
         "@types/adm-zip": "0.5.8"

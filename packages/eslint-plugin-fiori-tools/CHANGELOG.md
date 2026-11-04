@@ -1,5 +1,45 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.18.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+## 10.18.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+## 10.18.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Features
+
+- migrate sap-eslint-disable-count, sap-no-console-log, sap-no-upload, sap-no-core-model-usage, sap-not-localized, sap-concatenated-strings, sap-unescaped-write, sap-browser-api-error, sap-controller-hook-missing-callback-signature, sap-controller-hook-name-convention, and sap-controller-hook-bad-callback-signature rules from eslint-plugin-fiori-custom [[9fe7bdb](https://github.com/SAP/open-ux-tools/commit/9fe7bdb0c5b9af8873411823166f854ddc8d49fa)]
+
 ## 10.17.7
 
 ### Patch Changes

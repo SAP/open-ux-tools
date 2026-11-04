@@ -45,7 +45,7 @@
         "semver": "7.8.5"
     },
     "devDependencies": {
-        "@jest/globals": "30.4.1",
+        "@jest/globals": "30.5.2",
         "@types/semver": "7.8.0",
         "mock-spawn": "0.2.6",
         "nock": "14.0.16"
