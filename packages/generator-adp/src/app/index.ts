@@ -1037,7 +1037,7 @@ export default class extends Generator {
             ...(businessSolutionName ? { businessSolutionName } : {})
         };
 
-        const projectName = this.attributeAnswersProjectName(baseApplicationName, requestedProjectName);
+        const projectName = this.attributeAnswersProjectName(requestedProjectName);
         const title = applicationTitle ?? manifest['sap.app']?.title ?? t('prompts.appTitleDefault');
         const namespace = requestedNamespace ?? getDefaultNamespace(projectName, this.isCustomerBase);
 
@@ -1107,11 +1107,10 @@ export default class extends Generator {
     /**
      * Derives the project (sub-module) name for the CF flow from JSON input or a default.
      *
-     * @param {string} baseApplicationName - The base app id, used to derive a default name.
      * @param {string} [requested] - The explicit project name from JSON input, when provided.
      * @returns {string} The project name.
      */
-    private attributeAnswersProjectName(_baseApplicationName: string, requested?: string): string {
+    private attributeAnswersProjectName(requested?: string): string {
         return requested ?? getDefaultProjectName(this.destinationPath());
     }
 
