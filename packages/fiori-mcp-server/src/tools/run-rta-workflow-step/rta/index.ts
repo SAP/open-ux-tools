@@ -4,6 +4,7 @@ export {
     executeAction,
     executeUfaAction,
     getElementContext,
+    getODataMetadata,
     getOverlays,
     saveChanges,
     startRta,
@@ -20,6 +21,8 @@ export type {
     EditorPage,
     ElementContext,
     ExecuteUfaActionResult,
+    GetODataMetadataResult,
+    ODataMetadataEntry,
     Overlay,
     UiElementNode
 } from './types.js';

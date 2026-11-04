@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-writer
 
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
 ## 1.0.26
 
 ### Patch Changes

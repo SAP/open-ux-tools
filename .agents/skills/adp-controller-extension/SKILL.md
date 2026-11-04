@@ -34,7 +34,7 @@ The first install downloads ~120 MB. Subsequent runs reuse the cache. See the Er
 
 ## Tool Contract
 
-A single tool, dispatched by the `step` argument. `site` is the editor URL from `open_adaptation_editor` — pass it on every step. There is no server-side session; the tool locates the browser page by URL.
+A single tool, dispatched by the `step` argument. `site` is the editor URL from `open_adaptation_editor` — pass it on every step. The tool keeps the browser session server-side, keyed per project (that is why `start`/`restart`/`get_odata_metadata` require `appPath`); each other step locates its page by `site`.
 
 | step | site | frameId | payload | returns |
 |------|------|---------|---------|---------|
@@ -70,7 +70,7 @@ Three steps require AI judgment: control selection (Step 4), action selection (S
 
 ### Step 1 — Start RTA
 
-Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), and `frameId: "preview"` (both top-level). The `payload` is not required for this step. Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once.
+Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), `frameId: "preview"`, and `appPath` (the adaptation project root — the same path passed to `open_adaptation_editor`) — all as **top-level parameters**, not inside `payload`. `appPath` is **required**: it identifies the project so an authenticated Cloud Foundry session is reused per project (and ABAP projects skip session handling). Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once. If `rtaStarted: false` with `needsUserAction: "backend_login_required"`, the editor URL served a login page (CF XSUAA) — surface the message to the user to complete login once in the opened browser, then retry `start`.
 
 ### Step 2 — Navigate the app to the editing target
 
@@ -202,6 +202,16 @@ Run this step only if the user's intention involves binding the element to a dat
 - Whether the property is suitable for the target control (type, nullability, length)
 - Any annotation-driven formatting hints that should be applied
 
+**Cloud Foundry (CF) projects — two-call flow.** CF adaptation projects have no ABAP backend to proxy `$metadata`, so for a CF project `read_odata_metadata_adp` returns each OData data source **with an empty `metadata` string** (it still gives you the data-source `id`, `url`, and bound model). To get the real EDMX for a CF project:
+
+1. Call `read_odata_metadata_adp` to list the data sources and collect the `entries[].url` values (the service URIs).
+2. With a live editor session already started (the `start` step of `run_rta_workflow_step` has succeeded), call `run_rta_workflow_step` with `step: "get_odata_metadata"`, `site` (top-level), `appPath` (top-level, **required** — the adaptation project root), and `payload: { uris: [...] }` passing those URIs. It fetches the real EDMX through the editor's authenticated approuter session and returns `{ entries: Array<{ url, metadata } | { url, metadataFile, sizeBytes } | { url, error }> }`:
+   - `{ url, metadata }` — EDMX inline (small services); use it directly.
+   - `{ url, metadataFile, sizeBytes }` — EDMX too large to inline; it was written to `<appPath>/.context/<name>-metadata.xml`. **Read that file** (e.g. with a targeted `jq`/grep for the entity you need) rather than loading the whole multi-megabyte document.
+   - `{ url, error }` — the fetch failed (lost-auth login page, non-XML, or a foreign-origin URI was refused); re-run `start` if the session lapsed.
+
+For the common "what is this control bound to" question you usually need **neither** call — `get_context`'s `availableModels[<name>].contextEntityType` (Step 6) already resolves the bound entity type through the authenticated browser's meta model, for both ABAP and CF. Reach for `get_odata_metadata` only when you need the richer EDMX (full entity sets, navigation paths, annotations, or services outside the current binding context) for a CF project. For an ABAP project, `read_odata_metadata_adp` returns the EDMX directly and no workflow step is needed — small services inline as `metadata`, large ones spilled to `<appPath>/.context/<service>-metadata.xml` and returned as `{ metadataFile, sizeBytes }`, and a service whose metadata fetch fails returned as `{ error }` (the other services are unaffected) — exactly as the CF `get_odata_metadata` step does. Read a spilled file rather than loading the whole document.
+
 Typical triggers:
 
 - Binding a control property to an OData field (e.g. `text="{Customer/Name}"`)
@@ -307,9 +317,11 @@ Include XML comments inside fragments for context hints:
 After generating all files, call `restart` to reload the current editor browser with the newly written fragment and controller extension files.
 
 ```
-run_rta_workflow_step { step: "restart", site, frameId }
+run_rta_workflow_step { step: "restart", site, frameId, appPath }
 → { site, frameId, rtaStarted: true }
 ```
+
+`appPath` is **required** for `restart` (same as `start`) — pass the adaptation project root.
 
 Store the returned `site` and `frameId`. Navigate back to the editing target (repeat Step 2 navigation as needed — `restart` may reset the app to its initial view) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
 
