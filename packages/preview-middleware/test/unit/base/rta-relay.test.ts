@@ -257,6 +257,7 @@ describe('preview RTA relay', () => {
         {},
         { id: 'x' },
         { id: 'x', clientId: 'first' },
+        { id: 'x', clientId: '', result: null },
         { id: 'x', clientId: 'first', error: 1 },
         { id: 'x', clientId: 'first', error: 'failed', result: null }
     ])('rejects invalid result bodies: %j', async (body) => {
