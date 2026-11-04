@@ -125,7 +125,11 @@
             }
             if (action.actionName === '__reload__' || action.actionName === '__stop__') {
                 const result = action.actionName === '__reload__' ? { reloaded: true } : { stopped: true };
-                await request('result', { id: action.id, clientId, result });
+                try {
+                    await request('result', { id: action.id, clientId, result });
+                } catch (error) {
+                    console.error('[rta-relay] lifecycle result POST failed:', error);
+                }
                 if (action.actionName === '__reload__') {
                     location.reload();
                 }
@@ -137,7 +141,11 @@
             } catch (error) {
                 response = { error: error.message ?? String(error) };
             }
-            await request('result', { id: action.id, clientId, ...response });
+            try {
+                await request('result', { id: action.id, clientId, ...response });
+            } catch (error) {
+                console.error('[rta-relay] result POST failed, continuing poll loop:', error);
+            }
         }
     }
 

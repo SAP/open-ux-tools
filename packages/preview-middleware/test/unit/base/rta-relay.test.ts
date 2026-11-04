@@ -442,11 +442,22 @@ describe('relay browser client', () => {
         expect(client.ui5Require).toHaveBeenCalledTimes(1);
     });
 
-    test('does not retry result submission or its mutation after a network failure', async () => {
+    test('reloads even when the __reload__ result POST fails', async () => {
+        const client = await runClient([{ id: '1', actionName: '__reload__' }], {}, undefined, true);
+        expect(client.reload).toHaveBeenCalledTimes(1);
+        expect(client.log).toHaveBeenCalled();
+    });
+
+    test('keeps the poll loop alive after a failed result submission without retrying it', async () => {
         const getOverlays = jest.fn().mockResolvedValue({ overlays: [] });
         const client = await runClient([{ id: '1', actionName: ACTION }], { getOverlays }, undefined, true);
+        for (let i = 0; i < 2000 && client.fetch.mock.calls.length < 3; i++) {
+            await new Promise(setImmediate);
+        }
         expect(getOverlays).toHaveBeenCalledTimes(1);
-        expect(client.fetch).toHaveBeenCalledTimes(2);
+        // poll, the failed result POST (not retried), then the loop polls again and ends on 409
+        expect(client.fetch).toHaveBeenCalledTimes(3);
+        expect(client.fetch.mock.calls[2][1].body).toBeUndefined();
         expect(client.log).toHaveBeenCalled();
     });
 });
