@@ -53,22 +53,6 @@ export function parseJsonInput(jsonString: string, logger: ToolsLogger): JsonInp
 }
 
 /**
- * Returns true when the input selects the Cloud Foundry target environment but does not conform to
- * the CfJsonInput shape, so the headless flow can fail loudly instead of falling back to prompts.
- *
- * @param {string} jsonString - The json string representation.
- * @returns {boolean} True for a `targetEnv: 'CF'` input that fails CF validation.
- */
-export function isInvalidCfJsonInput(jsonString: string): boolean {
-    try {
-        const parsed = JSON.parse(jsonString);
-        return isPlainTargetEnvCf(parsed) && !isCfJsonInput(parsed);
-    } catch {
-        return false;
-    }
-}
-
-/**
  * Narrow check for whether a parsed json selects the Cloud Foundry target environment.
  *
  * @param {unknown} value - The parsed json value.

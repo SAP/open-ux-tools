@@ -1565,26 +1565,38 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect(mockGenerateCf).not.toHaveBeenCalled();
             });
 
-            it('should fail loudly (no prompts) when CF JSON is invalid', async () => {
-                // Both service fields set -> fails isCfJsonInput; a headless CF caller must get an
-                // error, not an interactive fallback.
-                const jsonInput = {
-                    targetEnv: 'CF',
-                    application: baseApp.appId,
-                    businessService: 'test-service',
-                    serviceInstanceName: 'test-service',
-                    mtaMode: 'existing',
-                    targetFolder: cfTestOutputDir
-                };
-
+            it.each([
+                ['corrupt JSON', '{"targetEnv":"CF",'],
+                ['unparseable input', 'not json'],
+                ['whitespace input', '   '],
+                ['null input', 'null'],
+                ['missing CF application', JSON.stringify({ targetEnv: 'CF', businessService: 'test-service' })],
+                ['missing CF service', JSON.stringify({ targetEnv: 'CF', application: baseApp.appId })],
+                [
+                    'both CF services',
+                    JSON.stringify({
+                        targetEnv: 'CF',
+                        application: baseApp.appId,
+                        businessService: 'test-service',
+                        serviceInstanceName: 'test-service'
+                    })
+                ],
+                ['incomplete ABAP input', JSON.stringify({ system: 'urlA' })]
+            ])('should stop before CF calls or prompts for %s', async (_description, jsonInputString) => {
+                const promptSpy = jest.spyOn(Generator.prototype, 'prompt');
                 const runContext = yeomanTest
                     .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
                     .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
-                    .withArguments([JSON.stringify(jsonInput)]);
+                    .withArguments([jsonInputString]);
 
-                await expect(runContext.run()).rejects.toThrow(t('error.invalidCfJsonInput'));
+                await expect(runContext.run()).rejects.toThrow(t('error.invalidJsonInput'));
 
+                expect(promptSpy).not.toHaveBeenCalled();
+                expect(mockIsCfInstalled).not.toHaveBeenCalled();
+                expect(mockLoadCfConfig).not.toHaveBeenCalled();
+                expect(mockIsLoggedInCf).not.toHaveBeenCalled();
                 expect(mockGenerateCf).not.toHaveBeenCalled();
+                promptSpy.mockRestore();
             });
         });
     });
