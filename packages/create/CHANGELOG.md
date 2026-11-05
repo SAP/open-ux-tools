@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 1.5.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 0.0.15 → 0.0.16
+
 ## 1.5.16
 
 ### Patch Changes
