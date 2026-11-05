@@ -1,9 +1,14 @@
+import { isNeedsUserAction } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
+import { formatXml, persistMetadata } from '../../../utils/index.js';
+import { buildMetadataUrl, looksLikeEdmx } from './odata-metadata.js';
 import type {
     ActionsCatalog,
     EditorPage,
     ElementContext,
+    GetODataMetadataResult,
     InteractiveElement,
+    ODataMetadataEntry,
     Overlay,
     PageActionRunResult,
     RegisteredPageAction
@@ -41,7 +46,27 @@ export class FrontendActionError extends Error {
 const action = (name: string): string => `${ACTION_PREFIX}.${name}.${ACTION_VERSION}`;
 
 /**
+ * Raised when a first editor call lands on a backend login page (CF XSUAA / ABAP
+ * reentrance) instead of the app. The browser driver encodes this as a reserved
+ * `backend_login_required` sentinel payload on an otherwise-successful envelope;
+ * {@link unwrap} decodes it centrally so any step — not just `start` — surfaces the
+ * login prompt rather than returning the sentinel as a mistyped result.
+ */
+export class BackendLoginRequiredError extends Error {
+    /**
+     * @param guidance Human-readable instruction for completing the interactive login.
+     */
+    constructor(public readonly guidance: string) {
+        super(guidance);
+        this.name = 'BackendLoginRequiredError';
+    }
+}
+
+/**
  * Returns the result payload on success; throws `FrontendActionError` on failure.
+ * A reserved `backend_login_required` sentinel payload is decoded here and raised as
+ * {@link BackendLoginRequiredError}, so every caller surfaces the login prompt instead
+ * of treating the sentinel as a valid `T`.
  *
  * @param actionName Fully-qualified action name, used in the error message.
  * @param result Frontend action result envelope.
@@ -52,19 +77,48 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
         const code = result.error?.code ?? 'GENERIC_ERROR';
         throw new FrontendActionError(actionName, code, result.error?.message);
     }
+    if (isNeedsUserAction(result.payload)) {
+        throw new BackendLoginRequiredError(result.payload.message);
+    }
     return result.payload as T;
 }
 
 /**
- * Starts Runtime Authoring on the editor page.
+ * Result of a `startRta` call. On the normal path `rtaStarted` is `true`. When
+ * the editor URL served a backend login page (CF XSUAA / ABAP reentrance),
+ * `rtaStarted` is `false` and `needsUserAction` carries the structured signal
+ * so the caller can prompt the human to log in and retry — instead of throwing.
+ */
+export interface StartRtaResult {
+    rtaStarted: boolean;
+    needsUserAction?: 'backend_login_required';
+    message?: string;
+}
+
+/**
+ * Starts Runtime Authoring on the editor page. The caller (the browser driver) awaits the
+ * editor's `app-loaded` signal before invoking this, so `startRTA` does not race
+ * a half-booted RuntimeAuthoring.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns `{ rtaStarted: true }` once RTA has started.
+ * @returns `{ rtaStarted: true }` once RTA has started, or a `backend_login_required` signal.
  */
-export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<{ rtaStarted: boolean }> {
+export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<StartRtaResult> {
     const name = action('startRTA');
-    return unwrap(name, await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, {}, page.frameId));
+    try {
+        // `start`/`restart` is the only path allowed to open a fresh editor page.
+        unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId, true));
+        return { rtaStarted: true };
+    } catch (error) {
+        // `unwrap` decodes the backend-login sentinel into this error for every
+        // caller; `start` is the one that treats it as a benign retry signal
+        // (prompt the user to log in) rather than a hard failure.
+        if (error instanceof BackendLoginRequiredError) {
+            return { rtaStarted: false, needsUserAction: 'backend_login_required', message: error.guidance };
+        }
+        throw error;
+    }
 }
 
 /**
@@ -256,4 +310,51 @@ export async function pressInteractive(
         name,
         await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
     );
+}
+
+/**
+ * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
+ * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
+ * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
+ * `error`, small EDMX is returned inline as `metadata`, and large EDMX is spilled to `.context`
+ * as `{ metadataFile, sizeBytes }` (see `persistMetadata`).
+ *
+ * @param transport Transport whose `fetchViaContext` carries the auth cookies.
+ * @param site Editor URL returned by `start`; its origin is the fetch target.
+ * @param uris OData data-source URIs (the `entries[].url` from `read_odata_metadata_adp`).
+ * @param appPath Adaptation project root; large metadata is saved under its `.context`.
+ * @returns One entry per URI: inline `metadata`, a `metadataFile` reference, or an `error`.
+ */
+export async function getODataMetadata(
+    transport: FrontendActionTransport,
+    site: string,
+    uris: string[],
+    appPath: string
+): Promise<GetODataMetadataResult> {
+    const entries: ODataMetadataEntry[] = await Promise.all(
+        uris.map(async (uri): Promise<ODataMetadataEntry> => {
+            try {
+                const { status, contentType, body } = await transport.fetchViaContext(
+                    site,
+                    buildMetadataUrl(site, uri)
+                );
+                if (status < 200 || status >= 300) {
+                    return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
+                }
+                const isXml = contentType.toLowerCase().includes('xml');
+                const looksEdmx = looksLikeEdmx(body);
+                if (!isXml || !looksEdmx) {
+                    return {
+                        url: uri,
+                        error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
+                    };
+                }
+                const formatted = formatXml(body);
+                return { url: uri, ...persistMetadata(appPath, uri, formatted) };
+            } catch (error) {
+                return { url: uri, error: error instanceof Error ? error.message : String(error) };
+            }
+        })
+    );
+    return { entries };
 }

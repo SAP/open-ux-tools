@@ -1,11 +1,15 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import yaml from 'js-yaml';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
 // Create mocks before any source modules are loaded
 const mockExistsSync = jest.fn<typeof realFs.existsSync>();
+const mockReaddirSync = jest.fn() as jest.Mock;
 const mockCreateServices = jest.fn() as jest.Mock;
 const mockCreateServiceInstance = jest.fn() as jest.Mock;
 const mockGetOrCreateServiceInstanceKeys = jest.fn() as jest.Mock;
@@ -31,7 +35,8 @@ const realFs = await import('node:fs');
 jest.unstable_mockModule('node:fs', () => ({
     ...realFs,
     existsSync: mockExistsSync,
-    default: { ...realFs.default, existsSync: mockExistsSync }
+    readdirSync: mockReaddirSync,
+    default: { ...realFs.default, existsSync: mockExistsSync, readdirSync: mockReaddirSync }
 }));
 
 jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
@@ -54,15 +59,18 @@ const {
     getSAPCloudService,
     getRouterType,
     getAppParamsFromUI5Yaml,
+    getCfProjectSpaceGuid,
     adjustMtaYaml,
-    addConnectivityServiceToMta
+    addConnectivityServiceToMta,
+    addExistingServiceToMta
 } = await import('../../../../src/cf/project/yaml.js');
 const { AppRouterType } = await import('../../../../src/types.js');
-import type { MtaYaml, CfUI5Yaml, ServiceKeys } from '../../../../src/types.js';
+import type { MtaYaml, CfUI5Yaml, ServiceKeys, CfServiceInstanceChoice } from '../../../../src/types.js';
 
 describe('YAML Project Functions', () => {
     const mockLogger = {
-        debug: jest.fn()
+        debug: jest.fn(),
+        log: jest.fn()
     } as unknown as ToolsLogger;
 
     beforeEach(() => {
@@ -80,6 +88,99 @@ describe('YAML Project Functions', () => {
 
             expect(mockExistsSync).toHaveBeenCalledWith(mtaYamlPath);
             expect(result).toBe(true);
+        });
+    });
+
+    describe('addExistingServiceToMta', () => {
+        const projectPath = '/test/project';
+        const mtaYamlPath = join(projectPath, 'mta.yaml');
+        const instance: CfServiceInstanceChoice = {
+            name: 'my-service',
+            service: 'abap',
+            servicePlan: 'standard'
+        };
+
+        const createMemFs = (content?: MtaYaml): Editor => {
+            const memFs = create(createStorage());
+            if (content) {
+                memFs.write(mtaYamlPath, yaml.dump(content));
+            }
+            return memFs;
+        };
+
+        const readResources = (memFs: Editor): MtaYaml['resources'] =>
+            (yaml.load(memFs.read(mtaYamlPath)) as MtaYaml).resources;
+
+        test('appends an existing-service resource for the selected instance', () => {
+            const memFs = createMemFs({ '_schema-version': '3.2', ID: 'proj', version: '0.0.1', resources: [] });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(readResources(memFs)).toEqual([
+                {
+                    name: 'my-service',
+                    type: 'org.cloudfoundry.existing-service',
+                    parameters: {
+                        service: 'abap',
+                        'service-plan': 'standard',
+                        'service-name': 'my-service'
+                    }
+                }
+            ]);
+        });
+
+        test('creates the resources array when the yaml has none', () => {
+            const memFs = createMemFs({ '_schema-version': '3.2', ID: 'proj', version: '0.0.1' });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(readResources(memFs)).toHaveLength(1);
+        });
+
+        test('is idempotent when the instance is already bound', () => {
+            const memFs = createMemFs({
+                '_schema-version': '3.2',
+                ID: 'proj',
+                version: '0.0.1',
+                resources: [
+                    {
+                        name: 'my-service',
+                        type: 'org.cloudfoundry.existing-service',
+                        parameters: { service: 'abap', 'service-plan': 'standard', 'service-name': 'my-service' }
+                    }
+                ]
+            });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(readResources(memFs)).toHaveLength(1);
+        });
+
+        test('appends a unique numeric suffix when the resource name collides', () => {
+            const memFs = createMemFs({
+                '_schema-version': '3.2',
+                ID: 'proj',
+                version: '0.0.1',
+                resources: [
+                    { name: 'my-service', type: 'org.cloudfoundry.managed-service', parameters: {} },
+                    { name: 'my-service-1', type: 'org.cloudfoundry.managed-service', parameters: {} }
+                ]
+            });
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            const resources = readResources(memFs) ?? [];
+            const added = resources.find((resource) => resource.type === 'org.cloudfoundry.existing-service');
+            expect(added?.name).toBe('my-service-2');
+            expect(added?.parameters?.['service-name']).toBe('my-service');
+        });
+
+        test('does nothing when mta.yaml does not exist', () => {
+            const memFs = createMemFs();
+
+            addExistingServiceToMta(projectPath, instance, memFs, mockLogger);
+
+            expect(memFs.exists(mtaYamlPath)).toBe(false);
         });
     });
 
@@ -289,6 +390,71 @@ describe('YAML Project Functions', () => {
         });
     });
 
+    describe('getCfProjectSpaceGuid', () => {
+        const projectPath = '/test/project';
+
+        const ui5WithSpace = (space?: string): CfUI5Yaml => ({
+            specVersion: '3.0',
+            type: 'application',
+            metadata: { name: 'test-app' },
+            builder: {
+                customTasks: [
+                    {
+                        name: 'app-variant-bundler-build',
+                        configuration: space === undefined ? {} : { space }
+                    }
+                ]
+            }
+        });
+
+        const dirent = (name: string, isDir = true) => ({ name, isDirectory: () => isDir });
+
+        test('should return the space GUID from an app subfolder (MTA layout)', () => {
+            mockReaddirSync.mockReturnValue([dirent('app1'), dirent('mta.yaml', false)]);
+            // root ui5.yaml absent, subfolder app1/ui5.yaml present
+            mockExistsSync.mockImplementation((p) => String(p) === join(projectPath, 'app1', 'ui5.yaml'));
+            mockGetYamlContent.mockReturnValue(ui5WithSpace('space-guid-1'));
+
+            expect(getCfProjectSpaceGuid(projectPath)).toBe('space-guid-1');
+            expect(mockGetYamlContent).toHaveBeenCalledWith(join(projectPath, 'app1', 'ui5.yaml'));
+        });
+
+        test('should return the space GUID from the root (standalone ADP layout)', () => {
+            mockReaddirSync.mockReturnValue([]);
+            mockExistsSync.mockImplementation((p) => String(p) === join(projectPath, 'ui5.yaml'));
+            mockGetYamlContent.mockReturnValue(ui5WithSpace('space-guid-root'));
+
+            expect(getCfProjectSpaceGuid(projectPath)).toBe('space-guid-root');
+        });
+
+        test('should return undefined when no ui5.yaml is found', () => {
+            mockReaddirSync.mockReturnValue([dirent('app1')]);
+            mockExistsSync.mockReturnValue(false);
+
+            expect(getCfProjectSpaceGuid(projectPath)).toBeUndefined();
+            expect(mockGetYamlContent).not.toHaveBeenCalled();
+        });
+
+        test('should return undefined when the found ui5.yaml has no space', () => {
+            mockReaddirSync.mockReturnValue([dirent('app1')]);
+            mockExistsSync.mockImplementation((p) => String(p) === join(projectPath, 'app1', 'ui5.yaml'));
+            mockGetYamlContent.mockReturnValue(ui5WithSpace(undefined));
+
+            expect(getCfProjectSpaceGuid(projectPath)).toBeUndefined();
+        });
+
+        test('should fall back to the root check and log when the directory scan fails', () => {
+            mockReaddirSync.mockImplementation(() => {
+                throw new Error('scan error');
+            });
+            mockExistsSync.mockImplementation((p) => String(p) === join(projectPath, 'ui5.yaml'));
+            mockGetYamlContent.mockReturnValue(ui5WithSpace('space-guid-root'));
+
+            expect(getCfProjectSpaceGuid(projectPath, mockLogger)).toBe('space-guid-root');
+            expect(mockLogger.log).toHaveBeenCalled();
+        });
+    });
+
     describe('adjustMtaYaml', () => {
         const projectPath = '/test/project';
         const moduleName = 'test-module';
@@ -302,8 +468,10 @@ describe('YAML Project Functions', () => {
         beforeEach(() => {
             jest.spyOn(Date, 'now').mockReturnValue(1234567890);
             mockMemFs = {
-                write: jest.fn()
-            } as jest.MockedObject<Editor>;
+                write: jest.fn(),
+                // adjustMtaYaml guards its disk read with memFs.exists; existing MTA projects have a yaml.
+                exists: jest.fn().mockReturnValue(true)
+            } as unknown as jest.MockedObject<Editor>;
         });
 
         afterEach(() => {

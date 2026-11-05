@@ -1,5 +1,24 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.4 → 1.0.5
+- @sap-ux/cds-annotation-parser 1.1.1 → 1.1.2
+- @sap-ux/odata-annotation-core 1.0.4 → 1.0.5
+- @sap-ux/odata-vocabularies 1.1.3 → 1.1.4
+
+## 1.1.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
 ## 1.1.1
 
 ### Patch Changes
