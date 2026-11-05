@@ -155,14 +155,23 @@ export interface UiElementNode {
     label?: string;
     /** Child nodes in the element tree. */
     children?: UiElementNode[];
+    /**
+     * `true` when this node has children that were omitted because the response
+     * was trimmed to a shallow depth. Call `describe_ui` again with
+     * `rootElementId` set to this node's `id` to retrieve the full subtree.
+     */
+    truncated?: boolean;
+    /** Number of direct children omitted when `truncated` is `true`. */
+    childCount?: number;
 }
 
 /**
- * Result of the `describeUI` Unified Frontend Action: the root node of the
- * current UI element tree. `describe_ui` returns this directly as `uiTree`, so
- * callers inspect `uiTree.id`, `uiTree.children`, etc.
+ * Result of the `describeUI` Unified Frontend Action: the list of top-level UI
+ * element nodes (`ActionHelpers.describeUI` returns the page's rendered controls
+ * as a forest, not a single root). `describe_ui` returns this array as `uiTree`,
+ * so callers iterate it and inspect each node's `id`, `children`, etc.
  */
-export type DescribeUiResult = UiElementNode;
+export type DescribeUiResult = UiElementNode[];
 
 /**
  * Result of the `executeAction` Unified Frontend Action.

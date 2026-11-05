@@ -28,6 +28,16 @@ const ACTION_VERSION = 'v1';
 const NAVIGATION_PROPERTIES = ['id', 'text', 'Type'];
 
 /**
+ * Default depth for an unscoped `describe_ui` overview. Depth 2 shows the
+ * top-level containers (pages, object page, RTA toolbar) and their immediate
+ * children (sections, tabs, toolbar buttons) — enough to decide which subtree to
+ * inspect — while keeping the response small on a large page. The model drills
+ * into a `truncated` node by calling `describe_ui` again with its id as
+ * `rootElementId` (which returns that subtree at full depth).
+ */
+const DEFAULT_DESCRIBE_UI_DEPTH = 2;
+
+/**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
  */
 export class FrontendActionError extends Error {
@@ -248,11 +258,40 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
 }
 
 /**
+ * Returns a copy of `node` whose descendants are trimmed to `maxDepth` levels
+ * (the root is depth 1). A node at the depth boundary that has children keeps no
+ * `children`, and is instead marked `truncated: true` with `childCount` set to
+ * the number of omitted direct children, signalling the caller to drill in with
+ * `rootElementId`. `maxDepth <= 0` means no trimming (full tree).
+ *
+ * @param node The root node to trim.
+ * @param maxDepth Maximum depth to retain, or `0` for the full tree.
+ * @param depth The current node's depth (1 for the root); used internally.
+ * @returns The trimmed node (a new object; the input is not mutated).
+ */
+export function trimTreeToDepth(node: UiElementNode, maxDepth: number, depth = 1): UiElementNode {
+    const { children, ...rest } = node;
+    if (!children || children.length === 0) {
+        return { ...rest };
+    }
+    if (maxDepth > 0 && depth >= maxDepth) {
+        return { ...rest, truncated: true, childCount: children.length };
+    }
+    return { ...rest, children: children.map((child) => trimTreeToDepth(child, maxDepth, depth + 1)) };
+}
+
+/**
  * Returns a hierarchical tree of the current UI elements via the Unified
  * Frontend Action `describeUI`. Each node carries a UI5 control id, type,
  * label, and children. Use the `id` values as `elementId` in `executeUfaAction`.
  * The response is scoped to {@link NAVIGATION_PROPERTIES} so a large page returns
  * a navigation-sized tree rather than every control's (potentially huge) value.
+ *
+ * Without `rootElementId` the tree is trimmed to {@link DEFAULT_DESCRIBE_UI_DEPTH}
+ * so a large page returns a shallow overview instead of thousands of nodes; a node
+ * with hidden children is marked `truncated` with a `childCount`. With
+ * `rootElementId` the caller is drilling into a specific (already small) subtree,
+ * so the full depth of that subtree is returned.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
@@ -269,10 +308,20 @@ export async function describeUi(
     if (rootElementId !== undefined) {
         params.rootElementId = rootElementId;
     }
-    // ActionHelpers.describeUI returns the UI element tree directly; the transport
-    // normalizes it into the Flex envelope, so `unwrap` yields the root node (and
-    // throws FrontendActionError if the runtime reported a failure, e.g. root not found).
-    return unwrap(name, await transport.callFrontendAction<UiElementNode>(page.site, name, params, page.frameId));
+    // ActionHelpers.describeUI returns the rendered controls as a FOREST (an array of
+    // top-level nodes), not a single root; the transport normalizes it into the Flex
+    // envelope, so `unwrap` yields that array (and throws FrontendActionError if the
+    // runtime reported a failure, e.g. root not found).
+    const forest = unwrap(
+        name,
+        await transport.callFrontendAction<UiElementNode[]>(page.site, name, params, page.frameId)
+    );
+    // describeUI has no depth parameter, so trim here: a scoped (rootElementId) call
+    // is an intentional drill-down and returns its full subtree; an unscoped call
+    // returns a shallow overview (each top-level node trimmed) the caller can expand.
+    return rootElementId !== undefined
+        ? forest
+        : forest.map((node) => trimTreeToDepth(node, DEFAULT_DESCRIBE_UI_DEPTH));
 }
 
 /**

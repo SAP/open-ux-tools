@@ -50,7 +50,7 @@ A single tool, dispatched by the `step` argument. `site` is the editor URL from 
 
 `Overlay` = `{ overlayId, controlId, label, controlType, parentElementId, parentAggregationName, index?, actionIds: string[] }` — `index` is the 0-based position within `parentAggregationName` and is omitted when the parent/aggregation can't be resolved or the aggregation is single-cardinality. `actionIds` lists the RTA actions available on this overlay; rich metadata for each id is in the top-level `actionsCatalog`.
 `Action` = `{ id, label, description?, parameters: [{ name, type, required?, description? }] }` — keyed by `actionId` in `actionsCatalog`. The catalog is **deduplicated across all overlays** in a single `get_overlays` response, so an id appears once even when many overlays expose it.
-`UiElementNode` = `{ id, type, label?, children?: UiElementNode[] }` — one node in the UI element tree returned by `describe_ui`. `id` is the UI5 control id; pass it as `elementId` in `execute_page_action`.
+`UiElementNode` = `{ id, type, label?, children?: UiElementNode[], truncated?, childCount? }` — one node in the UI element tree returned by `describe_ui`. `id` is the UI5 control id; pass it as `elementId` in `execute_page_action`. An unscoped `describe_ui` returns a **shallow overview** (top levels only); a node whose children were omitted is marked `truncated: true` with `childCount`. To see inside it, call `describe_ui` again with `rootElementId` set to that node's `id` — a scoped call returns that subtree at full depth.
 
 For the standard adaptation editor preview iframe, pass `frameId: "preview"` in the `start` step.
 
@@ -80,7 +80,7 @@ The RTA flow assumes the control to edit is already on screen. For Fiori Element
 
 **Navigation flow (UFA):**
 
-1. Call `step: "describe_ui"` to get the current UI element tree. Each node has `id` (UI5 control id), `type`, `label`, and `children`.
+1. Call `step: "describe_ui"` to get the current UI element tree. Each node has `id` (UI5 control id), `type`, `label`, and `children`. The unscoped call is a **shallow overview**: a node marked `truncated: true` (with `childCount`) has hidden children — if the control you need is inside one, call `describe_ui` again with `payload: { rootElementId: "<that node's id>" }` to expand just that subtree at full depth, rather than re-describing the whole page.
 2. Pick the element whose `type`/`label` matches the interaction the user's intent needs — the generic rule is "read the tree, choose the control that advances toward the target." (On Fiori Elements that is typically a search/"Go" button to load data, then a row to open its Object Page, then a section link — but treat these as examples, not a fixed script; match on what the tree actually shows.)
 3. Call `step: "execute_page_action"` with `payload: { actionName: "press", elementId: "<id>" }`.
 4. Call `describe_ui` again to confirm the navigation succeeded (new page/section is now on screen).

@@ -13,7 +13,8 @@ import {
     saveChanges,
     startRta,
     startVisualization,
-    stopRta
+    stopRta,
+    trimTreeToDepth
 } from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -211,9 +212,17 @@ describe('rta/commands', () => {
     // Reached via ActionHelpers; the transport normalizes their raw results into
     // the { isSuccess, payload, error } envelope, so these use ok()/fail().
 
-    test('describeUi calls the UFA describeUI action with navigation-scoped properties and returns the root node directly', async () => {
-        const tree = { id: 'root', type: 'sap.m.Page', children: [{ id: 'go', type: 'sap.m.Button' }] };
-        transport.callFrontendAction.mockResolvedValueOnce(ok(tree));
+    test('describeUi calls the UFA describeUI action with navigation-scoped properties and returns a shallow forest', async () => {
+        // describeUI returns a FOREST (array of top-level nodes). Deeper than the default
+        // depth (2) so trimming is observable: root → section → field.
+        const forest = [
+            {
+                id: 'root',
+                type: 'objectPage',
+                children: [{ id: 'section', type: 'section', children: [{ id: 'field', type: 'input' }] }]
+            }
+        ];
+        transport.callFrontendAction.mockResolvedValueOnce(ok(forest));
         const result = await describeUi(transport, { site: SITE, frameId: FRAME });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
@@ -221,18 +230,29 @@ describe('rta/commands', () => {
             { includedProperties: ['id', 'text', 'Type'] },
             FRAME
         );
-        expect(result).toEqual(tree);
+        // Default (unscoped) call trims each top-level node to depth 2: the section is kept
+        // but its children are replaced by a truncated marker so the model knows to drill in.
+        expect(result).toEqual([
+            {
+                id: 'root',
+                type: 'objectPage',
+                children: [{ id: 'section', type: 'section', truncated: true, childCount: 1 }]
+            }
+        ]);
     });
 
-    test('describeUi forwards rootElementId alongside the navigation-scoped properties when provided', async () => {
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ id: 'sub', type: 'sap.m.VBox' }));
-        await describeUi(transport, { site: SITE }, 'sub');
+    test('describeUi forwards rootElementId alongside the navigation-scoped properties and returns the subtree at full depth', async () => {
+        const subtree = [{ id: 'sub', type: 'section', children: [{ id: 'field', type: 'input' }] }];
+        transport.callFrontendAction.mockResolvedValueOnce(ok(subtree));
+        const result = await describeUi(transport, { site: SITE }, 'sub');
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
             'com.sap.ui.unified.frontend.actions.describeUI',
             { includedProperties: ['id', 'text', 'Type'], rootElementId: 'sub' },
             undefined
         );
+        // A scoped drill-down returns the subtree untrimmed (no truncated markers).
+        expect(result).toEqual(subtree);
     });
 
     test('describeUi throws FrontendActionError when the action fails', async () => {
@@ -240,6 +260,55 @@ describe('rta/commands', () => {
         await expect(describeUi(transport, { site: SITE }, 'sub')).rejects.toMatchObject({
             name: 'FrontendActionError',
             message: expect.stringContaining('Control not found: sub')
+        });
+    });
+
+    describe('trimTreeToDepth', () => {
+        const deepTree = {
+            id: 'root',
+            type: 'objectPage',
+            children: [
+                {
+                    id: 's1',
+                    type: 'section',
+                    children: [{ id: 'f1', type: 'input', children: [{ id: 'inner', type: 'text' }] }]
+                },
+                { id: 's2', type: 'section' } // leaf section, no children
+            ]
+        };
+
+        test('depth 1 keeps only the root and marks its children truncated with a count', () => {
+            expect(trimTreeToDepth(deepTree, 1)).toEqual({
+                id: 'root',
+                type: 'objectPage',
+                truncated: true,
+                childCount: 2
+            });
+        });
+
+        test('depth 2 keeps immediate children; a child with grandchildren is truncated, a leaf child is not', () => {
+            expect(trimTreeToDepth(deepTree, 2)).toEqual({
+                id: 'root',
+                type: 'objectPage',
+                children: [
+                    { id: 's1', type: 'section', truncated: true, childCount: 1 },
+                    { id: 's2', type: 'section' }
+                ]
+            });
+        });
+
+        test('a leaf node is returned unchanged (no truncated marker)', () => {
+            expect(trimTreeToDepth({ id: 'leaf', type: 'button' }, 2)).toEqual({ id: 'leaf', type: 'button' });
+        });
+
+        test('maxDepth 0 returns the full tree untrimmed', () => {
+            expect(trimTreeToDepth(deepTree, 0)).toEqual(deepTree);
+        });
+
+        test('does not mutate the input tree', () => {
+            const snapshot = JSON.parse(JSON.stringify(deepTree));
+            trimTreeToDepth(deepTree, 1);
+            expect(deepTree).toEqual(snapshot);
         });
     });
 
