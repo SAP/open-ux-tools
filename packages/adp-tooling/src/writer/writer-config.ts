@@ -174,8 +174,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
             fioriTools: true,
             enableTypeScript,
             addOpaTests: isVendorLayer,
-            // TODO set the value when we have UX.
-            addMockServer: false
+            addMockServer: configAnswers.addMockServer
         },
         keyUserChanges
     };

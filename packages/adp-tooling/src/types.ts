@@ -191,6 +191,7 @@ export interface ConfigAnswers {
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
+    addMockServer?: boolean;
 }
 
 export interface AttributesAnswers {
