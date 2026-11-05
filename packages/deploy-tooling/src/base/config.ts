@@ -94,7 +94,7 @@ export function validateConfig(config: AbapDeployConfig | undefined, logger?: Lo
 }
 
 /**
- * Reads builder.resources.excludes from the deploy config file and converts glob patterns to prefix patterns.
+ * Reads builder.resources.excludes from the deploy config file and returns the patterns verbatim.
  * Returns an empty array if the section is absent or the file cannot be read.
  *
  * @param deployConfigPath - path to the ui5-deploy.yaml file
@@ -142,13 +142,17 @@ function isFileNotFoundError(e: unknown): boolean {
 export function excludePatternToRegExp(pattern: string): RegExp {
     const body = pattern.startsWith('/') ? pattern.slice(1) : pattern;
     const openEnded = body.endsWith('*') || body.endsWith('/');
-    const globstar = '\u0000';
+    const globstarDir = '\u0000'; // '**/' — zero or more leading/intermediate path segments
+    const globstar = '\u0001'; // '**' — any characters across segments
     const source = body
-        .replace(/\*\*/g, globstar) // reserve globstar before escaping/single-star handling
-        .replace(/[.+^${}()|[\]\\?]/g, '\\$&') // escape regex metacharacters (keep `*` and `/`)
-        .replace(/\*/g, '[^/]*') // single star stays within a segment
+        .replaceAll('**/', globstarDir) // '**/' may match zero segments, so the '/' is optional
+        .replaceAll('**', globstar) // remaining globstar (no trailing slash)
+        .replace(/[.+^${}()|[\]\\?]/g, String.raw`\$&`) // escape regex metacharacters (keep `*` and `/`)
+        .replaceAll('*', '[^/]*') // single star stays within a segment
+        .split(globstarDir)
+        .join('(?:.*/)?')
         .split(globstar)
-        .join('.*'); // globstar spans segments
+        .join('.*');
     return new RegExp(openEnded ? `^/?${source}` : `^/?${source}$`);
 }
 
@@ -168,9 +172,10 @@ export function isExcluded(path: string, exclude: string[]): boolean {
  * Regex-only constructs that carry no special meaning under the glob semantics used by
  * {@link excludePatternToRegExp}. An explicit exclude entry containing one of these was most
  * likely authored as a regular expression (the pre-glob behaviour) and is now matched
- * literally, so its presence indicates a behavioural change worth surfacing.
+ * literally, so its presence indicates a behavioural change worth surfacing. Kept intentionally
+ * narrow (backslash escape, start/end anchors) to avoid flagging valid globs such as `*.*`.
  */
-const LEGACY_REGEX_HINTS = [/\\/, /\.[*+]/, /^\^/, /\$$/];
+const LEGACY_REGEX_HINTS = [/\\/, /^\^/, /\$$/];
 
 /**
  * Warns for each explicit exclude pattern that looks like a legacy regular expression rather than

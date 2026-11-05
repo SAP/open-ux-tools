@@ -60,6 +60,12 @@ describe('base/config', () => {
             expect(re.test('sub/dir/app.js.map')).toBe(true);
             expect(re.test('sub/dir/app.js')).toBe(false);
         });
+
+        test('leading globstar matches zero segments (root-level files)', () => {
+            const re = excludePatternToRegExp('/**/*.map');
+            expect(re.test('Component.js.map')).toBe(true);
+            expect(re.test('app.map')).toBe(true);
+        });
     });
 
     describe('isExcluded', () => {
@@ -85,7 +91,10 @@ describe('base/config', () => {
 
         test('does not warn for glob/path patterns', () => {
             const logger = { warn: jest.fn() } as any;
-            warnOnLegacyRegexExcludes(['/test/', '/test/**', '/**/*.map', '/Component.js', 'ext/'], logger);
+            warnOnLegacyRegexExcludes(
+                ['/test/', '/test/**', '/**/*.map', '/Component.js', 'ext/', '*.*', '/**/app.*'],
+                logger
+            );
             expect(logger.warn).not.toHaveBeenCalled();
         });
 
