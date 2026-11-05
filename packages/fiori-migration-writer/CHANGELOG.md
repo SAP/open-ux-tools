@@ -1,5 +1,17 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- (fiori-migration-writer): resolve relative paths to prevent hang [[f8ff029](https://github.com/SAP/open-ux-tools/commit/f8ff02929c38d7c4460bbcdb0ff2900490800c9a)]
+
 ## 0.0.15
 
 ### Patch Changes
