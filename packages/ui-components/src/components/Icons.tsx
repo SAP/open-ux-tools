@@ -184,7 +184,8 @@ export enum UiIcons {
     ZoomIn = 'ZoomIn',
     ZoomOut = 'ZoomOut',
     BuildingBlocks = 'BuildingBlocks',
-    Page = 'Page'
+    Page = 'Page',
+    LinkingTo = 'LinkingTo'
 }
 
 export function initIcons(): void {
@@ -2569,6 +2570,30 @@ export function initIcons(): void {
                         fill={COLORS.default}
                         fillRule="evenodd"
                         d="M4.007,7 L9.007,7 L9.007,6 L4.007,6 L4.007,7 Z M2,6.5 C2,4.019 4.019,2 6.5,2 C8.981,2 11,4.019 11,6.5 C11,8.981 8.981,11 6.5,11 C4.019,11 2,8.981 2,6.5 L2,6.5 Z M15.008,14.292 L10.727,10.014 C11.521,9.06 12,7.835 12,6.5 C12,3.468 9.533,1 6.5,1 C3.467,1 1,3.468 1,6.5 C1,9.532 3.467,12 6.5,12 C7.838,12 9.065,11.519 10.021,10.721 L14.301,14.999 L15.008,14.292 Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.LinkingTo]: (
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path
+                        d="M4.66318 3H15V2H4.96456C4.91405 2.35307 4.81085 2.68915 4.66318 3Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M7 5H15V6H7V5Z" fill={COLORS.default} />
+                    <path d="M15 8H7V9H15V8Z" fill={COLORS.default} />
+                    <path d="M15 11H1V12H15V11Z" fill={COLORS.default} />
+                    <path d="M15 14H1V15H15V14Z" fill={COLORS.default} />
+                    <path
+                        d="M2 2.91464C2.58261 2.70872 3 2.15311 3 1.5C3 0.67157 2.32843 0 1.5 0C0.67157 0 0 0.67157 0 1.5C0 2.15311 0.417389 2.70872 1 2.91464V5.5C1 5.63261 1.05267 5.75978 1.14645 5.85355L3.29291 8H1V9H4.5C4.77615 9 5 8.77614 5 8.5V5H4V7.29291L2 5.29289V2.91464ZM2 1.5C2 1.77614 1.77615 2 1.5 2C1.22385 2 1 1.77614 1 1.5C1 1.22386 1.22385 1 1.5 1C1.77615 1 2 1.22386 2 1.5Z"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        fill={COLORS.default}
                     />
                 </svg>
             )
