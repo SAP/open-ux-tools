@@ -8,6 +8,9 @@ const POLL_TIMEOUT_MS = 25000;
 const ACTION_TIMEOUT_MS = 60000;
 const OWNER_LEASE_MS = 30000;
 
+/** Relay client script, read once at module load and served verbatim — no per-request file access. */
+const RELAY_CLIENT_JS = readFileSync(new URL('../../templates/rta-relay-client.js', import.meta.url), 'utf8');
+
 interface PendingAction {
     id: string;
     actionName: string;
@@ -146,9 +149,7 @@ export function addRtaRelayApis(
 
     router.get(`${API}/client.js`, (_req, res) => {
         res.set('Cache-Control', 'no-store');
-        res.type('application/javascript').send(
-            readFileSync(new URL('../../templates/rta-relay-client.js', import.meta.url), 'utf8')
-        );
+        res.type('application/javascript').send(RELAY_CLIENT_JS);
     });
     router.use(API, (req, res, next) => {
         res.set('Cache-Control', 'no-store');

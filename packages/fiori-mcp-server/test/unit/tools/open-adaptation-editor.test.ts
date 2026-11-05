@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import { EventEmitter } from 'node:events';
 import type { ChildProcess } from 'node:child_process';
 import { PassThrough } from 'node:stream';
+import { join } from 'node:path';
 import type { EditorSession } from '../../../src/utils/editor-session.js';
 
 const mockLoggerWarn = jest.fn<any>();
@@ -532,7 +533,7 @@ describe('openAdaptationEditor', () => {
 
     test('Cloud Foundry with dist: spawns the editor and serves the adaptation-editor path', async () => {
         mockIsCFEnvironment.mockResolvedValue(true);
-        mockExistsSync.mockImplementation((p: unknown) => p === '/tmp/myapp/dist');
+        mockExistsSync.mockImplementation((p: unknown) => p === join('/tmp/myapp', 'dist'));
         const child = new FakeChildProcess(4321);
         mockSpawn.mockReturnValue(fakeSubprocess(child));
 
@@ -558,7 +559,7 @@ describe('openAdaptationEditor', () => {
 
     test('Cloud Foundry timeout message references the 300-second window', async () => {
         mockIsCFEnvironment.mockResolvedValue(true);
-        mockExistsSync.mockImplementation((p: unknown) => p === '/tmp/myapp/dist');
+        mockExistsSync.mockImplementation((p: unknown) => p === join('/tmp/myapp', 'dist'));
         const child = new FakeChildProcess(1234);
         mockSpawn.mockReturnValue(fakeSubprocess(child));
 
