@@ -141,6 +141,29 @@ export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendAction
 }
 
 /**
+ * Serializes a value to JSON, replacing any already-seen object with the string
+ * `"[Circular]"` so a self-referential graph does not throw. Exported and used
+ * verbatim inside the page's `evaluate` (its source is serialized into the browser
+ * by Playwright), so the in-page serialization and this unit-tested function are
+ * the same logic. See the call site for why serialization happens in the page.
+ *
+ * @param value The value to serialize.
+ * @returns The JSON string, with cycles broken by `"[Circular]"`.
+ */
+export function stringifyWithCircularGuard(value: unknown): string {
+    const seen = new WeakSet<object>();
+    return JSON.stringify(value, (_key: string, v: unknown) => {
+        if (typeof v === 'object' && v !== null) {
+            if (seen.has(v)) {
+                return '[Circular]';
+            }
+            seen.add(v);
+        }
+        return v;
+    });
+}
+
+/**
  * Wraps a Playwright `Page` in an RPC handle that invokes frontend actions by
  * `sap.ui.require`-ing the implementing module on the page and calling the
  * method directly.
@@ -190,6 +213,7 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
         // Wait up to 60 s for the UI5 loader (`sap.ui.require`) to be present; RTA
         // needs time to start before the implementing modules can be required.
         await (executionContext as Page | Frame).waitForFunction(
+            /* istanbul ignore next -- predicate runs in the browser page, not Node */
             () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
             undefined,
             { timeout: 60000 }
@@ -198,6 +222,10 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
         let serialized: string;
         try {
             serialized = await executionContext.evaluate(
+                /* istanbul ignore next -- runs in the browser page, not Node; Playwright
+                   serializes this closure's source and executes it there, so Node-side
+                   coverage never observes it. The serialization logic it inlines is the
+                   same as the unit-tested stringifyWithCircularGuard above. */
                 async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
                     const require = (
                         window as unknown as {

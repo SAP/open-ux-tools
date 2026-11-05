@@ -91,6 +91,7 @@ export async function probeUi5Loaded(page: Page, frameId?: string): Promise<bool
     const target: Page | Frame = (await resolveFrame(page, frameId)) ?? page;
     try {
         await target.waitForFunction(
+            /* istanbul ignore next -- predicate runs in the browser page, not Node */
             () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
             undefined,
             { timeout: UI5_LOADED_PROBE_MS }

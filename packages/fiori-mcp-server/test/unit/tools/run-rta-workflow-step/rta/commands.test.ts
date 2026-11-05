@@ -211,26 +211,26 @@ describe('rta/commands', () => {
     // Reached via ActionHelpers; the transport normalizes their raw results into
     // the { isSuccess, payload, error } envelope, so these use ok()/fail().
 
-    test('describeUi calls the UFA describeUI action and returns the root node directly', async () => {
+    test('describeUi calls the UFA describeUI action with navigation-scoped properties and returns the root node directly', async () => {
         const tree = { id: 'root', type: 'sap.m.Page', children: [{ id: 'go', type: 'sap.m.Button' }] };
         transport.callFrontendAction.mockResolvedValueOnce(ok(tree));
         const result = await describeUi(transport, { site: SITE, frameId: FRAME });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
             'com.sap.ui.unified.frontend.actions.describeUI',
-            {},
+            { includedProperties: ['id', 'text', 'Type'] },
             FRAME
         );
         expect(result).toEqual(tree);
     });
 
-    test('describeUi forwards rootElementId when provided', async () => {
+    test('describeUi forwards rootElementId alongside the navigation-scoped properties when provided', async () => {
         transport.callFrontendAction.mockResolvedValueOnce(ok({ id: 'sub', type: 'sap.m.VBox' }));
         await describeUi(transport, { site: SITE }, 'sub');
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
             'com.sap.ui.unified.frontend.actions.describeUI',
-            { rootElementId: 'sub' },
+            { includedProperties: ['id', 'text', 'Type'], rootElementId: 'sub' },
             undefined
         );
     });

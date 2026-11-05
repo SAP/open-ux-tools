@@ -715,6 +715,45 @@ describe('browser/playwright-bridge', () => {
         });
     });
 
+    describe('stringifyWithCircularGuard', () => {
+        test('serializes a plain nested object identically to JSON.stringify', async () => {
+            const fs = await loadPlaywrightBridge();
+            const tree = { id: 'root', type: 'sap.m.Page', children: [{ id: 'go', value: 42, flag: true }] };
+            expect(fs.stringifyWithCircularGuard(tree)).toBe(JSON.stringify(tree));
+            expect(JSON.parse(fs.stringifyWithCircularGuard(tree))).toEqual(tree);
+        });
+
+        test('replaces a circular reference with "[Circular]" instead of throwing', async () => {
+            const fs = await loadPlaywrightBridge();
+            const node: Record<string, unknown> = { id: 'a' };
+            node.self = node; // direct cycle
+            const parsed = JSON.parse(fs.stringifyWithCircularGuard(node));
+            expect(parsed).toEqual({ id: 'a', self: '[Circular]' });
+        });
+
+        test('breaks an indirect cycle through children', async () => {
+            const fs = await loadPlaywrightBridge();
+            const root: Record<string, unknown> = { id: 'root', children: [] as unknown[] };
+            const child: Record<string, unknown> = { id: 'child', parent: root };
+            (root.children as unknown[]).push(child);
+            const parsed = JSON.parse(fs.stringifyWithCircularGuard(root));
+            expect(parsed.children[0].id).toBe('child');
+            expect(parsed.children[0].parent).toBe('[Circular]');
+        });
+
+        test('serializes a value that repeats but is not circular without marking it [Circular]', async () => {
+            const fs = await loadPlaywrightBridge();
+            // The WeakSet guards against cycles; a shared-but-acyclic reference appearing
+            // twice in sibling positions is still emitted in full the first time it is seen.
+            const shared = { label: 'shared' };
+            const tree = { a: shared, b: { nested: 'x' } };
+            expect(JSON.parse(fs.stringifyWithCircularGuard(tree))).toEqual({
+                a: { label: 'shared' },
+                b: { nested: 'x' }
+            });
+        });
+    });
+
     // --- B1 (persistent session) + B2 (login-aware start) --------------------
 
     const CF_SITE = 'http://localhost:8083/local/editor.html';

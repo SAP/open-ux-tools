@@ -17,6 +17,16 @@ import type {
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
 
+// describe_ui exists for navigation: the caller needs each node's id (to press),
+// type and label (to recognize the control), and the children structure — never a
+// control's `value`. Left unscoped, describeUI includes `value`, and for some
+// controls `value` is the live UI5 control object itself; serializing one such
+// node produced a ~6 MB payload on a real Object Page (99%+ of it a single node's
+// `value`). Defaulting includedProperties to the navigation-relevant fields drops
+// `value` and keeps the response ~200x smaller. ('text' maps to label, 'Type' to
+// type in UITreeReader's PROP_NAME_MAP; 'children' is always retained by it.)
+const NAVIGATION_PROPERTIES = ['id', 'text', 'Type'];
+
 /**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
  */
@@ -241,6 +251,8 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
  * Returns a hierarchical tree of the current UI elements via the Unified
  * Frontend Action `describeUI`. Each node carries a UI5 control id, type,
  * label, and children. Use the `id` values as `elementId` in `executeUfaAction`.
+ * The response is scoped to {@link NAVIGATION_PROPERTIES} so a large page returns
+ * a navigation-sized tree rather than every control's (potentially huge) value.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
@@ -253,7 +265,7 @@ export async function describeUi(
     rootElementId?: string
 ): Promise<DescribeUiResult> {
     const name = `${UFA_PREFIX}describeUI`;
-    const params: Record<string, unknown> = {};
+    const params: Record<string, unknown> = { includedProperties: NAVIGATION_PROPERTIES };
     if (rootElementId !== undefined) {
         params.rootElementId = rootElementId;
     }
