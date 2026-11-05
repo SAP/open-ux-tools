@@ -427,7 +427,7 @@ export interface UI5ConfigOptions {
     localUI5Version?: string;
     ui5Version?: string;
     ui5Theme: string;
-    ui5SnapshotUrl: string;
+    ui5SnapshotUrl?: string;
     ui5VersionRequestInfo: any;
 }
 
