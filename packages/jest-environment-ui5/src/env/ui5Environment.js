@@ -54,7 +54,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
                 ok: true,
                 status: 200,
                 text: function () {
-                    return body;
+                    return Promise.resolve(body);
                 },
                 json: function () {
                     return Promise.resolve(JSON.parse(body));

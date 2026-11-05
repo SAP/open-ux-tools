@@ -42,7 +42,7 @@ describe('Jest Environment UI5', () => {
             expect(response.ok).toBe(true);
             expect(response.status).toBe(200);
             await expect(response.json()).resolves.toEqual(ui5Version);
-            expect(JSON.parse(response.text())).toEqual(ui5Version);
+            await expect(response.text()).resolves.toBe(JSON.stringify(ui5Version));
         });
 
         it('falls back to a default version object when none is provided', async () => {
