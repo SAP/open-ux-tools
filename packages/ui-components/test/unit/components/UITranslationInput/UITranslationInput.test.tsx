@@ -535,4 +535,23 @@ describe('<UITranslationInput />', () => {
             );
         }
     );
+
+    describe('Read only', () => {
+        test('Callout is not opened when input is read only', () => {
+            render(
+                <UITranslationInput
+                    id={id}
+                    value="Some text"
+                    entries={entries}
+                    allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    i18nPrefix={'i18n'}
+                    readOnly={true}
+                    onChange={jest.fn()}
+                />
+            );
+
+            clickI18nButton(false);
+        });
+    });
 });

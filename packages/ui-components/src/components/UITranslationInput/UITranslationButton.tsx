@@ -33,6 +33,12 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
      * @default false
      */
     preventFocusRestoreOnAccept?: boolean;
+    /**
+     * When true, the helper callout is not opened.
+     *
+     * @default false
+     */
+    readOnly?: boolean;
 }
 
 /**
@@ -79,7 +85,8 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         busy,
         suggestion,
         invertedCalloutTheme,
-        preventFocusRestoreOnAccept
+        preventFocusRestoreOnAccept,
+        readOnly
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
     const acceptedRef = useRef(false);
@@ -89,10 +96,10 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
             setCalloutVisible(false);
             // Trigger show existing entry callbACK
             onShowExistingEntry?.(suggestion.suggest.entry);
-        } else {
+        } else if (!readOnly) {
             setCalloutVisible(!calloutVisible);
         }
-    }, [calloutVisible, suggestion]);
+    }, [calloutVisible, suggestion, readOnly]);
     const onAccept = useCallback((): void => {
         if (suggestion.suggest) {
             if (suggestion.suggest.type === SuggestValueType.New) {
