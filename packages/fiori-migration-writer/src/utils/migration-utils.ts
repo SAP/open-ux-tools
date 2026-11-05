@@ -54,11 +54,13 @@ export class MigrationError extends Error {
 }
 
 /**
- * Determine error message based on error type
+ * Determine error message based on error type.
+ * Always returns a non-empty string with fallback to error.message.
  *
- * @param error
- * @param filename
- * @param useMessage
+ * @param error - The error object
+ * @param filename - Optional filename context for file-specific errors
+ * @param useMessage - Whether to use the raw error message
+ * @returns A user-friendly error message, or the original error message as fallback
  */
 export function determineMessage(error: Error, filename?: string, useMessage?: boolean): string {
     let errorMessage = '';
@@ -73,7 +75,9 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
     } else if (error.message.includes('EPERM')) {
         errorMessage = i18nText(filename ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename });
     }
-    return errorMessage;
+
+    // Fallback to original error message if no specific message was determined
+    return errorMessage || error.message || error.toString();
 }
 
 /**
