@@ -227,7 +227,7 @@ describe('rta/commands', () => {
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
             'com.sap.ui.unified.frontend.actions.describeUI',
-            { includedProperties: ['id', 'text', 'Type'] },
+            { includedProperties: ['id', 'text', 'Type', 'Tooltip'] },
             FRAME
         );
         // Default (unscoped) call trims each top-level node to depth 2: the section is kept
@@ -248,7 +248,7 @@ describe('rta/commands', () => {
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
             'com.sap.ui.unified.frontend.actions.describeUI',
-            { includedProperties: ['id', 'text', 'Type'], rootElementId: 'sub' },
+            { includedProperties: ['id', 'text', 'Type', 'Tooltip'], rootElementId: 'sub' },
             undefined
         );
         // A scoped drill-down returns the subtree untrimmed (no truncated markers).

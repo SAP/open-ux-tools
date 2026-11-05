@@ -18,14 +18,23 @@ const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
 
 // describe_ui exists for navigation: the caller needs each node's id (to press),
-// type and label (to recognize the control), and the children structure — never a
-// control's `value`. Left unscoped, describeUI includes `value`, and for some
+// type, label and tooltip (to recognize the control), and the children structure —
+// never a control's `value`. Left unscoped, describeUI includes `value`, and for some
 // controls `value` is the live UI5 control object itself; serializing one such
 // node produced a ~6 MB payload on a real Object Page (99%+ of it a single node's
 // `value`). Defaulting includedProperties to the navigation-relevant fields drops
-// `value` and keeps the response ~200x smaller. ('text' maps to label, 'Type' to
-// type in UITreeReader's PROP_NAME_MAP; 'children' is always retained by it.)
-const NAVIGATION_PROPERTIES = ['id', 'text', 'Type'];
+// `value` and keeps the response ~200x smaller.
+//
+// `Tooltip` (→ node `description`) is essential, not optional: many controls resolve
+// no meaningful visible label and fall back to their control-type name, so a page
+// can carry a dozen buttons all labelled "Button" and the row-navigation cells all
+// labelled "Button" too — indistinguishable without the tooltip, which carries the
+// real intent ("Navigate Back", "Navigation", "Share", …). Omitting it is what left
+// an agent unable to pick the right control among same-labelled ones.
+//
+// ('text' maps to label, 'Type' to type, 'Tooltip' to description in UITreeReader's
+// PROP_NAME_MAP; 'children' is always retained by it.)
+const NAVIGATION_PROPERTIES = ['id', 'text', 'Type', 'Tooltip'];
 
 /**
  * Default depth for an unscoped `describe_ui` overview. Depth 2 shows the
