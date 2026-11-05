@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const mockHasbinSync = jest.fn() as jest.Mock;
 const mockExistsSync = jest.fn().mockReturnValue(true);
 
-jest.unstable_mockModule('hasbin', () => ({
+jest.unstable_mockModule('which', () => ({
     default: { sync: mockHasbinSync },
     sync: mockHasbinSync
 }));

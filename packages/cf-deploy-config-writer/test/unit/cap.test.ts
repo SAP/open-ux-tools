@@ -14,9 +14,9 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-const realHasbin = await import('hasbin');
-jest.unstable_mockModule('hasbin', () => ({
-    ...realHasbin,
+const realWhich = await import('which');
+jest.unstable_mockModule('which', () => ({
+    ...realWhich,
     sync: jest.fn()
 }));
 
@@ -33,7 +33,7 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getCapProjectType: jest.fn()
 }));
 
-const hasbin = await import('hasbin');
+const whichMod = await import('which');
 const btpUtils = await import('@sap-ux/btp-utils');
 const projectAccess = await import('@sap-ux/project-access');
 const { generateAppConfig } = await import('../../src/index.js');
@@ -55,7 +55,7 @@ describe('CF Writer', () => {
         unitTestFs = create(createStorage());
         commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
         isAppStudioMock.mockReturnValue(false);
-        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
+        hasSyncMock = (whichMod.sync as jest.Mock).mockImplementation(() => true);
         // Re-apply real implementations after resetAllMocks clears them
         (projectAccess.getMtaPath as jest.Mock).mockImplementation(realProjectAccess.getMtaPath);
         (projectAccess.findCapProjectRoot as jest.Mock).mockImplementation(realProjectAccess.findCapProjectRoot);
