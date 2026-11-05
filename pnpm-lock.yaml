@@ -857,9 +857,6 @@ importers:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/adm-zip':
-        specifier: 0.5.8
-        version: 0.5.8
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
@@ -884,9 +881,6 @@ importers:
       '@types/supertest':
         specifier: 7.2.1
         version: 7.2.1
-      '@types/uuid':
-        specifier: 11.0.0
-        version: 11.0.0
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -1079,9 +1073,6 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
-      '@types/adm-zip':
-        specifier: 0.5.8
-        version: 0.5.8
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -1779,9 +1770,6 @@ importers:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/diff':
-        specifier: 8.0.0
-        version: 8.0.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -1995,9 +1983,6 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
-      '@types/adm-zip':
-        specifier: 0.5.8
-        version: 0.5.8
       '@types/prompts':
         specifier: 2.4.9
         version: 2.4.9
@@ -3232,9 +3217,6 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/uuid':
-        specifier: 11.0.0
-        version: 11.0.0
       '@types/vscode':
         specifier: 1.110.0
         version: 1.110.0
@@ -4291,9 +4273,6 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@types/adm-zip':
-        specifier: 0.5.8
-        version: 0.5.8
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
@@ -4717,9 +4696,6 @@ importers:
       '@types/sanitize-html':
         specifier: 2.16.2
         version: 2.16.2
-      '@types/uuid':
-        specifier: 11.0.0
-        version: 11.0.0
       babel-jest:
         specifier: 30.5.2
         version: 30.5.2(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
