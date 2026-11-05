@@ -1,5 +1,5 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { mergeObjects } from '@sap-ux/ui5-config';
@@ -23,10 +23,10 @@ export async function generateInboundNavigationConfig(
     appRootPath: string,
     { semanticObject, action, title, subTitle }: ManifestNamespace.Inbound[string],
     overwrite = false,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const { manifest, manifestPath } = await readManifest(appRootPath, fs);
     const inboundKey = `${semanticObject}-${action}`;

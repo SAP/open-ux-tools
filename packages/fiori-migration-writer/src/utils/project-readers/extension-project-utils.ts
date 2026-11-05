@@ -4,7 +4,7 @@
  */
 
 import { basename, join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists, readJSON } from '../../index.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { sapWattCommonSetting } from '../../types.js';
@@ -17,7 +17,7 @@ import { sapWattCommonSetting } from '../../types.js';
  * @param projectRoot - Root path of the project
  * @returns Extension settings or undefined
  */
-export async function readProjectExtensionSettings(fs: Editor, projectRoot: string): Promise<unknown> {
+export async function readProjectExtensionSettings(fs: MemFsEditor, projectRoot: string): Promise<unknown> {
     try {
         // Try .che/project.json first
         const cheSettings = await readCheProjectExtensionSettings(fs, projectRoot);
@@ -44,9 +44,9 @@ export async function readProjectExtensionSettings(fs: Editor, projectRoot: stri
  * @param projectRoot - Root path of the project
  * @returns Extension settings or undefined
  */
-async function readCheProjectExtensionSettings(fs: Editor, projectRoot: string): Promise<unknown> {
+async function readCheProjectExtensionSettings(fs: MemFsEditor, projectRoot: string): Promise<unknown> {
     const projectJsonPath = join(projectRoot, '.che', 'project.json');
-    const exists = fileExists(fs, projectJsonPath);
+    const exists = await fileExists(fs, projectJsonPath);
     if (!exists) {
         return undefined;
     }
@@ -71,9 +71,9 @@ async function readCheProjectExtensionSettings(fs: Editor, projectRoot: string):
  * @param projectRoot - Root path of the project
  * @returns Extension settings or undefined
  */
-async function readLegacyProjectExtensionSettings(fs: Editor, projectRoot: string): Promise<unknown> {
+async function readLegacyProjectExtensionSettings(fs: MemFsEditor, projectRoot: string): Promise<unknown> {
     const projectJsonPath = join(projectRoot, '.project.json');
-    if (!fileExists(fs, projectJsonPath)) {
+    if (!(await fileExists(fs, projectJsonPath))) {
         return undefined;
     }
 
@@ -94,7 +94,7 @@ async function readLegacyProjectExtensionSettings(fs: Editor, projectRoot: strin
  * @param projectRoot - Root path of the project
  * @returns True if extension settings found
  */
-export async function checkIfProjectExtension(fs: Editor, projectRoot: string): Promise<boolean> {
+export async function checkIfProjectExtension(fs: MemFsEditor, projectRoot: string): Promise<boolean> {
     const extensionProject = await readProjectExtensionSettings(fs, projectRoot);
     return !!extensionProject;
 }

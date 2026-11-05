@@ -3,7 +3,7 @@ import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { deleteModule, getModule, loadModuleFromProject } from './module-loader.js';
 import { getWebappPath } from './ui5-config.js';
 import { getNodeModulesPath } from './dependencies.js';
@@ -24,7 +24,7 @@ const specificationDistTagPath = join(fioriToolsDirectory, FileName.Specificatio
  * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-async function getProjectDistTag(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
+async function getProjectDistTag(root: string, options?: { logger?: Logger; memFs?: MemFsEditor }): Promise<string> {
     let distTag = 'latest';
     try {
         const memFs = options?.memFs;
@@ -49,7 +49,7 @@ async function getProjectDistTag(root: string, options?: { logger?: Logger; memF
  * @param [options.memFs] - optional mem-fs editor instance
  * @returns If dev dependency to specification is found in package.json
  */
-async function hasSpecificationDevDependency(root: string, options?: { memFs?: Editor }): Promise<boolean> {
+async function hasSpecificationDevDependency(root: string, options?: { memFs?: MemFsEditor }): Promise<boolean> {
     const packageJson = await readJSON<Package>(join(root, FileName.Package), options?.memFs);
     return !!packageJson.devDependencies?.['@sap/ux-specification'];
 }
@@ -65,7 +65,7 @@ async function hasSpecificationDevDependency(root: string, options?: { memFs?: E
  */
 export async function getSpecificationModuleFromCache<T>(
     root: string,
-    options?: { logger?: Logger; memFs?: Editor }
+    options?: { logger?: Logger; memFs?: MemFsEditor }
 ): Promise<T> {
     const { logger, memFs } = options ?? {};
     let specification: T;
@@ -91,7 +91,10 @@ export async function getSpecificationModuleFromCache<T>(
  * @param [options.memFs] - optional mem-fs editor instance
  * @returns - specification instance
  */
-export async function getSpecification<T>(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<T> {
+export async function getSpecification<T>(
+    root: string,
+    options?: { logger?: Logger; memFs?: MemFsEditor }
+): Promise<T> {
     const { logger, memFs } = options ?? {};
     try {
         if (await hasSpecificationDevDependency(root, { memFs })) {
@@ -200,7 +203,10 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
  * @param [options.memFs] - optional mem-fs editor instance
  * @returns - version of specification
  */
-async function getSpecificationVersion(root: string, options?: { logger?: Logger; memFs?: Editor }): Promise<string> {
+async function getSpecificationVersion(
+    root: string,
+    options?: { logger?: Logger; memFs?: MemFsEditor }
+): Promise<string> {
     const { logger, memFs } = options ?? {};
     const distTag = await getProjectDistTag(root, { logger, memFs });
     return await convertDistTagToVersion(distTag, { logger });
@@ -218,7 +224,7 @@ async function getSpecificationVersion(root: string, options?: { logger?: Logger
  */
 export async function getSpecificationPath(
     root: string,
-    options?: { logger?: Logger; memFs?: Editor }
+    options?: { logger?: Logger; memFs?: MemFsEditor }
 ): Promise<string> {
     const { logger, memFs } = options ?? {};
     const moduleName = '@sap/ux-specification';

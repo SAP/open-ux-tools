@@ -1,6 +1,6 @@
 import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { PromptsType } from '../utils/index.js';
 import type { ApplicationInformation } from '../addons/project/index.js';
 
@@ -16,7 +16,7 @@ const api: { [key: string]: PromptsAPI } = {};
  */
 export const getPromptApi = async (
     projectPath: string | undefined,
-    fs: Editor,
+    fs: MemFsEditor,
     appId?: string
 ): Promise<PromptsAPI> => {
     const key = projectPath ? join(projectPath, appId ?? '') : '';

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types.js';
 import {
@@ -15,11 +15,11 @@ import type { IWriter, InboundData, InboundContent } from '../../../types.js';
  */
 export class InboundWriter implements IWriter<InboundData> {
     /**
-     * @param {Editor} fs - The filesystem editor instance.
+     * @param {MemFsEditor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      */
     constructor(
-        private readonly fs: Editor,
+        private readonly fs: MemFsEditor,
         private readonly projectPath: string
     ) {}
 

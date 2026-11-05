@@ -1,107 +1,143 @@
 /**
- * File access utilities backed by a mem-fs editor.
+ * File access utilities using mem-fs-editor
  *
- * Every function takes the editor explicitly as its first argument, matching the
- * convention used across the other open-ux-tools writer packages. mem-fs reads from
- * the real filesystem on a cache miss, so these work for both staged and on-disk files.
+ * Uses editor from AsyncLocalStorage context set by runWithEditor().
+ * Functions can also accept an explicit MemFsEditor parameter for backward compatibility.
+ * If no editor is in context or provided, creates a temporary one (for tests/direct usage).
  */
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
-import type { Editor } from 'mem-fs-editor';
-import { existsSync } from 'node:fs';
-import { editorHasPath } from './fs-adapter.js';
+import type { MemFsEditor } from 'mem-fs-editor';
+import { readFile as fsReadFile, access } from 'node:fs/promises';
+import { editorHasPath, getCurrentEditor, exists as fsAdapterExists, getEditor } from './fs-adapter.js';
 
 /**
- * Read a text file.
+ * Read a text file
  *
- * @param fs - mem-fs editor
- * @param path - Path to file
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
  * @returns File contents as string
  */
-export function readFile(fs: Editor, path: string): string {
-    return fs.read(path);
+export function readFile(pathOrFs: string | MemFsEditor, path?: string): string {
+    const fs = getEditor(pathOrFs);
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+    return fs.read(filePath);
 }
 
 /**
- * Read and parse a JSON file, preserving indentation metadata (Symbol(indent))
- * so that a later updateJSON can keep the original formatting.
+ * Read a JSON file
  *
- * @param fs - mem-fs editor
- * @param path - Path to file
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
  * @returns Parsed JSON object
  */
-export function readJSON<T = any>(fs: Editor, path: string): T {
-    const content = fs.read(path);
-    const result = JSON.parse(content) as T;
-    try {
-        const withIndent = parseJson(content);
-        const indent = Symbol.for('indent');
-        if ((withIndent as any)[indent]) {
-            (result as any)[indent] = (withIndent as any)[indent];
-        }
-    } catch {
-        // JSON.parse already succeeded; indentation metadata is best-effort.
+export async function readJSON<T = any>(pathOrFs: string | MemFsEditor, path?: string): Promise<T> {
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+
+    // When called with just a path string and no editor context, read from filesystem directly
+    // This keeps behavior consistent with fileExists which also falls back to real filesystem
+    let content: string;
+    if (typeof pathOrFs === 'string' && !getCurrentEditor()) {
+        content = await fsReadFile(filePath, 'utf-8');
+    } else {
+        const fs = getEditor(pathOrFs);
+        content = fs.read(filePath);
     }
-    return result;
+
+    return JSON.parse(content) as T;
 }
 
 /**
- * Check if a file or directory exists (staged in mem-fs or present on the real filesystem).
+ * Check if a file exists
  *
- * Unlike mem-fs's `editor.exists()`, this also reports directories as present — many migration
- * checks test for folders (e.g. the webapp directory) — and reads through to the real filesystem
- * so files not yet staged in mem-fs are still seen.
- *
- * @param fs - mem-fs editor
- * @param path - Path to file or directory
- * @returns true if the path exists
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
+ * @returns true if file exists, false otherwise
  */
-export function fileExists(fs: Editor, path: string): boolean {
-    return editorHasPath(fs, path) || existsSync(path);
-}
+export async function fileExists(pathOrFs: string | MemFsEditor, path?: string): Promise<boolean> {
+    // String path: delegate to the single shared existence check (mem-fs staged OR real fs).
+    if (typeof pathOrFs === 'string') {
+        return fsAdapterExists(pathOrFs);
+    }
 
-/**
- * Write a text file.
- *
- * @param fs - mem-fs editor
- * @param path - Path to file
- * @param content - Content to write
- */
-export function writeFile(fs: Editor, path: string, content: string): void {
-    fs.write(path, content);
-}
-
-/**
- * Update a text file. Alias of writeFile; kept as a distinct name for call-site clarity
- * (updating an existing file vs. creating a new one).
- */
-export const updateFile = writeFile;
-
-/**
- * Update a JSON file while preserving the indentation of the existing file.
- * New files are written with 4-space indentation and a trailing newline.
- *
- * @param fs - mem-fs editor
- * @param path - Path to file
- * @param content - Object to serialize
- */
-export function updateJSON(fs: Editor, path: string, content: object): void {
+    // Explicit editor argument: check that editor's staged files, then fall back to real fs.
+    // The real-fs fallback prevents overwriting files not yet loaded into the given editor
+    // (e.g., the mockserver.js overwrite bug).
+    const filePath = path!;
+    if (editorHasPath(pathOrFs, filePath)) {
+        return true;
+    }
     try {
-        const oldContentJson = parseJson(fs.read(path));
-        const indent = Symbol.for('indent');
-        fs.write(path, JSON.stringify(content, null, oldContentJson[indent]) + '\n');
+        await access(filePath);
+        return true;
     } catch {
-        // Expected: file may not exist yet or may contain invalid JSON (new file creation).
-        fs.write(path, JSON.stringify(content, null, 4) + '\n');
+        return false;
     }
 }
 
 /**
- * Delete a file.
+ * Write a text file
  *
- * @param fs - mem-fs editor
- * @param path - Path to file
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param contentOrPath - Content to write, or path (if first param is MemFsEditor)
+ * @param content - Content to write (if first param is MemFsEditor)
  */
-export function deleteFile(fs: Editor, path: string): void {
-    fs.delete(path);
+export function writeFile(pathOrFs: string | MemFsEditor, contentOrPath: string, content?: string): void {
+    const fs = getEditor(pathOrFs);
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : contentOrPath;
+    const fileContent = typeof pathOrFs === 'string' ? contentOrPath : content!;
+    fs.write(filePath, fileContent);
+}
+
+/**
+ * Update a text file
+ * Alias for writeFile for backward compatibility
+ *
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param contentOrPath - Content to write, or path (if first param is MemFsEditor)
+ * @param content - Content to write (if first param is MemFsEditor)
+ */
+export function updateFile(pathOrFs: string | MemFsEditor, contentOrPath: string, content?: string): void {
+    writeFile(pathOrFs, contentOrPath, content);
+}
+
+/**
+ * Update a JSON file while preserving indentation
+ *
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param contentOrPath - Object to write, or path (if first param is MemFsEditor)
+ * @param _content - Object to write (if first param is MemFsEditor)
+ */
+export function updateJSON(pathOrFs: string | MemFsEditor, contentOrPath: string | object, _content?: object): void {
+    const fs = getEditor(pathOrFs);
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : (contentOrPath as string);
+    const fileContent = typeof pathOrFs === 'string' ? (contentOrPath as object) : _content!;
+
+    try {
+        // Read old contents and indentation of the JSON file
+        const oldContentText = fs.read(filePath);
+        const oldContentJson = parseJson(oldContentText);
+        const indent = Symbol.for('indent');
+
+        // Prepare new JSON file content with previous indentation
+        const result = JSON.stringify(fileContent, null, oldContentJson[indent]) + '\n';
+        fs.write(filePath, result);
+    } catch {
+        // Expected: file may not exist yet or may contain invalid JSON (new file creation scenario).
+        // Safe to write with default 4-space indentation and trailing newline - this is the standard format.
+        const newContent = JSON.stringify(fileContent, null, 4) + '\n';
+        fs.write(filePath, newContent);
+    }
+}
+
+/**
+ * Delete a file
+ *
+ * @param pathOrFs - Path to file, or MemFsEditor instance
+ * @param path - Path to file (if first param is MemFsEditor)
+ */
+export function deleteFile(pathOrFs: string | MemFsEditor, path?: string): void {
+    const fs = getEditor(pathOrFs);
+    const filePath = typeof pathOrFs === 'string' ? pathOrFs : path!;
+    fs.delete(filePath);
 }

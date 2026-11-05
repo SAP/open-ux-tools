@@ -1,6 +1,6 @@
 import { basename, dirname, join, sep } from 'node:path';
 import fg from 'fast-glob';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { isFioriToolsProject, findAllManifest } from './project-access-adapters.js';
@@ -14,7 +14,7 @@ import { isProjectFolderArray } from '../types/project-folder.js';
  * @param wsFolders
  */
 export async function findAllWebIDEProjectFolders(
-    fs: Editor,
+    fs: MemFsEditor,
     wsFolders: readonly ProjectFolder[] | string[]
 ): Promise<string[]> {
     let wsRoots: string[];
@@ -48,7 +48,7 @@ export async function findAllWebIDEProjectFolders(
  * @param skipSrcDirs - If true, skip scanning src/ directories (used for getProjectRoots)
  * @returns Array of project paths
  */
-async function findWebIDEProject(fs: Editor, wsRoot: string, skipSrcDirs = true): Promise<string[]> {
+async function findWebIDEProject(fs: MemFsEditor, wsRoot: string, skipSrcDirs = true): Promise<string[]> {
     const projects: string[] = [];
     const ignore = [
         '.git',
@@ -99,7 +99,7 @@ async function findWebIDEProject(fs: Editor, wsRoot: string, skipSrcDirs = true)
  */
 export async function getWebIDEProjectPathsAsLabels(
     workspaceRoots: ProjectFolder[],
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<ProjectAppPath[]> {
     const fs = fsEditor ?? createMemFsEditor();
     const result: ProjectAppPath[] = [];

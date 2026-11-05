@@ -1,6 +1,6 @@
 import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { CustomTableColumn, InternalCustomTableColumn } from './types.js';
@@ -33,7 +33,7 @@ export function getManifestRoot(ui5Version?: string): string {
 /**
  * Enhances the provided custom table column configuration with default data.
  *
- * @param {Editor} fs - the mem-fs editor instance
+ * @param {MemFsEditor} fs - the mem-fs editor instance
  * @param {CustomTableColumn} data - a custom column configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -41,7 +41,7 @@ export function getManifestRoot(ui5Version?: string): string {
  * @returns enhanced configuration
  */
 function enhanceConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     data: CustomTableColumn,
     manifestPath: string,
     manifest: Manifest,
@@ -74,16 +74,16 @@ function enhanceConfig(
  *
  * @param {string} basePath - the base path
  * @param {CustomTableColumn} customColumn - the custom column configuration
- * @param {Promise<Editor>} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {Promise<MemFsEditor>} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
 export async function generateCustomColumn(
     basePath: string,
     customColumn: CustomTableColumn,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     validateVersion(customColumn.minUI5Version);
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     await validateBasePath(basePath, fs);
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
 

@@ -6,7 +6,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { updateFile } from '../utils/index.js';
 import { TemplateFileName } from '../index.js';
 import type { TemplateData, NeoappDestination, Message, Ui5MockYaml } from '../types.js';
@@ -79,7 +79,7 @@ export interface UI5YamlAllFilesConfig {
  * @param fs - mem-fs editor
  * @param config - Configuration object containing all required parameters
  */
-export async function generateAndWriteUI5Yaml(fs: Editor, config: UI5YamlGenerationConfig): Promise<void> {
+export async function generateAndWriteUI5Yaml(fs: MemFsEditor, config: UI5YamlGenerationConfig): Promise<void> {
     const {
         templateData,
         neoappDestinations,
@@ -112,7 +112,10 @@ export async function generateAndWriteUI5Yaml(fs: Editor, config: UI5YamlGenerat
  * @param fs - mem-fs editor
  * @param config - Configuration object containing all required parameters
  */
-export async function generateAndWriteUI5LocalYaml(fs: Editor, config: UI5LocalYamlGenerationConfig): Promise<void> {
+export async function generateAndWriteUI5LocalYaml(
+    fs: MemFsEditor,
+    config: UI5LocalYamlGenerationConfig
+): Promise<void> {
     const {
         templateData,
         neoappDestinations,
@@ -147,7 +150,7 @@ export async function generateAndWriteUI5LocalYaml(fs: Editor, config: UI5LocalY
  * @param fs - mem-fs editor
  * @param config - Configuration object containing all required parameters
  */
-export async function generateAndWriteUI5MockYaml(fs: Editor, config: UI5MockYamlGenerationConfig): Promise<void> {
+export async function generateAndWriteUI5MockYaml(fs: MemFsEditor, config: UI5MockYamlGenerationConfig): Promise<void> {
     const { templateData, webappPath, setUI5version, rootPath, hasDataSource } = config;
     if (!hasDataSource) {
         return;
@@ -170,7 +173,7 @@ export async function generateAndWriteUI5MockYaml(fs: Editor, config: UI5MockYam
  * @param fs - mem-fs editor
  * @param config - Configuration object containing all required parameters
  */
-export async function generateAllUI5YamlFiles(fs: Editor, config: UI5YamlAllFilesConfig): Promise<void> {
+export async function generateAllUI5YamlFiles(fs: MemFsEditor, config: UI5YamlAllFilesConfig): Promise<void> {
     const {
         templateData,
         neoappDestinations,

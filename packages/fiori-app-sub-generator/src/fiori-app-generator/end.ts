@@ -15,7 +15,7 @@ import {
     type BackendSystemKey,
     getService
 } from '@sap-ux/store';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ApiHubConfig } from '../types/index.js';
 import { ApiHubType } from '../types/index.js';
@@ -114,7 +114,7 @@ export async function runPostGenerationTasks(
             enableVirtualEndpoints?: boolean;
         };
     },
-    fs: Editor,
+    fs: MemFsEditor,
     logger: Logger & ILogWrapper,
     vscode?: unknown,
     appWizard?: AppWizard,

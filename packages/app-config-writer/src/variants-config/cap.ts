@@ -1,5 +1,5 @@
 import { basename, join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package } from '@sap-ux/project-access';
 import { getRTAUrl, getRTAUrlParameters } from './utils.js';
@@ -23,7 +23,7 @@ export async function updateCapRootPackageJsonForVariants(
     appId: string,
     appFolderName: string,
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     yamlPath?: string,
     logger?: ToolsLogger
 ): Promise<void> {

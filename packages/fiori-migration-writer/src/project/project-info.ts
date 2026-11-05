@@ -1,5 +1,5 @@
 import type { ImportProjectInfo, Message } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { ProjectAccess } from '../utils/Project.js';
 import { createMemFsEditor } from '../utils/fs-adapter.js';
 
@@ -14,7 +14,7 @@ import { createMemFsEditor } from '../utils/fs-adapter.js';
 export async function loadOrFetchProjectInfo(
     projectRoot: string,
     importProjectInfo?: Partial<ImportProjectInfo>,
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
     const fs = fsEditor ?? createMemFsEditor();
     let messages: Message[] = [];

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import * as path from 'node:path';
 import yaml from 'js-yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -119,12 +119,12 @@ export function addExistingServiceToMta(
  * so the AppRouter can proxy requests through the Cloud Connector.
  *
  * @param {string} projectPath - The root path of the project.
- * @param {Editor} memFs - The mem-fs editor instance.
+ * @param {MemFsEditor} memFs - The mem-fs editor instance.
  * @param {ToolsLogger} [logger] - Optional logger.
  */
 export async function addConnectivityServiceToMta(
     projectPath: string,
-    memFs: Editor,
+    memFs: MemFsEditor,
     logger?: ToolsLogger
 ): Promise<void> {
     if (!isMtaProject(projectPath)) {
@@ -547,7 +547,7 @@ function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, busin
  * Adjusts the MTA YAML.
  *
  * @param {AdjustMtaYamlParams} params - The parameters.
- * @param {Editor} memFs - The mem-fs editor instance.
+ * @param {MemFsEditor} memFs - The mem-fs editor instance.
  * @param {string} timestamp - The timestamp.
  * @param {string} [templatePathOverwrite] - The template path overwrite.
  * @param {ToolsLogger} logger - The logger.
@@ -563,7 +563,7 @@ export async function adjustMtaYaml(
         serviceKeys,
         spaceGuid
     }: AdjustMtaYamlParams,
-    memFs: Editor,
+    memFs: MemFsEditor,
     timestamp: string,
     templatePathOverwrite?: string,
     logger?: ToolsLogger

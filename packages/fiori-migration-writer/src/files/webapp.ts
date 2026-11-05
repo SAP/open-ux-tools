@@ -4,7 +4,7 @@
 
 import { join } from 'node:path';
 import { stat, readdir, access } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
@@ -38,7 +38,7 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
  * @param direntToFilter - Files/directories to exclude
  */
 async function moveFilesWithGitFallback(
-    fs: Editor,
+    fs: MemFsEditor,
     rootPath: string,
     dirContent: Dirent[],
     direntToFilter: string[]
@@ -82,7 +82,7 @@ async function moveFilesWithGitFallback(
  * @param sourcePath - Source path
  * @param destPath - Destination path
  */
-async function recursiveMove(fs: Editor, sourcePath: string, destPath: string): Promise<void> {
+async function recursiveMove(fs: MemFsEditor, sourcePath: string, destPath: string): Promise<void> {
     // Check if source exists (staged in mem-fs or on the real filesystem)
     if (!editorHasPath(fs, sourcePath) && !(await pathExistsOnDisk(sourcePath))) {
         return; // Nothing to move
@@ -124,11 +124,15 @@ async function recursiveMove(fs: Editor, sourcePath: string, destPath: string): 
  * @param rootPath
  * @param projectInfo
  */
-export function createExtensionProjectManifest(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): void {
+export async function createExtensionProjectManifest(
+    fs: MemFsEditor,
+    rootPath: string,
+    projectInfo: ImportProjectInfo
+): Promise<void> {
     // Only create if manifest doesn't exist and it's an extension project
     if (
-        !fileExists(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest)) &&
-        !fileExists(fs, join(rootPath, FileName.Manifest)) &&
+        !(await fileExists(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest))) &&
+        !(await fileExists(fs, join(rootPath, FileName.Manifest))) &&
         projectInfo.type === MigrationTypes.projectExtension
     ) {
         // Add a basic manifest.json (not linked in component.json) needed for preview
@@ -170,7 +174,8 @@ export function createExtensionProjectManifest(fs: Editor, rootPath: string, pro
 
         // Write manifest to appropriate location
         // Check if webapp directory exists (staged in mem-fs or on disk, including an empty real dir)
-        const shouldWriteToWebapp = projectInfo.webappPath && fileExists(fs, join(rootPath, projectInfo.webappPath));
+        const shouldWriteToWebapp =
+            projectInfo.webappPath && (await fileExists(fs, join(rootPath, projectInfo.webappPath)));
 
         if (shouldWriteToWebapp) {
             updateJSON(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
@@ -190,13 +195,13 @@ export function createExtensionProjectManifest(fs: Editor, rootPath: string, pro
  * @param projectInfo
  */
 export async function createWebappFolderAndMigrateFiles(
-    fs: Editor,
+    fs: MemFsEditor,
     rootPath: string,
     projectInfo: ImportProjectInfo
 ): Promise<void> {
     // Only proceed if webapp path is empty and manifest exists in root
     const manifestPath = join(rootPath, FileName.Manifest);
-    const manifestExists = fileExists(fs, manifestPath);
+    const manifestExists = await fileExists(fs, manifestPath);
 
     if (projectInfo.webappPath === '' && manifestExists) {
         // manifest.json is outside of webapp folder and should not be a legacy project

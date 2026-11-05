@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 import { type Logger } from '@sap-ux/logger';
 import { generateSupportingConfig, fileExists } from '../utils.js';
 import LoggerHelper from '../logger-helper.js';
@@ -17,8 +17,12 @@ import { t } from '../i18n.js';
  * @returns File system reference
  * @throws {Error} If MTA binary is not found, configuration is invalid, or mta.yaml already exists
  */
-export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
-    fs ??= create(createStorage());
+export async function generateBaseConfig(
+    config: CFBaseConfig,
+    fs?: MemFsEditor,
+    logger?: Logger
+): Promise<MemFsEditor> {
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     if (logger) {
         LoggerHelper.logger = logger;
     }

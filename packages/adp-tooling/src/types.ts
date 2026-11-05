@@ -7,7 +7,7 @@ import type {
     KeyUserChangeContent,
     OperationsType
 } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
@@ -498,11 +498,11 @@ export type OperationType = 'read' | 'write' | 'delete';
 /**
  * Represents a constructor type that creates an instance of IWriter.
  *
- * @param fs - An instance of Editor used for file system operations.
+ * @param fs - An instance of MemFsEditor used for file system operations.
  * @param projectPath - The root path of the project.
  * @returns An instance of IWriter for handling specific data writing operations.
  */
-export type Writer = new (fs: Editor, projectPath: string) => IWriter<any>;
+export type Writer = new (fs: MemFsEditor, projectPath: string) => IWriter<any>;
 
 /**
  * Generic interface for handling data associated with specific writer operations.

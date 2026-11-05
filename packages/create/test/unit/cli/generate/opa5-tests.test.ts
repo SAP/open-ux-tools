@@ -67,7 +67,7 @@ describe('generate/opa5-tests', () => {
 
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback: () => void) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
 
         mockReadManifest.mockResolvedValue({});

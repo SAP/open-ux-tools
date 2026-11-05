@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 import { type ToolsLogger } from '@sap-ux/logger';
 import { type Package, hasDependency, FileName } from '@sap-ux/project-access';
 import { join } from 'node:path';
@@ -20,9 +20,9 @@ import { addEslintFeature } from '@sap-ux/ui5-application-writer';
  */
 export async function generateEslintConfig(
     basePath: string,
-    options: { logger?: ToolsLogger; fs?: Editor; config?: string }
-): Promise<Editor> {
-    const fs = options.fs ?? create(createStorage());
+    options: { logger?: ToolsLogger; fs?: MemFsEditor; config?: string }
+): Promise<MemFsEditor> {
+    const fs = options.fs ?? create(createStorage<VinylMemFsEditorFile>());
     const logger = options.logger;
 
     if (!(await checkPrerequisites(basePath, fs, logger))) {
@@ -41,7 +41,7 @@ export async function generateEslintConfig(
  * @param logger - logger to report info to the user
  * @returns true if the prerequisites are met, false otherwise
  */
-async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
+async function checkPrerequisites(basePath: string, fs: MemFsEditor, logger?: ToolsLogger): Promise<boolean> {
     const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath);
     if (!packageJson) {
@@ -69,7 +69,7 @@ async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLo
  * @param fs - file system reference
  * @param config - the name of the SAP Fiori tools eslint plugin config to be used
  */
-async function addEslintConfig(basePath: string, fs: Editor, config: string = 'recommended'): Promise<void> {
+async function addEslintConfig(basePath: string, fs: MemFsEditor, config: string = 'recommended'): Promise<void> {
     await addEslintFeature(basePath, fs);
     if (config === 'recommended-for-s4hana') {
         const eslintConfigPath = join(basePath, 'eslint.config.mjs');

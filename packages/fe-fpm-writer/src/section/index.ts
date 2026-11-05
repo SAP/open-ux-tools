@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomSubSection } from './types.js';
 import { join } from 'node:path';
@@ -45,7 +45,7 @@ function getAdditionalDependencies(ui5Version?: string): string | undefined {
 /**
  * Enhances the provided custom section configuration with additonal data.
  *
- * @param {Editor} fs - the mem-fs editor instance
+ * @param {MemFsEditor} fs - the mem-fs editor instance
  * @param {CustomSection} data - a custom section configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -53,7 +53,7 @@ function getAdditionalDependencies(ui5Version?: string): string | undefined {
  * @returns enhanced configuration
  */
 function enhanceConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     data: CustomSectionUnion,
     manifestPath: string,
     manifest: Manifest,
@@ -91,17 +91,17 @@ function enhanceConfig(
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
  * @param {string} manifestTemplateRoot - path to the template folder containing the manifest.json ejs template
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
 async function generate(
     basePath: string,
     customSection: CustomSectionUnion,
     manifestTemplateRoot: string,
-    fs?: Editor
-): Promise<{ editor: Editor; section: InternalCustomSection }> {
+    fs?: MemFsEditor
+): Promise<{ editor: MemFsEditor; section: InternalCustomSection }> {
     validateVersion(customSection.minUI5Version);
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     await validateBasePath(basePath, fs);
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
 
@@ -132,15 +132,15 @@ async function generate(
  *
  * @param {string} basePath - the base path
  * @param {CustomHeaderSection} customHeaderSection - the custom header section configuration
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
 export async function generateCustomHeaderSection(
     basePath: string,
     customHeaderSection: CustomHeaderSection,
-    fs?: Editor
-): Promise<Editor> {
-    const fsEditor = fs ?? create(createStorage());
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
+    const fsEditor = fs ?? create(createStorage<VinylMemFsEditorFile>());
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor }); // initialize ID generator to ensure unique IDs across both section and edit fragment
     const manifestRoot = getManifestRoot('header-section', customHeaderSection.minUI5Version);
     const minVersion = coerce(customHeaderSection.minUI5Version);
@@ -195,14 +195,14 @@ export async function generateCustomHeaderSection(
  *
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
 export async function generateCustomSection(
     basePath: string,
     customSection: CustomSection,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     const manifestRoot = getManifestRoot('section', customSection.minUI5Version);
     return (await generate(basePath, customSection, manifestRoot, fs)).editor;
 }
@@ -212,14 +212,14 @@ export async function generateCustomSection(
  *
  * @param {string} basePath - the base path
  * @param {CustomSubSection} customSubSection - the custom sub section configuration
- * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {MemFsEditor} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
 export async function generateCustomSubSection(
     basePath: string,
     customSubSection: CustomSubSection,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     const manifestRoot = getManifestRoot('subsection', customSubSection.minUI5Version);
     return (await generate(basePath, customSubSection, manifestRoot, fs)).editor;
 }

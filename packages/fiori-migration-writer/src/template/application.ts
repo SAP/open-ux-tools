@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import {
     getSapTemplatesMap,
     getFeTemplatesMap,
@@ -20,7 +20,7 @@ import { applyTemplates } from './template-helpers.js';
  * Configuration for applying application templates
  */
 export interface ApplyApplicationTemplatesConfig {
-    fs: Editor;
+    fs: MemFsEditor;
     projectInfo: ImportProjectInfo;
     templateData: TemplateData;
     rootPath: string;
@@ -89,7 +89,7 @@ interface V2AppTemplateConfig {
  * @param config
  */
 async function applyV2OrSapAppTemplates(
-    fs: Editor,
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     templateData: TemplateData,
     rootPath: string,
@@ -145,7 +145,7 @@ async function applyV2OrSapAppTemplates(
         );
 
         // Create mockserver.js if it doesn't exist
-        if (!fileExists(fs, mockServerJsPath)) {
+        if (!(await fileExists(fs, mockServerJsPath))) {
             mockServerFiles[TemplateFileName.MockServer] = {
                 path: join(DirName.Webapp, DirName.LocalService),
                 targetPath: join(projectInfo.webappPath, DirName.LocalService),
@@ -175,7 +175,7 @@ async function applyV2OrSapAppTemplates(
  * @param ui5Version
  */
 async function applyV4Templates(
-    fs: Editor,
+    fs: MemFsEditor,
     projectInfo: ImportProjectInfo,
     templateData: TemplateData,
     rootPath: string,

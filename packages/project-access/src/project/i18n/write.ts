@@ -5,7 +5,7 @@ import type { I18nPropertiesPaths, Manifest } from '../../types/index.js';
 import { join, dirname } from 'node:path';
 import { readJSON, writeFile } from '../../file/index.js';
 import { mkdir } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Maintains new translation entries in CAP i18n files.
@@ -22,7 +22,7 @@ export async function createCapI18nEntries(
     root: string,
     filePath: string,
     newI18nEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const env = await getCapEnvironment(root);
     return createI18nEntriesBase(root, filePath, newI18nEntries, env, fs);
@@ -45,7 +45,7 @@ async function createUI5I18nEntriesBase(
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
     modelKey: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const defaultPath = 'i18n/i18n.properties';
     const i18nFilePath = i18nPropertiesPaths.models[modelKey]?.path;
@@ -115,7 +115,7 @@ export async function createUI5I18nEntries(
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
     modelKey: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     return createUI5I18nEntriesBase(root, manifestPath, i18nPropertiesPaths, newEntries, modelKey, fs);
 }
@@ -148,7 +148,7 @@ export async function createAnnotationI18nEntries(
     manifestPath: string,
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     return createUI5I18nEntriesBase(root, manifestPath, i18nPropertiesPaths, newEntries, '@i18n', fs);
 }
@@ -167,7 +167,7 @@ export async function createI18nEntriesAtPath(
     root: string,
     filePath: string,
     newEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const dirPath = dirname(filePath);
     if (!fs) {
@@ -190,7 +190,7 @@ export async function createManifestI18nEntries(
     root: string,
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const i18nFilePath = i18nPropertiesPaths['sap.app'];
     // make sure i18n folder exists

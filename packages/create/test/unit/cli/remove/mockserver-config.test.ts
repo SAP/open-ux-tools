@@ -74,7 +74,7 @@ describe('Test command add mockserver-config', () => {
         // Mock setup
         const fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockRemoveMockserverConfig.mockResolvedValue(fsMock);
 
@@ -97,7 +97,7 @@ describe('Test command add mockserver-config', () => {
         // Mock setup
         const fsMock = {
             dump: jest.fn().mockReturnValue({ 'deleted.file': { state: 'deleted' } }),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockRemoveMockserverConfig.mockResolvedValue(fsMock);
         mockPrompt.mockResolvedValue({ doCommit: false });
@@ -122,7 +122,7 @@ describe('Test command add mockserver-config', () => {
         // Mock setup
         const fsMock = {
             dump: jest.fn().mockReturnValue({ 'deleted.file': { state: 'deleted' } }),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockRemoveMockserverConfig.mockResolvedValue(fsMock);
         mockPrompt.mockResolvedValue({ doCommit: true });
@@ -144,7 +144,7 @@ describe('Test command add mockserver-config', () => {
         // Mock setup
         const fsMock = {
             dump: jest.fn().mockReturnValue({ 'deleted.file': { state: 'deleted' } }),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockRemoveMockserverConfig.mockResolvedValue(fsMock);
         mockHasFileDeletes.mockReturnValueOnce(true);

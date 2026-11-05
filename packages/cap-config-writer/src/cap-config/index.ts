@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import { addCdsPluginUi5, enableWorkspaces, ensureMinCdsVersion } from './package-json.js';
 
@@ -11,11 +11,11 @@ import { addCdsPluginUi5, enableWorkspaces, ensureMinCdsVersion } from './packag
  *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
- * @returns Promise<Editor> - memfs editor instance with updated files
+ * @returns Promise<MemFsEditor> - memfs editor instance with updated files
  */
-export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise<Editor> {
+export async function enableCdsUi5Plugin(basePath: string, fs?: MemFsEditor): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;

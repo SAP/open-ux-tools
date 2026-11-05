@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import {
     getMinimumUI5Version,
     getProjectType,
@@ -20,7 +20,7 @@ const MIN_UI5_VERSION_CAP = '1.149.0';
  * @param fs - file system reference
  * @throws {Error} if the minimum UI5 version requirement is not met
  */
-export async function ensureMinUI5Version(basePath: string, fs: Editor): Promise<void> {
+export async function ensureMinUI5Version(basePath: string, fs: MemFsEditor): Promise<void> {
     const { manifest } = await readManifest(basePath, fs);
     const minUI5Version = getMinimumUI5Version(manifest);
     const projectRoot = await findProjectRoot(basePath, true, true, fs);
@@ -43,7 +43,7 @@ export async function ensureMinUI5Version(basePath: string, fs: Editor): Promise
  * @param fs - file system reference
  * @throws {Error} if `cds-plugin-ui5` is not enabled in the CAP root
  */
-export async function ensureCdsPluginUi5(capRoot: string, fs: Editor): Promise<void> {
+export async function ensureCdsPluginUi5(capRoot: string, fs: MemFsEditor): Promise<void> {
     if (!(await checkCdsUi5PluginEnabled(capRoot, fs))) {
         throw new Error(
             `The cards-editor command requires 'cds-plugin-ui5' to be installed and enabled in the CAP root package.json.`

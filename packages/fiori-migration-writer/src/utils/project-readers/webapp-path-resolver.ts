@@ -3,7 +3,7 @@
  */
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { DirName, FileName } from '../../project-spec-types.js';
 import { fileExists, readJSON } from '../../index.js';
 import { readFile } from '../../utils/file-access.js';
@@ -16,9 +16,9 @@ import { MigrationTypes } from '../constants.js';
  * @param fs - mem-fs editor
  * @param projectRoot
  */
-async function resolveFromProjectJson(fs: Editor, projectRoot: string): Promise<string | undefined> {
+async function resolveFromProjectJson(fs: MemFsEditor, projectRoot: string): Promise<string | undefined> {
     const projectJsonPath = join(projectRoot, '.project.json');
-    if (!fileExists(fs, projectJsonPath)) {
+    if (!(await fileExists(fs, projectJsonPath))) {
         return undefined;
     }
 
@@ -26,7 +26,7 @@ async function resolveFromProjectJson(fs: Editor, projectRoot: string): Promise<
         const projectJson = await readJSON(fs, projectJsonPath);
         if (projectJson?.hcpdeploy?.entryPath) {
             const projectWebappPath = join(projectRoot, projectJson.hcpdeploy.entryPath);
-            return fileExists(fs, projectWebappPath) ? projectJson.hcpdeploy.entryPath : undefined;
+            return (await fileExists(fs, projectWebappPath)) ? projectJson.hcpdeploy.entryPath : undefined;
         }
     } catch (error: unknown) {
         // Invalid JSON, skip
@@ -40,9 +40,9 @@ async function resolveFromProjectJson(fs: Editor, projectRoot: string): Promise<
  * @param fs - mem-fs editor
  * @param projectRoot
  */
-async function resolveFromCheProjectJson(fs: Editor, projectRoot: string): Promise<string | undefined> {
+async function resolveFromCheProjectJson(fs: MemFsEditor, projectRoot: string): Promise<string | undefined> {
     const cheProjectJsonPath = join(projectRoot, '.che', 'project.json');
-    if (!fileExists(fs, cheProjectJsonPath)) {
+    if (!(await fileExists(fs, cheProjectJsonPath))) {
         return undefined;
     }
 
@@ -52,7 +52,7 @@ async function resolveFromCheProjectJson(fs: Editor, projectRoot: string): Promi
             const settings: any = JSON.parse(projectJson.attributes[sapWattCommonSetting]?.[0]);
             if (settings?.hcpdeploy?.entryPath) {
                 const projectWebappPath = join(projectRoot, settings.hcpdeploy.entryPath);
-                return fileExists(fs, projectWebappPath) ? settings.hcpdeploy.entryPath : undefined;
+                return (await fileExists(fs, projectWebappPath)) ? settings.hcpdeploy.entryPath : undefined;
             }
         }
     } catch (error: unknown) {
@@ -67,7 +67,7 @@ async function resolveFromCheProjectJson(fs: Editor, projectRoot: string): Promi
  * @param fs - mem-fs editor
  * @param projectRoot
  */
-function resolveFromUi5Yaml(fs: Editor, projectRoot: string): string | undefined {
+function resolveFromUi5Yaml(fs: MemFsEditor, projectRoot: string): string | undefined {
     try {
         const yamlContent = readFile(fs, join(projectRoot, FileName.UI5Yaml));
         return parse(yamlContent)?.resources?.configuration?.paths?.webapp;
@@ -101,7 +101,7 @@ function resolveForLibrary(projectRoot: string, libPath?: string): string | unde
  * @param libPath
  */
 export async function getWebappPath(
-    fs: Editor,
+    fs: MemFsEditor,
     projectRoot: string,
     type?: MigrationTypes,
     libPath?: string
@@ -109,22 +109,22 @@ export async function getWebappPath(
     const defaultPath = join(projectRoot, DirName.Webapp);
 
     // Check if default webapp folder exists
-    if (fileExists(fs, defaultPath)) {
+    if (await fileExists(fs, defaultPath)) {
         return DirName.Webapp;
     }
 
     // Check if manifest.json is in root (no webapp folder)
-    if (fileExists(fs, join(projectRoot, FileName.Manifest))) {
+    if (await fileExists(fs, join(projectRoot, FileName.Manifest))) {
         return '';
     }
 
     // Check for legacy Maven/Java structure: src/main/webapp
     const legacyMavenPath = join('src', 'main', DirName.Webapp);
     const legacyMavenFullPath = join(projectRoot, legacyMavenPath);
-    if (fileExists(fs, legacyMavenFullPath)) {
+    if (await fileExists(fs, legacyMavenFullPath)) {
         // Verify it actually has webapp content (manifest.json)
         const legacyManifestPath = join(legacyMavenFullPath, FileName.Manifest);
-        if (fileExists(fs, legacyManifestPath)) {
+        if (await fileExists(fs, legacyManifestPath)) {
             return legacyMavenPath;
         }
     }

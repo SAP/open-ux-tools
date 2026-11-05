@@ -1,7 +1,7 @@
 import { resolve, normalize } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import type { Data, Options } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { readFile } from '../file-access.js';
 
 // esbuild minifies closure-captured variable names, including the `escapeFn` that
@@ -47,7 +47,7 @@ function validateTemplatePath(templateRoot: string, templateName: string): strin
  * @throws Error if template path contains path traversal
  */
 export function renderTemplate(
-    fs: Editor,
+    fs: MemFsEditor,
     templateRoot: string,
     fullTemplateName: string,
     templateData: Data,

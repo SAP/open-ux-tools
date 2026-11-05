@@ -44,7 +44,8 @@ async function addVariantsConfig(basePath: string, simulate: boolean, yamlPath: 
         await validateBasePath(basePath, ui5ConfigPath);
         const fs = await generateVariantsConfig(basePath, ui5ConfigPath, logger);
         if (!simulate) {
-            fs.commit(() => logger.info(`Variants configuration written.`));
+            await fs.commit();
+            logger.info(`Variants configuration written.`);
         } else {
             await traceChanges(fs);
         }

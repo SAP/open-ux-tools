@@ -4,7 +4,7 @@ import { FileName } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { join } from 'node:path';
 import { cfChoice, abapChoice } from './constants.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Target } from '../types/index.js';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
 
@@ -20,7 +20,7 @@ import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
  * @returns a list of Target options i.e. CF | ABAP
  */
 export async function getSupportedTargets(
-    fs: Editor,
+    fs: MemFsEditor,
     projectPath: string,
     isCap = false,
     hasMtaConfig = false,

@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Manifest } from '../project-spec-types.js';
 import { FileName, FioriElementsVersion } from '../project-spec-types.js';
 import { fileExists, readJSON } from './file-access.js';
@@ -50,12 +50,12 @@ export async function readManifest(
     rootPath: string,
     webappPath: string,
     uiAdaptation?: any,
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<Manifest | undefined> {
     const fs = fsEditor ?? createMemFsEditor();
     const manifestPath = join(rootPath, webappPath, FileName.Manifest);
     let manifestJSON: Manifest | undefined;
-    if (uiAdaptation === undefined && fileExists(fs, manifestPath)) {
+    if (uiAdaptation === undefined && (await fileExists(fs, manifestPath))) {
         manifestJSON = await readJSON(fs, manifestPath);
     }
     return manifestJSON;

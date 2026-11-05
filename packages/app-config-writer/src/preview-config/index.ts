@@ -1,6 +1,6 @@
 import { checkPrerequisites } from './prerequisites.js';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files.js';
 import { updatePreviewMiddlewareConfigs, updateDefaultTestConfig } from './ui5-yaml.js';
 import { updateVariantsCreationScript } from './package-json.js';
@@ -22,9 +22,9 @@ import { type ToolsLogger } from '@sap-ux/logger';
  */
 export async function convertToVirtualPreview(
     basePath: string,
-    options: { convertTests?: boolean; logger?: ToolsLogger; fs?: Editor }
-): Promise<Editor> {
-    const fs = options.fs ?? create(createStorage());
+    options: { convertTests?: boolean; logger?: ToolsLogger; fs?: MemFsEditor }
+): Promise<MemFsEditor> {
+    const fs = options.fs ?? create(createStorage<VinylMemFsEditorFile>());
     const logger = options.logger;
     const convertTests = options.convertTests ?? false;
 

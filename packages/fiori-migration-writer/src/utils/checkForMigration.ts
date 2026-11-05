@@ -2,13 +2,13 @@ import { ProjectAccess } from './Project.js';
 import { join } from 'node:path';
 import { getFioriToolsDirectory } from '@sap-ux/store';
 import { FileName, FioriToolsSettings } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
 import type { ImportProjectInfo, Message, MigrationSettingsFile } from '../types.js';
 import { hasDependency, readJSON, findProjectRoot } from './index.js';
 import type { MigrationTypes } from './constants.js';
 
-export const readMigrationSettingsFile = async (fsEditor?: Editor): Promise<any> => {
+export const readMigrationSettingsFile = async (fsEditor?: MemFsEditor): Promise<any> => {
     const fs = fsEditor ?? createMemFsEditor();
     let migrationSettingsFile;
     try {
@@ -22,7 +22,7 @@ export const readMigrationSettingsFile = async (fsEditor?: Editor): Promise<any>
     return migrationSettingsFile;
 };
 
-export const readMigrationSettingsFileIgnoreProjects = async (fsEditor?: Editor): Promise<string[]> => {
+export const readMigrationSettingsFileIgnoreProjects = async (fsEditor?: MemFsEditor): Promise<string[]> => {
     const migrationSettingsFile: MigrationSettingsFile = await readMigrationSettingsFile(fsEditor);
     migrationSettingsFile.ignoreProjects = migrationSettingsFile?.ignoreProjects ?? [];
     return migrationSettingsFile?.ignoreProjects;
@@ -32,7 +32,7 @@ export const checkForMigration = async (
     projectRoot: string,
     type: MigrationTypes,
     libPath?: string,
-    fsEditor?: Editor
+    fsEditor?: MemFsEditor
 ): Promise<boolean> => {
     const fs = fsEditor ?? createMemFsEditor();
     let project: { projectInfo: Partial<ImportProjectInfo>; messages: Message[] } = {

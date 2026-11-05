@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomField, InternalCustomField } from './types.js';
 import { join } from 'node:path';
@@ -15,7 +15,7 @@ import { getManifest } from '../common/utils.js';
 /**
  * Enhances the provided custom field configuration with default data.
  *
- * @param {Editor} fs - the mem-fs editor instance
+ * @param {MemFsEditor} fs - the mem-fs editor instance
  * @param {CustomField} data - a custom field configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -23,7 +23,7 @@ import { getManifest } from '../common/utils.js';
  * @returns enhanced configuration
  */
 function enhanceConfig(
-    fs: Editor,
+    fs: MemFsEditor,
     data: CustomField,
     manifestPath: string,
     manifest: Manifest,
@@ -56,12 +56,16 @@ function enhanceConfig(
  *
  * @param {string} basePath - the base path
  * @param {CustomField} customField - the custom field configuration
- * @param {Promise<Editor>} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
+ * @param {Promise<MemFsEditor>} [fs] - the mem-fs editor instance
+ * @returns {Promise<MemFsEditor>} the updated mem-fs editor instance
  */
-export async function generateCustomField(basePath: string, customField: CustomField, fs?: Editor): Promise<Editor> {
+export async function generateCustomField(
+    basePath: string,
+    customField: CustomField,
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     validateVersion(customField.minUI5Version);
-    fs ??= create(createStorage());
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     await validateBasePath(basePath, fs);
 
     const generateId = await createIdGenerator({ basePath, fsEditor: fs });

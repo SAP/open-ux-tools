@@ -78,7 +78,7 @@ export async function processRegularProject(
 
     // Step3. Get the template details
     try {
-        const templateDetails = extractTemplateDetails(
+        const templateDetails = await extractTemplateDetails(
             fs,
             manifest,
             projectRoot,
@@ -121,7 +121,7 @@ export async function processRegularProject(
         const manifestLibsTmp = manifest['sap.ui5']?.dependencies?.libs || {};
 
         // Extract and filter SAP libraries from manifest
-        const { manifestLibs, reuseManifestLibs } = extractSapLibraries(
+        const { manifestLibs, reuseManifestLibs } = await extractSapLibraries(
             fs,
             manifestLibsTmp,
             projectRoot,

@@ -8,7 +8,7 @@
  * @see https://github.com/SBoudrias/mem-fs
  */
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Represents a file entry in the mem-fs store.
@@ -37,7 +37,7 @@ export interface MemFsStore {
 }
 
 /**
- * Extended Editor interface that exposes the internal store.
+ * Extended MemFsEditor interface that exposes the internal store.
  * Use this type when you need to access the store for file iteration.
  *
  * @example
@@ -48,19 +48,31 @@ export interface MemFsStore {
  * });
  * ```
  */
-export interface EditorWithStore extends Editor {
+/**
+ * Extended MemFsEditor type that exposes the internal store.
+ * Use this type when you need to access the store for file iteration.
+ *
+ * @example
+ * ```typescript
+ * const editor = getCurrentEditor() as EditorWithStore;
+ * editor.store.each((file) => {
+ *     console.log(file.path);
+ * });
+ * ```
+ */
+export type EditorWithStore = MemFsEditor & {
     /** Internal file store - use for iteration only */
     store: MemFsStore;
-}
+};
 
 /**
  * Type guard to check if an editor has the store property.
  * This should always return true for mem-fs-editor instances,
  * but the guard provides type narrowing.
  *
- * @param editor - Editor instance to check
+ * @param editor - MemFsEditor instance to check
  * @returns true if the editor has a store property
  */
-export function hasStore(editor: Editor): editor is EditorWithStore {
+export function hasStore(editor: MemFsEditor): editor is EditorWithStore {
     return 'store' in editor && typeof (editor as EditorWithStore).store?.each === 'function';
 }

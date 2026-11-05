@@ -2,7 +2,7 @@
  * Utility for reading and accessing manifest.json files
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { DirName, FileName } from '../../project-spec-types.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { readJSON } from '../../index.js';
@@ -24,7 +24,7 @@ export function getManifestPath(projectRoot: string, webappPath: string): string
  * @param projectRoot
  * @param webappPath
  */
-export function getManifestJson(fs: Editor, projectRoot: string, webappPath: string): Manifest {
+export async function getManifestJson(fs: MemFsEditor, projectRoot: string, webappPath: string): Promise<Manifest> {
     const manifestPath = getManifestPath(projectRoot, webappPath);
     return readJSON(fs, manifestPath);
 }

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../types.js';
 import type { Writer, IWriterData } from '../../types.js';
@@ -35,7 +35,7 @@ export class WriterFactory {
      */
     static createWriter<T extends ChangeType>(
         type: T,
-        fs: Editor,
+        fs: MemFsEditor,
         projectPath: string,
         templatesPath?: string
     ): IWriterData<T> {

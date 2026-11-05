@@ -1,6 +1,6 @@
 import { dirname, join, normalize, posix } from 'node:path';
 import { coerce, satisfies } from 'semver';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import {
     isAppStudio,
@@ -43,7 +43,7 @@ import { fileURLToPath } from 'node:url';
  * @returns Manifest object
  * @throws {Error} If the manifest file cannot be read or parsed as valid JSON
  */
-export function readManifest(manifestPath: string, fs: Editor): Manifest {
+export function readManifest(manifestPath: string, fs: MemFsEditor): Manifest {
     return fs.readJSON(manifestPath) as unknown as Manifest;
 }
 
@@ -146,7 +146,7 @@ export function validateVersion(mtaVersion?: string): boolean {
  * @param config.mtaPath Path to the MTA project
  * @param fs Reference to a mem-fs editor
  */
-export function addXSSecurityConfig({ mtaPath }: MTABaseConfig, fs: Editor): void {
+export function addXSSecurityConfig({ mtaPath }: MTABaseConfig, fs: MemFsEditor): void {
     fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {});
 }
 
@@ -156,7 +156,7 @@ export function addXSSecurityConfig({ mtaPath }: MTABaseConfig, fs: Editor): voi
  * @param targetPath Path to the project folder
  * @param fs Reference to a mem-fs editor
  */
-export function addGitIgnore(targetPath: string, fs: Editor): void {
+export function addGitIgnore(targetPath: string, fs: MemFsEditor): void {
     fs.copyTpl(getTemplatePath('gitignore.tmpl'), join(targetPath, FileName.DotGitIgnore), {});
 }
 
@@ -168,7 +168,7 @@ export function addGitIgnore(targetPath: string, fs: Editor): void {
  * @param config.mtaId MTA ID used in package.json
  * @param fs Reference to a mem-fs editor
  */
-export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
+export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: MemFsEditor): void {
     fs.copyTpl(getTemplatePath(FileName.Package), join(mtaPath, FileName.Package), {
         mtaId
     });
@@ -180,7 +180,7 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
  * @param targetPath Path to the package.json file
  * @param fs Reference to a mem-fs editor
  */
-export async function addCommonPackageDependencies(targetPath: string, fs: Editor): Promise<void> {
+export async function addCommonPackageDependencies(targetPath: string, fs: MemFsEditor): Promise<void> {
     await addPackageDevDependency(targetPath, UI5TaskZipperPackage, UI5TaskZipperPackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5Package, UI5PackageVersion, fs);
 }
@@ -191,7 +191,7 @@ export async function addCommonPackageDependencies(targetPath: string, fs: Edito
  * @param config Writer configuration
  * @param fs Reference to a mem-fs editor
  */
-export async function generateSupportingConfig(config: MTABaseConfig, fs: Editor): Promise<void> {
+export async function generateSupportingConfig(config: MTABaseConfig, fs: MemFsEditor): Promise<void> {
     if (config.mtaId && !fs.exists(join(config.mtaPath, 'package.json'))) {
         addRootPackage(config, fs);
     }
@@ -226,7 +226,7 @@ export function setMtaDefaults(config: CFBaseConfig): void {
  */
 export async function updateRootPackage(
     { mtaId, rootPath }: { mtaId: string; rootPath: string },
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const packageExists = fileExists(fs, join(rootPath, FileName.Package));
     // Append package.json only if mta.yaml is at a different level to the HTML5 app
@@ -274,7 +274,7 @@ export function enforceValidRouterConfig(config: CFAppConfig): void {
  * @param rootPath Path to the project folder
  * @param fs Reference to a mem-fs editor
  */
-export async function alignCdsVersions(rootPath: string, fs: Editor): Promise<void> {
+export async function alignCdsVersions(rootPath: string, fs: MemFsEditor): Promise<void> {
     const filePath = join(rootPath, FileName.Package);
     const packageJson = (fs.readJSON(filePath) ?? {}) as Package;
     const cdsDKDevDepVersion = coerce(packageJson?.devDependencies?.[CDSDKPackage]);
@@ -313,6 +313,6 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
  * @param filePath Path to the file
  * @returns True if the file exists, false otherwise
  */
-export function fileExists(fs: Editor, filePath: string): boolean {
+export function fileExists(fs: MemFsEditor, filePath: string): boolean {
     return fs.exists(filePath);
 }

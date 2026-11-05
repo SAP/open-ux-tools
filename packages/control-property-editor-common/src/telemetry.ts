@@ -21,7 +21,7 @@ export function disableTelemetry() {
 }
 
 /**
- * Reports telemetry data from Control Property Editor.
+ * Reports telemetry data from Control Property MemFsEditor.
  *
  * @param data The TelemetryData object, that needs to be reported
  * @returns {Promise<void>}

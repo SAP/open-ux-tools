@@ -1,5 +1,5 @@
 import path, { isAbsolute } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types.js';
 import { FlexLayer, type IWriter, type AnnotationsData } from '../../../types.js';
@@ -10,12 +10,12 @@ import { getChange, writeAnnotationChange } from '../../../base/change-utils.js'
  */
 export class AnnotationsWriter implements IWriter<AnnotationsData> {
     /**
-     * @param {Editor} fs - The filesystem editor instance.
+     * @param {MemFsEditor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      * @param {string} templatesPath - The path to the templates used for generating changes.
      */
     constructor(
-        private readonly fs: Editor,
+        private readonly fs: MemFsEditor,
         private readonly projectPath: string,
         private readonly templatesPath?: string
     ) {}

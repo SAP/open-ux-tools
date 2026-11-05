@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { JSONPath, ModificationOptions } from 'jsonc-parser';
 import { applyEdits, modify } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 
 /**
  * Writes changes for 'launch.json'.
@@ -19,10 +19,10 @@ export async function updateLaunchJSON(
     filePath: string,
     jsonPath: JSONPath,
     options: ModificationOptions = {},
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<void> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     const jsonString = fs.read(filePath);
     if (!options.formattingOptions) {

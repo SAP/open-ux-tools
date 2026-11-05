@@ -1,6 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { UI5_TASK_FLATTEN_LIB } from './constants.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap-ux/ui5-config';
 
 /**
@@ -11,7 +11,7 @@ import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap
  * @param baseConfig - the base config
  * @param fs - the memfs editor instance
  */
-export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: UI5Config, fs: Editor) {
+export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: UI5Config, fs: MemFsEditor) {
     const before = baseConfig.toString();
     baseConfig.addBuilderResourceExcludes();
     if (isLib) {

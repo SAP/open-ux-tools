@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { CapRuntime, CapServiceCdsInfo } from '../../../src/index.js';
-import memFs from 'mem-fs';
-import editor, { type Editor } from 'mem-fs-editor';
+import { create as memFsCreate } from 'mem-fs';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Package } from '@sap-ux/project-access';
@@ -81,9 +81,9 @@ describe('Writing/package json files', () => {
 
     // beforeEach function to reset fs before each test
     beforeEach(() => {
-        const store = memFs.create();
+        const store = memFsCreate();
         // Create a new instance of the Editor class before each test
-        fs = editor.create(store);
+        fs = create(store);
     });
 
     beforeEach(() => {

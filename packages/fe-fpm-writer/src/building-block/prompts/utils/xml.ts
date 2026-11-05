@@ -5,7 +5,7 @@ import {
     type Node as XmldomNode,
     type Element as XmldomElement
 } from '@xmldom/xmldom';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 import { MACROS_NAMESPACE_URI } from '../../types.js';
 
@@ -100,7 +100,7 @@ function addMacrosItemsPathIfMissing(
  */
 export function getXPathStringsForXmlFile(
     xmlFilePath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): { inputChoices: Record<string, string>; pageMacroDefinition?: string } {
     const result: Record<string, string> = {};
     let pageMacroDefinition: string | undefined;
@@ -168,7 +168,7 @@ function getErrorMessage(error: Error): string {
  * @param fs  - the file system object for reading files
  * @returns an array of ids found in passed xml file.
  */
-export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Editor): Promise<string[]> {
+export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: MemFsEditor): Promise<string[]> {
     const ids: string[] = [];
     const buildingBlockSelector = 'macros:FilterBar';
     const xmlContent = fs.read(viewOrFragmentPath);
@@ -194,7 +194,7 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
 export async function getExistingButtonGroups(
     xmlFilePath: string,
     aggregationPath: string,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<Set<string>> {
     const existingButtonGroups = new Set<string>();
 

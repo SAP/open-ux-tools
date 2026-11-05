@@ -5,7 +5,7 @@ import type { LaunchConfig, LaunchConfigEnv } from '../types/index.js';
 import { Arguments } from '../types/index.js';
 import { getIndexOfArgument } from './utils.js';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';
 
 const RUN_SCRIPT = 'run-script';
@@ -135,7 +135,7 @@ function getProjectRootFromEnv(envConfig: LaunchConfigEnv): string | undefined {
 export async function convertOldLaunchConfigToFioriRun(
     launchConfig: LaunchConfig,
     projectRoot?: string,
-    memFs?: Editor
+    memFs?: MemFsEditor
 ): Promise<LaunchConfig> {
     // we only convert configs that uses run-script
     if (isRunScriptUsed(launchConfig.runtimeArgs)) {

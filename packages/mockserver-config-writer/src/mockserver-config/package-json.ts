@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { PackageJsonMockConfig } from '../types/index.js';
 
@@ -10,7 +10,7 @@ import type { PackageJsonMockConfig } from '../types/index.js';
  * @param basePath - path to application root, where package.json is
  * @param config - optional config for mockserver
  */
-export function enhancePackageJson(fs: Editor, basePath: string, config?: PackageJsonMockConfig): void {
+export function enhancePackageJson(fs: MemFsEditor, basePath: string, config?: PackageJsonMockConfig): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion);
@@ -55,7 +55,7 @@ function enhanceDependencies(
  * @param fs - mem-fs reference to be used for file access
  * @param packageJson - path to package.json
  */
-function enhanceScripts(fs: Editor, packageJson: Package): void {
+function enhanceScripts(fs: MemFsEditor, packageJson: Package): void {
     packageJson.scripts ||= {};
     packageJson.scripts['start-mock'] =
         copyStartScript(packageJson.scripts.start) ??
@@ -154,7 +154,7 @@ function removeMockserverUi5Dependencies(packageJson: Package): void {
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
  */
-export function removeFromPackageJson(fs: Editor, basePath: string): void {
+export function removeFromPackageJson(fs: MemFsEditor, basePath: string): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     delete packageJson.scripts?.['start-mock'];

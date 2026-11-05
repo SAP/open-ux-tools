@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import { extractYamlConfigFileName } from '../common/package-json.js';
 import { generateVariantsConfig } from '../variants-config/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { type Package, hasDependency } from '@sap-ux/project-access';
 
@@ -13,7 +13,7 @@ import { type Package, hasDependency } from '@sap-ux/project-access';
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
  */
-export function ensurePreviewMiddlewareDependency(fs: Editor, basePath: string): void {
+export function ensurePreviewMiddlewareDependency(fs: MemFsEditor, basePath: string): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     if (!packageJson) {
@@ -38,7 +38,11 @@ export function ensurePreviewMiddlewareDependency(fs: Editor, basePath: string):
  * @param basePath - base path to be used for the conversion
  * @param logger logger to report info to the user
  */
-export async function updateVariantsCreationScript(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function updateVariantsCreationScript(
+    fs: MemFsEditor,
+    basePath: string,
+    logger?: ToolsLogger
+): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     if (packageJson?.scripts?.['start-variants-management']) {

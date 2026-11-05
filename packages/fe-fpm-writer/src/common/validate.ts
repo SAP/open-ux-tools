@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
 import { isAbsolute } from 'node:path';
@@ -40,17 +40,17 @@ export function validateDependenciesLibs(manifest: Manifest, dependencies: strin
  * Validates the provided base path, checks at least one of expected dependencies is present.
  *
  * @param {string} basePath - the base path
- * @param {Editor} fs - the memfs editor instance
+ * @param {MemFsEditor} fs - the memfs editor instance
  * @param {string[]} dependencies - expected dependencies
  * @returns true if the path is valid, otherwise, throws and error
  */
 export async function validateBasePath(
     basePath: string,
-    fs?: Editor,
+    fs?: MemFsEditor,
     dependencies = ['sap.fe.templates']
 ): Promise<boolean> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
 
     const manifestPath = await getManifestPath(basePath, fs);

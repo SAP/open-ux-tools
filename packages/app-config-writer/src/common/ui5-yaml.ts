@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import { MiddlewareConfigs } from '../types/index.js';
 import { FileName, type Package, readUi5Yaml, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types/index.js';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
@@ -105,7 +105,10 @@ export async function getEnhancedReloadMiddleware(
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @returns 'fiori-tools-preview' or 'preview-middleware' configuration
  */
-export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): CustomMiddleware<PreviewConfigOptions> {
+export function createPreviewMiddlewareConfig(
+    fs: MemFsEditor,
+    basePath: string
+): CustomMiddleware<PreviewConfigOptions> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     return {
@@ -126,7 +129,7 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
  * @param logger - logger
  */
 export async function updateMiddlewaresForPreview(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger
@@ -218,7 +221,7 @@ export async function updatePreviewMiddlewareConfig(
     previewMiddleware: CustomMiddleware<PreviewConfigOptions>,
     script: Script,
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     logger?: ToolsLogger
 ): Promise<CustomMiddleware<PreviewConfigOptions>> {
     const { path, intent } = extractUrlDetails(script.value);
@@ -277,7 +280,7 @@ export async function updateTestConfig(
     testConfiguration: PreviewConfig['test'],
     path: string | undefined,
     basePath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     logger?: ToolsLogger
 ): Promise<PreviewConfig['test']> {
     const hasTestsuite = (config: PreviewConfig['test']): boolean => {
@@ -336,7 +339,7 @@ export async function updateTestConfig(
  * @param logger logger to report info to the user
  */
 export async function sanitizeTestScript(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     path: string,
     newConfig: TestConfig,

@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import { getRTAUrlParameters, getRTAUrl } from './utils.js';
 import { getCLIForPreview } from '../common/utils.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -17,7 +17,7 @@ const ERROR_MSG = `Script 'start-variants-management' cannot be written to packa
  * @returns Promise<void> - rejects in case variants management script can't be added to package.json
  */
 export async function addVariantsManagementScript(
-    fs: Editor,
+    fs: MemFsEditor,
     basePath: string,
     yamlPath?: string,
     logger?: ToolsLogger

@@ -93,7 +93,7 @@ const mockDataSources = {
 describe('add/annotations', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
-        commit: jest.fn().mockImplementation((cb) => cb())
+        commit: jest.fn().mockResolvedValue(undefined)
     };
     const getArgv = (...arg: string[]) => ['', '', 'annotations', ...arg];
     const mockAnswers: { id: string; fileSelectOption: number; filePath?: string } = {

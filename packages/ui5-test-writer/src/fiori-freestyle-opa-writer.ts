@@ -1,7 +1,7 @@
 import { dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { FFOPAConfig } from './types.js';
 import type { Logger } from '@sap-ux/logger';
@@ -14,11 +14,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /**
  * Updates tsconfig.json to include paths for unit and integration tests.
  *
- * @param {Editor} fs - The file system editor instance.
+ * @param {MemFsEditor} fs - The file system editor instance.
  * @param {string} destinationRoot - The root directory where tsconfig.json exists.
  * @param log
  */
-function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: Logger): void {
+function writeOPATsconfigJsonUpdates(fs: MemFsEditor, destinationRoot: string, log?: Logger): void {
     try {
         const tsconfig: any = fs.readJSON(join(destinationRoot, FileName.Tsconfig)) ?? {};
 
@@ -118,17 +118,17 @@ function getDestFilePath(
  *
  * @param {string} basePath - The base directory path.
  * @param {FFOPAConfig} opaConfig - Configuration object.
- * @param {Editor} fs - Optional file system editor instance.
+ * @param {MemFsEditor} fs - Optional file system editor instance.
  * @param {Logger} log - Optional logger instance.
- * @returns {Editor} - The modified file system editor.
+ * @returns {MemFsEditor} - The modified file system editor.
  */
 export async function generateFreestyleOPAFiles(
     basePath: string,
     opaConfig: FFOPAConfig,
-    fs?: Editor,
+    fs?: MemFsEditor,
     log?: Logger
-): Promise<Editor> {
-    const fsEditor = fs ?? create(createStorage());
+): Promise<MemFsEditor> {
+    const fsEditor = fs ?? create(createStorage<VinylMemFsEditorFile>());
     const { enableTypeScript, ui5Version, viewName, appId, useVirtualPreviewEndpoints } = opaConfig;
 
     const freestyleTemplateDir = join(__dirname, '../templates/freestyle/webapp/test');

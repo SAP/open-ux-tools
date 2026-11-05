@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { Manifest } from '@sap-ux/project-access';
@@ -25,7 +25,7 @@ export function getI18nDescription(layer: FlexLayer, appTitle?: string): string 
  * @param {string} basePath - The base path of the project where i18n files are located, typically the root.
  * @param {ResourceModel[]} [i18nModels] - An optional array of i18n models to be written. Each model contains
  *                                         the key, path, and content for an i18n file.
- * @param {Editor} fs - The file system editor interface used for writing files.
+ * @param {MemFsEditor} fs - The file system editor interface used for writing files.
  
  *
  * This function ensures that:
@@ -33,7 +33,7 @@ export function getI18nDescription(layer: FlexLayer, appTitle?: string): string 
  * - Models are written only if they have content and do not match the main i18n path.
  * - The file path for each model is constructed using the provided base path and model's specified path.
  */
-export function writeI18nModels(basePath: string, i18nModels: ResourceModel[] | undefined, fs: Editor): void {
+export function writeI18nModels(basePath: string, i18nModels: ResourceModel[] | undefined, fs: MemFsEditor): void {
     if (!i18nModels?.length) {
         return;
     }

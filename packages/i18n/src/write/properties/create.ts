@@ -2,7 +2,7 @@ import type { NewI18nEntry } from '../../types.js';
 import { doesExist, writeFile } from '../../utils/index.js';
 import { writeToExistingI18nPropertiesFile } from '../utils/index.js';
 import { basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Creates new i18n entries in `i18n.properties` file.
@@ -19,7 +19,7 @@ export async function createPropertiesI18nEntries(
     i18nFilePath: string,
     newI18nEntries: NewI18nEntry[],
     root?: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     if ((!fs && !(await doesExist(i18nFilePath))) || (fs && !fs.exists(i18nFilePath))) {
         await createNewI18nFile(i18nFilePath, root, fs);
@@ -43,7 +43,7 @@ export async function removeAndCreateI18nEntries(
     newI18nEntries: NewI18nEntry[],
     keysToRemove: string[] = [],
     root?: string,
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<void> {
     if ((!fs && !(await doesExist(i18nFilePath))) || (fs && !fs.exists(i18nFilePath))) {
         await createNewI18nFile(i18nFilePath, root, fs);
@@ -59,7 +59,7 @@ export async function removeAndCreateI18nEntries(
  * @param fs - Optional mem-fs-editor instance for file operations.
  * @returns A promise that resolves to the written content or void.
  */
-async function createNewI18nFile(i18nFilePath: string, root?: string, fs?: Editor): Promise<string | void> {
+async function createNewI18nFile(i18nFilePath: string, root?: string, fs?: MemFsEditor): Promise<string | void> {
     let content = '# Resource bundle \n';
     if (root) {
         content = `# This is the resource bundle for ${basename(root)}\n`;

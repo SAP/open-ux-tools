@@ -60,7 +60,7 @@ async function generateOpa5Tests(basePath: string, simulate: boolean, forceTypeS
         );
 
         if (!simulate) {
-            await new Promise<void>((resolve) => fs.commit(resolve));
+            await fs.commit();
             logger.info(`Changes written.`);
         } else {
             await traceChanges(fs);

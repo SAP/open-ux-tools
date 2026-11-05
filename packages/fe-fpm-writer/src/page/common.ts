@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
@@ -221,9 +221,9 @@ export function initializeTargetSettings(
 export async function validatePageConfig(
     basePath: string,
     config: CustomPage | ObjectPage,
-    fs: Editor,
+    fs: MemFsEditor,
     dependencies = []
-): Promise<Editor> {
+): Promise<MemFsEditor> {
     // common validators
 
     await validateBasePath(basePath, fs, dependencies);
@@ -269,10 +269,10 @@ export async function extendPageJSON(
     data: ObjectPage,
     enhanceDataFn: EnhancePageConfigFunction,
     templatePath: string,
-    fs?: Editor
-): Promise<Editor> {
+    fs?: MemFsEditor
+): Promise<MemFsEditor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = create(createStorage<VinylMemFsEditorFile>());
     }
     await validatePageConfig(basePath, data, fs);
 

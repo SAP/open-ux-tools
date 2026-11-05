@@ -133,7 +133,7 @@ describe('migrate command', () => {
             result: true,
             messages: [],
             fs: {
-                commit: jest.fn((callback: (err?: Error) => void) => callback())
+                commit: jest.fn().mockResolvedValue(undefined)
             }
         });
         mockExecNpmCommand.mockResolvedValue('npm install output');
@@ -252,7 +252,7 @@ describe('migrate command', () => {
             result: false,
             messages: [{ type: 'ERROR', description: 'Failed' }],
             fs: {
-                commit: jest.fn((callback: (err?: Error) => void) => callback())
+                commit: jest.fn().mockResolvedValue(undefined)
             }
         });
 
@@ -292,7 +292,7 @@ describe('migrate command', () => {
                 { type: 'ERROR', description: 'Non-critical error' }
             ],
             fs: {
-                commit: jest.fn((callback: (err?: Error) => void) => callback())
+                commit: jest.fn().mockResolvedValue(undefined)
             }
         });
 

@@ -56,7 +56,7 @@ jest.unstable_mockModule('fs', () => ({
 jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn() }));
 
 const mockGenerateChange = jest.fn().mockResolvedValue({
-    commit: jest.fn().mockImplementation((cb) => cb())
+    commit: jest.fn().mockResolvedValue(undefined)
 } as Partial<Editor> as Editor);
 const mockGetPromptsForNewModel = jest.fn() as jest.Mock;
 const mockGetVariant = jest.fn() as jest.Mock;

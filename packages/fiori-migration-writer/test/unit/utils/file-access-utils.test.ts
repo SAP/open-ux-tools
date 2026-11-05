@@ -13,8 +13,7 @@ import {
 } from '../../../src/index.js';
 import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
-const commit = (fs: ReturnType<typeof createMemFsEditor>): Promise<void> =>
-    new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
+const commit = (fs: ReturnType<typeof createMemFsEditor>): Promise<void> => fs.commit();
 
 describe('File Access Utilities', () => {
     const testRoot = join(tmpdir(), 'file-access-test-' + Date.now());
@@ -29,27 +28,27 @@ describe('File Access Utilities', () => {
     });
 
     describe('fileExists', () => {
-        test('should return true for a staged file', () => {
+        test('should return true for a staged file', async () => {
             const testFile = join(testRoot, 'staged.txt');
             const fs = createMemFsEditor();
             fs.write(testFile, 'staged');
 
-            expect(fileExists(fs, testFile)).toBe(true);
+            expect(await fileExists(fs, testFile)).toBe(true);
         });
 
-        test('should fall back to disk for an unstaged file', () => {
+        test('should fall back to disk for an unstaged file', async () => {
             const testFile = join(testRoot, 'on-disk.txt');
             writeFileSync(testFile, 'on disk');
 
             const fs = createMemFsEditor();
-            expect(fileExists(fs, testFile)).toBe(true);
+            expect(await fileExists(fs, testFile)).toBe(true);
         });
 
-        test('should return false when neither staged nor on disk', () => {
+        test('should return false when neither staged nor on disk', async () => {
             const testFile = join(testRoot, 'missing.txt');
 
             const fs = createMemFsEditor();
-            expect(fileExists(fs, testFile)).toBe(false);
+            expect(await fileExists(fs, testFile)).toBe(false);
         });
     });
 
@@ -153,7 +152,7 @@ describe('File Access Utilities', () => {
             deleteFile(fs, testFile);
             await commit(fs);
 
-            expect(fileExists(fs, testFile)).toBe(false);
+            expect(await fileExists(fs, testFile)).toBe(false);
         });
     });
 
@@ -167,7 +166,7 @@ describe('File Access Utilities', () => {
             writeFile(fs, testFile, 'test');
             await commit(fs);
 
-            expect(fileExists(fs, testFile)).toBe(true);
+            expect(await fileExists(fs, testFile)).toBe(true);
         });
     });
 });

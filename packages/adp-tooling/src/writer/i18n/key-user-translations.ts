@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
@@ -88,7 +88,7 @@ export async function writeKeyUserTranslations(
     projectPath: string,
     fileName: string,
     topLevelTexts: KeyUserTextTranslations,
-    fs: Editor
+    fs: MemFsEditor
 ): Promise<void> {
     const webappPath = await getWebappPath(projectPath, fs);
 

@@ -1,6 +1,6 @@
 import { join, relative, dirname } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types.js';
@@ -38,7 +38,7 @@ import { i18nNamespaces, translate } from '../i18n.js';
  * @param fs - mem-fs reference to be used for file access
  * @returns enhanced configuration
  */
-export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): InternalCustomPage {
+export function enhanceData(data: CustomPage, manifestPath: string, fs: MemFsEditor): InternalCustomPage {
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
     // Check if folder was explicitly provided before setCommonDefaults modifies the data object
@@ -99,7 +99,7 @@ export function getTemplateRoot(ui5Version?: string): string {
  * @param {PageTemplateType} [data.pageBuildingBlockTemplateType] - The layout template type ('full' or 'basic'). Defaults to 'basic' if the UI5 version does not meet the full layout requirement.
  * @param {string} [data.minUI5Version] - The minimum UI5 version of the application. Used to validate layout compatibility.
  * @param {string} viewPath - The path to the view XML file.
- * @param {Editor} fs - The memfs editor instance.
+ * @param {MemFsEditor} fs - The memfs editor instance.
  * @param {(baseId: string) => Promise<string>} generateId - Function to generate unique IDs for the building block elements.
  * @param {Logger} [log] - Logger instance.
  * @returns {Promise<void>} Resolves when the building block is handled or skipped due to version constraints.
@@ -108,7 +108,7 @@ async function handlePageBuildingBlock(
     basePath: string,
     data: { pageBuildingBlockTitle: string; pageBuildingBlockTemplateType?: PageTemplateType; minUI5Version?: string },
     viewPath: string,
-    fs: Editor,
+    fs: MemFsEditor,
     generateId: IdGeneratorFunction,
     log?: Logger
 ): Promise<void> {
@@ -163,12 +163,17 @@ async function handlePageBuildingBlock(
  *
  * @param {string} basePath - the base path
  * @param {CustomPage} data - the custom page configuration
- * @param {Editor} [fs] - the memfs editor instance
+ * @param {MemFsEditor} [fs] - the memfs editor instance
  * @param {Logger} [log] - Logger instance
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @returns {Promise<MemFsEditor>} the updated memfs editor instance
  */
-export async function generate(basePath: string, data: CustomPage, fs?: Editor, log?: Logger): Promise<Editor> {
-    fs ??= create(createStorage());
+export async function generate(
+    basePath: string,
+    data: CustomPage,
+    fs?: MemFsEditor,
+    log?: Logger
+): Promise<MemFsEditor> {
+    fs ??= create(createStorage<VinylMemFsEditorFile>());
     validateVersion(data.minUI5Version);
     await validatePageConfig(basePath, data, fs, []);
 

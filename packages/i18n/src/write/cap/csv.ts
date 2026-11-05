@@ -13,7 +13,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Range, Position } from '@sap-ux/text-document-utils';
 import { parseCsv } from '../../parser/csv/parser/index.js';
 import type { CsvField } from '../../parser/csv/types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor } from 'mem-fs-editor';
 
 /**
  * Add CSV text for fallback.
@@ -122,7 +122,7 @@ export async function tryAddCsvTexts(
     env: CdsEnvironment,
     path: string,
     newI18nEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: MemFsEditor
 ): Promise<boolean> {
     const i18nFilePath = csvPath(path);
     if (!(await doesExist(i18nFilePath))) {
