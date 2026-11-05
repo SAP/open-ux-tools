@@ -14,10 +14,9 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-const realWhich = await import('which');
+const syncMock = jest.fn();
 jest.unstable_mockModule('which', () => ({
-    ...realWhich,
-    sync: jest.fn()
+    default: Object.assign(jest.fn(), { sync: syncMock })
 }));
 
 const { MockMta } = await import('./mockMta.js');
@@ -55,7 +54,8 @@ describe('CF Writer', () => {
         unitTestFs = create(createStorage());
         commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
         isAppStudioMock.mockReturnValue(false);
-        hasSyncMock = (whichMod.sync as jest.Mock).mockImplementation(() => true);
+        hasSyncMock = syncMock;
+        hasSyncMock.mockImplementation(() => true);
         // Re-apply real implementations after resetAllMocks clears them
         (projectAccess.getMtaPath as jest.Mock).mockImplementation(realProjectAccess.getMtaPath);
         (projectAccess.findCapProjectRoot as jest.Mock).mockImplementation(realProjectAccess.findCapProjectRoot);

@@ -14,10 +14,9 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils
 }));
 
-const realWhich = await import('which');
+const syncMock = jest.fn();
 jest.unstable_mockModule('which', () => ({
-    ...realWhich,
-    sync: jest.fn()
+    default: Object.assign(jest.fn(), { sync: syncMock })
 }));
 
 const realCfTools = await import('@sap/cf-tools');
@@ -52,7 +51,8 @@ describe('CF Writer Base', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = (whichMod.sync as jest.Mock).mockImplementation(() => true);
+        hasSyncMock = syncMock;
+        hasSyncMock.mockImplementation(() => true);
     });
 
     beforeAll(() => {
