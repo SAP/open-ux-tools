@@ -40,13 +40,12 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "hasbin": "1.2.3",
+        "which": "6.0.1",
         "i18next": "26.5.11",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
-        "@types/hasbin": "1.2.2",
         "@types/inquirer": "8.2.6",
         "@types/js-yaml": "4.0.9",
         "@types/mem-fs-editor": "7.0.1",
