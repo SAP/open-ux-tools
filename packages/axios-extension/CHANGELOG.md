@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 2.1.6
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Surface the Gateway error reason (message and code) on the error thrown when a UI5 ABAP repository application lookup fails, so the underlying 4xx/5xx cause is visible at normal log levels; the full response body is still logged at debug level only (#4272) [[da67944](https://github.com/SAP/open-ux-tools/commit/da6794455b7a46311c194dbe659fd6cd74344282)]
+
 ## 2.1.5
 
 ### Patch Changes
