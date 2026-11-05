@@ -195,9 +195,9 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
             { timeout: 60000 }
         );
 
-        let response: unknown;
+        let serialized: string;
         try {
-            response = await executionContext.evaluate(
+            serialized = await executionContext.evaluate(
                 async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
                     const require = (
                         window as unknown as {
@@ -222,9 +222,25 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
                     if (typeof fnImpl !== 'function') {
                         throw new TypeError(`Frontend action "${fn}" is not available on ${mod}`);
                     }
-                    // Return the raw method result; normalization into the Flex envelope
-                    // happens in Node (normalizeUfaResult) so that pure logic stays testable.
-                    return await (fnImpl as (arg: unknown) => unknown).call(api, p);
+                    const raw = await (fnImpl as (arg: unknown) => unknown).call(api, p);
+                    // Serialize INSIDE the page and return a string, never the raw object.
+                    // Playwright's CDP serializer deep-clones an evaluate() return value by
+                    // value, and a large Fiori Elements UI tree (e.g. describeUI on an Object
+                    // Page) overruns its reference-chain depth limit — "Cannot serialize
+                    // result: object reference chain is too long". JSON.stringify has no such
+                    // limit; a circular-reference-safe replacer keeps it from throwing on the
+                    // rare self-referential graph (writing "[Circular]" instead). Node parses
+                    // it back before normalization.
+                    const seen = new WeakSet<object>();
+                    return JSON.stringify(raw, (_key: string, value: unknown) => {
+                        if (typeof value === 'object' && value !== null) {
+                            if (seen.has(value)) {
+                                return '[Circular]';
+                            }
+                            seen.add(value);
+                        }
+                        return value;
+                    });
                 },
                 { mod: module, fn: method, p: payload }
             );
@@ -236,6 +252,9 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
             const message = error instanceof Error ? error.message : String(error);
             return { isSuccess: false, payload: null, error: { code: 'FRONTEND_ACTION_THREW', message } };
         }
+        // `undefined` return (a void action) stringifies to the JS value undefined, not a
+        // string — treat it as a null raw result so normalizeUfaResult sees "no payload".
+        const response: unknown = serialized === undefined ? null : JSON.parse(serialized);
         return normalizeUfaResult(response, ufa) as FrontendActionResult<TReturn>;
     };
 

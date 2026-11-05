@@ -5,6 +5,13 @@ import { join } from 'node:path';
 import type * as PlaywrightBridgeModule from '../../../../../src/tools/run-rta-workflow-step/browser/playwright-bridge.js';
 import type * as SessionModule from '../../../../../src/tools/run-rta-workflow-step/browser/session.js';
 
+// The real transport serializes the action result INSIDE the page (JSON.stringify)
+// and returns a string, which Node parses before normalization. The fake `evaluate`
+// mocks must therefore resolve to the stringified form, not the raw object.
+function evalResult(value: unknown): string {
+    return JSON.stringify(value);
+}
+
 // --- playwright-core mock --------------------------------------------------
 
 class FakeFrameElement {
@@ -15,11 +22,13 @@ class FakeFrameElement {
 }
 
 class FakeFrame {
-    public readonly evaluate = jest.fn<Promise<unknown>, [unknown, unknown?]>(async () => ({
-        isSuccess: true,
-        payload: 'frame',
-        error: null
-    }));
+    public readonly evaluate = jest.fn<Promise<unknown>, [unknown, unknown?]>(async () =>
+        evalResult({
+            isSuccess: true,
+            payload: 'frame',
+            error: null
+        })
+    );
     public readonly frameElement = jest.fn(async () => new FakeFrameElement(this.id));
     public readonly waitForFunction = jest.fn(async () => undefined);
     public readonly waitForLoadState = jest.fn(async () => undefined);
@@ -27,11 +36,13 @@ class FakeFrame {
 }
 
 class FakePage extends EventEmitter {
-    public readonly evaluate = jest.fn<Promise<unknown>, [unknown, unknown?]>(async () => ({
-        isSuccess: true,
-        payload: 'page',
-        error: null
-    }));
+    public readonly evaluate = jest.fn<Promise<unknown>, [unknown, unknown?]>(async () =>
+        evalResult({
+            isSuccess: true,
+            payload: 'page',
+            error: null
+        })
+    );
     public readonly waitForFunction = jest.fn(async () => undefined);
     public readonly waitForLoadState = jest.fn(async () => undefined);
     public readonly addInitScript = jest.fn(async () => undefined);
@@ -196,7 +207,9 @@ describe('browser/playwright-bridge', () => {
     test('first callFrontendAction launches browser, opens page, navigates, evaluates', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        page.evaluate.mockResolvedValueOnce(
+            evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null })
+        );
 
         const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction(SITE_A, 'com.sap.ui.flex.startRTA.v1', {});
@@ -247,6 +260,41 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
+    test('parses the JSON string the page returns and normalizes a large UFA tree', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        // Build a deep/wide UI tree — the shape that overran Playwright's CDP
+        // reference-chain limit when returned as a raw object. The transport now
+        // serializes it in-page (JSON.stringify) and parses it back in Node, so the
+        // fake evaluate resolves to the STRING form, mirroring production.
+        const deepTree: { id: string; type: string; children: unknown[] } = {
+            id: 'root',
+            type: 'sap.ui.core.mvc.XMLView',
+            children: []
+        };
+        let cursor = deepTree;
+        for (let depth = 0; depth < 60; depth++) {
+            const child = { id: `n${depth}`, type: 'sap.m.VBox', children: [] as unknown[] };
+            cursor.children.push(child);
+            cursor = child;
+        }
+        page.evaluate.mockResolvedValueOnce(evalResult(deepTree));
+
+        const fs = await loadPlaywrightBridge();
+        const result = await fs.callFrontendAction(
+            SITE_A,
+            'com.sap.ui.unified.frontend.actions.describeUI',
+            {},
+            undefined,
+            true
+        );
+        // A UFA raw result normalizes to a success envelope whose payload is the parsed tree.
+        expect(result.isSuccess).toBe(true);
+        expect(result.payload).toEqual(deepTree);
+
+        await fs.stopBrowser();
+    });
+
     test('a non-start first call (allowOpen omitted) is rejected without launching a browser', async () => {
         const page = new FakePage();
         setupBrowser([page]);
@@ -264,8 +312,8 @@ describe('browser/playwright-bridge', () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
         page.evaluate
-            .mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null })
-            .mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+            .mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'first', error: null }))
+            .mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'second', error: null }));
 
         const fs = await loadPlaywrightBridge();
         const r1 = await fs.callFrontendAction(SITE_A, 'a');
@@ -284,8 +332,8 @@ describe('browser/playwright-bridge', () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
         page.evaluate
-            .mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null })
-            .mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+            .mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'first', error: null }))
+            .mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'second', error: null }));
 
         const fs = await loadPlaywrightBridge();
         const r1 = await fs.callFrontendAction('http://localhost:8080/a', 'x');
@@ -305,8 +353,8 @@ describe('browser/playwright-bridge', () => {
         const freshPage = new FakePage();
         const { browser } = setupBrowser([stalePage, freshPage]);
 
-        stalePage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
-        freshPage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+        stalePage.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'first', error: null }));
+        freshPage.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'second', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
@@ -328,7 +376,9 @@ describe('browser/playwright-bridge', () => {
         const otherFrame = new FakeFrame('toolbar');
         const page = new FakePage([otherFrame, matchedFrame]);
         setupBrowser([page]);
-        matchedFrame.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'inside-frame', error: null });
+        matchedFrame.evaluate.mockResolvedValueOnce(
+            evalResult({ isSuccess: true, payload: 'inside-frame', error: null })
+        );
 
         const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction(SITE_A, 'a', {}, 'preview');
@@ -356,7 +406,7 @@ describe('browser/playwright-bridge', () => {
     test('disconnectSite closes the page and context, and removes the entry', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page, new FakePage()]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'first', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
@@ -375,8 +425,8 @@ describe('browser/playwright-bridge', () => {
         const pageA = new FakePage();
         const pageB = new FakePage();
         const { browser } = setupBrowser([pageA, pageB]);
-        pageA.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'a', error: null });
-        pageB.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'b', error: null });
+        pageA.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'a', error: null }));
+        pageB.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'b', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'x');
@@ -399,7 +449,7 @@ describe('browser/playwright-bridge', () => {
     test('disconnected event clears registry; next call starts a fresh browser', async () => {
         const pageA = new FakePage();
         const { browser } = setupBrowser([pageA]);
-        pageA.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
+        pageA.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'first', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
@@ -411,7 +461,7 @@ describe('browser/playwright-bridge', () => {
         const newBrowser = new FakeBrowser();
         newBrowser.newPage.mockResolvedValue(pageB);
         launchMock.mockResolvedValueOnce(newBrowser);
-        pageB.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+        pageB.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'second', error: null }));
 
         const r2 = await fs.callFrontendAction(SITE_A, 'b');
         expect(launchMock).toHaveBeenCalledTimes(2);
@@ -426,7 +476,7 @@ describe('browser/playwright-bridge', () => {
         try {
             const page = new FakePage();
             setupBrowser([page]);
-            page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+            page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
             const fs = await loadPlaywrightBridge();
             await fs.callFrontendAction(SITE_A, 'a');
@@ -449,7 +499,7 @@ describe('browser/playwright-bridge', () => {
         const page = new FakePage();
         const browser = new FakeBrowser();
         browser.newPage.mockResolvedValue(page);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         launchMock.mockRejectedValueOnce(
             new Error("Executable doesn't exist at /usr/bin/google-chrome (channel=chrome)")
@@ -496,7 +546,7 @@ describe('browser/playwright-bridge', () => {
         const matchedFrame = new FakeFrame('preview');
         const page = new FakePage([nullFrame, matchedFrame]);
         setupBrowser([page]);
-        matchedFrame.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        matchedFrame.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction(SITE_A, 'a', {}, 'preview');
@@ -508,7 +558,7 @@ describe('browser/playwright-bridge', () => {
     test('pageerror event handler fires without throwing', async () => {
         const page = new FakePage();
         setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
@@ -522,7 +572,7 @@ describe('browser/playwright-bridge', () => {
     test('isRegistryEmpty returns true before any connection and false after one is open', async () => {
         const page = new FakePage();
         setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         expect(fs.isRegistryEmpty()).toBe(true);
@@ -549,8 +599,8 @@ describe('browser/playwright-bridge', () => {
         const page1 = new FakePage();
         const page2 = new FakePage();
         const { browser } = setupBrowser([page1, page2]);
-        page1.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'first', error: null });
-        page2.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'second', error: null });
+        page1.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'first', error: null }));
+        page2.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'second', error: null }));
 
         const fs = await loadPlaywrightBridge();
 
@@ -718,7 +768,9 @@ describe('browser/playwright-bridge', () => {
         previewFrame.waitForFunction.mockReset();
         previewFrame.waitForFunction.mockRejectedValueOnce(new Error('still on login')); // initial detection
         previewFrame.waitForFunction.mockResolvedValue(undefined); // login completed → bridge in frame
-        previewFrame.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        previewFrame.evaluate.mockResolvedValue(
+            evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null })
+        );
         process.env.PLAYWRIGHT_LOGIN_WAIT_MS = '10000';
         const { browser } = setupBrowser([page]);
 
@@ -745,7 +797,7 @@ describe('browser/playwright-bridge', () => {
     test('B2: ambiguous slow localhost app keeps the old behaviour (no login signal)', async () => {
         const page = loginProbePage('http://localhost:8080/a'); // still loopback, no markers
         setupBrowser([page]);
-        page.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction('http://localhost:8080/a', 'a');
@@ -776,7 +828,7 @@ describe('browser/playwright-bridge', () => {
     test('B2: ambiguous page with a 2xx status keeps the slow-but-valid backstop', async () => {
         const page = loginProbePage('http://localhost:8080/a', 200);
         setupBrowser([page]);
-        page.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         const result = await fs.callFrontendAction('http://localhost:8080/a', 'a');
@@ -790,7 +842,7 @@ describe('browser/playwright-bridge', () => {
     test('ABAP untouched: a site registered as non-CF is never seeded or snapshotted', async () => {
         const page = new FakePage(); // default: bridge present (probe resolves), localhost
         const { browser } = setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         mockIsCFEnvironment.mockResolvedValue(false); // ABAP
         const session = await loadSession();
@@ -809,7 +861,7 @@ describe('browser/playwright-bridge', () => {
     test('a site never registered gets a plain context (no seeding)', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge(); // no registerSite call
         await fs.callFrontendAction(SITE_A, 'a');
@@ -822,9 +874,11 @@ describe('browser/playwright-bridge', () => {
 
     test('B1: in-memory session reused across re-start for the same CF project', async () => {
         const appPage = new FakePage([], CF_SITE);
-        appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        appPage.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null }));
         const appPage2 = new FakePage([], CF_SITE);
-        appPage2.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        appPage2.evaluate.mockResolvedValue(
+            evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null })
+        );
 
         const { browser } = setupBrowser([appPage, appPage2]);
         const session = await loadSession();
@@ -846,9 +900,9 @@ describe('browser/playwright-bridge', () => {
 
     test('B1: per-project isolation — project A snapshot never seeds project B on the same port', async () => {
         const appA = new FakePage([], CF_SITE);
-        appA.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+        appA.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: 'ok', error: null }));
         const appB = new FakePage([], CF_SITE);
-        appB.evaluate.mockResolvedValue({ isSuccess: true, payload: 'ok', error: null });
+        appB.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const { browser } = setupBrowser([appA, appB]);
         const session = await loadSession();
@@ -873,7 +927,9 @@ describe('browser/playwright-bridge', () => {
         process.env.PLAYWRIGHT_SESSION_STATE_PATH = dir;
         try {
             const appPage = new FakePage([], CF_SITE);
-            appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+            appPage.evaluate.mockResolvedValue(
+                evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null })
+            );
 
             setupBrowser([appPage]);
             const session = await loadSession();
@@ -905,7 +961,9 @@ describe('browser/playwright-bridge', () => {
         process.env.PLAYWRIGHT_SESSION_STATE_PATH = dir; // set, but no session file exists yet
         try {
             const appPage = new FakePage([], CF_SITE);
-            appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+            appPage.evaluate.mockResolvedValue(
+                evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null })
+            );
 
             const { browser } = setupBrowser([appPage]);
             const session = await loadSession();
@@ -928,7 +986,9 @@ describe('browser/playwright-bridge', () => {
         const dir = mkdtempSync(join(tmpdir(), 'rta-sessions-off-'));
         try {
             const appPage = new FakePage([], CF_SITE);
-            appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+            appPage.evaluate.mockResolvedValue(
+                evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null })
+            );
 
             setupBrowser([appPage]);
             const session = await loadSession();
@@ -948,7 +1008,7 @@ describe('browser/playwright-bridge', () => {
 
     test('B1: snapshot write failure is swallowed', async () => {
         const appPage = new FakePage([], CF_SITE);
-        appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        appPage.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null }));
 
         const { browser } = setupBrowser([appPage]);
         browser.newContext.mockImplementation(async (options?: unknown) => {
@@ -973,7 +1033,7 @@ describe('browser/playwright-bridge', () => {
         process.env.PLAYWRIGHT_HEADLESS = '1';
         const page = new FakePage();
         setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
@@ -984,7 +1044,7 @@ describe('browser/playwright-bridge', () => {
     test('default launch is headed when PLAYWRIGHT_HEADLESS unset', async () => {
         const page = new FakePage();
         setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         await fs.callFrontendAction(SITE_A, 'a');
@@ -995,7 +1055,7 @@ describe('browser/playwright-bridge', () => {
     test('disconnected event keeps the CF session map (next start reuses the login)', async () => {
         const loginPage = loginProbePage(IDP_URL);
         const appPage = new FakePage([], CF_SITE);
-        appPage.evaluate.mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true }, error: null });
+        appPage.evaluate.mockResolvedValue(evalResult({ isSuccess: true, payload: { rtaStarted: true }, error: null }));
         const { browser } = setupBrowser([loginPage, appPage]);
 
         const session = await loadSession();
@@ -1014,7 +1074,7 @@ describe('browser/playwright-bridge', () => {
         const newBrowser = new FakeBrowser();
         newBrowser.newPage.mockResolvedValue(freshPage);
         launchMock.mockResolvedValueOnce(newBrowser);
-        freshPage.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        freshPage.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         await session.registerSite(CF_SITE, '/path/to/cf-project'); // re-register after reconnect
         await fs.callFrontendAction(CF_SITE, 'a');
@@ -1026,7 +1086,7 @@ describe('browser/playwright-bridge', () => {
     test('fetchViaContext returns status, content-type and body from the context request', async () => {
         const page = new FakePage();
         const { browser } = setupBrowser([page]);
-        page.evaluate.mockResolvedValueOnce({ isSuccess: true, payload: 'ok', error: null });
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
 
         const fs = await loadPlaywrightBridge();
         // Register a session for SITE_A so the registry has a PageRPC with a context.
