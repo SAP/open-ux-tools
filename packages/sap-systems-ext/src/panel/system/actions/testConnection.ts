@@ -15,7 +15,14 @@ import {
     getSystemInfo,
     hasServiceMetadata
 } from '../utils';
-import { TelemetryHelper, compareSystems, getBackendSystemService, shouldStoreSystemInfo, t } from '../../../utils';
+import {
+    TelemetryHelper,
+    compareSystems,
+    getBackendSystemService,
+    getSystemTelemetryProps,
+    shouldStoreSystemInfo,
+    t
+} from '../../../utils';
 import {
     GuidedAnswersLinkAction,
     SystemAction,
@@ -37,7 +44,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
     const { system, servicePath } = action.payload;
 
     await postMessage(loadingTestConnectionInfo());
-    logTestTelemetry(TestConnectionStatus.STARTED, system.systemType);
+    logTestTelemetry(TestConnectionStatus.STARTED, system);
 
     const validationResult = validateSystemInfo(system, servicePath);
     if (typeof validationResult === 'string') {
@@ -85,13 +92,13 @@ async function testCatalog(
         if ((v2Request.count ?? 0) > 0 || (v4Request.count ?? 0) > 0) {
             postConnectionStatus({ connected: true, catalogResults: serviceCount, postMessage });
             logServiceSummary(system.name, serviceCount);
-            logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
+            logTestTelemetry(TestConnectionStatus.SUCCEED, system);
         } else {
             throw new Error(t('error.noServices'));
         }
     } catch (e) {
         handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
-        logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+        logTestTelemetry(TestConnectionStatus.FAILED, system);
     }
 }
 
@@ -110,7 +117,7 @@ async function testODataService(
     try {
         await hasServiceMetadata(system, servicePath);
         postConnectionStatus({ connected: true, message: t('info.serviceMetadata'), postMessage });
-        logTestTelemetry(TestConnectionStatus.SUCCEED, system.systemType);
+        logTestTelemetry(TestConnectionStatus.SUCCEED, system);
     } catch (e) {
         postConnectionStatus({
             connected: false,
@@ -118,7 +125,7 @@ async function testODataService(
             postMessage
         });
         logServiceRequestError(e as AxiosError);
-        logTestTelemetry(TestConnectionStatus.FAILED, system.systemType);
+        logTestTelemetry(TestConnectionStatus.FAILED, system);
     }
 }
 
@@ -269,14 +276,14 @@ function logServiceSummary(systemName: string, catalog: CatalogServicesCounts): 
  * Logs telemetry for the test connection action.
  *
  * @param status - the status of the test connection action
- * @param systemType - the type of the system
+ * @param system - the backend system being tested
  */
-function logTestTelemetry(status: TestConnectionStatus, systemType = 'unknown'): void {
+function logTestTelemetry(status: TestConnectionStatus, system: BackendSystem): void {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.TEST_CONNECTION,
         status,
-        systemType
+        ...getSystemTelemetryProps(system)
     });
 }
 

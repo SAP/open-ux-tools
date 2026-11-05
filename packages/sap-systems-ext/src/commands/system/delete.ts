@@ -2,7 +2,14 @@ import type { StoredSystemViewNode, SystemCommandContext } from '../../types/sys
 import type { PanelManager, SystemPanel } from '../../panel';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { window } from 'vscode';
-import { t, confirmPrompt, TelemetryHelper, geti18nOpts, getBackendSystemService } from '../../utils';
+import {
+    t,
+    confirmPrompt,
+    TelemetryHelper,
+    geti18nOpts,
+    getBackendSystemService,
+    getSystemTelemetryProps
+} from '../../utils';
 import { ConfirmationPromptType, SYSTEMS_EVENT, SystemAction, SystemActionStatus } from '../../utils/constants';
 
 /**
@@ -49,7 +56,7 @@ function deletionSuccessHandler(
     backendSystem: BackendSystem
 ): void {
     panelManager.deleteAndDispose(panelKey);
-    logTelemetry(SystemActionStatus.DELETED_SUCCESS, backendSystem.systemType);
+    logTelemetry(SystemActionStatus.DELETED_SUCCESS, backendSystem);
 
     window.showInformationMessage(t('info.connectionDeleted', geti18nOpts(backendSystem.name)));
 }
@@ -61,20 +68,20 @@ function deletionSuccessHandler(
  */
 function deletionFailureHandler(system: BackendSystem): void {
     window.showWarningMessage(t('error.deletingConnection', geti18nOpts(system.name)));
-    logTelemetry(SystemActionStatus.DELETED_FAIL, system.systemType);
+    logTelemetry(SystemActionStatus.DELETED_FAIL, system);
 }
 
 /**
  * Call telemetry logger for system deletion actions.
  *
  * @param status - the status of the action (success or failure)
- * @param systemType - the type of the system (optional)
+ * @param system - the backend system the action was performed on
  */
-function logTelemetry(status: SystemActionStatus, systemType = ''): void {
+function logTelemetry(status: SystemActionStatus, system: BackendSystem): void {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status,
-        systemType
+        ...getSystemTelemetryProps(system)
     });
 }

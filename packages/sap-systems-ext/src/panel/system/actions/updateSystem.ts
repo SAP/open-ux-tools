@@ -9,7 +9,8 @@ import {
     t,
     getBackendSystemService,
     compareSystems,
-    shouldStoreSystemInfo
+    shouldStoreSystemInfo,
+    getSystemTelemetryProps
 } from '../../../utils';
 import {
     getSystemInfo,
@@ -63,13 +64,7 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         const existingSystem = error instanceof ConnectionExistsError ? error.existingSystem : undefined;
-        await postSavingError(
-            message,
-            context.postMessage,
-            backendSystem.systemType,
-            context.panelViewType,
-            existingSystem
-        );
+        await postSavingError(message, context.postMessage, backendSystem, context.panelViewType, existingSystem);
     }
 }
 
@@ -162,14 +157,14 @@ async function updateHandler(
  *
  * @param errorMsg - the error message to post
  * @param postMessage - function to post a message to the webview
- * @param systemType - optional system type for telemetry logging
+ * @param backendSystem - the system that failed to be saved, used for telemetry logging
  * @param panelViewType - the current panel view type
  * @param existingSystem - optional existing system that caused a conflict
  */
 async function postSavingError(
     errorMsg: string,
     postMessage: PanelContext['postMessage'],
-    systemType = 'unknown',
+    backendSystem: BackendSystem,
     panelViewType?: SystemPanelViewType,
     existingSystem?: BackendSystem
 ): Promise<void> {
@@ -193,7 +188,7 @@ async function postSavingError(
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status: isUpdate ? SystemActionStatus.UPDATED_FAIL : SystemActionStatus.CREATED_FAIL,
-        systemType
+        ...getSystemTelemetryProps(backendSystem)
     });
 }
 
@@ -228,6 +223,6 @@ async function saveSystem(
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status: existingSystem ? SystemActionStatus.UPDATED_SUCCESS : SystemActionStatus.CREATED_SUCCESS,
-        systemType: backendSystem.systemType || 'unknown'
+        ...getSystemTelemetryProps(backendSystem)
     });
 }
