@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
 import type { IPopupRestoreFocusParams } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton/index.js';
@@ -90,6 +90,11 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
     } = props;
     const [calloutVisible, setCalloutVisible] = useState(false);
     const acceptedRef = useRef(false);
+    useEffect(() => {
+        if (readOnly) {
+            setCalloutVisible(false);
+        }
+    }, [readOnly]);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
         if (suggestion.suggest?.type === SuggestValueType.Existing) {
@@ -101,6 +106,10 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         }
     }, [calloutVisible, suggestion, readOnly]);
     const onAccept = useCallback((): void => {
+        if (readOnly) {
+            setCalloutVisible(false);
+            return;
+        }
         if (suggestion.suggest) {
             if (suggestion.suggest.type === SuggestValueType.New) {
                 onCreateNewEntry?.(suggestion.suggest.entry);
@@ -111,7 +120,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
         }
         acceptedRef.current = true;
         setCalloutVisible(false);
-    }, [suggestion, onCreateNewEntry, onUpdateValue, value]);
+    }, [readOnly, suggestion, onCreateNewEntry, onUpdateValue, value]);
     const onCancel = useCallback((): void => {
         setCalloutVisible(false);
     }, []);
@@ -137,7 +146,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                 busy={busy?.busy}
                 useMinWaitingTime={busy?.useMinWaitingTime}
             />
-            {calloutVisible && (
+            {calloutVisible && !readOnly && (
                 <UICallout
                     target={`#${id}`}
                     gapSpace={5}
