@@ -169,7 +169,8 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                 adp: {
                     target: config.target,
                     ignoreCertErrors: false
-                }
+                },
+                flp: { useNewSandbox: true }
             }
         }
     ]);
@@ -207,6 +208,7 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                     target: config.target,
                     ignoreCertErrors: false
                 },
+                flp: { useNewSandbox: true },
                 rta: {
                     editors: [
                         {

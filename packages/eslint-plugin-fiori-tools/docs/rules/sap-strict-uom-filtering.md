@@ -63,3 +63,7 @@ If your application intentionally disables strict UOM filtering due to a specifi
 ## Further Reading
 
 - [UI5 Configuring Filter Fields](https://ui5.sap.com/#/topic/f5dcb29da3bf4e0091eba3e7ccef4580)
+
+## Bug Report
+
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).

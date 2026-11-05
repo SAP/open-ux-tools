@@ -2,6 +2,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { isFioriToolsProject } from '../../../src/utils/project-access-adapters.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -34,7 +35,7 @@ describe('project-access-adapters', () => {
                 })
             );
 
-            const result = await isFioriToolsProject(projectDir, '@sap-ux/ui5-tooling');
+            const result = await isFioriToolsProject(createMemFsEditor(), projectDir, '@sap-ux/ui5-tooling');
             expect(result).toBe(true);
         });
 
@@ -49,7 +50,7 @@ describe('project-access-adapters', () => {
                 })
             );
 
-            const result = await isFioriToolsProject(projectDir, '@sap-ux/ui5-tooling');
+            const result = await isFioriToolsProject(createMemFsEditor(), projectDir, '@sap-ux/ui5-tooling');
             expect(result).toBe(false);
         });
 
@@ -57,7 +58,7 @@ describe('project-access-adapters', () => {
             const projectDir = join(testOutputDir, 'no-package-json');
             await mkdir(projectDir, { recursive: true });
 
-            const result = await isFioriToolsProject(projectDir, '@sap-ux/ui5-tooling');
+            const result = await isFioriToolsProject(createMemFsEditor(), projectDir, '@sap-ux/ui5-tooling');
             expect(result).toBe(false);
         });
 
@@ -66,7 +67,7 @@ describe('project-access-adapters', () => {
             await mkdir(projectDir, { recursive: true });
             await writeFile(join(projectDir, 'package.json'), 'invalid json');
 
-            const result = await isFioriToolsProject(projectDir, '@sap-ux/ui5-tooling');
+            const result = await isFioriToolsProject(createMemFsEditor(), projectDir, '@sap-ux/ui5-tooling');
             expect(result).toBe(false);
         });
     });

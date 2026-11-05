@@ -8,7 +8,9 @@
 import fastGlob from 'fast-glob';
 import { dirname, basename, join, normalize } from 'node:path';
 import { access } from 'node:fs/promises';
+import type { Editor } from 'mem-fs-editor';
 import { readJSON } from './file-access.js';
+import { normalizePath } from './file-system-utils.js';
 import type { ProjectFolder } from '../types.js';
 
 /**
@@ -26,11 +28,12 @@ export type ReuseLibType = (typeof ReuseLibType)[keyof typeof ReuseLibType];
  *
  * Replaces: findAllProjectRoots from @sap/ux-project-access
  *
+ * @param fs - mem-fs editor
  * @param paths - Array of root paths to search
  * @param sapuxRequired - If true, only return projects with sapux in dependencies
  * @returns Array of project root paths
  */
-export async function findAllProjectRoots(paths: string[], sapuxRequired = false): Promise<string[]> {
+export async function findAllProjectRoots(fs: Editor, paths: string[], sapuxRequired = false): Promise<string[]> {
     const roots: string[] = [];
     const ignorePatterns = ['**/node_modules/**', '**/dist/**', '**/.git/**'];
 
@@ -55,7 +58,7 @@ export async function findAllProjectRoots(paths: string[], sapuxRequired = false
 
                         if (sapuxRequired) {
                             try {
-                                const pkg = await readJSON<any>(pkgPath);
+                                const pkg = await readJSON<any>(fs, pkgPath);
                                 // Check for SAP UX / Fiori Tools markers:
                                 // 1. "sapux": true property (Fiori Tools marker)
                                 // 2. Dependencies starting with @sap-ux/ or @sap/ux- (Fiori Tools packages)
@@ -124,8 +127,8 @@ export interface ReuseLibResult {
 async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: string): Promise<string> {
     let current = dirname(manifestPath);
     // Normalize paths for comparison
-    const normalizedBoundary = workspaceBoundary.replaceAll('\\', '/');
-    const normalizedCurrent = (path: string) => path.replaceAll('\\', '/');
+    const normalizedBoundary = normalizePath(workspaceBoundary);
+    const normalizedCurrent = (path: string) => normalizePath(path);
 
     // Helper to check if a file/directory exists using Node.js fs API
     // (not mem-fs, since project markers are real filesystem entries)
@@ -181,10 +184,11 @@ async function findLibraryProjectRoot(manifestPath: string, workspaceBoundary: s
  * Searches for UI5 libraries and components by finding manifest.json files
  * with "sap.app.type": "library" or "component"
  *
+ * @param fs - mem-fs editor
  * @param workspaceFolders - Array of workspace folders to search
  * @returns Array of reuse library information
  */
-export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): Promise<ReuseLibResult[]> {
+export async function getReuseLibs(fs: Editor, workspaceFolders: readonly ProjectFolder[]): Promise<ReuseLibResult[]> {
     // Process all workspace folders in parallel
     const folderResults = await Promise.all(
         workspaceFolders.map(async (folder) => {
@@ -204,7 +208,7 @@ export async function getReuseLibs(workspaceFolders: readonly ProjectFolder[]): 
                         // so paths match what callers build with path.join (fails on Windows otherwise).
                         const manifestPath = normalize(rawManifestPath);
                         try {
-                            const manifest = await readJSON<any>(manifestPath);
+                            const manifest = await readJSON<any>(fs, manifestPath);
                             const sapApp = manifest?.['sap.app'];
                             const type = sapApp?.type;
 

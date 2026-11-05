@@ -42,7 +42,7 @@ export interface ProcessProjectExtensionConfig {
         url?: string;
     };
     getClientFromDestinationName: (destination: string) => string;
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
+    getFlpIntentFromHtml: (path: string) => string | undefined;
     getManifestJson: (projectRoot: string, webappPath: string) => Promise<Manifest>;
 }
 
@@ -142,7 +142,9 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
         neoappDestinations,
         extensionProjectSettings,
         ui5Version,
-        appVersion
+        appVersion,
+        targetMockHtmlFile: 'test/flpSandboxMockServer.html',
+        ...(projectInfo.flpSandboxFlpIntent ? { flpSandboxFlpIntent: projectInfo.flpSandboxFlpIntent } : {})
     };
     if (manifest) {
         result.manifestUI5Version = getMinUI5VersionAsArray(manifest, true)[0] || '';

@@ -1,43 +1,22 @@
 /**
- * Mem-fs editor utilities with context-based management
+ * Mem-fs editor utilities.
  *
- * Provides thread-safe, per-invocation Editor instances for the migration writer.
- * Uses AsyncLocalStorage to track the current migration's editor without requiring
- * it to be passed through every function call.
+ * Provides per-invocation Editor instances for the migration writer. The editor is
+ * threaded explicitly through the call tree (as in the other open-ux-tools writers),
+ * so there is no implicit/global context here.
  */
 import type { Editor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
-import { access } from 'node:fs/promises';
-import { AsyncLocalStorage } from 'node:async_hooks';
-
-/**
- * AsyncLocalStorage for tracking the current migration's editor
- */
-const editorContext = new AsyncLocalStorage<Editor>();
+import fastGlob from 'fast-glob';
+import { normalizePath } from './file-system-utils.js';
 
 type EditorStore = {
-    each: (callback: (file: { path: string; state?: string }) => void) => void;
+    each: (callback: (file: { path: string; state?: string; contents: Buffer | null }) => void) => void;
+    get: (filepath: string) => { contents: Buffer | null };
 };
 
 type EditorWithStore = Editor & { store: EditorStore };
-
-/**
- * Get editor from context, parameter, or create a new one.
- * Priority: explicit parameter > context > new instance
- *
- * @param editorOrPath - Editor instance or a path string
- */
-export function getEditor(editorOrPath: string | Editor): Editor {
-    if (typeof editorOrPath !== 'string') {
-        return editorOrPath;
-    }
-    const contextEditor = getCurrentEditor();
-    if (contextEditor) {
-        return contextEditor;
-    }
-    return createMemFsEditor();
-}
 
 /**
  * Create a new mem-fs editor instance
@@ -50,39 +29,36 @@ export function createMemFsEditor(): Editor {
 }
 
 /**
- * Run a function with an editor in context
- * The editor will be available to all functions called within the callback
+ * Load every file under a project folder into the mem-fs store.
  *
- * @param editor - Editor instance to use
- * @param callback - Function to run with the editor in context
- * @returns Result of the callback
- */
-export function runWithEditor<T>(editor: Editor, callback: () => T | Promise<T>): T | Promise<T> {
-    return editorContext.run(editor, callback);
-}
-
-/**
- * Get the current editor from context
+ * Pulling files into the store makes existence checks that scan the store (editorHasPath)
+ * see the real project tree, so later writes do not overwrite untracked files. Loading via
+ * the store's get() does not mark files as modified, so commit() still skips them.
  *
- * @returns Current editor or undefined if not in a migration context
+ * @param editor - Mem-fs editor whose store should be populated
+ * @param projectRoot - Absolute path to the project folder to load
  */
-export function getCurrentEditor(): Editor | undefined {
-    return editorContext.getStore();
-}
-
-/**
- * Check if an editor is available in the current context
- *
- * @returns True if editor is available
- */
-export function isMemFsEnabled(): boolean {
-    return getCurrentEditor() !== undefined;
+export async function loadProjectIntoEditor(editor: Editor, projectRoot: string): Promise<void> {
+    const files = await fastGlob('**/*', {
+        cwd: projectRoot,
+        ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
+        absolute: true,
+        onlyFiles: true,
+        dot: true
+    });
+    const store = (editor as EditorWithStore).store;
+    for (const file of files) {
+        // get() lazily reads the file into the store without marking it modified.
+        // The store resolves and keys the path itself; editorHasPath normalizes separators
+        // at comparison time, so both sides stay consistent cross-platform.
+        store.get(file);
+    }
 }
 
 /**
  * Check whether an editor contains a file or a directory represented by staged files.
  *
- * WARNING: Do NOT use editor.exists() as it has a side effect of staging the file!
+ * WARNING: Do NOT use editor.exists() for directories as it only reports files.
  *
  * @param editor - Mem-fs editor to inspect
  * @param path - Absolute file or directory path
@@ -91,7 +67,7 @@ export function isMemFsEnabled(): boolean {
 export function editorHasPath(editor: Editor, path: string): boolean {
     // Normalize path separators to forward slashes for consistent comparison
     // mem-fs stores all paths with forward slashes regardless of OS
-    const normalizedPath = path.replaceAll('\\', '/');
+    const normalizedPath = normalizePath(path);
     const directoryPrefix = normalizedPath.endsWith('/') ? normalizedPath : normalizedPath + '/';
     let found = false;
 
@@ -99,8 +75,13 @@ export function editorHasPath(editor: Editor, path: string): boolean {
         if (file.state === 'deleted') {
             return;
         }
+        // Ignore entries with no content: a missing path that was only probed via store.get()
+        // (e.g. by fs.exists/fs.read) is cached with contents === null and must not count as present.
+        if (file.contents === null) {
+            return;
+        }
         // Normalize file path as well for comparison
-        const normalizedFilePath = file.path.replaceAll('\\', '/');
+        const normalizedFilePath = normalizePath(file.path);
         // Check exact match OR files under this directory
         if (normalizedFilePath === normalizedPath || normalizedFilePath.startsWith(directoryPrefix)) {
             found = true;
@@ -108,65 +89,4 @@ export function editorHasPath(editor: Editor, path: string): boolean {
     });
 
     return found;
-}
-
-/**
- * Check if file/directory exists (async)
- * Uses editor from context if available, otherwise checks real filesystem
- *
- * @param path - Path to check
- * @returns True if exists in mem-fs (when editor available) OR on real filesystem
- */
-export async function exists(path: string): Promise<boolean> {
-    const editor = getCurrentEditor();
-    if (editor) {
-        // In mem-fs mode, check mem-fs only
-        return editorHasPath(editor, path);
-    }
-    // No editor context - check real filesystem
-    try {
-        await access(path);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-/**
- * Copy file using mem-fs or real filesystem
- *
- * @param src - Source path
- * @param dest - Destination path
- */
-export function copyFile(src: string, dest: string): void {
-    const editor = getCurrentEditor();
-    if (editor) {
-        editor.copy(src, dest);
-    } else {
-        throw new Error('Editor not available. Call runWithEditor() to set up the migration context.');
-    }
-}
-
-/**
- * Delete file using mem-fs or real filesystem
- *
- * @param path - Path to delete
- */
-export function deleteFile(path: string): void {
-    const editor = getCurrentEditor();
-    if (editor) {
-        editor.delete(path);
-    } else {
-        throw new Error('Editor not available. Call runWithEditor() to set up the migration context.');
-    }
-}
-
-/**
- * Create directory (no-op in mem-fs, directories created implicitly)
- *
- * @param _path - Directory path
- */
-export function mkdir(_path: string): void {
-    // mem-fs handles directories implicitly when writing files
-    // No explicit mkdir needed
 }

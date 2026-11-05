@@ -29,6 +29,6 @@ In such a case, you can change the method name or deactivate the rule by placing
 /*eslint-enable sap-no-dom-insertion*/
 ```
 
-## Bug report
+## Bug Report
 
 In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).

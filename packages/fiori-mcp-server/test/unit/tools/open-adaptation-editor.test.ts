@@ -49,6 +49,11 @@ jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
 }));
 
+const mockIsCFEnvironment = jest.fn<(appPath: string) => Promise<boolean>>().mockResolvedValue(false);
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: mockIsCFEnvironment
+}));
+
 const { openAdaptationEditor } = await import('../../../src/tools/open-adaptation-editor.js');
 
 class FakeChildProcess extends EventEmitter {
@@ -463,6 +468,7 @@ describe('openAdaptationEditor', () => {
         const child = new FakeChildProcess();
         mockSpawn.mockReturnValue(fakeSubprocess(child));
         const pending = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        await new Promise(setImmediate);
         const token = String(mockSpawn.mock.calls[0][2].env.SAP_FIORI_MCP_ADP_RELAY_TOKEN);
         setImmediate(() => {
             child.emitLine(`debug ${token} inherited-secret`);
@@ -522,5 +528,47 @@ describe('openAdaptationEditor', () => {
         expect(result.status).toBe('Error');
         expect(mockTerminate).toHaveBeenCalledWith(child);
         expect(mockRegisterSession).not.toHaveBeenCalled();
+    });
+
+    test('Cloud Foundry with dist: spawns the editor and serves the adaptation-editor path', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockImplementation((p: unknown) => p === '/tmp/myapp/dist');
+        const child = new FakeChildProcess(4321);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+
+        const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        setImmediate(() => child.emitLine('URL: http://localhost:8080'));
+        const result = await promise;
+
+        expect(result.status).toBe('Success');
+        expect(result.editorUrl).toContain('/test/adaptation-editor.html');
+        expect(mockSpawn).toHaveBeenCalled();
+    });
+
+    test('Cloud Foundry without dist: fails fast with build guidance and does not spawn', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockReturnValue(false);
+
+        const result = await openAdaptationEditor({ appPath: '/tmp/myapp' });
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('dist');
+        expect(mockSpawn).not.toHaveBeenCalled();
+    });
+
+    test('Cloud Foundry timeout message references the 300-second window', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockImplementation((p: unknown) => p === '/tmp/myapp/dist');
+        const child = new FakeChildProcess(1234);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+
+        jest.useFakeTimers();
+        const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        await jest.advanceTimersByTimeAsync(300000);
+        const result = await promise;
+        jest.useRealTimers();
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('300 seconds');
     });
 });

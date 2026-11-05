@@ -25,6 +25,10 @@ const usesFilterFieldIdentifier =
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
+<%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (defaultSortOrder && defaultSortOrder.length > 0) || (tabs && tabs.some(function(tab) { return (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) || (tab.defaultSortOrder && tab.defaultSortOrder.length > 0); }))); -%>
+<%_ if (needsSortOrder) { -%>
+import { SortOrder } from "sap/ui/core/library";
+<%_ } -%>
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
@@ -203,6 +207,15 @@ function journey() {
     });
 
 <%_ } -%>
+<%_ if (tab.defaultSortOrder && tab.defaultSortOrder.length > 0) { -%>
+    opaTest(<%- JSON.stringify("Check default sort order from PresentationVariant in view " + tab.key) %>, function (_Given: Given, _When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ tab.defaultSortOrder.forEach(function(sort) { _%>
+        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+        <%_ }); -%>
+    });
+
+<%_ } -%>
 <%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
 <%_ if (tab.columnPersonalizationSupported !== false) { -%>
     opaTest(<%- JSON.stringify("Check the presence of the text columns for columns with a Text annotation in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
@@ -354,6 +367,22 @@ function journey() {
 <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
     opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+    });
+
+<%_ } -%>
+<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
+    opaTest("Check default sort order from PresentationVariant", function (_Given: Given, _When: When, Then: Then) {
+        <%_ defaultSortOrder.forEach(function(sort) { _%>
+        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+        <%_ }); -%>
+    });
+
+<%_ } -%>
+<%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
+    opaTest("Check default filter values from SelectionVariant", function (_Given: Given, _When: When, Then: Then) {
+        <%_ defaultFilterValues.forEach(function(filter) { _%>
+        Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: <%- JSON.stringify(filter.property) %> }, <%- filter.value2 !== undefined ? JSON.stringify([filter.value, filter.value2]) : JSON.stringify(filter.value) %><%- filter.operator ? ', ' + JSON.stringify(filter.operator) : '' %>);
+        <%_ }); -%>
     });
 
 <%_ } -%>

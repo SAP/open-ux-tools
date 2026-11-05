@@ -1,5 +1,45 @@
 # @sap-ux/project-input-validator
 
+## 1.0.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+
+## 1.0.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.0.23
 
 ### Patch Changes

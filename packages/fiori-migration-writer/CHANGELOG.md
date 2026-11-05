@@ -1,5 +1,186 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+
+## 0.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Upgrade vscode-uri 3.1.0 → 3.2.0 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/launch-config 1.0.27 → 1.0.28
+
+## 0.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.70 → 1.0.71
+
+## 0.0.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.69 → 1.0.70
+- @sap-ux/launch-config 1.0.26 → 1.0.27
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.7
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 0.0.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.68 → 1.0.69
+
+## 0.0.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Features
+
+- Export `postMigrationAction` and `distVar` from the public API so consumers do not need to import from internal `/dist/` sub-paths [[61dddec](https://github.com/SAP/open-ux-tools/commit/61dddec1f4da2806fc7a4772615a7a6818b6d24b)]
+
+## 0.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade read-package-up 11.0.0 → 12.0.0 [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+- @sap-ux/launch-config 1.0.25 → 1.0.26
+
+## 0.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
+## 0.0.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Restore ui5-mock.yaml middleware and targetMockHtmlFile; resolve SonarQube findings and thread mem-fs editor explicitly [[fc7d03d](https://github.com/SAP/open-ux-tools/commit/fc7d03dac8da1434cf14370da953b15edff89439)]
+
+## 0.0.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+
+## 0.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- Deduplicate project roots to prevent duplicate reuse library detection. Projects with both package.json and pom.xml markers, and libraries with nested manifest.json files, now appear exactly once in migration view. [[4a5825d](https://github.com/SAP/open-ux-tools/commit/4a5825d83dcd3f172e7575864d262e8a5df5fa80)]
+
+## 0.0.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Bug Fixes
+
+- Resolve pom.xml artifactId placeholder when manifest app ID contains ${project.artifactId},
+
+       Prevent overwriting existing mockserver.js during migration when mem-fs editor context is active
+       Load the project folder into mem-fs at migration start so existence checks see untracked files on disk and are not silently overwritten; unify the existence check and simplify readJSON [[4576e3a](https://github.com/SAP/open-ux-tools/commit/4576e3a0ff7b421483ad004bd7556a75a1c9c3e3)]
+
+#### Dependency Updates
+
+- Upgrade fs-extra 11.3.6 → 11.4.1 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/launch-config 1.0.24 → 1.0.25
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.6
+
 ## 0.0.2
 
 ### Patch Changes

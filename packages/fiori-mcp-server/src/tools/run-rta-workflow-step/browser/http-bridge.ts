@@ -1,4 +1,4 @@
-import type { FrontendActionResult, FrontendActionTransport } from './types.js';
+import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
 import { requireEditorSession, stopEditorSession } from '../../../utils/editor-session.js';
 import { logger } from '../../../utils/logger.js';
 
@@ -134,9 +134,36 @@ async function reloadPageHttp(site: string): Promise<void> {
     }
 }
 
+/**
+ * Fetches a URL through the editor page's authenticated same-origin context via the relay
+ * `__fetch__` command. The injected browser client performs the fetch (reusing the editor
+ * session cookies) and returns the status, content-type, and body — the relay equivalent of
+ * the Playwright transport's `fetchViaContext`, used by `get_odata_metadata` for CF projects.
+ *
+ * @param site Registered editor URL.
+ * @param url Absolute URL to GET; the relay client rejects anything not same-origin as the editor.
+ * @returns The response status, content-type, and body text.
+ */
+async function fetchViaContextHttp(site: string, url: string): Promise<FetchViaContextResult> {
+    const response = await requestRelay(site, '__fetch__', { url });
+    if (response.error) {
+        throw new Error(`Editor relay fetch failed: ${response.error}`);
+    }
+    if (!isFrontendResult(response.result)) {
+        throw new Error('Editor relay returned an invalid fetch result');
+    }
+    const result = response.result;
+    if (!result.isSuccess || result.payload === null) {
+        throw new Error(result.error?.message ?? 'Editor relay fetch failed');
+    }
+    // The relay client returns { status, contentType, body } as the envelope payload.
+    return result.payload as FetchViaContextResult;
+}
+
 /** HTTP relay for an automatically opened Simple Browser editor. */
 export const httpTransport: FrontendActionTransport = {
     callFrontendAction: callFrontendActionHttp,
+    fetchViaContext: fetchViaContextHttp,
     disconnectSite: async () => {},
     stopBrowser: async () => {},
     reloadPage: reloadPageHttp,

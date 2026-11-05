@@ -35,8 +35,9 @@ function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** Frontend action names the relay accepts: flex actions plus the lifecycle sentinels. */
-const ACTION_NAME_PATTERN = /^(?:com\.sap\.ui\.flex\.[A-Za-z][A-Za-z\d]*\.v\d+|__reload__|__ready__|__stop__)$/;
+/** Frontend action names the relay accepts: flex actions, the lifecycle sentinels, and `__fetch__`. */
+const ACTION_NAME_PATTERN =
+    /^(?:com\.sap\.ui\.flex\.[A-Za-z][A-Za-z\d]*\.v\d+|__reload__|__ready__|__stop__|__fetch__)$/;
 
 interface ActionBody {
     actionName: string;

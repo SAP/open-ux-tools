@@ -18,7 +18,7 @@ exports[`Migration Integration Tests Special Cases should migrate CA_FIORI_INBOX
     \\"start_old\\": \\"fiori run --open \\\\\\"index.html?sap-client=001&sap-ui-xx-viewCache=false#title-display\\\\\\"\\",
     \\"deploy_old\\": \\"fiori verify\\",
     \\"deploy-config_old\\": \\"fiori add deploy-config\\",
-    \\"start\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#title-display\\\\\\"\\",
     \\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\"

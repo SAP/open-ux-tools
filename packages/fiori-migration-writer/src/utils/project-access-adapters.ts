@@ -3,6 +3,7 @@
  * or compatibility with legacy @sap/ux-project-access
  */
 import { hasDependency, findFilesByExtension } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
 import { readJSON } from './file-access.js';
 import { dirname, join, sep } from 'node:path';
 
@@ -46,14 +47,15 @@ export async function findAllManifest(roots: string[]): Promise<string[]> {
  *
  * Uses modern @sap-ux/project-access hasDependency
  *
+ * @param fs - mem-fs editor
  * @param projectPath - Path to project root
  * @param dependencyName - Dependency name to check
  * @returns true if project has the dependency
  */
-export async function isFioriToolsProject(projectPath: string, dependencyName: string): Promise<boolean> {
+export async function isFioriToolsProject(fs: Editor, projectPath: string, dependencyName: string): Promise<boolean> {
     try {
         const packageJsonPath = join(projectPath, 'package.json');
-        const packageJson = await readJSON(packageJsonPath);
+        const packageJson = await readJSON(fs, packageJsonPath);
         return hasDependency(packageJson, dependencyName);
     } catch {
         // Expected: package.json may not exist or may be malformed in non-Fiori projects.

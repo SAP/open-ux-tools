@@ -296,6 +296,42 @@ describe('browser/http-bridge', () => {
         });
     });
 
+    describe('fetchViaContext', () => {
+        const URL_TO_FETCH = 'http://127.0.0.1:49152/sap/opu/odata/svc/$metadata';
+        const fetchResult = { status: 200, contentType: 'application/xml', body: '<edmx/>' };
+
+        test('sends __fetch__ with the url and returns the status, content-type and body', async () => {
+            respondWith({ result: { isSuccess: true, payload: fetchResult, error: null }, clientId: CLIENT_ID });
+            await expect(httpTransport.fetchViaContext(SITE, URL_TO_FETCH)).resolves.toEqual(fetchResult);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetchMock.mock.calls[0][0]).toEqual(new URL('http://127.0.0.1:49152/adp/api/rta/action'));
+            expect(fetchMock.mock.calls[0][1]?.body).toBe(
+                JSON.stringify({ actionName: '__fetch__', payload: { url: URL_TO_FETCH } })
+            );
+        });
+
+        test('surfaces a client-side fetch failure (e.g. cross-origin) as an error', async () => {
+            respondWith({
+                result: {
+                    isSuccess: false,
+                    payload: null,
+                    error: { code: 'FETCH_CROSS_ORIGIN', message: 'Refusing cross-origin fetch: https://evil.example' }
+                },
+                clientId: CLIENT_ID
+            });
+            await expect(httpTransport.fetchViaContext(SITE, URL_TO_FETCH)).rejects.toThrow(
+                'Refusing cross-origin fetch'
+            );
+        });
+
+        test('surfaces a relay error', async () => {
+            respondWith({ error: 'Browser client disconnected' });
+            await expect(httpTransport.fetchViaContext(SITE, URL_TO_FETCH)).rejects.toThrow(
+                'Editor relay fetch failed: Browser client disconnected'
+            );
+        });
+    });
+
     test.each([true, false])(
         'stopEditor delegates to the owned session and returns %s without browser network wait',
         async (stopped) => {

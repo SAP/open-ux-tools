@@ -301,7 +301,12 @@ describe('relay browser client', () => {
             : { setTimeout, clearTimeout };
         const reload = jest.fn();
         const log = jest.fn();
-        const fetch = jest.fn(async (url: URL, options: { body?: string }) => {
+        const fetch = jest.fn(async (url: URL | string, options: { body?: string } = {}) => {
+            const href = url.toString();
+            if (!href.includes(`${API}/`)) {
+                // Browser-context fetch issued by the __fetch__ command (not a relay endpoint).
+                return { status: 200, headers: { get: () => 'application/xml' }, text: async () => '<edmx/>' };
+            }
             if (options.body) {
                 if (failResult) {
                     throw new Error('Result network failure');
@@ -320,7 +325,11 @@ describe('relay browser client', () => {
             },
             window: { sap: { ui: { require: ui5Require } } },
             crypto: { randomUUID: () => 'document-id' },
-            location: { reload },
+            location: {
+                reload,
+                href: 'https://preview.test/prefix/test/adaptation-editor.html',
+                origin: 'https://preview.test'
+            },
             console: { error: log },
             URL,
             AbortController,
@@ -460,5 +469,33 @@ describe('relay browser client', () => {
         expect(client.fetch).toHaveBeenCalledTimes(3);
         expect(client.fetch.mock.calls[2][1].body).toBeUndefined();
         expect(client.log).toHaveBeenCalled();
+    });
+
+    test('__fetch__ does a same-origin authenticated fetch and returns status, content-type and body', async () => {
+        const client = await runClient([
+            { id: '1', actionName: '__fetch__', payload: { url: 'https://preview.test/svc/$metadata' } }
+        ]);
+        for (let i = 0; i < 2000 && client.fetch.mock.calls.length < 3; i++) {
+            await new Promise(setImmediate);
+        }
+        // calls: [0] poll, [1] the browser metadata fetch, [2] result POST
+        expect(client.fetch.mock.calls[1][0].toString()).toBe('https://preview.test/svc/$metadata');
+        expect(JSON.parse(client.fetch.mock.calls[2][1].body ?? '').result).toEqual({
+            isSuccess: true,
+            payload: { status: 200, contentType: 'application/xml', body: '<edmx/>' }
+        });
+    });
+
+    test('__fetch__ refuses a cross-origin url without issuing the fetch', async () => {
+        const client = await runClient([
+            { id: '1', actionName: '__fetch__', payload: { url: 'https://evil.example/$metadata' } }
+        ]);
+        for (let i = 0; i < 2000 && client.fetch.mock.calls.length < 2; i++) {
+            await new Promise(setImmediate);
+        }
+        // calls: [0] poll, [1] result POST — no browser fetch, rejected before it
+        const posted = JSON.parse(client.fetch.mock.calls[1][1].body ?? '');
+        expect(posted.result.isSuccess).toBe(false);
+        expect(posted.result.error.code).toBe('FETCH_CROSS_ORIGIN');
     });
 });

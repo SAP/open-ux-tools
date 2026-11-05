@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import path, { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
 import type { FlpConfig, MiddlewareConfig } from '../../../src/index.js';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';

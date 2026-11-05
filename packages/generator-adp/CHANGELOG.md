@@ -1,5 +1,145 @@
 # @sap-ux/generator-adp
 
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.2.26 → 1.2.27
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/telemetry 2.0.14 → 2.0.15
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.26 → 1.0.27
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.0.77
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.70 → 1.0.71
+
+## 1.0.76
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.69 → 1.0.70
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/system-access 1.0.18 → 1.0.19
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.75
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.68 → 1.0.69
+
+## 1.0.74
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/project-input-validator 1.0.24 → 1.0.25
+- @sap-ux/telemetry 2.0.12 → 2.0.13
+
+## 1.0.73
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
+## 1.0.72
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/system-access 1.0.16 → 1.0.17
+- @sap-ux/telemetry 2.0.11 → 2.0.12
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+
+## 1.0.71
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/telemetry 2.0.10 → 2.0.11
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
 ## 1.0.70
 
 ### Patch Changes

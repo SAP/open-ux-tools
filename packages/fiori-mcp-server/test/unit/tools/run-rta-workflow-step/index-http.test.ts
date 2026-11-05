@@ -23,7 +23,8 @@ const mockIsRegistryEmpty = jest.fn<() => boolean>();
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/index.js', () => ({
     defaultTransport: mockDefaultTransport,
     httpTransport: mockHttpTransport,
-    isRegistryEmpty: mockIsRegistryEmpty
+    isRegistryEmpty: mockIsRegistryEmpty,
+    registerSite: jest.fn()
 }));
 
 const mockStartRta = jest.fn<typeof rta.startRta>();
@@ -37,6 +38,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
     getPageActions: jest.fn(),
     callPageAction: jest.fn(),
     pressInteractive: jest.fn(),
+    getODataMetadata: jest.fn(),
     FrontendActionError: class FrontendActionError extends Error {}
 }));
 

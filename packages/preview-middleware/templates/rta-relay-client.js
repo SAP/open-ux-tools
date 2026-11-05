@@ -82,7 +82,34 @@
         return true;
     }
 
+    async function fetchViaContext(payload) {
+        // Same-origin only: the editor page may fetch its own origin (the preview-middleware
+        // proxy forwards authenticated backend requests), never a foreign host.
+        const target = new URL(String(payload?.url ?? ''), location.href);
+        if (target.origin !== location.origin) {
+            return {
+                isSuccess: false,
+                payload: null,
+                error: { code: 'FETCH_CROSS_ORIGIN', message: 'Refusing cross-origin fetch: ' + target.origin }
+            };
+        }
+        const response = await fetch(target.toString(), {
+            credentials: 'include',
+            redirect: 'follow',
+            cache: 'no-store'
+        });
+        const body = await response.text();
+        return {
+            isSuccess: true,
+            payload: { status: response.status, contentType: response.headers.get('content-type') ?? '', body }
+        };
+    }
+
     async function callAction(action) {
+        // Authenticated same-origin fetch through the editor page; needs no UI5/RTA, so handle it first.
+        if (action.actionName === '__fetch__') {
+            return await fetchViaContext(action.payload);
+        }
         // The script can already be inside the editor's "preview" frame. Descend only if it exists here.
         const targetWindow = document.getElementById(action.frameId)?.contentWindow ?? window;
         const deadline = Date.now() + ACTION_DEADLINE_MS;

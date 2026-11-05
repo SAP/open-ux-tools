@@ -8,10 +8,13 @@ import {
     writeFile,
     updateFile,
     updateJSON,
-    createDirectory,
+    deleteFile,
     initI18n
 } from '../../../src/index.js';
-import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
+
+const commit = (fs: ReturnType<typeof createMemFsEditor>): Promise<void> =>
+    new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
 
 describe('File Access Utilities', () => {
     const testRoot = join(tmpdir(), 'file-access-test-' + Date.now());
@@ -26,93 +29,105 @@ describe('File Access Utilities', () => {
     });
 
     describe('fileExists', () => {
-        test('should return true for existing file', async () => {
-            const testFile = join(testRoot, 'exists.txt');
-            writeFileSync(testFile, 'content');
+        test('should return true for a staged file', () => {
+            const testFile = join(testRoot, 'staged.txt');
+            const fs = createMemFsEditor();
+            fs.write(testFile, 'staged');
 
-            const exists = await fileExists(testFile);
-            expect(exists).toBe(true);
+            expect(fileExists(fs, testFile)).toBe(true);
         });
 
-        test('should return false for non-existing file', async () => {
-            const exists = await fileExists(join(testRoot, 'does-not-exist.txt'));
-            expect(exists).toBe(false);
+        test('should fall back to disk for an unstaged file', () => {
+            const testFile = join(testRoot, 'on-disk.txt');
+            writeFileSync(testFile, 'on disk');
+
+            const fs = createMemFsEditor();
+            expect(fileExists(fs, testFile)).toBe(true);
+        });
+
+        test('should return false when neither staged nor on disk', () => {
+            const testFile = join(testRoot, 'missing.txt');
+
+            const fs = createMemFsEditor();
+            expect(fileExists(fs, testFile)).toBe(false);
         });
     });
 
     describe('readFile', () => {
-        test('should read file content', () => {
+        test('should read file content from disk', () => {
             const testFile = join(testRoot, 'read.txt');
-            const content = 'test content';
-            writeFileSync(testFile, content);
+            writeFileSync(testFile, 'test content');
 
-            const result = readFile(testFile);
-            expect(result).toBe(content);
+            const fs = createMemFsEditor();
+            expect(readFile(fs, testFile)).toBe('test content');
+        });
+
+        test('should read staged file content', () => {
+            const testFile = join(testRoot, 'read-staged.txt');
+            const fs = createMemFsEditor();
+            fs.write(testFile, 'editor content');
+
+            expect(readFile(fs, testFile)).toBe('editor content');
         });
     });
 
     describe('writeFile', () => {
         test('should write file content', async () => {
             const testFile = join(testRoot, 'write.txt');
-            const content = 'new content';
-
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                writeFile(testFile, content);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
+            writeFile(fs, testFile, 'new content');
+            await commit(fs);
 
-            const result = readFileSync(testFile, 'utf-8');
-            expect(result).toBe(content);
+            expect(readFileSync(testFile, 'utf-8')).toBe('new content');
         });
     });
 
     describe('readJSON', () => {
-        test('should read and parse JSON file', async () => {
+        test('should read and parse JSON file from disk', async () => {
             const testFile = join(testRoot, 'test.json');
             const data = { foo: 'bar', number: 42 };
             writeFileSync(testFile, JSON.stringify(data));
 
-            const result = await readJSON(testFile);
-            expect(result).toEqual(data);
+            const fs = createMemFsEditor();
+            expect(await readJSON(fs, testFile)).toEqual(data);
+        });
+
+        test('should read staged JSON content', async () => {
+            const testFile = join(testRoot, 'context.json');
+            const data = { staged: true };
+            const fs = createMemFsEditor();
+            fs.write(testFile, JSON.stringify(data));
+
+            expect(await readJSON<typeof data>(fs, testFile)).toEqual(data);
         });
     });
 
     describe('updateJSON', () => {
         test('should update JSON file preserving formatting', async () => {
             const testFile = join(testRoot, 'update.json');
-            const original = { foo: 'bar', nested: { value: 1 } };
-            writeFileSync(testFile, JSON.stringify(original, null, 2));
+            writeFileSync(testFile, JSON.stringify({ foo: 'bar', nested: { value: 1 } }, null, 2));
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                const updated = { foo: 'updated', nested: { value: 2 }, newField: 'added' };
-                updateJSON(testFile, updated);
+            updateJSON(fs, testFile, { foo: 'updated', nested: { value: 2 }, newField: 'added' });
+            await commit(fs);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
-            const result = await readJSON(testFile);
+            const result = await readJSON(fs, testFile);
             expect(result.foo).toBe('updated');
             expect(result.nested.value).toBe(2);
             expect(result.newField).toBe('added');
+        });
+
+        test('should write a new JSON file with default indentation when none exists', async () => {
+            const testFile = join(testRoot, 'new.json');
+
+            const fs = createMemFsEditor();
+            // File does not exist yet, so updateJSON falls into the catch branch
+            // and writes with default 4-space indentation.
+            updateJSON(fs, testFile, { created: true });
+            await commit(fs);
+
+            expect(readFileSync(testFile, 'utf-8')).toBe('{\n    "created": true\n}\n');
         });
     });
 
@@ -122,52 +137,37 @@ describe('File Access Utilities', () => {
             writeFileSync(testFile, 'original content');
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                updateFile(testFile, 'modified content');
+            updateFile(fs, testFile, 'modified content');
+            await commit(fs);
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
-            const result = readFile(testFile);
-            expect(result).toBe('modified content');
+            expect(readFile(fs, testFile)).toBe('modified content');
         });
     });
 
-    describe('createDirectory', () => {
-        test('should create directory recursively', async () => {
-            const nestedDir = join(testRoot, 'nested', 'deep', 'directory');
+    describe('deleteFile', () => {
+        test('should delete a file', async () => {
+            const testFile = join(testRoot, 'to-delete.txt');
+            writeFileSync(testFile, 'delete me');
 
             const fs = createMemFsEditor();
-            await runWithEditor(fs, async () => {
-                createDirectory(nestedDir);
+            deleteFile(fs, testFile);
+            await commit(fs);
 
-                // In mem-fs mode, directories are created implicitly when files are written
-                // So we write a file to the directory and then check it exists
-                const testFile = join(nestedDir, 'test.txt');
-                writeFile(testFile, 'test');
+            expect(fileExists(fs, testFile)).toBe(false);
+        });
+    });
 
-                await new Promise<void>((resolve, reject) => {
-                    fs.commit((err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
-            });
-
+    describe('mem-fs directory handling', () => {
+        test('should create directory implicitly when writing file', async () => {
+            const nestedDir = join(testRoot, 'nested', 'deep', 'directory');
             const testFile = join(nestedDir, 'test.txt');
-            const exists = await fileExists(testFile);
-            expect(exists).toBe(true);
+
+            const fs = createMemFsEditor();
+            // mem-fs creates directories implicitly when files are written
+            writeFile(fs, testFile, 'test');
+            await commit(fs);
+
+            expect(fileExists(fs, testFile)).toBe(true);
         });
     });
 });
