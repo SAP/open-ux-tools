@@ -1,5 +1,25 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.99
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.93 → 3.1.94
+- @sap-ux/fiori-freestyle-writer 3.0.136 → 3.0.137
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.31
+
+## 1.2.98
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.92 → 3.1.93
+- @sap-ux/fiori-freestyle-writer 3.0.135 → 3.0.136
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.31
+
 ## 1.2.97
 
 ### Patch Changes
