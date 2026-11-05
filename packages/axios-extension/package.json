@@ -37,7 +37,7 @@
         "adm-zip": "0.6.1",
         "open": "8.4.2",
         "qs": "6.16.0",
-        "xpath": "0.0.35",
+        "xpath": "0.0.36",
         "@xmldom/xmldom": "0.9.12",
         "https-proxy-agent": "7.0.6",
         "http-proxy-agent": "7.0.2",
@@ -48,7 +48,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
         "@types/adm-zip": "0.5.8",
-        "@types/lodash": "4.17.26",
+        "@types/lodash": "4.17.27",
         "@types/proxy-from-env": "1.0.4",
         "nock": "14.0.16",
         "supertest": "7.3.1"

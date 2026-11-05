@@ -248,8 +248,11 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to an array of strings
      */
     public async writeFPM(params: GenerateCustomExtensionParams): Promise<string[]> {
-        if (params.data) {
-            params.data.minUI5Version = await getUI5Version(this.appAccess);
+        // FPMFragment is the only union member without minUI5Version; it is identified
+        // by having a 'content' property and no 'entity' property. Skip it.
+        const isFPMFragment = params.data && 'content' in params.data && !('entity' in params.data);
+        if (params.data && !isFPMFragment) {
+            (params.data as { minUI5Version?: string }).minUI5Version = await getUI5Version(this.appAccess);
         }
         const specification = await this.getSpecification();
         const fsEditor = await specification.generateCustomExtension(params);
