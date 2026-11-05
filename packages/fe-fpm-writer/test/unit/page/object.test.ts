@@ -162,6 +162,106 @@ describe('ObjectPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
+        describe('navigation with defaultSection', () => {
+            test.each([
+                { type: 'FacetSection', id: 'GeneralInformation' },
+                { type: 'FacetSubSection', id: 'TechnicalData' },
+                { type: 'CustomSection', id: 'MyCustomSection' },
+                { type: 'CustomSubSection', id: 'MyCustomSubSection' }
+            ] as const)('$type type', async ({ type, id }) => {
+                const target = join(testDir, `with-default-section-${type}`);
+                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+                await generate(
+                    target,
+                    {
+                        ...minimalInput,
+                        navigation: {
+                            sourcePage: 'RootEntityListReport',
+                            navEntity: minimalInput.entity,
+                            navKey: true,
+                            defaultSection: { type, id }
+                        }
+                    },
+                    fs
+                );
+                expect(
+                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing
+                ).toMatchSnapshot();
+            });
+
+            test('FacetSection type, plus optional page id', async () => {
+                const target = join(testDir, 'with-default-section-page-id');
+                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+                await generate(
+                    target,
+                    {
+                        ...minimalInput,
+                        id: 'DummyPage',
+                        navigation: {
+                            sourcePage: 'RootEntityListReport',
+                            navEntity: minimalInput.entity,
+                            navKey: true,
+                            defaultSection: {
+                                type: 'FacetSection',
+                                id: 'GeneralInformation'
+                            }
+                        }
+                    },
+                    fs
+                );
+                expect(
+                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing
+                ).toMatchSnapshot();
+            });
+
+            test('defaultSection ID with special characters is escaped correctly', async () => {
+                const specialId = 'My"Section\\With\\Backslash';
+                const target = join(testDir, 'with-default-section-special-id');
+                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+                await generate(
+                    target,
+                    {
+                        ...minimalInput,
+                        navigation: {
+                            sourcePage: 'RootEntityListReport',
+                            navEntity: minimalInput.entity,
+                            navKey: true,
+                            defaultSection: { type: 'FacetSection', id: specialId }
+                        }
+                    },
+                    fs
+                );
+                expect(
+                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing.targets
+                        .RootEntityListReport.options.settings.navigation[minimalInput.entity].detail.targetControlId
+                ).toBe(`fe::FacetSection::${specialId}`);
+            });
+
+            test('FacetSection type, nested navigation from object page', async () => {
+                const target = join(testDir, 'with-default-section-nested');
+                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+                await generate(
+                    target,
+                    {
+                        ...minimalInput,
+                        navigation: {
+                            sourcePage: 'RootEntityObjectPage',
+                            navEntity: `to_${minimalInput.entity}`,
+                            navKey: true,
+                            defaultSection: {
+                                type: 'FacetSection',
+                                id: 'GeneralInformation'
+                            }
+                        }
+                    },
+                    fs
+                );
+                expect(
+                    (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing
+                ).toMatchSnapshot();
+            });
+        });
+
         describe('Test property custom "tabSizing"', () => {
             test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
                 const target = join(testDir, 'tab-sizing');
