@@ -1610,7 +1610,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "ui5-ci.yaml": Object {
@@ -2685,7 +2686,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-tests/ui5-ci.yaml": Object {
@@ -3831,7 +3833,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "ui5-ci.yaml": Object {
@@ -4860,7 +4863,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-tests/ui5-ci.yaml": Object {
@@ -7429,7 +7433,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-tests/ui5-ci.yaml": Object {
@@ -8575,7 +8580,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "ui5-ci.yaml": Object {
@@ -9540,7 +9546,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-tests/ui5-ci.yaml": Object {
@@ -10011,7 +10018,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-with-mock/ui5-ci.yaml": Object {
@@ -12025,7 +12033,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-tests/ui5-ci.yaml": Object {
@@ -12496,7 +12505,8 @@ dist/
             <classifier>opt-static-abap</classifier>
         </dependency>
     </dependencies>
-</project>",
+</project>
+",
     "state": "modified",
   },
   "../opa-with-mock/ui5-ci.yaml": Object {
