@@ -1,5 +1,65 @@
 # @sap-ux/preview-middleware
 
+## 1.2.38
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[28edb94](https://github.com/SAP/open-ux-tools/commit/28edb94c6324bc2526374f7dfc4ddeb6e194038a)]
+
+## 1.2.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.1 → 1.2.0
+
+## 1.2.36
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
+## 1.2.35
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Some Actions don't work in the Outline of the Adaptation Project [[8a15549](https://github.com/SAP/open-ux-tools/commit/8a15549a21b324a74b27e69ebb57da2f81ead0aa)]
+
+#### Release Date
+
+2026-11-03
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/system-access 1.0.19 → 1.0.20
+
+## 1.2.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
 ## 1.2.33
 
 ### Patch Changes

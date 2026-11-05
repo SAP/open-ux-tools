@@ -1,5 +1,17 @@
 # @sap-ux/text-document-utils
 
+## 1.0.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-types 3.18.4 → 3.18.5 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
 ## 1.0.4
 
 ### Patch Changes

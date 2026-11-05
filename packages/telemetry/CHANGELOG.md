@@ -1,5 +1,17 @@
 # @sap-ux/telemetry
 
+## 2.0.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade applicationinsights 3.16.0 → 3.17.0 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
 ## 2.0.14
 
 ### Patch Changes

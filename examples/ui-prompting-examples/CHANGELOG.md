@@ -1,5 +1,40 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 1.1.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.21 → 3.1.0
+- @sap-ux/ui-prompting 1.0.23 → 1.0.24
+
+## 1.1.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.20 → 3.0.21
+- @sap-ux/ui-prompting 1.0.22 → 1.0.23
+
+## 1.1.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Upgrade sanitize-html 2.17.7 → 2.18.1 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.19 → 3.0.20
+- @sap-ux/ui-prompting 1.0.21 → 1.0.22
+
 ## 1.1.17
 
 ### Patch Changes

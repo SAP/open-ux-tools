@@ -3,6 +3,7 @@ import {
     executeAction,
     FrontendActionError,
     getElementContext,
+    getODataMetadata,
     getOverlays,
     getPageActions,
     pressInteractive,
@@ -10,67 +11,9 @@ import {
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
-import { defaultTransport, isRegistryEmpty } from './browser/index.js';
+import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
-
-/**
- * Reads `key` from `payload` and asserts it is a non-empty string. The Zod
- * schema declares `payload` as `record(string, unknown)` so the AI can pass
- * any shape; per-step required fields are validated here instead.
- *
- * @param payload The step payload, possibly undefined.
- * @param key Property name to read.
- * @returns The string value.
- */
-function requireString(payload: Record<string, unknown> | undefined, key: string): string {
-    const value = payload?.[key];
-    if (typeof value !== 'string' || value.length === 0) {
-        throw new Error(`payload.${key} is required and must be a non-empty string`);
-    }
-    return value;
-}
-
-/**
- * Reads `key` from `payload` and asserts it is a plain object.
- *
- * @param payload The step payload, possibly undefined.
- * @param key Property name to read.
- * @returns The object value.
- */
-function requireObject(payload: Record<string, unknown> | undefined, key: string): Record<string, unknown> {
-    const value = payload?.[key];
-    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-        throw new Error(`payload.${key} is required and must be an object`);
-    }
-    return value as Record<string, unknown>;
-}
-
-/**
- * Asserts that `site` is a non-empty http(s)://localhost or http(s)://127.0.0.1 URL.
- * The adaptation editor always binds to the local loopback interface, so any other
- * host is rejected to prevent SSRF via a malicious MCP client or prompt-injected URL.
- *
- * @param site Value of `input.site`.
- * @returns The validated site URL.
- */
-function requireSite(site: string | undefined): string {
-    if (typeof site !== 'string' || site.length === 0) {
-        throw new Error('site is required for this step. Pass the site URL returned by the "start" step.');
-    }
-    let url: URL;
-    try {
-        url = new URL(site);
-    } catch {
-        throw new Error(`site must be a valid URL. Received: "${site}"`);
-    }
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-        throw new Error(`site must be an http:// or https:// URL. Received: "${site}"`);
-    }
-    if (url.hostname !== 'localhost' && url.hostname !== '127.0.0.1') {
-        throw new Error(`site must point to localhost or 127.0.0.1. Received: "${url.hostname}"`);
-    }
-    return site;
-}
+import { requireAppPath, requireObject, requireSite, requireString, requireStringArray } from './assertions.js';
 
 /**
  * Runs one step of the RTA workflow. Dispatches by `input.step` and forwards
@@ -91,6 +34,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
                 await defaultTransport.disconnectSite(site);
+                // Record which project (and whether CF) is starting on this site, so
+                // session seeding is keyed by project and ABAP projects skip it entirely.
+                const appPath = requireAppPath(input.appPath);
+                await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, { site, frameId });
                 return { site, frameId, ...result };
             }
@@ -128,6 +75,10 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'restart': {
                 const page = { site, frameId };
                 await defaultTransport.disconnectSite(site);
+                // disconnectSite forgot the site meta; re-register so the reloaded
+                // editor keeps its project identity / CF session keying.
+                const appPath = requireAppPath(input.appPath);
+                await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, page);
                 return { site, frameId, ...result };
             }
@@ -151,6 +102,11 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const controlId = requireString(input.payload, 'controlId');
                 const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
                 return { result };
+            }
+            case 'get_odata_metadata': {
+                const uris = requireStringArray(input.payload, 'uris');
+                const appPath = requireAppPath(input.appPath);
+                return getODataMetadata(defaultTransport, site, uris, appPath);
             }
             default:
                 throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);
