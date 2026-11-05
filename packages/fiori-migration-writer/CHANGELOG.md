@@ -1,5 +1,43 @@
 # @sap-ux/fiori-migration-writer
 
+## 0.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.1 → 1.2.0
+
+## 0.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+
+## 0.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Upgrade vscode-uri 3.1.0 → 3.2.0 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/launch-config 1.0.27 → 1.0.28
+
 ## 0.0.12
 
 ### Patch Changes
