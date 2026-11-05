@@ -3,10 +3,11 @@
  */
 import { join } from 'node:path';
 import { DirName } from '../project-spec-types.js';
-import type { Manifest, Package } from '../project-spec-types.js';
+import type { Manifest } from '../project-spec-types.js';
 import type { ImportProjectInfo, NeoappDestination } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { getMinUI5VersionAsArray } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
 
 /**
  * Configuration for processing project extension
