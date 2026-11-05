@@ -283,7 +283,11 @@ describe('relay browser client', () => {
         api: Record<string, unknown> = {},
         frameWindow?: unknown,
         failResult = false,
-        { rta = editorRta(), fastClock = false }: { rta?: unknown; fastClock?: boolean } = {}
+        {
+            rta = editorRta(),
+            fastClock = false,
+            topLevel = false
+        }: { rta?: unknown; fastClock?: boolean; topLevel?: boolean } = {}
     ) => {
         const ui5Require = jest.fn(requireWith(api, rta));
         // A virtual clock lets deadline paths run without real waiting.
@@ -318,12 +322,15 @@ describe('relay browser client', () => {
             }
             return { ok: true, json: async () => actions.shift() };
         });
+        const win: Record<string, unknown> = { sap: { ui: { require: ui5Require } } };
+        win.self = win;
+        win.top = topLevel ? win : {};
         runInNewContext(source, {
             document: {
                 currentScript: { src: `https://preview.test/prefix${API}/client.js`, dataset: { token: TOKEN } },
                 getElementById: () => (frameWindow ? { contentWindow: frameWindow } : null)
             },
-            window: { sap: { ui: { require: ui5Require } } },
+            window: win,
             crypto: { randomUUID: () => 'document-id' },
             location: {
                 reload,
@@ -497,5 +504,13 @@ describe('relay browser client', () => {
         const posted = JSON.parse(client.fetch.mock.calls[1][1].body ?? '');
         expect(posted.result.isSuccess).toBe(false);
         expect(posted.result.error.code).toBe('FETCH_CROSS_ORIGIN');
+    });
+
+    test('throws a clear error when the editor frame is missing in the top document', async () => {
+        const client = await runClient([{ id: '1', actionName: ACTION, frameId: 'preview' }], {}, undefined, false, {
+            topLevel: true
+        });
+        const posted = await waitForResult(client);
+        expect(posted.error).toContain("editor frame 'preview' not found");
     });
 });

@@ -105,13 +105,26 @@
         };
     }
 
+    function resolveTargetWindow(frameId) {
+        const frame = document.getElementById(frameId);
+        if (frame && frame.contentWindow) {
+            return frame.contentWindow;
+        }
+        // No child frame. If this script runs inside a frame, this window IS the editor frame
+        // (expected in-frame injection). Only in the top document is a missing child frame a real
+        // load-order race, surfaced as a clear error instead of silently targeting the wrong window.
+        if (window.self !== window.top) {
+            return window;
+        }
+        throw new Error("[rta-relay] editor frame '" + frameId + "' not found in the top document");
+    }
+
     async function callAction(action) {
         // Authenticated same-origin fetch through the editor page; needs no UI5/RTA, so handle it first.
         if (action.actionName === '__fetch__') {
             return await fetchViaContext(action.payload);
         }
-        // The script can already be inside the editor's "preview" frame. Descend only if it exists here.
-        const targetWindow = document.getElementById(action.frameId)?.contentWindow ?? window;
+        const targetWindow = resolveTargetWindow(action.frameId);
         const deadline = Date.now() + ACTION_DEADLINE_MS;
         const api = await resolveApi(targetWindow, deadline);
         if (action.actionName === '__ready__' || action.actionName === 'com.sap.ui.flex.startRTA.v1') {
