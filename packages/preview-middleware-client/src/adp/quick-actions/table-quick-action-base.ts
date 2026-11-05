@@ -239,7 +239,8 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 return `'${header}' table`;
             }
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
-            const title = table?.getHeaderToolbar()?.getTitleControl()?.getText();
+            const titleControl = table?.getHeaderToolbar()?.getTitleControl() as { getText?: () => string } | undefined;
+            const title = titleControl?.getText?.();
             if (title) {
                 return `'${title}' table`;
             }

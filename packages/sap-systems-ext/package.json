@@ -59,7 +59,7 @@
         "@sap-ux/telemetry": "workspace:*",
         "@types/normalize-path": "3.0.2",
         "@types/vscode": "1.110.0",
-        "@zowe/secrets-for-zowe-sdk": "8.35.3",
+        "@zowe/secrets-for-zowe-sdk": "8.39.1",
         "cross-env": "10.1.0",
         "fast-glob": "3.3.3",
         "i18next": "26.5.11",
