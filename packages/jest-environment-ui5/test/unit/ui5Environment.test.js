@@ -25,4 +25,44 @@ describe('Jest Environment UI5', () => {
             }
         `);
     });
+
+    describe('fetch mock', () => {
+        const initWindow = (ui5Version) => {
+            const window = { performance: {}, window: {} };
+            initUI5Environment(window, jest.fn(), true, ui5Version);
+            return window;
+        };
+
+        it('synthesizes a complete response for sap-ui-version.json', async () => {
+            const ui5Version = { name: 'sap.ui.core', version: '2.0.0', libraries: [] };
+            const window = initWindow(ui5Version);
+
+            const response = await window.fetch('resources/sap-ui-version.json');
+
+            expect(response.ok).toBe(true);
+            expect(response.status).toBe(200);
+            await expect(response.json()).resolves.toEqual(ui5Version);
+            expect(JSON.parse(response.text())).toEqual(ui5Version);
+        });
+
+        it('falls back to a default version object when none is provided', async () => {
+            const window = initWindow(undefined);
+
+            const response = await window.fetch('sap-ui-version.json');
+
+            expect(response.ok).toBe(true);
+            await expect(response.json()).resolves.toMatchObject({ name: 'sap.ui.core', version: '2.0.0' });
+        });
+
+        it('serves other resources from disk with a well-formed response', async () => {
+            const window = initWindow(undefined);
+            window.sap = { ui: { loader: { _: { getResourcePath: () => __filename } } } };
+
+            const response = await window.fetch('resources/anything.js');
+
+            expect(response.ok).toBe(true);
+            expect(response.status).toBe(200);
+            expect(response.text()).toContain('fetch mock');
+        });
+    });
 });

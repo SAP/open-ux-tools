@@ -39,7 +39,31 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
         }
     };
     globalWindow.fetch = function (fetchWhat) {
+        // sap-ui-version.json isn't on disk (it's generated when served), so synthesize it.
+        if (String(fetchWhat).indexOf('sap-ui-version.json') !== -1) {
+            const body = JSON.stringify(
+                ui5Version || {
+                    name: 'sap.ui.core',
+                    version: '2.0.0',
+                    buildTimestamp: '',
+                    scmRevision: '',
+                    libraries: []
+                }
+            );
+            return Promise.resolve({
+                ok: true,
+                status: 200,
+                text: function () {
+                    return body;
+                },
+                json: function () {
+                    return Promise.resolve(JSON.parse(body));
+                }
+            });
+        }
         return Promise.resolve({
+            ok: true,
+            status: 200,
             text: function () {
                 const fetchFileContent = fs
                     .readFileSync(globalWindow.sap.ui.loader._.getResourcePath(fetchWhat))
@@ -77,7 +101,13 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
             'sap/ui/thirdparty/jquery-mobile-custom-dbg': true,
             'sap/ui/thirdparty/jquery-mobile-compat': true,
             'sap/ui/thirdparty/jquery-mobile-compat,js': true,
-            'sap/ui/thirdparty/jquery-mobile-compat-dbg': true
+            'sap/ui/thirdparty/jquery-mobile-compat-dbg': true,
+            // hasher/signals need the UI5 loader (like the default map), else isV2 falls back
+            // to a Node require('signals') that can't resolve.
+            'sap/ui/thirdparty/hasher': true,
+            'sap/ui/thirdparty/hasher.js': true,
+            'sap/ui/thirdparty/signals': true,
+            'sap/ui/thirdparty/signals.js': true
         };
     }
     globalWindow.pathMappingFn = pathMappingFn;
