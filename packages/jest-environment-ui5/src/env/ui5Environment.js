@@ -40,7 +40,7 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
     };
     globalWindow.fetch = function (fetchWhat) {
         // sap-ui-version.json isn't on disk (it's generated when served), so synthesize it.
-        if (String(fetchWhat).indexOf('sap-ui-version.json') !== -1) {
+        if (String(fetchWhat).includes('sap-ui-version.json')) {
             const body = JSON.stringify(
                 ui5Version || {
                     name: 'sap.ui.core',
