@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Migration Integration Tests Adaptation Project Migration should migrate adaptation_project_wde 1`] = `
-"{
+"
+{
     \\"name\\": \\"sap-ui-demoapps-rta-fiorielements\\",
     \\"version\\": \\"0.1.0\\",
     \\"private\\": true,
