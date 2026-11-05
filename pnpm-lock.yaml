@@ -1420,6 +1420,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/which':
+        specifier: 3.0.4
+        version: 3.0.4
       '@types/yeoman-generator':
         specifier: 5.2.14
         version: 5.2.14
@@ -1511,6 +1514,9 @@ importers:
       '@types/semver':
         specifier: 7.8.0
         version: 7.8.0
+      '@types/which':
+        specifier: 3.0.4
+        version: 3.0.4
       fs-extra:
         specifier: 11.4.1
         version: 11.4.1
@@ -1898,6 +1904,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/which':
+        specifier: 3.0.4
+        version: 3.0.4
       '@types/yeoman-generator':
         specifier: 5.2.14
         version: 5.2.14
@@ -10205,6 +10214,9 @@ packages:
 
   '@types/vscode@1.110.0':
     resolution: {integrity: sha512-AGuxUEpU4F4mfuQjxPPaQVyuOMhs+VT/xRok1jiHVBubHK7lBRvCuOMZG0LKUwxncrPorJ5qq/uil3IdZBd5lA==}
+
+  '@types/which@3.0.4':
+    resolution: {integrity: sha512-liyfuo/106JdlgSchJzXEQCVArk0CvevqPote8F8HgWgJ3dRCcTHgJIsLDuee0kxk/mhbInzIZk3QWSZJ8R+2w==}
 
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
@@ -24218,6 +24230,8 @@ snapshots:
       '@types/node': 22.13.14
 
   '@types/vscode@1.110.0': {}
+
+  '@types/which@3.0.4': {}
 
   '@types/ws@8.18.2':
     dependencies:
