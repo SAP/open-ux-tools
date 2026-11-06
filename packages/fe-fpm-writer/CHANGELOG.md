@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Features
+
+- Add section for navigation to a newly created object page. [[b570d2f](https://github.com/SAP/open-ux-tools/commit/b570d2f32989dbc5ee92ed868c422fa33b8dfb45)]
+
 ## 1.3.28
 
 ### Patch Changes

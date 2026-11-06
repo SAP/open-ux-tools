@@ -56,23 +56,6 @@ export const DirName = {
 export type DirName = (typeof DirName)[keyof typeof DirName];
 
 /**
- * Package.json structure
- */
-export interface Package {
-    name?: string;
-    version?: string;
-    description?: string;
-    scripts?: Record<string, string>;
-    dependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-    ui5?: {
-        dependencies?: string[];
-    };
-    sapux?: string[] | boolean;
-    [key: string]: unknown;
-}
-
-/**
  * UI5 routing target from manifest.json
  */
 export interface SapUi5RoutingTarget {
@@ -82,16 +65,4 @@ export interface SapUi5RoutingTarget {
     viewType?: string;
     viewLevel?: number;
     transition?: string;
-}
-
-/**
- * Middleware proxy configuration for ui5.yaml
- */
-export interface MiddlewareProxy {
-    name?: string;
-    path: string;
-    url?: string;
-    destination?: string;
-    destinationInstance?: string;
-    client?: string;
 }
