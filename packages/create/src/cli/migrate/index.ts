@@ -24,7 +24,7 @@ import {
     MigrationEventName,
     trackMigrateEvent,
     getProjectTelemetryProperties,
-    getErrorMessagesForTelemetry,
+    getErrorCategoriesForTelemetry,
     isMigrationSuccessful,
     type SystemResolvedVia
 } from './telemetry.js';
@@ -734,7 +734,7 @@ function getSystemResolvedVia(
  * Report the MIGRATION_SUCCESS or MIGRATION_FAILED event for the migrated project.
  *
  * @param success - whether the migration was successful
- * @param messages - sanitized error messages
+ * @param messages - categories of the error messages
  * @param ms - duration of the migration in milliseconds
  * @param project - project data used for the event properties
  * @param project.projectInfo - information read from the legacy project
@@ -863,14 +863,6 @@ async function runMigration(
             : undefined;
 
     const projectEvent = { projectInfo, ui5Version, resolvedPath };
-    const sensitiveValues = [
-        resolvedPath,
-        basename(resolvedPath),
-        destination,
-        hostname,
-        migrationHostname,
-        matchedSystem?.name
-    ];
     const migrationStart = Date.now();
     let result: Awaited<ReturnType<typeof ProjectMigrator.migrate>>;
     try {
@@ -883,10 +875,7 @@ async function runMigration(
         });
     } catch (error) {
         summary.failedMigrations = 1;
-        const messages = getErrorMessagesForTelemetry(
-            [{ type: 'ERROR', description: (error as Error).message }],
-            sensitiveValues
-        );
+        const messages = getErrorCategoriesForTelemetry([{ type: 'ERROR', description: (error as Error).message }]);
         await trackProjectResult(false, messages, Date.now() - migrationStart, projectEvent);
         throw error;
     }
@@ -896,7 +885,7 @@ async function runMigration(
     summary.failedMigrations = success ? 0 : 1;
     await trackProjectResult(
         success,
-        getErrorMessagesForTelemetry(result.messages, sensitiveValues),
+        getErrorCategoriesForTelemetry(result.messages),
         Date.now() - migrationStart,
         projectEvent
     );

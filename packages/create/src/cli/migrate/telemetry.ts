@@ -9,7 +9,6 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { ImportProjectInfo, Message } from '@sap-ux/fiori-migration-writer';
 import { getFioriToolsDirectory } from '@sap-ux/store';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { getLogger } from '../../tracing/index.js';
 import { t } from '../../i18n.js';
@@ -35,8 +34,6 @@ const RESOURCE_ID = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 const SEND_TIMEOUT_MS = 3000;
 
 const NOTICE_MARKER_FILE = 'create-telemetry-notice-shown';
-const REDACTED = '<redacted>';
-const MAX_MESSAGES_LENGTH = 500;
 
 /** How the backend system of a migration was determined. */
 export type SystemResolvedVia = 'cliOption' | 'savedSystem' | 'basDestination' | 'prompt';
@@ -181,42 +178,45 @@ export function getProjectTelemetryProperties(
 }
 
 /**
- * Remove values that could identify a project, a user or a system from a message.
- *
- * @param message - message to sanitize
- * @param sensitiveValues - known values (e.g. project path, hostname, destination) to remove
- * @returns sanitized message
+ * Known error types and the patterns identifying them in migrator messages. Messages are free text that can contain
+ * paths, hostnames or file names, so only the matched category is reported, never the message itself.
  */
-export function sanitizeTelemetryMessage(message: string, sensitiveValues: Array<string | undefined> = []): string {
-    const knownValues = [...sensitiveValues, homedir()]
-        .filter((value): value is string => !!value && value.length >= 3)
-        .sort((a, b) => b.length - a.length);
-    let sanitized = message;
-    for (const value of knownValues) {
-        sanitized = sanitized.split(value).join(REDACTED);
-    }
-    return sanitized
-        .replaceAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, REDACTED)
-        .replaceAll(/[a-z][a-z\d+.-]*:\/\/[^\s'"`,;)]+/gi, REDACTED)
-        .replaceAll(/[a-z]:[\\/][^\s'"`,;)]*/gi, REDACTED)
-        .replaceAll(/(?<![\w.:>])(?:\/[\w.@~+-]+){2,}/g, REDACTED);
+const ERROR_CATEGORIES: Array<[category: string, pattern: RegExp]> = [
+    ['floorPlanNotSupported', /floorplan is not supported/i],
+    ['projectTypeNotSupported', /project type is not supported/i],
+    ['projectInfoUnavailable', /cannot determine the project info/i],
+    ['permissionError', /permission error|EACCES|EPERM/i],
+    ['syntaxError', /syntax error/i],
+    ['fileNotFound', /ENOENT|no such file|not found/i],
+    ['readError', /error occurred reading|error reading/i],
+    ['networkError', /ECONN|ETIMEDOUT|ENOTFOUND|EAI_AGAIN|socket hang up|certificate|timed? ?out|network/i],
+    ['commitFailed', /error committing migration/i],
+    ['typeScriptEnablementFailed', /error enabling typescript/i],
+    ['libraryCopyFailed', /error copying library files/i],
+    ['commandFailed', /command failed|error code/i]
+];
+const UNKNOWN_ERROR_CATEGORY = 'other';
+
+/**
+ * Get the category of an error message.
+ *
+ * @param message - message returned by the migrator or thrown error message
+ * @returns the matching category, or 'other' if the error is not known
+ */
+export function getErrorCategory(message: string): string {
+    return ERROR_CATEGORIES.find(([, pattern]) => pattern.test(message))?.[0] ?? UNKNOWN_ERROR_CATEGORY;
 }
 
 /**
- * Get the error messages of a migration for telemetry. Same as in the IDE migration only errors are reported,
- * but values that could identify the project or system are removed.
+ * Get the categories of the error messages of a migration for telemetry. The IDE migration reports the error texts,
+ * the CLI reports only categories because the texts can contain project specific data.
  *
  * @param messages - messages returned by the migrator
- * @param sensitiveValues - known values (e.g. project path, hostname, destination) to remove
- * @returns comma separated and length limited error messages
+ * @returns comma separated, distinct error categories
  */
-export function getErrorMessagesForTelemetry(
-    messages: Message[] = [],
-    sensitiveValues: Array<string | undefined> = []
-): string {
-    return messages
+export function getErrorCategoriesForTelemetry(messages: Message[] = []): string {
+    const categories = messages
         .filter((message) => message.type === 'ERROR')
-        .map((message) => sanitizeTelemetryMessage(message.description, sensitiveValues))
-        .join(',')
-        .slice(0, MAX_MESSAGES_LENGTH);
+        .map((message) => getErrorCategory(message.description));
+    return [...new Set(categories)].join(',');
 }

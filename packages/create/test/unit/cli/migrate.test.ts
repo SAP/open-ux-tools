@@ -1114,7 +1114,7 @@ describe('migrate command', () => {
                     { type: 'WARNING', description: 'A warning' },
                     {
                         type: 'ERROR',
-                        description: `Cannot read ${testProjectRoot}/webapp/manifest.json from https://myhost.com/sap/opu`
+                        description: `ENOENT: no such file or directory, open '${testProjectRoot}/webapp/manifest.json' on myhost.com`
                     }
                 ],
                 fs: { commit: jest.fn() }
@@ -1129,7 +1129,7 @@ describe('migrate command', () => {
             ]);
             const failed = getEvent('MIGRATION_FAILED')!;
             expect(failed.properties.success).toBe('false');
-            expect(failed.properties.messages).toBe('Cannot read <redacted>/webapp/manifest.json from <redacted>');
+            expect(failed.properties.messages).toBe('fileNotFound');
             expect(JSON.stringify(mockReportEventBlocking.mock.calls.map((call) => call[0]))).not.toContain(
                 'myhost.com'
             );
@@ -1152,7 +1152,7 @@ describe('migrate command', () => {
             await migrateWithOptions(['--skip-install']);
 
             expect(getEvent('MIGRATION_FAILED')?.properties).toEqual(
-                expect.objectContaining({ success: 'false', messages: 'Non fatal error' })
+                expect.objectContaining({ success: 'false', messages: 'other' })
             );
             expect(getEvent('MIGRATION_SUCCESS')).toBeUndefined();
         });
@@ -1163,7 +1163,7 @@ describe('migrate command', () => {
             await expect(migrateWithOptions()).rejects.toThrow('process.exit called');
 
             expect(getEvent('MIGRATION_FAILED')?.properties).toEqual(
-                expect.objectContaining({ success: 'false', messages: 'Unexpected error in <redacted>' })
+                expect.objectContaining({ success: 'false', messages: 'other' })
             );
             expect(getEvent('MIGRATION_COMPLETED')?.properties).toEqual(
                 expect.objectContaining({ successfulMigrations: '0', failedMigrations: '1' })

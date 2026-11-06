@@ -1,6 +1,6 @@
 import { jest, describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 let toolsDirectory = '';
@@ -41,8 +41,8 @@ const {
     trackMigrateEvent,
     isMigrationSuccessful,
     getProjectTelemetryProperties,
-    sanitizeTelemetryMessage,
-    getErrorMessagesForTelemetry,
+    getErrorCategory,
+    getErrorCategoriesForTelemetry,
     MigrationEventName
 } = await import('../../../src/cli/migrate/telemetry.js');
 
@@ -312,51 +312,44 @@ describe('migrate telemetry', () => {
         });
     });
 
-    describe('sanitizeTelemetryMessage', () => {
-        test('removes known values, URLs, paths and email addresses', () => {
-            const message =
-                'Failed for /Users/jane/work/my-app on host.example.com: ' +
-                'https://host.example.com:44300/sap/opu/odata/srv, C:\\Projects\\app\\file.js, ' +
-                `${homedir()}/x, contact jane.doe@example.com, destination MY_DEST`;
-
-            const sanitized = sanitizeTelemetryMessage(message, [
-                '/Users/jane/work/my-app',
-                'MY_DEST',
-                undefined,
-                'ab'
-            ]);
-
-            expect(sanitized).toBe(
-                'Failed for <redacted> on host.example.com: <redacted>, <redacted>, <redacted>/x, contact <redacted>, destination <redacted>'
-            );
-        });
-
-        test('keeps harmless text', () => {
-            expect(sanitizeTelemetryMessage('Missing property sap.app/id in manifest')).toBe(
-                'Missing property sap.app/id in manifest'
-            );
+    describe('getErrorCategory', () => {
+        test.each([
+            ['The V2_ANALYTICAL floorplan is not supported for migration.', 'floorPlanNotSupported'],
+            ['This project type is not supported for migration.', 'projectTypeNotSupported'],
+            ['Cannot determine the project info for the selected project.', 'projectInfoUnavailable'],
+            ['A permission error occurred in /Users/jane/app/manifest.json.', 'permissionError'],
+            ["EACCES: permission denied, open '/Users/jane/app/file'", 'permissionError'],
+            ['A syntax error occurred in manifest.json. Ensure the file is valid.', 'syntaxError'],
+            ["ENOENT: no such file or directory, open '/Users/jane/app/x'", 'fileNotFound'],
+            ['An error occurred reading the webapp/manifest.json file.', 'readError'],
+            ['connect ECONNREFUSED 10.0.0.1:443', 'networkError'],
+            ['Error during migration: self-signed certificate', 'networkError'],
+            ['Error committing migration: disk full', 'commitFailed'],
+            ['Error enabling TypeScript: failed', 'typeScriptEnablementFailed'],
+            ['Error copying library files: failed', 'libraryCopyFailed'],
+            ['The npm command failed with the 1 error code.', 'commandFailed'],
+            ['Something customer specific happened at https://host.example.com', 'other']
+        ])('%s -> %s', (message, category) => {
+            expect(getErrorCategory(message)).toBe(category);
         });
     });
 
-    describe('getErrorMessagesForTelemetry', () => {
-        test('only reports sanitized errors, joined and limited in length', () => {
-            expect(
-                getErrorMessagesForTelemetry(
-                    [
-                        { type: 'WARNING', description: 'ignored' },
-                        { type: 'ERROR', description: 'first /a/b/c' },
-                        { type: 'ERROR', description: 'second' }
-                    ],
-                    []
-                )
-            ).toBe('first <redacted>,second');
+    describe('getErrorCategoriesForTelemetry', () => {
+        test('reports only distinct categories of errors and never the message text', () => {
+            const categories = getErrorCategoriesForTelemetry([
+                { type: 'WARNING', description: 'A syntax error occurred.' },
+                { type: 'ERROR', description: 'A syntax error occurred in /Users/jane/secret/manifest.json.' },
+                { type: 'ERROR', description: 'A syntax error occurred in other.json.' },
+                { type: 'ERROR', description: 'The V2_ANALYTICAL floorplan is not supported for migration.' },
+                { type: 'ERROR', description: 'Failure at https://host.example.com' }
+            ]);
 
-            const long = getErrorMessagesForTelemetry([{ type: 'ERROR', description: 'x'.repeat(2000) }]);
-            expect(long).toHaveLength(500);
+            expect(categories).toBe('syntaxError,floorPlanNotSupported,other');
+            expect(categories).not.toMatch(/jane|secret|example/);
         });
 
         test('defaults to no messages', () => {
-            expect(getErrorMessagesForTelemetry()).toBe('');
+            expect(getErrorCategoriesForTelemetry()).toBe('');
         });
     });
 });
