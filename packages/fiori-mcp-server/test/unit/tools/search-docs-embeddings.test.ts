@@ -19,7 +19,6 @@ function createClient(): MultiServerMCPClient {
         throwOnLoadError: true,
         prefixToolNameWithServerName: false,
         additionalToolNamePrefix: '',
-        useStandardContentBlocks: true,
         mcpServers: {
             'fiori-mcp-server': {
                 command: 'node',
