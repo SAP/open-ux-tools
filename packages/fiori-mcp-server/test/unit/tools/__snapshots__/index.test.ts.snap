@@ -16,13 +16,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -68,13 +64,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -120,13 +112,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -163,13 +151,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -414,13 +398,9 @@ Object {
               },
               Object {
                 "items": Object {
-                  "anyOf": Array [
-                    Object {
-                      "type": "string",
-                    },
-                    Object {
-                      "type": "number",
-                    },
+                  "type": Array [
+                    "string",
+                    "number",
                   ],
                 },
                 "type": "array",

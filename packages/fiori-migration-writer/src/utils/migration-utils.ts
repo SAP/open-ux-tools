@@ -5,7 +5,8 @@ import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
-import type { TemplateProperties, SapUxLayer } from '../types.js';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { TemplateProperties } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { writeFile } from './file-access.js';
 import uniq from 'lodash/uniq.js';
@@ -168,8 +169,8 @@ export function generateToolsId(): string {
  * @param isInternal - Whether the project is internal (SAP-developed)
  * @returns SAP UX layer identifier
  */
-export function determineSapUxLayer(isInternal: boolean): SapUxLayer {
-    return (isInternal ? 'VENDOR' : 'CUSTOMER_BASE') as SapUxLayer;
+export function determineSapUxLayer(isInternal: boolean): UI5FlexLayer {
+    return isInternal ? 'VENDOR' : 'CUSTOMER_BASE';
 }
 
 /**

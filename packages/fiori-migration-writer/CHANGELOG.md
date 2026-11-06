@@ -1,5 +1,17 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- use shared types from `@sap-ux/axios-extension`, `@sap-ux/project-access` and `@sap-ux/ui5-config` instead of local duplicates (`ODataVersion`, `UI5FlexLayer`, `Package`, `FioriToolsProxyConfigBackend`) , deprecate the unused `Credentials` type and remove the unused `ApiHubConfig`, `CapService` and `ReadMe` types [[12ffd55](https://github.com/SAP/open-ux-tools/commit/12ffd55d089478b3ca1761c87e269733d6da666e)]
+
 ## 0.0.16
 
 ### Patch Changes

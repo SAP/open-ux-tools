@@ -10,7 +10,8 @@ import type {
     HasRootIntent,
     Ui5YamlContext
 } from '../types.js';
-import { FLOOR_PLAN, ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import { FLOOR_PLAN } from '../types.js';
 import { escapeDoubleQuotes } from '../utils/index.js';
 
 /**

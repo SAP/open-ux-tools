@@ -1,7 +1,5 @@
 import {
-    ODataVersion,
     DatasourceType,
-    SapUxLayer,
     CapType,
     ApiHubType,
     SapSystemSourceType,
@@ -11,16 +9,6 @@ import {
 } from '../../../src/types.js';
 
 describe('Constants', () => {
-    describe('ODataVersion', () => {
-        test('should have v2 version', () => {
-            expect(ODataVersion.v2).toBe('2');
-        });
-
-        test('should have v4 version', () => {
-            expect(ODataVersion.v4).toBe('4');
-        });
-    });
-
     describe('DatasourceType', () => {
         test('should have FILE type', () => {
             expect(DatasourceType.FILE).toBe('File');
@@ -48,16 +36,6 @@ describe('Constants', () => {
 
         test('should have NONE type', () => {
             expect(DatasourceType.NONE).toBe('None');
-        });
-    });
-
-    describe('SapUxLayer', () => {
-        test('should have VENDOR layer', () => {
-            expect(SapUxLayer.VENDOR).toBe('VENDOR');
-        });
-
-        test('should have CUSTOMER_BASE layer', () => {
-            expect(SapUxLayer.CUSTOMER_BASE).toBe('CUSTOMER_BASE');
         });
     });
 

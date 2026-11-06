@@ -1,7 +1,7 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
@@ -9,26 +9,12 @@ export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
 
 /**
- * OData versions supported by the catalog service
- */
-export const ODataVersion = {
-    v2: '2',
-    v4: '4'
-} as const;
-export type ODataVersion = (typeof ODataVersion)[keyof typeof ODataVersion];
-/**
  * package.json script entries (commands and tasks)
  */
 export type Script = {
     name: string;
     command: string;
 };
-
-export const SapUxLayer = {
-    VENDOR: 'VENDOR',
-    CUSTOMER_BASE: 'CUSTOMER_BASE'
-} as const;
-export type SapUxLayer = (typeof SapUxLayer)[keyof typeof SapUxLayer];
 
 /** package.json interface */
 export interface PackageJson {
@@ -50,7 +36,7 @@ export interface PackageJson {
     localStartFile?: string; // relative path to local start html
     runTasks?: Script[];
     enableEslint: boolean;
-    sapuxLayer?: SapUxLayer;
+    sapuxLayer?: UI5FlexLayer;
 }
 
 // Common constants defs used throughout
@@ -88,17 +74,6 @@ export type NeoappDestination = {
     entryPath?: string;
 };
 
-export interface BackendConfig {
-    path: string;
-    url?: string;
-    client?: string;
-    destination?: string;
-    destinationInstance?: string;
-    pathPrefix?: string;
-}
-
-// NOTE: EntityConfig duplicates types from @sap-ux/app-gen-core
-// Consolidate when app-gen-core types are published to @sap-ux scope - track in package migration roadmap
 export interface EntityConfig {
     mainEntity?: { entityName: string; type?: any };
     filterEntityType?: string;
@@ -237,7 +212,6 @@ export type TemplateMap = {
 export interface TemplateData<P extends ProjectMigrate = ProjectMigrate, S extends Service = Service> {
     project: Partial<P>;
     service: Partial<S>;
-    readMe?: Partial<ReadMe>; // Customisation point for readme.txt
     ui5Yaml?: Partial<Ui5Yaml> & Partial<Ui5MockYaml>; // Customisation point for ui5Yaml
     packageJson?: Partial<PackageJsonMigrate>; // Customisation point for package.json
     appId?: string;
@@ -297,6 +271,8 @@ export interface Project {
  * SECURITY: This interface contains sensitive authentication data.
  * The `password` field must NEVER be logged, included in error messages,
  * or transmitted to telemetry systems.
+ *
+ * @deprecated Not used by the migration writer. Will be removed in a future release.
  */
 export interface Credentials {
     /** Username for authentication */
@@ -319,23 +295,6 @@ export const ApiHubType = {
     apiHubEnterprise: 'API_HUB_ENTERPRISE'
 } as const;
 export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
-/**
- * Defines the api hub service properties or enterprise and non-enterprise versions
- */
-export interface ApiHubConfig {
-    apiHubKey: string;
-    apiHubType: ApiHubType;
-}
-
-export interface CapService {
-    projectPath: string; // The CAP Project Root
-    serviceName: string;
-    appPath?: string; // Optional custom CAP app folder
-    serviceCdsPath?: string; // relative path to cap service cds file
-    capType?: CapType; // CAP implementation type,
-    capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
-}
-
 export const SapSystemSourceType = {
     SCP: 'SCP',
     ON_PREM: 'ON_PREM',
@@ -353,37 +312,11 @@ export interface Service {
     edmx: string;
     annotations?: Annotations[];
     version?: ODataVersion; // Not present for FF no datasource template flow
-    capService?: CapService;
     source: DatasourceType;
     sapSystemSource?: SapSystemSourceType; // Only used by README
     localEdmxFilePath?: string; // Only used by README
     destinationAuthType?: string;
-    apiHubConfig?: ApiHubConfig;
     ignoreCertError?: boolean;
-}
-
-/** README.txt base definition */
-export interface ReadMe {
-    genDate: string;
-    genPlatform: string;
-    dataSourceLabel: string;
-    metadataFilename?: string;
-    serviceUrl: string;
-    projectName: string;
-    projectTitle: string;
-    projectNamespace: string;
-    projectDescription: string;
-    ui5Theme: string;
-    projectUI5Version: string;
-    enableCodeAssist: boolean;
-    enableEslint: boolean;
-    enableTypeScript: boolean;
-    showMockDataInfo?: boolean;
-    genId: string;
-    genVersion: string;
-    templateLabel: string; // The template/floorplan selected
-    additionalEntries?: { label: string; value: string }[]; // Read me line entries
-    launchText?: string;
 }
 
 // Note that only ui5 properties supported by middleware proxy should go here
