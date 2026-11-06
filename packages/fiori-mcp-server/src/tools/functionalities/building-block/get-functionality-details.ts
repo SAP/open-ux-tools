@@ -179,7 +179,8 @@ function formatInsertionPointsNote(fileXPathMap: FileXPathEntry[], viewFiles: st
                     const displayed = xpaths.slice(0, 10);
                     const truncationNote =
                         xpaths.length > 10 ? `\n    ... (${xpaths.length - 10} more XPaths not shown)` : '';
-                    return `  ${file}:\n${displayed.map((x) => `    - ${x}`).join('\n')}${truncationNote}`;
+                    const xpathLines = displayed.map((x) => '    - ' + x).join('\n');
+                    return `  ${file}:\n${xpathLines}${truncationNote}`;
                 })
                 .join('\n') +
             '\nUse these relative paths as viewOrFragmentPath and one of the listed XPaths as aggregationPath. Do NOT read any files or list directories.'
