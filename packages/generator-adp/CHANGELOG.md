@@ -1,5 +1,38 @@
 # @sap-ux/generator-adp
 
+## 1.1.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- Display error warning beneath system prompt when system info contains malformed data. [[3cbaf5e](https://github.com/SAP/open-ux-tools/commit/3cbaf5e5a780cb363d46f1571ceb59f17a2337a3)]
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.1 → 1.2.0
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/fiori-generator-shared 1.2.26 → 1.2.27
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+
 ## 1.1.0
 
 ### Minor Changes

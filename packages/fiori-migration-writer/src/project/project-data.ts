@@ -7,7 +7,8 @@ import { defaultMinUi5Version, minUi5VersionV4Template } from '@sap-ux/ui5-info'
 import { getManifestVersion } from '@sap-ux/ui5-application-writer';
 import { getUI5Version, stripSpaces } from '../utils/index.js';
 import type { ImportProjectInfo, ProjectMigrate, Service } from '../types.js';
-import { DatasourceType, ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import { DatasourceType } from '../types.js';
 
 /**
  * Prepare sanitized project names and namespaces

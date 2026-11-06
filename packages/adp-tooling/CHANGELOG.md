@@ -1,5 +1,30 @@
 # @sap-ux/adp-tooling
 
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-04
+
+#### Features
+
+- Expose adaptation-project manifest builder API (`getMergedManifest`, `downloadAppResources`) for building the merged app descriptor and downloading base app resources via the project's `@ui5/task-adaptation` build.
+
+    FIX: Ignore `.context`, `.session`, and `.adp` in generated adaptation project gitignore templates (CF and onPremise), keeping both templates identical. [[a9c5247](https://github.com/SAP/open-ux-tools/commit/a9c524741838a50be7c24e1aeef36a55b5cb95b7)]
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+
 ## 1.1.0
 
 ### Minor Changes
