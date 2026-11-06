@@ -1,5 +1,25 @@
 # @sap-ux/generator-adp
 
+## 1.1.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- Display error warning beneath system prompt when system info contains malformed data. [[3cbaf5e](https://github.com/SAP/open-ux-tools/commit/3cbaf5e5a780cb363d46f1571ceb59f17a2337a3)]
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.1 → 1.2.0
+
 ## 1.1.1
 
 ### Patch Changes

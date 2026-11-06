@@ -333,6 +333,20 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(true);
         });
 
+        it('system prompt validate should return error message when system info call fails with a non-Axios error', async () => {
+            const nonAxiosError = new Error('Network connection refused');
+            isAbapCloudMock.mockRejectedValueOnce(nonAxiosError);
+            mockIsAxiosError.mockReturnValueOnce(false);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(nonAxiosError.message);
+        });
+
         it('should set system additional messages when additionalMessages callback gets called', async () => {
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
