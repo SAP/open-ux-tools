@@ -2,8 +2,7 @@ import { describe, expect, jest, test } from '@jest/globals';
 import {
     normalizeUfaResult,
     resolveAction,
-    runActionInPage,
-    stringifyWithCircularGuard
+    runActionInPage
 } from '../../../../../src/tools/run-rta-workflow-step/browser/frontend-actions.js';
 
 describe('resolveAction', () => {
@@ -82,41 +81,6 @@ describe('normalizeUfaResult', () => {
         expect(normalizeUfaResult({ success: false }, true).error).toEqual({
             code: 'UFA_ACTION_FAILED',
             message: 'UFA action failed'
-        });
-    });
-});
-
-describe('stringifyWithCircularGuard', () => {
-    test('serializes a plain nested object identically to JSON.stringify', () => {
-        const tree = { id: 'root', type: 'sap.m.Page', children: [{ id: 'go', value: 42, flag: true }] };
-        expect(stringifyWithCircularGuard(tree)).toBe(JSON.stringify(tree));
-        expect(JSON.parse(stringifyWithCircularGuard(tree))).toEqual(tree);
-    });
-
-    test('replaces a circular reference with "[Circular]" instead of throwing', () => {
-        const node: Record<string, unknown> = { id: 'a' };
-        node.self = node; // direct cycle
-        const parsed = JSON.parse(stringifyWithCircularGuard(node));
-        expect(parsed).toEqual({ id: 'a', self: '[Circular]' });
-    });
-
-    test('breaks an indirect cycle through children', () => {
-        const root: Record<string, unknown> = { id: 'root', children: [] as unknown[] };
-        const child: Record<string, unknown> = { id: 'child', parent: root };
-        (root.children as unknown[]).push(child);
-        const parsed = JSON.parse(stringifyWithCircularGuard(root));
-        expect(parsed.children[0].id).toBe('child');
-        expect(parsed.children[0].parent).toBe('[Circular]');
-    });
-
-    test('serializes a value that repeats but is not circular without marking it [Circular]', () => {
-        // The WeakSet guards against cycles; a shared-but-acyclic reference appearing
-        // twice in sibling positions is still emitted in full the first time it is seen.
-        const shared = { label: 'shared' };
-        const tree = { a: shared, b: { nested: 'x' } };
-        expect(JSON.parse(stringifyWithCircularGuard(tree))).toEqual({
-            a: { label: 'shared' },
-            b: { nested: 'x' }
         });
     });
 });

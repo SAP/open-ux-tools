@@ -52,15 +52,24 @@ export function isNeedsUserAction(value: unknown): value is NeedsUserActionPaylo
 }
 
 /**
- * Resolves the frame whose iframe element has `id === frameId`, or `undefined`
- * when `frameId` is omitted or no such frame exists. The editor runs inside the
- * `preview` iframe, so UI5 bootstraps on that frame's window.
+ * Resolves the frame whose iframe element has `id === frameId`. Returns
+ * `undefined` when `frameId` is omitted. When `frameId` is given but no matching
+ * frame exists, the result depends on `throwOnMiss`: `false` (the default)
+ * returns `undefined`, `true` throws. The editor runs inside the `preview`
+ * iframe, so UI5 bootstraps on that frame's window.
  *
  * @param page The editor page.
  * @param frameId The iframe element id to resolve (e.g. `preview`).
+ * @param throwOnMiss Throw instead of returning `undefined` when `frameId` is
+ * given but not found. Callers that must run an action in that exact frame pass
+ * `true`; readiness probes that fall back to the top-level page pass `false`.
  * @returns The matching frame, or `undefined`.
  */
-async function resolveFrame(page: Page, frameId: string | undefined): Promise<Frame | undefined> {
+export async function resolveFrame(
+    page: Page,
+    frameId: string | undefined,
+    throwOnMiss = false
+): Promise<Frame | undefined> {
     if (!frameId) {
         return undefined;
     }
@@ -70,6 +79,9 @@ async function resolveFrame(page: Page, frameId: string | undefined): Promise<Fr
         if (id === frameId) {
             return frame;
         }
+    }
+    if (throwOnMiss) {
+        throw new Error(`Frame with id "${frameId}" not found`);
     }
     return undefined;
 }

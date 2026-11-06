@@ -38,12 +38,14 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
         const frameId = input.frameId ?? 'preview';
         switch (input.step) {
             case 'start': {
+                // Validate required input BEFORE disconnecting: a bad appPath must not
+                // tear down an existing working page for a call that then throws.
+                const appPath = requireAppPath(input.appPath);
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
                 await defaultTransport.disconnectSite(site);
                 // Record which project (and whether CF) is starting on this site, so
                 // session seeding is keyed by project and ABAP projects skip it entirely.
-                const appPath = requireAppPath(input.appPath);
                 await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, { site, frameId });
                 return { site, frameId, ...result };
@@ -81,10 +83,12 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'restart': {
                 const page = { site, frameId };
+                // Validate required input BEFORE disconnecting: a bad appPath must not
+                // tear down the running editor page for a call that then throws.
+                const appPath = requireAppPath(input.appPath);
                 await defaultTransport.disconnectSite(site);
                 // disconnectSite forgot the site meta; re-register so the reloaded
                 // editor keeps its project identity / CF session keying.
-                const appPath = requireAppPath(input.appPath);
                 await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, page);
                 return { site, frameId, ...result };

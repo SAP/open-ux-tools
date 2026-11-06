@@ -7,6 +7,7 @@ import {
     LOGIN_REQUIRED_MESSAGE,
     LOGIN_WAIT_MESSAGE,
     probeUi5Loaded,
+    resolveFrame,
     waitForLogin,
     type NeedsUserActionPayload
 } from './login-page.js';
@@ -89,42 +90,30 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
         let executionContext: Page | Frame = page;
 
         if (frameId) {
-            let matched: Frame | undefined;
-            for (const frame of page.frames()) {
-                const element = await frame.frameElement().catch(() => undefined);
-                if (!element) {
-                    continue;
-                }
-                const id = await element.getAttribute('id');
-                if (id === frameId) {
-                    matched = frame;
-                    break;
-                }
-            }
-            if (!matched) {
-                throw new Error(`Frame with id "${frameId}" not found`);
-            }
-            executionContext = matched;
+            // throwOnMiss: an action must run in the requested frame, so a missing
+            // frame is a hard error rather than a silent fall back to the top page.
+            executionContext = (await resolveFrame(page, frameId, true)) as Frame;
         }
 
         const { module, method, ufa } = resolveAction(actionName);
 
-        // Wait up to 60 s for the UI5 loader (`sap.ui.require`) to be present; RTA
-        // needs time to start before the implementing modules can be required.
-        await (executionContext as Page | Frame).waitForFunction(
-            () => !!(window as unknown as Ui5LoaderWindow).sap?.ui?.require,
-            undefined,
-            { timeout: 60000 }
-        );
-
         let serialized: string;
         try {
+            // Wait up to 60 s for the UI5 loader (`sap.ui.require`) to be present; RTA
+            // needs time to start before the implementing modules can be required. This
+            // is inside the try so a loader timeout surfaces as a FrontendActionError
+            // (per the catch below) rather than escaping as a fatal exception.
+            await (executionContext as Page | Frame).waitForFunction(
+                () => !!(window as unknown as Ui5LoaderWindow).sap?.ui?.require,
+                undefined,
+                { timeout: 60000 }
+            );
             serialized = await executionContext.evaluate(runActionInPage, { mod: module, fn: method, p: payload });
         } catch (error) {
-            // Any failure from the page (module not loaded, method missing, require
-            // unavailable, or the action throwing) is returned as a failure envelope so
-            // the command layer surfaces it as a FrontendActionError instead of letting a
-            // raw page exception escape as a fatal error.
+            // Any failure from the page (loader never appeared, module not loaded, method
+            // missing, require unavailable, or the action throwing) is returned as a failure
+            // envelope so the command layer surfaces it as a FrontendActionError instead of
+            // letting a raw page exception escape as a fatal error.
             const message = error instanceof Error ? error.message : String(error);
             return { isSuccess: false, payload: null, error: { code: 'FRONTEND_ACTION_THREW', message } };
         }
@@ -205,7 +194,6 @@ async function startBrowser(): Promise<Browser> {
     }
 }
 
-/**
 /**
  * Whether a navigation response status means the editor failed to load. A
  * missing status (`undefined` — e.g. `goto` returned no response) is treated as

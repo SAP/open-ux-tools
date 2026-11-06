@@ -97,36 +97,13 @@ export function normalizeUfaResult(raw: unknown, isUfa: boolean): FrontendAction
 }
 
 /**
- * Serializes a value to JSON, replacing any already-seen object with the string
- * `"[Circular]"` so a self-referential graph does not throw. Exported and used
- * verbatim inside the page's `evaluate` (its source is serialized into the browser
- * by Playwright), so the in-page serialization and this unit-tested function are
- * the same logic. See the call site for why serialization happens in the page.
- *
- * @param value The value to serialize.
- * @returns The JSON string, with cycles broken by `"[Circular]"`.
- */
-export function stringifyWithCircularGuard(value: unknown): string {
-    const seen = new WeakSet<object>();
-    return JSON.stringify(value, (_key: string, v: unknown) => {
-        if (typeof v === 'object' && v !== null) {
-            if (seen.has(v)) {
-                return '[Circular]';
-            }
-            seen.add(v);
-        }
-        return v;
-    });
-}
-
-/**
  * Requires UI5 module `mod` in the page, calls its `fn` method with `p`, and returns
  * the result as a JSON string. Runs in-browser (Playwright serializes its source), so
- * it reads `window.sap.ui.require` and stays self-contained — it re-inlines the
- * circular-safe stringify (cf. {@link stringifyWithCircularGuard}) because the page
- * can't see module bindings, and serializes in-page to dodge Playwright's CDP
- * reference-chain limit on large UI trees. Exported so Node tests can exercise it by
- * stubbing `window.sap.ui.require`.
+ * it reads `window.sap.ui.require` and must stay fully self-contained — it cannot call
+ * any module-scope helper, because Playwright ships only this function's own source to
+ * the page. It serializes the result in-page (rather than returning the raw object) to
+ * dodge Playwright's CDP reference-chain limit on large UI trees. Exported so Node
+ * tests can exercise it (including the inlined replacer) by stubbing `window.sap.ui.require`.
  *
  * @param args The module path, method name, and payload.
  * @param args.mod The AMD module path to require.
@@ -155,6 +132,9 @@ export async function runActionInPage({
         throw new TypeError(`Frontend action "${fn}" is not available on ${mod}`);
     }
     const raw = await (fnImpl as (arg: unknown) => unknown).call(api, p);
+    // Circular-safe JSON stringify, intentionally inlined: this function is serialized
+    // to the browser by Playwright and cannot reference a module-scope helper. The
+    // runActionInPage unit tests exercise this replacer (including the cycle case).
     const seen = new WeakSet<object>();
     return JSON.stringify(raw, (_key: string, value: unknown) => {
         if (typeof value === 'object' && value !== null) {

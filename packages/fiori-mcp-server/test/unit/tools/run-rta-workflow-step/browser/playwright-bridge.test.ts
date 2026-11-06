@@ -260,6 +260,37 @@ describe('browser/playwright-bridge', () => {
         await fs.stopBrowser();
     });
 
+    test('returns a failure envelope (not a fatal throw) when the UI5-loader wait times out', async () => {
+        const page = new FakePage();
+        setupBrowser([page]);
+        page.evaluate.mockResolvedValueOnce(evalResult({ isSuccess: true, payload: 'ok', error: null }));
+
+        const fs = await loadPlaywrightBridge();
+        // First call connects the page (open + readiness probe both use waitForFunction).
+        await fs.callFrontendAction(SITE_A, 'com.sap.ui.unified.frontend.actions.describeUI', {}, undefined, true);
+        page.evaluate.mockClear();
+
+        // Second call reuses the connected page, so the ONLY waitForFunction left is the
+        // action's 60s UI5-loader wait. Make it reject: that wait is inside the try/catch,
+        // so a loader timeout must surface as FrontendActionError, not escape as fatal.
+        page.waitForFunction.mockReset();
+        page.waitForFunction.mockRejectedValueOnce(new Error('Timeout 60000ms exceeded'));
+
+        const result = await fs.callFrontendAction(
+            SITE_A,
+            'com.sap.ui.unified.frontend.actions.describeUI',
+            {},
+            undefined,
+            true
+        );
+        expect(result.isSuccess).toBe(false);
+        expect(result.error).toMatchObject({ code: 'FRONTEND_ACTION_THREW' });
+        // evaluate must not run once the loader wait failed.
+        expect(page.evaluate).not.toHaveBeenCalled();
+
+        await fs.stopBrowser();
+    });
+
     test('parses the JSON string the page returns and normalizes a large UFA tree', async () => {
         const page = new FakePage();
         setupBrowser([page]);
