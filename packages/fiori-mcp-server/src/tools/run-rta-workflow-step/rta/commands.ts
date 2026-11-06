@@ -2,6 +2,7 @@ import { isNeedsUserAction, UFA_PREFIX } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
 import { formatXml, persistMetadata } from '../../../utils/index.js';
 import { buildMetadataUrl, looksLikeEdmx } from './odata-metadata.js';
+import { DEFAULT_DESCRIBE_UI_DEPTH, trimTreeToDepth } from './ui-tree.js';
 import type {
     ActionsCatalog,
     DescribeUiResult,
@@ -26,16 +27,6 @@ const ACTION_VERSION = 'v1';
 // `value` and keeps the response ~200x smaller. ('text' maps to label, 'Type' to
 // type in UITreeReader's PROP_NAME_MAP; 'children' is always retained by it.)
 const NAVIGATION_PROPERTIES = ['id', 'text', 'Type'];
-
-/**
- * Default depth for an unscoped `describe_ui` overview. Depth 2 shows the
- * top-level containers (pages, object page, RTA toolbar) and their immediate
- * children (sections, tabs, toolbar buttons) — enough to decide which subtree to
- * inspect — while keeping the response small on a large page. The model drills
- * into a `truncated` node by calling `describe_ui` again with its id as
- * `rootElementId` (which returns that subtree at full depth).
- */
-const DEFAULT_DESCRIBE_UI_DEPTH = 2;
 
 /**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
@@ -255,29 +246,6 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
     } else {
         await transport.stopBrowser();
     }
-}
-
-/**
- * Returns a copy of `node` whose descendants are trimmed to `maxDepth` levels
- * (the root is depth 1). A node at the depth boundary that has children keeps no
- * `children`, and is instead marked `truncated: true` with `childCount` set to
- * the number of omitted direct children, signalling the caller to drill in with
- * `rootElementId`. `maxDepth <= 0` means no trimming (full tree).
- *
- * @param node The root node to trim.
- * @param maxDepth Maximum depth to retain, or `0` for the full tree.
- * @param depth The current node's depth (1 for the root); used internally.
- * @returns The trimmed node (a new object; the input is not mutated).
- */
-export function trimTreeToDepth(node: UiElementNode, maxDepth: number, depth = 1): UiElementNode {
-    const { children, ...rest } = node;
-    if (!children || children.length === 0) {
-        return { ...rest };
-    }
-    if (maxDepth > 0 && depth >= maxDepth) {
-        return { ...rest, truncated: true, childCount: children.length };
-    }
-    return { ...rest, children: children.map((child) => trimTreeToDepth(child, maxDepth, depth + 1)) };
 }
 
 /**
