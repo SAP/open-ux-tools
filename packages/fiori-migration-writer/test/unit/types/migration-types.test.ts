@@ -1,5 +1,4 @@
 import {
-    ApiHubType,
     CapType,
     DatasourceType,
     neoAppJsonRouteTargetTypes,
@@ -29,7 +28,6 @@ describe('migration type constants', () => {
             packageJson: 'packageJson'
         });
         expect(CapType).toEqual({ NODE_JS: 'Node.js', JAVA: 'Java' });
-        expect(ApiHubType).toEqual({ apiHub: 'API_HUB', apiHubEnterprise: 'API_HUB_ENTERPRISE' });
         expect(SapSystemSourceType).toEqual({
             SCP: 'SCP',
             ON_PREM: 'ON_PREM',
