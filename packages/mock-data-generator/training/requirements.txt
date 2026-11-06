@@ -1,0 +1,15 @@
+# Versions that built the shipped row model; `pnpm build:models` reproduces it byte for byte with them.
+torch==2.11.0
+transformers==4.47.1
+tokenizers==0.21.4
+peft==0.20.0
+accelerate==1.15.0
+safetensors==0.8.0
+huggingface_hub==0.36.2
+optimum==2.1.0
+optimum-onnx==0.1.0
+onnx==1.21.0
+onnxruntime==1.22.0
+numpy==2.5.3
+protobuf==7.36.2
+sympy==1.14.0

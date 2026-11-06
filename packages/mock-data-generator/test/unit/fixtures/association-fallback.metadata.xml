@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic OData V2 service with meaningless names. Ya lists Yb children through an association without a
+     referential constraint, and each Yb navigates back to its Ya through the same association; Ya lists Yc
+     children through an association whose referential constraint names Ya as the principal, and Yc has no
+     navigation back. -->
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="Ys" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="Ya">
+                <Key>
+                    <PropertyRef Name="Yk"/>
+                </Key>
+                <Property Name="Yk" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Yn" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="Ybs" Relationship="Ys.YaYb" FromRole="FromYa" ToRole="ToYb"/>
+                <NavigationProperty Name="Ycs" Relationship="Ys.YaYc" FromRole="FromYa" ToRole="ToYc"/>
+            </EntityType>
+            <EntityType Name="Yb">
+                <Key>
+                    <PropertyRef Name="Yk"/>
+                    <PropertyRef Name="Yi"/>
+                </Key>
+                <Property Name="Yk" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Yi" Type="Edm.String" Nullable="false" MaxLength="3"/>
+                <Property Name="Ym" Type="Edm.Decimal" Precision="13" Scale="2"/>
+                <NavigationProperty Name="Ya" Relationship="Ys.YaYb" FromRole="ToYb" ToRole="FromYa"/>
+            </EntityType>
+            <EntityType Name="Yc">
+                <Key>
+                    <PropertyRef Name="Yj"/>
+                </Key>
+                <Property Name="Yj" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="Yq" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Yt" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <Association Name="YaYb">
+                <End Type="Ys.Ya" Multiplicity="1" Role="FromYa"/>
+                <End Type="Ys.Yb" Multiplicity="*" Role="ToYb"/>
+            </Association>
+            <Association Name="YaYc">
+                <End Type="Ys.Ya" Multiplicity="1" Role="FromYa"/>
+                <End Type="Ys.Yc" Multiplicity="*" Role="ToYc"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromYa">
+                        <PropertyRef Name="Yk"/>
+                    </Principal>
+                    <Dependent Role="ToYc">
+                        <PropertyRef Name="Yq"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="Ys_Entities" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Yas" EntityType="Ys.Ya"/>
+                <EntitySet Name="Ybs" EntityType="Ys.Yb"/>
+                <EntitySet Name="Ycs" EntityType="Ys.Yc"/>
+                <AssociationSet Name="YaYbSet" Association="Ys.YaYb">
+                    <End EntitySet="Yas" Role="FromYa"/>
+                    <End EntitySet="Ybs" Role="ToYb"/>
+                </AssociationSet>
+                <AssociationSet Name="YaYcSet" Association="Ys.YaYc">
+                    <End EntitySet="Yas" Role="FromYa"/>
+                    <End EntitySet="Ycs" Role="ToYc"/>
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

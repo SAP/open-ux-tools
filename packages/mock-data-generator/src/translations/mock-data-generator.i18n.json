@@ -1,0 +1,83 @@
+{
+    "cli": {
+        "usage": "Usage: mockgen help | mockgen info | mockgen generate --input <request.json>",
+        "generateUsage": "Usage: mockgen generate --input <request.json>",
+        "uniqueOptions": "MockGen requires unique --name value options",
+        "requestDocumentUnreadable": "MockGen could not read the request document {{path}}: {{reason}}. Pass --input with a readable JSON file."
+    },
+    "request": {
+        "documentNotObject": "MockGen request document must be a JSON object",
+        "mustBeString": "MockGen {{path}} must be a string",
+        "mustBeObject": "MockGen {{path}} must be an object",
+        "mustBeList": "MockGen {{path}} must be a list",
+        "mustBeBoolean": "MockGen {{path}} must be a boolean",
+        "mustBeOneOf": "MockGen {{path}} must be one of {{values}}",
+        "unsupportedOption": "MockGen {{path}} is not a supported generation option",
+        "signalNotAllowed": "MockGen {{path}} cannot be supplied in a request document",
+        "unsafeTargetNames": "MockGen project targets require unique safe resource names"
+    },
+    "options": {
+        "seed": "Mock data generator seed must be a safe integer",
+        "rowCounts": "Mock data generator row counts must be integers between 0 and {{maximum}}",
+        "sftTimeout": "Mock data generator SFT timeout must be an integer between 1 and {{maximum}} milliseconds",
+        "sftBudget": "Mock data generator SFT budget must be an integer between 1 and {{maximum}} milliseconds",
+        "sftDeadline": "Mock data generator SFT deadline must be an integer between 1 and {{maximum}} milliseconds",
+        "sftModelRows": "Mock data generator SFT model rows must be an integer between 1 and {{maximum}}",
+        "sftPriorityTargets": "Mock data generator SFT priority targets must be a list of entity set names",
+        "sftFieldsPerCall": "Mock data generator SFT fields per call must be an integer between 1 and {{maximum}}",
+        "referenceDate": "Mock data generator reference date must be an ISO 8601 calendar date (YYYY-MM-DD)",
+        "windowYears": "Mock data generator window years must be an integer between 1 and {{maximum}}",
+        "includeGeneratedValues": "includeGeneratedValues must be a boolean"
+    },
+    "configuration": {
+        "executionModeUnsupported": "Unsupported MockGen execution mode",
+        "answerCacheDirectoryRelative": "The MockGen answer cache directory must be an absolute path",
+        "resourceRootInvalid": "The MockGen resource root must be an absolute path",
+        "resourceRootUnknown": "The MockGen package cannot locate its resources directory, as in a CommonJS bundle. Copy the package's resources directory next to the bundle and pass its absolute path as resourceRoot.",
+        "domainResourcesDiffer": "The MockGen {{resource}} below {{root}} differs from the one this process loaded from {{loadedRoot}}. A process uses one set of value banks, semantic rules and role registry: pass the same resourceRoot to every session, or a byte-identical copy.",
+        "sessionDisposed": "MockGen session has been disposed"
+    },
+    "integrity": {
+        "resourceName": {
+            "valueBankStore": "value-bank store",
+            "semanticRuleStore": "semantic rule store",
+            "roleRegistry": "role registry"
+        },
+        "resourceInvalid": "The packaged MockGen {{resource}} is invalid: {{reason}}",
+        "resourceNotDeclared": "The installed MockGen package does not declare its {{resource}}",
+        "resourceDigestMismatch": "The loaded MockGen {{resource}} does not match the package manifest",
+        "manifestUnreadable": "The MockGen model manifest cannot be read: {{reason}}",
+        "manifestInvalid": "The MockGen model manifest is invalid: {{reason}}",
+        "manifestComponentsMissing": "The packaged model manifest requires classifier and SFT components",
+        "datasetsCorrupt": "The installed MockGen datasets are corrupt: {{datasets}}",
+        "modelArtifactsCorrupt": "The installed MockGen package has missing or corrupt model artifacts: {{failures}}",
+        "modelArtifactsUnverifiable": "The MockGen model artifacts cannot be verified: {{reason}}",
+        "classifierHeadMissing": "The packaged classifier head is missing",
+        "classifierHeadInvalid": "The packaged classifier head is invalid: {{reason}}"
+    },
+    "projectData": {
+        "pathUnsafe": "MockGen data directory must be a safe application-relative path",
+        "notRegularDirectory": "MockGen data directory must be a regular directory",
+        "linksOrSpecialFiles": "MockGen refuses a mockdata directory containing links or special files",
+        "unsafeParent": "MockGen data directory contains an unsafe parent directory or link",
+        "escapesApplication": "MockGen data directory escapes the application",
+        "resolvesOutside": "MockGen data directory resolves outside the application",
+        "rejectedValidation": "MockGen rejected project data with failed semantic validation",
+        "directoryChanged": "MockGen project data directory changed during generation",
+        "changedDuringGeneration": "MockGen project data changed during generation",
+        "changedBeforeReplacement": "MockGen project data changed before replacement",
+        "rollbackFailed": "MockGen rollback failed; originals are retained at {{backup}}"
+    },
+    "recovery": {
+        "journalMissing": "MockGen found an interrupted project transaction without a journal: {{transactionRoot}}. Its backup directory holds the original project data: if the data directory is missing or incomplete, move {{backup}} back in its place, then delete {{transactionRoot}} and retry.",
+        "journalUnreadable": "MockGen project transaction requires manual recovery: {{transactionRoot}}. Its journal is unreadable; if it holds a backup directory, restore that as the data directory, then delete {{transactionRoot}}.",
+        "changedAfterInterruption": "MockGen project data changed after interruption: {{directory}}",
+        "completedDataMissing": "MockGen completed project data is missing: {{directory}}"
+    },
+    "lock": {
+        "held": "MockGen project data is locked by {{holder}}: {{lockPath}}. Waited {{timeoutMs}} ms. Wait for the other run to finish; if no MockGen run is active, delete the lock directory and retry.",
+        "holderProcess": "process {{pid}} on {{hostname}} since {{createdAt}}",
+        "holderUnknown": "a process that has not recorded itself yet",
+        "releaseFailed": "{{reason}}; the project lock could not be released"
+    }
+}
