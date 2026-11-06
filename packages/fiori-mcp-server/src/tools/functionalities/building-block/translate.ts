@@ -49,7 +49,10 @@ export function translateBuildingBlockInput(bbData: Record<string, unknown>): Re
     // Action keeps anchor/placement flat — its TypeScript type has them as top-level fields.
     if (POSITION_WRAP_TYPES.has(type) && data['position'] === undefined) {
         if (data['anchor'] !== undefined || data['placement'] !== undefined) {
-            data['position'] = { anchor: data['anchor'], placement: data['placement'] };
+            data['position'] = {
+                ...(data['anchor'] !== undefined && { anchor: data['anchor'] }),
+                placement: (data['placement'] ?? 'After') as string
+            };
             delete data['anchor'];
             delete data['placement'];
         }
