@@ -9,7 +9,7 @@ import { AGGREGATION_CHILD_TYPES } from './utils.js';
  * @returns Sanitized name with `..` and `/`/`\` removed
  */
 function sanitizeFileName(name: string): string {
-    return name.replace(/\.\./g, '').replace(/[/\\]/g, '');
+    return name.replaceAll('..', '').replaceAll(/[/\\]/g, '');
 }
 
 /** BB types that wrap flat anchor/placement into a nested position object. */
