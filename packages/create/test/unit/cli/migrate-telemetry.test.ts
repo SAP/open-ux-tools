@@ -46,6 +46,8 @@ const {
     MigrationEventName
 } = await import('../../../src/cli/migrate/telemetry.js');
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
 describe('migrate telemetry', () => {
     const originalEnv = { ...process.env };
 
@@ -184,7 +186,7 @@ describe('migrate telemetry', () => {
             expect(mockReportEventBlocking).toHaveBeenCalledWith(
                 {
                     eventName: 'MIGRATION_SUCCESS',
-                    properties: { success: 'true', source: 'CLI' },
+                    properties: { success: 'true', source: 'CLI', SessionId: expect.stringMatching(UUID) },
                     measurements: { ms: 42 }
                 },
                 2,
@@ -198,7 +200,11 @@ describe('migrate telemetry', () => {
             await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD);
 
             expect(mockReportEventBlocking).toHaveBeenCalledWith(
-                { eventName: 'MIGRATION_BACKEND_LOAD', properties: { source: 'CLI' }, measurements: {} },
+                {
+                    eventName: 'MIGRATION_BACKEND_LOAD',
+                    properties: { source: 'CLI', SessionId: expect.stringMatching(UUID) },
+                    measurements: {}
+                },
                 2,
                 undefined
             );
@@ -247,6 +253,22 @@ describe('migrate telemetry', () => {
             await initCliTelemetry('1.0.0');
             await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
             expect(mockReportEventBlocking).toHaveBeenCalledTimes(2);
+        });
+
+        test('uses one session id per run and a new one after re-initialization', async () => {
+            const getSessionIds = (): string[] =>
+                mockReportEventBlocking.mock.calls.map(
+                    (call) => (call[0] as { properties: { SessionId: string } }).properties.SessionId
+                );
+            await initCliTelemetry('1.0.0');
+            await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD);
+            await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
+            await initCliTelemetry('1.0.0');
+            await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
+
+            const [first, second, third] = getSessionIds();
+            expect(first).toBe(second);
+            expect(third).not.toBe(first);
         });
 
         test('never throws when sending fails', async () => {

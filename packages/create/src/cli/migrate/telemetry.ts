@@ -8,6 +8,7 @@ import {
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { ImportProjectInfo, Message } from '@sap-ux/fiori-migration-writer';
 import { getFioriToolsDirectory } from '@sap-ux/store';
+import { randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getLogger } from '../../tracing/index.js';
@@ -41,6 +42,8 @@ export type SystemResolvedVia = 'cliOption' | 'savedSystem' | 'basDestination' |
 let telemetryEnabled = false;
 // Set when sending fails or times out, so an unreachable backend delays the CLI at most once per run
 let sendingFailed = false;
+// Random id correlating the events of one run; it is neither persisted nor linked to a user or machine
+let sessionId = randomUUID();
 
 /**
  * Get the environment variable that opts out of telemetry, if set. Besides the variable supported by all
@@ -65,6 +68,7 @@ export function getTelemetryOptOutEnvVariable(): string | undefined {
  */
 export async function initCliTelemetry(version: string): Promise<void> {
     sendingFailed = false;
+    sessionId = randomUUID();
     try {
         await initTelemetrySettings({
             consumerModule: { name: CONSUMER_MODULE_NAME, version },
@@ -124,7 +128,7 @@ export async function trackMigrateEvent(
         const timeout = new Promise<'timeout'>((resolve) => {
             timer = setTimeout(() => resolve('timeout'), SEND_TIMEOUT_MS);
         });
-        const eventProperties: TelemetryProperties = { ...properties, source: TELEMETRY_SOURCE };
+        const eventProperties: TelemetryProperties = { ...properties, source: TELEMETRY_SOURCE, SessionId: sessionId };
         const send = ClientFactory.getTelemetryClient()
             .reportEventBlocking(
                 { eventName, properties: eventProperties, measurements: ms === undefined ? {} : { ms } },

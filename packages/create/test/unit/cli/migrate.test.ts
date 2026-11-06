@@ -1051,7 +1051,7 @@ describe('migrate command', () => {
             ]);
             expect(getEvent('MIGRATION_BACKEND_LOAD')).toEqual({
                 eventName: 'MIGRATION_BACKEND_LOAD',
-                properties: { source: 'CLI' },
+                properties: { source: 'CLI', SessionId: expect.any(String) },
                 measurements: { ms: expect.any(Number) }
             });
             expect(getEvent('MIGRATION_SUCCESS')).toEqual({
@@ -1065,7 +1065,8 @@ describe('migrate command', () => {
                     numReuseLibs: '2',
                     type: 'application',
                     messages: '',
-                    source: 'CLI'
+                    source: 'CLI',
+                    SessionId: expect.any(String)
                 },
                 measurements: { ms: expect.any(Number) }
             });
@@ -1079,7 +1080,8 @@ describe('migrate command', () => {
                     systemResolvedVia: 'cliOption',
                     forceOverride: 'false',
                     npmInstallSuccess: 'skipped',
-                    source: 'CLI'
+                    source: 'CLI',
+                    SessionId: expect.any(String)
                 },
                 measurements: { ms: expect.any(Number) }
             });

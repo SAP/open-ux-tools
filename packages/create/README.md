@@ -30,7 +30,7 @@ sap-ux [command] [sub-command] /path/to/project
 
 The `migrate` command collects anonymous usage data to help improve SAP Fiori tools. A short notice is shown the first time `migrate` runs. No other command sends usage data.
 
-**What is collected** (all events carry `source: CLI`):
+**What is collected** (all events carry `source: CLI` and a random `SessionId` that is generated for each run, is not stored and only correlates the events of that run):
 
 | Event | When | Properties |
 |---|---|---|
