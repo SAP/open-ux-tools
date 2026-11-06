@@ -79,6 +79,7 @@ function qualifierFromMetaPath(metaPath: string | undefined): string {
  *
  * @param entitySetName - Entity set or navigation property name derived from metaPath/contextPath
  * @param rawSchema - Raw schema returned by `annotationService.getSchema()`
+ * @param contextEntitySetName
  * @returns Fully qualified OData type name to use as the annotation target
  */
 function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema, contextEntitySetName?: string): string {
