@@ -29,15 +29,12 @@ import { ProjectMigrator, createMemFsEditor } from '@sap-ux/fiori-migration-writ
 const fs = createMemFsEditor();
 
 // Migrate a project
-const { fs: updatedFs, result, messages } = await ProjectMigrator.migrate(
-    '/path/to/project',
-    'https://backend.example.com',
-    'https://ui5.sap.com',
-    undefined, // optional project info
-    undefined, // optional vscode context
-    false,     // internal toggle
-    fs         // optional fs editor
-);
+const { fs: updatedFs, result, messages } = await ProjectMigrator.migrate({
+    projectRoot: '/path/to/project', // absolute or relative to the working directory
+    baseUri: 'https://backend.example.com',
+    ui5SnapshotUrl: 'https://ui5.sap.com', // optional
+    fs // optional fs editor
+});
 
 // Commit changes to disk
 await new Promise((resolve, reject) => {

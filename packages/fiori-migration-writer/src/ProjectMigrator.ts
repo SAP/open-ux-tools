@@ -69,6 +69,13 @@ export class ProjectMigrator {
     public static async migrate(
         options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
+        // Guards JavaScript callers still using the removed positional signature migrate(projectRoot, baseUri, ...)
+        if (typeof options?.projectRoot !== 'string' || options.projectRoot.length === 0) {
+            throw new TypeError(
+                'ProjectMigrator.migrate() expects a single options object with a non-empty "projectRoot" string, ' +
+                    'e.g. migrate({ projectRoot, baseUri }). The positional signature is no longer supported.'
+            );
+        }
         const {
             projectRoot: projectRootInput,
             baseUri: baseUriOpt,

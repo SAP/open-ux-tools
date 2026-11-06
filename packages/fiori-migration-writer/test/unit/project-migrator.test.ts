@@ -29,6 +29,20 @@ describe('ProjectMigrator', () => {
         await rm(testOutputDir, { recursive: true, force: true });
     });
 
+    describe('migrate argument validation', () => {
+        it.each([
+            ['a positional string argument', '/path/to/project'],
+            ['no argument', undefined],
+            ['an empty projectRoot', { projectRoot: '', baseUri: 'https://backend.example.com' }],
+            ['a missing projectRoot', { baseUri: 'https://backend.example.com' }]
+        ])('should reject %s with a descriptive error', async (_name, input) => {
+            const ProjectMigrator = await getProjectMigratorPrivate();
+            await expect(ProjectMigrator.migrate(input, 'https://backend.example.com')).rejects.toThrow(
+                /expects a single options object with a non-empty "projectRoot"/
+            );
+        });
+    });
+
     describe('detectTypeScriptApp', () => {
         it('should return false for JavaScript-only project', async () => {
             const ProjectMigrator = await getProjectMigratorPrivate();
