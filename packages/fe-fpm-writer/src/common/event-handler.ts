@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { getTemplatePath } from '../templates.js';
 import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types.js';

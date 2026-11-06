@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import path from 'node:path';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type {

@@ -2,7 +2,7 @@ import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './pro
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { Annotations } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';

@@ -4,4 +4,4 @@ export { ErrorHandler, ERROR_TYPE, bail, handleErrorMessage } from './error-hand
 export { getExtensionGenPromptOpts } from './extension-prompts.js';
 export * from './constants.js';
 export * from './destination.js';
-export * from './types.js';
+export type { ConnectedSystem } from './types.js';

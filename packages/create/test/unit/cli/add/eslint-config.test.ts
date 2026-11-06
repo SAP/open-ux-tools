@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { Command } from 'commander';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -63,7 +63,7 @@ describe('Test command add eslint-config', () => {
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockGenerateEslintConfig.mockResolvedValue(fsMock);
         mockGetProjectType.mockResolvedValue('CAPNodejs');

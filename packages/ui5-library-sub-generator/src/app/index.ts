@@ -21,14 +21,14 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { generate, type UI5LibConfig } from '@sap-ux/ui5-library-writer';
 import { prompt, type UI5LibraryAnswers, type InquirerAdapter } from '@sap-ux/ui5-library-inquirer';
-import type { Ui5LibGenerator } from './types.js';
+import type { Ui5LibGenerator, Ui5LibGeneratorOptions } from './types.js';
 
 /**
  * Generator for creating a new UI5 library.
  *
  * @extends Generator
  */
-export default class extends Generator implements Ui5LibGenerator {
+export default class extends Generator<Record<string, unknown>, Ui5LibGeneratorOptions> implements Ui5LibGenerator {
     answers: UI5LibraryAnswers = {};
     prompts: Prompts;
     appWizard: AppWizard;
@@ -43,7 +43,7 @@ export default class extends Generator implements Ui5LibGenerator {
      * @param args - arguments passed to the generator
      * @param opts - options passed to the generator
      */
-    constructor(args: string | string[], opts: Generator.GeneratorOptions) {
+    constructor(args: string[], opts: Ui5LibGeneratorOptions) {
         super(args, opts);
 
         this.appWizard = AppWizard.create(opts);
@@ -101,8 +101,10 @@ export default class extends Generator implements Ui5LibGenerator {
         }
 
         try {
+            // yeoman v8's this.fs is mem-fs-editor@12; the writer still types its fs param as the @9 Editor.
+            // Derive that param type from `generate` itself so no direct mem-fs-editor dependency is needed.
             await generate(this.targetFolder, ui5Lib, this.fs);
-            writeApplicationInfoSettings(this.projectPath);
+            await writeApplicationInfoSettings(this.projectPath);
         } catch (e) {
             ReuseLibGenLogger.logger.error(e);
             throw new Error(t('error.generatingUi5Lib'));

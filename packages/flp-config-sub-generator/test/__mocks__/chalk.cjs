@@ -1,29 +1,23 @@
 // CJS-compatible chalk mock for tests
-// chalk v4 is CJS and named imports don't work in ESM mode
+// chalk v4 is CJS and named imports don't work in ESM mode.
+// A Proxy returns an identity function for every colour/style accessor
+// (including chainable and background variants such as `bgGreen`) so the
+// mock stays in step with whatever chalk API the Yeoman adapter calls.
 const identity = (s) => s;
 
-identity.cyan = identity;
-identity.yellow = identity;
-identity.red = identity;
-identity.green = identity;
-identity.blue = identity;
-identity.magenta = identity;
-identity.white = identity;
-identity.gray = identity;
-identity.bold = identity;
-identity.dim = identity;
-identity.underline = identity;
+const handler = {
+    get(target, prop) {
+        if (prop in target) {
+            return target[prop];
+        }
+        return proxy;
+    },
+    apply(target, thisArg, args) {
+        return args[0];
+    }
+};
 
-module.exports = identity;
-module.exports.cyan = identity;
-module.exports.yellow = identity;
-module.exports.red = identity;
-module.exports.green = identity;
-module.exports.blue = identity;
-module.exports.magenta = identity;
-module.exports.white = identity;
-module.exports.gray = identity;
-module.exports.bold = identity;
-module.exports.dim = identity;
-module.exports.underline = identity;
-module.exports.default = identity;
+const proxy = new Proxy(identity, handler);
+
+module.exports = proxy;
+module.exports.default = proxy;

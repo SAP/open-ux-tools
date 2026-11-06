@@ -8,7 +8,7 @@ import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target.js';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type {
     ApiHubConfig,
     CfDeployConfigPromptOptions,
@@ -99,7 +99,7 @@ export async function getSubGenPrompts(
     if (!targetDeployment || targetDeployment === TargetName.CF) {
         cfPrompts = await getCFQuestions({
             projectRoot: options.projectRoot,
-            isAbapDirectServiceBinding: options.isAbapDirectServiceBinding,
+            isAbapDirectServiceBinding: options.isAbapDirectServiceBinding ?? false,
             cfDestination: cfDestination,
             isCap: isCap,
             addOverwrite: showOverwrite,

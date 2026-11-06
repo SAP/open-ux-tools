@@ -4,7 +4,7 @@
 
 import { basename, join, sep as pathSep } from 'node:path';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';

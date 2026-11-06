@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import type { Editor as MFSEditor, Store } from 'mem-fs-editor';
+import type { MemFsEditor as MFSEditor } from 'mem-fs-editor';
+import type { Store } from 'mem-fs';
 
 // MOCKS - use jest.unstable_mockModule for ESM compatibility
 const mockCreate = jest.fn().mockReturnValue({} as MFSEditor);

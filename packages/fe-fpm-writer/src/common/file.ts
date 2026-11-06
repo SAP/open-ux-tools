@@ -1,4 +1,4 @@
-import type { CopyOptions, Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { TabInfo } from '../common/types.js';
 import { sep, normalize } from 'node:path';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file/index.js';
@@ -235,9 +235,7 @@ export function createIdGenerator(
     return createGenerator([]);
 }
 
-// `noGlob` is supported in `mem-fs-editor` v9,
-// but is missing from `@types/mem-fs-editor` (no v9 typings), so we extend the type here.
-export const COPY_TEMPLATE_OPTIONS: CopyOptions & { noGlob: boolean } = {
+export const COPY_TEMPLATE_OPTIONS = {
     noGlob: true
 };
 
@@ -359,7 +357,7 @@ export function copyTpl(
         const additionalContext = config.getData(generateId, context);
         context = { ...context, ...additionalContext };
     }
-    fs.copyTpl(from, to, context, undefined, COPY_TEMPLATE_OPTIONS);
+    fs.copyTpl(from, to, context, undefined, { noGlob: true });
 }
 
 /**

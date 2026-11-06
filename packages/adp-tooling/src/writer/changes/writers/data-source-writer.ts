@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types.js';
 import type { IWriter, DataSourceData } from '../../../types.js';

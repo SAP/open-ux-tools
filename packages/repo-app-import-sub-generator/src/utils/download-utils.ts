@@ -1,6 +1,6 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { PromptState } from '../prompts/prompt-state.js';
 import { t } from './i18n.js';
 import RepoAppDownloadLogger from '../utils/logger.js';

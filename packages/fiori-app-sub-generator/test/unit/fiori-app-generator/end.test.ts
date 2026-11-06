@@ -4,7 +4,7 @@ import { PLATFORMS, ApiHubType, EventName, State } from '../../../src/types/inde
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';

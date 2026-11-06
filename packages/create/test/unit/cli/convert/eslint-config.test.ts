@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { Command } from 'commander';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -61,7 +61,7 @@ describe('Test command convert eslint-config', () => {
             dump: jest.fn(),
             exists: jest.fn(),
             delete: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockConvertEslintConfig.mockResolvedValue(fsMock);
         mockRunNpmInstallCommand.mockImplementation(() => Promise.resolve());

@@ -1,7 +1,7 @@
 import { resolve, normalize } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import type { Data, Options } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile } from '../file-access.js';
 
 // esbuild minifies closure-captured variable names, including the `escapeFn` that

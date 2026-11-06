@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -45,7 +45,7 @@ describe('Test command add flp-embedded-config', () => {
         fsMock = {
             dump: jest.fn(),
             exists: jest.fn(),
-            commit: jest.fn().mockImplementation((callback: () => void) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockGenerateFlpEmbeddedConfig.mockResolvedValue(fsMock);
     });
@@ -103,7 +103,7 @@ describe('Test command add flp-embedded-config', () => {
     });
 
     test('add flp-embedded-config passes commit error to logger', async () => {
-        fsMock.commit = jest.fn().mockImplementation((callback: () => void) => callback(new Error('disk full')));
+        fsMock.commit = jest.fn().mockRejectedValue(new Error('disk full'));
         const command = new Command('add');
         addFlpEmbeddedConfigCommand(command);
         await command.parseAsync(getArgv(['flp-embedded-config', appRoot, '-b', 'my-bsp-app']));

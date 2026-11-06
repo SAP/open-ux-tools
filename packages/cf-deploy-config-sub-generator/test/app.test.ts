@@ -1,45 +1,15 @@
 import { jest } from '@jest/globals';
-import path, { join, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 import fs from 'node:fs';
-import * as memfs from 'memfs';
-import { Union } from 'unionfs';
+import os from 'node:os';
 import { load, dump } from 'js-yaml';
 import yeomanTest from 'yeoman-test';
 import { TestFixture } from './fixtures/index.js';
 import type { Manifest } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
-const require = createRequire(import.meta.url);
 const __testdirname = dirname(fileURLToPath(import.meta.url));
-
-// CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
-jest.mock('fs', () => {
-    const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const vol = require('memfs').vol;
-    const _fs = new Union().use(fsLib);
-    const unionFs = _fs.use(vol as unknown as typeof fs);
-    unionFs.constants = fsLib.constants;
-    unionFs.realpath = fsLib.realpath;
-    unionFs.realpathSync = fsLib.realpathSync;
-    return unionFs;
-});
-
-// ESM mock for 'node:fs' — intercepted by ESM imports (e.g., mock-mta.ts)
-const realFs = { ...fs };
-const esmUnionFs = new Union().use(realFs as unknown as typeof fs).use(memfs.vol as unknown as typeof fs);
-(esmUnionFs as any).constants = fs.constants;
-(esmUnionFs as any).realpath = fs.realpath;
-(esmUnionFs as any).realpathSync = fs.realpathSync;
-
-jest.unstable_mockModule('node:fs', () => ({
-    ...esmUnionFs,
-    default: esmUnionFs
-}));
 
 const mockHasbinSync = jest.fn() as jest.Mock;
 
@@ -48,7 +18,6 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: mockHasbinSync
 }));
 
-// Import MockMta AFTER fs mocks are set up so it gets the mocked fs
 const { MockMta } = await import('./utils/mock-mta.js');
 
 jest.unstable_mockModule('@sap/mta-lib', () => ({
@@ -112,11 +81,8 @@ const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
 const { ApiHubType, RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
 const { DeploymentGenerator } = await import('@sap-ux/deploy-config-generator-shared');
 
-// Use memfs.fs to read files written to virtual paths by the generator
-const mockedFs = memfs.fs;
-
 const readJson = (filePath: string) => {
-    return JSON.parse(mockedFs.readFileSync(filePath).toString());
+    return JSON.parse(fs.readFileSync(filePath).toString());
 };
 
 const mockShowInformation = jest.fn() as jest.Mock;
@@ -130,24 +96,36 @@ const mockAppWizard = {
 jest.setTimeout(60000);
 
 describe('Cloud foundry generator tests', () => {
-    let cwd: string;
     const cfGenPath = join(__testdirname, '../src/app');
-    const OUTPUT_DIR_PREFIX = join('/output');
     const testFixture = new TestFixture();
     let fsMock: Editor;
+    let outputDir: string;
+
+    /**
+     * Seed a real on-disk directory tree for a test run.
+     *
+     * @param files - map of real absolute path → file contents
+     */
+    const seedFiles = (files: Record<string, string>): void => {
+        for (const [filePath, contents] of Object.entries(files)) {
+            fs.mkdirSync(dirname(filePath), { recursive: true });
+            fs.writeFileSync(filePath, contents);
+        }
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
-        memfs.vol.reset();
-        const mockChdir = jest.spyOn(process, 'chdir');
-        mockChdir.mockImplementation((dir): void => {
-            cwd = dir;
-        });
+        outputDir = fs.mkdtempSync(join(os.tmpdir(), 'cf-deploy-config-'));
         // Delegate to real implementations by default
         mockGetCFQuestions.mockImplementation((...args) => (realQuestions.getCFQuestions as Function)(...args));
         mockGenerateAppConfig.mockImplementation((...args) =>
             (realCfConfigWriter.generateAppConfig as Function)(...args)
         );
         mockIsExtensionInstalled.mockReturnValue(true);
+    });
+
+    afterEach(() => {
+        fs.rmSync(outputDir, { recursive: true, force: true });
     });
 
     beforeAll(async () => {
@@ -170,17 +148,13 @@ describe('Cloud foundry generator tests', () => {
         });
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -212,7 +186,7 @@ describe('Cloud foundry generator tests', () => {
         expect(parametersBefore).toStrictEqual({});
 
         // After
-        const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/`);
+        const mtaAfterYaml = new MockMta(join(appDir, '/'));
         const modulesAfter = await mtaAfterYaml.getModules();
         const resourcesAfter = await mtaAfterYaml.getResources();
         const parametersAfter = await mtaAfterYaml.getParameters();
@@ -312,14 +286,14 @@ describe('Cloud foundry generator tests', () => {
             }
         `);
         expect(resourcesAfter).toMatchSnapshot(); // Shows the ui5 destination being added to an existing resource
-        const changedManifest: Manifest = readJson(`${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`);
+        const changedManifest: Manifest = readJson(join(appDir, 'webapp/manifest.json'));
         expect(changedManifest['sap.cloud']).toMatchInlineSnapshot(`
             {
               "public": true,
               "service": "myTestApp",
             }
         `);
-        const xsApp = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`, 'utf-8');
+        const xsApp = fs.readFileSync(join(appDir, 'xs-app.json'), 'utf-8');
         expect(xsApp).toMatchSnapshot(); // Uses the xs-app-nodestination config
         expect(mockShowInformation).toHaveBeenCalledWith(t('cfGen.info.filesGenerated'), MessageType.notification);
     });
@@ -328,17 +302,13 @@ describe('Cloud foundry generator tests', () => {
         mockHasbinSync.mockReturnValue(true);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed-apps/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('/app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('/app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -365,7 +335,7 @@ describe('Cloud foundry generator tests', () => {
         expect(parametersBefore).toBeDefined();
 
         // After
-        const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/`);
+        const mtaAfterYaml = new MockMta(join(appDir, '/'));
         const modulesAfter = await mtaAfterYaml.getModules();
         const resourcesAfter = await mtaAfterYaml.getResources();
         const parametersAfter = await mtaAfterYaml.getParameters();
@@ -506,7 +476,7 @@ describe('Cloud foundry generator tests', () => {
             ]
         `);
 
-        const changedManifest: Manifest = readJson(`${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`);
+        const changedManifest: Manifest = readJson(join(appDir, 'webapp/manifest.json'));
 
         expect(changedManifest['sap.cloud']).toMatchInlineSnapshot(`
             {
@@ -514,7 +484,7 @@ describe('Cloud foundry generator tests', () => {
               "service": "myTestApp",
             }
         `);
-        const xsApp = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`, 'utf-8');
+        const xsApp = fs.readFileSync(join(appDir, 'xs-app.json'), 'utf-8');
         expect(xsApp).toMatchSnapshot();
     });
 
@@ -524,15 +494,12 @@ describe('Cloud foundry generator tests', () => {
         const manifestId = 'a'.repeat(200);
         const manifestConfig = JSON.parse(testFixture.getContents('/app1/webapp/manifest.json'));
         manifestConfig['sap.app'].id = manifestId;
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/${projectName}/webapp/manifest.json`]: JSON.stringify(manifestConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/${projectName}/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/${projectName}/ui5.yaml`]: testFixture.getContents('/app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, projectName, 'webapp/manifest.json')]: JSON.stringify(manifestConfig),
+            [join(appDir, projectName, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, projectName, 'ui5.yaml')]: testFixture.getContents('/app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -557,9 +524,9 @@ describe('Cloud foundry generator tests', () => {
         ).resolves.not.toThrow();
 
         // After
-        expect(mockedFs.existsSync(`${OUTPUT_DIR_PREFIX}/app1/mta.yaml`)).toBeFalsy(); // Ensure nothing is added to the root folder
+        expect(fs.existsSync(join(appDir, 'mta.yaml'))).toBeFalsy(); // Ensure nothing is added to the root folder
 
-        const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/`);
+        const mtaAfterYaml = new MockMta(join(appDir, projectName, '/'));
         const idAfter = await mtaAfterYaml.getMtaID();
         const modulesAfter = await mtaAfterYaml.getModules();
         const resourcesAfter = await mtaAfterYaml.getResources();
@@ -581,20 +548,20 @@ describe('Cloud foundry generator tests', () => {
         const appHtml5 = modulesAfter.find((m) => m.type === 'html5');
         expect(appHtml5).toMatchSnapshot();
         expect(resourcesAfter).toMatchSnapshot();
-        const xsSecurity = readJson(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/xs-security.json`);
+        const xsSecurity = readJson(join(appDir, projectName, 'xs-security.json'));
         expect(xsSecurity).toMatchSnapshot();
-        const gitIgnore = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/.gitignore`, 'utf-8');
+        const gitIgnore = fs.readFileSync(join(appDir, projectName, '.gitignore'), 'utf-8');
         expect(gitIgnore).toMatchSnapshot();
-        const changedManifest: Manifest = readJson(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/webapp/manifest.json`);
+        const changedManifest: Manifest = readJson(join(appDir, projectName, 'webapp/manifest.json'));
         expect(changedManifest['sap.cloud']).toMatchInlineSnapshot(`
             {
               "public": true,
               "service": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             }
         `);
-        const xsApp = readJson(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/xs-app.json`);
+        const xsApp = readJson(join(appDir, projectName, 'xs-app.json'));
         expect(xsApp).toMatchSnapshot();
-        const ui5Deploy = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/ui5-deploy.yaml`, 'utf-8');
+        const ui5Deploy = fs.readFileSync(join(appDir, projectName, 'ui5-deploy.yaml'), 'utf-8');
         const ui5DeployYaml = load(ui5Deploy);
         expect(ui5DeployYaml).toMatchSnapshot(); // Validates the archiveName is shortened
     });
@@ -603,17 +570,13 @@ describe('Cloud foundry generator tests', () => {
         mockHasbinSync.mockReturnValue(true);
         const standaloneRouterConfig = load(testFixture.getContents('mta-types/standalone/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('/app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/app1/ui5-client-value.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(standaloneRouterConfig)
-            },
-            '/'
-        );
-        const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('/app1/webapp/manifest.json'),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('/app1/ui5-client-value.yaml'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(standaloneRouterConfig)
+        });
 
         await expect(
             yeomanTest
@@ -645,7 +608,7 @@ describe('Cloud foundry generator tests', () => {
         expect(parametersBefore).toBeDefined();
 
         // After
-        const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/`);
+        const mtaAfterYaml = new MockMta(join(appDir, '/'));
         const modulesAfter = await mtaAfterYaml.getModules();
         const resourcesAfter = await mtaAfterYaml.getResources();
         const parametersAfter = await mtaAfterYaml.getParameters();
@@ -734,14 +697,14 @@ describe('Cloud foundry generator tests', () => {
             }
         `);
 
-        const packagejson: Manifest = readJson(`${OUTPUT_DIR_PREFIX}/app1/package.json`);
+        const packagejson: Manifest = readJson(join(appDir, 'package.json'));
         expect(packagejson).toMatchSnapshot();
 
-        const changedManifest: Manifest = readJson(`${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`);
+        const changedManifest: Manifest = readJson(join(appDir, 'webapp/manifest.json'));
         expect(changedManifest['sap.cloud']).toBeUndefined();
 
         // Validates ui5-deploy template being copied with comment
-        const ui5DeployYamlContent = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/ui5-deploy.yaml`, 'utf-8');
+        const ui5DeployYamlContent = fs.readFileSync(join(appDir, 'ui5-deploy.yaml'), 'utf-8');
         const regExArr = ui5DeployYamlContent.match(/#.*/g);
 
         if (regExArr) {
@@ -754,7 +717,7 @@ describe('Cloud foundry generator tests', () => {
             fail('No comments found in the ui5.yaml file');
         }
 
-        const xsApp = readJson(`${OUTPUT_DIR_PREFIX}/app1/xs-app.json`);
+        const xsApp = readJson(join(appDir, 'xs-app.json'));
         expect(xsApp).toMatchSnapshot(); // authenticationType should equal `none`
     });
 
@@ -763,17 +726,13 @@ describe('Cloud foundry generator tests', () => {
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
         const getCFQuestionsSpy = mockGetCFQuestions;
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -815,17 +774,13 @@ describe('Cloud foundry generator tests', () => {
         mockIsAppStudio.mockReturnValue(true);
         const standaloneRouterConfig = load(testFixture.getContents('mta-types/standalone-with-ui/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('/app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/app1/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(standaloneRouterConfig)
-            },
-            '/'
-        );
-        const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('/app1/webapp/manifest.json'),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('/app1/ui5.yaml'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(standaloneRouterConfig)
+        });
 
         await expect(
             yeomanTest
@@ -854,7 +809,7 @@ describe('Cloud foundry generator tests', () => {
         expect(parametersBefore).toStrictEqual({});
 
         // After
-        const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/`);
+        const mtaAfterYaml = new MockMta(join(appDir, '/'));
         const modulesAfter = await mtaAfterYaml.getModules();
         const resourcesAfter = await mtaAfterYaml.getResources();
 
@@ -913,17 +868,13 @@ describe('Cloud foundry generator tests', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -949,17 +900,13 @@ describe('Cloud foundry generator tests', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -990,17 +937,13 @@ describe('Cloud foundry generator tests', () => {
         mockFindCapProjectRoot.mockReturnValueOnce('/capRoot');
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -1024,18 +967,13 @@ describe('Cloud foundry generator tests', () => {
     it('Ensure init is loaded when loaded as a subgenerator', async () => {
         mockHasbinSync.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
-        memfs.vol.fromNestedJSON({}, '/');
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -1063,16 +1001,12 @@ describe('Cloud foundry generator tests', () => {
 
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig)
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig)
+        });
 
         await expect(
             yeomanTest
@@ -1097,15 +1031,12 @@ describe('Cloud foundry generator tests', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -1133,18 +1064,15 @@ describe('Cloud foundry generator tests', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]: JSON.stringify({
-                    'sap.app': { fakeid: 'myTestApp' }
-                }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: JSON.stringify({
+                'sap.app': { fakeid: 'myTestApp' }
+            }),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -1176,17 +1104,13 @@ describe('Cloud foundry generator tests', () => {
         });
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(outputDir, 'app1');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -1213,20 +1137,16 @@ describe('Cloud foundry generator tests', () => {
             throw new Error('Telemetry Error');
         });
         mockGenerateAppConfig.mockResolvedValue(fsMock);
-        const cfGenSpawnSpy = jest.spyOn(CFGenerator.prototype as any, 'spawnCommand').mockResolvedValue({});
+        const cfGenSpawnSpy = jest.spyOn(CFGenerator.prototype as any, 'spawn').mockResolvedValue({});
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/telemetery/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/telemetery/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/telemetery/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/telemetery/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'telemetery');
+        const appDir = join(outputDir, 'telemetery');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         await expect(
             yeomanTest
@@ -1263,17 +1183,13 @@ describe('Cloud foundry generator tests', () => {
         } as unknown as typeof DeploymentGenerator.logger);
 
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/fullurl/webapp/manifest.json`]:
-                    testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/fullurl/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/fullurl/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/fullurl/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'fullurl');
+        const appDir = join(outputDir, 'fullurl');
+        seedFiles({
+            [join(appDir, 'webapp/manifest.json')]: testFixture.getContents('app1/webapp/manifest.json'),
+            [join(appDir, 'package.json')]: JSON.stringify({ scripts: {} }),
+            [join(appDir, 'mta.yaml')]: dump(managedRouterConfig),
+            [join(appDir, 'ui5.yaml')]: testFixture.getContents('app1/ui5.yaml')
+        });
 
         // When
         await expect(

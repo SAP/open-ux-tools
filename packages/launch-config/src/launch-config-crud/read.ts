@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types/index.js';
 import { LAUNCH_JSON_FILE } from '../types/index.js';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';
 import type { Logger } from '@sap-ux/logger';
 

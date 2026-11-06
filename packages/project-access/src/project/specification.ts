@@ -3,7 +3,7 @@ import { mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { deleteModule, getModule, loadModuleFromProject } from './module-loader.js';
 import { getWebappPath } from './ui5-config.js';
 import { getNodeModulesPath } from './dependencies.js';

@@ -1,5 +1,6 @@
 import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 import {
     DeploymentGenerator,
     ERROR_TYPE,
@@ -54,6 +55,7 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
  * ABAP deploy config generator.
  */
 export default class extends DeploymentGenerator {
+    declare options: AbapDeployConfigOptions;
     private readonly appWizard: AppWizardType;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;
@@ -73,7 +75,7 @@ export default class extends DeploymentGenerator {
      * @param args - arguments passed to the generator
      * @param opts - options passed to the generator
      */
-    constructor(args: string | string[], opts: AbapDeployConfigOptions) {
+    constructor(args: string[], opts: AbapDeployConfigOptions) {
         super(args, opts);
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.launchStandaloneFromYui = opts.launchStandaloneFromYui;
@@ -81,7 +83,6 @@ export default class extends DeploymentGenerator {
 
         this.appWizard = opts.appWizard || AppWizard.create(opts);
         this.vscode = opts.vscode;
-        this.options = opts;
     }
 
     public async initializing(): Promise<void> {
@@ -223,7 +224,9 @@ export default class extends DeploymentGenerator {
                 promptOptions,
                 promptModule: (this.env?.adapter as InquirerAdapter | undefined)?.promptModule
             });
-            const prompAnswers = await this.prompt(abapDeployConfigPrompts);
+            const prompAnswers = (await this.prompt(
+                abapDeployConfigPrompts as PromptQuestions<AbapDeployConfigAnswersInternal>
+            )) as AbapDeployConfigAnswersInternal;
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
         }
         await this._reconcileAnswersWithOptions();
@@ -232,7 +235,7 @@ export default class extends DeploymentGenerator {
     private async _processAbapTargetAnswers(): Promise<void> {
         this.answers.destination = this.options.destination || this.answers.destination;
         this.answers.url =
-            this.options.url || this.answers.url || (await determineUrlFromDestination(this.answers.destination));
+            this.options.url || this.answers.url || (await determineUrlFromDestination(this.answers.destination)) || '';
         this.answers.connectPath = this.options.connectPath || this.answers.connectPath;
         this.answers.client = this.options.client || this.answers.client;
         this.answers.scp =
@@ -336,15 +339,15 @@ export default class extends DeploymentGenerator {
         );
     }
 
-    public install(): void {
+    public async install(): Promise<void> {
         if (this.answers.overwrite !== false) {
-            this._install();
+            await this._install();
         }
     }
 
-    private _install(): void {
+    private async _install(): Promise<void> {
         if (!this.options.skipInstall) {
-            this.spawnCommand('npm', [
+            await this.spawn('npm', [
                 'install',
                 '--no-audit',
                 '--no-fund',

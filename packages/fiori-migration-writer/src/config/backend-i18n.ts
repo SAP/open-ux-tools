@@ -2,7 +2,7 @@
  * Helper functions for extracting backend configuration and app title from i18n
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { fileExists } from '../utils/index.js';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 

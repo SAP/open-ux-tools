@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';

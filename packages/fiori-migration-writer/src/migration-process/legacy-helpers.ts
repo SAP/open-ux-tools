@@ -1,6 +1,6 @@
 import { join, relative, sep } from 'node:path';
 import { access, readdir } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';

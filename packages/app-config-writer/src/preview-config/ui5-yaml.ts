@@ -19,7 +19,7 @@ import {
 } from '../common/package-json.js';
 import { renameSandbox } from './preview-files.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 

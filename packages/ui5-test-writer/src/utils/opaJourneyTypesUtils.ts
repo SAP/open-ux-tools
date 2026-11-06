@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';
 import { t } from '../i18n.js';

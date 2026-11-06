@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import {
     writeApplicationInfoSettings,
     deleteAppInfoSettings,
@@ -56,7 +56,7 @@ describe('Application Info Settings', () => {
         expect(fs.exists(appInfoFilePath)).toBe(false);
     });
 
-    it('should throw an error if fs.delete fails', () => {
+    it('should throw an error if fs.delete fails', async () => {
         // Create a mock file system that throws an error when delete is called
         const errorFs = create(createStorage());
         errorFs.write(appInfoFilePath, JSON.stringify(defaultAppInfoContents));
@@ -64,7 +64,7 @@ describe('Application Info Settings', () => {
         errorFs.delete = jest.fn(() => {
             throw new Error('Mock delete error');
         });
-        expect(() => deleteAppInfoSettings(errorFs)).toThrow(
+        await expect(deleteAppInfoSettings(errorFs)).rejects.toThrow(
             'Error deleting appInfo.json file: Error: Mock delete error'
         );
     });

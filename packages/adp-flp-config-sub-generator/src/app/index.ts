@@ -1,6 +1,7 @@
 import type { FlpConfigOptions } from './types.js';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import { join, basename } from 'node:path';
 import {
     type AxiosError,
@@ -66,7 +67,7 @@ import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../ut
  *
  * @extends Generator
  */
-export default class AdpFlpConfigGenerator extends Generator {
+export default class AdpFlpConfigGenerator extends Generator<Record<string, unknown>, FlpConfigOptions> {
     setPromptsCallback: (fn: object) => void;
     private prompts: PromptsType;
     // Flag to determine if the generator was launched as a sub-generator or standalone
@@ -94,17 +95,16 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Creates an instance of the generator.
      *
-     * @param {string | string[]} args - The arguments passed to the generator.
+     * @param {string[]} args - The arguments passed to the generator.
      * @param {FlpConfigOptions} opts - The options for the generator.
      */
-    constructor(args: string | string[], opts: FlpConfigOptions) {
+    constructor(args: string[], opts: FlpConfigOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
         this.toolsLogger = new ToolsLogger();
         this.logger = opts.logger ?? DefaultLogger;
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
-        this.options = opts;
         this.vscode = opts.vscode;
         this.inbounds = opts.inbounds;
         this.layer = opts.layer;
@@ -172,7 +172,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 this.isCfProject
             )
         );
-        this.answers = await this.prompt(prompts);
+        this.answers = await this.prompt(prompts as unknown as PromptQuestions<FLPConfigAnswers>);
     }
 
     async writing(): Promise<void> {
@@ -258,7 +258,8 @@ export default class AdpFlpConfigGenerator extends Generator {
                 description: t('yuiNavSteps.flpCredentialsDesc', { system: systemName })
             }
         ]);
-        await this.prompt(prompts);
+        // yeoman v8 narrows `prompt`'s question type; YUIQuestion carries the same inquirer shape with extra GUI fields
+        await this.prompt(prompts as unknown as PromptQuestions<CredentialsAnswers>);
         await this._fetchSystemUI5Version();
     }
 
@@ -473,7 +474,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         };
         const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
 
-        return this.prompt(tileSettingsPrompts);
+        return this.prompt(tileSettingsPrompts as unknown as PromptQuestions<TileSettingsAnswers>);
     }
 
     /**

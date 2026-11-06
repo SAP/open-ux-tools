@@ -1,16 +1,22 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
+import type { BaseOptions } from 'yeoman-generator';
 
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { LogWrapper } from '@sap-ux/fiori-generator-shared';
 
 import { getPackageInfo } from './deps.js';
 
-export interface GeneratorOpts {
+export type GeneratorOpts = BaseOptions & {
     appWizard?: AppWizard;
     vscode?: any;
     data?: {
         path: string;
     };
-}
+    logger?: IVSCodeExtLogger;
+    logLevel?: LogLevel;
+    logWrapper?: LogWrapper;
+};
 
 /**
  * Sets a custom header title in the AppWizard UI, if the `setHeaderTitle` method is available.

@@ -2,7 +2,7 @@ import { ProjectAccess } from './Project.js';
 import { join } from 'node:path';
 import { getFioriToolsDirectory } from '@sap-ux/store';
 import { FileName, FioriToolsSettings } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
 import type { ImportProjectInfo, Message, MigrationSettingsFile } from '../types.js';
 import { hasDependency, readJSON, findProjectRoot } from './index.js';

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ManifestNamespace } from '@sap-ux/project-access';

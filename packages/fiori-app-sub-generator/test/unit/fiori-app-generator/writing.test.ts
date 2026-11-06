@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ApiHubConfig, Project, Service } from '../../../src/types/index.js';
 import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types/index.js';

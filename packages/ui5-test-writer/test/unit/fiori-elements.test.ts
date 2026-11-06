@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import fileSystem, { readFileSync } from 'node:fs';
@@ -79,17 +79,12 @@ describe('ui5-test-writer', () => {
         return outputDir;
     }
 
-    afterEach(() => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug && fs) {
-                fs.commit(resolve);
-                fs = undefined;
-            } else {
-                fs = undefined;
-                resolve(true);
-            }
-        });
+    afterEach(async () => {
+        // write out the files for debugging
+        if (debug && fs) {
+            await fs.commit();
+        }
+        fs = undefined;
     });
 
     describe('generateOPAFiles', () => {

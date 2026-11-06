@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';

@@ -1,5 +1,7 @@
-import type { Editor, FileMap } from 'mem-fs-editor';
-import { basename, dirname, extname, join, sep, posix } from 'node:path';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
+import { basename, dirname, extname, join, posix } from 'node:path';
+
+type FileMap = ReturnType<Editor['dump']>;
 import type { FindError } from 'findit2';
 import find from 'findit2';
 import { fileExists } from './file-access.js';
@@ -8,18 +10,22 @@ import { promises as fs } from 'node:fs';
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
  *
- * @param changes - memfs editor changes, usually retrieved by fs.dump()
+ * `changes` is produced by `fs.dump(root)`, so its keys are POSIX paths relative to `root`
+ * (keys starting with `../` are outside `root` and are skipped). The returned paths are absolute,
+ * joined back onto `root`, to stay consistent with the on-disk search results they are merged with.
+ *
+ * @param changes - memfs editor changes, retrieved by fs.dump(root)
  * @param fileNames - array of file names to search for
  * @param extensionNames - array of extensions names to search for
- * @param root - path to root folder
+ * @param root - path to root folder the changes were dumped against
  * @example
- * // returns { deleted: ['src/test.css'], modified: ['src/app.js'] }
+ * // returns { deleted: ['<root>/src/test.css'], modified: ['<root>/src/app.js'] }
  * const changes = {
  *   'src/app.js': { state: 'modified' },
  *   'src/test.css': { state: 'deleted' },
  *   'src/index.ts': { state: 'modified' }
  * };
- * getMemFsChanges(changes, ['app.js'], ['.css'], 'src');
+ * getMemFsChanges(changes, ['app.js'], ['.css'], '<root>');
  * @returns - array of deleted and modified files filtered by query
  */
 function getMemFsChanges(
@@ -32,17 +38,18 @@ function getMemFsChanges(
     const modified: string[] = [];
     const filteredChanges = Object.keys(changes).filter(
         (f) =>
-            f.startsWith(root.replaceAll(sep, posix.sep)) &&
+            !f.startsWith('..' + posix.sep) &&
             (fileNames.includes(basename(f)) ||
                 extensionNames.includes(extname(f)) ||
                 (fileNames.length === 0 && extensionNames.length === 0))
     );
-    for (const file of filteredChanges) {
-        if (changes[file].state === 'deleted') {
-            deleted.push(join(file));
+    for (const relPath of filteredChanges) {
+        const file = join(root, relPath);
+        if (changes[relPath].state === 'deleted') {
+            deleted.push(file);
         }
-        if (changes[file].state === 'modified') {
-            modified.push(join(file));
+        if (changes[relPath].state === 'modified') {
+            modified.push(file);
         }
     }
     return { deleted, modified };
@@ -72,7 +79,7 @@ function getFindResultOnEnd(
     let fatalErrors = errors;
 
     if (memFs) {
-        const { modified, deleted } = getMemFsChanges(memFs.dump(''), fileNames, extensionNames, root);
+        const { modified, deleted } = getMemFsChanges(memFs.dump(root), fileNames, extensionNames, root);
         const merged = Array.from(new Set([...results, ...modified]));
         searchResult = merged.filter((f) => !deleted.includes(f));
         // Filter out errors that are of type ENOENT and path is part of memfs changes, which can happen for folders that contain memfs files only.

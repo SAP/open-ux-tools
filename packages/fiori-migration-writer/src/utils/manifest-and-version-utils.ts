@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Manifest } from '../project-spec-types.js';
 import { FileName, FioriElementsVersion } from '../project-spec-types.js';
 import { fileExists, readJSON } from './file-access.js';

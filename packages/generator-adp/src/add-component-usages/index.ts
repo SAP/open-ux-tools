@@ -1,4 +1,5 @@
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 import type { AddComponentUsageAnswers, ComponentUsagesData, DescriptorVariant } from '@sap-ux/adp-tooling';
 import { ChangeType, generateChange, getPromptsForAddComponentUsages, getVariant } from '@sap-ux/adp-tooling';
 
@@ -30,7 +31,7 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
      * @param {string | string[]} args - The arguments passed to the generator.
      * @param {GeneratorOpts} opts - The options for the generator.
      */
-    constructor(args: string | string[], opts: GeneratorOpts) {
+    constructor(args: string[], opts: GeneratorOpts) {
         super(args, opts, GeneratorTypes.ADD_COMPONENT_USAGES);
         if (opts.data) {
             this.projectPath = opts.data.path;
@@ -64,7 +65,12 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
             return;
         }
 
-        this.answers = await this.prompt(getPromptsForAddComponentUsages(this.projectPath, this.variant.layer));
+        this.answers = await this.prompt(
+            getPromptsForAddComponentUsages(
+                this.projectPath,
+                this.variant.layer
+            ) as unknown as PromptQuestions<AddComponentUsageAnswers>
+        );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }
 

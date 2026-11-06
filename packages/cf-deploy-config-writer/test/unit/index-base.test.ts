@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import fsExtra from 'fs-extra';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import fs from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

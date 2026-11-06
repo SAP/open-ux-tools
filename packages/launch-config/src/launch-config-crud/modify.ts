@@ -5,7 +5,7 @@ import type { LaunchConfig, LaunchConfigEnv } from '../types/index.js';
 import { Arguments } from '../types/index.js';
 import { getIndexOfArgument } from './utils.js';
 import { parse } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';
 
 const RUN_SCRIPT = 'run-script';

@@ -1,10 +1,11 @@
-import type Generator from 'yeoman-generator';
+import type { BaseOptions } from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
+import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 
-export interface FlpConfigOptions extends Generator.GeneratorOptions {
+export type FlpConfigOptions = BaseOptions & {
     /**
      * VSCode instance
      */
@@ -58,4 +59,12 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      * FLP configuration inqurier prompt options
      */
     inquirerPromptOptions?: FLPConfigPromptOptions;
-}
+    /**
+     * Log level for the generator's logger
+     */
+    logLevel?: LogLevel;
+    /**
+     * VSCode extension logger instance
+     */
+    logger?: IVSCodeExtLogger;
+};

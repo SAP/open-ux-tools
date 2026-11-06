@@ -15,7 +15,7 @@ import {
     type BackendSystemKey,
     getService
 } from '@sap-ux/store';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ApiHubConfig } from '../types/index.js';
 import { ApiHubType } from '../types/index.js';

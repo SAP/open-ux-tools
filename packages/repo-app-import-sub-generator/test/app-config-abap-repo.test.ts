@@ -5,7 +5,7 @@ import { PromptState } from '../src/prompts/prompt-state.js';
 import { AppDownloadType, type AppInfo } from '../src/app/types.js';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -209,14 +209,14 @@ describe('Project Utils', () => {
         const projectPath = 'project';
 
         const writeFilesSpy = jest.fn();
-        const mockFs = { copyTpl: writeFilesSpy };
+        const mockFs = { copy: writeFilesSpy, copyTpl: jest.fn(), dump: jest.fn(() => ({})), move: jest.fn() };
 
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+            expect(writeFilesSpy.mock.calls[0][2].transformData).toEqual({
                 ...data,
                 typesPackage: '@sapui5/types',
                 typesVersion: '~1.136.0'
@@ -229,7 +229,7 @@ describe('Project Utils', () => {
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+            expect(writeFilesSpy.mock.calls[0][2].transformData).toEqual({
                 ...newData,
                 typesPackage: '@sapui5/types',
                 typesVersion: '~1.136.0'
@@ -238,7 +238,7 @@ describe('Project Utils', () => {
 
         it('should throw error when writing file fails', () => {
             const errMsg = 'Corrupted file.';
-            mockFs.copyTpl.mockImplementation(() => {
+            mockFs.copy.mockImplementation(() => {
                 throw new Error(errMsg);
             });
 

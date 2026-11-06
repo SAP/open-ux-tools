@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { addServicesData, updateServicesData } from './update.js';
 import { enhanceData, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data/index.js';

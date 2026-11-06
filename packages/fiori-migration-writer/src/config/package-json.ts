@@ -3,7 +3,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { fileExists } from '../utils/index.js';
 import { TemplateFileName } from '../index.js';
 import { FioriElementsVersion } from '../project-spec-types.js';

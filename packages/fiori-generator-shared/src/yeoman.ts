@@ -1,4 +1,12 @@
-import type { GeneratorOptions } from 'yeoman-generator';
+/**
+ * The Yeoman environment's conflicter is an internal, version-variable property that is not
+ * part of the public `@yeoman/types` environment interface. This minimal structural type
+ * captures only the fields `setYeomanEnvConflicterForce` touches.
+ */
+interface ConflicterEnv {
+    conflicter?: { force?: boolean };
+    conflicterOptions?: { force?: boolean };
+}
 
 /**
  * Set the Yeoman environment's conflicter force option.
@@ -8,12 +16,13 @@ import type { GeneratorOptions } from 'yeoman-generator';
  * @param env - Yeoman environment
  * @param force - whether to force overwriting files
  */
-export function setYeomanEnvConflicterForce(env: GeneratorOptions['Environment'], force?: boolean): void {
-    if (env.conflicter) {
-        env.conflicter.force = force ?? true;
+export function setYeomanEnvConflicterForce(env: object, force?: boolean): void {
+    const conflicterEnv = env as ConflicterEnv;
+    if (conflicterEnv.conflicter) {
+        conflicterEnv.conflicter.force = force ?? true;
     }
 
-    if (env.conflicterOptions) {
-        env.conflicterOptions.force = force ?? true;
+    if (conflicterEnv.conflicterOptions) {
+        conflicterEnv.conflicterOptions.force = force ?? true;
     }
 }

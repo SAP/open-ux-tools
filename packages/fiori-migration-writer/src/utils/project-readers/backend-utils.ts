@@ -4,7 +4,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { TemplateFileName, fileExists, readJSON } from '../../index.js';
 import type { NeoappDestination } from '../../types.js';
 import { neoAppJsonRouteTargetTypes } from '../../types.js';

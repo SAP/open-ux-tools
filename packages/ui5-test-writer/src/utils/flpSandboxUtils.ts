@@ -4,7 +4,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Regex to extract the first application key from the sap-ushell-config

@@ -16,7 +16,7 @@ import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import { join } from 'node:path';
 import xmlFormatter from 'xml-formatter';
-import type { GeneratorOptions } from 'yeoman-generator';
+import type { BaseOptions, PromptQuestions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
 import { initI18nODataDownloadGenerator, t } from '../utils/i18n.js';
 import type { EntitySetsFlat } from './odata-query.js';
@@ -39,10 +39,22 @@ import { TelemetryHelper } from '../telemetry/index.js';
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
 /**
+ * Options accepted by the OData download generator.
+ */
+export type ODataDownloadGeneratorOptions = BaseOptions & {
+    appWizard?: AppWizardType;
+    vscode?: object;
+    logLevel?: LogLevel;
+    logger?: IVSCodeExtLogger;
+    force?: boolean;
+    data?: { appPath?: string };
+};
+
+/**
  * The root generator for Fiori Elements and Fiori Freestyle generators.
  * All common functionality is implemented here.
  */
-export class ODataDownloadGenerator extends Generator {
+export class ODataDownloadGenerator extends Generator<Record<string, unknown>, ODataDownloadGeneratorOptions> {
     private readonly vscode: unknown;
     private readonly appWizard: AppWizardType | undefined;
 
@@ -110,7 +122,7 @@ export class ODataDownloadGenerator extends Generator {
      * @param args - Generator arguments passed to yeoman
      * @param opts - Generator options passed to yeoman
      */
-    constructor(args: string | string[], opts: GeneratorOptions) {
+    constructor(args: string[], opts: ODataDownloadGeneratorOptions) {
         super(
             args,
             { ...opts, skipInstall: true },
@@ -176,7 +188,9 @@ export class ODataDownloadGenerator extends Generator {
                 answers: { application, odataQueryResult, odataServiceAnswers },
                 questions
             } = await getODataDownloaderPrompts(this.options?.data);
-            const promptAnswers = (await this.prompt(questions)) as Record<string, unknown>;
+            const promptAnswers = (await this.prompt(
+                questions as unknown as PromptQuestions<Record<string, unknown>>
+            )) as Record<string, unknown>;
             this.state.entityOData = odataQueryResult.odata;
             this.state.entityPropertyToEntitySet = application.relatedEntityChoices.entitySetsFlat;
             this.state.appRootPath = application.appAccess?.getAppRoot();
@@ -217,7 +231,7 @@ export class ODataDownloadGenerator extends Generator {
                     odataServiceAnswers.metadata,
                     odataServiceAnswers.connectedSystem?.serviceProvider as AbapServiceProvider
                 );
-                await this.prompt(valueHelpQuestions);
+                await this.prompt(valueHelpQuestions as unknown as PromptQuestions<Record<string, unknown>>);
                 this.state.valueHelpData = valueHelpData;
             }
         } catch (error) {
@@ -412,7 +426,9 @@ export class ODataDownloadGenerator extends Generator {
             ]);
 
             const refConsPrompts = getMissingReferentialConstraintsPrompts(entitiesWithMissingConstraints);
-            const refConsAnswers = (await this.prompt(refConsPrompts)) as Record<string, string>;
+            const refConsAnswers = (await this.prompt(
+                refConsPrompts as unknown as PromptQuestions<Record<string, string>>
+            )) as Record<string, string>;
             const allEntities = [
                 application.referencedEntities?.listEntity,
                 ...(application.referencedEntities?.pageObjectEntities ?? [])
@@ -452,7 +468,11 @@ export class ODataDownloadGenerator extends Generator {
      * @param vscode - The VS Code API object
      * @returns The configured log wrapper
      */
-    _configureLogging(logLevel: LogLevel, vscLogger: IVSCodeExtLogger, vscode?: object): ILogWrapper {
+    _configureLogging(
+        logLevel: LogLevel | undefined,
+        vscLogger: IVSCodeExtLogger | undefined,
+        vscode?: object
+    ): ILogWrapper {
         const logWrapper = new LogWrapper(
             this.rootGeneratorName(),
             this.log,

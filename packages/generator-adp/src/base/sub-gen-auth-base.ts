@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { Prompts } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Manifest } from '@sap-ux/project-access';
@@ -71,7 +72,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      * @param {Generator.GeneratorOptions} opts - The options for the generator.
      * @param {GeneratorTypes} type - The type of generator.
      */
-    constructor(args: string | string[], opts: GeneratorOpts, type: GeneratorTypes) {
+    constructor(args: string[], opts: GeneratorOpts, type: GeneratorTypes) {
         super(args, opts, type);
         this.generatorType = type;
 
@@ -139,7 +140,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
             let requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined;
             if (this.requiresAuth) {
                 const credentials = (await this.prompt(
-                    getCredentialsPrompts(this.abapTarget, this.logger)
+                    getCredentialsPrompts(this.abapTarget, this.logger) as unknown as PromptQuestions<Credentials>
                 )) as Credentials;
                 requestOptions = { auth: { username: credentials.username, password: credentials.password } };
             }

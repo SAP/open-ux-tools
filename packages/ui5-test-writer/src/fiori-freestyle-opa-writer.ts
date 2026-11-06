@@ -1,7 +1,7 @@
 import { dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { FFOPAConfig } from './types.js';
 import type { Logger } from '@sap-ux/logger';

@@ -28,7 +28,7 @@ import {
 import { getProject } from './info.js';
 import { findAllApps } from './search.js';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file/index.js';
 import { FileName } from '../constants.js';
 import { getSpecification } from './specification.js';

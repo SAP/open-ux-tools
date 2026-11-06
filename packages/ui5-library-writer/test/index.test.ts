@@ -87,17 +87,12 @@ describe('Reuse lib templates', () => {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/ts-types-esm');
             }
         }
-        return new Promise(async (resolve) => {
-            if (debug) {
-                await updatePackageJSONDependencyToUseLocalPath(projectPath, fs);
-                // write out the files for debugging
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        }).then(async () => {
-            await projectChecks(projectPath, config, debug?.debugFull);
-        });
+        if (debug) {
+            await updatePackageJSONDependencyToUseLocalPath(projectPath, fs);
+            // write out the files for debugging
+            await fs.commit();
+        }
+        await projectChecks(projectPath, config, debug?.debugFull);
     });
 
     // Test to ensure generation will throw error when input is invalid

@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';

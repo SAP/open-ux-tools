@@ -1,6 +1,6 @@
 import { readHashFromFlpSandbox, resolveFlpSandboxHtmlTarget } from '../../../src/utils/flpSandboxUtils.js';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 describe('readHashFromFlpSandbox()', () => {
     const basePath = join('/', 'project');

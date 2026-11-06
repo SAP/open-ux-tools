@@ -1,6 +1,6 @@
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { AppInfo, AbapRepositoryContext, AbapRepoAppConfig } from '../app/types.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';

@@ -6,7 +6,7 @@
 import { join } from 'node:path';
 import { render, escapeXML } from 'ejs';
 import { parse, stringify } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile, updateFile } from '../utils/index.js';
 import { migrate, type AdpWriterConfig } from '@sap-ux/adp-tooling';
 import { TemplateFileName, templatesDirPath } from '../index.js';

@@ -2,7 +2,7 @@ import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { mergeChanges, writeFlexChanges } from '../../../src/page-editor-api/flex.js';
 import type { FlexChange, FlexChangeFiles } from '../../../src/page-editor-api/flex.js';
 import { generateFlexChanges } from '../utils.js';

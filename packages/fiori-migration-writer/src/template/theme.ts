@@ -1,5 +1,5 @@
 import type { ImportProjectInfo } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readManifest } from '../utils/common.js';
 import { getExcludedThemes } from '../utils/UI5Theme.js';
 

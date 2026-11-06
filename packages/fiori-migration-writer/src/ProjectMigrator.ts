@@ -33,7 +33,7 @@ import { resolveUI5VersionsForMigration } from './data/index.js';
 
 import type { ImportProjectInfo, Message } from './types.js';
 import { MigrationTypes } from './utils/constants.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
 import { i18nText, initI18n } from './i18n.js';
 
@@ -134,9 +134,7 @@ export class ProjectMigrator {
         // Commit only when we own the editor; otherwise the caller commits (matches other writers).
         if (ownsEditor && migrationResult.result) {
             try {
-                await new Promise<void>((resolve, reject) =>
-                    migrationResult.fs.commit((error) => (error ? reject(error) : resolve()))
-                );
+                await migrationResult.fs.commit();
             } catch (error) {
                 migrationResult.result = false;
                 migrationResult.messages.push({

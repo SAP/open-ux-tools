@@ -1,6 +1,6 @@
 import { basename, join } from 'node:path';
 import type { FioriElementsVersion } from '../project-spec-types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { trueCasePath } from 'true-case-path';

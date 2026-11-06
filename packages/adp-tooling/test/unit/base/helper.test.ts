@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { readFileSync as realReadFileSync } from 'node:fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import type { Editor, create } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, create } from 'mem-fs-editor';
 
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';

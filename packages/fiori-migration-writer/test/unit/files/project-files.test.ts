@@ -2,7 +2,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { create as createMemFsEditor } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { copyAdaptationFiles, copyLibraryFiles } from '../../../src/files/project-files.js';
 import type { ImportProjectInfo } from '../../../src/types.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';

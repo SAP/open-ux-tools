@@ -1,5 +1,5 @@
 import type { Message, ImportProjectInfo } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { validateMetadata, determineMessage } from '../utils/index.js';
 import { MigrationTypes, postMigrationAction } from '../utils/constants.js';
 import { updateExtConfigJson } from '../components/extension.js';

@@ -3,7 +3,7 @@ import { dirname, isAbsolute, join, parse } from 'node:path';
 import { FileName } from '../constants.js';
 import { readJSON, updatePackageJSON } from '../file/index.js';
 import type { Package } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Helper to check for dependency/devDependency.

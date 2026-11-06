@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor, type VinylMemFsEditorFile } from 'mem-fs-editor';
 
 import {
     generateInboundConfig,
@@ -79,7 +79,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         const appType = await getAppType(basePath);
         const isAdp = appType === 'Fiori Adaptation';
 
-        const fs = create(createStorage());
+        const fs = create(createStorage<VinylMemFsEditorFile>());
 
         let variant: Variant;
 
@@ -117,7 +117,8 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         );
 
         if (!simulate) {
-            fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
+            await fs.commit();
+            logger.info(`Inbound navigation configuration complete.`);
         } else {
             await traceChanges(fs);
         }

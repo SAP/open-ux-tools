@@ -24,7 +24,7 @@ import {
 import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-service-writer';
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types/index.js';
@@ -280,7 +280,7 @@ export async function generateLaunchConfig(
                 debugOptions
             };
             await createLaunchConfig(projectPath, fioriOptions, fs, log);
-            writeApplicationInfoSettings(projectPath);
+            await writeApplicationInfoSettings(projectPath);
         }
     } catch (err) {
         log?.error(`${t('error.errorWritingApplicationFiles')} : ${err}`);

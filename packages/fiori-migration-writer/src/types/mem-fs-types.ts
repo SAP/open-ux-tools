@@ -1,66 +1,36 @@
 /**
- * Type definitions for mem-fs internal store API
+ * Type definitions for mem-fs store access.
  *
- * The mem-fs library's store API is not publicly typed, but we need to access it
- * for file iteration operations during migration. These types provide type safety
- * for the internal store methods we use.
+ * mem-fs-editor v12 exposes the store publicly on the editor (`editor.store`), typed as
+ * `Store<VinylMemFsEditorFile>`. These aliases keep the previous public surface of this module
+ * stable for consumers while delegating to the native types.
  *
  * @see https://github.com/SBoudrias/mem-fs
  */
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, VinylMemFsEditorFile } from 'mem-fs-editor';
 
 /**
- * Represents a file entry in the mem-fs store.
- * Each file tracked by mem-fs has these properties.
+ * Represents a file entry in the mem-fs store (vinyl-based in v12).
  */
-export interface MemFsFile {
-    /** Absolute path to the file */
-    path: string;
-    /** File contents as Buffer or string (null if deleted) */
-    contents: Buffer | string | null;
-    /** File state: 'modified', 'deleted', etc. */
-    state: string;
-}
+export type MemFsFile = VinylMemFsEditorFile;
 
 /**
- * mem-fs store interface for internal operations.
- * Provides methods for iterating over tracked files.
+ * mem-fs store type exposed by the editor.
  */
-export interface MemFsStore {
-    /**
-     * Iterate over each file in the store.
-     *
-     * @param callback - Function called for each file entry
-     */
-    each: (callback: (file: MemFsFile) => void) => void;
-}
+export type MemFsStore = Editor['store'];
 
 /**
- * Extended Editor interface that exposes the internal store.
- * Use this type when you need to access the store for file iteration.
- *
- * @example
- * ```typescript
- * const editor = fs as EditorWithStore;
- * editor.store.each((file) => {
- *     console.log(file.path);
- * });
- * ```
+ * Editor with its store exposed. v12 always exposes `store`, so this is just the editor type.
  */
-export interface EditorWithStore extends Editor {
-    /** Internal file store - use for iteration only */
-    store: MemFsStore;
-}
+export type EditorWithStore = Editor;
 
 /**
- * Type guard to check if an editor has the store property.
- * This should always return true for mem-fs-editor instances,
- * but the guard provides type narrowing.
+ * Type guard retained for API compatibility. v12 editors always expose a usable `store`.
  *
  * @param editor - Editor instance to check
- * @returns true if the editor has a store property
+ * @returns true if the editor has a usable store property
  */
 export function hasStore(editor: Editor): editor is EditorWithStore {
-    return 'store' in editor && typeof (editor as EditorWithStore).store?.each === 'function';
+    return 'store' in editor && typeof editor.store?.each === 'function';
 }

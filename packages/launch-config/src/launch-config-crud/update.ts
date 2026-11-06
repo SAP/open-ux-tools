@@ -4,7 +4,7 @@ import type { FioriOptions, LaunchJSON } from '../types/index.js';
 import { LAUNCH_JSON_FILE } from '../types/index.js';
 import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
 import { findNodeAtLocation, parse, parseTree } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig, mergeArgs } from './utils.js';
 import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';

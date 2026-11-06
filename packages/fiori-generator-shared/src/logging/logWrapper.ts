@@ -7,8 +7,14 @@ import type {
 } from '@vscode-logging/logger';
 import * as vscodeLogging from '@vscode-logging/logger';
 import { format } from 'logform';
-import type { Logger } from 'yeoman-environment';
 import { t } from '../i18n.js';
+
+/**
+ * Minimal structural type for the Yeoman adapter logger. The full `Logger` type lives in
+ * `@yeoman/types` (re-exported from `@yeoman/adapter`), but this wrapper only ever invokes
+ * the logger's call signature, so a local type avoids a fragile transitive type dependency.
+ */
+type Logger = (message?: string) => void;
 
 const { getExtensionLogger } = vscodeLogging;
 

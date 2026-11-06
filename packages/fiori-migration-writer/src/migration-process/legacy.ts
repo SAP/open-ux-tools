@@ -4,7 +4,7 @@
  */
 
 import { join, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile, updateFile, readJSON, updateJSON, fileExists } from '../utils/index.js';
 import { editorHasPath } from '../utils/fs-adapter.js';
 import { TemplateFileName } from '../index.js';

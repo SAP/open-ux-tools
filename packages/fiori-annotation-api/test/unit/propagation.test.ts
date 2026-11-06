@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getProject } from '@sap-ux/project-access';
 
 import { pathFromUri } from '../../src/utils/index.js';

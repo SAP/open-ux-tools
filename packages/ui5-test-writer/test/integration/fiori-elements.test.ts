@@ -1,7 +1,7 @@
 import { generateOPAFiles } from '../../src/fiori-elements-opa-writer.js';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import fileSystem from 'node:fs';
@@ -24,17 +24,12 @@ describe('ui5-test-writer - Integration tests', () => {
         return outputDir;
     }
 
-    afterAll(() => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug && fs) {
-                fs.commit(resolve);
-                fs = undefined;
-            } else {
-                fs = undefined;
-                resolve(true);
-            }
-        });
+    afterAll(async () => {
+        // write out the files for debugging
+        if (debug && fs) {
+            await fs.commit();
+        }
+        fs = undefined;
     });
 
     it('Generate initial OPA test files and add more pages', async () => {

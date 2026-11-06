@@ -3,7 +3,7 @@
  */
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { DirName, FileName } from '../../project-spec-types.js';
 import { fileExists, readJSON } from '../../index.js';
 import { readFile } from '../../utils/file-access.js';
