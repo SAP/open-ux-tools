@@ -596,3 +596,27 @@ Options:
 - `-f, --force` - Force migration even if project is already a Fiori tools project
 - `-n, --skip-install` - Skip the `npm install` step after migration
 
+--------------------------------
+
+## [`telemetry`](#telemetry)
+
+Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools.
+
+--------------------------------
+
+## [`telemetry enable`](#telemetry-enable)
+
+Enable the collection of anonymous usage data
+
+--------------------------------
+
+## [`telemetry disable`](#telemetry-disable)
+
+Disable the collection of anonymous usage data
+
+--------------------------------
+
+## [`telemetry status`](#telemetry-status)
+
+Show whether the collection of anonymous usage data is enabled
+

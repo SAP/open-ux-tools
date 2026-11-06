@@ -15,6 +15,8 @@ import { getListCommands } from './list/index.js';
 import { getGetCommands } from './get/index.js';
 import { getUpdateCommands } from './update/index.js';
 import { getMigrateCommand } from './migrate/index.js';
+import { initCliTelemetry } from './migrate/telemetry.js';
+import { getTelemetryCommand } from './telemetry/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -148,6 +150,16 @@ function getCommanderProgram(): Command {
 
     // Handler for create-fiori migrate ..
     program.addCommand(getMigrateCommand());
+
+    // Handler for create-fiori telemetry ..
+    program.addCommand(getTelemetryCommand());
+
+    // Telemetry is only needed by the commands that report events or manage the setting
+    program.hook('preAction', async (_thisCommand, actionCommand) => {
+        if (actionCommand.name() === 'migrate' || actionCommand.parent?.name() === 'telemetry') {
+            await initCliTelemetry(version);
+        }
+    });
 
     return program;
 }

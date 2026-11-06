@@ -190,6 +190,16 @@ jest.unstable_mockModule('@sap-ux/fiori-migration-writer', () => ({
     initI18n: jest.fn().mockResolvedValue(undefined)
 }));
 
+const mockInitTelemetrySettings = jest.fn();
+const mockGetTelemetrySetting = jest.fn();
+const actualTelemetry = await import('@sap-ux/telemetry');
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ...actualTelemetry,
+    initTelemetrySettings: mockInitTelemetrySettings,
+    getTelemetrySetting: mockGetTelemetrySetting,
+    setEnableTelemetry: jest.fn()
+}));
+
 jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
     isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
 }));
@@ -255,6 +265,28 @@ describe('Test handleCreateFioriCommand()', () => {
         // Result check
         expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('create-fiori [options] [command]'));
         expect(mockLogger.error).not.toHaveBeenCalled();
+    });
+
+    test('Execute command create-fiori telemetry status, should initialize telemetry and print the setting', async () => {
+        const mockLogger = { error: jest.fn(), debug: jest.fn(), info: jest.fn() };
+        mockGetLogger.mockReturnValue(mockLogger);
+        mockInitTelemetrySettings.mockResolvedValue(undefined);
+        mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: false });
+
+        await handleCreateFioriCommand([process.argv[0], 'create-fiori', 'telemetry', 'status']);
+
+        expect(mockInitTelemetrySettings).toHaveBeenCalledWith(
+            expect.objectContaining({ consumerModule: expect.objectContaining({ name: '@sap-ux/create' }) })
+        );
+        expect(mockLogger.info).toHaveBeenCalledWith('telemetry.status.disabled');
+    });
+
+    test('Execute commands that do not use telemetry, should not initialize telemetry', async () => {
+        mockGetLogger.mockReturnValue({ error: jest.fn(), debug: jest.fn(), info: jest.fn() });
+
+        await handleCreateFioriCommand([process.argv[0], 'create-fiori', '--generateJsonSpec']);
+
+        expect(mockInitTelemetrySettings).not.toHaveBeenCalled();
     });
 
     test('Execute command create-fiori --generateJsonSpec, should show json spec', async () => {

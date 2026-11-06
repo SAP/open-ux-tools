@@ -121,6 +121,20 @@
             "failedError": "Migration failed"
         }
     },
+    "telemetry": {
+        "command": {
+            "description": "Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools.",
+            "enable": "Enable the collection of anonymous usage data",
+            "disable": "Disable the collection of anonymous usage data",
+            "status": "Show whether the collection of anonymous usage data is enabled"
+        },
+        "status": {
+            "enabled": "Telemetry is enabled.",
+            "disabled": "Telemetry is disabled.",
+            "enabledByDefault": "Telemetry is enabled (default, no setting saved yet).",
+            "updateFailed": "Unable to save the telemetry setting."
+        }
+    },
     "npm": {
         "installSuccess": "npm install completed successfully.",
         "installFailed": "npm install failed. '{{error}}'"
