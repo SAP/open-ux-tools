@@ -138,7 +138,11 @@ export function resolveAggregationChildDefaults(
     // will pass as an anchor value when referencing this element from a later call.
     const titleOrLabel = (bbData['title'] ?? bbData['label'] ?? bbData['text']) as string | undefined;
     const normalized =
-        titleOrLabel?.trim().toLowerCase().replaceAll(/\s+/g, '-').replaceAll(/[^a-z0-9-]/g, '') || uniqueId;
+        titleOrLabel
+            ?.trim()
+            .toLowerCase()
+            .replaceAll(/\s+/g, '-')
+            .replaceAll(/[^a-z0-9-]/g, '') || uniqueId;
     const baseKey = /^[a-z]/.test(normalized) ? normalized : `bb-${normalized}`;
     const derivedKey = generateId ? generateId(baseKey) : baseKey;
 
