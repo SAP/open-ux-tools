@@ -1,5 +1,31 @@
 # @sap-ux/create
 
+## 1.5.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 0.0.16 → 1.0.0
+
+## 1.5.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 0.0.15 → 0.0.16
+
+## 1.5.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.37 → 1.2.38
+- @sap-ux/app-config-writer 1.1.33 → 1.1.33
+- @sap-ux/ui5-test-writer 1.19.10 → 1.19.11
+
 ## 1.5.15
 
 ### Patch Changes
