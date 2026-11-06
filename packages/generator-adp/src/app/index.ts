@@ -878,9 +878,10 @@ export default class extends Generator {
     private async _initFromJsonInput(jsonInput: JsonInput | CfJsonInput): Promise<void> {
         if (isCfJsonInput(jsonInput)) {
             await this._initFromJsonCf(jsonInput);
-        } else {
-            await this._initFromJson();
+            return;
         }
+
+        await this._initFromJson();
     }
 
     /**
@@ -1004,7 +1005,7 @@ export default class extends Generator {
         const resolvedApprouter =
             approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
 
-        const serviceName = businessService ?? serviceInstanceName ?? '';
+        const serviceName = businessService?.trim() ? businessService : (serviceInstanceName ?? '');
         const serviceInfo = await getBusinessServiceInfo(serviceName, this.cfConfig, this.logger);
         if (!serviceInfo) {
             throw new Error(t('error.businessServiceDoesNotExist'));

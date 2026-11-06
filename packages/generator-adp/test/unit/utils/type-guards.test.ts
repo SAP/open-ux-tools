@@ -175,6 +175,25 @@ describe('isCfJsonInput', () => {
         expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', serviceInstanceName: '' })).toBe(false);
     });
 
+    it('should return false when one service field is empty even though the other is valid', () => {
+        expect(
+            isCfJsonInput({
+                targetEnv: 'CF',
+                application: 'base.app.id',
+                businessService: '',
+                serviceInstanceName: 'my-live-instance'
+            })
+        ).toBe(false);
+        expect(
+            isCfJsonInput({
+                targetEnv: 'CF',
+                application: 'base.app.id',
+                businessService: 'my-business-service',
+                serviceInstanceName: '   '
+            })
+        ).toBe(false);
+    });
+
     it('should return false when application is an empty string', () => {
         expect(isCfJsonInput({ targetEnv: 'CF', application: '', businessService: 'svc' })).toBe(false);
     });

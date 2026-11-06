@@ -84,8 +84,8 @@ export function isCfJsonInput(value: unknown): value is CfJsonInput {
     return (
         isOptionalString(value.id) &&
         isOptionalString(value.applicationTitle) &&
-        isOptionalString(value.businessService) &&
-        isOptionalString(value.serviceInstanceName) &&
+        isOptionalNonEmptyString(value.businessService) &&
+        isOptionalNonEmptyString(value.serviceInstanceName) &&
         isOptionalString(value.businessSolutionName) &&
         isOptionalString(value.mtaId) &&
         isOptionalString(value.targetFolder) &&
@@ -114,6 +114,16 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  */
 function isOptionalString(value: unknown): value is string | undefined {
     return typeof value === 'undefined' || isString(value);
+}
+
+/**
+ * Type guard for an optional non-empty string.
+ *
+ * @param {unknown} value - The value being checked.
+ * @returns {boolean} True if the value is undefined or a string with non-whitespace content.
+ */
+function isOptionalNonEmptyString(value: unknown): value is string | undefined {
+    return value === undefined || isNonEmptyString(value);
 }
 
 /**
