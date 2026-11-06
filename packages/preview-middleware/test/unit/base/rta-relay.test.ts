@@ -325,6 +325,12 @@ describe('relay browser client', () => {
         const win: Record<string, unknown> = { sap: { ui: { require: ui5Require } } };
         win.self = win;
         win.top = topLevel ? win : {};
+        const messageHandlers: Array<(event: { origin: string; data: unknown }) => void> = [];
+        win.addEventListener = (type: string, handler: (event: { origin: string; data: unknown }) => void) => {
+            if (type === 'message') {
+                messageHandlers.push(handler);
+            }
+        };
         runInNewContext(source, {
             document: {
                 currentScript: { src: `https://preview.test/prefix${API}/client.js`, dataset: { token: TOKEN } },
@@ -344,7 +350,12 @@ describe('relay browser client', () => {
             fetch
         });
         await new Promise(setImmediate);
-        return { fetch, reload, log, ui5Require };
+        const dispatchMessage = (event: { origin: string; data: unknown }) => {
+            for (const handler of messageHandlers) {
+                handler(event);
+            }
+        };
+        return { fetch, reload, log, ui5Require, dispatchMessage };
     };
 
     const waitForResult = async (client: { fetch: jest.Mock }) => {
@@ -424,6 +435,24 @@ describe('relay browser client', () => {
             expect(startRTA).not.toHaveBeenCalled();
         }
     );
+
+    test('waits for a same-origin app-loaded signal before adopting RTA, ignoring cross-origin senders', async () => {
+        const startRTA = jest.fn().mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true } });
+        const frameRequire = jest.fn(requireWith({ startRTA }, editorRta({})));
+        const client = await runClient(
+            [{ id: '1', actionName: 'com.sap.ui.flex.startRTA.v1', frameId: 'preview' }],
+            {},
+            { sap: { ui: { require: frameRequire } } },
+            false,
+            { topLevel: true, fastClock: true }
+        );
+        const appLoaded = { type: 'post-message-action', action: { type: '[ext] app-loaded' } };
+        client.dispatchMessage({ origin: 'https://evil.example', data: appLoaded });
+        client.dispatchMessage({ origin: 'https://preview.test', data: appLoaded });
+        const body = await waitForResult(client);
+        expect(body.result.isSuccess).toBe(true);
+        expect(startRTA).toHaveBeenCalledTimes(1);
+    });
 
     test('treats a missing RuntimeAuthoring module as not started', async () => {
         const ui5Require = jest.fn(

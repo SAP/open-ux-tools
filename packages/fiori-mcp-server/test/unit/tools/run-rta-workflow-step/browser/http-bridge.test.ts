@@ -53,6 +53,7 @@ describe('browser/http-bridge', () => {
     afterEach(() => {
         jest.useRealTimers();
         jest.restoreAllMocks();
+        delete process.env.SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS;
     });
 
     test('returns success immediately and uses the exact local URL and relay token without a browser hostname port', async () => {
@@ -230,6 +231,54 @@ describe('browser/http-bridge', () => {
             expect(jest.getTimerCount()).toBe(0);
         }
     );
+
+    describe('login wait (startRTA)', () => {
+        const loginSentinel = {
+            isSuccess: true,
+            payload: { __needsUserAction: 'backend_login_required', message: expect.stringContaining('login') },
+            error: null
+        };
+
+        test('waits for the client to return from login, then succeeds without a reload', async () => {
+            respondWith({}, 504);
+            respondWith({ result: success, clientId: CLIENT_ID });
+            const result = httpTransport.callFrontendAction(SITE, START, {}, 'preview');
+            await jest.advanceTimersByTimeAsync(1999);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            await jest.advanceTimersByTimeAsync(1);
+            await expect(result).resolves.toEqual(success);
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        test('returns the backend-login sentinel when the login budget elapses with no client', async () => {
+            process.env.SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS = '0';
+            respondWith({}, 504);
+            await expect(httpTransport.callFrontendAction(SITE, START)).resolves.toEqual(loginSentinel);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(jest.getTimerCount()).toBe(0);
+        });
+
+        test('does not wait out a login for non-start actions (504 surfaces immediately)', async () => {
+            respondWith({}, 504);
+            await expect(httpTransport.callFrontendAction(SITE, 'com.sap.ui.flex.callAction.v1')).rejects.toThrow(
+                'Editor relay HTTP 504'
+            );
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(jest.getTimerCount()).toBe(0);
+        });
+
+        test('returns EDITOR_RTA_NOT_STARTED as-is rather than treating it as a login prompt', async () => {
+            const notStarted = {
+                isSuccess: false,
+                payload: null,
+                error: { code: 'EDITOR_RTA_NOT_STARTED', message: 'The adaptation editor did not start UI adaptation' }
+            };
+            respondWith({ result: notStarted, clientId: CLIENT_ID });
+            await expect(httpTransport.callFrontendAction(SITE, START)).resolves.toEqual(notStarted);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(jest.getTimerCount()).toBe(0);
+        });
+    });
 
     describe('reloadPage', () => {
         test('reloads once then waits for a fresh ready client', async () => {

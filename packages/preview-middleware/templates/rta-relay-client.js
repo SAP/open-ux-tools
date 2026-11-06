@@ -6,12 +6,35 @@
     const API_POLL_INTERVAL_MS = 200;
     const RTA_POLL_INTERVAL_MS = 250;
     const RETRY_DELAY_MS = 1000;
+    const APP_LOADED_POLL_INTERVAL_MS = 200;
+    const APP_LOADED_ENVELOPE_TYPE = 'post-message-action';
+    const APP_LOADED_ACTION_TYPE = '[ext] app-loaded';
 
     // Capture currentScript before any await. Deriving endpoints from its URL preserves mount prefixes.
     const script = document.currentScript;
     const token = script.dataset.token;
     const base = new URL('.', script.src);
     const clientId = crypto.randomUUID();
+
+    let appLoadedSeen = false;
+    let appLoadedListening = false;
+    if (window.self === window.top) {
+        appLoadedListening = true;
+        window.addEventListener('message', (event) => {
+            if (event.origin !== location.origin) {
+                return;
+            }
+            const data = event.data;
+            if (
+                data &&
+                data.type === APP_LOADED_ENVELOPE_TYPE &&
+                data.action &&
+                data.action.type === APP_LOADED_ACTION_TYPE
+            ) {
+                appLoadedSeen = true;
+            }
+        });
+    }
 
     function delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -82,6 +105,19 @@
         return true;
     }
 
+    async function waitForAppLoaded(deadline) {
+        if (!appLoadedListening) {
+            return true;
+        }
+        while (!appLoadedSeen) {
+            if (Date.now() >= deadline) {
+                return false;
+            }
+            await delay(APP_LOADED_POLL_INTERVAL_MS);
+        }
+        return true;
+    }
+
     async function fetchViaContext(payload) {
         // Same-origin only: the editor page may fetch its own origin (the preview-middleware
         // proxy forwards authenticated backend requests), never a foreign host.
@@ -128,6 +164,7 @@
         const deadline = Date.now() + ACTION_DEADLINE_MS;
         const api = await resolveApi(targetWindow, deadline);
         if (action.actionName === '__ready__' || action.actionName === 'com.sap.ui.flex.startRTA.v1') {
+            await waitForAppLoaded(deadline);
             const started = await waitForEditorRta(targetWindow, deadline);
             if (!started) {
                 return {

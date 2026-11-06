@@ -1,9 +1,33 @@
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
+import type { NeedsUserActionPayload } from './login-page.js';
 import { requireEditorSession, stopEditorSession } from '../../../utils/editor-session.js';
 import { logger } from '../../../utils/logger.js';
 
 // Allow the preview relay's 60-second action deadline to return its own error.
 const REQUEST_TIMEOUT_MS = 70000;
+
+const START_RTA_ACTION = 'com.sap.ui.flex.startRTA.v1';
+const START_RETRY_DELAY_MS = 2000;
+const MAX_PERMISSION_RETRIES = 4;
+const DEFAULT_RELAY_LOGIN_WAIT_MS = 120000;
+
+const RELAY_LOGIN_REQUIRED_MESSAGE =
+    'The adaptation editor could not be reached — it is likely still on the backend login screen. ' +
+    'Complete the login in the Simple Browser, then run the start step again.';
+
+/**
+ * Login wait budget in ms.
+ *
+ * @returns SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS, default 120000.
+ */
+function relayLoginWaitMs(): number {
+    const raw = Number(process.env.SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS);
+    return Number.isFinite(raw) && raw >= 0 ? raw : DEFAULT_RELAY_LOGIN_WAIT_MS;
+}
+
+function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 interface RelayResponse {
     result?: unknown;
@@ -75,8 +99,38 @@ function isFrontendResult(value: unknown): value is FrontendActionResult {
 }
 
 /**
- * Calls a frontend action. Only transient startRTA permission checks are retried;
- * edits and ambiguous network failures are never replayed.
+ * Converts a relay response into a frontend envelope.
+ *
+ * @param response Validated relay response.
+ * @returns Frontend result envelope.
+ */
+function toFrontendResult<TReturn>(response: RelayResponse): FrontendActionResult<TReturn> {
+    if (response.error) {
+        return { isSuccess: false, payload: null, error: { code: 'RELAY_ERROR', message: response.error } };
+    }
+    if (!isFrontendResult(response.result)) {
+        throw new Error('Editor relay returned an invalid frontend result');
+    }
+    return response.result as FrontendActionResult<TReturn>;
+}
+
+/**
+ * Whether the error means no browser client answered (relay 504 or aborted request).
+ *
+ * @param error Error thrown by requestRelay.
+ * @returns True when the client was absent rather than the request hard-failing.
+ */
+function isClientAbsent(error: unknown): boolean {
+    return (
+        error instanceof Error &&
+        (/HTTP 504/.test(error.message) || error.name === 'TimeoutError' || error.name === 'AbortError')
+    );
+}
+
+/**
+ * Calls a frontend action over the relay. Non-start actions are single-shot. The `startRTA` start
+ * path keeps its bounded key-user retry and waits a login budget for the browser client to return
+ * from the backend login screen, returning the backend-login sentinel if it never does.
  *
  * @param site Registered editor URL.
  * @param actionName Fully-qualified frontend action.
@@ -90,22 +144,40 @@ async function callFrontendActionHttp<TReturn = unknown>(
     payload: Record<string, unknown> = {},
     frameId?: string
 ): Promise<FrontendActionResult<TReturn>> {
-    const maxRetries = actionName === 'com.sap.ui.flex.startRTA.v1' ? 4 : 0;
-    for (let attempt = 0; ; attempt++) {
-        const response = await requestRelay(site, actionName, payload, frameId);
-        if (response.error) {
-            return { isSuccess: false, payload: null, error: { code: 'RELAY_ERROR', message: response.error } };
+    if (actionName !== START_RTA_ACTION) {
+        return toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
+    }
+    const deadline = Date.now() + relayLoginWaitMs();
+    let permissionRetries = 0;
+    for (;;) {
+        try {
+            const result = toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
+            if (
+                result.isSuccess ||
+                permissionRetries >= MAX_PERMISSION_RETRIES ||
+                !/key user permission/i.test(result.error?.message ?? '')
+            ) {
+                return result;
+            }
+            permissionRetries++;
+            logger.debug(
+                `HTTP relay: startRTA key-user check not ready, retry ${permissionRetries}/${MAX_PERMISSION_RETRIES}`
+            );
+            await delay(START_RETRY_DELAY_MS);
+        } catch (error) {
+            if (!isClientAbsent(error)) {
+                throw error;
+            }
+            if (Date.now() >= deadline) {
+                logger.debug('HTTP relay: login wait budget elapsed with no editor client; prompting for login');
+                const loginPayload: NeedsUserActionPayload = {
+                    __needsUserAction: 'backend_login_required',
+                    message: RELAY_LOGIN_REQUIRED_MESSAGE
+                };
+                return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
+            }
+            await delay(START_RETRY_DELAY_MS);
         }
-        if (!isFrontendResult(response.result)) {
-            throw new Error('Editor relay returned an invalid frontend result');
-        }
-        // UI5 supplies the payload type; the relay can only validate its envelope.
-        const result = response.result as FrontendActionResult<TReturn>;
-        if (attempt >= maxRetries || result.isSuccess || !/key user permission/i.test(result.error?.message ?? '')) {
-            return result;
-        }
-        logger.debug(`HTTP relay: startRTA key-user check not ready, retry ${attempt + 1}/${maxRetries}`);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 }
 
