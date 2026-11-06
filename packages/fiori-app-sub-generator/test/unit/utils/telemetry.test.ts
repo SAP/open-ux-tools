@@ -1,7 +1,7 @@
 import { DestinationProxyType, WebIDEUsage } from '@sap-ux/btp-utils';
 import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 import type { BackendSystem } from '@sap-ux/store';
-import { ApiHubType } from '../../../src/types/index.js';
+import { ApiHubType } from '@sap-ux/fiori-generator-shared';
 import { getTelemetryBusinessHubType, getTelemetrySapSystemType } from '../../../src/utils/telemetry.js';
 
 describe('Test utils', () => {
