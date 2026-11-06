@@ -1,0 +1,5400 @@
+{
+    "$source": "CSN of LROPODataService compiled from https://github.com/SAP-samples/fiori-elements-feature-showcase (commit ecbb43c7a152a57e454758675d100129375c5855). License: Apache-2.0. Definitions unmodified.",
+    "definitions": {
+        "sap.fe.showcase.rootBasis": {
+            "kind": "aspect",
+            "elements": {
+                "imageUrl": {
+                    "type": "cds.String"
+                },
+                "stringProperty": {
+                    "type": "cds.String"
+                },
+                "integerValue": {
+                    "type": "cds.Integer"
+                },
+                "forecastValue": {
+                    "type": "cds.Integer"
+                },
+                "targetValue": {
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 30
+                    }
+                },
+                "dimensions": {
+                    "type": "cds.Integer"
+                },
+                "starsValue": {
+                    "type": "cds.Decimal"
+                },
+                "contact": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "sap.fe.showcase.Contacts",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "criticality_code": {
+                    "type": "cds.Integer"
+                },
+                "criticality": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "sap.common.Criticality",
+                    "on": [
+                        {
+                            "ref": [
+                                "criticality",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "criticality_code"
+                            ]
+                        }
+                    ]
+                },
+                "fieldWithUoM": {
+                    "type": "cds.Decimal",
+                    "precision": 15,
+                    "scale": 3
+                },
+                "uom": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "sap.common.UnitOfMeasures",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "fieldWithPrice": {
+                    "type": "cds.Decimal",
+                    "precision": 12,
+                    "scale": 3
+                },
+                "isoCurrency": {
+                    "@title": "{i18n>Currency}",
+                    "@description": "{i18n>CurrencyCode.Description}",
+                    "type": "Currency",
+                    "target": "sap.common.Currencies",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "fieldWithCriticality": {
+                    "type": "cds.String"
+                },
+                "deletePossible": {
+                    "type": "cds.Boolean"
+                },
+                "updateHidden": {
+                    "type": "cds.Boolean"
+                },
+                "fieldWithURL": {
+                    "type": "cds.String"
+                },
+                "fieldWithURLtext": {
+                    "type": "cds.String"
+                },
+                "email": {
+                    "type": "cds.String"
+                },
+                "telephone": {
+                    "type": "cds.String"
+                },
+                "country": {
+                    "@title": "{i18n>Country}",
+                    "@description": "{i18n>CountryCode.Description}",
+                    "type": "Country",
+                    "target": "sap.common.Countries",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "regionWithConstantValueHelp": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "sap.common.Regions",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        }
+                    ]
+                },
+                "region": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "sap.common.Regions",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        }
+                    ]
+                },
+                "validFrom": {
+                    "type": "cds.Date"
+                },
+                "validTo": {
+                    "type": "cds.DateTime"
+                },
+                "time": {
+                    "type": "cds.Time"
+                },
+                "timeStamp": {
+                    "type": "cds.Timestamp"
+                },
+                "description": {
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "description_customGrowing": {
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "organizationalUnit": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "sap.fe.showcase.OrganizationalUnits",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService": {
+            "kind": "service",
+            "@CodeList.UnitsOfMeasure.Url": "./$metadata",
+            "@CodeList.UnitsOfMeasure.CollectionPath": "UnitOfMeasures",
+            "@requires": "authenticated-user",
+            "@path": "/srv1",
+            "@Capabilities.FilterFunctions": [
+                "tolower"
+            ]
+        },
+        "LROPODataService.RootEntities": {
+            "kind": "entity",
+            "@Capabilities.SortRestrictions.NonSortableProperties": [
+                {
+                    "=": "createdAt"
+                },
+                {
+                    "=": "createdBy"
+                },
+                {
+                    "=": "modifiedAt"
+                },
+                {
+                    "=": "modifiedBy"
+                }
+            ],
+            "@odata.draft.enabled": true,
+            "@Capabilities.DeleteRestrictions.Deletable": {
+                "=": "deletePossible"
+            },
+            "@UI.UpdateHidden": {
+                "=": "updateHidden"
+            },
+            "@UI.CreateHidden.$edmJson.$Path": "/Singleton/createHidden",
+            "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+                {
+                    "Property": "validFrom",
+                    "AllowedExpressions": "SingleRange"
+                }
+            ],
+            "@Common.SemanticKey": [
+                {
+                    "=": "stringProperty"
+                }
+            ],
+            "@UI.Identification": [
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeCriticality",
+                    "Label": "{i18n>changeCriticality}",
+                    "Criticality": {
+                        "=": "criticality_code"
+                    },
+                    "CriticalityRepresentation": {
+                        "#": "WithIcon"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeCriticality",
+                    "Label": "{i18n>changeCriticality}",
+                    "Determining": true,
+                    "Criticality": {
+                        "=": "criticality_code"
+                    }
+                }
+            ],
+            "@UI.LineItem": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "imageUrl"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "stringProperty"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithPrice"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "@UI.DataPoint#fieldWithTooltip",
+                    "Label": "{i18n>fieldWithToolTip}"
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    },
+                    "@UI.Importance": {
+                        "#": "Low"
+                    }
+                },
+                {
+                    "Label": "Navigation field only available via settings",
+                    "Value": {
+                        "=": "association2one.country_code"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    },
+                    "Criticality": {
+                        "=": "criticality_code"
+                    },
+                    "CriticalityRepresentation": {
+                        "#": "WithIcon"
+                    },
+                    "@UI.Importance": {
+                        "#": "Low"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Label": "{i18n>progressIndicator}",
+                    "Target": "@UI.DataPoint#progressIndicator",
+                    "@UI.Importance": {
+                        "#": "Low"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Label": "{i18n>ratingIndicator}",
+                    "Target": "@UI.DataPoint#ratingIndicator",
+                    "@UI.Importance": {
+                        "#": "Low"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Label": "{i18n>bulletChart}",
+                    "Target": "@UI.Chart#bulletChart",
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "association2one_ID"
+                    },
+                    "Label": "{i18n>Order}",
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "@UI.FieldGroup#AdminData",
+                    "Label": "{i18n>adminData}",
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "@UI.Chart#radialChart",
+                    "Label": "{i18n>radialChart}"
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "contact/@Communication.Contact",
+                    "Label": "{i18n>contactQuickView}"
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeCriticality",
+                    "Label": "{i18n>changeCriticality}"
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeProgress",
+                    "Label": "{i18n>changeProgress}",
+                    "IconUrl": "sap-icon://command-line-interfaces",
+                    "Inline": true
+                },
+                {
+                    "$Type": "UI.DataFieldForIntentBasedNavigation",
+                    "Label": "{i18n>IntentBasedNavigation}",
+                    "SemanticObject": "FeatureShowcaseOrder",
+                    "Action": "manage",
+                    "RequiresContext": true,
+                    "Inline": true,
+                    "IconUrl": "sap-icon://cart",
+                    "Mapping": [
+                        {
+                            "$Type": "Common.SemanticObjectMappingType",
+                            "LocalProperty": {
+                                "=": "integerValue"
+                            },
+                            "SemanticObjectProperty": "integerProperty"
+                        }
+                    ],
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.EntityContainer/unboundAction",
+                    "Label": "{i18n>unboundAction}"
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.EntityContainer/criticalAction",
+                    "Label": "{i18n>criticalAction}"
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "srv.resetEntities(srv.RootEntities)",
+                    "Label": "{i18n>resetEntities}"
+                },
+                {
+                    "$Type": "UI.DataFieldWithUrl",
+                    "Url": {
+                        "=": "fieldWithURL"
+                    },
+                    "Value": {
+                        "=": "fieldWithURLtext"
+                    },
+                    "Label": "{i18n>dataFieldWithURL}",
+                    "@UI.Importance": {
+                        "#": "Medium"
+                    }
+                }
+            ],
+            "@UI.LineItem.@UI.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.LineItem#simplified": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "stringProperty"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithPrice"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    },
+                    "Criticality": {
+                        "=": "criticality_code"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#AdminData.Data": [
+                {
+                    "Value": {
+                        "=": "createdAt"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "createdBy"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "modifiedAt"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "modifiedBy"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#Section.Data": [
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "@UI.ConnectedFields#ConnectedDates"
+                },
+                {
+                    "Value": {
+                        "=": "description"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "description_customGrowing"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForIntentBasedNavigation",
+                    "Label": "{i18n>IntentBasedNavigation}",
+                    "SemanticObject": "FeatureShowcaseOrder",
+                    "Action": "manage",
+                    "RequiresContext": true,
+                    "IconUrl": "sap-icon://cart",
+                    "Mapping": [
+                        {
+                            "$Type": "Common.SemanticObjectMappingType",
+                            "LocalProperty": {
+                                "=": "integerValue"
+                            },
+                            "SemanticObjectProperty": "integerProperty"
+                        }
+                    ],
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.EntityContainer/unboundAction",
+                    "Label": "{i18n>formActionEmphasized}",
+                    "@UI.Emphasized": true
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeProgress",
+                    "Label": "{i18n>formAction}",
+                    "Inline": true
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Label": "{i18n>MultiInputField}",
+                    "Value": {
+                        "=": "childEntities1.field"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#ShowWhenInEdit.Data": [
+                {
+                    "Value": {
+                        "=": "stringProperty"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithPrice"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "criticality_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "contact_ID"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "association2one_ID"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#chartData.Data": [
+                {
+                    "Value": {
+                        "=": "integerValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "targetValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "forecastValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "dimensions"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#advancedChartData.Data": [
+                {
+                    "Value": {
+                        "=": "sumIntegerValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "sumTargetValue"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#HeaderData.Data": [
+                {
+                    "Value": {
+                        "=": "stringProperty"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    },
+                    "Criticality": {
+                        "=": "criticality_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "association2one_ID"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "contact/@Communication.Contact",
+                    "Label": "{i18n>contact}"
+                }
+            ],
+            "@UI.FieldGroup#location.Data": [
+                {
+                    "Value": {
+                        "=": "country_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "region_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "regionWithConstantValueHelp_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "regions.region_code"
+                    },
+                    "Label": "{i18n>MultiInputFieldWithVH}"
+                }
+            ],
+            "@UI.FieldGroup#communication.Data": [
+                {
+                    "Value": {
+                        "=": "email"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "telephone"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#timeAndDate.Data": [
+                {
+                    "Value": {
+                        "=": "validTo"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "time"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "timeStamp"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#plainText.Data": [
+                {
+                    "Value": {
+                        "=": "description"
+                    }
+                }
+            ],
+            "@UI.ConnectedFields#ConnectedDates.Label": "{i18n>connectedField}",
+            "@UI.ConnectedFields#ConnectedDates.Template": "{integerValue} / {targetValue}",
+            "@UI.ConnectedFields#ConnectedDates.Data.integerValue.$Type": "UI.DataField",
+            "@UI.ConnectedFields#ConnectedDates.Data.integerValue.Value": {
+                "=": "integerValue"
+            },
+            "@UI.ConnectedFields#ConnectedDates.Data.targetValue.$Type": "UI.DataField",
+            "@UI.ConnectedFields#ConnectedDates.Data.targetValue.Value": {
+                "=": "targetValue"
+            },
+            "@UI.HeaderInfo.TypeName": "{i18n>RootEntities}",
+            "@UI.HeaderInfo.TypeNamePlural": "{i18n>RootEntities.typeNamePlural}",
+            "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+            "@UI.HeaderInfo.Title.Value": {
+                "=": "stringProperty"
+            },
+            "@UI.HeaderInfo.Description.$Type": "UI.DataField",
+            "@UI.HeaderInfo.Description.Value": "{i18n>RootEntities}",
+            "@UI.HeaderInfo.ImageUrl": {
+                "=": "imageUrl"
+            },
+            "@UI.HeaderInfo.TypeImageUrl": "sap-icon://sales-order",
+            "@UI.HeaderInfo.Initials": "RE",
+            "@UI.HeaderFacets": [
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.DataPoint#fieldWithPrice"
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#HeaderData",
+                            "Label": "{i18n>generalData}"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.Chart#bulletChart"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "ID": "CollectionFacet1",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.DataPoint#ratingIndicator"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.DataPoint#progressIndicator"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "contact/@Communication.Address",
+                            "Label": "{i18n>address}"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "ID": "CollectionFacet2",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "chartEntities/@UI.Chart#areaChart"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.Chart#radialChart"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.FieldGroup#plainText",
+                    "Label": "{i18n>plainText}"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#lineChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#columnChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.Chart#harveyChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#stackedBarChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#comparisonChart"
+                }
+            ],
+            "@UI.Facets": [
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "ID": "collectionFacetSection",
+                    "Label": "{i18n>collectionSection}",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#Section",
+                            "ID": "SubSectionID",
+                            "Label": "{i18n>subSection}"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#location",
+                            "Label": "{i18n>locationSubSection}"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#communication",
+                            "Label": "{i18n>communication}"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#timeAndDate",
+                            "Label": "{i18n>timeAndDate}"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.FieldGroup#ShowWhenInEdit",
+                    "Label": "{i18n>showWhenInEdit}",
+                    "@UI.Hidden": {
+                        "=": "IsActiveEntity"
+                    }
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "Label": "{i18n>chartDataCollection}",
+                    "ID": "chartDataCollection",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#chartData",
+                            "Label": "{i18n>chartData}"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#advancedChartData",
+                            "ID": "advancedChartData",
+                            "Label": "{i18n>advancedChartData}",
+                            "@UI.PartOfPreview": false
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "childEntities1/@UI.PresentationVariant",
+                    "ID": "childEntities1Section",
+                    "Label": "{i18n>childEntities1}"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "association2one/@UI.FieldGroup#data",
+                    "Label": "{i18n>Order}",
+                    "@UI.Hidden": {
+                        "xpr": [
+                            "not",
+                            {
+                                "ref": [
+                                    "$draft",
+                                    "IsActiveEntity"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "childEntities3/@UI.LineItem",
+                    "Label": "{i18n>childEntities3}"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart",
+                    "Label": "{i18n>chart}"
+                }
+            ],
+            "@UI.PresentationVariant.SortOrder": [
+                {
+                    "Property": {
+                        "=": "stringProperty"
+                    },
+                    "Descending": false
+                }
+            ],
+            "@UI.PresentationVariant.Visualizations": [
+                "@UI.LineItem"
+            ],
+            "@UI.FilterFacets": [
+                {
+                    "Target": "@UI.FieldGroup#chartData",
+                    "Label": "{i18n>chartData}"
+                },
+                {
+                    "Target": "@UI.FieldGroup#location",
+                    "Label": "{i18n>location}"
+                }
+            ],
+            "@UI.SelectionFields": [
+                {
+                    "=": "stringProperty"
+                },
+                {
+                    "=": "validFrom"
+                },
+                {
+                    "=": "childEntities1.criticalityValue_code"
+                },
+                {
+                    "=": "organizationalUnit_ID"
+                }
+            ],
+            "@UI.SelectionVariant#variant1.Text": "{i18n>SVariant1}",
+            "@UI.SelectionVariant#variant1.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticality_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "High": 2,
+                            "Option": {
+                                "#": "BT"
+                            },
+                            "Low": 0
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionVariant#variant2.Text": "{i18n>SVariant2}",
+            "@UI.SelectionVariant#variant2.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticality_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "EQ"
+                            },
+                            "Low": 3
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.Text": "{i18n>SelectionPresentationVariant}",
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.SelectionVariant.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticality_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "GT"
+                            },
+                            "Low": 0
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.PresentationVariant.SortOrder": [
+                {
+                    "Property": {
+                        "=": "fieldWithPrice"
+                    },
+                    "Descending": false
+                }
+            ],
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.PresentationVariant.Visualizations": [
+                "@UI.LineItem#simplified"
+            ],
+            "@UI.DataPoint#progressIndicator.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#progressIndicator.TargetValue": 100,
+            "@UI.DataPoint#progressIndicator.Visualization": {
+                "#": "Progress"
+            },
+            "@UI.DataPoint#progressIndicator.Title": "{i18n>progressIndicator}",
+            "@UI.DataPoint#ratingIndicator.Value": {
+                "=": "starsValue"
+            },
+            "@UI.DataPoint#ratingIndicator.TargetValue": 4,
+            "@UI.DataPoint#ratingIndicator.Visualization": {
+                "#": "Rating"
+            },
+            "@UI.DataPoint#ratingIndicator.Title": "{i18n>ratingIndicator}",
+            "@UI.DataPoint#ratingIndicator.@Common.QuickInfo": "Tooltip via Common.QuickInfo",
+            "@UI.DataPoint#bulletChart.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#bulletChart.TargetValue": {
+                "=": "targetValue"
+            },
+            "@UI.DataPoint#bulletChart.ForecastValue": {
+                "=": "forecastValue"
+            },
+            "@UI.DataPoint#bulletChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#bulletChart.MinimumValue": 0,
+            "@UI.DataPoint#radialChart.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#radialChart.TargetValue": {
+                "=": "targetValue"
+            },
+            "@UI.DataPoint#radialChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#harveyChart.Value": {
+                "=": "fieldWithPrice"
+            },
+            "@UI.DataPoint#harveyChart.MaximumValue": {
+                "=": "fieldWithUoM"
+            },
+            "@UI.DataPoint#harveyChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#fieldWithPrice.Value": {
+                "=": "fieldWithPrice"
+            },
+            "@UI.DataPoint#fieldWithPrice.Title": "{i18n>fieldWithPrice}",
+            "@UI.DataPoint#fieldWithTooltip.Value": {
+                "=": "dimensions"
+            },
+            "@UI.DataPoint#fieldWithTooltip.@Common.QuickInfo": "{i18n>toolTip}",
+            "@UI.Chart#bulletChart.Title": "{i18n>bulletChart}",
+            "@UI.Chart#bulletChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#bulletChart.ChartType": {
+                "#": "Bullet"
+            },
+            "@UI.Chart#bulletChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#bulletChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#bulletChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#bulletChart"
+                }
+            ],
+            "@UI.Chart#radialChart.Title": "{i18n>radialChart}",
+            "@UI.Chart#radialChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#radialChart.ChartType": {
+                "#": "Donut"
+            },
+            "@UI.Chart#radialChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#radialChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#radialChart"
+                }
+            ],
+            "@UI.Chart#harveyChart.Title": "{i18n>harveyChart}",
+            "@UI.Chart#harveyChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#harveyChart.ChartType": {
+                "#": "Pie"
+            },
+            "@UI.Chart#harveyChart.Measures": [
+                {
+                    "=": "fieldWithPrice"
+                }
+            ],
+            "@UI.Chart#harveyChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "fieldWithPrice"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#harveyChart"
+                }
+            ],
+            "query": {
+                "SELECT": {
+                    "from": {
+                        "ref": [
+                            "sap.fe.showcase.RootEntities"
+                        ]
+                    }
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@UI.Hidden": true,
+                    "@readonly": true,
+                    "@mandatory": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "imageUrl": {
+                    "@title": "{i18n>image}",
+                    "@UI.IsImageURL": true,
+                    "type": "cds.String"
+                },
+                "stringProperty": {
+                    "@Core.Immutable": true,
+                    "@mandatory": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>semanticKeyField}",
+                    "type": "cds.String"
+                },
+                "integerValue": {
+                    "@title": "{i18n>integerValue}",
+                    "type": "cds.Integer"
+                },
+                "forecastValue": {
+                    "@title": "{i18n>forecastValue}",
+                    "type": "cds.Integer"
+                },
+                "targetValue": {
+                    "@title": "{i18n>targetValue}",
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 30
+                    }
+                },
+                "dimensions": {
+                    "@title": "{i18n>dimensions}",
+                    "type": "cds.Integer"
+                },
+                "starsValue": {
+                    "@title": "{i18n>stars}",
+                    "type": "cds.Decimal"
+                },
+                "contact": {
+                    "@title": "{i18n>contact}",
+                    "@Common.Text": {
+                        "=": "contact.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextOnly"
+                    },
+                    "@Common.ValueList.Label": "{i18n>contact}",
+                    "@Common.ValueList.CollectionPath": "Contacts",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "ID",
+                            "LocalDataProperty": {
+                                "=": "contact_ID"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "country_code"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "city"
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Contacts",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "criticality_code": {
+                    "@title": "{i18n>criticality}",
+                    "@Common.Text": {
+                        "=": "criticality.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@Common.ValueListWithFixedValues": true,
+                    "@Common.ValueListWithFixedValues.@Common.ValueListShowValuesImmediately": true,
+                    "@Common.ValueList.Label": "{i18n>criticality}",
+                    "@Common.ValueList.CollectionPath": "Criticality",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "code",
+                            "LocalDataProperty": {
+                                "=": "criticality_code"
+                            }
+                        }
+                    ],
+                    "type": "cds.Integer"
+                },
+                "criticality": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Criticality",
+                    "on": [
+                        {
+                            "ref": [
+                                "criticality",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "criticality_code"
+                            ]
+                        }
+                    ]
+                },
+                "fieldWithUoM": {
+                    "@title": "{i18n>fieldWithUoM}",
+                    "@Measures.Unit": {
+                        "=": "uom_code"
+                    },
+                    "type": "cds.Decimal",
+                    "precision": 15,
+                    "scale": 3
+                },
+                "uom": {
+                    "@UI.Hidden": true,
+                    "@Common.ValueListWithFixedValues": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.UnitOfMeasures",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "fieldWithPrice": {
+                    "@title": "{i18n>fieldWithPrice}",
+                    "@Measures.ISOCurrency": {
+                        "=": "isoCurrency_code"
+                    },
+                    "type": "cds.Decimal",
+                    "precision": 12,
+                    "scale": 3
+                },
+                "isoCurrency": {
+                    "@title": "{i18n>currencyForFieldWithPrice}",
+                    "@description": "{i18n>CurrencyCode.Description}",
+                    "type": "Currency",
+                    "target": "LROPODataService.Currencies",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "fieldWithCriticality": {
+                    "@title": "{i18n>fieldWithCriticality}",
+                    "type": "cds.String"
+                },
+                "deletePossible": {
+                    "@UI.Hidden": true,
+                    "type": "cds.Boolean"
+                },
+                "updateHidden": {
+                    "@UI.Hidden": true,
+                    "type": "cds.Boolean"
+                },
+                "fieldWithURL": {
+                    "@UI.Hidden": true,
+                    "type": "cds.String"
+                },
+                "fieldWithURLtext": {
+                    "@UI.HiddenFilter": true,
+                    "@HTML5.LinkTarget": "_blank",
+                    "type": "cds.String"
+                },
+                "email": {
+                    "@mandatory": true,
+                    "@title": "{i18n>email}",
+                    "@Communication.IsEmailAddress": true,
+                    "type": "cds.String"
+                },
+                "telephone": {
+                    "@title": "{i18n>telephone}",
+                    "@Communication.IsPhoneNumber": true,
+                    "type": "cds.String"
+                },
+                "country": {
+                    "@title": "{i18n>country}",
+                    "@Common.Text": {
+                        "=": "country.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@description": "{i18n>CountryCode.Description}",
+                    "type": "Country",
+                    "target": "LROPODataService.Countries",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "regionWithConstantValueHelp": {
+                    "@title": "{i18n>region_with_constant_vh}",
+                    "@Common.Text": {
+                        "=": "regionWithConstantValueHelp.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@Common.ValueListWithFixedValues": true,
+                    "@Common.ValueList.Label": "{i18n>region}",
+                    "@Common.ValueList.CollectionPath": "Regions",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "code",
+                            "LocalDataProperty": {
+                                "=": "region_code"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterConstant",
+                            "ValueListProperty": "country_code",
+                            "Constant": "DE"
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Regions",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        }
+                    ]
+                },
+                "region": {
+                    "@UI.HiddenFilter": true,
+                    "@title": "{i18n>region}",
+                    "@UI.Placeholder": "Select a region",
+                    "@Common.Text": {
+                        "=": "region.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@Common.ValueListWithFixedValues": true,
+                    "@Common.ValueList.Label": "{i18n>region}",
+                    "@Common.ValueList.CollectionPath": "Regions",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "code",
+                            "LocalDataProperty": {
+                                "=": "region_code"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterFilterOnly",
+                            "ValueListProperty": "country_code"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterIn",
+                            "LocalDataProperty": {
+                                "=": "country_code"
+                            },
+                            "ValueListProperty": "country_code"
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Regions",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        }
+                    ]
+                },
+                "validFrom": {
+                    "@title": "{i18n>date}",
+                    "type": "cds.Date"
+                },
+                "validTo": {
+                    "@UI.DateTimeStyle": "short",
+                    "@title": "{i18n>dateTo}",
+                    "type": "cds.DateTime"
+                },
+                "time": {
+                    "@title": "{i18n>time}",
+                    "type": "cds.Time"
+                },
+                "timeStamp": {
+                    "@title": "{i18n>timeStamp}",
+                    "type": "cds.Timestamp"
+                },
+                "description": {
+                    "@title": "{i18n>description}",
+                    "@UI.MultiLineText": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "description_customGrowing": {
+                    "@title": "{i18n>description2}",
+                    "@UI.MultiLineText": true,
+                    "@UI.Placeholder": "max.mustermann@sap.com",
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "organizationalUnit": {
+                    "@title": "{i18n>OrganizationalUnit}",
+                    "@Common.Text": {
+                        "=": "organizationalUnit.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@Common.ValueList.Label": "{i18n>OrganizationalUnit}",
+                    "@Common.ValueList.CollectionPath": "OrganizationalUnits",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "ID",
+                            "LocalDataProperty": {
+                                "=": "organizationalUnit_ID"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "description"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "category"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "superOrdinateOrgUnit_ID"
+                        }
+                    ],
+                    "@Common.ValueList#OrgUnitsHierarchy.Label": "{i18n>OrganizationalUnitHierarchy}",
+                    "@Common.ValueList#OrgUnitsHierarchy.CollectionPath": "OrganizationalUnits",
+                    "@Common.ValueList#OrgUnitsHierarchy.PresentationVariantQualifier": "OrgUnitsHierarchy",
+                    "@Common.ValueList#OrgUnitsHierarchy.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "ID",
+                            "LocalDataProperty": {
+                                "=": "organizationalUnit_ID"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "description"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "category"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "superOrdinateOrgUnit_ID"
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.OrganizationalUnits",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "childEntities1": {
+                    "@title": "{i18n>childEntities1}",
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.ChildEntities1",
+                    "on": [
+                        {
+                            "ref": [
+                                "childEntities1",
+                                "parent"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "association2one": {
+                    "@Common.SemanticObject": "FeatureShowcaseOrder",
+                    "@Common.SemanticObjectMapping": [
+                        {
+                            "$Type": "Common.SemanticObjectMappingType",
+                            "LocalProperty": {
+                                "=": "association2one_ID"
+                            },
+                            "SemanticObjectProperty": "ID"
+                        },
+                        {
+                            "$Type": "Common.SemanticObjectMappingType",
+                            "LocalProperty": {
+                                "=": "integerValue"
+                            },
+                            "SemanticObjectProperty": "field3"
+                        }
+                    ],
+                    "@Common.SemanticObject#Deliveries": "FeatureShowcaseDeliveries",
+                    "@Common.SemanticObjectMapping#Deliveries": [
+                        {
+                            "$Type": "Common.SemanticObjectMappingType",
+                            "LocalProperty": {
+                                "=": "association2one_ID"
+                            },
+                            "SemanticObjectProperty": "order.ID"
+                        }
+                    ],
+                    "@title": "{i18n>Order}",
+                    "@Common.Text": {
+                        "=": "association2one.stringProperty"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextOnly"
+                    },
+                    "@Common.ValueListWithFixedValues": true,
+                    "@Common.ValueList.Label": "{i18n>Order}",
+                    "@Common.ValueList.CollectionPath": "Orders",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "ID",
+                            "LocalDataProperty": {
+                                "=": "association2one_ID"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "stringProperty"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "integerProperty"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "decimalProperty"
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterDisplayOnly",
+                            "ValueListProperty": "country_code"
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Orders",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "childEntities3": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.ChildEntities3",
+                    "on": [
+                        {
+                            "ref": [
+                                "childEntities3",
+                                "parent"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "chartEntities": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.ChartDataEntities",
+                    "on": [
+                        {
+                            "ref": [
+                                "chartEntities",
+                                "parent"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "regions": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.AssignedRegions",
+                    "on": [
+                        {
+                            "ref": [
+                                "regions",
+                                "root"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "actions": {
+                "changeCriticality": {
+                    "kind": "action",
+                    "@Common.SideEffects.TargetProperties": [
+                        "in/criticality_code",
+                        "in/fieldWithCriticality"
+                    ],
+                    "params": {
+                        "newCriticality": {
+                            "@title": "{i18n>newCriticality}",
+                            "@UI.ParameterDefaultValue": {
+                                "=": "in.criticality_code"
+                            },
+                            "@Common.ValueListWithFixedValues": true,
+                            "@Common.ValueList.Label": "{i18n>criticality}",
+                            "@Common.ValueList.CollectionPath": "Criticality",
+                            "@Common.ValueList.Parameters": [
+                                {
+                                    "$Type": "Common.ValueListParameterInOut",
+                                    "ValueListProperty": "code",
+                                    "LocalDataProperty": {
+                                        "=": "newCriticality"
+                                    }
+                                },
+                                {
+                                    "$Type": "Common.ValueListParameterDisplayOnly",
+                                    "ValueListProperty": "name"
+                                }
+                            ],
+                            "type": "cds.Integer"
+                        }
+                    }
+                },
+                "changeProgress": {
+                    "kind": "action",
+                    "@Common.SideEffects.TargetProperties": [
+                        {
+                            "=": "$self.criticality_code",
+                            "ref": [
+                                "$self",
+                                "criticality_code"
+                            ]
+                        },
+                        "in/integerValue"
+                    ],
+                    "@Core.OperationAvailable": {
+                        "xpr": [
+                            {
+                                "ref": [
+                                    "$self",
+                                    "integerValue"
+                                ]
+                            },
+                            ">",
+                            {
+                                "val": 0
+                            }
+                        ]
+                    },
+                    "params": {
+                        "newProgress": {
+                            "@title": "{i18n>newProgress}",
+                            "@UI.ParameterDefaultValue": 50,
+                            "type": "cds.Integer"
+                        }
+                    }
+                },
+                "resetEntities": {
+                    "kind": "action",
+                    "@Common.SideEffects.TargetEntities": [
+                        {
+                            "=": "in"
+                        }
+                    ],
+                    "params": {
+                        "in": {
+                            "items": {
+                                "type": "$self"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "LROPODataService.unboundAction": {
+            "kind": "action",
+            "@Core.OperationAvailable.$edmJson.$Path": "/Singleton/enabled",
+            "params": {
+                "input": {
+                    "@title": "{i18n>inputValue}",
+                    "type": "cds.String"
+                }
+            }
+        },
+        "LROPODataService.criticalAction": {
+            "kind": "action",
+            "@Common.IsActionCritical": true
+        },
+        "LROPODataService.ChildEntities1": {
+            "kind": "entity",
+            "@UI.LineItem": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "field"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithPerCent"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "booleanProperty"
+                    },
+                    "Criticality": {
+                        "=": "criticalityValue_code"
+                    }
+                }
+            ],
+            "@UI.HeaderInfo.TypeName": "{i18n>childEntities1}",
+            "@UI.HeaderInfo.TypeNamePlural": "{i18n>childEntities1.typeNamePlural}",
+            "@UI.HeaderInfo.Title.Value": "{i18n>childEntities1}",
+            "@UI.HeaderInfo.Description.Value": {
+                "xpr": [
+                    {
+                        "val": "Using odata.concat - Field: "
+                    },
+                    "||",
+                    {
+                        "ref": [
+                            "field"
+                        ]
+                    }
+                ]
+            },
+            "@UI.HeaderInfo.ImageUrl": "",
+            "@UI.HeaderInfo.TypeImageUrl": "sap-icon://blank-tag",
+            "@UI.HeaderFacets": [
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.DataPoint#fieldWithPercent",
+                    "ID": "FacetWithPercent"
+                }
+            ],
+            "@UI.Facets": [
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "grandChildren/@UI.LineItem",
+                    "Label": "{i18n>grandChildren}"
+                }
+            ],
+            "@UI.DataPoint#fieldWithPercent.Value": {
+                "=": "fieldWithPerCent"
+            },
+            "@UI.DataPoint#fieldWithPercent.Title": "{i18n>fieldWithPerCent}",
+            "@UI.DataPoint#fieldWithPercent.Visualization": {
+                "#": "Number"
+            },
+            "@UI.PresentationVariant.SortOrder": [
+                {
+                    "Property": {
+                        "=": "field"
+                    },
+                    "Descending": false
+                }
+            ],
+            "@UI.PresentationVariant.Visualizations": [
+                "@UI.LineItem"
+            ],
+            "@UI.SelectionVariant#variant1.Text": "{i18n>variant1ChildEntities1}",
+            "@UI.SelectionVariant#variant1.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticalityValue_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "High": 5,
+                            "Option": {
+                                "#": "BT"
+                            },
+                            "Low": 0
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionVariant#variant2.Text": "{i18n>variant2ChildEntities1}",
+            "@UI.SelectionVariant#variant2.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticalityValue_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "EQ"
+                            },
+                            "Low": 3
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionVariant#variant3.Text": "{i18n>variant3ChildEntities1}",
+            "@UI.SelectionVariant#variant3.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticalityValue_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "EQ"
+                            },
+                            "Low": 2
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionVariant#variant4.Text": "{i18n>variant4ChildEntities1}",
+            "@UI.SelectionVariant#variant4.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticalityValue_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "EQ"
+                            },
+                            "Low": 1
+                        }
+                    ]
+                }
+            ],
+            "@title": "{i18n>childEntities1}",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.ChildEntities1"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@UI.Hidden": true,
+                    "@readonly": true,
+                    "@mandatory": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "parent": {
+                    "@UI.Hidden": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.RootEntities",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "field": {
+                    "@Core.Immutable": true,
+                    "@mandatory": true,
+                    "@title": "{i18n>field}",
+                    "type": "cds.String"
+                },
+                "fieldWithPerCent": {
+                    "@title": "{i18n>fieldWithPerCent}",
+                    "@Measures.Unit": "%",
+                    "type": "cds.Decimal",
+                    "precision": 5,
+                    "scale": 2
+                },
+                "booleanProperty": {
+                    "@title": "{i18n>booleanProperty}",
+                    "type": "cds.Boolean",
+                    "default": {
+                        "val": false
+                    }
+                },
+                "criticalityValue": {
+                    "@title": "{i18n>criticality}",
+                    "@Common.Text": {
+                        "=": "criticalityValue.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Criticality",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "grandChildren": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.GrandChildEntities",
+                    "on": [
+                        {
+                            "ref": [
+                                "grandChildren",
+                                "parent"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.Orders": {
+            "kind": "entity",
+            "@cds.redirection.target": true,
+            "@UI.FieldGroup#data.Data": [
+                {
+                    "Value": {
+                        "=": "stringProperty"
+                    },
+                    "@Common.FieldControl": {
+                        "#": "ReadOnly"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "integerProperty"
+                    },
+                    "@Common.FieldControl": {
+                        "#": "ReadOnly"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "decimalProperty"
+                    },
+                    "@Common.FieldControl": {
+                        "#": "ReadOnly"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "country_code"
+                    },
+                    "@Common.FieldControl": {
+                        "#": "ReadOnly"
+                    }
+                }
+            ],
+            "@UI.HeaderInfo.TypeName": "{i18n>Order}",
+            "@UI.HeaderInfo.TypeNamePlural": "{i18n>Order.typeNamePlural}",
+            "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+            "@UI.HeaderInfo.Title.Value": "{i18n>Order}",
+            "@UI.HeaderInfo.Description.$Type": "UI.DataField",
+            "@UI.HeaderInfo.Description.Value": {
+                "=": "stringProperty"
+            },
+            "@UI.HeaderInfo.ImageUrl": "",
+            "@UI.HeaderInfo.TypeImageUrl": "sap-icon://blank-tag",
+            "@UI.LineItem": [
+                {
+                    "Value": {
+                        "=": "stringProperty"
+                    }
+                }
+            ],
+            "@UI.QuickViewFacets": [
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.FieldGroup#data",
+                    "Label": "{i18n>Order}"
+                }
+            ],
+            "@title": "{i18n>Order}",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.Orders"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@UI.Hidden": true,
+                    "@readonly": true,
+                    "@mandatory": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "stringProperty": {
+                    "@title": "{i18n>stringProperty}",
+                    "@UI.MultiLineText": true,
+                    "type": "cds.String"
+                },
+                "integerProperty": {
+                    "@title": "{i18n>integerProperty}",
+                    "type": "cds.Integer"
+                },
+                "decimalProperty": {
+                    "@title": "{i18n>decimalProperty}",
+                    "type": "cds.Decimal",
+                    "precision": 5,
+                    "scale": 3
+                },
+                "country": {
+                    "@Common.Text": {
+                        "=": "country.name"
+                    },
+                    "@Common.TextArrangement#TextFirst": true,
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@title": "{i18n>Country}",
+                    "@description": "{i18n>CountryCode.Description}",
+                    "type": "Country",
+                    "target": "LROPODataService.Countries",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "items": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.OrderItems",
+                    "on": [
+                        {
+                            "ref": [
+                                "items",
+                                "order"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.ChildEntities3": {
+            "kind": "entity",
+            "@UI.LineItem": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "field"
+                    }
+                }
+            ],
+            "@title": "{i18n>childEntities3}",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.ChildEntities3"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "parent": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.RootEntities",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "field": {
+                    "@title": "{i18n>stringProperty}",
+                    "type": "cds.String"
+                }
+            }
+        },
+        "LROPODataService.ChartDataEntities": {
+            "kind": "entity",
+            "@Aggregation.ApplySupported.GroupableProperties": [
+                {
+                    "=": "dimensions"
+                },
+                {
+                    "=": "criticality_code"
+                }
+            ],
+            "@Aggregation.ApplySupported.AggregatableProperties": [
+                {
+                    "Property": {
+                        "=": "integerValue"
+                    }
+                }
+            ],
+            "@UI.LineItem": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "integerValue"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "forecastValue"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "targetValue"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "dimensions"
+                    }
+                }
+            ],
+            "@UI.LineItem.@UI.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.Chart.Title": "{i18n>chart}",
+            "@UI.Chart.ChartType": {
+                "#": "Column"
+            },
+            "@UI.Chart.Measures": [
+                {
+                    "=": "maxAmount"
+                }
+            ],
+            "@UI.Chart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "maxAmount"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    }
+                }
+            ],
+            "@UI.Chart.DimensionAttributes": [
+                {
+                    "$Type": "UI.ChartDimensionAttributeType",
+                    "Dimension": {
+                        "=": "dimensions"
+                    },
+                    "Role": {
+                        "#": "Category"
+                    }
+                },
+                {
+                    "$Type": "UI.ChartDimensionAttributeType",
+                    "Dimension": {
+                        "=": "criticality_code"
+                    },
+                    "Role": {
+                        "#": "Category"
+                    }
+                }
+            ],
+            "@UI.Chart.Actions": [
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.EntityContainer/unboundAction",
+                    "Label": "{i18n>unboundAction}"
+                }
+            ],
+            "@UI.Chart#areaChart.Title": "{i18n>areaChart}",
+            "@UI.Chart#areaChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#areaChart.ChartType": {
+                "#": "Area"
+            },
+            "@UI.Chart#areaChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#areaChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#areaChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#areaChart"
+                }
+            ],
+            "@UI.Chart#lineChart.Title": "{i18n>lineChart}",
+            "@UI.Chart#lineChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#lineChart.ChartType": {
+                "#": "Line"
+            },
+            "@UI.Chart#lineChart.Measures": [
+                {
+                    "=": "integerValueWithUoM"
+                },
+                {
+                    "=": "targetValue"
+                }
+            ],
+            "@UI.Chart#lineChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                },
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#lineChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValueWithUoM"
+                    },
+                    "Role": {
+                        "#": "Axis2"
+                    },
+                    "DataPoint": "@UI.DataPoint#lineChartWidth"
+                },
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "targetValue"
+                    },
+                    "Role": {
+                        "#": "Axis2"
+                    },
+                    "DataPoint": "@UI.DataPoint#lineChartDepth"
+                }
+            ],
+            "@UI.Chart#columnChart.Title": "{i18n>columnChart}",
+            "@UI.Chart#columnChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#columnChart.ChartType": {
+                "#": "Column"
+            },
+            "@UI.Chart#columnChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#columnChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#columnChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#dataPointForChart"
+                }
+            ],
+            "@UI.Chart#stackedBarChart.Title": "{i18n>stackedBarChart}",
+            "@UI.Chart#stackedBarChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#stackedBarChart.ChartType": {
+                "#": "BarStacked"
+            },
+            "@UI.Chart#stackedBarChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#stackedBarChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#stackedBarChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#dataPointForChart"
+                }
+            ],
+            "@UI.Chart#comparisonChart.Title": "{i18n>comparisonChart}",
+            "@UI.Chart#comparisonChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#comparisonChart.ChartType": {
+                "#": "Bar"
+            },
+            "@UI.Chart#comparisonChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#comparisonChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#comparisonChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#dataPointForChart"
+                }
+            ],
+            "@UI.DataPoint#areaChart.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#areaChart.TargetValue": {
+                "=": "targetValue"
+            },
+            "@UI.DataPoint#areaChart.CriticalityCalculation.ImprovementDirection": {
+                "#": "Target"
+            },
+            "@UI.DataPoint#areaChart.CriticalityCalculation.ToleranceRangeLowValue": {
+                "=": "areaChartToleranceLowerBoundValue"
+            },
+            "@UI.DataPoint#areaChart.CriticalityCalculation.ToleranceRangeHighValue": {
+                "=": "areaChartDeviationUpperBoundValue"
+            },
+            "@UI.DataPoint#areaChart.CriticalityCalculation.DeviationRangeLowValue": {
+                "=": "areaChartDeviationLowerBoundValue"
+            },
+            "@UI.DataPoint#areaChart.CriticalityCalculation.DeviationRangeHighValue": {
+                "=": "areaChartDeviationUpperBoundValue"
+            },
+            "@UI.DataPoint#lineChartWidth.Value": {
+                "=": "integerValueWithUoM"
+            },
+            "@UI.DataPoint#lineChartWidth.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#lineChartDepth.Value": {
+                "=": "targetValue"
+            },
+            "@UI.DataPoint#lineChartDepth.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#dataPointForChart.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#dataPointForChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@Analytics.AggregatedProperties": [
+                {
+                    "Name": "minAmount",
+                    "AggregationMethod": "min",
+                    "AggregatableProperty": "integerValue",
+                    "@Common.Label": "Minimal Net Amount"
+                },
+                {
+                    "Name": "maxAmount",
+                    "AggregationMethod": "max",
+                    "AggregatableProperty": "integerValue",
+                    "@Common.Label": "Maximal Net Amount"
+                },
+                {
+                    "Name": "avgAmount",
+                    "AggregationMethod": "average",
+                    "AggregatableProperty": "integerValue",
+                    "@Common.Label": "Average Net Amount"
+                }
+            ],
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.ChartDataEntities"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@UI.Hidden": true,
+                    "@readonly": true,
+                    "@mandatory": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "parent": {
+                    "@UI.Hidden": true,
+                    "@Core.Immutable": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.RootEntities",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "criticality": {
+                    "@UI.ValueCriticality": [
+                        {
+                            "Value": 0,
+                            "Criticality": {
+                                "#": "Neutral"
+                            }
+                        },
+                        {
+                            "Value": 1,
+                            "Criticality": {
+                                "#": "Negative"
+                            }
+                        },
+                        {
+                            "Value": 2,
+                            "Criticality": {
+                                "#": "Critical"
+                            }
+                        },
+                        {
+                            "Value": 3,
+                            "Criticality": {
+                                "#": "Positive"
+                            }
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Criticality",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "integerValue": {
+                    "@Measures.ISOCurrency": {
+                        "=": "uom_code"
+                    },
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>integerValue}",
+                    "type": "cds.Integer"
+                },
+                "integerValueWithUoM": {
+                    "@Measures.Unit": {
+                        "=": "uom_code"
+                    },
+                    "type": "cds.Integer"
+                },
+                "uom": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.UnitOfMeasures",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "forecastValue": {
+                    "@title": "{i18n>forecastValue}",
+                    "type": "cds.Integer"
+                },
+                "targetValue": {
+                    "@title": "{i18n>targetValue}",
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 30
+                    }
+                },
+                "dimensions": {
+                    "@title": "{i18n>dimensions}",
+                    "type": "cds.Integer"
+                },
+                "areaChartToleranceUpperBoundValue": {
+                    "@UI.HiddenFilter": true,
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 90
+                    }
+                },
+                "areaChartToleranceLowerBoundValue": {
+                    "@UI.HiddenFilter": true,
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 80
+                    }
+                },
+                "areaChartDeviationUpperBoundValue": {
+                    "@UI.HiddenFilter": true,
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 50
+                    }
+                },
+                "areaChartDeviationLowerBoundValue": {
+                    "@UI.HiddenFilter": true,
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 0
+                    }
+                }
+            }
+        },
+        "LROPODataService.GrandChildEntities": {
+            "kind": "entity",
+            "@UI.LineItem": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "field"
+                    }
+                }
+            ],
+            "@title": "{i18n>grandChildren}",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.GrandChildEntities"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@UI.Hidden": true,
+                    "@readonly": true,
+                    "@mandatory": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "parent": {
+                    "@UI.Hidden": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.ChildEntities1",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "field": {
+                    "@title": "{i18n>field}",
+                    "type": "cds.String"
+                }
+            }
+        },
+        "LROPODataService.OrganizationalUnits": {
+            "kind": "entity",
+            "@odata.draft.bypass": true,
+            "@Aggregation.RecursiveHierarchy#OrgUnitsHierarchy.ParentNavigationProperty": {
+                "=": "superOrdinateOrgUnit"
+            },
+            "@Aggregation.RecursiveHierarchy#OrgUnitsHierarchy.NodeProperty": {
+                "=": "ID"
+            },
+            "@Hierarchy.RecursiveHierarchyActions#OrgUnitsHierarchy.ChangeSiblingForRootsSupported": true,
+            "@Hierarchy.RecursiveHierarchyActions#OrgUnitsHierarchy.ChangeNextSiblingAction": "LROPODataService.moveOrgUnit",
+            "@Hierarchy.RecursiveHierarchyActions#OrgUnitsHierarchy.CopyAction": "LROPODataService.copyOrgUnit",
+            "@Hierarchy.RecursiveHierarchy#OrgUnitsHierarchy.LimitedDescendantCount": {
+                "=": "LimitedDescendantCount"
+            },
+            "@Hierarchy.RecursiveHierarchy#OrgUnitsHierarchy.DistanceFromRoot": {
+                "=": "DistanceFromRoot"
+            },
+            "@Hierarchy.RecursiveHierarchy#OrgUnitsHierarchy.DrillState": {
+                "=": "DrillState"
+            },
+            "@Hierarchy.RecursiveHierarchy#OrgUnitsHierarchy.LimitedRank": {
+                "=": "LimitedRank"
+            },
+            "@Capabilities.FilterRestrictions.NonFilterableProperties": [
+                "LimitedDescendantCount",
+                "DistanceFromRoot",
+                "DrillState",
+                "LimitedRank"
+            ],
+            "@Capabilities.SortRestrictions.NonSortableProperties": [
+                "LimitedDescendantCount",
+                "DistanceFromRoot",
+                "DrillState",
+                "LimitedRank"
+            ],
+            "@odata.draft.enabled": true,
+            "@UI.HeaderInfo.TypeName": "{i18n>OrganizationalUnit}",
+            "@UI.HeaderInfo.TypeNamePlural": "{i18n>OrganizationalUnits}",
+            "@UI.HeaderInfo.Title.Value": {
+                "=": "name"
+            },
+            "@UI.HeaderInfo.Description.Value": {
+                "=": "externalId"
+            },
+            "@UI.SelectionVariant#activeOrgUnits.Text": "{i18n>OrganizationalUnits}",
+            "@UI.SelectionVariant#activeOrgUnits.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "isActive"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "EQ"
+                            },
+                            "Low": true
+                        }
+                    ]
+                }
+            ],
+            "@UI.LineItem": [
+                {
+                    "Value": {
+                        "=": "externalId"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "category_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "isActive"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#creationDialog.Data": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "description"
+                    }
+                }
+            ],
+            "@UI.PresentationVariant#OrgUnitsHierarchy.RecursiveHierarchyQualifier": "OrgUnitsHierarchy",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.OrganizationalUnits"
+                    ]
+                },
+                "columns": [
+                    "*",
+                    {
+                        "val": null,
+                        "as": "LimitedDescendantCount",
+                        "cast": {
+                            "type": "cds.Int16"
+                        }
+                    },
+                    {
+                        "val": null,
+                        "as": "DistanceFromRoot",
+                        "cast": {
+                            "type": "cds.Int16"
+                        }
+                    },
+                    {
+                        "val": null,
+                        "as": "DrillState",
+                        "cast": {
+                            "type": "cds.String"
+                        }
+                    },
+                    {
+                        "val": null,
+                        "as": "LimitedRank",
+                        "cast": {
+                            "type": "cds.Int16"
+                        }
+                    }
+                ],
+                "orderBy": [
+                    {
+                        "ref": [
+                            "rank"
+                        ]
+                    }
+                ]
+            },
+            "elements": {
+                "ID": {
+                    "@title": "{i18n>ID}",
+                    "@Core.Computed": true,
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "externalId": {
+                    "@title": "{i18n>ExternalId}",
+                    "@Core.Computed": true,
+                    "type": "cds.String",
+                    "length": 128
+                },
+                "rank": {
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 0
+                    }
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 128
+                },
+                "description": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 256
+                },
+                "isActive": {
+                    "@title": "{i18n>IsActive}",
+                    "type": "cds.Boolean",
+                    "default": {
+                        "val": true
+                    }
+                },
+                "category": {
+                    "@title": "{i18n>Category}",
+                    "@Common.Text": {
+                        "=": "category.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextOnly"
+                    },
+                    "@Common.ValueListWithFixedValues": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.OrganizationalUnitCategoryCodes",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "superOrdinateOrgUnit": {
+                    "@title": "{i18n>SuperOrdinateOrgUnit}",
+                    "@Common.Text": {
+                        "=": "superOrdinateOrgUnit.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.OrganizationalUnits",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "subordinaryOrgUnits": {
+                    "@title": "{i18n>SubordinaryOrgUnits}",
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.OrganizationalUnits",
+                    "on": [
+                        {
+                            "ref": [
+                                "subordinaryOrgUnits",
+                                "superOrdinateOrgUnit"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.OrganizationalUnits.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "ID"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.OrganizationalUnits.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "ID"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                },
+                "LimitedDescendantCount": {
+                    "@Core.Computed": true,
+                    "type": "cds.Int16",
+                    "$calc": {
+                        "val": null
+                    }
+                },
+                "DistanceFromRoot": {
+                    "@Core.Computed": true,
+                    "type": "cds.Int16",
+                    "$calc": {
+                        "val": null
+                    }
+                },
+                "DrillState": {
+                    "@Core.Computed": true,
+                    "type": "cds.String",
+                    "$calc": {
+                        "val": null
+                    }
+                },
+                "LimitedRank": {
+                    "@Core.Computed": true,
+                    "type": "cds.Int16",
+                    "$calc": {
+                        "val": null
+                    }
+                }
+            },
+            "actions": {
+                "copyOrgUnit": {
+                    "kind": "action",
+                    "returns": {
+                        "type": "LROPODataService.OrganizationalUnits"
+                    }
+                },
+                "moveOrgUnit": {
+                    "kind": "action",
+                    "params": {
+                        "NextSibling": {
+                            "elements": {
+                                "ID": {
+                                    "type": "cds.UUID"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "LROPODataService.Contacts": {
+            "kind": "entity",
+            "@readonly": true,
+            "@Communication.Contact.fn": {
+                "=": "name"
+            },
+            "@Communication.Contact.kind": {
+                "#": "org"
+            },
+            "@Communication.Contact.tel": [
+                {
+                    "uri": {
+                        "=": "phone"
+                    },
+                    "type": {
+                        "#": "preferred"
+                    }
+                }
+            ],
+            "@Communication.Contact.adr": [
+                {
+                    "building": {
+                        "=": "building"
+                    },
+                    "country": {
+                        "=": "country.name"
+                    },
+                    "street": {
+                        "=": "street"
+                    },
+                    "locality": {
+                        "=": "city"
+                    },
+                    "code": {
+                        "=": "postCode"
+                    },
+                    "type": {
+                        "#": "preferred"
+                    }
+                }
+            ],
+            "@Communication.Address.building": {
+                "=": "building"
+            },
+            "@Communication.Address.street": {
+                "=": "street"
+            },
+            "@Communication.Address.locality": {
+                "=": "city"
+            },
+            "@Communication.Address.code": {
+                "=": "postCode"
+            },
+            "@Communication.Address.country": {
+                "=": "country.name"
+            },
+            "@Communication.Address.label": {
+                "=": "addressLabel"
+            },
+            "@Communication.Address.type": {
+                "#": "preferred"
+            },
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.Contacts"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@title": "{i18n>Name}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextOnly"
+                    },
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "name": {
+                    "type": "cds.String"
+                },
+                "phone": {
+                    "type": "cds.String"
+                },
+                "building": {
+                    "type": "cds.String"
+                },
+                "country": {
+                    "@title": "{i18n>Country}",
+                    "@description": "{i18n>CountryCode.Description}",
+                    "type": "Country",
+                    "target": "LROPODataService.Countries",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "street": {
+                    "type": "cds.String"
+                },
+                "city": {
+                    "type": "cds.String"
+                },
+                "postCode": {
+                    "type": "cds.String"
+                },
+                "addressLabel": {
+                    "type": "cds.String"
+                },
+                "photoUrl": {
+                    "type": "cds.String"
+                }
+            }
+        },
+        "LROPODataService.RootEntitySemanticKeys": {
+            "kind": "entity",
+            "@odata.draft.enabled": false,
+            "@readonly": true,
+            "@UI.LineItem": [],
+            "@UI.Facets": [],
+            "@Capabilities.SortRestrictions.NonSortableProperties": [
+                {
+                    "=": "createdAt"
+                },
+                {
+                    "=": "createdBy"
+                },
+                {
+                    "=": "modifiedAt"
+                },
+                {
+                    "=": "modifiedBy"
+                }
+            ],
+            "@Capabilities.DeleteRestrictions.Deletable": {
+                "=": "deletePossible"
+            },
+            "@UI.UpdateHidden": {
+                "=": "updateHidden"
+            },
+            "@UI.CreateHidden.$edmJson.$Path": "/Singleton/createHidden",
+            "@Capabilities.FilterRestrictions.FilterExpressionRestrictions": [
+                {
+                    "Property": "validFrom",
+                    "AllowedExpressions": "SingleRange"
+                }
+            ],
+            "@Common.SemanticKey": [
+                {
+                    "=": "stringProperty"
+                }
+            ],
+            "@UI.Identification": [
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeCriticality",
+                    "Label": "{i18n>changeCriticality}",
+                    "Criticality": {
+                        "=": "criticality_code"
+                    },
+                    "CriticalityRepresentation": {
+                        "#": "WithIcon"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeCriticality",
+                    "Label": "{i18n>changeCriticality}",
+                    "Determining": true,
+                    "Criticality": {
+                        "=": "criticality_code"
+                    }
+                }
+            ],
+            "@UI.LineItem.@UI.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.LineItem#simplified": [
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "stringProperty"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithPrice"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    },
+                    "Criticality": {
+                        "=": "criticality_code"
+                    },
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#AdminData.Data": [
+                {
+                    "Value": {
+                        "=": "createdAt"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "createdBy"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "modifiedAt"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "modifiedBy"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#Section.Data": [
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "@UI.ConnectedFields#ConnectedDates"
+                },
+                {
+                    "Value": {
+                        "=": "description"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "description_customGrowing"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForIntentBasedNavigation",
+                    "Label": "{i18n>IntentBasedNavigation}",
+                    "SemanticObject": "FeatureShowcaseOrder",
+                    "Action": "manage",
+                    "RequiresContext": true,
+                    "IconUrl": "sap-icon://cart",
+                    "Mapping": [
+                        {
+                            "$Type": "Common.SemanticObjectMappingType",
+                            "LocalProperty": {
+                                "=": "integerValue"
+                            },
+                            "SemanticObjectProperty": "integerProperty"
+                        }
+                    ],
+                    "@UI.Importance": {
+                        "#": "High"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.EntityContainer/unboundAction",
+                    "Label": "{i18n>formActionEmphasized}",
+                    "@UI.Emphasized": true
+                },
+                {
+                    "$Type": "UI.DataFieldForAction",
+                    "Action": "LROPODataService.changeProgress",
+                    "Label": "{i18n>formAction}",
+                    "Inline": true
+                },
+                {
+                    "$Type": "UI.DataField",
+                    "Label": "{i18n>MultiInputField}",
+                    "Value": {
+                        "=": "childEntities1.field"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#ShowWhenInEdit.Data": [
+                {
+                    "Value": {
+                        "=": "stringProperty"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithPrice"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "criticality_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "contact_ID"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "association2one_ID"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#chartData.Data": [
+                {
+                    "Value": {
+                        "=": "integerValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "targetValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "forecastValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "dimensions"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#advancedChartData.Data": [
+                {
+                    "Value": {
+                        "=": "sumIntegerValue"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "sumTargetValue"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#HeaderData.Data": [
+                {
+                    "Value": {
+                        "=": "stringProperty"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithCriticality"
+                    },
+                    "Criticality": {
+                        "=": "criticality_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "fieldWithUoM"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "association2one_ID"
+                    }
+                },
+                {
+                    "$Type": "UI.DataFieldForAnnotation",
+                    "Target": "contact/@Communication.Contact",
+                    "Label": "{i18n>contact}"
+                }
+            ],
+            "@UI.FieldGroup#location.Data": [
+                {
+                    "Value": {
+                        "=": "country_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "region_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "regionWithConstantValueHelp_code"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "regions.region_code"
+                    },
+                    "Label": "{i18n>MultiInputFieldWithVH}"
+                }
+            ],
+            "@UI.FieldGroup#communication.Data": [
+                {
+                    "Value": {
+                        "=": "email"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "telephone"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#timeAndDate.Data": [
+                {
+                    "Value": {
+                        "=": "validTo"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "time"
+                    }
+                },
+                {
+                    "Value": {
+                        "=": "timeStamp"
+                    }
+                }
+            ],
+            "@UI.FieldGroup#plainText.Data": [
+                {
+                    "Value": {
+                        "=": "description"
+                    }
+                }
+            ],
+            "@UI.ConnectedFields#ConnectedDates.Label": "{i18n>connectedField}",
+            "@UI.ConnectedFields#ConnectedDates.Template": "{integerValue} / {targetValue}",
+            "@UI.ConnectedFields#ConnectedDates.Data.integerValue.$Type": "UI.DataField",
+            "@UI.ConnectedFields#ConnectedDates.Data.integerValue.Value": {
+                "=": "integerValue"
+            },
+            "@UI.ConnectedFields#ConnectedDates.Data.targetValue.$Type": "UI.DataField",
+            "@UI.ConnectedFields#ConnectedDates.Data.targetValue.Value": {
+                "=": "targetValue"
+            },
+            "@UI.HeaderInfo.TypeName": "{i18n>RootEntities}",
+            "@UI.HeaderInfo.TypeNamePlural": "{i18n>RootEntities.typeNamePlural}",
+            "@UI.HeaderInfo.Title.$Type": "UI.DataField",
+            "@UI.HeaderInfo.Title.Value": {
+                "=": "stringProperty"
+            },
+            "@UI.HeaderInfo.Description.$Type": "UI.DataField",
+            "@UI.HeaderInfo.Description.Value": "{i18n>RootEntities}",
+            "@UI.HeaderInfo.ImageUrl": {
+                "=": "imageUrl"
+            },
+            "@UI.HeaderInfo.TypeImageUrl": "sap-icon://sales-order",
+            "@UI.HeaderInfo.Initials": "RE",
+            "@UI.HeaderFacets": [
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.DataPoint#fieldWithPrice"
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.FieldGroup#HeaderData",
+                            "Label": "{i18n>generalData}"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.Chart#bulletChart"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "ID": "CollectionFacet1",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.DataPoint#ratingIndicator"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.DataPoint#progressIndicator"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "contact/@Communication.Address",
+                            "Label": "{i18n>address}"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.CollectionFacet",
+                    "ID": "CollectionFacet2",
+                    "Facets": [
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "chartEntities/@UI.Chart#areaChart"
+                        },
+                        {
+                            "$Type": "UI.ReferenceFacet",
+                            "Target": "@UI.Chart#radialChart"
+                        }
+                    ]
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.FieldGroup#plainText",
+                    "Label": "{i18n>plainText}"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#lineChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#columnChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "@UI.Chart#harveyChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#stackedBarChart"
+                },
+                {
+                    "$Type": "UI.ReferenceFacet",
+                    "Target": "chartEntities/@UI.Chart#comparisonChart"
+                }
+            ],
+            "@UI.PresentationVariant.SortOrder": [
+                {
+                    "Property": {
+                        "=": "stringProperty"
+                    },
+                    "Descending": false
+                }
+            ],
+            "@UI.PresentationVariant.Visualizations": [
+                "@UI.LineItem"
+            ],
+            "@UI.FilterFacets": [
+                {
+                    "Target": "@UI.FieldGroup#chartData",
+                    "Label": "{i18n>chartData}"
+                },
+                {
+                    "Target": "@UI.FieldGroup#location",
+                    "Label": "{i18n>location}"
+                }
+            ],
+            "@UI.SelectionFields": [
+                {
+                    "=": "stringProperty"
+                },
+                {
+                    "=": "validFrom"
+                },
+                {
+                    "=": "childEntities1.criticalityValue_code"
+                },
+                {
+                    "=": "organizationalUnit_ID"
+                }
+            ],
+            "@UI.SelectionVariant#variant1.Text": "{i18n>SVariant1}",
+            "@UI.SelectionVariant#variant1.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticality_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "High": 2,
+                            "Option": {
+                                "#": "BT"
+                            },
+                            "Low": 0
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionVariant#variant2.Text": "{i18n>SVariant2}",
+            "@UI.SelectionVariant#variant2.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticality_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "EQ"
+                            },
+                            "Low": 3
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.Text": "{i18n>SelectionPresentationVariant}",
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.SelectionVariant.SelectOptions": [
+                {
+                    "PropertyName": {
+                        "=": "criticality_code"
+                    },
+                    "Ranges": [
+                        {
+                            "Sign": {
+                                "#": "I"
+                            },
+                            "Option": {
+                                "#": "GT"
+                            },
+                            "Low": 0
+                        }
+                    ]
+                }
+            ],
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.PresentationVariant.SortOrder": [
+                {
+                    "Property": {
+                        "=": "fieldWithPrice"
+                    },
+                    "Descending": false
+                }
+            ],
+            "@UI.SelectionPresentationVariant#SelectionPresentationVariant.PresentationVariant.Visualizations": [
+                "@UI.LineItem#simplified"
+            ],
+            "@UI.DataPoint#progressIndicator.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#progressIndicator.TargetValue": 100,
+            "@UI.DataPoint#progressIndicator.Visualization": {
+                "#": "Progress"
+            },
+            "@UI.DataPoint#progressIndicator.Title": "{i18n>progressIndicator}",
+            "@UI.DataPoint#ratingIndicator.Value": {
+                "=": "starsValue"
+            },
+            "@UI.DataPoint#ratingIndicator.TargetValue": 4,
+            "@UI.DataPoint#ratingIndicator.Visualization": {
+                "#": "Rating"
+            },
+            "@UI.DataPoint#ratingIndicator.Title": "{i18n>ratingIndicator}",
+            "@UI.DataPoint#ratingIndicator.@Common.QuickInfo": "Tooltip via Common.QuickInfo",
+            "@UI.DataPoint#bulletChart.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#bulletChart.TargetValue": {
+                "=": "targetValue"
+            },
+            "@UI.DataPoint#bulletChart.ForecastValue": {
+                "=": "forecastValue"
+            },
+            "@UI.DataPoint#bulletChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#bulletChart.MinimumValue": 0,
+            "@UI.DataPoint#radialChart.Value": {
+                "=": "integerValue"
+            },
+            "@UI.DataPoint#radialChart.TargetValue": {
+                "=": "targetValue"
+            },
+            "@UI.DataPoint#radialChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#harveyChart.Value": {
+                "=": "fieldWithPrice"
+            },
+            "@UI.DataPoint#harveyChart.MaximumValue": {
+                "=": "fieldWithUoM"
+            },
+            "@UI.DataPoint#harveyChart.Criticality": {
+                "=": "criticality_code"
+            },
+            "@UI.DataPoint#fieldWithPrice.Value": {
+                "=": "fieldWithPrice"
+            },
+            "@UI.DataPoint#fieldWithPrice.Title": "{i18n>fieldWithPrice}",
+            "@UI.DataPoint#fieldWithTooltip.Value": {
+                "=": "dimensions"
+            },
+            "@UI.DataPoint#fieldWithTooltip.@Common.QuickInfo": "{i18n>toolTip}",
+            "@UI.Chart#bulletChart.Title": "{i18n>bulletChart}",
+            "@UI.Chart#bulletChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#bulletChart.ChartType": {
+                "#": "Bullet"
+            },
+            "@UI.Chart#bulletChart.Dimensions": [
+                {
+                    "=": "dimensions"
+                }
+            ],
+            "@UI.Chart#bulletChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#bulletChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#bulletChart"
+                }
+            ],
+            "@UI.Chart#radialChart.Title": "{i18n>radialChart}",
+            "@UI.Chart#radialChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#radialChart.ChartType": {
+                "#": "Donut"
+            },
+            "@UI.Chart#radialChart.Measures": [
+                {
+                    "=": "integerValue"
+                }
+            ],
+            "@UI.Chart#radialChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "integerValue"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#radialChart"
+                }
+            ],
+            "@UI.Chart#harveyChart.Title": "{i18n>harveyChart}",
+            "@UI.Chart#harveyChart.Description": "{i18n>ThisIsAMicroChart}",
+            "@UI.Chart#harveyChart.ChartType": {
+                "#": "Pie"
+            },
+            "@UI.Chart#harveyChart.Measures": [
+                {
+                    "=": "fieldWithPrice"
+                }
+            ],
+            "@UI.Chart#harveyChart.MeasureAttributes": [
+                {
+                    "$Type": "UI.ChartMeasureAttributeType",
+                    "Measure": {
+                        "=": "fieldWithPrice"
+                    },
+                    "Role": {
+                        "#": "Axis1"
+                    },
+                    "DataPoint": "@UI.DataPoint#harveyChart"
+                }
+            ],
+            "query": {
+                "SELECT": {
+                    "from": {
+                        "ref": [
+                            "LROPODataService.RootEntities"
+                        ]
+                    },
+                    "columns": [
+                        {
+                            "key": true,
+                            "ref": [
+                                "stringProperty"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "elements": {
+                "stringProperty": {
+                    "@Core.Immutable": true,
+                    "@mandatory": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>semanticKeyField}",
+                    "key": true,
+                    "type": "cds.String"
+                }
+            }
+        },
+        "LROPODataService.Countries": {
+            "kind": "entity",
+            "@readonly": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Countries"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@title": "{i18n>CountryCode}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 3
+                },
+                "regions": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.Regions",
+                    "on": [
+                        {
+                            "ref": [
+                                "regions",
+                                "country"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.Countries.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.Countries.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.Currencies": {
+            "kind": "entity",
+            "@readonly": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Currencies"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@title": "{i18n>CurrencyCode}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 3
+                },
+                "symbol": {
+                    "@title": "{i18n>CurrencySymbol}",
+                    "type": "cds.String",
+                    "length": 5
+                },
+                "minorUnit": {
+                    "@title": "{i18n>CurrencyMinorUnit}",
+                    "type": "cds.Int16"
+                },
+                "numcode": {
+                    "type": "cds.Integer"
+                },
+                "exponent": {
+                    "type": "cds.Integer"
+                },
+                "minor": {
+                    "type": "cds.String"
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.Currencies.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.Currencies.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.Criticality": {
+            "kind": "entity",
+            "@readonly": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Criticality"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "key": true,
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 0
+                    }
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.Criticality.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.Criticality.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.UnitOfMeasures": {
+            "kind": "entity",
+            "@readonly": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.UnitOfMeasures"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@Common.Text": {
+                        "=": "descr"
+                    },
+                    "@Common.UnitSpecificScale": {
+                        "=": "scale"
+                    },
+                    "@CodeList.ExternalCode": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 30
+                },
+                "scale": {
+                    "type": "cds.Integer"
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.UnitOfMeasures.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.UnitOfMeasures.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.Singleton": {
+            "kind": "entity",
+            "@odata.singleton": true,
+            "@readonly": true,
+            "elements": {
+                "createHidden": {
+                    "type": "cds.Boolean"
+                },
+                "enabled": {
+                    "type": "cds.Boolean"
+                }
+            }
+        },
+        "WorkListODataService": {
+            "kind": "service",
+            "@requires": "authenticated-user",
+            "@path": "/worklist-srv"
+        },
+        "Language": {
+            "kind": "type",
+            "@title": "{i18n>Language}",
+            "@description": "{i18n>LanguageCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Languages",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Currency": {
+            "kind": "type",
+            "@title": "{i18n>Currency}",
+            "@description": "{i18n>CurrencyCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Currencies",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Country": {
+            "kind": "type",
+            "@title": "{i18n>Country}",
+            "@description": "{i18n>CountryCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Countries",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Timezone": {
+            "kind": "type",
+            "type": "cds.Association",
+            "target": "sap.common.Timezones",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "sap.common": {
+            "kind": "context"
+        },
+        "sap.common.Locale": {
+            "kind": "type",
+            "@title": "{i18n>LanguageCode}",
+            "type": "cds.String",
+            "length": 14
+        },
+        "sap.common.CodeList": {
+            "kind": "aspect",
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                }
+            }
+        },
+        "sap.common.TextsAspect": {
+            "kind": "aspect",
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                }
+            }
+        },
+        "sap.common.FlowHistory": {
+            "kind": "aspect",
+            "@cds.persistence.skip": "if-unused",
+            "elements": {
+                "transitions_": {
+                    "@odata.draft.enabled": false,
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "targetAspect": {
+                        "elements": {
+                            "timestamp": {
+                                "@cds.on.insert": {
+                                    "=": "$now"
+                                },
+                                "@UI.HiddenFilter": true,
+                                "@UI.ExcludeFromNavigationContext": true,
+                                "@Core.Immutable": true,
+                                "@title": "{i18n>CreatedAt}",
+                                "@readonly": true,
+                                "key": true,
+                                "type": {
+                                    "ref": [
+                                        "managed",
+                                        "createdAt"
+                                    ]
+                                }
+                            },
+                            "user": {
+                                "@cds.on.insert": {
+                                    "=": "$user"
+                                },
+                                "@UI.HiddenFilter": true,
+                                "@UI.ExcludeFromNavigationContext": true,
+                                "@Core.Immutable": true,
+                                "@title": "{i18n>CreatedBy}",
+                                "@readonly": true,
+                                "@description": "{i18n>UserID.Description}",
+                                "type": {
+                                    "ref": [
+                                        "managed",
+                                        "createdBy"
+                                    ]
+                                },
+                                "length": 255
+                            },
+                            "status": {
+                                "type": "cds.String"
+                            },
+                            "comment": {
+                                "type": "cds.String"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "cuid": {
+            "kind": "aspect",
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                }
+            }
+        },
+        "managed": {
+            "kind": "aspect",
+            "elements": {
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                }
+            }
+        },
+        "temporal": {
+            "kind": "aspect",
+            "elements": {
+                "validFrom": {
+                    "@cds.valid.from": true,
+                    "type": "cds.Timestamp"
+                },
+                "validTo": {
+                    "@cds.valid.to": true,
+                    "type": "cds.Timestamp"
+                }
+            }
+        },
+        "User": {
+            "kind": "type",
+            "@title": "{i18n>UserID}",
+            "@description": "{i18n>UserID.Description}",
+            "type": "cds.String",
+            "length": 255
+        },
+        "LROPODataService.Regions": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Regions"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@title": "{i18n>region}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 10
+                },
+                "country": {
+                    "@UI.Hidden": true,
+                    "@title": "{i18n>Country}",
+                    "@description": "{i18n>CountryCode.Description}",
+                    "key": true,
+                    "type": "Country",
+                    "target": "LROPODataService.Countries",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.Regions.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "texts",
+                                "country"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.Regions.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "country"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.AssignedRegions": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.AssignedRegions"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "root": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.RootEntities",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "region": {
+                    "@Common.Text": {
+                        "=": "region.name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "@Common.ValueListWithFixedValues": true,
+                    "@Common.ValueList.Label": "{i18n>region}",
+                    "@Common.ValueList.CollectionPath": "Regions",
+                    "@Common.ValueList.Parameters": [
+                        {
+                            "$Type": "Common.ValueListParameterInOut",
+                            "ValueListProperty": "code",
+                            "LocalDataProperty": {
+                                "=": "region_code"
+                            }
+                        },
+                        {
+                            "$Type": "Common.ValueListParameterIn",
+                            "LocalDataProperty": {
+                                "=": "root.country_code"
+                            },
+                            "ValueListProperty": "country_code"
+                        }
+                    ],
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Regions",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        {
+                            "ref": [
+                                "country"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.OrderItems": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@title": "{i18n>OrderItems}",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.OrderItems"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@UI.Hidden": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "order": {
+                    "@UI.Hidden": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": 1
+                    },
+                    "target": "LROPODataService.Orders",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "product": {
+                    "@title": "{i18n>Product}",
+                    "type": "cds.String"
+                },
+                "productCategory": {
+                    "@title": "{i18n>ProductCategory}",
+                    "type": "cds.String"
+                },
+                "netValue": {
+                    "@title": "{i18n>NetValue}",
+                    "type": "cds.Decimal",
+                    "precision": 6,
+                    "scale": 3
+                },
+                "currency": {
+                    "@title": "{i18n>Currency}",
+                    "@description": "{i18n>CurrencyCode.Description}",
+                    "type": "Currency",
+                    "target": "LROPODataService.Currencies",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.OrganizationalUnitCategoryCodes": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.OrganizationalUnitCategoryCodes"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 2
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "LROPODataService.OrganizationalUnitCategoryCodes.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "LROPODataService.OrganizationalUnitCategoryCodes.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.OrganizationalUnits.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.OrganizationalUnits.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "@title": "{i18n>ID}",
+                    "@Core.Computed": true,
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 128
+                },
+                "description": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 256
+                }
+            }
+        },
+        "LROPODataService.Countries.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Countries.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@title": "{i18n>CountryCode}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 3
+                }
+            }
+        },
+        "LROPODataService.Currencies.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Currencies.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@title": "{i18n>CurrencyCode}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 3
+                }
+            }
+        },
+        "LROPODataService.Criticality.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Criticality.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "key": true,
+                    "type": "cds.Integer",
+                    "default": {
+                        "val": 0
+                    }
+                }
+            }
+        },
+        "LROPODataService.UnitOfMeasures.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.UnitOfMeasures.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@Common.Text": {
+                        "=": "descr"
+                    },
+                    "@Common.UnitSpecificScale": {
+                        "=": "scale"
+                    },
+                    "@CodeList.ExternalCode": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 30
+                }
+            }
+        },
+        "LROPODataService.Regions.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Regions.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@title": "{i18n>region}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "@Common.TextArrangement": {
+                        "#": "TextFirst"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 10
+                },
+                "country": {
+                    "@odata.containment.ignore": true,
+                    "@UI.Hidden": true,
+                    "@title": "{i18n>Country}",
+                    "@description": "{i18n>CountryCode.Description}",
+                    "key": true,
+                    "type": "Country",
+                    "target": "LROPODataService.Countries",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "LROPODataService.OrganizationalUnitCategoryCodes.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.fe.showcase.OrganizationalUnitCategoryCodes.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 2
+                }
+            }
+        }
+    }
+}

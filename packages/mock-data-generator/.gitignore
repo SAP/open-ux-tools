@@ -1,0 +1,8 @@
+# Build output and coverage
+dist/
+coverage/
+*.tsbuildinfo
+
+# ONNX model binaries are supplied separately (see docs/model-supply.md); the model metadata,
+# heads, tokenizer and vocabulary next to them are tracked.
+resources/models/**/*.onnx

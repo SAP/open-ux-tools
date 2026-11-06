@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Source: https://github.com/SAP-samples/btp-industry-use-cases/blob/d5571fd/03-workplace-management/app/wpm-adm/webapp/localService/metadata.xml (Apache-2.0). Copied unchanged as a test fixture. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="wpm.srv.WPMAdmin" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Workspace" EntityType="wpm.srv.WPMAdmin.Workspace">
+                    <NavigationPropertyBinding Path="workPlaces" Target="Workplace"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Workspace"/>
+                </EntitySet>
+                <EntitySet Name="Workplace" EntityType="wpm.srv.WPMAdmin.Workplace">
+                    <NavigationPropertyBinding Path="space" Target="Workspace"/>
+                    <NavigationPropertyBinding Path="bookings" Target="Booking"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Workplace"/>
+                </EntitySet>
+                <EntitySet Name="Booking" EntityType="wpm.srv.WPMAdmin.Booking">
+                    <NavigationPropertyBinding Path="space" Target="Workspace"/>
+                    <NavigationPropertyBinding Path="place" Target="Workplace"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Booking"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name="Workspace">
+                <Key>
+                    <PropertyRef Name="irn"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="irn" Type="Edm.String" MaxLength="80" Nullable="false"/>
+                <Property Name="shortName" Type="Edm.String" MaxLength="20"/>
+                <Property Name="longName" Type="Edm.String" MaxLength="100"/>
+                <Property Name="type" Type="Edm.String" MaxLength="15"/>
+                <NavigationProperty Name="workPlaces" Type="Collection(wpm.srv.WPMAdmin.Workplace)" Partner="space">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="wpm.srv.WPMAdmin.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="wpm.srv.WPMAdmin.Workspace"/>
+            </EntityType>
+            <EntityType Name="Workplace">
+                <Key>
+                    <PropertyRef Name="irn"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="irn" Type="Edm.String" MaxLength="80" Nullable="false"/>
+                <NavigationProperty Name="space" Type="wpm.srv.WPMAdmin.Workspace" Partner="workPlaces">
+                    <ReferentialConstraint Property="space_irn" ReferencedProperty="irn"/>
+                </NavigationProperty>
+                <Property Name="space_irn" Type="Edm.String" MaxLength="80"/>
+                <Property Name="space_name" Type="Edm.String" MaxLength="100"/>
+                <Property Name="name" Type="Edm.String" MaxLength="50"/>
+                <NavigationProperty Name="bookings" Type="Collection(wpm.srv.WPMAdmin.Booking)" Partner="place">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="wpm.srv.WPMAdmin.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="wpm.srv.WPMAdmin.Workplace"/>
+            </EntityType>
+            <EntityType Name="Booking">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="fromDateTime" Type="Edm.DateTimeOffset"/>
+                <Property Name="toDateTime" Type="Edm.DateTimeOffset"/>
+                <Property Name="userId" Type="Edm.String" MaxLength="150"/>
+                <NavigationProperty Name="space" Type="wpm.srv.WPMAdmin.Workspace">
+                    <ReferentialConstraint Property="space_irn" ReferencedProperty="irn"/>
+                </NavigationProperty>
+                <Property Name="space_irn" Type="Edm.String" MaxLength="80"/>
+                <NavigationProperty Name="place" Type="wpm.srv.WPMAdmin.Workplace" Partner="bookings">
+                    <ReferentialConstraint Property="place_irn" ReferencedProperty="irn"/>
+                </NavigationProperty>
+                <Property Name="place_irn" Type="Edm.String" MaxLength="80"/>
+                <Property Name="deletable" Type="Edm.Boolean" DefaultValue="false"/>
+                <Property Name="updateHidden" Type="Edm.Boolean" DefaultValue="true"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="wpm.srv.WPMAdmin.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="wpm.srv.WPMAdmin.Booking"/>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="wpm.srv.WPMAdmin.Workspace"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="wpm.srv.WPMAdmin.Workspace"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="wpm.srv.WPMAdmin.Workplace"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="wpm.srv.WPMAdmin.Workplace"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="wpm.srv.WPMAdmin.Booking"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="wpm.srv.WPMAdmin.Booking"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="wpm.srv.WPMAdmin.Workspace"/>
+                <ReturnType Type="wpm.srv.WPMAdmin.Workspace"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="wpm.srv.WPMAdmin.Workspace"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="wpm.srv.WPMAdmin.Workspace"/>
+            </Action>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace">
+                <Annotation Term="UI.UpdateHidden" Bool="false"/>
+                <Annotation Term="UI.DeleteHidden" Bool="false"/>
+                <Annotation Term="UI.CreateHidden" Bool="false"/>
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="shortName"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="shortName"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="longName"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="type"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="Workspace"/>
+                        <PropertyValue Property="TypeNamePlural" String="Workspaces"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="shortName"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="longName"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="General">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="shortName"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="longName"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="type"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="General"/>
+                            <PropertyValue Property="Label" String="General"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#General"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="Workplaces"/>
+                            <PropertyValue Property="Label" String="Workplaces"/>
+                            <PropertyValue Property="Target" AnnotationPath="workPlaces/@UI.LineItem#Workplaces"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>shortName</PropertyPath>
+                        <PropertyPath>longName</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.EntityContainer/Workspace">
+                <Annotation Term="Capabilities.SearchRestrictions">
+                    <Record Type="Capabilities.SearchRestrictionsType">
+                        <PropertyValue Property="Searchable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.UpdateHidden" Bool="false"/>
+                <Annotation Term="UI.DeleteHidden" Bool="false"/>
+                <Annotation Term="UI.CreateHidden" Bool="false"/>
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="wpm.srv.WPMAdmin.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="wpm.srv.WPMAdmin.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="wpm.srv.WPMAdmin.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/irn">
+                <Annotation Term="Common.Label" String="Internal ID"/>
+                <Annotation Term="Common.Text" Path="shortName">
+                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                </Annotation>
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/shortName">
+                <Annotation Term="Common.Label" String="Code"/>
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/longName">
+                <Annotation Term="Common.Label" String="Workspace"/>
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/type">
+                <Annotation Term="Common.Label" String="Type"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workspace/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace">
+                <Annotation Term="UI.UpdateHidden" Bool="false"/>
+                <Annotation Term="UI.DeleteHidden" Bool="false"/>
+                <Annotation Term="UI.CreateHidden" Bool="false"/>
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant">
+                    <Record Type="UI.PresentationVariantType">
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="space_name"/>
+                                    <PropertyValue Property="Descending" Bool="false"/>
+                                </Record>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="name"/>
+                                    <PropertyValue Property="Descending" Bool="false"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="GroupBy">
+                            <Collection>
+                                <PropertyPath>space_name</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                <AnnotationPath>@UI.LineItem#Workplaces</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="space_irn"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.LineItem" Qualifier="Workplaces">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="name"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.HeaderInfo">
+                    <Record Type="UI.HeaderInfoType">
+                        <PropertyValue Property="TypeName" String="Workplace"/>
+                        <PropertyValue Property="TypeNamePlural" String="Workplaces"/>
+                        <PropertyValue Property="Title">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="space_irn"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="UI.DataField">
+                                <PropertyValue Property="Value" Path="name"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="General">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="space_irn"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Value" Path="name"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="General"/>
+                            <PropertyValue Property="Label" String="General"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#General"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>space_irn</PropertyPath>
+                        <PropertyPath>name</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.EntityContainer/Workplace">
+                <Annotation Term="Capabilities.SearchRestrictions">
+                    <Record Type="Capabilities.SearchRestrictionsType">
+                        <PropertyValue Property="Searchable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.InsertRestrictions">
+                    <Record Type="Capabilities.InsertRestrictionsType">
+                        <PropertyValue Property="Insertable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="Updatable" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.UpdateHidden" Bool="false"/>
+                <Annotation Term="UI.DeleteHidden" Bool="false"/>
+                <Annotation Term="UI.CreateHidden" Bool="false"/>
+                <Annotation Term="UI.PresentationVariant">
+                    <Record Type="UI.PresentationVariantType">
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="space_name"/>
+                                    <PropertyValue Property="Descending" Bool="false"/>
+                                </Record>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="name"/>
+                                    <PropertyValue Property="Descending" Bool="false"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="GroupBy">
+                            <Collection>
+                                <PropertyPath>space_name</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                                <AnnotationPath>@UI.LineItem#Workplaces</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Common.DraftNode">
+                    <Record Type="Common.DraftNodeType">
+                        <PropertyValue Property="PreparationAction" String="wpm.srv.WPMAdmin.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/irn">
+                <Annotation Term="Common.Label" String="Internal ID"/>
+                <Annotation Term="Common.Text" Path="name">
+                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                </Annotation>
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/space">
+                <Annotation Term="Common.Label" String="Workspace"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/space_irn">
+                <Annotation Term="Common.Label" String="Workspace"/>
+                <Annotation Term="Common.Text" Path="space/longName">
+                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                </Annotation>
+                <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="CollectionPath" String="Workspace"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="space_irn"/>
+                                    <PropertyValue Property="ValueListProperty" String="irn"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="longName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/space_name">
+                <Annotation Term="Common.Label" String="Workspace"/>
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/name">
+                <Annotation Term="Common.Label" String="Workplace"/>
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Workplace/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.EntityContainer/Booking">
+                <Annotation Term="Common.DraftNode">
+                    <Record Type="Common.DraftNodeType">
+                        <PropertyValue Property="PreparationAction" String="wpm.srv.WPMAdmin.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Booking/deletable">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Booking/updateHidden">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Booking/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Booking/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Booking/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.Booking/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData">
+                <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+                </Annotations>
+                <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/DraftUUID">
+                    <Annotation Term="UI.Hidden" Bool="true"/>
+                    <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+                    </Annotations>
+                    <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/CreationDateTime">
+                        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+                        </Annotations>
+                        <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/CreatedByUser">
+                            <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+                            </Annotations>
+                            <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/DraftIsCreatedByMe">
+                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+                                </Annotations>
+                                <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/LastChangeDateTime">
+                                    <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+                                    </Annotations>
+                                    <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/LastChangedByUser">
+                                        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+                                        </Annotations>
+                                        <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/InProcessByUser">
+                                            <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+                                            </Annotations>
+                                            <Annotations Target="wpm.srv.WPMAdmin.DraftAdministrativeData/DraftIsProcessedByMe">
+                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+                                                </Annotations>
+                                            </Schema>
+                                        </edmx:DataServices>
+                                    </edmx:Edmx>

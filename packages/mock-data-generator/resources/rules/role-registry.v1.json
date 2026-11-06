@@ -1,0 +1,1147 @@
+{
+    "format": "mockgen-role-registry",
+    "version": 1,
+    "notes": "The semantic roles the generator routes fields to. The classifier head pins the SHA-256 of the canonical JSON of roles (object keys in code-point order, arrays in order): any change here invalidates a packaged head, so runtime routing policy lives in semantic-rules.v1.json instead. keyDomain names the value bank that bounds a role's key values, never its size.",
+    "roles": {
+        "account_description": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": true,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "approval_status": {
+            "family": "status",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "audit_user": {
+            "family": "identity",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_account_internal_id": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_account_type": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_name": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_statement_format": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_statement_id": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_statement_page": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bank_statement_type": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "batch": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "bic": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "bic",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95,
+            "keyDomain": "bic",
+            "minimumKeyLength": 8
+        },
+        "boolean_flag": {
+            "family": "boolean",
+            "compatiblePrimitiveTypes": ["bool"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "business_identifier": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "business_network_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "business_partner_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "chart_of_accounts": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "city": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "comment": {
+            "family": "narrative",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": true,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "company_code": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "control_code": {
+            "family": "technical",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "conversion_factor": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "conversion_offset": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "count": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string", "int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "country": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "country",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.99,
+            "keyDomain": "locations",
+            "minimumKeyLength": 2
+        },
+        "country_name": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "currency_name": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "currency": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "currency",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95,
+            "keyDomain": "currencies",
+            "minimumKeyLength": 3
+        },
+        "customer_purchase_order": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "customer_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "date": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["date"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "decimal_places": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "description": {
+            "family": "narrative",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": true,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "datetime": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["datetime", "datetimeoffset"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "dimension_exponent": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "distribution_channel": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "document_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "document_item": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "distance": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "duration": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "duration_unit": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "email": {
+            "family": "contact",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "email",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "employee_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "end_date": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["date", "datetime", "datetimeoffset"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "equipment_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "equipment_name": {
+            "family": "asset",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "exponent": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "field_control": {
+            "family": "technical",
+            "compatiblePrimitiveTypes": ["int"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "fiscal_period": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "gl_account": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "guid_text": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "house_bank": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "iban": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "iban",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "indicator": {
+            "family": "boolean",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "interest_rate": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "language": {
+            "family": "locale",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "length_unit": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "long_text": {
+            "family": "narrative",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": true,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "material_no": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "measurement_dimension": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "mobile_phone": {
+            "family": "contact",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "phone",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "monetary_amount": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "notes": {
+            "family": "narrative",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": true,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "numeric_identifier": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "object_type": {
+            "family": "classification",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "status": {
+            "family": "status",
+            "compatiblePrimitiveTypes": ["string", "int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "org_name": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "manufacturer": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "payment_file_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "payment_terms": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "payment_transaction_group": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "percentage": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "person_first_name": {
+            "family": "identity",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "person_full_name": {
+            "family": "identity",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "person_last_name": {
+            "family": "identity",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "phone": {
+            "family": "contact",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "phone",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "plant": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "postal_code": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "pressure": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "pressure_unit": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "price": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "product_category": {
+            "family": "product",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "product_name": {
+            "family": "product",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "purchase_order_no": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "quantity": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "rating": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "region": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "region_name": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "remark": {
+            "family": "narrative",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": true,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "sales_division": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "sales_doc_no": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "sales_document_type": {
+            "family": "classification",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "sales_organization": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "service_document_item_category": {
+            "family": "classification",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "service_document_type": {
+            "family": "classification",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "service_organization": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "service_team": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "source_name": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "start_date": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["date", "datetime", "datetimeoffset"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "storage_location": {
+            "family": "organization",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "street_address": {
+            "family": "location",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "technical_object_type": {
+            "family": "classification",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "temperature": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["int", "decimal"],
+            "keyPolicy": "forbidden",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "temperature_unit": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "tax_code": {
+            "family": "finance",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "time": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["time"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "timezone": {
+            "family": "locale",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "unique_item_identifier": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "unit_of_measure": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95,
+            "keyDomain": "units",
+            "minimumKeyLength": 2
+        },
+        "unit_of_measure_iso": {
+            "family": "measure",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95,
+            "keyDomain": "unit-iso-codes",
+            "minimumKeyLength": 3
+        },
+        "url": {
+            "family": "contact",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "forbidden",
+            "validator": "url",
+            "sftEligible": false,
+            "lexicalPrecisionGate": false,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "vendor_id": {
+            "family": "identifier",
+            "compatiblePrimitiveTypes": ["string"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        },
+        "year": {
+            "family": "temporal",
+            "compatiblePrimitiveTypes": ["string", "int"],
+            "keyPolicy": "allowed",
+            "validator": "structural",
+            "sftEligible": false,
+            "lexicalPrecisionGate": true,
+            "routeThreshold": 0.9,
+            "conflictThreshold": 0.95
+        }
+    }
+}

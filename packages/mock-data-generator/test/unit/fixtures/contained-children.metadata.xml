@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names. Only Za has an entity set: each Za contains a collection of Zb
+     and one Zc, and each Zb contains a collection of Zd. The contained types are read from the row that
+     contains them, so their keys only identify a row within its container. Za also declares a property named
+     like the key of Zc, nothing more links them. Each Zc contains a collection of Zg, which reference it. Zf
+     rows contain one Zc each too. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Zs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Zas" EntityType="Zs.Za"/>
+                <EntitySet Name="Zfs" EntityType="Zs.Zf"/>
+            </EntityContainer>
+            <EntityType Name="Za">
+                <Key>
+                    <PropertyRef Name="Zk"/>
+                </Key>
+                <Property Name="Zk" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Zn" Type="Edm.String" MaxLength="40"/>
+                <Property Name="Zi" Type="Edm.String" MaxLength="10"/>
+                <NavigationProperty Name="Zbn" Type="Collection(Zs.Zb)" ContainsTarget="true"/>
+                <NavigationProperty Name="Zcn" Type="Zs.Zc" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="Zf">
+                <Key>
+                    <PropertyRef Name="Zo"/>
+                </Key>
+                <Property Name="Zo" Type="Edm.Int32" Nullable="false"/>
+                <NavigationProperty Name="Zcf" Type="Zs.Zc" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="Zb">
+                <Key>
+                    <PropertyRef Name="Zj"/>
+                </Key>
+                <Property Name="Zj" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="Zq" Type="Edm.Decimal" Precision="13" Scale="3"/>
+                <NavigationProperty Name="Zdn" Type="Collection(Zs.Zd)" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="Zc">
+                <Key>
+                    <PropertyRef Name="Zi"/>
+                </Key>
+                <Property Name="Zi" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Zt" Type="Edm.String" MaxLength="80"/>
+                <NavigationProperty Name="Zgn" Type="Collection(Zs.Zg)" Partner="Zup" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="Zg">
+                <Key>
+                    <PropertyRef Name="Zi"/>
+                    <PropertyRef Name="Zm"/>
+                </Key>
+                <Property Name="Zi" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Zm" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <NavigationProperty Name="Zup" Type="Zs.Zc" Nullable="false" Partner="Zgn">
+                    <ReferentialConstraint Property="Zi" ReferencedProperty="Zi"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Zd">
+                <Key>
+                    <PropertyRef Name="Zh"/>
+                </Key>
+                <Property Name="Zh" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <Property Name="Zv" Type="Edm.Date"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
