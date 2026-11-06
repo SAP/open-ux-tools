@@ -3,13 +3,17 @@ import type { IdGeneratorFunction } from '@sap-ux/fe-fpm-writer';
 import { AGGREGATION_CHILD_TYPES } from './utils.js';
 
 /**
- * Removes path-traversal characters so LLM-derived names are safe as file path segments.
+ * Sanitizes an LLM-derived name into a safe filesystem identifier.
+ * Strips `..`, path separators, and any character outside `[A-Za-z0-9_-]`.
+ * Guarantees a non-empty result by prefixing `Fragment` when the sanitized value
+ * is empty or does not start with a letter.
  *
- * @param name - Raw name that may contain path separators or `..` sequences
- * @returns Sanitized name with `..` and `/`/`\` removed
+ * @param name - Raw name from LLM output
+ * @returns A safe, non-empty filename segment matching `[A-Za-z][A-Za-z0-9_-]*`
  */
 function sanitizeFileName(name: string): string {
-    return name.replaceAll('..', '').replaceAll(/[/\\]/g, '');
+    const sanitized = name.replaceAll('..', '').replaceAll(/[^A-Za-z0-9_-]/g, '');
+    return /^[A-Za-z][A-Za-z0-9_-]*$/.test(sanitized) ? sanitized : `Fragment${sanitized || '1'}`;
 }
 
 /** BB types that wrap flat anchor/placement into a nested position object. */
@@ -133,7 +137,10 @@ export function resolveAggregationChildDefaults(
     // Derive a kebab-case key from the label so the XML key attribute matches what the LLM
     // will pass as an anchor value when referencing this element from a later call.
     const titleOrLabel = (bbData['title'] ?? bbData['label'] ?? bbData['text']) as string | undefined;
-    const derivedKey = titleOrLabel ? titleOrLabel.trim().toLowerCase().replace(/\s+/g, '-') : uniqueId;
+    const normalized =
+        titleOrLabel?.trim().toLowerCase().replaceAll(/\s+/g, '-').replaceAll(/[^a-z0-9-]/g, '') || uniqueId;
+    const baseKey = /^[a-z]/.test(normalized) ? normalized : `bb-${normalized}`;
+    const derivedKey = generateId ? generateId(baseKey) : baseKey;
 
     const keyDefaults: Record<string, unknown> = {};
     if (bbType === BuildingBlockType.CustomColumn && !bbData['columnKey']) {
