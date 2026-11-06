@@ -31,6 +31,13 @@ jest.unstable_mockModule('node:fs', () => ({
     existsSync: mockExistsSync
 }));
 
+const mockIsCFEnvironment = jest.fn<any>().mockResolvedValue(false);
+const actualAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...actualAdpTooling,
+    isCFEnvironment: mockIsCFEnvironment
+}));
+
 const { openAdaptationEditor } = await import('../../../src/tools/open-adaptation-editor.js');
 
 class FakeChildProcess extends EventEmitter {
@@ -65,6 +72,7 @@ describe('openAdaptationEditor', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockExistsSync.mockReturnValue(false);
+        mockIsCFEnvironment.mockResolvedValue(false);
     });
 
     function fakeSubprocess(child: FakeChildProcess): { nodeChildProcess: Promise<FakeChildProcess> } {
@@ -278,5 +286,64 @@ describe('openAdaptationEditor', () => {
         // On non-Windows the fallback command is 'npm'
         expect(spawnCmd).not.toContain('fiori');
         expect(spawnCmd).toContain('npm');
+    });
+
+    // --- CF adaptation projects ---------------------------------------------
+
+    test('CF with dist: starts server via fiori run (no browser) and uses /test/adaptation-editor.html', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        // fiori.cjs binary present AND dist/ present (CF prerequisite met).
+        mockExistsSync.mockImplementation(
+            (p: unknown) => typeof p === 'string' && (p.includes('fiori.cjs') || p.endsWith('dist'))
+        );
+        const child = new FakeChildProcess(500);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+
+        const promise = openAdaptationEditor({ appPath: '/tmp/cfapp' });
+        setImmediate(() => {
+            // ui5-tooling server announces the URL without opening a browser.
+            child.emitLine('Server started');
+            child.emitLine('URL: http://localhost:8080');
+        });
+        const result = await promise;
+
+        expect(result.status).toEqual('Success');
+        expect(result.editorUrl).toBe('http://localhost:8080/test/adaptation-editor.html');
+        // Same launch mechanism as ABAP — no npm script, no --open.
+        expect(mockSpawn).toHaveBeenCalledWith(
+            process.execPath,
+            expect.arrayContaining([expect.stringContaining('fiori.cjs'), 'run', '/test/adaptation-editor.html']),
+            expect.any(Object)
+        );
+    });
+
+    test('CF without dist: fails fast with build guidance and does not spawn', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockReturnValue(false); // no dist/
+
+        const result = await openAdaptationEditor({ appPath: '/tmp/cfapp' });
+
+        expect(result.status).toEqual('Error');
+        expect(result.message).toContain('dist');
+        expect(result.message).toContain('npm run build');
+        expect(mockSpawn).not.toHaveBeenCalled();
+    });
+
+    test('CF timeout message references the CF timeout window (300 seconds)', async () => {
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockImplementation(
+            (p: unknown) => typeof p === 'string' && (p.includes('fiori.cjs') || p.endsWith('dist'))
+        );
+        const child = new FakeChildProcess(501);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+
+        jest.useFakeTimers();
+        const promise = openAdaptationEditor({ appPath: '/tmp/cfapp' });
+        await jest.advanceTimersByTimeAsync(300000);
+        const result = await promise;
+        jest.useRealTimers();
+
+        expect(result.status).toEqual('Error');
+        expect(result.message).toContain('300 seconds');
     });
 });

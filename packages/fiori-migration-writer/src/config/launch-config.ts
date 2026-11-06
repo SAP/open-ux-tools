@@ -8,7 +8,7 @@ import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
-import { ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
 import type { ImportProjectInfo } from '../types.js';
 
 /**

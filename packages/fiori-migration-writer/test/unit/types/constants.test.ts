@@ -1,9 +1,6 @@
 import {
-    ODataVersion,
     DatasourceType,
-    SapUxLayer,
     CapType,
-    ApiHubType,
     SapSystemSourceType,
     neoAppJsonRouteTargetTypes,
     TemplateDataKey,
@@ -11,16 +8,6 @@ import {
 } from '../../../src/types.js';
 
 describe('Constants', () => {
-    describe('ODataVersion', () => {
-        test('should have v2 version', () => {
-            expect(ODataVersion.v2).toBe('2');
-        });
-
-        test('should have v4 version', () => {
-            expect(ODataVersion.v4).toBe('4');
-        });
-    });
-
     describe('DatasourceType', () => {
         test('should have FILE type', () => {
             expect(DatasourceType.FILE).toBe('File');
@@ -51,16 +38,6 @@ describe('Constants', () => {
         });
     });
 
-    describe('SapUxLayer', () => {
-        test('should have VENDOR layer', () => {
-            expect(SapUxLayer.VENDOR).toBe('VENDOR');
-        });
-
-        test('should have CUSTOMER_BASE layer', () => {
-            expect(SapUxLayer.CUSTOMER_BASE).toBe('CUSTOMER_BASE');
-        });
-    });
-
     describe('CapType', () => {
         test('should have NODE_JS type', () => {
             expect(CapType.NODE_JS).toBe('Node.js');
@@ -68,16 +45,6 @@ describe('Constants', () => {
 
         test('should have JAVA type', () => {
             expect(CapType.JAVA).toBe('Java');
-        });
-    });
-
-    describe('ApiHubType', () => {
-        test('should have apiHub type', () => {
-            expect(ApiHubType.apiHub).toBe('API_HUB');
-        });
-
-        test('should have apiHubEnterprise type', () => {
-            expect(ApiHubType.apiHubEnterprise).toBe('API_HUB_ENTERPRISE');
         });
     });
 

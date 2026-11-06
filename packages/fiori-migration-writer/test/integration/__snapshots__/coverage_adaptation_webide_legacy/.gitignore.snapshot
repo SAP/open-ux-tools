@@ -4,6 +4,9 @@ exports[`Migration Integration Tests Adaptation Projects Coverage should migrate
 "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip"
 `;

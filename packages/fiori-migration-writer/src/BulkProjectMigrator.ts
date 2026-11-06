@@ -3,6 +3,7 @@ import { ProjectMigrator } from './ProjectMigrator.js';
 import { URI } from 'vscode-uri';
 import { i18nText } from './i18n.js';
 import { createMemFsEditor } from './utils/fs-adapter.js';
+import { commitFileSystemChanges } from './files/file-system.js';
 
 // Telemetry stub - @sap-ux/telemetry is an optional dependency for performance measurement
 // This provides a no-op implementation for open-source usage
@@ -24,7 +25,7 @@ export class BulkProjectMigrator {
      */
     public async migrate(
         projects: MigrationUIProjectInfo[],
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl?: string,
         vscode?: any,
         internalToggle: boolean = false
     ): Promise<MigrationUIProjectInfo[]> {
@@ -58,7 +59,7 @@ export class BulkProjectMigrator {
     private async migrateProject(
         project: MigrationUIProjectInfo,
         index: number,
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl: string | undefined,
         vscode: any,
         internalToggle: boolean
     ): Promise<MigrationUIProjectInfo> {
@@ -80,7 +81,7 @@ export class BulkProjectMigrator {
         // Commit changes to disk for this project
         if (result) {
             try {
-                await fs.commit();
+                await commitFileSystemChanges(fs);
             } catch (error) {
                 // Handle both callback errors and synchronous throws from fs.commit
                 throw new Error(

@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 3.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Features
+
+- Add a new LinkingTo icon to UiIcons [[28edb94](https://github.com/SAP/open-ux-tools/commit/28edb94c6324bc2526374f7dfc4ddeb6e194038a)]
+
+## 3.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Bug Fixes
+
+- Avoid double padding in UITooltip callout [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
 ## 3.0.20
 
 ### Patch Changes

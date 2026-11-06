@@ -1,5 +1,37 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.50
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[28edb94](https://github.com/SAP/open-ux-tools/commit/28edb94c6324bc2526374f7dfc4ddeb6e194038a)]
+
+## 1.0.49
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
+## 1.0.48
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[da67944](https://github.com/SAP/open-ux-tools/commit/da6794455b7a46311c194dbe659fd6cd74344282)]
+
 ## 1.0.47
 
 ### Patch Changes

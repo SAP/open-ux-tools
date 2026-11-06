@@ -10,7 +10,7 @@ import { FioriElementsVersion } from '../project-spec-types.js';
 import { propertyEditorTaskProjectTypes, isGenerateIndex } from '../utils/common.js';
 import { determineSapUxLayer } from '../utils/migration-utils.js';
 import { MigrationTypes } from '../utils/constants.js';
-import { ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
 import type {
     PackageJsonMigrate,
     ImportProjectInfo,
