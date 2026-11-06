@@ -73,7 +73,7 @@ before inserting):
 | FilterBar | ✅ | ❌ | ✅ | ❌ | ✅ |
 | Field | ❌ | ✅ | ❌ | ❌ | ✅ |
 | Form | ❌ | ✅ | ❌ | ❌ | ✅ |
-| Rich Text Editor | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Rich Text Editor | ❌ | ✅ | ❌ | ❌ | ✅ (fragment only) |
 
 If the requested building block is not supported on the target page type, tell the user instead of inserting it.
 

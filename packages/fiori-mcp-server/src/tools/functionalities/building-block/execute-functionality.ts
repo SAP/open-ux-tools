@@ -101,11 +101,15 @@ export async function executeFunctionality(input: ExecuteFunctionalityInput): Pr
         }
     }
 
+    // Collect modified-file paths before committing — dump() returns every file that touched the store,
+    // including files only read by createIdGenerator. Filtering to state === 'modified' isolates writes.
+    const changes = Object.entries(fs.dump())
+        .filter(([, file]) => (file as unknown as { state?: string }).state === 'modified')
+        .map(([path]) => path);
+
     await new Promise<void>((resolve, reject) => {
         fs.commit((err?: Error | null) => (err ? reject(err) : resolve()));
     });
-
-    const changes = Object.keys(fs.dump());
 
     logger.info(`[add_building_block] executeFunctionality basePath="${basePath}" changes=${changes.length}`);
 

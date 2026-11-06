@@ -19,7 +19,10 @@ export function buildBuildingBlockSchema() {
     const baseSchema = (type: BuildingBlockType): BuildingBlockMemberSchema =>
         zod.looseObject({
             buildingBlockType: zod.literal(type),
-            id: zod.string().optional(),
+            id: zod
+                .string()
+                .regex(/^[A-Za-z_][\w.-]*$/, 'Must be a valid XML ID')
+                .optional(),
             metaPath: zod.string().optional(),
             contextPath: zod.string().optional()
         });
@@ -28,22 +31,41 @@ export function buildBuildingBlockSchema() {
     // surfaced in the JSON Schema so the LLM knows to provide them.
     const customColumn = zod.looseObject({
         buildingBlockType: zod.literal(BuildingBlockType.CustomColumn),
-        id: zod.string().optional(),
+        id: zod
+            .string()
+            .regex(/^[A-Za-z_][\w.-]*$/, 'Must be a valid XML ID')
+            .optional(),
         metaPath: zod.string().optional(),
         contextPath: zod.string().optional(),
         header: zod.string().describe('Column header label shown in the table.')
     });
     const customFilterField = zod.looseObject({
         buildingBlockType: zod.literal(BuildingBlockType.CustomFilterField),
-        id: zod.string().optional(),
+        id: zod
+            .string()
+            .regex(/^[A-Za-z_][\w.-]*$/, 'Must be a valid XML ID')
+            .optional(),
         metaPath: zod.string().optional(),
         contextPath: zod.string().optional(),
         label: zod.string().describe('Label shown for the filter field.'),
         property: zod.string().describe('The entity property this filter field filters on.')
     });
+    const customFormField = zod.looseObject({
+        buildingBlockType: zod.literal(BuildingBlockType.CustomFormField),
+        id: zod
+            .string()
+            .regex(/^[A-Za-z_][\w.-]*$/, 'Must be a valid XML ID')
+            .optional(),
+        metaPath: zod.string().optional(),
+        contextPath: zod.string().optional(),
+        property: zod.string().describe('The entity property path this form field displays.')
+    });
     const action = zod.looseObject({
         buildingBlockType: zod.literal(BuildingBlockType.Action),
-        id: zod.string().optional(),
+        id: zod
+            .string()
+            .regex(/^[A-Za-z_][\w.-]*$/, 'Must be a valid XML ID')
+            .optional(),
         metaPath: zod.string().optional(),
         contextPath: zod.string().optional(),
         key: zod.string().describe('Unique key identifying the action within the table actions aggregation.'),
@@ -67,7 +89,7 @@ export function buildBuildingBlockSchema() {
         [BuildingBlockType.Page]: baseSchema(BuildingBlockType.Page),
         [BuildingBlockType.RichTextEditor]: baseSchema(BuildingBlockType.RichTextEditor),
         [BuildingBlockType.RichTextEditorButtonGroups]: baseSchema(BuildingBlockType.RichTextEditorButtonGroups),
-        [BuildingBlockType.CustomFormField]: baseSchema(BuildingBlockType.CustomFormField),
+        [BuildingBlockType.CustomFormField]: customFormField,
         [BuildingBlockType.CustomColumn]: customColumn,
         [BuildingBlockType.CustomFilterField]: customFilterField,
         [BuildingBlockType.Action]: action

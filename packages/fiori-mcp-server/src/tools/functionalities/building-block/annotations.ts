@@ -53,7 +53,9 @@ function entitySetFromMetaPath(metaPath: string | undefined): string | undefined
         return undefined;
     }
     const segment = metaPath.slice(0, atIndex).replace(/^\//, '');
-    return segment || undefined;
+    // Take only the last path segment: "SalesOrder/to_Items" → "to_Items".
+    const lastSegment = segment.split('/').at(-1) ?? segment;
+    return lastSegment || undefined;
 }
 
 /**
@@ -79,14 +81,17 @@ function qualifierFromMetaPath(metaPath: string | undefined): string {
  * @param rawSchema - Raw schema returned by `annotationService.getSchema()`
  * @returns Fully qualified OData type name to use as the annotation target
  */
-function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema): string {
+function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema, contextEntitySetName?: string): string {
     const directMatch = rawSchema.schema.entitySets.find((es) => es.name === entitySetName);
     if (directMatch) {
         return directMatch.entityTypeName ?? directMatch.fullyQualifiedName ?? entitySetName;
     }
 
     const convertedSchema = convert(rawSchema as unknown as Parameters<typeof convert>[0]);
-    const navTarget = convertedSchema.entitySets
+    const searchEntities = contextEntitySetName
+        ? convertedSchema.entitySets.filter((es) => es.name === contextEntitySetName)
+        : convertedSchema.entitySets;
+    const navTarget = searchEntities
         .flatMap((es) => es.entityType.navigationProperties)
         .find((nav) => nav.name === entitySetName);
     // The target is the navigation's target entity type FQN. Use targetType.fullyQualifiedName directly rather than
@@ -157,6 +162,11 @@ function annotationExists(rawSchema: RawSchema, target: string, term: string, qu
  * @param appId - Application identifier
  * @param fs - Shared mem-fs editor instance (written, not committed, here)
  * @returns Count of shells written and whether the attempt failed
+ *
+ * **Partial-write risk:** `annotationService.save()` may write XML into the shared `fs` before
+ * throwing. The catch block returns `{ failed: true }`, but any partial XML already in `fs`
+ * will be committed by the caller. There is no rollback path; the `annotationWarning` surfaced
+ * to the user advises adding the annotation manually.
  */
 export async function writeAnnotationShell(
     buildingBlockData: AnnotationShellInput,
@@ -199,7 +209,12 @@ export async function writeAnnotationShell(
         await annotationService.sync();
 
         const rawSchema = annotationService.getSchema() as unknown as RawSchema;
-        const fullyQualifiedTarget = resolveAnnotationTarget(entitySetName, rawSchema);
+        if (!rawSchema?.schema?.entitySets || !rawSchema?.schema?.annotations) {
+            logger.warn('[add_building_block] annotation shell: unexpected schema shape from getSchema(), skipping');
+            return { written: 0, failed: true };
+        }
+        const contextEntitySetName = contextPath ? entitySetFromContextPath(contextPath) : undefined;
+        const fullyQualifiedTarget = resolveAnnotationTarget(entitySetName, rawSchema, contextEntitySetName);
 
         if (annotationExists(rawSchema, fullyQualifiedTarget, term, qualifier)) {
             logger.info(`[add_building_block] annotation shell: ${term}${qualifierSuffix} already exists, skipping`);

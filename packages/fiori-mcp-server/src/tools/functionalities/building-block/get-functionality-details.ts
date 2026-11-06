@@ -68,7 +68,8 @@ const ACTION_HANDLER_GUIDE =
     'Action handler options: ' +
     '(1) New handler file, new function — set embeddedAction.eventHandler to { fileName: "MyHandler", fnName: "myFn" }. The tool creates the file automatically. ' +
     '(2) Existing handler file, new function — set embeddedAction.name to the existing file and embeddedAction.eventHandler to { fileName: "ExistingFile", fnName: "newFn" }. ' +
-    'The tool wires the XML but does NOT append the function to the existing file. After execute_functionality, append the new function to the handler .js file. ' +
+    'The tool wires the XML but does NOT append the function to the existing file. After execute_functionality, you MUST manually append the new function to the handler .js file — ' +
+    'this is the only case where manual handler editing is required; the "Do NOT create handler files manually" rule in the fragment guide does not apply to Action case (2). ' +
     '(3) Existing handler file, existing function — set embeddedAction.name to the existing file and embeddedAction.eventHandler to { fileName: "ExistingFile", fnName: "existingFn" }. ' +
     'The function already exists — no file editing needed.';
 
@@ -174,13 +175,12 @@ function formatInsertionPointsNote(fileXPathMap: FileXPathEntry[], viewFiles: st
         return (
             'Available insertion points (viewOrFragmentPath → aggregationPath options):\n' +
             fileXPathMap
-                .map(
-                    ({ file, xpaths }) =>
-                        `  ${file}:\n${xpaths
-                            .slice(0, 10)
-                            .map((x) => `    - ${x}`)
-                            .join('\n')}`
-                )
+                .map(({ file, xpaths }) => {
+                    const displayed = xpaths.slice(0, 10);
+                    const truncationNote =
+                        xpaths.length > 10 ? `\n    ... (${xpaths.length - 10} more XPaths not shown)` : '';
+                    return `  ${file}:\n${displayed.map((x) => `    - ${x}`).join('\n')}${truncationNote}`;
+                })
                 .join('\n') +
             '\nUse these relative paths as viewOrFragmentPath and one of the listed XPaths as aggregationPath. Do NOT read any files or list directories.'
         );

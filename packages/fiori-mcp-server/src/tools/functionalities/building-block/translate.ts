@@ -122,11 +122,12 @@ export function resolveAggregationChildDefaults(
     const titleOrLabel = (bbData['title'] ?? bbData['label'] ?? bbData['text']) as string | undefined;
     const derivedKey = titleOrLabel ? titleOrLabel.trim().toLowerCase().replace(/\s+/g, '-') : uniqueId;
 
+    const keyDefaults: Record<string, unknown> = {};
     if (bbType === BuildingBlockType.CustomColumn && !bbData['columnKey']) {
-        bbData['columnKey'] = derivedKey;
+        keyDefaults['columnKey'] = derivedKey;
     }
     if (bbType === BuildingBlockType.CustomFilterField && !bbData['filterFieldKey']) {
-        bbData['filterFieldKey'] = derivedKey;
+        keyDefaults['filterFieldKey'] = derivedKey;
     }
 
     const existingEmbededFragment = bbData['embededFragment'] as Record<string, unknown> | undefined;
@@ -140,7 +141,9 @@ export function resolveAggregationChildDefaults(
         string | undefined;
     const fragmentName = (explicitFragmentName ??
         bbData['columnKey'] ??
+        keyDefaults['columnKey'] ??
         bbData['filterFieldKey'] ??
+        keyDefaults['filterFieldKey'] ??
         bbData['actionKey'] ??
         derivedKey) as string;
 
@@ -149,9 +152,10 @@ export function resolveAggregationChildDefaults(
 
     return {
         ...bbData,
-        // Always use the derived kebab-case key as the id for aggregation children — the LLM
-        // reuses generic values like "custom-filter-field" across calls, causing duplicate ids.
-        id: derivedKey,
+        ...keyDefaults,
+        // Prefer an explicit LLM-supplied id; fall back to the derived key so repeated adds
+        // get meaningful, unique ids (e.g. the label-derived key is predictable for anchors).
+        id: (bbData['id'] as string | undefined) ?? derivedKey,
         ...(generateId && { generateId }),
         // Default to After placement — CustomColumn accesses position unconditionally with a non-null assertion.
         position: bbData['position'] ?? { placement: 'After' },
