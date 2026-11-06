@@ -243,14 +243,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "popinLayout",
-    ],
-  },
-  Object {
     "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
     "functionalityId": Array [
       "TravelList",
@@ -303,14 +295,6 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Leading property that decides between either a recursive hierarchy or data aggregation.",
-    "functionalityId": Array [
-      "TravelList",
-      "table",
-      "hierarchyQualifier",
-    ],
-  },
-  Object {
     "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
     "functionalityId": Array [
       "TravelList",
@@ -332,6 +316,14 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "TravelList",
       "table",
       "enableMassEdit",
+    ],
+  },
+  Object {
+    "description": "Defines the layout options of the table popins. A popin layout defined at the table level takes precedence over a popin layout defined at the application level.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "popinLayout",
     ],
   },
   Object {
@@ -364,6 +356,14 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
       "table",
       "personalization",
       "filter",
+    ],
+  },
+  Object {
+    "description": "Defines whether the user can group data of a given table.",
+    "functionalityId": Array [
+      "table",
+      "personalization",
+      "group",
     ],
   },
   Object {
@@ -688,6 +688,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::TravelID",
+      "settings",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -719,6 +729,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::AgencyID",
       "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::AgencyID",
+      "settings",
     ],
   },
   Object {
@@ -756,6 +776,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::CustomerID",
+      "settings",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -787,6 +817,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::BeginDate",
       "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::BeginDate",
+      "settings",
     ],
   },
   Object {
@@ -824,6 +864,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::EndDate",
+      "settings",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -858,6 +908,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
     ],
   },
   Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::TotalPrice",
+      "settings",
+    ],
+  },
+  Object {
     "description": "A string type that represents CSS size values.
 Refer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
     "functionalityId": Array [
@@ -889,6 +949,16 @@ Hidden: the column is neither available in the table nor in adaptation.",
       "columns",
       "DataField::TravelStatus",
       "widthIncludingColumnHeader",
+    ],
+  },
+  Object {
+    "description": "Manifest-only settings for the column.",
+    "functionalityId": Array [
+      "TravelList",
+      "table",
+      "columns",
+      "DataField::TravelStatus",
+      "settings",
     ],
   },
   Object {
