@@ -119,6 +119,36 @@ describe('migrate telemetry', () => {
             }
         });
 
+        test('stops sending further events after a timeout', async () => {
+            jest.useFakeTimers();
+            try {
+                await initCliTelemetry('1.0.0');
+                mockReportEventBlocking.mockReturnValue(new Promise(() => undefined));
+
+                const first = trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD);
+                await jest.advanceTimersByTimeAsync(3000);
+                await first;
+                await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
+
+                expect(mockReportEventBlocking).toHaveBeenCalledTimes(1);
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        test('stops sending further events after a failure and resumes after re-initialization', async () => {
+            await initCliTelemetry('1.0.0');
+            mockReportEventBlocking.mockRejectedValueOnce(new Error('offline'));
+
+            await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD);
+            await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
+            expect(mockReportEventBlocking).toHaveBeenCalledTimes(1);
+
+            await initCliTelemetry('1.0.0');
+            await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
+            expect(mockReportEventBlocking).toHaveBeenCalledTimes(2);
+        });
+
         test('never throws when sending fails', async () => {
             await initCliTelemetry('1.0.0');
             mockReportEventBlocking.mockRejectedValue(new Error('offline'));

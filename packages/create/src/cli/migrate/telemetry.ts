@@ -27,7 +27,7 @@ export const TELEMETRY_SOURCE = 'CLI';
 const CONSUMER_MODULE_NAME = '@sap-ux/create';
 // Replaced with the real key when the module is built for release
 const RESOURCE_ID = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
-// Upper bound for sending an event, so an unreachable backend never blocks the CLI
+// Upper bound for sending an event, so an unreachable backend never blocks the CLI for long
 const SEND_TIMEOUT_MS = 3000;
 
 const REDACTED = '<redacted>';
@@ -37,6 +37,8 @@ const MAX_MESSAGES_LENGTH = 500;
 export type SystemResolvedVia = 'cliOption' | 'savedSystem' | 'basDestination' | 'prompt';
 
 let telemetryEnabled = false;
+// Set when sending fails or times out, so an unreachable backend delays the CLI at most once per run
+let sendingFailed = false;
 
 /**
  * Initialize the shared Fiori tools telemetry settings. Failures never affect the CLI.
@@ -44,6 +46,7 @@ let telemetryEnabled = false;
  * @param version - version of the create module
  */
 export async function initCliTelemetry(version: string): Promise<void> {
+    sendingFailed = false;
     try {
         await initTelemetrySettings({
             consumerModule: { name: CONSUMER_MODULE_NAME, version },
@@ -74,22 +77,28 @@ export async function trackMigrateEvent(
     ms?: number,
     appPath?: string
 ): Promise<void> {
-    if (!telemetryEnabled) {
+    if (!telemetryEnabled || sendingFailed) {
         return;
     }
     let timer: NodeJS.Timeout | undefined;
     try {
-        const timeout = new Promise<void>((resolve) => {
-            timer = setTimeout(resolve, SEND_TIMEOUT_MS);
+        const timeout = new Promise<'timeout'>((resolve) => {
+            timer = setTimeout(() => resolve('timeout'), SEND_TIMEOUT_MS);
         });
         const eventProperties: TelemetryProperties = { ...properties, source: TELEMETRY_SOURCE };
-        const send = ClientFactory.getTelemetryClient().reportEventBlocking(
-            { eventName, properties: eventProperties, measurements: ms === undefined ? {} : { ms } },
-            SampleRate.NoSampling,
-            appPath ? { appPath } : undefined
-        );
-        await Promise.race([send, timeout]);
+        const send = ClientFactory.getTelemetryClient()
+            .reportEventBlocking(
+                { eventName, properties: eventProperties, measurements: ms === undefined ? {} : { ms } },
+                SampleRate.NoSampling,
+                appPath ? { appPath } : undefined
+            )
+            .then(() => 'sent' as const);
+        if ((await Promise.race([send, timeout])) === 'timeout') {
+            sendingFailed = true;
+            getLogger().debug(`Telemetry event ${eventName} timed out, no further events are sent`);
+        }
     } catch (error) {
+        sendingFailed = true;
         getLogger().debug(`Unable to send telemetry event ${eventName}: ${(error as Error).message}`);
     } finally {
         clearTimeout(timer);
