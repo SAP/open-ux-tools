@@ -5,6 +5,19 @@ import { isLoopbackHost } from './origin.js';
 // login page instead of serving the app, in which case UI5 never bootstraps.
 // These helpers let the browser driver tell "slow but valid app" apart from "needs interactive login".
 
+/**
+ * The UI5 loader surface on the editor page's `window`. `sap.ui.require` present
+ * means UI5 has bootstrapped; its array+callback form (`require([mod], cb, errback)`)
+ * loads a module and resolves `cb`.
+ */
+export interface Ui5LoaderWindow {
+    sap?: {
+        ui?: {
+            require?: (deps: string[], cb: (api: unknown) => void, errback: (err: unknown) => void) => void;
+        };
+    };
+}
+
 /** Bounded probe for the UI5 loader: generous for a valid app, far below the 60 s action timeout. */
 const UI5_LOADED_PROBE_MS = 8000;
 
@@ -90,12 +103,9 @@ async function resolveFrame(page: Page, frameId: string | undefined): Promise<Fr
 export async function probeUi5Loaded(page: Page, frameId?: string): Promise<boolean> {
     const target: Page | Frame = (await resolveFrame(page, frameId)) ?? page;
     try {
-        await target.waitForFunction(
-            /* istanbul ignore next -- predicate runs in the browser page, not Node */
-            () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
-            undefined,
-            { timeout: UI5_LOADED_PROBE_MS }
-        );
+        await target.waitForFunction(() => !!(window as unknown as Ui5LoaderWindow).sap?.ui?.require, undefined, {
+            timeout: UI5_LOADED_PROBE_MS
+        });
         return true;
     } catch {
         return false;

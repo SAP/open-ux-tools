@@ -754,6 +754,105 @@ describe('browser/playwright-bridge', () => {
         });
     });
 
+    describe('runActionInPage', () => {
+        // runActionInPage runs in the browser page in production (Playwright serializes
+        // its source). It reads window.sap.ui.require, so Node tests stub a `window`
+        // global with a fake require. This exercises the require wiring, the
+        // missing-loader / missing-method throws, and the in-page serialization path.
+        type FakeRequire = (deps: string[], cb: (api: unknown) => void, errback: (err: unknown) => void) => void;
+
+        /** Installs a `window.sap.ui.require` global (or omits `require` when `undefined`), restoring it after. */
+        function withWindow(require: FakeRequire | undefined, run: () => Promise<void> | void): Promise<void> | void {
+            const g = globalThis as unknown as { window?: unknown };
+            const had = 'window' in g;
+            const prev = g.window;
+            g.window = { sap: { ui: require ? { require } : {} } };
+            const restore = (): void => {
+                if (had) {
+                    g.window = prev;
+                } else {
+                    delete g.window;
+                }
+            };
+            try {
+                const result = run();
+                if (result instanceof Promise) {
+                    return result.finally(restore);
+                }
+                restore();
+                return result;
+            } catch (error) {
+                restore();
+                throw error;
+            }
+        }
+
+        /** A require that resolves module `mod` to `api`, or errbacks when `api` is absent. */
+        const requireResolving =
+            (registry: Record<string, Record<string, unknown>>): FakeRequire =>
+            (deps, cb, errback) => {
+                const api = registry[deps[0]];
+                if (api) {
+                    cb(api);
+                } else {
+                    errback(new Error(`module not found: ${deps[0]}`));
+                }
+            };
+
+        test('requires the module, calls the method, and returns the JSON-serialized result', async () => {
+            const fs = await loadPlaywrightBridge();
+            const tree = { id: 'root', type: 'sap.m.Page', children: [{ id: 'go' }] };
+            const describeUI = jest.fn(async () => tree);
+            await withWindow(requireResolving({ 'ui5/ActionHelpers': { describeUI } }), async () => {
+                const out = await fs.runActionInPage({
+                    mod: 'ui5/ActionHelpers',
+                    fn: 'describeUI',
+                    p: { includedProperties: ['id'] }
+                });
+                expect(JSON.parse(out)).toEqual(tree);
+                expect(describeUI).toHaveBeenCalledWith({ includedProperties: ['id'] });
+            });
+        });
+
+        test('serializes a result with a circular reference without throwing', async () => {
+            const fs = await loadPlaywrightBridge();
+            const node: Record<string, unknown> = { id: 'a' };
+            node.self = node;
+            const api = { describeUI: async () => node };
+            await withWindow(requireResolving({ m: api }), async () => {
+                const out = await fs.runActionInPage({ mod: 'm', fn: 'describeUI', p: {} });
+                expect(JSON.parse(out)).toEqual({ id: 'a', self: '[Circular]' });
+            });
+        });
+
+        test('throws when sap.ui.require is not available on the page', async () => {
+            const fs = await loadPlaywrightBridge();
+            await withWindow(undefined, async () => {
+                await expect(fs.runActionInPage({ mod: 'm', fn: 'f', p: {} })).rejects.toThrow(
+                    'sap.ui.require is not available on the page'
+                );
+            });
+        });
+
+        test('throws a TypeError when the required module has no such method', async () => {
+            const fs = await loadPlaywrightBridge();
+            await withWindow(requireResolving({ m: { other: () => undefined } }), async () => {
+                await expect(fs.runActionInPage({ mod: 'm', fn: 'missing', p: {} })).rejects.toThrow(
+                    'Frontend action "missing" is not available on m'
+                );
+            });
+        });
+
+        test('rejects when the loader errbacks (module cannot be resolved)', async () => {
+            const fs = await loadPlaywrightBridge();
+            await withWindow(requireResolving({}), async () => {
+                await expect(fs.runActionInPage({ mod: 'nope', fn: 'f', p: {} })).rejects.toThrow(
+                    'module not found: nope'
+                );
+            });
+        });
+    });
+
     // --- B1 (persistent session) + B2 (login-aware start) --------------------
 
     const CF_SITE = 'http://localhost:8083/local/editor.html';

@@ -8,7 +8,8 @@ import {
     LOGIN_WAIT_MESSAGE,
     probeUi5Loaded,
     waitForLogin,
-    type NeedsUserActionPayload
+    type NeedsUserActionPayload,
+    type Ui5LoaderWindow
 } from './login-page.js';
 import { originKey } from './origin.js';
 import { buildContextOptions, forgetSite, persistSessionState } from './session.js';
@@ -164,6 +165,54 @@ export function stringifyWithCircularGuard(value: unknown): string {
 }
 
 /**
+ * Requires UI5 module `mod` in the page, calls its `fn` method with `p`, and returns
+ * the result as a JSON string. Runs in-browser (Playwright serializes its source), so
+ * it reads `window.sap.ui.require` and stays self-contained — it re-inlines the
+ * circular-safe stringify (cf. {@link stringifyWithCircularGuard}) because the page
+ * can't see module bindings, and serializes in-page to dodge Playwright's CDP
+ * reference-chain limit on large UI trees. Exported so Node tests can exercise it by
+ * stubbing `window.sap.ui.require`.
+ *
+ * @param args The module path, method name, and payload.
+ * @param args.mod The AMD module path to require.
+ * @param args.fn The method name to call on the required module.
+ * @param args.p The payload forwarded to the method.
+ * @returns The JSON string of the action's raw result.
+ */
+export async function runActionInPage({
+    mod,
+    fn,
+    p
+}: {
+    mod: string;
+    fn: string;
+    p: Record<string, unknown>;
+}): Promise<string> {
+    const require = (window as unknown as Ui5LoaderWindow).sap?.ui?.require;
+    if (!require) {
+        throw new Error('sap.ui.require is not available on the page');
+    }
+    const api = await new Promise<Record<string, unknown>>((resolve, reject) => {
+        require([mod], (loaded) => resolve(loaded as Record<string, unknown>), reject);
+    });
+    const fnImpl = api[fn];
+    if (typeof fnImpl !== 'function') {
+        throw new TypeError(`Frontend action "${fn}" is not available on ${mod}`);
+    }
+    const raw = await (fnImpl as (arg: unknown) => unknown).call(api, p);
+    const seen = new WeakSet<object>();
+    return JSON.stringify(raw, (_key: string, value: unknown) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return '[Circular]';
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+}
+
+/**
  * Wraps a Playwright `Page` in an RPC handle that invokes frontend actions by
  * `sap.ui.require`-ing the implementing module on the page and calling the
  * method directly.
@@ -213,65 +262,14 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
         // Wait up to 60 s for the UI5 loader (`sap.ui.require`) to be present; RTA
         // needs time to start before the implementing modules can be required.
         await (executionContext as Page | Frame).waitForFunction(
-            /* istanbul ignore next -- predicate runs in the browser page, not Node */
-            () => !!(window as unknown as { sap?: { ui?: { require?: unknown } } }).sap?.ui?.require,
+            () => !!(window as unknown as Ui5LoaderWindow).sap?.ui?.require,
             undefined,
             { timeout: 60000 }
         );
 
         let serialized: string;
         try {
-            serialized = await executionContext.evaluate(
-                /* istanbul ignore next -- runs in the browser page, not Node; Playwright
-                   serializes this closure's source and executes it there, so Node-side
-                   coverage never observes it. The serialization logic it inlines is the
-                   same as the unit-tested stringifyWithCircularGuard above. */
-                async ({ mod, fn, p }: { mod: string; fn: string; p: Record<string, unknown> }) => {
-                    const require = (
-                        window as unknown as {
-                            sap?: {
-                                ui?: {
-                                    require?: (
-                                        deps: string[],
-                                        cb: (api: unknown) => void,
-                                        errback: (err: unknown) => void
-                                    ) => void;
-                                };
-                            };
-                        }
-                    ).sap?.ui?.require;
-                    if (!require) {
-                        throw new Error('sap.ui.require is not available on the page');
-                    }
-                    const api = await new Promise<Record<string, unknown>>((resolve, reject) => {
-                        require([mod], (loaded) => resolve(loaded as Record<string, unknown>), reject);
-                    });
-                    const fnImpl = api[fn];
-                    if (typeof fnImpl !== 'function') {
-                        throw new TypeError(`Frontend action "${fn}" is not available on ${mod}`);
-                    }
-                    const raw = await (fnImpl as (arg: unknown) => unknown).call(api, p);
-                    // Serialize INSIDE the page and return a string, never the raw object.
-                    // Playwright's CDP serializer deep-clones an evaluate() return value by
-                    // value, and a large Fiori Elements UI tree (e.g. describeUI on an Object
-                    // Page) overruns its reference-chain depth limit — "Cannot serialize
-                    // result: object reference chain is too long". JSON.stringify has no such
-                    // limit; a circular-reference-safe replacer keeps it from throwing on the
-                    // rare self-referential graph (writing "[Circular]" instead). Node parses
-                    // it back before normalization.
-                    const seen = new WeakSet<object>();
-                    return JSON.stringify(raw, (_key: string, value: unknown) => {
-                        if (typeof value === 'object' && value !== null) {
-                            if (seen.has(value)) {
-                                return '[Circular]';
-                            }
-                            seen.add(value);
-                        }
-                        return value;
-                    });
-                },
-                { mod: module, fn: method, p: payload }
-            );
+            serialized = await executionContext.evaluate(runActionInPage, { mod: module, fn: method, p: payload });
         } catch (error) {
             // Any failure from the page (module not loaded, method missing, require
             // unavailable, or the action throwing) is returned as a failure envelope so
