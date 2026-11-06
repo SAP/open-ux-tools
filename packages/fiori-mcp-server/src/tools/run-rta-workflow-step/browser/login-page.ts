@@ -1,22 +1,10 @@
 import { type Frame, type Page } from 'playwright-core';
 import { isLoopbackHost } from './origin.js';
+import type { Ui5LoaderWindow } from './frontend-actions.js';
 
 // Backend login / IdP page detection. A CF editor URL may redirect to an XSUAA
 // login page instead of serving the app, in which case UI5 never bootstraps.
 // These helpers let the browser driver tell "slow but valid app" apart from "needs interactive login".
-
-/**
- * The UI5 loader surface on the editor page's `window`. `sap.ui.require` present
- * means UI5 has bootstrapped; its array+callback form (`require([mod], cb, errback)`)
- * loads a module and resolves `cb`.
- */
-export interface Ui5LoaderWindow {
-    sap?: {
-        ui?: {
-            require?: (deps: string[], cb: (api: unknown) => void, errback: (err: unknown) => void) => void;
-        };
-    };
-}
 
 /** Bounded probe for the UI5 loader: generous for a valid app, far below the 60 s action timeout. */
 const UI5_LOADED_PROBE_MS = 8000;
