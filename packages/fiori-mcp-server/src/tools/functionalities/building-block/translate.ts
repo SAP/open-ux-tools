@@ -2,6 +2,16 @@ import { BuildingBlockType } from '@sap-ux/fe-fpm-writer';
 import type { IdGeneratorFunction } from '@sap-ux/fe-fpm-writer';
 import { AGGREGATION_CHILD_TYPES } from './utils.js';
 
+/**
+ * Removes path-traversal characters so LLM-derived names are safe as file path segments.
+ *
+ * @param name - Raw name that may contain path separators or `..` sequences
+ * @returns Sanitized name with `..` and `/`/`\` removed
+ */
+function sanitizeFileName(name: string): string {
+    return name.replace(/\.\./g, '').replace(/[/\\]/g, '');
+}
+
 /** BB types that wrap flat anchor/placement into a nested position object. */
 const POSITION_WRAP_TYPES = new Set<BuildingBlockType>([
     BuildingBlockType.CustomColumn,
@@ -142,13 +152,15 @@ export function resolveAggregationChildDefaults(
     // producing e.g. "HeaderNewEvent.js" even when the fragment is called "FragmentNameEvent".
     const explicitFragmentName = (existingEmbededFragment?.['name'] ?? existingEmbeddedAction?.['name']) as
         string | undefined;
-    const fragmentName = (explicitFragmentName ??
-        bbData['columnKey'] ??
-        keyDefaults['columnKey'] ??
-        bbData['filterFieldKey'] ??
-        keyDefaults['filterFieldKey'] ??
-        bbData['actionKey'] ??
-        derivedKey) as string;
+    const fragmentName = sanitizeFileName(
+        (explicitFragmentName ??
+            bbData['columnKey'] ??
+            keyDefaults['columnKey'] ??
+            bbData['filterFieldKey'] ??
+            keyDefaults['filterFieldKey'] ??
+            bbData['actionKey'] ??
+            derivedKey) as string
+    );
 
     // Expand eventHandler: true → { fileName } so fe-fpm-writer generates the handler file.
     const resolveHandler = (handler: unknown): unknown => (handler === true ? { fileName: fragmentName } : handler);
