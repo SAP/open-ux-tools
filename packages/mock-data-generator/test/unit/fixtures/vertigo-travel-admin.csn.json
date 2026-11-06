@@ -1,0 +1,1040 @@
+{
+    "$source": "CSN of AdminService compiled from https://github.com/SAP-samples/btp-generative-ai-hub-use-cases (commit 023037864e301a576038de2b781b90d164812d9f). License: Apache-2.0. Definitions unmodified.",
+    "definitions": {
+        "Result": {
+            "kind": "type",
+            "elements": {
+                "type": {
+                    "type": "cds.String"
+                },
+                "route": {
+                    "type": "cds.String"
+                },
+                "replyMessage": {
+                    "type": "cds.String"
+                }
+            }
+        },
+        "GenAIOutput": {
+            "kind": "type",
+            "elements": {
+                "redditPostID": {
+                    "type": "cds.String"
+                },
+                "author": {
+                    "type": "cds.String"
+                },
+                "category": {
+                    "type": "cds.String"
+                },
+                "priority": {
+                    "type": "cds.String"
+                },
+                "summary": {
+                    "type": "cds.String"
+                },
+                "description": {
+                    "type": "cds.String"
+                },
+                "address": {
+                    "type": "cds.String"
+                },
+                "location": {
+                    "type": "cds.String"
+                },
+                "sentiment": {
+                    "type": "cds.String"
+                },
+                "date": {
+                    "type": "cds.String"
+                },
+                "time": {
+                    "type": "cds.String"
+                },
+                "longText": {
+                    "type": "cds.String"
+                },
+                "maintenanceNotificationID": {
+                    "type": "cds.String"
+                },
+                "ID": {
+                    "type": "cds.String"
+                },
+                "processor": {
+                    "type": "cds.String"
+                },
+                "decision": {
+                    "type": "cds.String"
+                }
+            }
+        },
+        "BusinessPartner": {
+            "kind": "type",
+            "elements": {
+                "businessPartnerID": {
+                    "type": "cds.String"
+                },
+                "firstName": {
+                    "type": "cds.String"
+                },
+                "lastName": {
+                    "type": "cds.String"
+                },
+                "email": {
+                    "type": "cds.String"
+                }
+            }
+        },
+        "SalesOrder": {
+            "kind": "type",
+            "elements": {
+                "BusinessPartnerID": {
+                    "type": "cds.String"
+                },
+                "DepositAmount": {
+                    "type": "cds.String"
+                },
+                "SalesOrderID": {
+                    "type": "cds.String"
+                },
+                "MaterialID": {
+                    "type": "cds.String"
+                },
+                "ConditionRateValue": {
+                    "type": "cds.String"
+                }
+            }
+        },
+        "TravelerService": {
+            "kind": "service",
+            "@path": "/traveler"
+        },
+        "AdminService": {
+            "kind": "service",
+            "@path": "/admin"
+        },
+        "AdminService.Travelers": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "vertigo.travels.Travelers"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "firstName": {
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "lastName": {
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "email": {
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "dateOfBirth": {
+                    "type": "cds.Date"
+                },
+                "isKid": {
+                    "type": "cds.Boolean",
+                    "default": {
+                        "val": false
+                    }
+                },
+                "parent": {
+                    "type": "cds.Association",
+                    "target": "AdminService.Travelers",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "businessPartnerID": {
+                    "type": "cds.String",
+                    "length": 10
+                },
+                "subscriptions": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "AdminService.Subscriptions",
+                    "on": [
+                        {
+                            "ref": [
+                                "subscriptions",
+                                "traveler"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "specialDiscount": {
+                    "type": "cds.Decimal",
+                    "precision": 10,
+                    "scale": 2
+                },
+                "incomeStatement_documentID": {
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "noOfKids": {
+                    "type": "cds.Integer"
+                },
+                "familyGrossIncome": {
+                    "type": "cds.Decimal",
+                    "precision": 15,
+                    "scale": 2
+                },
+                "noOfKids_documentEntityID": {
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "familyGrossIncome_documentEntityID": {
+                    "type": "cds.String",
+                    "length": 100
+                }
+            }
+        },
+        "AdminService.Courses": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "vertigo.travels.Courses"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "name": {
+                    "@title": "Course Name",
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "description": {
+                    "type": "cds.LargeString"
+                },
+                "price": {
+                    "type": "cds.Decimal",
+                    "precision": 10,
+                    "scale": 2
+                },
+                "depositAmount": {
+                    "type": "cds.Decimal",
+                    "precision": 10,
+                    "scale": 2
+                },
+                "requiredDocuments": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "AdminService.RequiredDocuments",
+                    "on": [
+                        {
+                            "ref": [
+                                "requiredDocuments",
+                                "course"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "image": {
+                    "type": "cds.LargeString"
+                },
+                "s4hanaProductID": {
+                    "type": "cds.String",
+                    "length": 10
+                }
+            }
+        },
+        "AdminService.Subscriptions": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "vertigo.travels.Subscriptions"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "traveler": {
+                    "type": "cds.Association",
+                    "target": "AdminService.Travelers",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "course": {
+                    "type": "cds.Association",
+                    "target": "AdminService.Courses",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "subscriptionDate": {
+                    "type": "cds.Date",
+                    "default": {
+                        "ref": [
+                            "$now"
+                        ]
+                    }
+                },
+                "status": {
+                    "type": "cds.String",
+                    "length": 20,
+                    "enum": {
+                        "Draft": {},
+                        "DocsPending": {},
+                        "DocsChecking": {},
+                        "DepositPending": {},
+                        "DepositPaid": {},
+                        "Confirmed": {},
+                        "Canceled": {},
+                        "ActionRequired": {}
+                    }
+                },
+                "documents": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "AdminService.SubmittedDocuments",
+                    "on": [
+                        {
+                            "ref": [
+                                "documents",
+                                "subscription"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "s4hanaBusinessPartnerID": {
+                    "type": "cds.String",
+                    "length": 10
+                },
+                "s4hanaSalesOrderID": {
+                    "type": "cds.String",
+                    "length": 10
+                }
+            }
+        },
+        "AdminService.SubmittedDocuments": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "vertigo.travels.SubmittedDocuments"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "subscription": {
+                    "key": true,
+                    "type": "cds.Association",
+                    "target": "AdminService.Subscriptions",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "documentType": {
+                    "type": "cds.String",
+                    "length": 50
+                },
+                "fileName": {
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "mimeType": {
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "content": {
+                    "@Core.MediaType": {
+                        "=": "mimeType"
+                    },
+                    "type": "cds.LargeBinary"
+                },
+                "status": {
+                    "type": "cds.String",
+                    "length": 20,
+                    "enum": {
+                        "Uploaded": {},
+                        "Processing": {},
+                        "Approved": {},
+                        "Rejected": {},
+                        "Confirmed": {},
+                        "Missing": {}
+                    }
+                },
+                "extractedData": {
+                    "type": "cds.LargeString"
+                },
+                "rejectionReason": {
+                    "type": "cds.String"
+                },
+                "documentID": {
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "documentTypeSchemaID": {
+                    "type": "cds.String",
+                    "length": 100
+                }
+            }
+        },
+        "AdminService.AppSettings": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "vertigo.travels.AppSettings"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "settingKey": {
+                    "@assert.unique": true,
+                    "@title": "Setting Key",
+                    "@description": "Unique identifier for the setting (e.g., DocAISchema.IncomeStatement)",
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 100
+                },
+                "value": {
+                    "@title": "Setting Value",
+                    "@description": "The value of the setting",
+                    "type": "cds.String",
+                    "length": 500
+                },
+                "description": {
+                    "@title": "Description",
+                    "@description": "Explanation of the setting",
+                    "type": "cds.String",
+                    "length": 255,
+                    "notNull": false
+                }
+            }
+        },
+        "S4Service": {
+            "kind": "service",
+            "@path": "/s4-api"
+        },
+        "S4Service.getBusinessPartner": {
+            "kind": "action",
+            "params": {
+                "message": {
+                    "type": "BusinessPartner"
+                }
+            },
+            "returns": {
+                "type": "Result"
+            }
+        },
+        "S4Service.getAllBusinessPartners": {
+            "kind": "action",
+            "params": {
+                "message": {
+                    "type": "BusinessPartner"
+                }
+            },
+            "returns": {
+                "type": "Result"
+            }
+        },
+        "S4Service.createNewBusinessPartner": {
+            "kind": "action",
+            "params": {
+                "message": {
+                    "type": "BusinessPartner"
+                }
+            },
+            "returns": {
+                "type": "Result"
+            }
+        },
+        "S4Service.createNewSalesOrder": {
+            "kind": "action",
+            "params": {
+                "message": {
+                    "type": "SalesOrder"
+                }
+            },
+            "returns": {
+                "type": "Result"
+            }
+        },
+        "S4Service.addSalesOrderItem": {
+            "kind": "action",
+            "params": {
+                "message": {
+                    "type": "SalesOrder"
+                }
+            },
+            "returns": {
+                "type": "Result"
+            }
+        },
+        "S4Service.addSalesOrderPricingElement": {
+            "kind": "action",
+            "params": {
+                "message": {
+                    "type": "SalesOrder"
+                }
+            },
+            "returns": {
+                "type": "Result"
+            }
+        },
+        "Language": {
+            "kind": "type",
+            "@title": "{i18n>Language}",
+            "@description": "{i18n>LanguageCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Languages",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Currency": {
+            "kind": "type",
+            "@title": "{i18n>Currency}",
+            "@description": "{i18n>CurrencyCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Currencies",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Country": {
+            "kind": "type",
+            "@title": "{i18n>Country}",
+            "@description": "{i18n>CountryCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Countries",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Timezone": {
+            "kind": "type",
+            "type": "cds.Association",
+            "target": "sap.common.Timezones",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "sap.common": {
+            "kind": "context"
+        },
+        "sap.common.Locale": {
+            "kind": "type",
+            "@title": "{i18n>LanguageCode}",
+            "type": "cds.String",
+            "length": 14
+        },
+        "sap.common.CodeList": {
+            "kind": "aspect",
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                }
+            }
+        },
+        "sap.common.TextsAspect": {
+            "kind": "aspect",
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                }
+            }
+        },
+        "sap.common.FlowHistory": {
+            "kind": "aspect",
+            "@cds.persistence.skip": "if-unused",
+            "elements": {
+                "transitions_": {
+                    "@odata.draft.enabled": false,
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "targetAspect": {
+                        "elements": {
+                            "timestamp": {
+                                "@cds.on.insert": {
+                                    "=": "$now"
+                                },
+                                "@UI.HiddenFilter": true,
+                                "@UI.ExcludeFromNavigationContext": true,
+                                "@Core.Immutable": true,
+                                "@title": "{i18n>CreatedAt}",
+                                "@readonly": true,
+                                "key": true,
+                                "type": {
+                                    "ref": [
+                                        "managed",
+                                        "createdAt"
+                                    ]
+                                }
+                            },
+                            "user": {
+                                "@cds.on.insert": {
+                                    "=": "$user"
+                                },
+                                "@UI.HiddenFilter": true,
+                                "@UI.ExcludeFromNavigationContext": true,
+                                "@Core.Immutable": true,
+                                "@title": "{i18n>CreatedBy}",
+                                "@readonly": true,
+                                "@description": "{i18n>UserID.Description}",
+                                "type": {
+                                    "ref": [
+                                        "managed",
+                                        "createdBy"
+                                    ]
+                                },
+                                "length": 255
+                            },
+                            "status": {
+                                "type": "cds.String"
+                            },
+                            "comment": {
+                                "type": "cds.String"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "cuid": {
+            "kind": "aspect",
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                }
+            }
+        },
+        "managed": {
+            "kind": "aspect",
+            "elements": {
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                }
+            }
+        },
+        "temporal": {
+            "kind": "aspect",
+            "elements": {
+                "validFrom": {
+                    "@cds.valid.from": true,
+                    "type": "cds.Timestamp"
+                },
+                "validTo": {
+                    "@cds.valid.to": true,
+                    "type": "cds.Timestamp"
+                }
+            }
+        },
+        "User": {
+            "kind": "type",
+            "@title": "{i18n>UserID}",
+            "@description": "{i18n>UserID.Description}",
+            "type": "cds.String",
+            "length": 255
+        },
+        "AdminService.RequiredDocuments": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "vertigo.travels.RequiredDocuments"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "course": {
+                    "key": true,
+                    "type": "cds.Association",
+                    "target": "AdminService.Courses",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "documentType": {
+                    "@title": "Document Type",
+                    "type": "cds.String",
+                    "length": 50
+                },
+                "description": {
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "documentTypeSchemaID": {
+                    "type": "cds.String",
+                    "length": 100
+                }
+            }
+        }
+    }
+}

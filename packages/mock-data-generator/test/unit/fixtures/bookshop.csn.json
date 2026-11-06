@@ -1,0 +1,473 @@
+{
+    "namespace": "sap.capire.bookshop",
+    "definitions": {
+        "sap.capire.bookshop.Authors": {
+            "kind": "entity",
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "name": {
+                    "localized": true,
+                    "type": "cds.String"
+                },
+                "books": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.Books",
+                    "on": [
+                        {
+                            "ref": ["books", "author"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$self"]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.Authors.texts",
+                    "on": [
+                        {
+                            "ref": ["texts", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.Authors.texts",
+                    "on": [
+                        {
+                            "ref": ["localized", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        },
+                        "and",
+                        {
+                            "ref": ["localized", "locale"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$user", "locale"]
+                        }
+                    ]
+                }
+            },
+            "$localized": true
+        },
+        "sap.capire.bookshop.Books": {
+            "kind": "entity",
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "title": {
+                    "localized": true,
+                    "type": "cds.String"
+                },
+                "author": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.Authors",
+                    "keys": [
+                        {
+                            "ref": ["ID"],
+                            "$generatedFieldName": "author_ID"
+                        }
+                    ]
+                },
+                "author_ID": {
+                    "type": "cds.Integer",
+                    "@odata.foreignKey4": "author"
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.Books.texts",
+                    "on": [
+                        {
+                            "ref": ["texts", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.Books.texts",
+                    "on": [
+                        {
+                            "ref": ["localized", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        },
+                        "and",
+                        {
+                            "ref": ["localized", "locale"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$user", "locale"]
+                        }
+                    ]
+                }
+            },
+            "$localized": true
+        },
+        "sap.capire.bookshop.CatalogService": {
+            "kind": "service"
+        },
+        "sap.capire.bookshop.CatalogService.Books": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": ["sap.capire.bookshop.Books"]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "title": {
+                    "localized": true,
+                    "type": "cds.String"
+                },
+                "author": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.CatalogService.Authors",
+                    "keys": [
+                        {
+                            "ref": ["ID"],
+                            "$generatedFieldName": "author_ID"
+                        }
+                    ]
+                },
+                "author_ID": {
+                    "type": "cds.Integer",
+                    "@odata.foreignKey4": "author"
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.CatalogService.Books.texts",
+                    "on": [
+                        {
+                            "ref": ["texts", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.CatalogService.Books.texts",
+                    "on": [
+                        {
+                            "ref": ["localized", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        },
+                        "and",
+                        {
+                            "ref": ["localized", "locale"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$user", "locale"]
+                        }
+                    ]
+                }
+            },
+            "$localized": true
+        },
+        "sap.capire.bookshop.CatalogService.Authors": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": ["sap.capire.bookshop.Authors"]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "name": {
+                    "localized": true,
+                    "type": "cds.String"
+                },
+                "books": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.CatalogService.Books",
+                    "on": [
+                        {
+                            "ref": ["books", "author"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$self"]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.CatalogService.Authors.texts",
+                    "on": [
+                        {
+                            "ref": ["texts", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.CatalogService.Authors.texts",
+                    "on": [
+                        {
+                            "ref": ["localized", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        },
+                        "and",
+                        {
+                            "ref": ["localized", "locale"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$user", "locale"]
+                        }
+                    ]
+                }
+            },
+            "$localized": true
+        },
+        "sap.capire.bookshop.AdminService": {
+            "kind": "service"
+        },
+        "sap.capire.bookshop.AdminService.Books": {
+            "kind": "entity",
+            "projection": {
+                "from": {
+                    "ref": ["sap.capire.bookshop.Books"]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "title": {
+                    "localized": true,
+                    "type": "cds.String"
+                },
+                "author": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.Authors",
+                    "keys": [
+                        {
+                            "ref": ["ID"],
+                            "$generatedFieldName": "author_ID"
+                        }
+                    ]
+                },
+                "author_ID": {
+                    "type": "cds.Integer",
+                    "@odata.foreignKey4": "author"
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "sap.capire.bookshop.AdminService.Books.texts",
+                    "on": [
+                        {
+                            "ref": ["texts", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "sap.capire.bookshop.AdminService.Books.texts",
+                    "on": [
+                        {
+                            "ref": ["localized", "ID"]
+                        },
+                        "=",
+                        {
+                            "ref": ["ID"]
+                        },
+                        "and",
+                        {
+                            "ref": ["localized", "locale"]
+                        },
+                        "=",
+                        {
+                            "ref": ["$user", "locale"]
+                        }
+                    ]
+                }
+            },
+            "$localized": true
+        },
+        "sap.capire.bookshop.Authors.texts": {
+            "kind": "entity",
+            "@odata.draft.enabled": false,
+            "elements": {
+                "locale": {
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 14
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "name": {
+                    "localized": null,
+                    "type": "cds.String"
+                }
+            }
+        },
+        "sap.capire.bookshop.Books.texts": {
+            "kind": "entity",
+            "@odata.draft.enabled": false,
+            "elements": {
+                "locale": {
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 14
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "title": {
+                    "localized": null,
+                    "type": "cds.String"
+                }
+            }
+        },
+        "sap.capire.bookshop.CatalogService.Books.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": ["sap.capire.bookshop.Books.texts"]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 14
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "title": {
+                    "localized": null,
+                    "type": "cds.String"
+                }
+            }
+        },
+        "sap.capire.bookshop.CatalogService.Authors.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": ["sap.capire.bookshop.Authors.texts"]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 14
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "name": {
+                    "localized": null,
+                    "type": "cds.String"
+                }
+            }
+        },
+        "sap.capire.bookshop.AdminService.Books.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": ["sap.capire.bookshop.Books.texts"]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 14
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "key": true,
+                    "type": "cds.Integer"
+                },
+                "title": {
+                    "localized": null,
+                    "type": "cds.String"
+                }
+            }
+        }
+    }
+}

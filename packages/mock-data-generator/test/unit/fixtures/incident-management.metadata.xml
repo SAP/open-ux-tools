@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Source: https://github.com/SAP-samples/fiori-tools-samples/blob/cccb9b2/app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/webapp/localService/metadata.xml (Apache-2.0). Copied unchanged as a test fixture. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml">
+        <edmx:Include Alias="Communication" Namespace="com.sap.vocabularies.Communication.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="IncidentService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Incidents" EntityType="IncidentService.Incidents">
+                    <NavigationPropertyBinding Path="category" Target="Category"/>
+                    <NavigationPropertyBinding Path="priority" Target="Priority"/>
+                    <NavigationPropertyBinding Path="incidentStatus" Target="IncidentStatus"/>
+                    <NavigationPropertyBinding Path="assignedIndividual" Target="Individual"/>
+                    <NavigationPropertyBinding Path="incidentFlow" Target="IncidentFlow"/>
+                    <NavigationPropertyBinding Path="incidentProcessTimeline" Target="IncidentProcessTimeline"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Incidents"/>
+                </EntitySet>
+                <EntitySet Name="IncidentFlow" EntityType="IncidentService.IncidentFlow">
+                    <NavigationPropertyBinding Path="incident" Target="Incidents"/>
+                </EntitySet>
+                <EntitySet Name="IncidentProcessTimeline" EntityType="IncidentService.IncidentProcessTimeline">
+                    <NavigationPropertyBinding Path="incident" Target="Incidents"/>
+                </EntitySet>
+                <EntitySet Name="Individual" EntityType="IncidentService.Individual">
+                    <NavigationPropertyBinding Path="Incidents" Target="Incidents"/>
+                </EntitySet>
+                <EntitySet Name="Category" EntityType="IncidentService.Category">
+                    <NavigationPropertyBinding Path="texts" Target="Category_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Category_texts"/>
+                </EntitySet>
+                <EntitySet Name="Priority" EntityType="IncidentService.Priority">
+                    <NavigationPropertyBinding Path="texts" Target="Priority_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Priority_texts"/>
+                </EntitySet>
+                <EntitySet Name="IncidentStatus" EntityType="IncidentService.IncidentStatus">
+                    <NavigationPropertyBinding Path="texts" Target="IncidentStatus_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="IncidentStatus_texts"/>
+                </EntitySet>
+                <EntitySet Name="Category_texts" EntityType="IncidentService.Category_texts"/>
+                <EntitySet Name="Priority_texts" EntityType="IncidentService.Priority_texts"/>
+                <EntitySet Name="IncidentStatus_texts" EntityType="IncidentService.IncidentStatus_texts"/>
+            </EntityContainer>
+            <EntityType Name="Incidents">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="identifier" Type="Edm.String" MaxLength="100"/>
+                <Property Name="title" Type="Edm.String" MaxLength="50"/>
+                <NavigationProperty Name="category" Type="IncidentService.Category">
+                    <ReferentialConstraint Property="category_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="category_code" Type="Edm.String" MaxLength="20"/>
+                <NavigationProperty Name="priority" Type="IncidentService.Priority">
+                    <ReferentialConstraint Property="priority_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="priority_code" Type="Edm.String" MaxLength="20"/>
+                <NavigationProperty Name="incidentStatus" Type="IncidentService.IncidentStatus">
+                    <ReferentialConstraint Property="incidentStatus_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="incidentStatus_code" Type="Edm.String" MaxLength="20"/>
+                <Property Name="description" Type="Edm.String" MaxLength="1000"/>
+                <NavigationProperty Name="assignedIndividual" Type="IncidentService.Individual" Partner="Incidents">
+                    <ReferentialConstraint Property="assignedIndividual_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="assignedIndividual_ID" Type="Edm.Guid"/>
+                <NavigationProperty Name="incidentFlow" Type="Collection(IncidentService.IncidentFlow)" Partner="incident"/>
+                <NavigationProperty Name="incidentProcessTimeline" Type="Collection(IncidentService.IncidentProcessTimeline)" Partner="incident"/>
+                <Property Name="isDraft" Type="Edm.Boolean" DefaultValue="false"/>
+                <Property Name="identifierFieldControl" Type="Edm.Int32" DefaultValue="7"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="IncidentService.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="IncidentService.Incidents"/>
+            </EntityType>
+            <EntityType Name="IncidentFlow">
+                <Key>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="id" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="processStep" Type="Edm.String" MaxLength="30"/>
+                <Property Name="stepStatus" Type="Edm.String" MaxLength="10"/>
+                <Property Name="criticality" Type="Edm.Int32"/>
+                <Property Name="stepStartDate" Type="Edm.Date"/>
+                <Property Name="stepEndDate" Type="Edm.Date"/>
+                <NavigationProperty Name="incident" Type="IncidentService.Incidents" Partner="incidentFlow">
+                    <ReferentialConstraint Property="incident_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="incident_ID" Type="Edm.Guid"/>
+            </EntityType>
+            <EntityType Name="IncidentProcessTimeline">
+                <Key>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="id" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="text" Type="Edm.String"/>
+                <Property Name="type" Type="Edm.String"/>
+                <Property Name="startTime" Type="Edm.DateTimeOffset"/>
+                <Property Name="endTime" Type="Edm.DateTimeOffset"/>
+                <NavigationProperty Name="incident" Type="IncidentService.Incidents" Partner="incidentProcessTimeline">
+                    <ReferentialConstraint Property="incident_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="incident_ID" Type="Edm.Guid"/>
+            </EntityType>
+            <EntityType Name="Individual">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="fullName" Type="Edm.String"/>
+                <Property Name="emailAddress" Type="Edm.String"/>
+                <NavigationProperty Name="Incidents" Type="Collection(IncidentService.Incidents)" Partner="assignedIndividual"/>
+            </EntityType>
+            <EntityType Name="Category">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+                <NavigationProperty Name="texts" Type="Collection(IncidentService.Category_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="IncidentService.Category_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Priority">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+                <Property Name="criticality" Type="Edm.Int32" Nullable="false" DefaultValue="3"/>
+                <NavigationProperty Name="texts" Type="Collection(IncidentService.Priority_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="IncidentService.Priority_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="IncidentStatus">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+                <NavigationProperty Name="texts" Type="Collection(IncidentService.IncidentStatus_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="IncidentService.IncidentStatus_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <EntityType Name="Category_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="Priority_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="IncidentStatus_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+            </EntityType>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="IncidentService.Incidents"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="IncidentService.Incidents"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="IncidentService.Incidents"/>
+                <ReturnType Type="IncidentService.Incidents"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="IncidentService.Incidents"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="IncidentService.Incidents"/>
+            </Action>
+            <Annotations Target="IncidentService.Incidents">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>identifier</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.Identification">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="identifier"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.EntityContainer/Incidents">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="IncidentService.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="IncidentService.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="IncidentService.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.Incidents/createdAt">
+                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                <Annotation Term="Core.Immutable" Bool="true"/>
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                </Annotations>
+                <Annotations Target="IncidentService.Incidents/createdBy">
+                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                    <Annotation Term="Core.Immutable" Bool="true"/>
+                    <Annotation Term="Core.Computed" Bool="true"/>
+                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                        </Annotations>
+                        <Annotations Target="IncidentService.Incidents/modifiedAt">
+                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                            <Annotation Term="Core.Computed" Bool="true"/>
+                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                            </Annotations>
+                            <Annotations Target="IncidentService.Incidents/modifiedBy">
+                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                <Annotation Term="Core.Computed" Bool="true"/>
+                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                    </Annotations>
+                                    <Annotations Target="IncidentService.Incidents/ID">
+                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                        <Annotation Term="Common.Text" Path="identifier">
+                                            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                        </Annotation>
+                                        <Annotation Term="Common.Label" String="{i18n>ID}"/>
+                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                        </Annotations>
+                                        <Annotations Target="IncidentService.Incidents/identifier">
+                                            <Annotation Term="Common.FieldControl" Path="identifierFieldControl"/>
+                                            <Annotation Term="Common.Label" String="Identifier"/>
+                                        </Annotations>
+                                        <Annotations Target="IncidentService.Incidents/title">
+                                            <Annotation Term="Common.Label" String="{i18n>Title}"/>
+                                            </Annotations>
+                                            <Annotations Target="IncidentService.Incidents/category">
+                                                <Annotation Term="Common.Label" String="{i18n>Category}"/>
+                                                </Annotations>
+                                                <Annotations Target="IncidentService.Incidents/category_code">
+                                                    <Annotation Term="Common.Text" Path="category/name">
+                                                        <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                                    </Annotation>
+                                                    <Annotation Term="Common.Label" String="{i18n>Category}"/>
+                                                        <Annotation Term="Common.ValueList">
+                                                            <Record Type="Common.ValueListType">
+                                                                <PropertyValue Property="Label" String="{i18n>Category}"/>
+                                                                    <PropertyValue Property="CollectionPath" String="Category"/>
+                                                                    <PropertyValue Property="Parameters">
+                                                                        <Collection>
+                                                                            <Record Type="Common.ValueListParameterInOut">
+                                                                                <PropertyValue Property="LocalDataProperty" PropertyPath="category_code"/>
+                                                                                <PropertyValue Property="ValueListProperty" String="code"/>
+                                                                            </Record>
+                                                                            <Record Type="Common.ValueListParameterDisplayOnly">
+                                                                                <PropertyValue Property="ValueListProperty" String="name"/>
+                                                                            </Record>
+                                                                        </Collection>
+                                                                    </PropertyValue>
+                                                                </Record>
+                                                            </Annotation>
+                                                        </Annotations>
+                                                        <Annotations Target="IncidentService.Incidents/priority">
+                                                            <Annotation Term="Common.Label" String="{i18n>Priority}"/>
+                                                            </Annotations>
+                                                            <Annotations Target="IncidentService.Incidents/priority_code">
+                                                                <Annotation Term="Common.Text" Path="priority/name">
+                                                                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                                                </Annotation>
+                                                                <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+                                                                <Annotation Term="Common.Label" String="{i18n>Priority}"/>
+                                                                    <Annotation Term="Common.ValueList">
+                                                                        <Record Type="Common.ValueListType">
+                                                                            <PropertyValue Property="Label" String="{i18n>Priority}"/>
+                                                                                <PropertyValue Property="CollectionPath" String="Priority"/>
+                                                                                <PropertyValue Property="Parameters">
+                                                                                    <Collection>
+                                                                                        <Record Type="Common.ValueListParameterInOut">
+                                                                                            <PropertyValue Property="LocalDataProperty" PropertyPath="priority_code"/>
+                                                                                            <PropertyValue Property="ValueListProperty" String="code"/>
+                                                                                        </Record>
+                                                                                        <Record Type="Common.ValueListParameterDisplayOnly">
+                                                                                            <PropertyValue Property="ValueListProperty" String="name"/>
+                                                                                        </Record>
+                                                                                    </Collection>
+                                                                                </PropertyValue>
+                                                                            </Record>
+                                                                        </Annotation>
+                                                                    </Annotations>
+                                                                    <Annotations Target="IncidentService.Incidents/incidentStatus">
+                                                                        <Annotation Term="Common.Label" String="{i18n>IncidentStatus}"/>
+                                                                        </Annotations>
+                                                                        <Annotations Target="IncidentService.Incidents/incidentStatus_code">
+                                                                            <Annotation Term="Common.Text" Path="incidentStatus/name">
+                                                                                <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                                                            </Annotation>
+                                                                            <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+                                                                            <Annotation Term="Common.Label" String="{i18n>IncidentStatus}"/>
+                                                                                <Annotation Term="Common.ValueList">
+                                                                                    <Record Type="Common.ValueListType">
+                                                                                        <PropertyValue Property="Label" String="{i18n>IncidentStatus}"/>
+                                                                                            <PropertyValue Property="CollectionPath" String="IncidentStatus"/>
+                                                                                            <PropertyValue Property="Parameters">
+                                                                                                <Collection>
+                                                                                                    <Record Type="Common.ValueListParameterInOut">
+                                                                                                        <PropertyValue Property="LocalDataProperty" PropertyPath="incidentStatus_code"/>
+                                                                                                        <PropertyValue Property="ValueListProperty" String="code"/>
+                                                                                                    </Record>
+                                                                                                    <Record Type="Common.ValueListParameterDisplayOnly">
+                                                                                                        <PropertyValue Property="ValueListProperty" String="name"/>
+                                                                                                    </Record>
+                                                                                                </Collection>
+                                                                                            </PropertyValue>
+                                                                                        </Record>
+                                                                                    </Annotation>
+                                                                                </Annotations>
+                                                                                <Annotations Target="IncidentService.Incidents/description">
+                                                                                    <Annotation Term="Common.Label" String="{i18n>IncidentDescription}"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/assignedIndividual">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/assignedIndividual_ID">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/isDraft">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/identifierFieldControl">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/IsActiveEntity">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/HasActiveEntity">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/HasDraftEntity">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.Incidents/DraftAdministrativeData">
+                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.EntityContainer/IncidentFlow">
+                                                                                        <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                            <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                            </Record>
+                                                                                        </Annotation>
+                                                                                        <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                            <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                            </Record>
+                                                                                        </Annotation>
+                                                                                        <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                            <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                            </Record>
+                                                                                        </Annotation>
+                                                                                    </Annotations>
+                                                                                    <Annotations Target="IncidentService.IncidentFlow/createdAt">
+                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                                                        </Annotations>
+                                                                                        <Annotations Target="IncidentService.IncidentFlow/createdBy">
+                                                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                                                </Annotations>
+                                                                                                <Annotations Target="IncidentService.IncidentFlow/modifiedAt">
+                                                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                                                    </Annotations>
+                                                                                                    <Annotations Target="IncidentService.IncidentFlow/modifiedBy">
+                                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                                            </Annotations>
+                                                                                                            <Annotations Target="IncidentService.IncidentFlow/processStep">
+                                                                                                                <Annotation Term="Common.Label" String="{i18n>ProcessStep}"/>
+                                                                                                                </Annotations>
+                                                                                                                <Annotations Target="IncidentService.IncidentFlow/stepStatus">
+                                                                                                                    <Annotation Term="Common.Label" String="{i18n>ProcessStepStatus}"/>
+                                                                                                                    </Annotations>
+                                                                                                                    <Annotations Target="IncidentService.IncidentFlow/stepStartDate">
+                                                                                                                        <Annotation Term="Common.Label" String="{i18n>StepStartDate}"/>
+                                                                                                                        </Annotations>
+                                                                                                                        <Annotations Target="IncidentService.IncidentFlow/stepEndDate">
+                                                                                                                            <Annotation Term="Common.Label" String="{i18n>StepEndDate}"/>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="IncidentService.EntityContainer/IncidentProcessTimeline">
+                                                                                                                                <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                                                                    <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                                                        <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                                                                    </Record>
+                                                                                                                                </Annotation>
+                                                                                                                                <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                                                                    <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                                                        <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                                                                    </Record>
+                                                                                                                                </Annotation>
+                                                                                                                                <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                                                                    <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                                                        <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                                                                    </Record>
+                                                                                                                                </Annotation>
+                                                                                                                            </Annotations>
+                                                                                                                            <Annotations Target="IncidentService.IncidentProcessTimeline/createdAt">
+                                                                                                                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                                                                                                </Annotations>
+                                                                                                                                <Annotations Target="IncidentService.IncidentProcessTimeline/createdBy">
+                                                                                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                    <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                    <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                                                                                        </Annotations>
+                                                                                                                                        <Annotations Target="IncidentService.IncidentProcessTimeline/modifiedAt">
+                                                                                                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                                                                                            </Annotations>
+                                                                                                                                            <Annotations Target="IncidentService.IncidentProcessTimeline/modifiedBy">
+                                                                                                                                                <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                                <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                                                                                    </Annotations>
+                                                                                                                                                    <Annotations Target="IncidentService.Individual">
+                                                                                                                                                        <Annotation Term="Communication.Contact">
+                                                                                                                                                            <Record Type="Communication.ContactType">
+                                                                                                                                                                <PropertyValue Property="fn" Path="fullName"/>
+                                                                                                                                                                <PropertyValue Property="kind" EnumMember="Communication.KindType/individual"/>
+                                                                                                                                                                <PropertyValue Property="email">
+                                                                                                                                                                    <Collection>
+                                                                                                                                                                        <Record Type="Communication.EmailAddressType">
+                                                                                                                                                                            <PropertyValue Property="address" Path="emailAddress"/>
+                                                                                                                                                                            <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/work"/>
+                                                                                                                                                                        </Record>
+                                                                                                                                                                    </Collection>
+                                                                                                                                                                </PropertyValue>
+                                                                                                                                                            </Record>
+                                                                                                                                                        </Annotation>
+                                                                                                                                                    </Annotations>
+                                                                                                                                                    <Annotations Target="IncidentService.EntityContainer/Individual">
+                                                                                                                                                        <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                                                                                            <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                                                                                <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                                                                                            </Record>
+                                                                                                                                                        </Annotation>
+                                                                                                                                                        <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                                                                                            <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                                                                                <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                                                                                            </Record>
+                                                                                                                                                        </Annotation>
+                                                                                                                                                        <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                                                                                            <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                                                                                <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                                                                                            </Record>
+                                                                                                                                                        </Annotation>
+                                                                                                                                                    </Annotations>
+                                                                                                                                                    <Annotations Target="IncidentService.Individual/createdAt">
+                                                                                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                                        <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>CreatedAt}"/>
+                                                                                                                                                        </Annotations>
+                                                                                                                                                        <Annotations Target="IncidentService.Individual/createdBy">
+                                                                                                                                                            <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                                            <Annotation Term="Core.Immutable" Bool="true"/>
+                                                                                                                                                            <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                                            <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>CreatedBy}"/>
+                                                                                                                                                                </Annotations>
+                                                                                                                                                                <Annotations Target="IncidentService.Individual/modifiedAt">
+                                                                                                                                                                    <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                                                    <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>ChangedAt}"/>
+                                                                                                                                                                    </Annotations>
+                                                                                                                                                                    <Annotations Target="IncidentService.Individual/modifiedBy">
+                                                                                                                                                                        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+                                                                                                                                                                        <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                                                        <Annotation Term="Core.Description" String="{i18n>UserID.Description}"/>
+                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>ChangedBy}"/>
+                                                                                                                                                                            </Annotations>
+                                                                                                                                                                            <Annotations Target="IncidentService.Individual/fullName">
+                                                                                                                                                                                <Annotation Term="Common.Label" String="First Name"/>
+                                                                                                                                                                            </Annotations>
+                                                                                                                                                                            <Annotations Target="IncidentService.Individual/emailAddress">
+                                                                                                                                                                                <Annotation Term="Common.Label" String="Email Address"/>
+                                                                                                                                                                            </Annotations>
+                                                                                                                                                                            <Annotations Target="IncidentService.Category">
+                                                                                                                                                                                <Annotation Term="UI.Identification">
+                                                                                                                                                                                    <Collection>
+                                                                                                                                                                                        <Record Type="UI.DataField">
+                                                                                                                                                                                            <PropertyValue Property="Value" Path="name"/>
+                                                                                                                                                                                        </Record>
+                                                                                                                                                                                    </Collection>
+                                                                                                                                                                                </Annotation>
+                                                                                                                                                                            </Annotations>
+                                                                                                                                                                            <Annotations Target="IncidentService.EntityContainer/Category">
+                                                                                                                                                                                <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                                                                                                                    <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                                                                                                        <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                                                                                                                    </Record>
+                                                                                                                                                                                </Annotation>
+                                                                                                                                                                                <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                                                                                                                    <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                                                                                                        <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                                                                                                                    </Record>
+                                                                                                                                                                                </Annotation>
+                                                                                                                                                                                <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                                                                                                                    <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                                                                                                        <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                                                                                                                    </Record>
+                                                                                                                                                                                </Annotation>
+                                                                                                                                                                            </Annotations>
+                                                                                                                                                                            <Annotations Target="IncidentService.Category/name">
+                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                <Annotations Target="IncidentService.Category/descr">
+                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                    <Annotations Target="IncidentService.Category/code">
+                                                                                                                                                                                        <Annotation Term="Common.Text" Path="name">
+                                                                                                                                                                                            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                                                                                                                                                                        </Annotation>
+                                                                                                                                                                                        <Annotation Term="Common.Label" String="Category"/>
+                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                    <Annotations Target="IncidentService.Priority">
+                                                                                                                                                                                        <Annotation Term="UI.Identification">
+                                                                                                                                                                                            <Collection>
+                                                                                                                                                                                                <Record Type="UI.DataField">
+                                                                                                                                                                                                    <PropertyValue Property="Value" Path="name"/>
+                                                                                                                                                                                                </Record>
+                                                                                                                                                                                            </Collection>
+                                                                                                                                                                                        </Annotation>
+                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                    <Annotations Target="IncidentService.EntityContainer/Priority">
+                                                                                                                                                                                        <Annotation Term="Capabilities.DeleteRestrictions">
+                                                                                                                                                                                            <Record Type="Capabilities.DeleteRestrictionsType">
+                                                                                                                                                                                                <PropertyValue Property="Deletable" Bool="false"/>
+                                                                                                                                                                                            </Record>
+                                                                                                                                                                                        </Annotation>
+                                                                                                                                                                                        <Annotation Term="Capabilities.InsertRestrictions">
+                                                                                                                                                                                            <Record Type="Capabilities.InsertRestrictionsType">
+                                                                                                                                                                                                <PropertyValue Property="Insertable" Bool="false"/>
+                                                                                                                                                                                            </Record>
+                                                                                                                                                                                        </Annotation>
+                                                                                                                                                                                        <Annotation Term="Capabilities.UpdateRestrictions">
+                                                                                                                                                                                            <Record Type="Capabilities.UpdateRestrictionsType">
+                                                                                                                                                                                                <PropertyValue Property="Updatable" Bool="false"/>
+                                                                                                                                                                                            </Record>
+                                                                                                                                                                                        </Annotation>
+                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                    <Annotations Target="IncidentService.Priority/name">
+                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                        <Annotations Target="IncidentService.Priority/descr">
+                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                            <Annotations Target="IncidentService.Priority/code">
+                                                                                                                                                                                                <Annotation Term="Common.Text" Path="name">
+                                                                                                                                                                                                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                                                                                                                                                                                </Annotation>
+                                                                                                                                                                                                <Annotation Term="Common.Label" String="Priority"/>
+                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                            <Annotations Target="IncidentService.Priority/criticality">
+                                                                                                                                                                                                <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                                                                <Annotation Term="Core.Computed" Bool="true"/>
+                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                            <Annotations Target="IncidentService.IncidentStatus">
+                                                                                                                                                                                                <Annotation Term="UI.Identification">
+                                                                                                                                                                                                    <Collection>
+                                                                                                                                                                                                        <Record Type="UI.DataField">
+                                                                                                                                                                                                            <PropertyValue Property="Value" Path="name"/>
+                                                                                                                                                                                                        </Record>
+                                                                                                                                                                                                    </Collection>
+                                                                                                                                                                                                </Annotation>
+                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                            <Annotations Target="IncidentService.IncidentStatus/name">
+                                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                                <Annotations Target="IncidentService.IncidentStatus/descr">
+                                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                                    <Annotations Target="IncidentService.IncidentStatus/code">
+                                                                                                                                                                                                        <Annotation Term="Common.Text" Path="name">
+                                                                                                                                                                                                            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+                                                                                                                                                                                                        </Annotation>
+                                                                                                                                                                                                        <Annotation Term="Common.Label" String="Incident Status"/>
+                                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                                    <Annotations Target="IncidentService.DraftAdministrativeData">
+                                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+                                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                                        <Annotations Target="IncidentService.DraftAdministrativeData/DraftUUID">
+                                                                                                                                                                                                            <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+                                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                                            <Annotations Target="IncidentService.DraftAdministrativeData/CreationDateTime">
+                                                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+                                                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                                                <Annotations Target="IncidentService.DraftAdministrativeData/CreatedByUser">
+                                                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+                                                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                                                    <Annotations Target="IncidentService.DraftAdministrativeData/DraftIsCreatedByMe">
+                                                                                                                                                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+                                                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                                                        <Annotations Target="IncidentService.DraftAdministrativeData/LastChangeDateTime">
+                                                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+                                                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                                                            <Annotations Target="IncidentService.DraftAdministrativeData/LastChangedByUser">
+                                                                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+                                                                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                                                                <Annotations Target="IncidentService.DraftAdministrativeData/InProcessByUser">
+                                                                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+                                                                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                                                                    <Annotations Target="IncidentService.DraftAdministrativeData/DraftIsProcessedByMe">
+                                                                                                                                                                                                                                        <Annotation Term="UI.Hidden" Bool="true"/>
+                                                                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+                                                                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                                                                        <Annotations Target="IncidentService.Category_texts/locale">
+                                                                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>LanguageCode}"/>
+                                                                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                                                                            <Annotations Target="IncidentService.Category_texts/name">
+                                                                                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                                                                                <Annotations Target="IncidentService.Category_texts/descr">
+                                                                                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                                                                                    <Annotations Target="IncidentService.Priority_texts/locale">
+                                                                                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>LanguageCode}"/>
+                                                                                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                                                                                        <Annotations Target="IncidentService.Priority_texts/name">
+                                                                                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                                                                                            <Annotations Target="IncidentService.Priority_texts/descr">
+                                                                                                                                                                                                                                                                <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                                                                                                </Annotations>
+                                                                                                                                                                                                                                                                <Annotations Target="IncidentService.IncidentStatus_texts/locale">
+                                                                                                                                                                                                                                                                    <Annotation Term="Common.Label" String="{i18n>LanguageCode}"/>
+                                                                                                                                                                                                                                                                    </Annotations>
+                                                                                                                                                                                                                                                                    <Annotations Target="IncidentService.IncidentStatus_texts/name">
+                                                                                                                                                                                                                                                                        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                                                                                                                                                                                                                                        </Annotations>
+                                                                                                                                                                                                                                                                        <Annotations Target="IncidentService.IncidentStatus_texts/descr">
+                                                                                                                                                                                                                                                                            <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                                                                                                                                                                                                                                            </Annotations>
+                                                                                                                                                                                                                                                                        </Schema>
+                                                                                                                                                                                                                                                                    </edmx:DataServices>
+                                                                                                                                                                                                                                                                </edmx:Edmx>

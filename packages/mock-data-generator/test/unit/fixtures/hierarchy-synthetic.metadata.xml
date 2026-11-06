@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names: each Xa row may reference a parent Xa through the nullable Xu_Xk,
+     each Xb row references a parent Xb through the required Xp, and each Xc row may reference a parent Xc
+     through the nullable Xr, whose value list is Xv. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Xs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Xas" EntityType="Xs.Xa">
+                    <NavigationPropertyBinding Path="Xu" Target="Xas"/>
+                </EntitySet>
+                <EntitySet Name="Xbs" EntityType="Xs.Xb">
+                    <NavigationPropertyBinding Path="Xq" Target="Xbs"/>
+                </EntitySet>
+                <EntitySet Name="Xcs" EntityType="Xs.Xc">
+                    <NavigationPropertyBinding Path="Xs" Target="Xcs"/>
+                </EntitySet>
+                <EntitySet Name="Xvs" EntityType="Xs.Xv"/>
+            </EntityContainer>
+            <EntityType Name="Xa">
+                <Key>
+                    <PropertyRef Name="Xk"/>
+                </Key>
+                <Property Name="Xk" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Xu_Xk" Type="Edm.Guid"/>
+                <Property Name="Xn" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="Xu" Type="Xs.Xa">
+                    <ReferentialConstraint Property="Xu_Xk" ReferencedProperty="Xk"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Xb">
+                <Key>
+                    <PropertyRef Name="Xj"/>
+                </Key>
+                <Property Name="Xj" Type="Edm.String" Nullable="false" MaxLength="8"/>
+                <Property Name="Xp" Type="Edm.String" Nullable="false" MaxLength="8"/>
+                <Property Name="Xv" Type="Edm.Int32"/>
+                <NavigationProperty Name="Xq" Type="Xs.Xb" Nullable="false">
+                    <ReferentialConstraint Property="Xp" ReferencedProperty="Xj"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Xc">
+                <Key>
+                    <PropertyRef Name="Xi"/>
+                </Key>
+                <Property Name="Xi" Type="Edm.String" Nullable="false" MaxLength="8"/>
+                <Property Name="Xr" Type="Edm.String" MaxLength="8"/>
+                <NavigationProperty Name="Xs" Type="Xs.Xc">
+                    <ReferentialConstraint Property="Xr" ReferencedProperty="Xi"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Xv">
+                <Key>
+                    <PropertyRef Name="Xi"/>
+                </Key>
+                <Property Name="Xi" Type="Edm.String" Nullable="false" MaxLength="8"/>
+                <Property Name="Xd" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <Annotations Target="Xs.Xc/Xr">
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="Xvs"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Xr"/>
+                                    <PropertyValue Property="ValueListProperty" String="Xi"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

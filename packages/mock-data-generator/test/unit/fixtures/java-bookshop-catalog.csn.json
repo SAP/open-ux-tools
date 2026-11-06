@@ -1,0 +1,1186 @@
+{
+    "$source": "CSN of CatalogService compiled from https://github.com/SAP-samples/cloud-cap-samples-java (commit 55a55d1a2f42362aa03df6fb10be3533690d6d9e). License: Apache-2.0. Definitions unmodified.",
+    "definitions": {
+        "my.bookshop.TechnicalBooleanFlag": {
+            "kind": "type",
+            "@UI.Hidden": true,
+            "@Core.Computed": true,
+            "type": "cds.Boolean"
+        },
+        "my.bookshop.Rating": {
+            "kind": "type",
+            "type": "cds.Integer",
+            "enum": {
+                "Best": {
+                    "val": 5
+                },
+                "Good": {
+                    "val": 4
+                },
+                "Avg": {
+                    "val": 3
+                },
+                "Poor": {
+                    "val": 2
+                },
+                "Worst": {
+                    "val": 1
+                }
+            }
+        },
+        "CatalogService": {
+            "kind": "service",
+            "@path": "browse",
+            "@odata.apply.transformations": true,
+            "@requires": "any"
+        },
+        "CatalogService.Books": {
+            "kind": "entity",
+            "@readonly": true,
+            "@fiori.draft.enabled": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Books"
+                    ]
+                },
+                "excluding": [
+                    "createdBy",
+                    "modifiedBy"
+                ]
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "title": {
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 111
+                },
+                "descr": {
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1111
+                },
+                "author": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.Authors",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "genre": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.GenreHierarchy",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "stock": {
+                    "type": "cds.Integer"
+                },
+                "price": {
+                    "type": "cds.Decimal",
+                    "precision": 9,
+                    "scale": 2
+                },
+                "currency": {
+                    "@title": "{i18n>Currency}",
+                    "@description": "{i18n>CurrencyCode.Description}",
+                    "type": "Currency",
+                    "target": "CatalogService.Currencies",
+                    "keys": [
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "rating": {
+                    "type": "cds.Decimal",
+                    "precision": 2,
+                    "scale": 1
+                },
+                "reviews": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.Reviews",
+                    "on": [
+                        {
+                            "ref": [
+                                "reviews",
+                                "book"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "isReviewable": {
+                    "@UI.Hidden": true,
+                    "@Core.Computed": true,
+                    "type": "my.bookshop.TechnicalBooleanFlag",
+                    "notNull": true,
+                    "default": {
+                        "val": true
+                    }
+                },
+                "contents": {
+                    "@odata.contained": false,
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.Contents",
+                    "on": [
+                        {
+                            "ref": [
+                                "contents",
+                                "book"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.Books.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "ID"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.Books.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "ID"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "actions": {
+                "addReview": {
+                    "kind": "action",
+                    "params": {
+                        "rating": {
+                            "type": "cds.Integer"
+                        },
+                        "title": {
+                            "type": "cds.String"
+                        },
+                        "text": {
+                            "type": "cds.String"
+                        }
+                    },
+                    "returns": {
+                        "type": "CatalogService.Reviews"
+                    }
+                }
+            }
+        },
+        "CatalogService.Authors": {
+            "kind": "entity",
+            "@readonly": true,
+            "@PersonalData.DataSubjectRole": "Author",
+            "@PersonalData.EntitySemantics": "DataSubject",
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Authors"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "@PersonalData.FieldSemantics": "DataSubjectID",
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "name": {
+                    "@assert.format": "^\\p{Lu}.*",
+                    "@PersonalData.IsPotentiallySensitive": true,
+                    "type": "cds.String",
+                    "length": 111
+                },
+                "dateOfBirth": {
+                    "type": "cds.Date"
+                },
+                "dateOfDeath": {
+                    "type": "cds.Date"
+                },
+                "placeOfBirth": {
+                    "type": "cds.String"
+                },
+                "placeOfDeath": {
+                    "type": "cds.String"
+                },
+                "books": {
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.Books",
+                    "on": [
+                        {
+                            "ref": [
+                                "books",
+                                "author"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "details": {
+                    "type": "cds.Map"
+                }
+            }
+        },
+        "CatalogService.Reviews": {
+            "kind": "entity",
+            "@readonly": true,
+            "@restrict": [
+                {
+                    "grant": "READ",
+                    "to": "any"
+                },
+                {
+                    "grant": "CREATE",
+                    "to": "authenticated-user"
+                }
+            ],
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Reviews"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "book": {
+                    "@cds.odata.ValueList": true,
+                    "@mandatory": true,
+                    "@assert.target": true,
+                    "type": "cds.Association",
+                    "target": "CatalogService.Books",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "rating": {
+                    "@assert.range": true,
+                    "type": "my.bookshop.Rating"
+                },
+                "title": {
+                    "@mandatory": true,
+                    "type": "cds.String",
+                    "length": 111
+                },
+                "text": {
+                    "type": "cds.String",
+                    "length": 1111
+                }
+            }
+        },
+        "CatalogService.GenreHierarchy": {
+            "kind": "entity",
+            "@readonly": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Genres"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "siblingRank": {
+                    "type": "cds.Integer"
+                },
+                "parent": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.GenreHierarchy",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "children": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.GenreHierarchy",
+                    "on": [
+                        {
+                            "ref": [
+                                "children",
+                                "parent"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.GenreHierarchy.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "ID"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.GenreHierarchy.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "ID"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "CatalogService.submitOrder": {
+            "kind": "action",
+            "params": {
+                "book": {
+                    "type": {
+                        "ref": [
+                            "CatalogService.Books",
+                            "ID"
+                        ]
+                    }
+                },
+                "quantity": {
+                    "type": "cds.Integer"
+                }
+            },
+            "returns": {
+                "elements": {
+                    "stock": {
+                        "type": "cds.Integer"
+                    }
+                }
+            }
+        },
+        "ReviewService": {
+            "kind": "service",
+            "@path": "review"
+        },
+        "NotesService": {
+            "kind": "service",
+            "@path": "notes"
+        },
+        "Language": {
+            "kind": "type",
+            "@title": "{i18n>Language}",
+            "@description": "{i18n>LanguageCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Languages",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Currency": {
+            "kind": "type",
+            "@title": "{i18n>Currency}",
+            "@description": "{i18n>CurrencyCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Currencies",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Country": {
+            "kind": "type",
+            "@title": "{i18n>Country}",
+            "@description": "{i18n>CountryCode.Description}",
+            "type": "cds.Association",
+            "target": "sap.common.Countries",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "Timezone": {
+            "kind": "type",
+            "type": "cds.Association",
+            "target": "sap.common.Timezones",
+            "keys": [
+                {
+                    "ref": [
+                        "code"
+                    ]
+                }
+            ]
+        },
+        "sap.common": {
+            "kind": "context"
+        },
+        "sap.common.Locale": {
+            "kind": "type",
+            "@title": "{i18n>LanguageCode}",
+            "type": "cds.String",
+            "length": 14
+        },
+        "sap.common.CodeList": {
+            "kind": "aspect",
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                }
+            }
+        },
+        "sap.common.TextsAspect": {
+            "kind": "aspect",
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                }
+            }
+        },
+        "sap.common.FlowHistory": {
+            "kind": "aspect",
+            "@cds.persistence.skip": "if-unused",
+            "elements": {
+                "transitions_": {
+                    "@odata.draft.enabled": false,
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "targetAspect": {
+                        "elements": {
+                            "timestamp": {
+                                "@cds.on.insert": {
+                                    "=": "$now"
+                                },
+                                "@UI.HiddenFilter": true,
+                                "@UI.ExcludeFromNavigationContext": true,
+                                "@Core.Immutable": true,
+                                "@title": "{i18n>CreatedAt}",
+                                "@readonly": true,
+                                "key": true,
+                                "type": {
+                                    "ref": [
+                                        "managed",
+                                        "createdAt"
+                                    ]
+                                }
+                            },
+                            "user": {
+                                "@cds.on.insert": {
+                                    "=": "$user"
+                                },
+                                "@UI.HiddenFilter": true,
+                                "@UI.ExcludeFromNavigationContext": true,
+                                "@Core.Immutable": true,
+                                "@title": "{i18n>CreatedBy}",
+                                "@readonly": true,
+                                "@description": "{i18n>UserID.Description}",
+                                "type": {
+                                    "ref": [
+                                        "managed",
+                                        "createdBy"
+                                    ]
+                                },
+                                "length": 255
+                            },
+                            "status": {
+                                "type": "cds.String"
+                            },
+                            "comment": {
+                                "type": "cds.String"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "cuid": {
+            "kind": "aspect",
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                }
+            }
+        },
+        "managed": {
+            "kind": "aspect",
+            "elements": {
+                "createdAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "createdBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@Core.Immutable": true,
+                    "@title": "{i18n>CreatedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                },
+                "modifiedAt": {
+                    "@cds.on.insert": {
+                        "=": "$now"
+                    },
+                    "@cds.on.update": {
+                        "=": "$now"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedAt}",
+                    "@readonly": true,
+                    "type": "cds.Timestamp"
+                },
+                "modifiedBy": {
+                    "@cds.on.insert": {
+                        "=": "$user"
+                    },
+                    "@cds.on.update": {
+                        "=": "$user"
+                    },
+                    "@UI.HiddenFilter": true,
+                    "@UI.ExcludeFromNavigationContext": true,
+                    "@title": "{i18n>ChangedBy}",
+                    "@readonly": true,
+                    "@description": "{i18n>UserID.Description}",
+                    "type": "User",
+                    "length": 255
+                }
+            }
+        },
+        "temporal": {
+            "kind": "aspect",
+            "elements": {
+                "validFrom": {
+                    "@cds.valid.from": true,
+                    "type": "cds.Timestamp"
+                },
+                "validTo": {
+                    "@cds.valid.to": true,
+                    "type": "cds.Timestamp"
+                }
+            }
+        },
+        "User": {
+            "kind": "type",
+            "@title": "{i18n>UserID}",
+            "@description": "{i18n>UserID.Description}",
+            "type": "cds.String",
+            "length": 255
+        },
+        "CatalogService.Currencies": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@cds.autoexpose": true,
+            "@cds.persistence.skip": "if-unused",
+            "@UI.Identification": [
+                {
+                    "Value": {
+                        "=": "name"
+                    }
+                }
+            ],
+            "@cds.odata.valuelist": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Currencies"
+                    ]
+                }
+            },
+            "elements": {
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": true,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@title": "{i18n>CurrencyCode}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 3
+                },
+                "symbol": {
+                    "@title": "{i18n>CurrencySymbol}",
+                    "type": "cds.String",
+                    "length": 5
+                },
+                "minorUnit": {
+                    "@title": "{i18n>CurrencyMinorUnit}",
+                    "type": "cds.Int16"
+                },
+                "texts": {
+                    "type": "cds.Composition",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.Currencies.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "texts",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        }
+                    ]
+                },
+                "localized": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.Currencies.texts",
+                    "on": [
+                        {
+                            "ref": [
+                                "localized",
+                                "code"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "code"
+                            ]
+                        },
+                        "and",
+                        {
+                            "ref": [
+                                "localized",
+                                "locale"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$user",
+                                "locale"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "CatalogService.Contents": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Contents"
+                    ]
+                }
+            },
+            "elements": {
+                "ID": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "name": {
+                    "type": "cds.String"
+                },
+                "page": {
+                    "type": "cds.Integer"
+                },
+                "parent": {
+                    "@odata.draft.enclosed": true,
+                    "type": "cds.Association",
+                    "target": "CatalogService.Contents",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "book": {
+                    "type": "cds.Association",
+                    "target": "CatalogService.Books",
+                    "keys": [
+                        {
+                            "ref": [
+                                "ID"
+                            ]
+                        }
+                    ]
+                },
+                "children": {
+                    "@cascade.delete": true,
+                    "@odata.draft.enclosed": true,
+                    "type": "cds.Association",
+                    "cardinality": {
+                        "max": "*"
+                    },
+                    "target": "CatalogService.Contents",
+                    "on": [
+                        {
+                            "ref": [
+                                "children",
+                                "parent"
+                            ]
+                        },
+                        "=",
+                        {
+                            "ref": [
+                                "$self"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "CatalogService.Books.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@assert.unique.locale": [
+                {
+                    "=": "locale"
+                },
+                {
+                    "=": "ID"
+                }
+            ],
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Books.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "ID_texts": {
+                    "key": true,
+                    "type": "cds.UUID"
+                },
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "ID": {
+                    "type": "cds.UUID"
+                },
+                "title": {
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 111
+                },
+                "descr": {
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1111
+                }
+            }
+        },
+        "CatalogService.GenreHierarchy.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "my.bookshop.Genres.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "ID": {
+                    "@odata.containment.ignore": true,
+                    "key": true,
+                    "type": "cds.UUID"
+                }
+            }
+        },
+        "CatalogService.Currencies.texts": {
+            "kind": "entity",
+            "@cds.autoexposed": true,
+            "@odata.draft.enabled": false,
+            "projection": {
+                "from": {
+                    "ref": [
+                        "sap.common.Currencies.texts"
+                    ]
+                }
+            },
+            "elements": {
+                "locale": {
+                    "@title": "{i18n>LanguageCode}",
+                    "key": true,
+                    "type": "sap.common.Locale",
+                    "length": 14
+                },
+                "name": {
+                    "@title": "{i18n>Name}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 255
+                },
+                "descr": {
+                    "@title": "{i18n>Description}",
+                    "localized": null,
+                    "type": "cds.String",
+                    "length": 1000
+                },
+                "code": {
+                    "@odata.containment.ignore": true,
+                    "@title": "{i18n>CurrencyCode}",
+                    "@Common.Text": {
+                        "=": "name"
+                    },
+                    "key": true,
+                    "type": "cds.String",
+                    "length": 3
+                }
+            }
+        }
+    }
+}
