@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import { getTelemetrySetting, setEnableTelemetry } from '@sap-ux/telemetry';
+import { getTelemetryOptOutEnvVariable } from '../migrate/telemetry.js';
 import { getLogger } from '../../tracing/index.js';
 import { t } from '../../i18n.js';
 
@@ -30,7 +31,10 @@ export function getTelemetryCommand(): Command {
         .action(async () => {
             const setting = await getTelemetrySetting();
             const logger = getLogger();
-            if (setting === undefined) {
+            const envVariable = getTelemetryOptOutEnvVariable();
+            if (envVariable) {
+                logger.info(t('telemetry.status.disabledByEnv', { variable: envVariable }));
+            } else if (setting === undefined) {
                 logger.info(t('telemetry.status.enabledByDefault'));
             } else {
                 logger.info(t(setting.enableTelemetry ? 'telemetry.status.enabled' : 'telemetry.status.disabled'));

@@ -49,7 +49,8 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
 
 const mockGetService = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    getService: (...args: unknown[]) => mockGetService(...args)
+    getService: (...args: unknown[]) => mockGetService(...args),
+    getFioriToolsDirectory: () => '/tmp/fioritools-migrate-test'
 }));
 
 const mockFindSystemByUrl = jest.fn() as jest.Mock;
@@ -1014,7 +1015,15 @@ describe('migrate command', () => {
             );
         };
 
+        const originalEnv = { ...process.env };
+
+        afterEach(() => {
+            process.env = { ...originalEnv };
+        });
+
         beforeEach(async () => {
+            delete process.env.DO_NOT_TRACK;
+            delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
             await initCliTelemetry('1.0.0');
             mockPrompt.mockResolvedValue({ version: '' });
             mockGetProjectInfo.mockResolvedValue({
@@ -1254,6 +1263,19 @@ describe('migrate command', () => {
             expect(mockMigrate).toHaveBeenCalled();
             expect(mockReportEventBlocking).not.toHaveBeenCalled();
         });
+
+        test.each(['DO_NOT_TRACK', 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY'])(
+            'should not report events when %s is set',
+            async (variable) => {
+                process.env[variable] = variable === 'DO_NOT_TRACK' ? '1' : 'true';
+                await initCliTelemetry('1.0.0');
+
+                await migrateWithOptions(['--skip-install']);
+
+                expect(mockMigrate).toHaveBeenCalled();
+                expect(mockReportEventBlocking).not.toHaveBeenCalled();
+            }
+        );
 
         test('should not fail the migration when sending an event fails', async () => {
             mockReportEventBlocking.mockRejectedValue(new Error('network down'));

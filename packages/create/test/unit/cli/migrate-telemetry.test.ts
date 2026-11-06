@@ -1,9 +1,22 @@
-import { jest, describe, test, expect, beforeEach } from '@jest/globals';
-import { homedir } from 'node:os';
+import { jest, describe, test, expect, beforeEach, afterEach } from '@jest/globals';
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+let toolsDirectory = '';
+let tempDirectory = '';
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    getFioriToolsDirectory: () => toolsDirectory
+}));
+
+jest.unstable_mockModule('../../../src/i18n.js', () => ({
+    t: (key: string) => key
+}));
 
 const mockDebug = jest.fn();
+const mockInfo = jest.fn();
 jest.unstable_mockModule('../../../src/tracing/index.js', () => ({
-    getLogger: () => ({ debug: mockDebug, info: jest.fn(), warn: jest.fn(), error: jest.fn() })
+    getLogger: () => ({ debug: mockDebug, info: mockInfo, warn: jest.fn(), error: jest.fn() })
 }));
 
 const mockInitTelemetrySettings = jest.fn() as jest.Mock<(...args: unknown[]) => Promise<void>>;
@@ -22,6 +35,8 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
 }));
 
 const {
+    getTelemetryOptOutEnvVariable,
+    showTelemetryNoticeOnce,
     initCliTelemetry,
     trackMigrateEvent,
     isMigrationSuccessful,
@@ -32,12 +47,97 @@ const {
 } = await import('../../../src/cli/migrate/telemetry.js');
 
 describe('migrate telemetry', () => {
+    const originalEnv = { ...process.env };
+
     beforeEach(() => {
+        delete process.env.DO_NOT_TRACK;
+        delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
+        tempDirectory = mkdtempSync(join(tmpdir(), 'create-telemetry-'));
+        toolsDirectory = tempDirectory;
         jest.clearAllMocks();
         mockInitTelemetrySettings.mockResolvedValue(undefined);
         mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: true });
         mockReportEventBlocking.mockResolvedValue(undefined);
         mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
+    });
+
+    afterEach(() => {
+        process.env = { ...originalEnv };
+        rmSync(tempDirectory, { recursive: true, force: true });
+    });
+
+    describe('getTelemetryOptOutEnvVariable', () => {
+        test.each([
+            [{}, undefined],
+            [{ DO_NOT_TRACK: '1' }, 'DO_NOT_TRACK'],
+            [{ DO_NOT_TRACK: 'TRUE' }, 'DO_NOT_TRACK'],
+            [{ DO_NOT_TRACK: '0' }, undefined],
+            [{ DO_NOT_TRACK: '' }, undefined],
+            [{ SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }, 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY'],
+            [{ SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'false' }, undefined]
+        ])('%j -> %s', (env, expected) => {
+            Object.assign(process.env, env);
+            expect(getTelemetryOptOutEnvVariable()).toBe(expected);
+        });
+    });
+
+    describe('opt-out by environment', () => {
+        test.each([
+            ['DO_NOT_TRACK', '1'],
+            ['SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY', 'true']
+        ])('%s disables events and the notice', async (variable, value) => {
+            process.env[variable] = value;
+            await initCliTelemetry('1.0.0');
+
+            await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);
+            showTelemetryNoticeOnce();
+
+            expect(mockReportEventBlocking).not.toHaveBeenCalled();
+            expect(mockInfo).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('showTelemetryNoticeOnce', () => {
+        test('shows the notice only once', async () => {
+            await initCliTelemetry('1.0.0');
+
+            showTelemetryNoticeOnce();
+            showTelemetryNoticeOnce();
+
+            expect(mockInfo).toHaveBeenCalledTimes(1);
+            expect(mockInfo).toHaveBeenCalledWith('telemetry.notice');
+            expect(readdirSync(toolsDirectory)).toEqual(['create-telemetry-notice-shown']);
+        });
+
+        test('does not show the notice when telemetry is disabled', async () => {
+            mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: false });
+            await initCliTelemetry('1.0.0');
+
+            showTelemetryNoticeOnce();
+
+            expect(mockInfo).not.toHaveBeenCalled();
+            expect(existsSync(join(toolsDirectory, 'create-telemetry-notice-shown'))).toBe(false);
+        });
+
+        test('does not repeat the notice when it was shown before', async () => {
+            await initCliTelemetry('1.0.0');
+            writeFileSync(join(toolsDirectory, 'create-telemetry-notice-shown'), '');
+
+            showTelemetryNoticeOnce();
+
+            expect(mockInfo).not.toHaveBeenCalled();
+        });
+
+        test('does not throw when the marker cannot be written', async () => {
+            await initCliTelemetry('1.0.0');
+            // a file in place of the tools directory makes creating the marker fail
+            const blocker = join(toolsDirectory, 'blocker');
+            writeFileSync(blocker, '');
+            toolsDirectory = join(blocker, 'nested');
+
+            expect(() => showTelemetryNoticeOnce()).not.toThrow();
+            expect(mockDebug).toHaveBeenCalledWith(expect.stringContaining('telemetry notice'));
+        });
     });
 
     describe('initCliTelemetry', () => {

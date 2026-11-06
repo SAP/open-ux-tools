@@ -7,8 +7,12 @@ import {
 } from '@sap-ux/telemetry';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { ImportProjectInfo, Message } from '@sap-ux/fiori-migration-writer';
+import { getFioriToolsDirectory } from '@sap-ux/store';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
+import { join } from 'node:path';
 import { getLogger } from '../../tracing/index.js';
+import { t } from '../../i18n.js';
 
 /**
  * Event names shared with the migration events fired by the application modeler (IDE extension).
@@ -30,6 +34,7 @@ const RESOURCE_ID = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 // Upper bound for sending an event, so an unreachable backend never blocks the CLI for long
 const SEND_TIMEOUT_MS = 3000;
 
+const NOTICE_MARKER_FILE = 'create-telemetry-notice-shown';
 const REDACTED = '<redacted>';
 const MAX_MESSAGES_LENGTH = 500;
 
@@ -39,6 +44,22 @@ export type SystemResolvedVia = 'cliOption' | 'savedSystem' | 'basDestination' |
 let telemetryEnabled = false;
 // Set when sending fails or times out, so an unreachable backend delays the CLI at most once per run
 let sendingFailed = false;
+
+/**
+ * Get the environment variable that opts out of telemetry, if set. Besides the variable supported by all
+ * Fiori tools, the cross-tool `DO_NOT_TRACK` convention is honored.
+ *
+ * @returns name of the environment variable, or undefined if telemetry is not disabled by the environment
+ */
+export function getTelemetryOptOutEnvVariable(): string | undefined {
+    if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
+        return 'DO_NOT_TRACK';
+    }
+    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
+        return 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY';
+    }
+    return undefined;
+}
 
 /**
  * Initialize the shared Fiori tools telemetry settings. Failures never affect the CLI.
@@ -56,10 +77,31 @@ export async function initCliTelemetry(version: string): Promise<void> {
         });
         // Events are sent in blocking mode (the process may exit right after), which does not check the opt-out
         // setting itself, so it is resolved once here.
-        telemetryEnabled = (await getTelemetrySetting())?.enableTelemetry !== false;
+        telemetryEnabled = !getTelemetryOptOutEnvVariable() && (await getTelemetrySetting())?.enableTelemetry !== false;
     } catch (error) {
         telemetryEnabled = false;
         getLogger().debug(`Unable to initialize telemetry: ${(error as Error).message}`);
+    }
+}
+
+/**
+ * Tell the user once that usage data is collected and how to opt out. Nothing is shown if telemetry is disabled.
+ * Must be called before the first event is sent.
+ */
+export function showTelemetryNoticeOnce(): void {
+    if (!telemetryEnabled) {
+        return;
+    }
+    try {
+        const markerFile = join(getFioriToolsDirectory(), NOTICE_MARKER_FILE);
+        if (existsSync(markerFile)) {
+            return;
+        }
+        getLogger().info(t('telemetry.notice'));
+        mkdirSync(getFioriToolsDirectory(), { recursive: true });
+        writeFileSync(markerFile, new Date().toISOString());
+    } catch (error) {
+        getLogger().debug(`Unable to remember the telemetry notice: ${(error as Error).message}`);
     }
 }
 

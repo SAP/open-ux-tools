@@ -13,9 +13,15 @@ jest.unstable_mockModule('../../../src/i18n.js', () => ({
 const mockSetEnableTelemetry = jest.fn() as jest.Mock<(enable: boolean) => Promise<void>>;
 const mockGetTelemetrySetting = jest.fn() as jest.Mock<() => Promise<{ enableTelemetry: boolean } | undefined>>;
 jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ClientFactory: { getTelemetryClient: jest.fn() },
+    SampleRate: { NoSampling: 2 },
+    initTelemetrySettings: jest.fn(),
     setEnableTelemetry: (enable: boolean) => mockSetEnableTelemetry(enable),
     getTelemetrySetting: () => mockGetTelemetrySetting()
 }));
+
+jest.unstable_mockModule('@sap-ux/store', () => ({ getFioriToolsDirectory: () => '/tmp/fioritools-test' }));
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({ isInternalFeaturesSettingEnabled: () => false }));
 
 const { getTelemetryCommand } = await import('../../../src/cli/telemetry/index.js');
 
@@ -28,6 +34,8 @@ describe('telemetry command', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        delete process.env.DO_NOT_TRACK;
+        delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
         process.exitCode = undefined;
     });
 
@@ -62,6 +70,19 @@ describe('telemetry command', () => {
         expect(mockSetEnableTelemetry).toHaveBeenCalledWith(false);
         expect(mockLogger.error).toHaveBeenCalledWith('telemetry.status.updateFailed');
         expect(process.exitCode).toBe(1);
+    });
+
+    test('status reports an opt-out by environment variable', async () => {
+        process.env.DO_NOT_TRACK = '1';
+        try {
+            mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: true });
+
+            await run('status');
+
+            expect(mockLogger.info).toHaveBeenCalledWith('telemetry.status.disabledByEnv');
+        } finally {
+            delete process.env.DO_NOT_TRACK;
+        }
     });
 
     test.each([

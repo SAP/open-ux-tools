@@ -15,7 +15,7 @@ import { getListCommands } from './list/index.js';
 import { getGetCommands } from './get/index.js';
 import { getUpdateCommands } from './update/index.js';
 import { getMigrateCommand } from './migrate/index.js';
-import { initCliTelemetry } from './migrate/telemetry.js';
+import { initCliTelemetry, showTelemetryNoticeOnce } from './migrate/telemetry.js';
 import { getTelemetryCommand } from './telemetry/index.js';
 
 /*
@@ -158,6 +158,9 @@ function getCommanderProgram(): Command {
     program.hook('preAction', async (_thisCommand, actionCommand) => {
         if (actionCommand.name() === 'migrate' || actionCommand.parent?.name() === 'telemetry') {
             await initCliTelemetry(version);
+            if (actionCommand.name() === 'migrate') {
+                showTelemetryNoticeOnce();
+            }
         }
     });
 
