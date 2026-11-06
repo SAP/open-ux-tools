@@ -4,7 +4,7 @@
 import type { ManifestNamespace } from '../project-spec-types.js';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import type { NeoappDestination } from '../types.js';
-import { ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
 
 /**
  * Result of neo-app and OData version processing
