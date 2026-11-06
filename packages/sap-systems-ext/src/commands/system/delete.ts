@@ -1,5 +1,6 @@
 import type { StoredSystemViewNode, SystemCommandContext } from '../../types/system';
 import type { PanelManager, SystemPanel } from '../../panel';
+import type { SystemTelemetryProps } from '../../utils';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { window } from 'vscode';
 import {
@@ -56,7 +57,7 @@ function deletionSuccessHandler(
     backendSystem: BackendSystem
 ): void {
     panelManager.deleteAndDispose(panelKey);
-    logTelemetry(SystemActionStatus.DELETED_SUCCESS, backendSystem);
+    logTelemetry(SystemActionStatus.DELETED_SUCCESS, getSystemTelemetryProps(backendSystem));
 
     window.showInformationMessage(t('info.connectionDeleted', geti18nOpts(backendSystem.name)));
 }
@@ -68,20 +69,20 @@ function deletionSuccessHandler(
  */
 function deletionFailureHandler(system: BackendSystem): void {
     window.showWarningMessage(t('error.deletingConnection', geti18nOpts(system.name)));
-    logTelemetry(SystemActionStatus.DELETED_FAIL, system);
+    logTelemetry(SystemActionStatus.DELETED_FAIL, getSystemTelemetryProps(system));
 }
 
 /**
  * Call telemetry logger for system deletion actions.
  *
  * @param status - the status of the action (success or failure)
- * @param system - the backend system the action was performed on
+ * @param systemProps - the system type, connection type and authentication type of the affected system
  */
-function logTelemetry(status: SystemActionStatus, system: BackendSystem): void {
+function logTelemetry(status: SystemActionStatus, systemProps: SystemTelemetryProps): void {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status,
-        ...getSystemTelemetryProps(system)
+        ...systemProps
     });
 }

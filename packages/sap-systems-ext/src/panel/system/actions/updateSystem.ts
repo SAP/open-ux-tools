@@ -1,6 +1,7 @@
 import type { UpdateSystem } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types/system';
 import type { BackendSystem } from '@sap-ux/store';
+import type { SystemTelemetryProps } from '../../../utils';
 import { commands, window } from 'vscode';
 import {
     getBackendSystem,
@@ -64,7 +65,13 @@ export async function updateSystem(context: PanelContext, action: UpdateSystem):
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         const existingSystem = error instanceof ConnectionExistsError ? error.existingSystem : undefined;
-        await postSavingError(message, context.postMessage, backendSystem, context.panelViewType, existingSystem);
+        await postSavingError(
+            message,
+            context.postMessage,
+            getSystemTelemetryProps(backendSystem),
+            context.panelViewType,
+            existingSystem
+        );
     }
 }
 
@@ -157,14 +164,14 @@ async function updateHandler(
  *
  * @param errorMsg - the error message to post
  * @param postMessage - function to post a message to the webview
- * @param backendSystem - the system that failed to be saved, used for telemetry logging
+ * @param systemProps - the system type, connection type and authentication type, used for telemetry logging
  * @param panelViewType - the current panel view type
  * @param existingSystem - optional existing system that caused a conflict
  */
 async function postSavingError(
     errorMsg: string,
     postMessage: PanelContext['postMessage'],
-    backendSystem: BackendSystem,
+    systemProps: SystemTelemetryProps,
     panelViewType?: SystemPanelViewType,
     existingSystem?: BackendSystem
 ): Promise<void> {
@@ -188,7 +195,7 @@ async function postSavingError(
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.SYSTEM,
         status: isUpdate ? SystemActionStatus.UPDATED_FAIL : SystemActionStatus.CREATED_FAIL,
-        ...getSystemTelemetryProps(backendSystem)
+        ...systemProps
     });
 }
 

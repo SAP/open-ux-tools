@@ -2,6 +2,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
 import type { TestConnection, CatalogServicesCounts } from '@sap-ux/sap-systems-ext-types';
 import type { PanelContext } from '../../../types';
+import type { SystemTelemetryProps } from '../../../utils';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import {
@@ -44,7 +45,7 @@ export async function testSystemConnection(context: PanelContext, action: TestCo
     const { system, servicePath } = action.payload;
 
     await postMessage(loadingTestConnectionInfo());
-    logTestTelemetry(TestConnectionStatus.STARTED, system);
+    logTestTelemetry(TestConnectionStatus.STARTED, getSystemTelemetryProps(system));
 
     const validationResult = validateSystemInfo(system, servicePath);
     if (typeof validationResult === 'string') {
@@ -92,13 +93,13 @@ async function testCatalog(
         if ((v2Request.count ?? 0) > 0 || (v4Request.count ?? 0) > 0) {
             postConnectionStatus({ connected: true, catalogResults: serviceCount, postMessage });
             logServiceSummary(system.name, serviceCount);
-            logTestTelemetry(TestConnectionStatus.SUCCEED, system);
+            logTestTelemetry(TestConnectionStatus.SUCCEED, getSystemTelemetryProps(system));
         } else {
             throw new Error(t('error.noServices'));
         }
     } catch (e) {
         handleCatalogError(postMessage, serviceCount, isGuidedAnswersEnabled, e as Error);
-        logTestTelemetry(TestConnectionStatus.FAILED, system);
+        logTestTelemetry(TestConnectionStatus.FAILED, getSystemTelemetryProps(system));
     }
 }
 
@@ -117,7 +118,7 @@ async function testODataService(
     try {
         await hasServiceMetadata(system, servicePath);
         postConnectionStatus({ connected: true, message: t('info.serviceMetadata'), postMessage });
-        logTestTelemetry(TestConnectionStatus.SUCCEED, system);
+        logTestTelemetry(TestConnectionStatus.SUCCEED, getSystemTelemetryProps(system));
     } catch (e) {
         postConnectionStatus({
             connected: false,
@@ -125,7 +126,7 @@ async function testODataService(
             postMessage
         });
         logServiceRequestError(e as AxiosError);
-        logTestTelemetry(TestConnectionStatus.FAILED, system);
+        logTestTelemetry(TestConnectionStatus.FAILED, getSystemTelemetryProps(system));
     }
 }
 
@@ -276,14 +277,14 @@ function logServiceSummary(systemName: string, catalog: CatalogServicesCounts): 
  * Logs telemetry for the test connection action.
  *
  * @param status - the status of the test connection action
- * @param system - the backend system being tested
+ * @param systemProps - the system type, connection type and authentication type of the tested system
  */
-function logTestTelemetry(status: TestConnectionStatus, system: BackendSystem): void {
+function logTestTelemetry(status: TestConnectionStatus, systemProps: SystemTelemetryProps): void {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     TelemetryHelper.sendTelemetry(SYSTEMS_EVENT, {
         action: SystemAction.TEST_CONNECTION,
         status,
-        ...getSystemTelemetryProps(system)
+        ...systemProps
     });
 }
 
