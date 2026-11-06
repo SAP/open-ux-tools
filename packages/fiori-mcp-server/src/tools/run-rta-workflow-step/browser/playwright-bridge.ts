@@ -13,18 +13,7 @@ import {
 import { originKey } from './origin.js';
 import { buildContextOptions, forgetSite, persistSessionState } from './session.js';
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
-import {
-    normalizeUfaResult,
-    resolveAction,
-    runActionInPage,
-    stringifyWithCircularGuard,
-    UFA_PREFIX,
-    type Ui5LoaderWindow
-} from './frontend-actions.js';
-
-// Re-exported so existing consumers (the browser barrel, tests) keep importing
-// these from the bridge after the pure protocol logic moved to frontend-actions.ts.
-export { normalizeUfaResult, resolveAction, runActionInPage, stringifyWithCircularGuard, UFA_PREFIX };
+import { normalizeUfaResult, resolveAction, runActionInPage, type Ui5LoaderWindow } from './frontend-actions.js';
 
 // Browser driver for the adaptation-editor automation.
 //
