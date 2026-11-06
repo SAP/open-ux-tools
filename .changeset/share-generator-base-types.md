@@ -1,6 +1,6 @@
 ---
 "@sap-ux/fiori-generator-shared": minor
-"@sap-ux/fiori-app-sub-generator": major
+"@sap-ux/fiori-app-sub-generator": minor
 "@sap-ux/fiori-migration-writer": minor
 ---
 
