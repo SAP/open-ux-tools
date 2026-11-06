@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { createMemFsEditor, loadProjectIntoEditor } from '../../src/utils/fs-adapter.js';
 import { writeFile as writeFileUtil, initI18n } from '../../src/index.js';
 

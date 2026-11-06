@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger.js';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
@@ -32,7 +33,7 @@ const flpConfigSubGenNamespace = '@sap-ux/flp-config-sub-generator';
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
  */
-export default class extends Generator {
+export default class extends Generator<Record<string, unknown>, FlpConfigOptions> {
     private readonly appWizard: AppWizard;
     private readonly vscode?: VSCodeInstance;
     private readonly launchFlpConfigAsSubGenerator: boolean;
@@ -44,7 +45,6 @@ export default class extends Generator {
     private manifest: Partial<Manifest>;
     private manifestPath: string;
     private promptOptions?: FLPConfigPromptOptions;
-    public options: FlpConfigOptions;
 
     setPromptsCallback: (fn: object) => void;
 
@@ -54,7 +54,7 @@ export default class extends Generator {
      * @param args - arguments passed to the generator
      * @param opts - options passed to the generator
      */
-    constructor(args: string | string[], opts: FlpConfigOptions) {
+    constructor(args: string[], opts: FlpConfigOptions) {
         super(args, opts);
 
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
@@ -62,7 +62,6 @@ export default class extends Generator {
         this.launchFlpConfigAsSubGenerator = opts.launchFlpConfigAsSubGenerator ?? false;
         this.appRootPath = opts.data?.appRootPath ?? opts?.appRootPath ?? this.destinationRoot();
         this.promptOptions = this.options?.inquirerPromptOptions;
-        this.options = opts;
 
         FlpGenLogger.configureLogging(
             this.rootGeneratorName(),
@@ -90,7 +89,9 @@ export default class extends Generator {
         setYeomanEnvConflicterForce(this.env, this.options.force);
 
         const extensionPromptOpts = await getExtensionGenPromptOpts(
-            this.env.create.bind(this.env),
+            // yeoman-environment v6 `env.create` is async; getExtensionGenPromptOpts only needs its
+            // (namespace) => Promise<instance> shape, so narrow the richer v6 signature here.
+            this.env.create.bind(this.env) as (namespaceOrPath: string) => Promise<unknown>,
             flpConfigSubGenNamespace,
             this.vscode
         );
@@ -163,7 +164,9 @@ export default class extends Generator {
 
         this.answers = {} as FLPConfigAnswers;
 
-        const answers = await this.prompt(questions);
+        // yeoman v8 types `this.prompt` with its own PromptQuestions/answers shape; these prompts are
+        // inquirer questions producing FLPConfigAnswers, so bridge both ends through the expected types.
+        const answers = await this.prompt(questions as unknown as PromptQuestions<FLPConfigAnswers>);
         if (answers.s4Continue === false || (answers.overwrite === false && !silentOverwrite)) {
             this.abort = true;
             process.exit(0); // only relevant for CLI
@@ -212,6 +215,7 @@ export default class extends Generator {
                 subTitle: keysAdded && subTitle ? `{{${semanticObject}-${action}.${i18nKeySubTitle}}}` : subTitle
             },
             true,
+            // yeoman v8's this.fs is mem-fs-editor@12; the writer still types its fs param as the @9 Editor.
             this.fs
         );
     }
@@ -248,7 +252,13 @@ export default class extends Generator {
                     value: subTitle
                 });
             }
-            createProps = await createPropertiesI18nEntries(i18nPath, i18nEntries, this.appRootPath, this.fs);
+            createProps = await createPropertiesI18nEntries(
+                i18nPath,
+                i18nEntries,
+                this.appRootPath,
+                // yeoman v8's this.fs is mem-fs-editor@12; the writer still types its fs param as the @9 Editor.
+                this.fs
+            );
         } catch (error) {
             const errorMsg = t('warning.updatei18n', { path: i18nPath });
             this.appWizard.showWarning(errorMsg, MessageType.notification);

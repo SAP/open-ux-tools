@@ -5,7 +5,7 @@ import { addVariantsManagementScript } from '../../../src/variants-config/packag
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -2,7 +2,7 @@
  * Helper functions for preparing configuration data during migration
  */
 import type { ImportProjectInfo } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getUi5ThemeBasedOnUi5Version } from '../utils/index.js';
 import { getSupportedThemes } from '../template/theme.js';
 import { getComponentMapping } from '../components/component-mapping.js';

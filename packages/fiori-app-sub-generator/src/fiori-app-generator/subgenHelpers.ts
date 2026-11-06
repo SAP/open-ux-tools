@@ -52,7 +52,7 @@ export async function addDeployGen(
         telemetryData: { appType: applicationType },
         logWrapper: logger,
         subGenPromptOptions: promptSettings
-    });
+    } as unknown as Parameters<typeof composeWith>[1]);
 }
 
 /**
@@ -108,5 +108,5 @@ export async function addFlpGen(
             }
         };
     }
-    await composeWith('@sap/fiori:flp-config', flpConfigOptions);
+    await composeWith('@sap/fiori:flp-config', flpConfigOptions as unknown as Parameters<typeof composeWith>[1]);
 }

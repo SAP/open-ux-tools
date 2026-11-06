@@ -1,6 +1,6 @@
-import { dirname, join } from 'node:path';
+import { dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { UI5, Ui5App } from './types.js';
 import { getFilePaths } from '@sap-ux/project-access';
@@ -45,9 +45,11 @@ async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: F
         const outPath = join(basePath, relPath);
         // Extend or add
         if (!fs.exists(outPath)) {
-            fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                globOptions: { dot: true },
-                processDestinationPath: processDestinationPath
+            // `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` callback, so the
+            // version segment is stripped from the destination up-front. Store keys are POSIX.
+            const destPath = processDestinationPath(outPath.split(sep).join('/'));
+            fs.copyTpl(optTmplFilePath, destPath, ui5App, undefined, {
+                globOptions: { dot: true }
             });
         } else if (outPath.endsWith('.json')) {
             // Only merge JSON files (e.g., package.json)

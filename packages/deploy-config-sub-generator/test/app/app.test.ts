@@ -1,56 +1,13 @@
-import { dirname, join, sep } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
-import { createRequire } from 'node:module';
-import * as memfs from 'memfs';
-import type fs from 'node:fs';
+import fs from 'node:fs';
+import os from 'node:os';
 
-const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const hasbinSyncMock = jest.fn();
 const mockIsAppStudio = jest.fn<typeof actualBtpUtils.isAppStudio>();
-
-// Create unionfs factory for mocking both ESM and CJS fs modules
-function createUnionFs() {
-    const fsLib = require('node:fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const vol = require('memfs').vol;
-    const _fs = new Union().use(fsLib);
-    const memfsUnion = _fs.use(vol as unknown as typeof fs);
-    memfsUnion.constants = fsLib.constants;
-    memfsUnion.realpath = fsLib.realpath;
-    memfsUnion.realpathSync = fsLib.realpathSync;
-    return memfsUnion;
-}
-
-// Mock for CJS consumers (yeoman-generator uses require('fs'))
-jest.mock('fs', () => {
-    const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const vol = require('memfs').vol;
-    const _fs = new Union().use(fsLib);
-    const memfs = _fs.use(vol as unknown as typeof fs);
-    memfs.constants = fsLib.constants;
-    memfs.realpath = fsLib.realpath;
-    memfs.realpathSync = fsLib.realpathSync;
-    return memfs;
-});
-
-// Mock for ESM consumers
-jest.unstable_mockModule('node:fs', () => {
-    const memfsUnion = createUnionFs();
-    return { __esModule: true, default: memfsUnion, ...memfsUnion };
-});
-
-jest.unstable_mockModule('fs', () => {
-    const memfsUnion = createUnionFs();
-    return { __esModule: true, default: memfsUnion, ...memfsUnion };
-});
 
 jest.unstable_mockModule('hasbin', () => ({
     default: { sync: hasbinSyncMock },
@@ -116,10 +73,17 @@ const { TargetName } = await import('@sap-ux/deploy-config-generator-shared');
 describe('Deployment Generator', () => {
     jest.setTimeout(200000);
     let cwd: string;
+    let outputDir: string;
     const deployPath = join(__dirname, '../src/app');
-    const OUTPUT_DIR_PREFIX = join('/output');
     const testFixture = new TestFixture();
     const mockSubGen = yeomanTest.createDummyGenerator();
+
+    const seedFiles = (files: Record<string, string>): void => {
+        for (const [filePath, contents] of Object.entries(files)) {
+            fs.mkdirSync(dirname(filePath), { recursive: true });
+            fs.writeFileSync(filePath, contents);
+        }
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -129,7 +93,7 @@ describe('Deployment Generator', () => {
         mockGetAbapQuestions.mockImplementation(actualAbapDeploySubGen.getAbapQuestions);
         mockGetMtaPath.mockImplementation(actualProjectAccess.getMtaPath);
         mockFindCapProjectRoot.mockImplementation(actualProjectAccess.findCapProjectRoot);
-        memfs.vol.reset();
+        outputDir = fs.mkdtempSync(join(os.tmpdir(), 'deploy-config-'));
         const mockChdir = jest.spyOn(process, 'chdir');
         mockChdir.mockImplementation((dir): void => {
             cwd = dir;
@@ -143,22 +107,22 @@ describe('Deployment Generator', () => {
         process.stdin.isTTY = true;
     });
 
+    afterEach(() => {
+        fs.rmSync(outputDir, { recursive: true, force: true });
+    });
+
     afterAll(() => {
         jest.resetAllMocks();
         // Remove the test folder if the folder is empty (i.e. no failed tests)
     });
 
     it('Validate deployment generator exists if the incorrect target is set', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
-            },
-            '/'
-        );
+        seedFiles({
+            [join(outputDir, 'project1/ui5.yaml')]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+        });
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
+        const appDir = (cwd = join(outputDir, 'project1'));
         await expect(
             yeomanTest
                 .create(
@@ -172,7 +136,7 @@ describe('Deployment Generator', () => {
                     overwrite: false,
                     skipInstall: true,
                     launchDeployConfigAsSubGenerator: false,
-                    projectPath: OUTPUT_DIR_PREFIX,
+                    projectPath: outputDir,
                     projectName: 'project1',
                     target: 'Unknown'
                 })
@@ -181,18 +145,14 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator is loaded as root generator', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
         const composeWithSpy = jest.spyOn(DeployGenerator.prototype as any, 'composeWith').mockResolvedValue(undefined);
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
-            },
-            '/'
-        );
+        seedFiles({
+            [join(outputDir, 'project1/ui5.yaml')]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+        });
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
+        const appDir = (cwd = join(outputDir, 'project1'));
         await expect(
             yeomanTest
                 .create(
@@ -206,7 +166,7 @@ describe('Deployment Generator', () => {
                     overwrite: false,
                     skipInstall: true,
                     launchDeployConfigAsSubGenerator: false,
-                    projectPath: OUTPUT_DIR_PREFIX,
+                    projectPath: outputDir,
                     projectName: 'project1',
                     appGenDestination: '~Destination',
                     appGenServiceHost: '~Host',
@@ -225,22 +185,14 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator is loaded as sub generator', async () => {
-        cwd = join(OUTPUT_DIR_PREFIX, 'mta-app/project1');
         mockIsAppStudio.mockReturnValueOnce(true);
         mockGetAbapQuestions.mockResolvedValueOnce({ prompts: [], answers: {} } as any);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/mta-app/project1/ui5.yaml`]: testFixture.getContents(
-                    'mta1/app1/ui5-client-value.yaml'
-                ),
-                [`.${OUTPUT_DIR_PREFIX}/mta-app/mta.yaml`]: testFixture.getContents(
-                    'mta1/mta-with-router-deployer.yaml'
-                )
-            },
-            '/'
-        );
+        seedFiles({
+            [join(outputDir, 'mta-app/project1/ui5.yaml')]: testFixture.getContents('mta1/app1/ui5-client-value.yaml'),
+            [join(outputDir, 'mta-app/mta.yaml')]: testFixture.getContents('mta1/mta-with-router-deployer.yaml')
+        });
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/mta-app/project1`);
+        const appDir = (cwd = join(outputDir, 'mta-app/project1'));
         await expect(
             yeomanTest
                 .create(
@@ -274,7 +226,7 @@ describe('Deployment Generator', () => {
         );
         expect(mockGetAbapQuestions).toHaveBeenCalledWith(
             expect.objectContaining({
-                appRootPath: expect.stringContaining(join('/output/mta-app/project1')),
+                appRootPath: expect.stringContaining(join(outputDir, 'mta-app/project1')),
                 backendConfig: {
                     client: 100,
                     path: '/sap',
@@ -286,17 +238,13 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator is loaded and backend config is loaded from options', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
         mockGetAbapQuestions.mockResolvedValueOnce({ prompts: [], answers: {} } as any);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
-            },
-            '/'
-        );
+        seedFiles({
+            [join(outputDir, 'project1/ui5.yaml')]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+        });
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
+        const appDir = (cwd = join(outputDir, 'project1'));
         await expect(
             yeomanTest
                 .create(
@@ -360,17 +308,13 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator is ran standalone (no backend config)', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
         mockGetAbapQuestions.mockResolvedValueOnce({ prompts: [], answers: {} } as any);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('mta1/app1/ui5.yaml')
-            },
-            '/'
-        );
+        seedFiles({
+            [join(outputDir, 'project1/ui5.yaml')]: testFixture.getContents('mta1/app1/ui5.yaml')
+        });
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
+        const appDir = (cwd = join(outputDir, 'project1'));
         await expect(
             yeomanTest
                 .create(
@@ -400,18 +344,14 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}capproject`;
         mockIsAppStudio.mockReturnValueOnce(true);
         mockGetMtaPath.mockResolvedValue(undefined);
         mockFindCapProjectRoot.mockResolvedValue('CAPNodejs');
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/capproject/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
-            },
-            '/'
-        );
+        seedFiles({
+            [join(outputDir, 'capproject/ui5.yaml')]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+        });
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/capproject`);
+        const appDir = (cwd = join(outputDir, 'capproject'));
         await expect(
             yeomanTest
                 .create(
@@ -425,7 +365,7 @@ describe('Deployment Generator', () => {
                     overwrite: false,
                     skipInstall: true,
                     launchDeployConfigAsSubGenerator: false,
-                    projectPath: OUTPUT_DIR_PREFIX,
+                    projectPath: outputDir,
                     projectName: 'capproject'
                 })
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])

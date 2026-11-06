@@ -1,6 +1,6 @@
 import { join, dirname } from 'node:path';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { ToolsLogger } from '@sap-ux/logger';
 
 import { ChangeType, ServiceType } from '../../../types.js';

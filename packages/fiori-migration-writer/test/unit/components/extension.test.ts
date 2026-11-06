@@ -21,15 +21,7 @@ describe('components/extension', () => {
      * Helper to commit mem-fs changes
      */
     async function commitEditor(fs: ReturnType<typeof createMemFsEditor>): Promise<void> {
-        await new Promise<void>((resolve, reject) => {
-            fs.commit((err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
+        await fs.commit();
     }
 
     describe('updateExtConfigJson', () => {

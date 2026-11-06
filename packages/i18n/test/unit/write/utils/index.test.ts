@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 // Import real printPropertiesI18nEntry from the leaf module (not the barrel)
 // This avoids caching the barrel so our mock can take effect

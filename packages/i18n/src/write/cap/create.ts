@@ -4,7 +4,7 @@ import { getI18nConfiguration, getCapI18nFolder } from '../../utils/index.js';
 import { tryAddJsonTexts } from './json.js';
 import { tryAddCsvTexts } from './csv.js';
 import { tryAddPropertiesTexts } from './properties.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Create new i18n entries to an existing file or in a new file if one does not exist.

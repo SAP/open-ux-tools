@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { Manifest } from '@sap-ux/project-access';

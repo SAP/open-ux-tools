@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n.js';
 import { join } from 'node:path';
 import { PromptState } from '../../src/prompts/prompt-state.js';

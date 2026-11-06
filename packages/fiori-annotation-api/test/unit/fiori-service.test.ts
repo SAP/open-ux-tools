@@ -5,7 +5,7 @@ import { dirname, join, posix, relative, sep } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import { create as createStore } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
 
 import type { Project } from '@sap-ux/project-access';

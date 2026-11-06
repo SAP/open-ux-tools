@@ -9,13 +9,14 @@ import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaul
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { getTemplateVersionPath, processDestinationPath } from './utils.js';
+import { getTemplateVersionPath, processDestinationPath, copyTplAndRename } from './utils.js';
+import type { CopyOptionsWithIgnore } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests.js';
 import type { Logger } from '@sap-ux/logger';
 import { addVirtualTestConfig } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { BasicAppSettings, FreestyleApp } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -64,20 +65,20 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     };
     const templateVersionPath = getTemplateVersionPath(ffApp);
 
-    fs.copyTpl(
+    const copyOptions: CopyOptionsWithIgnore = { globOptions: { ignore, dot: true } };
+    copyTplAndRename(
+        fs,
         join(tmplPath, 'common', 'add', templateVersionPath),
         basePath,
         {
             ...appConfig,
             escapeFLPText
         },
-        undefined,
-        {
-            globOptions: { ignore, dot: true },
-            processDestinationPath: processDestinationPath
-        }
+        processDestinationPath,
+        copyOptions
     );
-    fs.copyTpl(
+    copyTplAndRename(
+        fs,
         join(
             tmplPath,
             ffApp.template.type,
@@ -86,35 +87,20 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         ),
         basePath,
         ffApp,
-        undefined,
-        {
-            globOptions: { ignore, dot: true },
-            processDestinationPath: processDestinationPath
-        }
+        processDestinationPath,
+        copyOptions
     );
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
-        fs.copyTpl(
-            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`),
-            viewTarget,
-            ffApp,
-            undefined,
-            {
-                processDestinationPath: processDestinationPath
-            }
-        );
+        fs.copyTpl(join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`), viewTarget, ffApp);
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
         fs.copyTpl(
             join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/Controller.${ext}`),
             controllerTarget,
-            ffApp,
-            undefined,
-            {
-                processDestinationPath: processDestinationPath
-            }
+            ffApp
         );
     }
 

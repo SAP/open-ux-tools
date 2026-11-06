@@ -11,7 +11,7 @@ import {
 import { jsonToI18nBundle } from '../../transformer/json/index.js';
 import { propertiesToI18nEntry } from '../../transformer/properties/index.js';
 import { csvToI18nBundle } from '../../transformer/csv/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Try to convert text to i18n bundle.

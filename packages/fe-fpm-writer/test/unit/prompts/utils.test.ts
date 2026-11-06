@@ -1,6 +1,6 @@
 import { getAnswer } from '../../../src/prompts/utils.js';
 import { getExistingButtonGroups } from '../../../src/building-block/prompts/utils/xml.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 describe('Prompts', () => {
     describe('getAnswer', () => {

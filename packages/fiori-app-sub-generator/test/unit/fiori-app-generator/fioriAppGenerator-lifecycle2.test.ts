@@ -12,10 +12,11 @@ import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Generator from 'yeoman-generator';
-import yeomanTest from 'yeoman-test';
+import { createEnv } from 'yeoman-environment';
 import type { Project, State } from '../../../src/types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const generatorResolved = join(__dirname, '../../../src/fiori-app-generator/index.ts');
 
 // Pre-import actuals
 const actualTransforms = await import('../../../src/fiori-app-generator/transforms.js');
@@ -169,7 +170,9 @@ describe('Test FioriAppGenerator', () => {
     beforeEach(() => {
         options = {
             appWizard: {} as AppWizard,
-            env: (yeomanTest as any).createEnv([]),
+            namespace: '@sap/fiori:app',
+            resolved: generatorResolved,
+            env: createEnv(),
             telemetryData: { data1: 'value1' },
             floorplan: FloorplanFE.FE_OVP,
             yeomanUiStepConfig: allYUIStepsConfig

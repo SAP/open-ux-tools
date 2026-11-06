@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const mockGetMinimumUI5Version = jest.fn();
 const mockGetProjectType = jest.fn();

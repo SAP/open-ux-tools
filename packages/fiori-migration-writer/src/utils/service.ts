@@ -1,7 +1,7 @@
 import { fileExists } from './file-access.js';
 import { createMemFsEditor } from './fs-adapter.js';
 import type { Manifest } from '../project-spec-types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { XMLValidator, XMLParser } from 'fast-xml-parser';
 import { join } from 'node:path';
 

@@ -34,12 +34,11 @@
         "@sap-ux/nodejs-utils": "workspace:*",
         "@vscode-logging/logger": "2.0.10",
         "i18next": "26.5.11",
-        "yeoman-generator": "5.10.0"
+        "yeoman-generator": "8.2.2"
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
         "@types/inquirer": "8.2.6",
-        "@types/yeoman-generator": "5.2.14",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/store": "workspace:*"

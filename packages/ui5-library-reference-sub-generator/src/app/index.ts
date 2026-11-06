@@ -16,7 +16,7 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { prompt } from '@sap-ux/ui5-library-reference-inquirer';
 import { t } from '../utils/i18n.js';
 import { EventName } from '../telemetryEvents/index.js';
-import type { UI5ReferenceLibGenerator } from './types.js';
+import type { UI5ReferenceLibGenerator, UI5ReferenceLibGeneratorOptions } from './types.js';
 import type { ReuseLibConfig } from '@sap-ux/ui5-library-reference-writer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InquirerAdapter, UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';
@@ -26,7 +26,10 @@ import type { InquirerAdapter, UI5LibraryReferenceAnswers } from '@sap-ux/ui5-li
  *
  * @extends Generator
  */
-export default class extends Generator implements UI5ReferenceLibGenerator {
+export default class
+    extends Generator<Record<string, unknown>, UI5ReferenceLibGeneratorOptions>
+    implements UI5ReferenceLibGenerator
+{
     answers: UI5LibraryReferenceAnswers = {};
     prompts: Prompts;
     appWizard: AppWizard;
@@ -40,7 +43,7 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
      * @param args - arguments passed to the generator
      * @param opts - options passed to the generator
      */
-    constructor(args: string | string[], opts: Generator.GeneratorOptions) {
+    constructor(args: string[], opts: UI5ReferenceLibGeneratorOptions) {
         super(args, opts);
 
         this.appWizard = opts.appWizard || AppWizard.create(opts);
@@ -101,6 +104,8 @@ export default class extends Generator implements UI5ReferenceLibGenerator {
 
         try {
             if (this.answers.targetProjectFolder) {
+                // yeoman v8's this.fs is mem-fs-editor@12; the writer still types its fs param as the @9 Editor.
+                // Derive that param type from `generate` itself so no direct mem-fs-editor dependency is needed.
                 await generate(this.answers.targetProjectFolder, reuseLibConfigs, this.fs);
             }
         } catch (e) {

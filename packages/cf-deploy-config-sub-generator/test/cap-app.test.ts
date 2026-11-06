@@ -1,43 +1,13 @@
 import { jest } from '@jest/globals';
-import path, { join, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 import fs from 'node:fs';
-import * as memfs from 'memfs';
-import { Union } from 'unionfs';
+import os from 'node:os';
 import yeomanTest from 'yeoman-test';
 import { TestFixture } from './fixtures/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
-const require = createRequire(import.meta.url);
 const __testdirname = dirname(fileURLToPath(import.meta.url));
-
-// CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
-jest.mock('fs', () => {
-    const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const vol = require('memfs').vol;
-    const _fs = new Union().use(fsLib);
-    const unionFs = _fs.use(vol as unknown as typeof fs);
-    unionFs.constants = fsLib.constants;
-    unionFs.realpath = fsLib.realpath;
-    unionFs.realpathSync = fsLib.realpathSync;
-    return unionFs;
-});
-
-// ESM mock for 'node:fs' — intercepted by ESM imports (e.g., mock-mta.ts)
-const realFs = { ...fs };
-const esmUnionFs = new Union().use(realFs as unknown as typeof fs).use(memfs.vol as unknown as typeof fs);
-(esmUnionFs as any).constants = fs.constants;
-(esmUnionFs as any).realpath = fs.realpath;
-(esmUnionFs as any).realpathSync = fs.realpathSync;
-
-jest.unstable_mockModule('node:fs', () => ({
-    ...esmUnionFs,
-    default: esmUnionFs
-}));
 
 const mockHasbinSync = jest.fn() as jest.Mock;
 
@@ -46,7 +16,7 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: mockHasbinSync
 }));
 
-// Import MockMta AFTER fs mocks are set up so it gets the mocked fs
+// Import MockMta AFTER mocks are set up
 const { MockMta } = await import('./utils/mock-mta.js');
 
 jest.unstable_mockModule('@sap/mta-lib', () => ({
@@ -98,7 +68,7 @@ jest.unstable_mockModule('@sap-ux/cf-deploy-config-writer', () => ({
 
 // Dynamic imports after mock registration
 const { default: CFGenerator } = await import('../src/app/index.js');
-const { initI18n, t } = await import('../src/utils/index.js');
+const { initI18n } = await import('../src/utils/index.js');
 const { RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
 
 const mockShowInformation = jest.fn() as jest.Mock;
@@ -110,19 +80,21 @@ const mockAppWizard = {
 
 describe('Cloud foundry generator tests', () => {
     jest.setTimeout(10000);
-    let cwd: string;
     let fsMock: Editor;
+    let outputDir: string;
     const cfGenPath = join(__testdirname, '../src/app');
-    const OUTPUT_DIR_PREFIX = join('/output');
     const testFixture = new TestFixture();
+
+    const seedFiles = (files: Record<string, string>): void => {
+        for (const [filePath, contents] of Object.entries(files)) {
+            fs.mkdirSync(dirname(filePath), { recursive: true });
+            fs.writeFileSync(filePath, contents);
+        }
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
-        memfs.vol.reset();
-        const mockChdir = jest.spyOn(process, 'chdir');
-        mockChdir.mockImplementation((dir): void => {
-            cwd = dir;
-        });
+        outputDir = fs.mkdtempSync(join(os.tmpdir(), 'cf-cap-app-'));
         fsMock = {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
@@ -141,35 +113,29 @@ describe('Cloud foundry generator tests', () => {
         await initI18n();
     });
 
-    afterAll(() => {
+    afterEach(() => {
         jest.resetAllMocks();
+        fs.rmSync(outputDir, { recursive: true, force: true });
     });
 
     it('Validate Approuter prompting aborts if user doesnt want to proceed', async () => {
         mockHasbinSync.mockReturnValue(true);
-        mockFindCapProjectRoot.mockReturnValueOnce('/capmissingmta');
+        const capRoot = join(outputDir, 'capmissingmta');
+        mockFindCapProjectRoot.mockReturnValueOnce(capRoot);
         mockGenerateCAPConfig.mockResolvedValue(fsMock);
         mockGenerateAppConfig.mockResolvedValue(fsMock);
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/testui5app/webapp/manifest.json`]: testFixture.getContents(
-                    'cap/app/testui5app/webapp/manifest.json'
-                ),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/testui5app/package.json`]: testFixture.getContents(
-                    'cap/app/testui5app/package.json'
-                ),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/testui5app/ui5.yaml`]:
-                    testFixture.getContents('cap/app/testui5app/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/services.cds`]:
-                    testFixture.getContents('cap/app/services.cds'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/db/schmea.cds`]: testFixture.getContents('cap/db/schema.cds'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/srv/cat-service.cds`]:
-                    testFixture.getContents('cap/srv/cat-service.cds')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'capmissingmta', 'app', 'testui5app');
+        seedFiles({
+            [join(capRoot, 'app/testui5app/webapp/manifest.json')]: testFixture.getContents(
+                'cap/app/testui5app/webapp/manifest.json'
+            ),
+            [join(capRoot, 'app/testui5app/package.json')]: testFixture.getContents('cap/app/testui5app/package.json'),
+            [join(capRoot, 'app/testui5app/ui5.yaml')]: testFixture.getContents('cap/app/testui5app/ui5.yaml'),
+            [join(capRoot, 'app/services.cds')]: testFixture.getContents('cap/app/services.cds'),
+            [join(capRoot, 'db/schmea.cds')]: testFixture.getContents('cap/db/schema.cds'),
+            [join(capRoot, 'srv/cat-service.cds')]: testFixture.getContents('cap/srv/cat-service.cds')
+        });
+        const appDir = join(capRoot, 'app', 'testui5app');
 
         await expect(
             yeomanTest
@@ -189,7 +155,7 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({
                     addCapMtaContinue: false,
                     routerType: RouterModuleType.Managed,
-                    mtaPath: join(OUTPUT_DIR_PREFIX, 'capmissingmta'),
+                    mtaPath: capRoot,
                     mtaId: 'capmtaid'
                 })
                 .run()
@@ -202,30 +168,23 @@ describe('Cloud foundry generator tests', () => {
 
     it('Validate Approuter prompting is shown if HTML5 is being added to a CAP project with missing mta', async () => {
         mockHasbinSync.mockReturnValue(true);
-        mockFindCapProjectRoot.mockReturnValue(join('/output/', '/capmissingmta'));
+        const capRoot = join(outputDir, 'capmissingmta');
+        mockFindCapProjectRoot.mockReturnValue(capRoot);
         mockGenerateCAPConfig.mockResolvedValue(fsMock);
         mockGenerateAppConfig.mockResolvedValue(fsMock);
 
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/testui5app/webapp/manifest.json`]: testFixture.getContents(
-                    'cap/app/testui5app/webapp/manifest.json'
-                ),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/testui5app/package.json`]: testFixture.getContents(
-                    'cap/app/testui5app/package.json'
-                ),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/testui5app/ui5.yaml`]:
-                    testFixture.getContents('cap/app/testui5app/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/app/services.cds`]:
-                    testFixture.getContents('cap/app/services.cds'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/db/schmea.cds`]: testFixture.getContents('cap/db/schema.cds'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/srv/cat-service.cds`]:
-                    testFixture.getContents('cap/srv/cat-service.cds'),
-                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/package.json`]: testFixture.getContents('cap/package.json')
-            },
-            '/'
-        );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'capmissingmta', 'app', 'testui5app');
+        seedFiles({
+            [join(capRoot, 'app/testui5app/webapp/manifest.json')]: testFixture.getContents(
+                'cap/app/testui5app/webapp/manifest.json'
+            ),
+            [join(capRoot, 'app/testui5app/package.json')]: testFixture.getContents('cap/app/testui5app/package.json'),
+            [join(capRoot, 'app/testui5app/ui5.yaml')]: testFixture.getContents('cap/app/testui5app/ui5.yaml'),
+            [join(capRoot, 'app/services.cds')]: testFixture.getContents('cap/app/services.cds'),
+            [join(capRoot, 'db/schmea.cds')]: testFixture.getContents('cap/db/schema.cds'),
+            [join(capRoot, 'srv/cat-service.cds')]: testFixture.getContents('cap/srv/cat-service.cds'),
+            [join(capRoot, 'package.json')]: testFixture.getContents('cap/package.json')
+        });
+        const appDir = join(capRoot, 'app', 'testui5app');
 
         await expect(
             yeomanTest
@@ -245,7 +204,7 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({
                     addCapMtaContinue: true,
                     routerType: RouterModuleType.Managed,
-                    mtaPath: join(OUTPUT_DIR_PREFIX, 'capmissingmta'),
+                    mtaPath: capRoot,
                     mtaId: 'capmtaid' // Will be ignored as question is disabled
                 })
                 .run()
@@ -254,7 +213,7 @@ describe('Cloud foundry generator tests', () => {
             expect.objectContaining({
                 mtaId: 'captestproject', // Read from the package.json
                 addCapMtaContinue: true,
-                mtaPath: join(OUTPUT_DIR_PREFIX, 'capmissingmta'),
+                mtaPath: capRoot,
                 routerType: 'managed'
             }),
             expect.anything(),

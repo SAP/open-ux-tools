@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import * as utils from '../../../src/common/utils.js';
 import { create as createFS } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

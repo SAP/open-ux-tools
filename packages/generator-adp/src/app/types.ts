@@ -1,12 +1,13 @@
-import type Generator from 'yeoman-generator';
+import type { BaseOptions } from 'yeoman-generator';
 import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { LogWrapper, TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AdaptationDescriptor, AdaptationProjectType, KeyUserChangeContent } from '@sap-ux/axios-extension';
 import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 
-export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
+export type AdpGeneratorOptions = BaseOptions & {
     /**
      * VSCode instance
      */
@@ -27,7 +28,19 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
      * A boolean flag indicating whether node_modules should be installed after project generation.
      */
     shouldInstallDeps?: boolean;
-}
+    /**
+     * VSCode extension logger
+     */
+    logger?: IVSCodeExtLogger;
+    /**
+     * Log level used for CLI logging
+     */
+    logLevel?: LogLevel;
+    /**
+     * Shared log wrapper instance passed from a parent generator
+     */
+    logWrapper?: LogWrapper;
+};
 
 /**
  * Enumeration of prompt names used in the configuration.

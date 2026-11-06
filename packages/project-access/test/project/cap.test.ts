@@ -3,7 +3,7 @@ import path, { join, sep, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type * as childProcess from 'node:child_process';
 import { create as createStorage, type Store } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import type * as projectModuleType from '../../src/project/module-loader.js';
 import type * as fileType from '../../src/file/index.js';
 import type { Package } from '../../src/index.js';
@@ -1442,13 +1442,15 @@ describe('deleteCapApp', () => {
         // Check deleted and not deleted folders
         expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
         expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
-        expect(getDeletedFiles()).toEqual([
-            join(capProject, 'apps', FileName.IndexCds),
-            join(capProject, 'apps', 'one', 'annotations.cds'),
-            join(capProject, 'apps', 'one', FileName.Package),
-            join(capProject, 'apps', 'one', FileName.Ui5Yaml),
-            join(capProject, 'apps', 'one', 'source', 'webapp', FileName.Manifest)
-        ]);
+        expect(getDeletedFiles().sort()).toEqual(
+            [
+                join(capProject, 'apps', FileName.IndexCds),
+                join(capProject, 'apps', 'one', 'annotations.cds'),
+                join(capProject, 'apps', 'one', FileName.Package),
+                join(capProject, 'apps', 'one', FileName.Ui5Yaml),
+                join(capProject, 'apps', 'one', 'source', 'webapp', FileName.Manifest)
+            ].sort()
+        );
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
         expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
@@ -1470,11 +1472,13 @@ describe('deleteCapApp', () => {
         // Check deleted and not deleted folders
         expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
         expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
-        expect(getDeletedFiles()).toEqual([
-            join(capProject, 'apps', 'two', 'annotations.cds'),
-            join(capProject, 'apps', 'two', FileName.Package),
-            join(capProject, 'apps', 'two', 'webapp', FileName.Manifest)
-        ]);
+        expect(getDeletedFiles().sort()).toEqual(
+            [
+                join(capProject, 'apps', 'two', 'annotations.cds'),
+                join(capProject, 'apps', 'two', FileName.Package),
+                join(capProject, 'apps', 'two', 'webapp', FileName.Manifest)
+            ].sort()
+        );
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-two']).toBeUndefined();
         expect(modifiedPackage?.scripts?.['watch-one']).toBeDefined();

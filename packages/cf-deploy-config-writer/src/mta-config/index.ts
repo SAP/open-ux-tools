@@ -34,7 +34,7 @@ import {
 import LoggerHelper from '../logger-helper.js';
 import { sync } from 'hasbin';
 import { t } from '../i18n.js';
-import { type Editor } from 'mem-fs-editor';
+import { type MemFsEditor as Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
 

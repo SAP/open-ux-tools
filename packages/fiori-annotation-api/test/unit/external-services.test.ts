@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import { createElementNode, Range, Edm, Location } from '@sap-ux/odata-annotation-core-types';
 
 import { createFsEditorForProject } from './virtual-fs.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { pathFromUri } from '../../src/utils/path.js';
 import { PROJECTS } from './projects.js';
 import type { ValueListReference } from '../../src/types/adapter.js';

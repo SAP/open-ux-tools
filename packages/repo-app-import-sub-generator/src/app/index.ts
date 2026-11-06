@@ -1,4 +1,5 @@
 import Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import RepoAppDownloadLogger from '../utils/logger.js';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
@@ -60,7 +61,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
  * Generator class for downloading a basic app from a repository.
  * This class handles the process of app selection, downloading the app and generating a fiori app from the downloaded app
  */
-export default class extends Generator {
+export default class extends Generator<Record<string, unknown>, RepoAppDownloadOptions> {
     private readonly appWizard: AppWizard;
     private readonly vscode?: any;
     private readonly appRootPath: string;
@@ -81,7 +82,7 @@ export default class extends Generator {
      * @param args - arguments passed to the generator
      * @param opts - options passed to the generator
      */
-    constructor(args: string | string[], opts: RepoAppDownloadOptions) {
+    constructor(args: string[], opts: RepoAppDownloadOptions) {
         super(args, opts);
 
         // Initialise properties from options
@@ -138,7 +139,7 @@ export default class extends Generator {
             isCli(),
             this.downloadType
         );
-        const answers: RepoAppDownloadAnswers = await this.prompt(questions);
+        const answers = await this.prompt(questions as unknown as PromptQuestions<RepoAppDownloadAnswers>);
         const { targetFolder } = answers;
         if (quickDeployedAppConfig?.appId) {
             // Handle quick deployed app download where prompts for system selection and app selection are not displayed
@@ -200,19 +201,20 @@ export default class extends Generator {
      * Writing phase for ABAP Repository downloads.
      */
     private async _generateAbapRepositoryApp(): Promise<void> {
+        const fs = this.fs;
         const webappPath = join(this.projectPath, DirName.Webapp);
-        await extractZip(webappPath, this.fs);
+        await extractZip(webappPath, fs);
 
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
         if (serviceProvider) {
-            await writeServiceMetadata(serviceProvider, webappPath, this.fs);
+            await writeServiceMetadata(serviceProvider, webappPath, fs);
         }
 
-        cleanupArtifacts(webappPath, this.fs);
-        const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, this.fs);
+        cleanupArtifacts(webappPath, fs);
+        const appConfig = getAbapRepoAppConfig(webappPath, this.answers.selectedApp, fs);
 
         // If package.json does not exist in the extracted app, add a minimal one with the appId as the package name.
-        addPackageJsonIfNotFound(this.projectPath, appConfig, this.fs);
+        addPackageJsonIfNotFound(this.projectPath, appConfig, fs);
 
         // Generate deploy config
         const context: AppDownloadContext = {
@@ -228,15 +230,15 @@ export default class extends Generator {
             await createLaunchConfig(
                 this.projectPath,
                 fioriOptions,
-                this.fs,
+                fs,
                 RepoAppDownloadLogger.logger as unknown as Logger
             );
-            writeApplicationInfoSettings(this.projectPath);
+            await writeApplicationInfoSettings(this.projectPath);
         }
 
         // Generate README
         const readMeConfig = this._getReadMeConfig(appConfig);
-        generateAppGenInfo(this.projectPath, readMeConfig, this.fs);
+        generateAppGenInfo(this.projectPath, readMeConfig, fs);
     }
 
     /**
@@ -244,10 +246,11 @@ export default class extends Generator {
      * Generates a full Fiori project from qfa.json metadata including deploy config.
      */
     private async _generateAdtQuickDeployApp(): Promise<void> {
-        await extractZip(this.extractedProjectPath, this.fs);
+        const fs = this.fs;
+        await extractZip(this.extractedProjectPath, fs);
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
-        const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
+        const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, fs);
         // Generate project files
         validateQfaJsonFile(qfaJson);
         const context: AppDownloadContext = {
@@ -261,13 +264,13 @@ export default class extends Generator {
             this.extractedProjectPath,
             context,
             this.answers.systemSelection,
-            this.fs
+            fs
         );
-        await generate(this.projectPath, config, this.fs);
+        await generate(this.projectPath, config, fs);
 
         // Generate deploy config
         this.deployConfig = await getAdtDeployConfig(context);
-        await generateDeployConfig(this.projectPath, this.deployConfig, undefined, this.fs);
+        await generateDeployConfig(this.projectPath, this.deployConfig, undefined, fs);
 
         if (this.vscode) {
             // Generate Fiori launch config
@@ -276,22 +279,22 @@ export default class extends Generator {
             await createLaunchConfig(
                 this.projectPath,
                 fioriOptions,
-                this.fs,
+                fs,
                 RepoAppDownloadLogger.logger as unknown as Logger
             );
-            writeApplicationInfoSettings(this.projectPath);
+            await writeApplicationInfoSettings(this.projectPath);
         }
 
         // Generate README
         const readMeConfig = this._getReadMeConfig(config);
-        generateAppGenInfo(this.projectPath, readMeConfig, this.fs);
+        generateAppGenInfo(this.projectPath, readMeConfig, fs);
 
         // Replace webapp files with downloaded app files
-        await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+        await replaceWebappFiles(this.projectPath, this.extractedProjectPath, fs);
 
-        await validateAndUpdateManifestUI5Version(join(this.projectPath, DirName.Webapp, FileName.Manifest), this.fs);
+        await validateAndUpdateManifestUI5Version(join(this.projectPath, DirName.Webapp, FileName.Manifest), fs);
         // Clean up extracted project files
-        this.fs.delete(this.extractedProjectPath);
+        fs.delete(this.extractedProjectPath);
     }
 
     /**
@@ -375,13 +378,10 @@ export default class extends Generator {
     private async _runNpmInstall(path: string): Promise<void> {
         const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
         // install dependencies
-        await this.spawnCommand(
-            npm,
-            ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'],
-            {
-                cwd: path
-            }
-        );
+        // yeoman v8 renamed the args-array form of `spawnCommand` to `spawn`
+        await this.spawn(npm, ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'], {
+            cwd: path
+        });
     }
 
     /**

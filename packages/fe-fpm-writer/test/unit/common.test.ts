@@ -1,5 +1,5 @@
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { EdmxAnnotationsInfo, OdataService, ProjectPaths } from './types.js';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { deleteServiceFromManifest } from './data/manifest.js';

@@ -9,13 +9,21 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import type { ProviderSystem, ServiceConnectivityData } from '@sap/service-provider-apis';
 import { ProviderType } from '@sap/service-provider-apis';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { basename, dirname, join } from 'node:path';
-import type { GeneratorOptions } from 'yeoman-generator';
 import { SAP_NAMESPACE, SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils/index.js';
 import { t } from '../utils/i18n.js';
 import UiServiceGenLogger from '../utils/logger.js';
-import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth } from './types.js';
+import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth, VSCodeInstance } from './types.js';
+
+/**
+ * Subset of the generator options read by {@link runPostGenHook}. Yeoman v8's `BaseOptions`
+ * dropped its index signature, so the fields accessed here are declared explicitly.
+ */
+type PostGenHookOptions = {
+    data?: (PromptOptions & { appGenLaunchCommand?: string }) | undefined;
+    vscode?: VSCodeInstance;
+};
 
 /**
  * Generate the service.
@@ -178,7 +186,7 @@ export function getServiceMedadataContent(
  * @param provider - the service provider
  */
 export async function runPostGenHook(
-    options: GeneratorOptions,
+    options: PostGenHookOptions,
     systemData: AppGenSystemSystemData,
     content: string,
     provider: ServiceProvider
@@ -307,7 +315,7 @@ export async function checkConnection(provider: AbapServiceProvider): Promise<bo
  * @param appWizard - the app wizard reference
  */
 export function setToolbarMessage(
-    data: PromptOptions,
+    data: PromptOptions | undefined,
     systemSelectionAnswers: SystemSelectionAnswers,
     appWizard: AppWizard
 ): void {

@@ -1,7 +1,7 @@
 import { homedir } from 'node:os';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 
 export const appInfoFilePath = join(homedir(), '.fioritools', 'appInfo.json');
@@ -44,14 +44,12 @@ function readJSONFile(filePath: string, fs: Editor): AppInfoSettings {
  * @param {string} path - The file path to add to the `latestGeneratedFiles` array.
  * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
  */
-export function writeApplicationInfoSettings(path: string, fs?: Editor) {
+export async function writeApplicationInfoSettings(path: string, fs?: Editor): Promise<void> {
     fs = getFsInstance(fs);
     const appInfoContents: AppInfoSettings = readJSONFile(appInfoFilePath, fs);
     appInfoContents.latestGeneratedFiles.push(path);
     fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
-    fs.commit((err) => {
-        console.log('Error in writting to AppInfo.json file', err);
-    });
+    await fs.commit();
 }
 
 /**
@@ -62,16 +60,12 @@ export function writeApplicationInfoSettings(path: string, fs?: Editor) {
  * @param {Editor} [fs] - The optional mem-fs editor instance. If not provided, a new instance is created.
  * @throws {Error} Throws an error if there is a problem deleting the file.
  */
-export function deleteAppInfoSettings(fs?: Editor) {
+export async function deleteAppInfoSettings(fs?: Editor): Promise<void> {
     fs = getFsInstance(fs);
     if (fs.exists(appInfoFilePath)) {
         try {
-            // suppressErrors prevents globby from throwing ENOTDIR when the parent
-            // directory doesn't exist on disk (file exists only in-memory store).
-            fs.delete(appInfoFilePath, { globOptions: { suppressErrors: true } });
-            fs.commit((err) => {
-                console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
-            });
+            fs.delete(appInfoFilePath);
+            await fs.commit();
         } catch (err) {
             throw new Error(`Error deleting appInfo.json file: ${err}`);
         }
@@ -113,6 +107,8 @@ export function loadApplicationInfoFromSettings(
         if (executeCommand && filePath && autoOpen) {
             executeCommand(filePath);
         }
-        deleteAppInfoSettings(fs);
+        deleteAppInfoSettings(fs).catch(() => {
+            // fire-and-forget: deletion failure must not block loading the application info
+        });
     }
 }

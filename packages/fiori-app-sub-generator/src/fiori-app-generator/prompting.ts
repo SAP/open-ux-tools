@@ -24,7 +24,6 @@ import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sa
 import type { Question } from 'inquirer';
 import merge from 'lodash/merge.js';
 import { join } from 'node:path';
-import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types/index.js';
 import { Features, defaultPromptValues } from '../types/index.js';
 import { validateViewName } from '@sap-ux/project-input-validator';
@@ -34,6 +33,12 @@ const viewNamePromptName = 'viewName';
 export interface ViewNameAnswer {
     [viewNamePromptName]: string;
 }
+
+/**
+ * The Yeoman environment adapter as consumed by the prompting helpers. The underlying inquirer
+ * adapter is reached via `actualAdapter` when running in the YUI-wrapped environment.
+ */
+type PromptAdapter = { actualAdapter?: unknown } | undefined;
 
 export const getViewQuestion = (): Question<ViewNameAnswer> => {
     return {
@@ -88,7 +93,7 @@ export async function promptUI5ApplicationAnswers(
         entityRelatedConfig
     }: PromptUI5AppAnswersOptions,
     yeomanUiStepConfig: YeomanUiStepConfig[],
-    adapter: Adapter
+    adapter: PromptAdapter
 ): Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules
@@ -139,7 +144,7 @@ export async function promptUI5ApplicationAnswers(
 export async function promptOdataServiceAnswers(
     options: OdataServiceInquirerOptions,
     logger: Logger,
-    adapter: Adapter,
+    adapter: PromptAdapter,
     connectedSystem?: ConnectedSystem
 ): Promise<Service> {
     let inquirerAdapter;

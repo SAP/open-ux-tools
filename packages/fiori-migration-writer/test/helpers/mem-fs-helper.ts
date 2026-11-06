@@ -1,5 +1,5 @@
 import { create as createMemFs } from 'mem-fs';
-import { create as createEditor, type Editor } from 'mem-fs-editor';
+import { create as createEditor, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { readdirSync, statSync, readFileSync } from 'node:fs';
 

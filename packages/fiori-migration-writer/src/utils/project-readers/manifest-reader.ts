@@ -2,7 +2,7 @@
  * Utility for reading and accessing manifest.json files
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { DirName, FileName } from '../../project-spec-types.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { readJSON } from '../../index.js';

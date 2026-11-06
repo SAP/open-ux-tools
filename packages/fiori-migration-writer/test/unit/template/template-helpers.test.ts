@@ -2,7 +2,7 @@ import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, rm } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { applyTemplates } from '../../../src/template/template-helpers.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';
 import { DirName } from '../../../src/project-spec-types.js';

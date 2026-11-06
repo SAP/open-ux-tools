@@ -1,5 +1,5 @@
 import { access } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { findProjectRoot, getProjectType } from '../utils/index.js';
 import { MigrationError } from '../utils/common.js';
 import { i18nText } from '../i18n.js';

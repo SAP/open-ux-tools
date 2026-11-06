@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types/index.js';
 import { readJSON } from '../file/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 export interface UsedEntity {
     service: string;

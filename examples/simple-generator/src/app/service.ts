@@ -1,4 +1,5 @@
 import type Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import type { AxiosBasicCredentials } from 'axios';
 import type { ODataService, AbapServiceProvider, Annotations } from '@sap-ux/axios-extension';
 import type { BackendSystem } from '@sap-ux/store';
@@ -68,7 +69,7 @@ async function askToStoreCredentials(generator: Generator, provider: AbapService
             ...inquirer.systemName,
             default: new URL(provider.defaults.baseURL!).hostname
         }
-    ]);
+    ] as PromptQuestions<{ store: boolean; name: string }>);
     if (store) {
         await storeCredentials(
             name,
@@ -153,7 +154,7 @@ export async function getMetadata(
                         default: generator.config.get('username')
                     },
                     inquirer.password
-                ]);
+                ] as PromptQuestions<AxiosBasicCredentials>);
                 newCredentials = true;
             } else {
                 throw error;

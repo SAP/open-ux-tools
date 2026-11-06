@@ -1,6 +1,6 @@
 import { join, posix } from 'node:path';
 import * as xpath from 'xpath';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Document as XmldomDocument, Element as XmldomElement } from '@xmldom/xmldom';
 import {
     BuildingBlockType,

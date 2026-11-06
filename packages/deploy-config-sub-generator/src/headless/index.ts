@@ -3,6 +3,7 @@ import { unlinkSync } from 'node:fs';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 import { t, generatorNamespace, abapChoice, cfChoice } from '../utils/index.js';
 import { DeployTarget } from '@sap-ux/fiori-generator-shared';
+import type { DeploymentGeneratorOptions } from '@sap-ux/deploy-config-generator-shared';
 import type { CfDeployConfigOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { AbapDeployConfigOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type {
@@ -10,6 +11,15 @@ import type {
     CFDeployConfig as CfHeadlessDeployConfig,
     AbapDeployConfigOptions as AbapHeadlessDeployConfigOptions
 } from '@sap-ux/fiori-generator-shared';
+
+/**
+ * Options accepted by the headless deployment generator.
+ */
+type HeadlessDeployConfigOptions = DeploymentGeneratorOptions & {
+    namespace: string;
+    appConfig?: AppConfig | string;
+    deleteFile?: boolean;
+};
 
 /**
  * Headless deployment generator
@@ -20,13 +30,15 @@ export default class extends DeploymentGenerator {
     appConfig: AppConfig;
     deployTarget?: DeployTarget;
 
+    declare options: HeadlessDeployConfigOptions;
+
     /**
      * Constructor for the headless deployment config generator.
      *
      * @param args - the arguments passed in
      * @param opts - the options passed in
      */
-    public constructor(args: string | string[], opts: any) {
+    public constructor(args: string[], opts: HeadlessDeployConfigOptions) {
         super(args, opts);
         this.genNamespace = opts.namespace;
 
@@ -37,18 +49,19 @@ export default class extends DeploymentGenerator {
                 required: false
             });
             // Is this a file path or app config as string
-            if (Object.keys(this.options.appConfig ?? {}).length === 0) {
+            const appConfigOption = this.options.appConfig;
+            if (!appConfigOption || Object.keys(appConfigOption).length === 0) {
                 throw Error(t('headless.error.headlessGenOptions'));
             }
 
             // Support direct cli/process execution
-            if (typeof this.options.appConfig === 'object') {
-                this.appConfig = this.options.appConfig;
-            } else if (this.fs.exists(this.options.appConfig)) {
-                this.appConfig = JSON.parse(this.fs.read(this.options.appConfig)) as AppConfig;
-                this.absAppConfigPath = resolve(this.options.appConfig);
+            if (typeof appConfigOption === 'object') {
+                this.appConfig = appConfigOption;
+            } else if (this.fs.exists(appConfigOption)) {
+                this.appConfig = JSON.parse(this.fs.read(appConfigOption)) as AppConfig;
+                this.absAppConfigPath = resolve(appConfigOption);
             } else {
-                this.appConfig = JSON.parse(this.options.appConfig) as AppConfig;
+                this.appConfig = JSON.parse(appConfigOption) as AppConfig;
             } // Limited by OS max cli arg length
 
             this.deployTarget = this.appConfig.deployConfig?.deployTarget;
@@ -66,8 +79,8 @@ export default class extends DeploymentGenerator {
             })
         );
         const additionalTelemetryData = {
-            AppGenLaunchSource: this.options.appConfig.telemetryData?.generationSourceName ?? 'Headless',
-            AppGenLaunchSourceVersion: this.options.appConfig.telemetryData?.generationSourceVersion ?? 'Not Provided'
+            AppGenLaunchSource: this.appConfig.telemetryData?.generationSourceName ?? 'Headless',
+            AppGenLaunchSourceVersion: this.appConfig.telemetryData?.generationSourceVersion ?? 'Not Provided'
         };
 
         const deployConfigOpts = this.transformExtConfig();
@@ -75,8 +88,8 @@ export default class extends DeploymentGenerator {
         if (deployConfigOpts && this.deployTarget) {
             const subGen = this.deployTarget === DeployTarget.CF ? cfChoice.name : abapChoice.name;
             await this.composeWith(generatorNamespace(this.genNamespace, subGen), {
-                arguments: this.args,
-                ...Object.assign(this.options, deployConfigOpts, {
+                generatorArgs: this.args,
+                generatorOptions: Object.assign(this.options, deployConfigOpts, {
                     telemetryData: additionalTelemetryData
                 })
             });
@@ -120,7 +133,7 @@ export default class extends DeploymentGenerator {
                     package: abap?.package,
                     transport: abap?.transport,
                     launchDeployConfigAsSubGenerator: true // ensures prompting is skipping within abap sub gen
-                } satisfies AbapDeployConfigOptions;
+                } as AbapDeployConfigOptions;
             }
         }
         return options;

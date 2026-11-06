@@ -2,7 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../types.js';
 import { TemplateType } from '../types.js';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import semVer from 'semver';

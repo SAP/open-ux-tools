@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { dirname, join } from 'node:path';
@@ -81,7 +81,7 @@ describe('add/deploy-config', () => {
         mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
         mockGetExistingAdpProjectType.mockResolvedValue(undefined);
         mockReconcileAnswers.mockReturnValue({});

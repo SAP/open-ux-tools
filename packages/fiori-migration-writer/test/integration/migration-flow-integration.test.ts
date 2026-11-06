@@ -19,7 +19,7 @@ import {
 } from '@sap-ux/ui5-info';
 import { loadProjectIntoMemFs, fileExistsInMemFs, getFileFromMemFs } from '../helpers/mem-fs-helper.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../test-constants.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { toMatchSpecificSnapshot } from 'jest-specific-snapshot';
 
 const PINNED_UI5_VERSION = '1.153.0';

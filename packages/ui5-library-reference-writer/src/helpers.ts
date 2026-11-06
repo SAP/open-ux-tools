@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ReuseLibConfig } from './types.js';
 import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';

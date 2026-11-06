@@ -8,7 +8,7 @@ import { mergeWithDefaults } from './data/index.js';
 import { ui5TSSupport } from './data/ui5Libs.js';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options.js';
 import type { Ui5App, App, AppOptions, UI5 } from './types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { copyTemplates } from './utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

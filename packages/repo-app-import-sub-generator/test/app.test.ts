@@ -134,7 +134,7 @@ const { TestFixture } = await import('./fixtures/index.js');
 const RepoAppDownloadLogger = (await import('../src/utils/logger.js')).default;
 const { TelemetryHelper } = await import('@sap-ux/fiori-generator-shared');
 const { handleWorkspaceConfig, createLaunchConfig } = await import('@sap-ux/launch-config');
-const env = (await import('yeoman-environment')).default;
+const { createEnv } = await import('yeoman-environment');
 const { FileName, DirName } = await import('@sap-ux/project-access');
 const { getUI5Versions } = await import('@sap-ux/ui5-info');
 const { PromptState } = await import('../src/prompts/prompt-state.js');
@@ -625,10 +625,12 @@ describe('Repo App Download', () => {
 
     it('should successfully download a quick deployed app from repository', async () => {
         copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
-        const yeomanEnv = env.createEnv();
+        const yeomanEnv = createEnv();
 
         const generator = new RepoAppDownloadGenerator([], {
             env: yeomanEnv,
+            namespace: generatorName,
+            resolved: repoAppDownloadGenPath,
             appWizard: mockAppWizard as AppWizard,
             logger: {},
             vscode: mockVSCode,
@@ -648,10 +650,12 @@ describe('Repo App Download', () => {
     });
 
     it('should successfully download a quick deployed app from repository', async () => {
-        const yeomanEnv = env.createEnv();
+        const yeomanEnv = createEnv();
 
         const generator = new RepoAppDownloadGenerator([], {
             env: yeomanEnv,
+            namespace: generatorName,
+            resolved: repoAppDownloadGenPath,
             appWizard: mockAppWizard as AppWizard,
             logger: {},
             vscode: mockVSCode,
@@ -664,15 +668,17 @@ describe('Repo App Download', () => {
             }
         });
         // mock installation
-        (generator as any).spawnCommand = jest.fn().mockResolvedValue(undefined);
+        (generator as any).spawn = jest.fn().mockResolvedValue(undefined);
         await generator.install();
-        expect((generator as any).spawnCommand).toHaveBeenCalled();
+        expect((generator as any).spawn).toHaveBeenCalled();
     });
 
     it('should log an error if installation of a quick deployed app from repository', async () => {
-        const yeomanEnv = env.createEnv();
+        const yeomanEnv = createEnv();
         const generator = new RepoAppDownloadGenerator([], {
             env: yeomanEnv,
+            namespace: generatorName,
+            resolved: repoAppDownloadGenPath,
             appWizard: mockAppWizard as AppWizard,
             logger: {},
             vscode: mockVSCode,
@@ -685,7 +691,7 @@ describe('Repo App Download', () => {
             }
         });
         // mock installation
-        (generator as any).spawnCommand = jest.fn().mockRejectedValue(new Error('Installation error'));
+        (generator as any).spawn = jest.fn().mockRejectedValue(new Error('Installation error'));
         await generator.install();
         expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.installationErrors.npmInstall', { error: 'Error: Installation error' })
@@ -693,9 +699,11 @@ describe('Repo App Download', () => {
     });
 
     it('should set conflicter.force to true and initialize telemetry', async () => {
-        const yeomanEnv = env.createEnv();
+        const yeomanEnv = createEnv();
         const generator = new RepoAppDownloadGenerator([], {
             env: yeomanEnv,
+            namespace: generatorName,
+            resolved: repoAppDownloadGenPath,
             appWizard: mockAppWizard as AppWizard,
             logger: {},
             vscode: mockVSCode,
@@ -728,9 +736,11 @@ describe('Repo App Download', () => {
     });
 
     it('should set callback function on prompts if prompts exist', () => {
-        const yeomanEnv = env.createEnv();
+        const yeomanEnv = createEnv();
         const generator = new RepoAppDownloadGenerator([], {
             env: yeomanEnv,
+            namespace: generatorName,
+            resolved: repoAppDownloadGenPath,
             appWizard: mockAppWizard as AppWizard,
             logger: {},
             vscode: mockVSCode,
@@ -912,9 +922,11 @@ describe('Repo App Download', () => {
         // must be false and writing() must call _generateAbapRepositoryApp, not _generateAdtQuickDeployApp.
         (downloadUtils.hasQfaJson as jest.Mock).mockReturnValue(false);
 
-        const yeomanEnv = env.createEnv();
+        const yeomanEnv = createEnv();
         const generator = new RepoAppDownloadGenerator([], {
             env: yeomanEnv,
+            namespace: generatorName,
+            resolved: repoAppDownloadGenPath,
             appWizard: mockAppWizard as AppWizard,
             logger: {},
             vscode: mockVSCode

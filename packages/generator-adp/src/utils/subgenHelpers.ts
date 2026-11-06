@@ -79,7 +79,7 @@ export async function addFlpGen(
             data: { projectRootPath },
             appWizard,
             isCfProject
-        });
+        } as unknown as Parameters<typeof composeWith>[1]);
         logger.info(`'@sap/fiori:adp-flp-config' was called.`);
     } catch (e) {
         logger.error(e);
@@ -137,7 +137,7 @@ export async function addDeployGen(
             ...(system?.Url && { appGenServiceHost: system.Url })
         };
 
-        await composeWith('@sap/fiori:deploy-config', generatorOptions);
+        await composeWith('@sap/fiori:deploy-config', generatorOptions as unknown as Parameters<typeof composeWith>[1]);
         logger.info(`'@sap/fiori:deploy-config' was called.`);
     } catch (e) {
         logger.error(e);
@@ -166,9 +166,9 @@ export async function addExtProjectGen(
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
 
         await composeWith('@bas-dev/extensibility-sub', {
-            arguments: [JSON.stringify(data)],
-            appWizard
-        });
+            generatorArgs: [JSON.stringify(data)],
+            generatorOptions: { appWizard }
+        } as unknown as Parameters<typeof composeWith>[1]);
         logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
     } catch (e) {
         logger.info(t('error.creatingExtensionProjectError'));

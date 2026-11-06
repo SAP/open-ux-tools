@@ -6,7 +6,7 @@ import type * as i18nWriteType from '../../src/project/i18n/write.js';
 import type * as specType from '../../src/project/specification.js';
 import type * as capType from '../../src/project/cap.js';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { promises } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

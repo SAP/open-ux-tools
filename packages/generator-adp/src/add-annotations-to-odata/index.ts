@@ -1,4 +1,5 @@
 import { MessageType } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 
 import {
     ChangeType,
@@ -35,7 +36,7 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
      * @param {string | string[]} args - The arguments passed to the generator.
      * @param {GeneratorOpts} opts - The options for the generator.
      */
-    constructor(args: string | string[], opts: GeneratorOpts) {
+    constructor(args: string[], opts: GeneratorOpts) {
         super(args, opts, GeneratorTypes.ADD_ANNOTATIONS_TO_DATA);
     }
 
@@ -47,7 +48,12 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
         try {
             const manifest = await this.getManifest();
             this.dataSources = manifest?.['sap.app']?.dataSources ?? {};
-            this.answers = await this.prompt(getPromptsForAddAnnotationsToOData(this.projectPath, this.dataSources));
+            this.answers = await this.prompt(
+                getPromptsForAddAnnotationsToOData(
+                    this.projectPath,
+                    this.dataSources
+                ) as unknown as PromptQuestions<AddAnnotationsAnswers>
+            );
             this.logger.log(`Current OData services\n${JSON.stringify(this.answers, null, 2)}`);
         } catch (e) {
             await this.handleRuntimeCrash(e.message);

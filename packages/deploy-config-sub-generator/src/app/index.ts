@@ -38,6 +38,7 @@ const deployConfigSubGenNamespace = '@sap-ux/deploy-config-sub-generator';
  * The main deployment configuration generator.
  */
 export default class extends DeploymentGenerator implements DeployConfigGenerator {
+    declare options: DeployConfigOptions;
     readonly appWizard: AppWizardType;
     readonly prompts: PromptsType;
     readonly genNamespace: string;
@@ -63,23 +64,19 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      * @param args - the arguments passed in
      * @param opts - the options passed in
      */
-    constructor(args: string | string[], opts: DeployConfigOptions) {
+    constructor(args: string[], opts: DeployConfigOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.genNamespace = opts.namespace;
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.promptOptions = opts?.subGenPromptOptions;
         this.target = parseTarget(args, opts);
-        this.vscode = opts.vscode;
-
-        if (this.rootGeneratorName()) {
-            this.env.lookup({ packagePatterns: [this.rootGeneratorName()] });
-        }
+        this.vscode = opts.vscode as VSCodeInstance;
 
         // Extensions use options.data to pass in the options
         if (this.options.data?.destinationRoot) {
             this.launchStandaloneFromYui = true;
-            this.launchDeployConfigAsSubGenerator ||= this.options.data.launchDeployConfigAsSubGenerator;
+            this.launchDeployConfigAsSubGenerator ||= this.options.data.launchDeployConfigAsSubGenerator ?? false;
             this.options.appRootPath = join(
                 dirname(this.options.data.destinationRoot),
                 basename(this.options.data.destinationRoot)
@@ -94,7 +91,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             }
             // Load .env file for api hub config
             dotenv.config({ quiet: true });
-            this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
+            this.apiHubConfig = (this.options.apiHubConfig ?? getEnvApiHubConfig()) as ApiHubConfig;
             this.launchStandaloneFromYui = false;
         }
 
@@ -116,8 +113,16 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     public async initializing(): Promise<void> {
         await super.initializing();
 
+        // yeoman-environment v6 `env.lookup` is async; register the root generator before
+        // the prompting phase composes its sub generators.
+        if (this.rootGeneratorName()) {
+            await this.env.lookup({ packagePatterns: [this.rootGeneratorName()] });
+        }
+
         const promptOptions = await getExtensionGenPromptOpts(
-            this.env.create.bind(this.env),
+            // yeoman-environment v6 `env.create` is async; getExtensionGenPromptOpts only needs its
+            // (namespace) => Promise<instance> shape, so narrow the richer v6 signature here.
+            this.env.create.bind(this.env) as (namespaceOrPath: string) => Promise<unknown>,
             deployConfigSubGenNamespace,
             this.vscode
         );
@@ -150,8 +155,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             appPath: this.options.appRootPath,
             servicePath: this.options.appGenServicePath
         });
-        this.options.appGenServicePath ||= servicePath;
-        this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig?.destination;
+        this.options.appGenServicePath ||= servicePath ?? '';
+        this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig?.destination ?? '';
     }
 
     /**
@@ -229,9 +234,12 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 : { ...this.options, launchDeployConfigAsSubGenerator: false };
 
             if (this.apiHubConfig) {
-                (subGenOpts as CfDeployConfigOptions).apiHubConfig = this.apiHubConfig;
+                (subGenOpts as unknown as CfDeployConfigOptions).apiHubConfig = this.apiHubConfig;
             }
-            await this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
+            await this.composeWith(
+                generatorNamespace(this.genNamespace, generatorName),
+                subGenOpts as unknown as Parameters<typeof this.composeWith>[1]
+            );
         } catch (error) {
             DeploymentGenerator.logger?.error(error.message);
         }

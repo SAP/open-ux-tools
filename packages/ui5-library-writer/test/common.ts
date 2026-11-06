@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 import { exec as execCP } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { UI5LibConfig } from '../src/types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from '../src/utils.js';
 
 const __testdir = dirname(fileURLToPath(import.meta.url));

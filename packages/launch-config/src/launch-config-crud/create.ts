@@ -10,7 +10,7 @@ import type {
     DebugOptions,
     LaunchConfig
 } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils.js';
 import { updateLaunchJSON } from './writer.js';
 import { parse } from 'jsonc-parser';

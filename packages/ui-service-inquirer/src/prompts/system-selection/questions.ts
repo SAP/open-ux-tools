@@ -1,8 +1,7 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
-import type { ListChoiceOptions, ListQuestion } from 'inquirer';
-import type { Question } from 'yeoman-generator';
+import type { ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import { t } from '../../i18n.js';
 import { ObjectType, type UiServiceAnswers } from '../../types.js';
 import { getAbapCDSViews, getBusinessObjects } from '../prompt-helper.js';
@@ -126,7 +125,7 @@ export async function getSystemQuestions(
         } as ListQuestion
     ];
     return [
-        ...(systemQuestions.prompts as Question<UiServiceAnswers>[]),
+        ...(systemQuestions.prompts as unknown as Question<UiServiceAnswers>[]),
         ...(objectQuestions as Question<UiServiceAnswers>[])
     ];
 }

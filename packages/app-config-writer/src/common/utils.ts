@@ -2,7 +2,7 @@ import { FileName, readUi5Yaml, type Manifest, getWebappPath } from '@sap-ux/pro
 import { MiddlewareConfigs } from '../types/index.js';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types/index.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import type { ToolsLogger } from '@sap-ux/logger';
 /**

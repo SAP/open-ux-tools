@@ -1,6 +1,6 @@
 import { basename, dirname, join, sep } from 'node:path';
 import fg from 'fast-glob';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { isFioriToolsProject, findAllManifest } from './project-access-adapters.js';

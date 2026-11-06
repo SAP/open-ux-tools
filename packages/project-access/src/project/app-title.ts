@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { extractDoubleCurlyBracketsKey, getPropertiesI18nBundle } from '@sap-ux/i18n';
 import type { Logger } from '@sap-ux/logger';
 import { FileName } from '../constants.js';

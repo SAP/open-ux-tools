@@ -1,5 +1,5 @@
 import { dirname, join, relative, sep } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { createMemFsEditor } from './fs-adapter.js';
 import { getReuseLibs, findAllProjectRoots, ReuseLibType } from './file-discovery.js';
 import type { Package } from '@sap-ux/project-access';

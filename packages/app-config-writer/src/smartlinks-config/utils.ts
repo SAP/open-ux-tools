@@ -1,7 +1,7 @@
 import type { AxiosBasicCredentials, AxiosResponse } from 'axios';
 import chalk from 'chalk';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';

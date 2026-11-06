@@ -3,6 +3,7 @@ import { platform } from 'node:os';
 import * as hasbin from 'hasbin';
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 import {
     sendTelemetry,
     TelemetryHelper,
@@ -53,6 +54,7 @@ import type { Answers } from 'inquirer';
  * Cloud Foundry deployment configuration generator.
  */
 export default class extends DeploymentGenerator {
+    declare options: CfDeployConfigOptions;
     private readonly appWizard: AppWizardType;
     private readonly vscode: unknown;
     private readonly launchDeployConfigAsSubGenerator: boolean;
@@ -81,14 +83,13 @@ export default class extends DeploymentGenerator {
      * @param args - arguments
      * @param opts - cf deploy config options
      */
-    constructor(args: string | string[], opts: CfDeployConfigOptions) {
+    constructor(args: string[], opts: CfDeployConfigOptions) {
         super(args, opts);
 
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.launchStandaloneFromYui = opts.launchStandaloneFromYui;
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.vscode = opts.vscode;
-        this.options = opts;
 
         this.destinationName = opts.destinationName ?? '';
         this.addMtaDestination = opts.addMTADestination ?? false; // by default, it's false unless passed in i.e. headless flow
@@ -194,9 +195,11 @@ export default class extends DeploymentGenerator {
         const isCAPMissingMTA = this.isCap && this.projectRoot && !this.mtaPath;
         if (isCAPMissingMTA) {
             DeploymentGenerator.logger?.debug(t('cfGen.debug.capMissingMTA'));
-            this.appRouterAnswers = (await this.prompt(
-                await getCAPMTAQuestions({ projectRoot: this.projectRoot ?? process.cwd() })
-            )) as CfAppRouterDeployConfigAnswers;
+            this.appRouterAnswers = await this.prompt(
+                (await getCAPMTAQuestions({
+                    projectRoot: this.projectRoot ?? process.cwd()
+                })) as unknown as PromptQuestions<CfAppRouterDeployConfigAnswers>
+            );
             if ((this.appRouterAnswers as Answers).addCapMtaContinue !== true) {
                 this.abort = true;
                 return;
@@ -211,7 +214,9 @@ export default class extends DeploymentGenerator {
         } else {
             await this._handleApiHubConfig();
             const questions = await this._getCFQuestions();
-            this.answers = await this.prompt(questions);
+            this.answers = await this.prompt(
+                questions as unknown as PromptQuestions<CfDeployConfigAnswers & Partial<CFAppConfig>>
+            );
         }
     }
 
@@ -279,7 +284,8 @@ export default class extends DeploymentGenerator {
             destinationName,
             addManagedAppRouter,
             isDestinationFullUrl,
-            destinationAuthentication,
+            // destinationAuthType option is a free-form string; narrow to the Authentication union expected by the writer
+            destinationAuthentication: destinationAuthentication as CFAppConfig['destinationAuthentication'],
             overwrite,
             addAppFrontendRouter
         };
@@ -370,13 +376,9 @@ export default class extends DeploymentGenerator {
         const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
 
         // install dependencies
-        await this.spawnCommand(
-            npm,
-            ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'],
-            {
-                cwd: path
-            }
-        );
+        await this.spawn(npm, ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'], {
+            cwd: path
+        });
     }
 
     public async end(): Promise<void> {

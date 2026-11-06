@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const mockExistsSync = jest.fn() as jest.Mock;
 const mockReadFileSync = jest.fn() as jest.Mock;

@@ -5,7 +5,7 @@
 
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { fileExists } from '../../index.js';
 import { readFile } from '../../utils/file-access.js';
 import type { Manifest, SapUi5RoutingTarget } from '../../project-spec-types.js';

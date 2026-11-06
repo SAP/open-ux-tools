@@ -1,10 +1,11 @@
-import type Generator from 'yeoman-generator';
+import type { BaseOptions } from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper, Floorplan } from '@sap-ux/fiori-generator-shared';
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { OdataServiceAnswers, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 
 /**
  * App configuration derived from the downloaded manifest for the ABAP repository flow.
@@ -89,7 +90,7 @@ export interface QuickDeployedAppConfig {
 /**
  * Options for downloading an application from repository.
  */
-export interface RepoAppDownloadOptions extends Generator.GeneratorOptions {
+export type RepoAppDownloadOptions = BaseOptions & {
     /** VSCode instance for interacting with the VSCode environment. */
     vscode?: VSCodeInstance;
 
@@ -108,9 +109,26 @@ export interface RepoAppDownloadOptions extends Generator.GeneratorOptions {
     /** Logger instance for logging operations. */
     logWrapper?: LogWrapper;
 
+    /** The vscode extension logger. */
+    logger?: IVSCodeExtLogger;
+
+    /** The log level. */
+    logLevel?: LogLevel;
+
+    /** Whether to overwrite files without prompting. */
+    force?: boolean;
+
+    /** Generator payload carrying download type and post-generation command details. */
+    data?: {
+        appDownloadType?: AppDownloadType;
+        quickDeployedAppConfig?: QuickDeployedAppConfig;
+        postGenCommand?: string;
+        postGenCommands?: string[];
+    };
+
     /** The type of app download. */
     appDownloadType?: AppDownloadType;
-}
+};
 
 /**
  * Represents a question in the app download process.

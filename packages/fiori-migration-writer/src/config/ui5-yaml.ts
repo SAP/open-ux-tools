@@ -6,7 +6,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { updateFile } from '../utils/index.js';
 import { TemplateFileName } from '../index.js';
 import type { TemplateData, NeoappDestination, Message, Ui5MockYaml } from '../types.js';

@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 // Get real utils exports before mocking
 const realUtils = await import('../../../../src/utils/index.js');

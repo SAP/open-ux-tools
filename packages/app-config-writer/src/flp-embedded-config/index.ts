@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { isCapProject, FileName, readUi5Yaml } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { FioriToolsServeStaticPath } from '@sap-ux/ui5-config';

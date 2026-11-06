@@ -1,7 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { create as createStore } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createEditor } from 'mem-fs-editor';
 
 import type { RawMetadata } from '@sap-ux/vocabularies-types';
@@ -175,7 +175,7 @@ export class FioriAnnotationService {
         if (fs) {
             fsEditor = fs;
         } else {
-            const store = createStore();
+            const store = createStore<VinylMemFsEditorFile>();
             fsEditor = createEditor(store);
         }
         const changeConverter = new ChangeConverter(
@@ -460,18 +460,7 @@ export class FioriAnnotationService {
     }
 
     private async commit(): Promise<void> {
-        await new Promise<void>((resolve, reject) => {
-            this.fs.commit((error: any) => {
-                if (error instanceof Error) {
-                    reject(error);
-                } else if (typeof error === 'string') {
-                    reject(new Error(error));
-                } else if (error) {
-                    reject(new Error('Unknown error.'));
-                }
-                resolve();
-            });
-        });
+        await this.fs.commit();
     }
 }
 
@@ -529,6 +518,9 @@ async function getService(
         const fileCache = new Map<string, string>();
         if (fsEditor) {
             for (const [relativePath, value] of Object.entries(fsEditor.dump())) {
+                if (value.contents === null) {
+                    continue;
+                }
                 const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
                 fileCache.set(absolute, value.contents);
             }

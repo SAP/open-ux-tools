@@ -1,5 +1,5 @@
 import { basename, join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { getPreviewMiddleware, getIntentFromPreviewConfig } from '../common/utils.js';

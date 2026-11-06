@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile, updateFile, generateTemplate, updateThemeAttribute, fileExists } from '../utils/index.js';
 import { DirName } from '../project-spec-types.js';
 import { TemplateFileName, templatesDirPath } from '../index.js';

@@ -1,6 +1,12 @@
 import { DefaultLogger, LogWrapper, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
-import type { Logger } from 'yeoman-environment';
+
+/**
+ * Minimal structural type for the Yeoman adapter logger. The full `Logger` type moved to
+ * `@yeoman/types` in the v6/v8 stack; this file only forwards the logger to `LogWrapper`,
+ * so a local type avoids a fragile transitive type dependency.
+ */
+type Logger = (message?: string) => void;
 
 /**
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
@@ -36,7 +42,7 @@ export default class UiServiceGenLogger {
      * @param logLevel - the log level
      */
     static configureLogging(
-        vscLogger: IVSCodeExtLogger,
+        vscLogger: IVSCodeExtLogger | undefined,
         loggerName: string,
         yoLogger: Logger,
         vscode?: unknown,

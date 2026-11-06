@@ -7,10 +7,12 @@ import { type Logger } from '@sap-ux/logger';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import { getConfigPrompts, getSystemSelectionPrompts, ObjectType } from '@sap-ux/ui-service-inquirer';
 import Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import { boUri, cdsUri, initI18n, prompts, SERVICE_GENERATION_SUCCESS, t, UI_SERVICE_CACHE } from '../utils/index.js';
 import UiServiceGenLogger from '../utils/logger.js';
 import { getTelemetryData } from './telemetryHelper.js';
 import { BAS_OBJECT } from './types.js';
+import type { UiServiceGeneratorOptions } from './types.js';
 import {
     addToCache,
     authenticateInputData,
@@ -27,7 +29,7 @@ import {
  *
  * @extends Generator
  */
-export default class extends Generator {
+export default class extends Generator<Record<string, unknown>, UiServiceGeneratorOptions> {
     answers: UiServiceAnswers = {
         url: '',
         package: ''
@@ -49,7 +51,7 @@ export default class extends Generator {
      * @param args - arguments passed to the generator
      * @param opts - options passed to the generator
      */
-    constructor(args: string | string[], opts: Generator.GeneratorOptions) {
+    constructor(args: string[], opts: UiServiceGeneratorOptions) {
         super(args, opts);
         setYeomanEnvConflicterForce(this.env, this.options.force);
 
@@ -101,17 +103,21 @@ export default class extends Generator {
     }
 
     private async _initSteps(): Promise<void> {
-        await authenticateInputData(this.options.data, this.systemSelectionAnswers);
+        const data = this.options.data;
+        if (!data) {
+            return;
+        }
+        await authenticateInputData(data, this.systemSelectionAnswers);
         if (this.systemSelectionAnswers.connectedSystem?.serviceProvider) {
             try {
-                if (this.options.data.id && this.options.data.type) {
+                if (data.id && data.type) {
                     // new BAS service center data interface, for BO and CDS
-                    const objectUri = this.options.data.type === BAS_OBJECT.BUSINESS_OBJECT ? boUri : cdsUri;
+                    const objectUri = data.type === BAS_OBJECT.BUSINESS_OBJECT ? boUri : cdsUri;
                     this.systemSelectionAnswers.objectGenerator = await (
                         this.systemSelectionAnswers.connectedSystem.serviceProvider as AbapServiceProvider
                     ).getUiServiceGenerator({
-                        name: this.options.data.id,
-                        uri: `${objectUri}${this.options.data.id.toLowerCase()}`
+                        name: data.id,
+                        uri: `${objectUri}${data.id.toLowerCase()}`
                     });
                 } else {
                     // old interface, for BO only
@@ -119,12 +125,12 @@ export default class extends Generator {
                     this.systemSelectionAnswers.objectGenerator = await (
                         this.systemSelectionAnswers.connectedSystem.serviceProvider as AbapServiceProvider
                     ).getUiServiceGenerator({
-                        name: this.options.data.businessObject,
-                        uri: `${boUri}${this.options.data.businessObject.toLowerCase()}`
+                        name: data.businessObject,
+                        uri: `${boUri}${data.businessObject.toLowerCase()}`
                     });
                 }
                 this.systemSelectionAnswers.connectedSystem.destination = {
-                    Name: this.options.data.systemName
+                    Name: data.systemName
                 } as Destination;
             } catch (error) {
                 UiServiceGenLogger.logger.error(t('error.fetchingGenerator', { error: error.message }));
@@ -140,7 +146,9 @@ export default class extends Generator {
                 ...getFromCache(this.appWizard),
                 UiServiceGenLogger.logger as unknown as Logger
             );
-            const systemSelectionAnswers = await this.prompt(systemPrompts.prompts);
+            const systemSelectionAnswers = await this.prompt(
+                systemPrompts.prompts as unknown as PromptQuestions<SystemSelectionAnswers>
+            );
             Object.assign(this.answers, systemSelectionAnswers);
             Object.assign(this.systemSelectionAnswers, systemPrompts.answers);
             addToCache(this.appWizard, this.systemSelectionAnswers, this.answers);
@@ -159,7 +167,7 @@ export default class extends Generator {
             UiServiceGenLogger.logger as unknown as Logger
         );
 
-        const configAnswers = await this.prompt(configPrompts.prompts);
+        const configAnswers = await this.prompt(configPrompts.prompts as unknown as PromptQuestions<ServiceConfig>);
         Object.assign(this.answers, configAnswers);
         Object.assign(this.serviceConfigAnswers, configPrompts.answers);
     }
@@ -188,6 +196,7 @@ export default class extends Generator {
                 if (this.options.data?.path && this.options.data?.providerSystem) {
                     await writeBASMetadata(
                         this.serviceConfigAnswers,
+                        // yeoman v8's this.fs is mem-fs-editor@12; writeBASMetadata still types its fs param as the @9 Editor
                         this.fs,
                         this.appWizard,
                         this.options.data,
@@ -217,3 +226,5 @@ export default class extends Generator {
         });
     }
 }
+
+export type { UiServiceGeneratorOptions } from './types.js';

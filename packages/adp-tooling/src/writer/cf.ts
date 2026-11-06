@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { type ToolsLogger } from '@sap-ux/logger';
 import { readUi5Yaml } from '@sap-ux/project-access';

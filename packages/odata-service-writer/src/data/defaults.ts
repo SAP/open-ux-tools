@@ -4,7 +4,7 @@ import { ServiceType } from '../types.js';
 import { DEFAULT_DATASOURCE_NAME } from './constants.js';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { UI5Config, type FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 
 /**

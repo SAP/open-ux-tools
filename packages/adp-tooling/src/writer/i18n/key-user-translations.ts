@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getWebappPath } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';

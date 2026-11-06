@@ -1,4 +1,5 @@
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 import type { NewModelAnswers, DescriptorVariant, CfConfig } from '@sap-ux/adp-tooling';
 import {
     generateChange,
@@ -46,7 +47,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
      * @param {string | string[]} args - The arguments passed to the generator.
      * @param {GeneratorOpts} opts - The options for the generator.
      */
-    constructor(args: string | string[], opts: GeneratorOpts) {
+    constructor(args: string[], opts: GeneratorOpts) {
         super(args, opts, GeneratorTypes.ADD_NEW_MODEL);
         if (opts.data) {
             this.projectPath = opts.data.path;
@@ -110,7 +111,12 @@ class AddNewModelGenerator extends SubGeneratorBase {
         }
 
         this.answers = await this.prompt(
-            await getPromptsForNewModel(this.projectPath, this.variant.layer, this.logger, this.appWizard)
+            (await getPromptsForNewModel(
+                this.projectPath,
+                this.variant.layer,
+                this.logger,
+                this.appWizard
+            )) as unknown as PromptQuestions<NewModelAnswers>
         );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }

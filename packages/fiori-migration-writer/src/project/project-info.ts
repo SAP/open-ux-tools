@@ -1,5 +1,5 @@
 import type { ImportProjectInfo, Message } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { ProjectAccess } from '../utils/Project.js';
 import { createMemFsEditor } from '../utils/fs-adapter.js';
 

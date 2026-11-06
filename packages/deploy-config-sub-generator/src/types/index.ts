@@ -1,4 +1,3 @@
-import type Generator from 'yeoman-generator';
 import type { Answers } from 'inquirer';
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
@@ -8,6 +7,7 @@ import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
+import type { DeploymentGeneratorOptions } from '@sap-ux/deploy-config-generator-shared';
 import type { promptNames } from '../utils/index.js';
 
 export type DeployConfigSubGenPromptOptions =
@@ -17,7 +17,7 @@ export type DeployConfigSubGenPromptOptions =
     | AbapDeployConfigPromptOptions
     | CfDeployConfigPromptOptions;
 
-export interface DeployConfigOptions extends Generator.GeneratorOptions {
+export type DeployConfigOptions = DeploymentGeneratorOptions & {
     /**
      * The target deployment
      */
@@ -26,6 +26,10 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
      * Instance of the AppWizard
      */
     appWizard: AppWizard;
+    /**
+     * Instance of vscode
+     */
+    vscode?: VSCodeInstance;
     /**
      * Whether the deploy config should be launched as a sub generator
      * All prompts (CF & ABAP) wil be combined into one step
@@ -39,6 +43,10 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
      * Service path passed from the generator
      */
     appGenServicePath: string;
+    /**
+     * Destination passed from the generator
+     */
+    appGenDestination?: string;
     /**
      * Client passed from the generator
      */
@@ -56,6 +64,30 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
      */
     projectPath: string;
     /**
+     * Resolved path to the root of the project
+     */
+    projectRoot: string;
+    /**
+     * Resolved path to the application root
+     */
+    appRootPath: string;
+    /**
+     * Name of the base config file e.g. ui5.yaml
+     */
+    base?: string;
+    /**
+     * Name of the deploy config file e.g. ui5-deploy.yaml
+     */
+    config?: string;
+    /**
+     * Whether an existing deploy config should be overwritten silently
+     */
+    overwrite?: boolean;
+    /**
+     * Whether the project uses ABAP direct service binding
+     */
+    isAbapDirectServiceBinding?: boolean;
+    /**
      * Telemetry data to be added to the deployment telemetry event
      */
     telemetryData?: Record<string, string>;
@@ -70,17 +102,21 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
      * Optional data passed from extension e.g Application Modeler
      */
-    data: {
+    data?: {
         /**
          * Project folder root
          */
         destinationRoot: string;
+        /**
+         * Whether the deploy config should be launched as a sub generator
+         */
+        launchDeployConfigAsSubGenerator?: boolean;
     };
     /**
      * Deployment configuration prompt options for sub generators
      */
     subGenPromptOptions?: DeployConfigSubGenPromptOptions;
-}
+};
 
 /**
  * The deployment target (CF or ABAP)

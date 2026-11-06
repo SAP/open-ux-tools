@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { readFileSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import { render } from 'ejs';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getTemplatePath } from '../templates.js';
 import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
@@ -101,6 +102,55 @@ export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
 }
 
 /**
+ * `copy`'s options with `globOptions` augmented to accept `ignore`. `mem-fs-editor@12` narrows
+ * `globOptions` and drops `ignore` from the type, but tinyglobby still honours it at runtime.
+ */
+export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copy']>[2]>, 'globOptions'> & {
+    globOptions?: NonNullable<NonNullable<Parameters<Editor['copyTpl']>[3]>['globOptions']> & {
+        ignore?: string | readonly string[];
+    };
+};
+
+/**
+ * Copies template files while renaming them during the copy, mirroring what `copyTpl` does internally.
+ *
+ * `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` rename callback. Doing the rename
+ * as a post-copy `fs.move()` would leave `state: 'deleted'` tombstones in the store (move = copy +
+ * delete), which surface in `fs.dump()` snapshots. Instead this renders and renames in a single
+ * `fs.copy()` pass via its `fileTransform` hook, so no tombstone is created. The rename callback
+ * operates on the POSIX (forward-slash) destination path relative to `to`.
+ *
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {string | string[]} from - Source path(s) / glob(s) to copy.
+ * @param {string} to - Destination base path.
+ * @param {object} data - EJS template data (as `copyTpl`'s 3rd argument).
+ * @param {(posixRelPath: string) => string} rename - Maps a POSIX, `to`-relative destination path to its renamed path.
+ * @param {CopyOptionsWithIgnore} [copyOptions] - Optional copy options (e.g. `globOptions`).
+ * @returns {void}
+ */
+export function copyTplAndRename(
+    fs: Editor,
+    from: string | string[],
+    to: string,
+    data: object,
+    rename: (posixRelPath: string) => string,
+    copyOptions?: CopyOptionsWithIgnore
+): void {
+    fs.copy(from, to, {
+        ...copyOptions,
+        transformData: data,
+        fileTransform({ destinationPath, sourcePath, contents }) {
+            const renderedPath = render(destinationPath, data, {});
+            // No binary template files exist in this package; text is always safe to render.
+            const processedContents = render(contents.toString(), data, { filename: sourcePath });
+            const strippedPath = renderedPath.endsWith('.ejs') ? renderedPath.replace(/\.ejs$/, '') : renderedPath;
+            const relPosix = relative(to, strippedPath).split(sep).join('/');
+            return { path: join(to, rename(relPosix)), contents: processedContents };
+        }
+    });
+}
+
+/**
  * Writes a given project template files within a specified folder in the project directory.
  *
  * @param {string} baseTmplPath - The root path of the templates folder.
@@ -122,10 +172,14 @@ export function writeTemplateToFolder(
     const { typesPackage, typesVersion } = getTypes(ui5Version);
 
     try {
-        fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
-            globOptions: { dot: true },
-            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-        });
+        copyTplAndRename(
+            fs,
+            tmplPath,
+            projectPath,
+            { ...data, typesPackage, typesVersion },
+            (filePath) => filePath.replace(/gitignore.tmpl/g, '.gitignore'),
+            { globOptions: { dot: true } }
+        );
 
         if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');

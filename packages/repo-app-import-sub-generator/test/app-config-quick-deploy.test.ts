@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { TransportChecksService } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { AppInfo, QfaJsonConfig } from '../src/app/types.js';
 import { t } from '../src/utils/i18n.js';
 import {
