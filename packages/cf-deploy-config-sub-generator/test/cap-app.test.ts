@@ -41,7 +41,7 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const mockHasbinSync = jest.fn() as jest.Mock;
 
-jest.unstable_mockModule('hasbin', () => ({
+jest.unstable_mockModule('which', () => ({
     default: { sync: mockHasbinSync },
     sync: mockHasbinSync
 }));

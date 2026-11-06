@@ -14,10 +14,9 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     ...realBtpUtils
 }));
 
-const realHasbin = await import('hasbin');
-jest.unstable_mockModule('hasbin', () => ({
-    ...realHasbin,
-    sync: jest.fn()
+const syncMock = jest.fn();
+jest.unstable_mockModule('which', () => ({
+    default: Object.assign(jest.fn(), { sync: syncMock })
 }));
 
 const realCfTools = await import('@sap/cf-tools');
@@ -31,7 +30,7 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const hasbin = await import('hasbin');
+const whichMod = await import('which');
 const cfTools = await import('@sap/cf-tools');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 const { generateBaseConfig } = await import('../../src/index.js');
@@ -52,7 +51,8 @@ describe('CF Writer Base', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
+        hasSyncMock = syncMock;
+        hasSyncMock.mockImplementation(() => true);
     });
 
     beforeAll(() => {
