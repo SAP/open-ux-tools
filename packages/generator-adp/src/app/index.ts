@@ -1056,8 +1056,6 @@ export default class extends Generator {
             ui5Version: '',
             enableTypeScript: false
         };
-
-        this.publicVersions = await fetchPublicVersions(this.logger);
     }
 
     /**
