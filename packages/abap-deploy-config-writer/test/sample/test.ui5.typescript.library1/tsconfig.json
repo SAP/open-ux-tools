@@ -10,9 +10,8 @@
       "rootDir": "./",
       "outDir": "./dist",
       "baseUrl": "./",
-      "typeRoots": [
-        "./node_modules/@types",
-        "./node_modules/@sapui5/types"
+      "types": [
+        "@sapui5/types"
       ],
       "paths": {
           "test/ui5/typescript/library1/*": [
