@@ -186,7 +186,7 @@ pnpm test
 # Coverage reports are in: packages/[package-name]/coverage/lcov-report/index.html
 ```
 
-**Coverage Configuration** (from [jest.base.js](jest.base.js:6)):
+**Coverage Configuration** (from [jest.base.mjs](jest.base.mjs:51)):
 - `collectCoverageFrom: ['src/**/*.ts']`
 - Reports: text and lcov formats
 - SonarCloud integration via jest-sonar reporter
@@ -213,8 +213,8 @@ pnpm lint:fix
 - Security patterns (via eslint-plugin-sonarjs)
 
 **Configuration:**
-- Root config: [eslint.config.js](eslint.config.js)
-- Prettier config: [.prettierrc.js](.prettierrc.js)
+- Root config: [eslint.config.mjs](eslint.config.mjs)
+- Prettier config: [.prettierrc.cjs](.prettierrc.cjs)
 
 ### 5. Security Audit Resolution
 
@@ -448,7 +448,7 @@ BUMP: Upgrade express 4.18 → 4.19
 **Validation:**
 The build process includes `pnpm validate:changesets` to check:
 - Changesets have valid frontmatter
-- No blocked major version bumps (see [scripts/validate-changesets.js](scripts/validate-changesets.js))
+- No blocked major version bumps (see [scripts/validate-changesets.mjs](scripts/validate-changesets.mjs))
 - Summary starts with a valid prefix (`FEAT:`, `FIX:`, or `BUMP:`)
 
 ## Quality Gates
@@ -477,8 +477,8 @@ Follow the conventions in [docs/Guidelines.md](docs/Guidelines.md):
 
 **TypeScript:**
 - Use ESLint and Prettier for consistent formatting
-- See [eslint.config.js](eslint.config.js) for linting rules
-- See [.prettierrc.js](.prettierrc.js) for formatting rules
+- See [eslint.config.mjs](eslint.config.mjs) for linting rules
+- See [.prettierrc.cjs](.prettierrc.cjs) for formatting rules
 - Individual packages may have their own eslint configs that extend the root configuration
 
 **Testing:**
@@ -596,8 +596,8 @@ packages/[package-name]/
 ├── coverage/         # Test coverage (generated)
 ├── package.json      # Package manifest
 ├── tsconfig.json     # TypeScript config
-├── jest.config.js    # Jest config
-├── eslint.config.js  # ESLint config (optional, extends root config)
+├── jest.config.mjs   # Jest config
+├── eslint.config.mjs # ESLint config (optional, extends root config)
 └── README.md         # Package documentation
 ```
 
@@ -627,7 +627,7 @@ This ensures packages always use the local workspace version during development 
 
 **Framework**: Jest with ts-jest
 
-**Base config**: [jest.base.js](jest.base.js)
+**Base config**: [jest.base.mjs](jest.base.mjs)
 
 **Run tests:**
 ```bash
