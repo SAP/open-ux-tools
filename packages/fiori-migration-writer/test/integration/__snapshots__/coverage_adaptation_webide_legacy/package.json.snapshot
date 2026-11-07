@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Migration Integration Tests Adaptation Projects Coverage should migrate adaptation project with legacy structure 1`] = `
-"{
+"
+{
     \\"name\\": \\"com-example-base-app\\",
     \\"version\\": \\"0.1.0\\",
     \\"private\\": true,

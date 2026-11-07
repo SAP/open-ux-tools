@@ -118,6 +118,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
 
     const isCloudSystem = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+    const isVendorLayer = !isCustomerBase;
 
     const ui5Version = isCloudSystem
         ? getLatestVersion(publicVersions)
@@ -171,7 +172,9 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         target,
         options: {
             fioriTools: true,
-            enableTypeScript
+            enableTypeScript,
+            addOpaTests: isVendorLayer,
+            addMockServer: configAnswers.addMockServer
         },
         keyUserChanges
     };

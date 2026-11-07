@@ -290,9 +290,189 @@ describe('ADP writer', () => {
                 )
             ).toMatchSnapshot();
         });
+
+        test('add OPA tests', async () => {
+            const projectDir = join(outputDir, 'opa-tests');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    app: {
+                        ...config.app,
+                        manifest: {
+                            'sap.app': {
+                                id: 'the.original.app',
+                                applicationVersion: { version: '1.0.0' }
+                            }
+                        } as any
+                    },
+                    options: {
+                        fioriTools: true,
+                        addOpaTests: true
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        test('add mock server', async () => {
+            const projectDir = join(outputDir, 'mock-server');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    target: {
+                        url: 'http://sap.example',
+                        client: '000'
+                    },
+                    customConfig: {
+                        adp: {
+                            environment: 'P',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
+                        }
+                    },
+                    ui5: {
+                        version: '1.133.1',
+                        frameworkUrl: 'https://ui5.sap.com'
+                    },
+                    options: {
+                        fioriTools: true,
+                        addMockServer: true
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        test('add OPA tests with mock server', async () => {
+            const projectDir = join(outputDir, 'opa-with-mock');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    app: {
+                        ...config.app,
+                        manifest: {
+                            'sap.app': {
+                                id: 'the.original.app',
+                                applicationVersion: { version: '1.0.0' }
+                            }
+                        } as any
+                    },
+                    target: {
+                        url: 'http://sap.example',
+                        client: '000'
+                    },
+                    customConfig: {
+                        adp: {
+                            environment: 'P',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
+                        }
+                    },
+                    ui5: {
+                        version: '1.133.1',
+                        frameworkUrl: 'https://ui5.sap.com'
+                    },
+                    options: {
+                        fioriTools: true,
+                        addOpaTests: true,
+                        addMockServer: true
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
     });
 
     describe('migrate', () => {
+        test('add mock server', async () => {
+            const projectDir = join(outputDir, 'mock-server');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    target: {
+                        url: 'http://sap.example',
+                        client: '000'
+                    },
+                    customConfig: {
+                        adp: {
+                            environment: 'P',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
+                        }
+                    },
+                    ui5: {
+                        version: '1.133.1',
+                        frameworkUrl: 'https://ui5.sap.com'
+                    },
+                    options: {
+                        fioriTools: true,
+                        addMockServer: true
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        test('add OPA tests with mock server', async () => {
+            const projectDir = join(outputDir, 'opa-with-mock');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    app: {
+                        ...config.app,
+                        manifest: {
+                            'sap.app': {
+                                id: 'the.original.app',
+                                applicationVersion: { version: '1.0.0' }
+                            }
+                        } as any
+                    },
+                    target: {
+                        url: 'http://sap.example',
+                        client: '000'
+                    },
+                    customConfig: {
+                        adp: {
+                            environment: 'P',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
+                        }
+                    },
+                    ui5: {
+                        version: '1.133.1',
+                        frameworkUrl: 'https://ui5.sap.com'
+                    },
+                    options: {
+                        fioriTools: true,
+                        addOpaTests: true,
+                        addMockServer: true
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
         const migrateConfig: AdpWriterConfig = {
             app: {
                 id: 'my.test.app',
