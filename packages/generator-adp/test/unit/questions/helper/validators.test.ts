@@ -47,7 +47,8 @@ const {
     validateEnvironment,
     validateProjectPath,
     validateMtaId,
-    validateBusinessSolutionName
+    validateBusinessSolutionName,
+    assertValidationPassed
 } = await import('../../../../src/app/questions/helper/validators.js');
 const { initI18n, t } = await import('../../../../src/utils/i18n.js');
 const { MtaMode } = await import('../../../../src/app/types.js');
@@ -398,6 +399,16 @@ describe('validateMtaId', () => {
 
         const result = validateMtaId('my-mta', '/parent');
         expect(result).toBe(true);
+    });
+});
+
+describe('assertValidationPassed', () => {
+    it('should not throw when the result is true', () => {
+        expect(() => assertValidationPassed(true)).not.toThrow();
+    });
+
+    it('should throw the error message when the result is a string', () => {
+        expect(() => assertValidationPassed('something is wrong')).toThrow('something is wrong');
     });
 });
 

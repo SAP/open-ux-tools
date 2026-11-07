@@ -1,4 +1,4 @@
-import { isJsonInput, isJsonInputFile, isString } from '../../../src/utils/type-guards.js';
+import { isCfJsonInput, isJsonInput, isJsonInputFile, isString } from '../../../src/utils/type-guards.js';
 
 describe('isString', () => {
     it('should return true for string literals', () => {
@@ -104,6 +104,129 @@ describe('isJsonInput', () => {
             keyUserChanges: 'not an array'
         };
         expect(isJsonInput(input)).toBe(true);
+    });
+});
+
+describe('isCfJsonInput', () => {
+    const validBusinessServiceInput = {
+        targetEnv: 'CF',
+        application: 'base.app.id',
+        businessService: 'my-business-service'
+    };
+
+    const validServiceInstanceInput = {
+        targetEnv: 'CF',
+        application: 'base.app.id',
+        serviceInstanceName: 'my-live-instance'
+    };
+
+    it('should return true for a valid businessService CF input', () => {
+        expect(isCfJsonInput(validBusinessServiceInput)).toBe(true);
+    });
+
+    it('should return true for a valid serviceInstanceName CF input', () => {
+        expect(isCfJsonInput(validServiceInstanceInput)).toBe(true);
+    });
+
+    it('should return true when all optional fields are present', () => {
+        expect(
+            isCfJsonInput({
+                ...validBusinessServiceInput,
+                id: 'correlation-id',
+                applicationTitle: 'My App',
+                approuter: 'Managed HTML5 Application Runtime',
+                businessSolutionName: 'solution',
+                mtaMode: 'existing',
+                mtaId: 'my-mta',
+                targetFolder: '/abs/path',
+                projectName: 'app.variant',
+                namespace: 'customer.app.variant'
+            })
+        ).toBe(true);
+    });
+
+    it('should return false when targetEnv is not CF', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, targetEnv: 'ABAP' })).toBe(false);
+        expect(isCfJsonInput({ application: 'base.app.id', businessService: 'svc' })).toBe(false);
+    });
+
+    it('should return false when application is missing', () => {
+        expect(isCfJsonInput({ targetEnv: 'CF', businessService: 'svc' })).toBe(false);
+    });
+
+    it('should return false when neither businessService nor serviceInstanceName is provided', () => {
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id' })).toBe(false);
+    });
+
+    it('should return false when both businessService and serviceInstanceName are provided', () => {
+        expect(
+            isCfJsonInput({
+                targetEnv: 'CF',
+                application: 'base.app.id',
+                businessService: 'svc',
+                serviceInstanceName: 'inst'
+            })
+        ).toBe(false);
+    });
+
+    it('should return false when the service name is an empty or whitespace-only string', () => {
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', businessService: '' })).toBe(false);
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', businessService: '   ' })).toBe(false);
+        expect(isCfJsonInput({ targetEnv: 'CF', application: 'base.app.id', serviceInstanceName: '' })).toBe(false);
+    });
+
+    it('should return false when one service field is empty even though the other is valid', () => {
+        expect(
+            isCfJsonInput({
+                targetEnv: 'CF',
+                application: 'base.app.id',
+                businessService: '',
+                serviceInstanceName: 'my-live-instance'
+            })
+        ).toBe(false);
+        expect(
+            isCfJsonInput({
+                targetEnv: 'CF',
+                application: 'base.app.id',
+                businessService: 'my-business-service',
+                serviceInstanceName: '   '
+            })
+        ).toBe(false);
+    });
+
+    it('should return false when application is an empty string', () => {
+        expect(isCfJsonInput({ targetEnv: 'CF', application: '', businessService: 'svc' })).toBe(false);
+    });
+
+    it('should return false when mtaMode is not an allowed literal', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, mtaMode: 'bogus' })).toBe(false);
+    });
+
+    it('should return true for both supported approuter literals', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'Managed HTML5 Application Runtime' })).toBe(
+            true
+        );
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'Standalone HTML5 Application Runtime' })).toBe(
+            true
+        );
+    });
+
+    it('should return false when approuter is not an allowed literal', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'Managed' })).toBe(false);
+        expect(isCfJsonInput({ ...validBusinessServiceInput, approuter: 'bogus-router' })).toBe(false);
+    });
+
+    it('should return false when an optional field has the wrong type', () => {
+        expect(isCfJsonInput({ ...validBusinessServiceInput, projectName: 123 })).toBe(false);
+        expect(isCfJsonInput({ ...validBusinessServiceInput, id: 123 })).toBe(false);
+    });
+
+    it('should return false for non-plain / non-object values', () => {
+        expect(isCfJsonInput(null)).toBe(false);
+        expect(isCfJsonInput(undefined)).toBe(false);
+        expect(isCfJsonInput('string')).toBe(false);
+        expect(isCfJsonInput(['a'])).toBe(false);
+        expect(isCfJsonInput(Object.create(null))).toBe(false);
     });
 });
 
