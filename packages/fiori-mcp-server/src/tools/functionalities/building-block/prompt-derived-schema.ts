@@ -182,16 +182,21 @@ export async function buildBuildingBlockSchemaFromPrompts(options: {
     const members = buildHandWrittenMembers();
     try {
         const promptsApi = await PromptsAPI.init(options.projectRoot, options.appId ?? '', options.fs);
-        for (const [bbType, promptsType] of BB_TYPE_TO_PROMPTS_TYPE) {
-            try {
-                const { questions } = await promptsApi.getPrompts(promptsType);
-                members[bbType] = buildMemberFromQuestions(bbType, questions as PromptQuestion[]);
-            } catch (e) {
-                logger.warn(
-                    `[BB] prompt-derived schema: failed for "${bbType}", using hand-written fallback: ${e instanceof Error ? e.message : String(e)}`
-                );
-            }
-        }
+        // Derive all prompt-backed types concurrently (each independent); a failure for one type keeps
+        // its hand-written member. Each call is isolated in its own try/catch so one rejection never
+        // fails the others.
+        await Promise.all(
+            BB_TYPE_TO_PROMPTS_TYPE.map(async ([bbType, promptsType]) => {
+                try {
+                    const { questions } = await promptsApi.getPrompts(promptsType);
+                    members[bbType] = buildMemberFromQuestions(bbType, questions as PromptQuestion[]);
+                } catch (e) {
+                    logger.warn(
+                        `[BB] prompt-derived schema: failed for "${bbType}", using hand-written fallback: ${e instanceof Error ? e.message : String(e)}`
+                    );
+                }
+            })
+        );
     } catch (e) {
         logger.warn(
             `[BB] prompt-derived schema: PromptsAPI unavailable, using hand-written schema: ${e instanceof Error ? e.message : String(e)}`
