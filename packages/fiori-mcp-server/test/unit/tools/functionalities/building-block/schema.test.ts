@@ -1,6 +1,27 @@
-import { buildBuildingBlockSchema } from '../../../../../src/tools/functionalities/building-block/schema.js';
+import {
+    buildBuildingBlockSchema,
+    buildHandWrittenMembers
+} from '../../../../../src/tools/functionalities/building-block/schema.js';
 
 const schema = buildBuildingBlockSchema();
+
+describe('hand-written members: no stray metaPath/contextPath (issue #39379 / review C3)', () => {
+    const members = buildHandWrittenMembers();
+
+    test('Page and RichTextEditorButtonGroups declare neither metaPath nor contextPath', () => {
+        for (const type of ['page', 'rich-text-editor-button-groups'] as const) {
+            const keys = Object.keys((members[type] as any).shape);
+            expect(keys).not.toContain('metaPath');
+            expect(keys).not.toContain('contextPath');
+        }
+    });
+
+    test('RichTextEditor keeps metaPath (it binds to data) but drops contextPath', () => {
+        const keys = Object.keys((members['rich-text-editor'] as any).shape);
+        expect(keys).toContain('metaPath');
+        expect(keys).not.toContain('contextPath');
+    });
+});
 
 describe('buildBuildingBlockSchema', () => {
     test('accepts a minimal Table and passes extra properties through (looseObject)', () => {

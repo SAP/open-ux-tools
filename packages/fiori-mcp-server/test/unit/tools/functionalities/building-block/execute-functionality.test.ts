@@ -68,11 +68,19 @@ describe('building-block executeFunctionality', () => {
         expect(mockGenerateBuildingBlock).not.toHaveBeenCalled();
     });
 
-    test('rejects a viewOrFragmentPath that escapes the app root before any write', async () => {
+    test('rejects an embededFragment.folder that escapes the app root before any write', async () => {
         const result = await executeFunctionality({
             functionalityId: 'add-building-block',
             appPath: '/project/app',
-            parameters: { ...tableParams, viewOrFragmentPath: '../../etc/passwd' }
+            parameters: {
+                viewOrFragmentPath: 'webapp/ext/Main.view.xml',
+                aggregationPath: '/mvc:View/content',
+                buildingBlockData: {
+                    buildingBlockType: 'custom-column',
+                    header: 'Evil',
+                    embededFragment: { folder: '../../sensitive-dir' }
+                }
+            }
         } as any);
         expect(result.status).toBe('error');
         expect(result.message).toContain('resolves outside the application root');

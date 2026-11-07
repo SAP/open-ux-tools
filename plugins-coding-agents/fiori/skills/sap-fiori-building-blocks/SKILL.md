@@ -1,6 +1,6 @@
 ---
 name: sap-fiori-building-blocks
-description: Add SAP Fiori Elements building blocks (Table, Chart, FilterBar, Field, Form, Page, Rich Text Editor, and custom column/filter/form-field/action) to an FPM view or fragment using the add_building_block MCP tool. Use when asked to add a building block, macro, table, chart, filter bar, or notes editor to a Fiori Elements app.
+description: Add SAP Fiori Elements building blocks (Table, Chart, FilterBar, Field, Form, Page, Rich Text Editor, and custom column/filter/form-field/action) to an FPM view or fragment using the Fiori MCP server's add-building-block functionality (list_functionality → get_functionality_details → execute_functionality). Use when asked to add a building block, macro, table, chart, filter bar, or notes editor to a Fiori Elements app.
 argument-hint: building block type (table/chart/filter-bar/field/form/page/rich-text-editor/custom-column/custom-filter-field/custom-form-field/action), the target page, and the annotation path or target property
 metadata:
   author: sap-fiori-tools
@@ -13,12 +13,13 @@ metadata:
 
 Add Fiori Elements **building blocks** (sap.fe macros) to a Flexible Programming Model (FPM) view or fragment.
 This skill is the **"before"** — gathering the prerequisites (which annotation, which view, which aggregation
-point). The **`add_building_block` MCP tool** is the **"do it"** — it calls the same generator as the SAP Page
-Editor (`@sap-ux/fe-fpm-writer`), so the XML, namespaces, and `manifest.json` dependencies are always correct.
+point). The **Fiori MCP server's `add-building-block` functionality** is the **"do it"** — it calls the same
+generator as the SAP Page Editor (`@sap-ux/fe-fpm-writer`), so the XML, namespaces, and `manifest.json`
+dependencies are always correct.
 
 **Never hand-write building block XML or use write_file/edit_file on the view.** Manual XML produces wrong
-namespaces, missing `sap.fe.macros` manifest entries, and hallucinated attributes. `add_building_block` is the only
-correct path.
+namespaces, missing `sap.fe.macros` manifest entries, and hallucinated attributes. The `execute_functionality`
+call with `functionalityId: "add-building-block"` is the only correct path.
 
 ## Scope
 
@@ -29,7 +30,8 @@ is a separate developer task in `@sap-ux/fe-fpm-writer` (new macro, templates, p
 
 ## Prerequisites
 
-- ✅ **Fiori MCP Server** connected (provides the `add_building_block` and `search_docs` tools).
+- ✅ **Fiori MCP Server** connected (provides the `list_functionality`, `get_functionality_details`,
+  `execute_functionality`, and `search_docs` tools).
 - ✅ An existing **FPM application** with a custom page or custom fragment to insert into. This tool inserts a
   building block into an existing view/fragment; it does not scaffold a page. If there is no FPM custom page yet,
   create one first (e.g. via the app-generation / page-modification tools).
@@ -81,21 +83,35 @@ If the requested building block is not supported on the target page type, tell t
 
 ## Workflow
 
+Modifying an existing Fiori app goes through the Fiori MCP server's **three-step functionality protocol**.
+Adding a building block is the functionality with id **`add-building-block`**.
+
 1. **Locate the app.** If the app path is unknown, call `list_fiori_apps`.
-2. **Discover the view/fragment and aggregation — let the tool do it, don't read files.** `add_building_block` has
-   a progressive discovery mode:
-   - Call it with only `appPath` → it returns `status: "needs_input"` and `insertionPoints` listing the available
-     view/fragment files.
-   - Call again adding the chosen `viewOrFragmentPath` → it returns `insertionPoints[0].aggregationPaths`, the valid
-     XPath options for that file (e.g. `/mvc:View/content`).
-   - Call again with both `viewOrFragmentPath` and the chosen `aggregationPath` → it inserts the building block.
-   You may skip straight to the final call if you already know both values. **Do not guess the `aggregationPath`.**
-3. **Determine the binding.** For standard building blocks, pick the `metaPath` annotation (see the table). If you
+2. **Confirm the operation** (optional). Call `list_functionality` with the app path to confirm that
+   `add-building-block` is available.
+3. **Get the insertion points — let the tool do it, don't read files.** Call `get_functionality_details`
+   with `{ appPath, functionalityId: "add-building-block" }`. Its `description` lists the **available
+   insertion points**: every view/fragment file and the valid `aggregationPath` XPath options for it
+   (e.g. `/mvc:View/content`). Its `parameters` is the JSON schema for the call in step 5. **Do not guess the
+   `viewOrFragmentPath` or `aggregationPath`** — use the values it returns.
+4. **Determine the binding.** For standard building blocks, pick the `metaPath` annotation (see the table). If you
    are unsure which annotation path to use, call `search_docs`. For `rich-text-editor`, use `targetProperty`.
-4. **Call `add_building_block`** with `appPath`, `viewOrFragmentPath`, `aggregationPath`, and `buildingBlockData`
-   (which carries `buildingBlockType`, `id`, and any type-specific fields).
-5. **Multiple building blocks:** call the tool **once per building block, in sequence** — not in parallel. Each call
-   reads the view from disk; parallel calls won't see each other's writes and may produce duplicate element IDs.
+5. **Insert.** Call `execute_functionality` with the chosen parameters:
+   ```json
+   {
+     "appPath": "<app path>",
+     "functionalityId": "add-building-block",
+     "parameters": {
+       "viewOrFragmentPath": "<one of the files from step 3>",
+       "aggregationPath": "<one of the XPaths from step 3>",
+       "buildingBlockData": { "buildingBlockType": "table", "id": "myTable" }
+     }
+   }
+   ```
+   `buildingBlockData` carries `buildingBlockType`, an optional `id`, and the type-specific fields (e.g. `metaPath`).
+6. **Multiple building blocks:** call `execute_functionality` **once per building block, in sequence** — not in
+   parallel. Each call reads the view from disk; parallel calls won't see each other's writes and may produce
+   duplicate element IDs.
 
 ---
 
@@ -103,19 +119,21 @@ If the requested building block is not supported on the target page type, tell t
 
 ```
 Add to the main custom page view (webapp/ext/main/Main.view.xml, aggregation /mvc:View/content):
-1. A FilterBar: id productFilterBar, contextPath /Products,
-   metaPath @com.sap.vocabularies.UI.v1.SelectionFields
-2. A Table: id productTable, contextPath /Products,
-   metaPath @com.sap.vocabularies.UI.v1.LineItem, linked to productFilterBar
+1. A FilterBar: id productFilterBar,
+   metaPath /Products/@com.sap.vocabularies.UI.v1.SelectionFields
+2. A Table: id productTable,
+   metaPath /Products/@com.sap.vocabularies.UI.v1.LineItem, linked to productFilterBar
 3. A Rich Text Editor: id productNotesRte, targetProperty /Products/description
 ```
+
+(Leave `contextPath` unset — use an absolute `metaPath` with a leading slash as above.)
 
 ---
 
 ## Common mistakes
 
-- Guessing the `aggregationPath` instead of using the tool's discovery mode (call it without `aggregationPath` to
-  get the valid options).
+- Guessing the `aggregationPath` (or `viewOrFragmentPath`) instead of using the options returned by
+  `get_functionality_details`.
 - Setting `metaPath` on a `rich-text-editor` (it uses `targetProperty`).
 - Expecting the tool to create annotations for types other than Table/FilterBar/Form, or on CAP apps — there the UI
   annotation must already exist.

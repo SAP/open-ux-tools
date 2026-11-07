@@ -125,6 +125,21 @@ export function buildHandWrittenMembers(): Record<BuildingBlockType, BuildingBlo
         buttonGroups: zod.array(buttonGroupConfig).describe('Button groups to add to the editor toolbar.')
     });
 
+    // RichTextEditor has no contextPath — the fe-fpm-writer prompts bind via metaPath (built from
+    // entitySet + targetProperty), not contextPath. It does bind to data, so metaPath stays.
+    const richTextEditor = zod.looseObject({
+        buildingBlockType: zod.literal(BuildingBlockType.RichTextEditor),
+        id: zod
+            .string()
+            .regex(/^[A-Za-z_][\w.-]*$/, 'Must be a valid XML ID')
+            .optional(),
+        metaPath: zod.string().optional(),
+        targetProperty: zod
+            .string()
+            .optional()
+            .describe('Property path used to build the editor binding, e.g. "/Products/description".')
+    });
+
     // Exhaustive per-type map. `satisfies Record<BuildingBlockType, …>` forces an entry for every
     // BuildingBlockType — if @sap-ux/fe-fpm-writer adds a new type upstream, this breaks the build
     // instead of silently falling back to a bare base schema (issue #39379 AC4).
@@ -135,7 +150,7 @@ export function buildHandWrittenMembers(): Record<BuildingBlockType, BuildingBlo
         [BuildingBlockType.Field]: baseSchema(BuildingBlockType.Field),
         [BuildingBlockType.Form]: baseSchema(BuildingBlockType.Form),
         [BuildingBlockType.Page]: page,
-        [BuildingBlockType.RichTextEditor]: baseSchema(BuildingBlockType.RichTextEditor),
+        [BuildingBlockType.RichTextEditor]: richTextEditor,
         [BuildingBlockType.RichTextEditorButtonGroups]: richTextEditorButtonGroups,
         [BuildingBlockType.CustomFormField]: customFormField,
         [BuildingBlockType.CustomColumn]: customColumn,

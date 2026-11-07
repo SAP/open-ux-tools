@@ -73,6 +73,24 @@ export async function executeFunctionality(input: ExecuteFunctionalityInput): Pr
     // Aggregation children require embededFragment.name / position defaults before passing to generateBuildingBlock.
     const resolvedBbData = resolveAggregationChildDefaults(bbData, baseId, generateId);
 
+    // Guard LLM-supplied fragment/handler folders against path traversal — generateBuildingBlock writes
+    // these relative to basePath, so an unchecked folder like "../../x" would escape the app root (same
+    // protection viewOrFragmentPath already gets above).
+    for (const field of ['embededFragment', 'embeddedAction'] as const) {
+        const folder = (resolvedBbData[field] as Record<string, unknown> | undefined)?.['folder'];
+        if (typeof folder === 'string' && !resolveWithinApp(basePath, folder)) {
+            return {
+                functionalityId: ADD_BUILDING_BLOCK,
+                status: 'error',
+                message: `${field}.folder "${folder}" resolves outside the application root; provide a folder inside the app.`,
+                parameters,
+                appPath,
+                changes: [],
+                timestamp: new Date().toISOString()
+            };
+        }
+    }
+
     const config = {
         viewOrFragmentPath: normalizedViewPath,
         aggregationPath,
