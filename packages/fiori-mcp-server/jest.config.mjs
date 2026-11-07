@@ -24,6 +24,9 @@ export default {
         // Stub fe-fpm-writer to prevent the CJS require chain: ux-specification → fe-fpm-writer →
         // fiori-annotation-api → @sap/ux-cds-compiler-facade which conflicts with the ESM mock
         '^@sap-ux/fe-fpm-writer$': '<rootDir>/test/__mocks__/@sap-ux/fe-fpm-writer.cjs',
+        // Stub fiori-annotation-api (imported by building-block-annotations.ts) to keep the real package and its
+        // static ESM import of @sap/ux-cds-compiler-facade out of the jest module graph.
+        '^@sap-ux/fiori-annotation-api$': '<rootDir>/test/__mocks__/@sap-ux/fiori-annotation-api.cjs',
         '^@sap-devx/yeoman-ui-types$': '<rootDir>/test/__mocks__/@sap-devx/yeoman-ui-types.mjs',
         '^@sap/ux-specification$': '<rootDir>/test/__mocks__/@sap/ux-specification.mjs',
         ...baseConfig.moduleNameMapper,
