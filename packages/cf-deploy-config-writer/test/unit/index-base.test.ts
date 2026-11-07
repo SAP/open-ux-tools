@@ -115,6 +115,30 @@ describe('CF Writer Base', () => {
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
         });
+
+        test('MTA ID is truncated so the derived destination service name matches the generated resource', async () => {
+            // The CF html5-apps-repo CLI derives the destination instance name as `<MTA_ID>-destination-service`
+            // rather than reading the mta.yaml service-name, so the generated MTA ID must be short enough that this
+            // derived name matches the (<= 50 char) destination service resource that is actually deployed.
+            const mtaId = 'localexamplefioriapplicationverylongname';
+            const mtaPath = join(outputDir, mtaId);
+            fsExtra.mkdirSync(outputDir, { recursive: true });
+            fsExtra.mkdirSync(mtaPath);
+            const localFs = await generateBaseConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    routerType: RouterModuleType.Managed
+                },
+                undefined,
+                logger
+            );
+            const mtaYaml = localFs.read(join(mtaPath, 'mta.yaml')).toString();
+            const generatedId = /^ID:\s*(\S+)/m.exec(mtaYaml)?.[1];
+            expect(generatedId).toBe('localexamplefioriapplicationve');
+            expect(generatedId?.length).toBeLessThanOrEqual(30);
+            expect(mtaYaml).toContain(`name: ${generatedId}-destination-service`);
+        });
     });
 
     describe('Generate Base Config - Managed', () => {
@@ -194,7 +218,7 @@ describe('CF Writer Base', () => {
             hasSyncMock.mockReturnValue(false);
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(MTABinNotFound);
         });
-        it.each([['~sample'], ['111sample'], [' sample'], ['0sample'], ['.sample'], ['s'.repeat(129)]])(
+        it.each([['~sample'], ['111sample'], [' sample'], ['0sample'], ['.sample']])(
             'Validate length and starting characters %s',
             async (mtaId) => {
                 const config = {
@@ -208,7 +232,7 @@ describe('CF Writer Base', () => {
                     routerType: RouterModuleType.Managed
                 } as Partial<CFBaseConfig>;
                 await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrow(
-                    'The MTA ID must start with a letter or underscore and be less than 128 characters.'
+                    'The MTA ID must start with a letter or underscore.'
                 );
             }
         );

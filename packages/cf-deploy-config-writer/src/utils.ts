@@ -30,7 +30,8 @@ import {
     MbtPackage,
     MTABuildScript,
     CDSDKPackage,
-    CDSPackage
+    CDSPackage,
+    MAX_MTA_ID_LENGTH
 } from './constants.js';
 import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types/index.js';
 import { fileURLToPath } from 'node:url';
@@ -212,7 +213,7 @@ export async function generateSupportingConfig(config: MTABaseConfig, fs: Editor
 export function setMtaDefaults(config: CFBaseConfig): void {
     config.mtaPath = config.mtaPath.replace(/\/$/, '');
     config.addConnectivityService ??= false;
-    config.mtaId = toMtaModuleName(config.mtaId);
+    config.mtaId = toMtaModuleName(config.mtaId).slice(0, MAX_MTA_ID_LENGTH);
 }
 
 /**
