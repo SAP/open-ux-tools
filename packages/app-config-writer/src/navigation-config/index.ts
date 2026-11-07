@@ -54,6 +54,20 @@ export async function generateInboundNavigationConfig(
         }
     );
 
-    fs.extendJSON(manifestPath, { 'sap.app': Object.assign(manifest['sap.app'], { crossNavigation }) });
+    // `mergeObjects` (lodash merge) skips `undefined` source values, so when overwriting an
+    // existing inbound a cleared title/subTitle would otherwise retain the stale value. Remove
+    // them explicitly so the manifest falls back to `sap.app/title`.
+    const mergedInbound = crossNavigation.inbounds[inboundKey];
+    if (title === undefined) {
+        delete mergedInbound.title;
+    }
+    if (subTitle === undefined) {
+        delete mergedInbound.subTitle;
+    }
+
+    // Write the full manifest (rather than `extendJSON`) so removed title/subTitle keys are not
+    // re-merged from the existing file content when overwriting.
+    manifest['sap.app'] = Object.assign(manifest['sap.app'], { crossNavigation });
+    fs.writeJSON(manifestPath, manifest);
     return fs;
 }
