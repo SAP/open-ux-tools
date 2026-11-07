@@ -8,6 +8,10 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/fiori-docs-embeddings"
     },
+    "homepage": "https://github.com/SAP/open-ux-tools/tree/main/packages/fiori-docs-embeddings#readme",
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues"
+    },
     "private": false,
     "scripts": {
         "build-compile": "tsc --noEmit",
