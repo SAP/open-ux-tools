@@ -11932,9 +11932,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -12086,8 +12086,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         ),
@@ -12095,8 +12094,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageGenerated
         )
@@ -12395,9 +12393,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -12549,8 +12547,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         ),
@@ -12558,8 +12555,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageGenerated
         )
@@ -12858,9 +12854,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -13012,7 +13008,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesListGenerated
@@ -13021,7 +13016,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesObjectPageGenerated
@@ -13298,7 +13292,7 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
     });
 
@@ -13418,8 +13412,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         )
@@ -13757,9 +13750,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -13913,8 +13906,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         ),
@@ -13922,8 +13914,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageGenerated
         ),
@@ -13931,8 +13922,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"PositionsObjectPage\\",
-                entitySet: \\"Positions\\",
-                contextPath: \\"\\"
+                entitySet: \\"Positions\\"
             },
             CustomPositionsObjectPageGenerated
         ),
@@ -13940,8 +13930,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"TrainingsObjectPage\\",
-                entitySet: \\"Trainings\\",
-                contextPath: \\"\\"
+                entitySet: \\"Trainings\\"
             },
             CustomTrainingsObjectPageGenerated
         )
@@ -15392,9 +15381,9 @@ function journey() {
         
         When.onTheEmployeesListTargetGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListTargetGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListTargetGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListTargetGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListTargetGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesCustomPageTargetGenerated.iSeeThisPage();
 
     });
@@ -15577,8 +15566,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListTargetGenerated
         ),
@@ -15586,8 +15574,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
@@ -15915,9 +15902,9 @@ function journey() {
         
         When.onTheEmployeesListTargetGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListTargetGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListTargetGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListTargetGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListTargetGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesCustomPageTargetGenerated.iSeeThisPage();
 
     });
@@ -16100,8 +16087,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListTargetGenerated
         ),
@@ -16109,8 +16095,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
@@ -18594,9 +18579,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -18748,7 +18733,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesListGenerated
@@ -18757,7 +18741,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesObjectPageGenerated
