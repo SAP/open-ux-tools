@@ -45,6 +45,42 @@ describe('buildBuildingBlockSchema', () => {
         ).toBeDefined();
     });
 
+    test('requires a title for a Page and does not declare metaPath/contextPath', () => {
+        expect(() =>
+            schema.parse({
+                viewOrFragmentPath: 'v.xml',
+                aggregationPath: '/mvc:View/Page',
+                buildingBlockData: { buildingBlockType: 'page' }
+            })
+        ).toThrow();
+        const result = schema.parse({
+            viewOrFragmentPath: 'v.xml',
+            aggregationPath: '/mvc:View/Page',
+            buildingBlockData: { buildingBlockType: 'page', title: 'My Page', templateType: 'basic' }
+        }) as any;
+        expect(result.buildingBlockData.title).toBe('My Page');
+        expect(result.buildingBlockData.templateType).toBe('basic');
+    });
+
+    test('requires buttonGroups for RichTextEditorButtonGroups', () => {
+        expect(() =>
+            schema.parse({
+                viewOrFragmentPath: 'v.xml',
+                aggregationPath: '/x',
+                buildingBlockData: { buildingBlockType: 'rich-text-editor-button-groups' }
+            })
+        ).toThrow();
+        const result = schema.parse({
+            viewOrFragmentPath: 'v.xml',
+            aggregationPath: '/x',
+            buildingBlockData: {
+                buildingBlockType: 'rich-text-editor-button-groups',
+                buttonGroups: [{ name: 'font-style', buttons: 'bold,italic,underline' }]
+            }
+        }) as any;
+        expect(result.buildingBlockData.buttonGroups[0].name).toBe('font-style');
+    });
+
     test('rejects an unknown buildingBlockType', () => {
         expect(() =>
             schema.parse({

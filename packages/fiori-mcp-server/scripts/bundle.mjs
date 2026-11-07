@@ -198,6 +198,32 @@ const onnxNodeWasmPlugin = {
     }
 };
 
+// ── fe-fpm-writer template copy plugin ────────────────────────────────────────
+// @sap-ux/fe-fpm-writer resolves its EJS templates at runtime via
+// join(__dirname, '../templates', ...). Once bundled into dist/index.js the
+// writer's __dirname becomes dist/, so '../templates' would resolve to the
+// package root (which has no templates/) and every generateBuildingBlock call
+// would crash. This plugin:
+//   1. onLoad — patches the bundled templates module so it looks in './templates'
+//      (i.e. dist/templates/) instead of '../templates'.
+//   2. onEnd — copies the writer's templates/ tree into dist/templates/.
+const copyFpmWriterTemplatesPlugin = {
+    name: 'copy-fpm-writer-templates',
+    setup(build) {
+        build.onLoad({ filter: /fe-fpm-writer[\\/]dist[\\/]templates\.js$/ }, ({ path: p }) => {
+            const source = fs.readFileSync(p, 'utf8');
+            return { contents: source.replace(/'\.\.\/templates'/g, "'./templates'"), loader: 'js' };
+        });
+        build.onEnd((result) => {
+            if (result.errors.length === 0) {
+                const fpmWriterRoot = path.dirname(req.resolve('@sap-ux/fe-fpm-writer/package.json'));
+                fs.cpSync(path.join(fpmWriterRoot, 'templates'), path.join(DIST, 'templates'), { recursive: true });
+                console.log('✓ Copied @sap-ux/fe-fpm-writer templates');
+            }
+        });
+    }
+};
+
 await esbuild.build({
     entryPoints: [path.join(PKG_ROOT, 'src/index.ts')],
     bundle: true,
@@ -222,10 +248,22 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: ['vscode', 'chromium-bidi', '@sap-ux/fe-fpm-writer', '@sap-ux/fiori-annotation-api'],
+    external: [
+        'vscode',
+        'chromium-bidi',
+        // fiori-annotation-api → @sap/ux-cds-compiler-facade dynamically loads @sap/cds from the
+        // user's project at runtime — cannot be bundled at build time.
+        '@sap-ux/fiori-annotation-api'
+    ],
     legalComments: 'linked',
     metafile: true,
-    plugins: [onnxNodeWasmPlugin, pkgJsonShimPlugin, sharpStubPlugin, makeLicensePlugin()]
+    plugins: [
+        onnxNodeWasmPlugin,
+        pkgJsonShimPlugin,
+        sharpStubPlugin,
+        copyFpmWriterTemplatesPlugin,
+        makeLicensePlugin()
+    ]
 });
 
 console.log('✓ esbuild bundle complete');

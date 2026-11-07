@@ -5,6 +5,7 @@ import type { GetFunctionalityDetailsInput, GetFunctionalityDetailsOutput } from
 import { convertToSchema, resolveApplication, logger } from '../../../utils/index.js';
 import { ADD_BUILDING_BLOCK } from '../../../constant.js';
 import { buildBuildingBlockSchema } from './schema.js';
+import { buildBuildingBlockSchemaFromPrompts } from './prompt-derived-schema.js';
 import {
     getViewAndFragmentPaths,
     aggregationChildTypeNames,
@@ -232,9 +233,15 @@ export async function getFunctionalityDetails(
     const fileXPathMap = fs ? buildFileXPathMap(viewFiles, appPath, fs) : [];
     const insertionPointsNote = formatInsertionPointsNote(fileXPathMap, viewFiles, appPath);
 
+    // Derive the per-type schemas from fe-fpm-writer's prompts when possible (reusing the same fs),
+    // falling back to the hand-written schema if the mem-fs editor could not be created.
+    const schema = fs
+        ? await buildBuildingBlockSchemaFromPrompts({ projectRoot: project.root, appId: project.appId, fs })
+        : buildBuildingBlockSchema();
+
     return {
         ...ADD_BUILDING_BLOCK_FUNCTIONALITY,
         description: ADD_BUILDING_BLOCK_FUNCTIONALITY.description + '\n\n' + insertionPointsNote,
-        parameters: convertToSchema(buildBuildingBlockSchema())
+        parameters: convertToSchema(schema)
     };
 }

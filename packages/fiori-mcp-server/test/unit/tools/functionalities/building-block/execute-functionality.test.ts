@@ -98,7 +98,7 @@ describe('building-block executeFunctionality', () => {
             parameters: {
                 viewOrFragmentPath: 'webapp/ext/Custom.view.xml',
                 aggregationPath: '/mvc:View/Page',
-                buildingBlockData: { buildingBlockType: 'page' }
+                buildingBlockData: { buildingBlockType: 'page', title: 'My Page' }
             }
         } as any);
         const [, config] = mockGenerateBuildingBlock.mock.calls[0];
