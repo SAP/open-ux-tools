@@ -14,6 +14,7 @@ import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL, LATEST_VERSION } from '
  * Otherwise, returns fallback ui5 versions.
  */
 export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Version> {
+    logger?.debug(`Fetching public UI5 versions from CDN.`);
     try {
         const { data } = await axios.get<UI5Version>(UI5_VERSIONS_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_CDN_URL));
         return data;
@@ -34,6 +35,7 @@ export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Vers
  */
 export async function fetchInternalVersions(latestVersion: string, logger?: ToolsLogger): Promise<string[]> {
     let data;
+    logger?.debug(`Fetching internal UI5 versions.`);
     try {
         ({ data } = await axios.get(UI5_VERSIONS_NEO_CDN_URL, getProxyAgentConfig(UI5_VERSIONS_NEO_CDN_URL)));
     } catch (e) {

@@ -607,9 +607,11 @@ export default class extends Generator {
 
         updateCfWizardSteps(this.isCfEnv, this.prompts);
 
-        this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
-        this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
-        this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
+        if (this.targetEnv === "CF") {
+            this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
+            this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
+            this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
+        }
     }
 
     /**
@@ -847,7 +849,7 @@ export default class extends Generator {
         }
         this.projectType = selectedProjectType;
 
-        const applications = await loadApps(this.abapProvider, this.isCustomerBase, supportedProject);
+        const applications = await loadApps(this.abapProvider, this.isCustomerBase, supportedProject, this.logger);
         this.telemetryCollector.setBatch({ numberOfApplications: applications.length });
         const application = applications.find((application) => application.id === baseApplicationName);
         if (!application) {
