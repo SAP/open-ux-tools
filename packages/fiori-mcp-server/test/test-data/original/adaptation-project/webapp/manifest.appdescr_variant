@@ -1,0 +1,7 @@
+{
+    "id": "customer.test.variant",
+    "reference": "test.base.application",
+    "layer": "CUSTOMER_BASE",
+    "fileType": "appdescr_variant",
+    "content": []
+}

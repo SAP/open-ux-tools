@@ -136,6 +136,18 @@ describe('executeFunctionality', () => {
         expect(details).toEqual(result);
     });
 
+    test('rejects generic execution for adaptation projects before invoking a handler', async () => {
+        mockCreateApplicationAccess.mockClear();
+        await expect(
+            executeFunctionality({
+                appPath: join(__dirname, '../../test-data/original/adaptation-project'),
+                functionalityId: 'create-controller-extension',
+                parameters: {}
+            })
+        ).rejects.toThrow('SAP_FIORI_MCP_ADP_TOOLS=true');
+        expect(mockCreateApplicationAccess).not.toHaveBeenCalled();
+    });
+
     test('Change app property', async () => {
         const updatedManifest = { changed: true };
         mockSpecificationReadAppWithModel(readAppMock, appPathLropV4, applications);

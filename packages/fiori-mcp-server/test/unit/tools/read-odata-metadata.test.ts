@@ -22,10 +22,10 @@ jest.unstable_mockModule('../../../src/utils', () => ({
     }
 }));
 
-const mockReadUi5Config = jest.fn<any>();
+const mockGetAdpConfig = jest.fn<any>();
 const mockIsCFEnvironment = jest.fn<any>().mockResolvedValue(false);
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
-    readUi5Config: mockReadUi5Config,
+    getAdpConfig: mockGetAdpConfig,
     isCFEnvironment: mockIsCFEnvironment,
     getMergedManifest: mockGetMergedManifest
 }));
@@ -55,11 +55,7 @@ describe('readODataMetadataAdp', () => {
         jest.clearAllMocks();
         mockIsCFEnvironment.mockResolvedValue(false);
         mockFormatXml.mockImplementation((xml: string) => `<formatted>${xml}</formatted>`);
-        mockReadUi5Config.mockResolvedValue({
-            findCustomMiddleware: jest.fn<any>().mockReturnValue({
-                configuration: { adp: { target: { url: 'http://host', client: '100' } } }
-            })
-        });
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'http://host', client: '100' } });
     });
 
     function setupProvider(
@@ -121,11 +117,7 @@ describe('readODataMetadataAdp', () => {
     });
 
     test('passes url and client from ui5.yaml to createAbapServiceProvider', async () => {
-        mockReadUi5Config.mockResolvedValue({
-            findCustomMiddleware: jest.fn<any>().mockReturnValue({
-                configuration: { adp: { target: { url: 'http://myhost', client: '200' } } }
-            })
-        });
+        mockGetAdpConfig.mockResolvedValue({ target: { url: 'http://myhost', client: '200' } });
         setupProvider({});
 
         await readODataMetadataAdp({ appPath: APP_PATH });
@@ -138,19 +130,12 @@ describe('readODataMetadataAdp', () => {
         );
     });
 
-    test('defaults url and client to empty strings when middleware is not configured', async () => {
-        mockReadUi5Config.mockResolvedValue({
-            findCustomMiddleware: jest.fn<any>().mockReturnValue(undefined)
-        });
+    test('throws a clear error when no ABAP target is configured', async () => {
+        mockGetAdpConfig.mockResolvedValue({});
         setupProvider({});
 
-        await readODataMetadataAdp({ appPath: APP_PATH });
-
-        expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
-            { url: '', client: '' },
-            expect.anything(),
-            expect.anything(),
-            expect.anything()
+        await expect(readODataMetadataAdp({ appPath: APP_PATH })).rejects.toThrow(
+            'requires an ABAP target system configured'
         );
     });
 
@@ -236,7 +221,7 @@ describe('readODataMetadataAdp', () => {
             await readODataMetadataAdp({ appPath: APP_PATH });
 
             expect(mockGetMergedManifest).toHaveBeenCalledWith(APP_PATH);
-            expect(mockReadUi5Config).not.toHaveBeenCalled();
+            expect(mockGetAdpConfig).not.toHaveBeenCalled();
             expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
         });
 
