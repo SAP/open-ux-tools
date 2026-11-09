@@ -1,4 +1,7 @@
 {
+    "error": {
+        "invalidConfigurations": "The property 'configurations' in {{file}} must be an array."
+    },
     "info": {
         "startServerMessage": "To start the server, launch a terminal, navigate to the {{folder}} folder and type: npm {{npmCommand}}."
     }

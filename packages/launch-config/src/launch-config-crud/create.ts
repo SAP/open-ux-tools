@@ -13,11 +13,13 @@ import type {
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils.js';
 import { updateLaunchJSON } from './writer.js';
-import { parse } from 'jsonc-parser';
+import { applyEdits, modify, parse } from 'jsonc-parser';
 import { handleWorkspaceConfig } from '../debug-config/workspaceManager.js';
 import { configureLaunchJsonFile } from '../debug-config/config.js';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../i18n.js';
+
+const LAUNCH_JSON_VERSION = '0.2.0';
 
 /**
  * Writes the `launch.json` file with the specified configurations. If the file already exists, it will be overwritten.
@@ -28,8 +30,47 @@ import { t } from '../i18n.js';
  * @returns {void}
  */
 function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations: LaunchConfig[]): void {
-    const newLaunchJSONContent = { version: '0.2.0', configurations };
+    const newLaunchJSONContent = { version: LAUNCH_JSON_VERSION, configurations };
     fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
+}
+
+/**
+ * Makes sure that an existing `launch.json` has a `configurations` array, so new configurations can be added to it.
+ * A file that is empty, contains only comments or has no `configurations` (for example `{}`) is completed, its
+ * existing content and comments are kept.
+ *
+ * @param fs - The file system editor used to read and write the `launch.json` file.
+ * @param launchJSONPath - The full path to the `launch.json` file.
+ * @returns The number of launch configurations the file contains.
+ * @throws If the file has a `configurations` property that is not an array.
+ */
+function ensureConfigurationsArray(fs: Editor, launchJSONPath: string): number {
+    const content = fs.read(launchJSONPath);
+    const launchJson: unknown = parse(content);
+    const formattingOptions = { tabSize: 4, insertSpaces: true };
+    if (typeof launchJson !== 'object' || launchJson === null || Array.isArray(launchJson)) {
+        const completed = { version: LAUNCH_JSON_VERSION, configurations: [] };
+        fs.write(launchJSONPath, applyEdits(content, modify(content, [], completed, { formattingOptions })));
+        return 0;
+    }
+    const { version, configurations } = launchJson as Partial<LaunchJSON>;
+    if (configurations !== undefined && configurations !== null && !Array.isArray(configurations)) {
+        throw new Error(
+            t('error.invalidConfigurations', { file: launchJSONPath, interpolation: { escapeValue: false } })
+        );
+    }
+    if (Array.isArray(configurations) && version !== undefined) {
+        return configurations.length;
+    }
+    let updated = content;
+    if (version === undefined) {
+        updated = applyEdits(updated, modify(updated, ['version'], LAUNCH_JSON_VERSION, { formattingOptions }));
+    }
+    if (!Array.isArray(configurations)) {
+        updated = applyEdits(updated, modify(updated, ['configurations'], [], { formattingOptions }));
+    }
+    fs.write(launchJSONPath, updated);
+    return Array.isArray(configurations) ? configurations.length : 0;
 }
 
 /**
@@ -47,12 +88,11 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
     if (fs.exists(launchJsonWritePath)) {
         // launch.json exists, enhance existing file with new config
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
-        const launchJsonString = fs.read(launchJsonWritePath);
-        const launchJson = parse(launchJsonString) as LaunchJSON;
+        const configurationCount = ensureConfigurationsArray(fs, launchJsonWritePath);
         await updateLaunchJSON(
             launchConfig,
             launchJsonWritePath,
-            ['configurations', launchJson.configurations.length + 1],
+            ['configurations', configurationCount + 1],
             {
                 isArrayInsertion: true
             },
@@ -85,19 +125,18 @@ async function handleExistingLaunchJson(
     configurations: LaunchConfig[],
     replaceWithNew: boolean = false
 ): Promise<void> {
-    const launchJsonString = fs.read(launchJSONPath);
-    const launchJson = parse(launchJsonString) as LaunchJSON;
     if (replaceWithNew) {
         // replaceWithNew is needed in cases where launch config exists in
         // `.vscode` but isn't added to the workspace. If `replaceWithNew` is `true`, it indicates that the app is not
         // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder.
         writeLaunchJsonFile(fs, launchJSONPath, configurations);
     } else {
+        const configurationCount = ensureConfigurationsArray(fs, launchJSONPath);
         for (const config of configurations) {
             await updateLaunchJSON(
                 config,
                 launchJSONPath,
-                ['configurations', launchJson.configurations.length + 1],
+                ['configurations', configurationCount + 1],
                 {
                     isArrayInsertion: true
                 },
