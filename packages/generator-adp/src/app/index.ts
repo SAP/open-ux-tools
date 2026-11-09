@@ -226,26 +226,9 @@ export default class extends Generator {
      */
     private cfConfig: CfConfig;
     /**
-     * Base app manifest resolved for the CF flow (headless or interactive). Used for telemetry and
-     * writer config when no `cfPrompter` is available (JSON input).
+     * Base-app values discovered from CF JSON input; undefined when the interactive prompter supplies them instead.
      */
-    private cfManifest?: Manifest;
-    /**
-     * HTML5 repo runtime GUID discovered for the headless CF flow.
-     */
-    private cfHtml5RepoRuntimeGuid?: string;
-    /**
-     * Business service instance GUID discovered for the headless CF flow.
-     */
-    private cfServiceInstanceGuid?: string;
-    /**
-     * Backend URLs derived from the service keys for the headless CF flow.
-     */
-    private cfBackendUrls?: string[];
-    /**
-     * OAuth paths extracted from the base app's xs-app.json for the headless CF flow.
-     */
-    private cfOAuthPaths?: string[];
+    private cfArtifacts?: CfArtifactInputs;
     /**
      * Indicates if the current project is an MTA project.
      */
@@ -625,7 +608,8 @@ export default class extends Generator {
                 : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {
-            telemetryData.baseAppTechnicalName = (this.cfManifest ?? this.cfPrompter?.manifest)?.['sap.app']?.id ?? '';
+            telemetryData.baseAppTechnicalName =
+                (this.cfArtifacts?.manifest ?? this.cfPrompter?.manifest)?.['sap.app']?.id ?? '';
             telemetryData.projectType = 'cf';
             telemetryData.cfServiceOffering = this.cfServicesAnswers?.serviceInstance?.service ?? '';
         } else {
@@ -772,12 +756,15 @@ export default class extends Generator {
      * @returns {CfArtifactInputs} The base-app values required to build the CF writer config.
      */
     private _getCfArtifactInputs(): CfArtifactInputs {
+        if (this.cfArtifacts) {
+            return this.cfArtifacts;
+        }
         return {
-            manifest: this.cfManifest ?? this.cfPrompter?.manifest,
-            html5RepoRuntimeGuid: this.cfManifest ? this.cfHtml5RepoRuntimeGuid : this.cfPrompter?.html5RepoRuntimeGuid,
-            serviceInstanceGuid: this.cfManifest ? this.cfServiceInstanceGuid : this.cfPrompter?.serviceInstanceGuid,
-            backendUrls: this.cfManifest ? this.cfBackendUrls : this.cfPrompter?.backendUrls,
-            oauthPaths: this.cfManifest ? this.cfOAuthPaths : this.cfPrompter?.oauthPaths
+            manifest: this.cfPrompter?.manifest,
+            html5RepoRuntimeGuid: this.cfPrompter?.html5RepoRuntimeGuid,
+            serviceInstanceGuid: this.cfPrompter?.serviceInstanceGuid,
+            backendUrls: this.cfPrompter?.backendUrls,
+            oauthPaths: this.cfPrompter?.oauthPaths
         };
     }
 
@@ -1035,11 +1022,13 @@ export default class extends Generator {
         await validateSmartTemplateApplication(manifest);
         await validateODataEndpoints(entries, serviceInfo.serviceKeys, this.logger);
 
-        this.cfManifest = manifest;
-        this.cfHtml5RepoRuntimeGuid = serviceInstanceGuid;
-        this.cfServiceInstanceGuid = serviceInfo.serviceInstance?.guid;
-        this.cfBackendUrls = getBackendUrlsFromServiceKeys(serviceInfo.serviceKeys);
-        this.cfOAuthPaths = getOAuthPathsFromXsApp(entries);
+        this.cfArtifacts = {
+            manifest,
+            html5RepoRuntimeGuid: serviceInstanceGuid,
+            serviceInstanceGuid: serviceInfo.serviceInstance?.guid,
+            backendUrls: getBackendUrlsFromServiceKeys(serviceInfo.serviceKeys),
+            oauthPaths: getOAuthPathsFromXsApp(entries)
+        };
 
         this.cfServicesAnswers = {
             approuter: resolvedApprouter,
