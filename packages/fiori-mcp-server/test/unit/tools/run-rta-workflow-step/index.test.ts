@@ -95,10 +95,11 @@ describe('runRtaWorkflowStep dispatcher', () => {
             expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, 'Joule');
         });
 
-        test('throws when payload.agentName is present but empty', async () => {
+        test('throws when payload.agentName is present but empty, without disconnecting the existing session', async () => {
             await expect(
                 runRtaWorkflowStep({ step: 'start', site: SITE, appPath: '/tmp/app', payload: { agentName: '' } })
             ).rejects.toThrow('payload.agentName must be a non-empty string when provided');
+            expect(mockDisconnectSite).not.toHaveBeenCalled();
         });
 
         test('registers the site with appPath before starting', async () => {
