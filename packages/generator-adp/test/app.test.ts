@@ -1322,7 +1322,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             it.each([AppRouterType.MANAGED, AppRouterType.STANDALONE])(
                 'should honor an explicit approuter choice: %s',
                 async (approuter) => {
-                    await runHeadlessGenerator({ ...baseJsonInput, approuter });
+                    await runHeadlessGenerator({ ...baseJsonInput, approuter, businessSolutionName: 'my-solution' });
 
                     expect(mockGetApprouterType).not.toHaveBeenCalled();
                     expect(mockGenerateCf).toHaveBeenCalledWith(
@@ -1343,6 +1343,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                     runHeadlessGenerator({
                         ...baseJsonInput,
                         applicationTitle: 'Headless CF App',
+                        businessSolutionName: 'my-solution',
                         targetFolder: otherMtaRoot
                     })
                 ).resolves.not.toThrow();
@@ -1378,6 +1379,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                     runHeadlessGenerator({
                         ...baseJsonInput,
                         serviceInstanceName: 'live-instance',
+                        businessSolutionName: 'my-solution',
                         projectName: 'app.variant.cf',
                         namespace: 'customer.app.variant.cf',
                         mtaMode: 'new',
@@ -1401,6 +1403,32 @@ describe('Adaptation Project Generator Integration Test', () => {
                     expect.any(Object),
                     expect.any(Object)
                 );
+            });
+
+            it('should reject a new managed-approuter MTA when businessSolutionName is missing', async () => {
+                const newMtaParent = join(cfTestOutputDir, 'headless-new-mta-no-solution');
+                fs.mkdirSync(newMtaParent, { recursive: true });
+                mockGetAdpServiceInstances.mockResolvedValue([
+                    { name: 'live-instance', guid: 'inst-guid', service: 'hana', servicePlan: 'hdi-shared' }
+                ]);
+                const promptSpy = jest.spyOn(Generator.prototype, 'prompt');
+
+                try {
+                    await expect(
+                        runHeadlessGenerator({
+                            ...baseJsonInput,
+                            serviceInstanceName: 'live-instance',
+                            mtaMode: 'new',
+                            mtaId: 'brand-new-mta',
+                            targetFolder: newMtaParent
+                        })
+                    ).rejects.toThrow(t('error.updatingApp'));
+
+                    expect(promptSpy).not.toHaveBeenCalled();
+                    expect(mockGenerateCf).not.toHaveBeenCalled();
+                } finally {
+                    promptSpy.mockRestore();
+                }
             });
 
             it('should reject invalid JSON and report headless generation failures without prompting or generating', async () => {
@@ -1435,7 +1463,12 @@ describe('Adaptation Project Generator Integration Test', () => {
                         mockIsLoggedInCf.mockResolvedValue(loggedIn);
 
                         await expect(
-                            runHeadlessGenerator({ ...baseJsonInput, id: 'orchestrator-id', ...input })
+                            runHeadlessGenerator({
+                                ...baseJsonInput,
+                                businessSolutionName: 'my-solution',
+                                id: 'orchestrator-id',
+                                ...input
+                            })
                         ).rejects.toThrow(t('error.updatingApp'));
 
                         expect(mockWriteResult).toHaveBeenCalledWith(

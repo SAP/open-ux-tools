@@ -15,6 +15,8 @@ import {
     generateCf,
     getCfBaseAppInbounds,
     getApprouterType,
+    getModuleNames,
+    hasApprouter,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
@@ -94,6 +96,7 @@ import {
     validateJsonInput,
     validateMtaId,
     validateProjectPath,
+    validateBusinessSolutionName,
     assertValidationPassed
 } from './questions/helper/validators.js';
 import {
@@ -1006,6 +1009,11 @@ export default class extends Generator {
         const resolvedApprouter =
             approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
 
+        // A managed approuter with no existing router writes destinations keyed on the business solution name.
+        if (resolvedApprouter === AppRouterType.MANAGED && !this._hasExistingApprouter(mtaMode, projectPath)) {
+            assertValidationPassed(validateBusinessSolutionName(businessSolutionName ?? ''));
+        }
+
         const serviceInfo = await getBusinessServiceInfo(serviceInstanceName, this.cfConfig, this.logger);
         if (!serviceInfo) {
             throw new Error(t('error.businessServiceDoesNotExist'));
@@ -1080,6 +1088,25 @@ export default class extends Generator {
         }
 
         return fs.realpathSync(targetFolder, 'utf-8');
+    }
+
+    /**
+     * Whether the target MTA already declares an approuter module. A new MTA never does; for an existing
+     * MTA the modules are read from its `mta.yaml`. Mirrors the interactive flow's `detectExistingApprouter`.
+     *
+     * @param {MtaMode} mtaMode - The MTA mode.
+     * @param {string} projectPath - The resolved project/MTA path.
+     * @returns {boolean} True if an approuter module already exists.
+     */
+    private _hasExistingApprouter(mtaMode: MtaMode, projectPath: string): boolean {
+        if (mtaMode === MtaMode.New) {
+            return false;
+        }
+        try {
+            return hasApprouter(getModuleNames(projectPath));
+        } catch {
+            return false;
+        }
     }
 
     /**
