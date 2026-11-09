@@ -138,6 +138,7 @@ jobs:
               if: steps.version.outputs.changed == 'true' && inputs.dry_run != true
               env:
                   GH_TOKEN: ${{ steps.app-token.outputs.token }}
+                  PR_TOKEN: ${{ secrets.AWESOME_COPILOT_PR_TOKEN }}
                   VERSION: ${{ steps.version.outputs.new }}
                   BRANCH: ${{ steps.branch.outputs.branch }}
               run: |
@@ -146,7 +147,7 @@ jobs:
                   git commit -m "chore(sap-ux-fiori-tools): bump to ${VERSION}"
                   git push origin "$BRANCH" --force
 
-                  gh pr create \
+                  GH_TOKEN="$PR_TOKEN" gh pr create \
                     --repo github/awesome-copilot \
                     --head "IainSAP:${BRANCH}" \
                     --base main \
