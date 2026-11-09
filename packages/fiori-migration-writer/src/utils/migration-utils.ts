@@ -145,6 +145,74 @@ export function getErrorFile(error: unknown, projectRoot?: string): string | und
 }
 
 /**
+ * Convert any value to a string suitable for Error construction.
+ * Prevents '[object Object]' stringification.
+ *
+ * @param value - the value to convert
+ * @returns a string representation
+ */
+function errorValueToString(value: unknown): string {
+    if (value == null) {
+        return '';
+    }
+    if (typeof value === 'string') {
+        return value;
+    }
+    if (value instanceof Error) {
+        return value.message;
+    }
+    return String(value);
+}
+
+/**
+ * Get error message text based on error type and file context.
+ *
+ * @param err - the error object
+ * @param file - optional file path
+ * @param useMessage - whether to use raw error message
+ * @returns the error message text
+ */
+function getErrorMessageText(err: Error, file: string | undefined, useMessage?: boolean): string {
+    if (err.name === 'MigrationError') {
+        return err.message;
+    }
+    if (err.name === 'SyntaxError') {
+        return i18nText(file ? 'ERROR_SYNTAX_FILENAME' : 'ERROR_SYNTAX', { filename: file });
+    }
+    if (isPermissionError(err)) {
+        return i18nText(file ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename: file });
+    }
+    return (useMessage ? err.message : '') || err.message || err.toString();
+}
+
+/**
+ * Check if technical details should be added to error message.
+ *
+ * @param err - the error object
+ * @param useMessage - whether raw message was requested
+ * @returns true if technical details should be omitted
+ */
+function shouldOmitTechnicalDetails(err: Error, useMessage?: boolean): boolean {
+    return useMessage === true || (err as { useMessage?: boolean }).useMessage === true;
+}
+
+/**
+ * Build technical details string for error (code and step).
+ *
+ * @param error - the original error
+ * @param text - the error message text
+ * @returns array of detail strings
+ */
+function buildErrorDetails(error: unknown, text: string): string[] {
+    const code = getErrorCode(error);
+    const step = (error as { migrationStep?: unknown } | undefined)?.migrationStep;
+    return [
+        code && !text.includes(code) ? `code: ${code}` : undefined,
+        typeof step === 'string' ? `step: ${step}` : undefined
+    ].filter(Boolean) as string[];
+}
+
+/**
  * Describe an error for the user and for telemetry. In addition to what `determineMessage` does, it names the
  * file of file system errors (relative to the project), treats `EACCES` like `EPERM`, and adds the error code and the
  * step of the migration, so the failure can be understood without the original stack trace. The result is never empty.
@@ -156,30 +224,19 @@ export function getErrorFile(error: unknown, projectRoot?: string): string | und
  */
 export function describeError(error: unknown, projectRoot?: string, useMessage?: boolean): string {
     // Error-like objects are accepted as they are, anything else is turned into an error
-    const err = (typeof error === 'object' && error !== null ? error : new Error(String(error ?? ''))) as Error;
+    const errorString = errorValueToString(error);
+    const err = (typeof error === 'object' && error !== null ? error : new Error(errorString)) as Error;
     const file = getErrorFile(error, projectRoot);
-    let text: string;
-    if (err.name === 'MigrationError') {
-        text = err.message;
-    } else if (err.name === 'SyntaxError') {
-        text = i18nText(file ? 'ERROR_SYNTAX_FILENAME' : 'ERROR_SYNTAX', { filename: file });
-    } else if (isPermissionError(err)) {
-        text = i18nText(file ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename: file });
-    } else {
-        text = (useMessage ? err.message : '') || err.message || err.toString();
-    }
+
+    let text = getErrorMessageText(err, file, useMessage);
     text = text || i18nText('ERROR_UNKNOWN');
 
     // Messages that are written for the user explain themselves, technical details would only add noise
-    if (useMessage || (err as { useMessage?: boolean }).useMessage === true) {
+    if (shouldOmitTechnicalDetails(err, useMessage)) {
         return text;
     }
-    const code = getErrorCode(error);
-    const step = (error as { migrationStep?: unknown } | undefined)?.migrationStep;
-    const details = [
-        code && !text.includes(code) ? `code: ${code}` : undefined,
-        typeof step === 'string' ? `step: ${step}` : undefined
-    ].filter(Boolean);
+
+    const details = buildErrorDetails(error, text);
     return details.length > 0 ? `${text} (${details.join(', ')})` : text;
 }
 
