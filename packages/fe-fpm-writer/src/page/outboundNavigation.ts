@@ -2,13 +2,12 @@ import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-import type { OutboundNavigation } from './types.js';
+import type { OutboundNavigation, TargetOptionsAddition } from './types.js';
 import { getManifest } from '../common/utils.js';
 import { extendJSON, getJsonSpace } from '../common/file.js';
 import { render } from 'ejs';
 import { getTemplatePath } from '../templates.js';
 
-type TargetOptionsAddition = { options?: { settings?: { navigation?: { [key: string]: unknown } } } };
 /**
  * Add an Outbound Navigation Link to a page of a UI5 application.
  *

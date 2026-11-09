@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { OutboundNavigation } from '../../../src/page/types.js';
-import { generate } from '../../../src/page/outboundNavigation.js';
+import { generate, deleteOutboundNavigation } from '../../../src/page/outboundNavigation.js';
 import { detectTabSpacing } from '../../../src/common/file.js';
 import { tabSizingTestCases } from '../../common/index.js';
 
@@ -249,6 +249,240 @@ describe('OutboundNavigation', () => {
                 fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
 
                 await generate(target, { ...minimalInput, tabInfo }, fs);
+
+                const updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+                const result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
+        });
+    });
+
+    describe('deleteOutboundNavigation', () => {
+        const manifestWithBoth = JSON.stringify(
+            {
+                'sap.app': {
+                    id: 'my.test.App',
+                    crossNavigation: {
+                        outbounds: {
+                            ProductsOutbound: { semanticObject: 'ProductSO', action: 'display' }
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    routing: {
+                        targets: {
+                            RootEntityListReport: {
+                                options: {
+                                    settings: {
+                                        navigation: {
+                                            Products: { detail: { outbound: 'ProductsOutbound' } }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            null,
+            2
+        );
+
+        test('returns the mem-fs editor instance', async () => {
+            const target = join(testDir, 'delete-return-value');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+
+            const result = await deleteOutboundNavigation(target, minimalInput, fs);
+
+            expect(result).toBe(fs);
+        });
+
+        test('creates its own fs editor when none is passed', async () => {
+            const target = join(testDir, 'delete-no-fs');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            // write to disk so the internal fs can read it
+            await new Promise<void>((resolve) => fs.commit(resolve));
+
+            const result = await deleteOutboundNavigation(target, minimalInput);
+
+            expect(result).toBeDefined();
+        });
+
+        test('skips page navigation deletion when sourcePage is not provided', async () => {
+            const target = join(testDir, 'delete-no-source-page');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+            await deleteOutboundNavigation(
+                target,
+                { entity: 'Products', settings: { outboundKey: 'ProductsOutbound' } } as OutboundNavigation,
+                fs
+            );
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            // outbound removed from sap.app
+            expect(manifest['sap.app'].crossNavigation.outbounds['ProductsOutbound']).toBeUndefined();
+            // page navigation untouched
+            expect(
+                manifest['sap.ui5'].routing.targets.RootEntityListReport.options.settings.navigation.Products
+            ).toBeDefined();
+        });
+
+        test('skips page navigation deletion when sourcePage is empty string', async () => {
+            const target = join(testDir, 'delete-empty-source-page');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+            await deleteOutboundNavigation(
+                target,
+                {
+                    entity: 'Products',
+                    navigation: { sourcePage: '' },
+                    settings: { outboundKey: 'ProductsOutbound' }
+                } as OutboundNavigation,
+                fs
+            );
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            expect(manifest['sap.app'].crossNavigation.outbounds['ProductsOutbound']).toBeUndefined();
+            expect(
+                manifest['sap.ui5'].routing.targets.RootEntityListReport.options.settings.navigation.Products
+            ).toBeDefined();
+        });
+
+        test('throws when sourcePage is provided but does not exist in manifest targets', async () => {
+            const target = join(testDir, 'delete-unknown-source-page');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+
+            await expect(
+                deleteOutboundNavigation(target, { ...minimalInput, navigation: { sourcePage: 'NonExistentPage' } }, fs)
+            ).rejects.toThrow('Could not find navigation source NonExistentPage!');
+        });
+
+        test('deletes entity navigation entry when sourcePage and entity navigation both exist', async () => {
+            const target = join(testDir, 'delete-entity-nav');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+            await deleteOutboundNavigation(
+                target,
+                {
+                    entity: 'Products',
+                    navigation: { sourcePage: 'RootEntityListReport' },
+                    settings: { outboundKey: '' }
+                } as OutboundNavigation,
+                fs
+            );
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            const navigation = manifest['sap.ui5'].routing.targets.RootEntityListReport.options.settings.navigation;
+            expect(navigation['Products']).toBeUndefined();
+        });
+
+        test('does not write manifest when entity navigation does not exist for the given entity', async () => {
+            const manifestWithOtherNav = JSON.stringify(
+                {
+                    'sap.app': { id: 'my.test.App' },
+                    'sap.ui5': {
+                        routing: {
+                            targets: {
+                                RootEntityListReport: {
+                                    options: {
+                                        settings: {
+                                            navigation: {
+                                                Customers: { detail: { outbound: 'CustomersOutbound' } }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                null,
+                2
+            );
+            const target = join(testDir, 'delete-entity-nav-missing');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOtherNav);
+
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            await deleteOutboundNavigation(
+                target,
+                {
+                    entity: 'Products',
+                    navigation: { sourcePage: 'RootEntityListReport' },
+                    settings: { outboundKey: '' }
+                } as OutboundNavigation,
+                fs
+            );
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('deletes outbound key from sap.app.crossNavigation.outbounds when it exists', async () => {
+            const target = join(testDir, 'delete-outbound-key');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+            await deleteOutboundNavigation(target, minimalInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            expect(manifest['sap.app'].crossNavigation.outbounds['ProductsOutbound']).toBeUndefined();
+        });
+
+        test('does not write manifest when outbound key does not exist in sap.app', async () => {
+            const target = join(testDir, 'delete-outbound-key-missing');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            await deleteOutboundNavigation(target, minimalInput, fs);
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('does not write manifest when outboundKey is empty', async () => {
+            const target = join(testDir, 'delete-empty-outbound-key');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            await deleteOutboundNavigation(
+                target,
+                { entity: 'Products', settings: { outboundKey: '' } } as OutboundNavigation,
+                fs
+            );
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('deletes both page navigation entry and outbound key when both exist', async () => {
+            const target = join(testDir, 'delete-both');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+            await deleteOutboundNavigation(target, minimalInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            const navigation = manifest['sap.ui5'].routing.targets.RootEntityListReport.options.settings.navigation;
+            expect(navigation['Products']).toBeUndefined();
+            expect(manifest['sap.app'].crossNavigation.outbounds['ProductsOutbound']).toBeUndefined();
+        });
+
+        test('manifest matches snapshot after deleting both entries', async () => {
+            const target = join(testDir, 'delete-both-snapshot');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+            await deleteOutboundNavigation(target, minimalInput, fs);
+
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
+        describe('tab sizing', () => {
+            test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
+                const target = join(testDir, 'delete-tab-sizing');
+                fs.write(join(target, 'webapp/manifest.json'), manifestWithBoth);
+
+                await deleteOutboundNavigation(target, { ...minimalInput, tabInfo }, fs);
 
                 const updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
                 const result = detectTabSpacing(updatedManifest);

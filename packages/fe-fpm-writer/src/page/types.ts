@@ -73,6 +73,11 @@ export interface FpmPage {
      * UI5 Libraries that should be added to the application.
      */
     libraries?: Libraries;
+
+    /**
+     * If set to true then instead of creation of a new page the existing page with the provided id is relinked to the parent one
+     */
+    reuseExisting?: boolean;
 }
 
 /**
@@ -188,3 +193,5 @@ export type InternalCustomPage = CustomPage & InternalFpmPage & InternalCustomEl
 export type InternalListReport = ListReport & InternalFpmPage & { name: PageType.ListReport; navigation?: Navigation };
 
 export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: PageType.ObjectPage };
+
+export type TargetOptionsAddition = { options?: { settings?: { navigation?: { [key: string]: unknown } } } };

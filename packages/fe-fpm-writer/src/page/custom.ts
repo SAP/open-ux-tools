@@ -10,14 +10,16 @@ import {
     getFclConfig,
     getManifestJsonExtensionHelper,
     validatePageConfig,
-    getLibraryDependencies
+    getLibraryDependencies,
+    deleteOutboundNavigationDetail,
+    prepareToReuseExistingPage
 } from './common.js';
 import { setCommonDefaults } from '../common/defaults.js';
 import type { Manifest } from '../common/types.js';
 import { validateVersion } from '../common/validate.js';
 import { getTemplatePath } from '../templates.js';
 import { coerce, gte, lt } from 'semver';
-import { addExtensionTypes, getManifestPath } from '../common/utils.js';
+import { addExtensionTypes, getManifest } from '../common/utils.js';
 import { copyTpl, extendJSON, createIdGenerator, type IdGeneratorFunction } from '../common/file.js';
 import { generateBuildingBlock } from '../building-block/index.js';
 import {
@@ -172,10 +174,16 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     validateVersion(data.minUI5Version);
     await validatePageConfig(basePath, data, fs, []);
 
-    const manifestPath = await getManifestPath(basePath, fs);
+    const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
     const config = enhanceData(data, manifestPath, fs);
+
+    if (data.reuseExisting) {
+        prepareToReuseExistingPage(manifestPath, manifest, data, fs);
+    }
+
+    deleteOutboundNavigationDetail(manifestPath, manifest, data, fs);
 
     // merge content into existing files
     const root = getTemplateRoot(data.minUI5Version);
@@ -187,6 +195,10 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
         replacer: getManifestJsonExtensionHelper(config),
         tabInfo: data.tabInfo
     });
+
+    if (data.reuseExisting) {
+        return fs;
+    }
 
     // add extension content
     const viewPath = join(config.path, `${config.name}.view.xml`);
