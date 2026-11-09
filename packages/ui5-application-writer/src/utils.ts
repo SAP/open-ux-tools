@@ -1,6 +1,6 @@
 import { gte, coerce } from 'semver';
 import { type UI5, type TemplateOptions } from './types.js';
-import { join, relative, sep } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import { render } from 'ejs';
 import { FileName } from '@sap-ux/project-access';
 import type { MemFsEditor as Editor } from 'mem-fs-editor';
@@ -48,6 +48,7 @@ export function copyTplAndRename(
     rename: (posixRelPath: string) => string,
     copyOptions?: CopyOptionsWithIgnore
 ): void {
+    const resolvedTo = resolve(to);
     fs.copy(from, to, {
         ...copyOptions,
         transformData: data,
@@ -56,8 +57,8 @@ export function copyTplAndRename(
             // No binary template files exist in this package; text is always safe to render.
             const processedContents = render(contents.toString(), data, { filename: sourcePath });
             const strippedPath = renderedPath.endsWith('.ejs') ? renderedPath.replace(/\.ejs$/, '') : renderedPath;
-            const relPosix = relative(to, strippedPath).split(sep).join('/');
-            return { path: join(to, rename(relPosix)), contents: processedContents };
+            const relPosix = relative(resolvedTo, strippedPath).split(sep).join('/');
+            return { path: join(resolvedTo, rename(relPosix)), contents: processedContents };
         }
     });
 }
