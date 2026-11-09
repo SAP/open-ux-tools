@@ -11,6 +11,7 @@
     "ERROR_READING_FILE": "An error occurred reading the {{filename}} file.",
     "ERROR_SYNTAX": "A syntax error occurred.",
     "ERROR_SYNTAX_FILENAME": "A syntax error occurred in {{filename}}. Ensure the file is valid.",
+    "ERROR_UNKNOWN": "An unknown error occurred.",
     "ERROR_PERMISSION": "A permission error occurred. Ensure your project files are accessible.",
     "ERROR_PERMISSION_FILE": "A permission error occurred in {{filename}}. Ensure the file is accessible.",
     "DEBUG_LOG_MSG_LOGGING_LEVEL_CONFIGURED": "Logging level configured to {{logLevel}}.",

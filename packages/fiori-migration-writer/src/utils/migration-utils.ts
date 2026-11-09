@@ -1,4 +1,4 @@
-import { dirname } from 'node:path';
+import { dirname, isAbsolute, relative, basename, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Data } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
@@ -39,11 +39,14 @@ export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): str
  */
 export class MigrationError extends Error {
     private readonly useMessage: boolean;
+    /** Error code of the original error, for example `EPERM` for file system errors. */
+    readonly code?: string;
     constructor(error: unknown, filename?: string, useMessage?: boolean) {
         const msg = error instanceof Error ? error.message : String(error);
         super(msg);
         this.useMessage = useMessage ?? false;
         this.name = 'MigrationError';
+        this.code = getErrorCode(error);
 
         const errorObj = error instanceof Error ? error : new Error(msg);
         this.setMessage(errorObj, filename);
@@ -52,6 +55,132 @@ export class MigrationError extends Error {
     private setMessage(error: Error, filename?: string) {
         this.message = determineMessage(error, filename, this.useMessage);
     }
+}
+
+/**
+ * Steps of the migration. They are added to errors, so the failing step can be reported.
+ */
+export const MigrationStep = {
+    loadProject: 'loadProject',
+    loadProjectInfo: 'loadProjectInfo',
+    resolveUI5Versions: 'resolveUI5Versions',
+    validateProject: 'validateProject',
+    detectTypeScript: 'detectTypeScript',
+    prepareConfiguration: 'prepareConfiguration',
+    setupProjectStructure: 'setupProjectStructure',
+    assembleTemplateData: 'assembleTemplateData',
+    generateAppSettings: 'generateAppSettings',
+    applyTemplates: 'applyTemplates',
+    postProcessing: 'postProcessing',
+    setupTypeScript: 'setupTypeScript'
+} as const;
+export type MigrationStep = (typeof MigrationStep)[keyof typeof MigrationStep];
+
+/**
+ * Run a step of the migration. An error that is thrown by the step is marked with the step, unless it already
+ * has one. The error itself is not changed otherwise.
+ *
+ * @param step - the step
+ * @param action - the action to run
+ * @returns the result of the action
+ */
+export async function runMigrationStep<T>(step: MigrationStep, action: () => Promise<T> | T): Promise<T> {
+    try {
+        return await action();
+    } catch (error) {
+        if (typeof error === 'object' && error !== null && !('migrationStep' in error)) {
+            // Not enumerable, so the error looks the same when it is logged or serialized
+            Object.defineProperty(error, 'migrationStep', { value: step, enumerable: false });
+        }
+        throw error;
+    }
+}
+
+/**
+ * Get the error code of a Node.js error, for example `EPERM` or `ENOSPC`.
+ *
+ * @param error - the error
+ * @returns the code, if the error has one
+ */
+export function getErrorCode(error: unknown): string | undefined {
+    const code = (error as { code?: unknown } | undefined)?.code;
+    return typeof code === 'string' && code.length > 0 ? code : undefined;
+}
+
+/**
+ * Check if an error is a permission error of the file system.
+ *
+ * @param error - the error
+ * @returns true if the error is an `EPERM` or `EACCES` error
+ */
+function isPermissionError(error: Error): boolean {
+    const code = getErrorCode(error);
+    const message = String(error.message ?? '');
+    return ['EPERM', 'EACCES'].some((permissionCode) => code === permissionCode || message.includes(permissionCode));
+}
+
+/**
+ * Get the file an error is about, relative to the project. Only file system errors know their file. A file outside
+ * of the project is reduced to its name, so no absolute path is reported.
+ *
+ * @param error - the error
+ * @param projectRoot - absolute path of the project
+ * @returns the file with `/` as separator, if the error has one
+ */
+export function getErrorFile(error: unknown, projectRoot?: string): string | undefined {
+    const path = (error as { path?: unknown } | undefined)?.path;
+    if (typeof path !== 'string' || path.length === 0) {
+        return undefined;
+    }
+    let file = basename(path);
+    if (projectRoot && isAbsolute(path)) {
+        const relativePath = relative(projectRoot, path);
+        if (relativePath && !relativePath.startsWith('..') && !isAbsolute(relativePath)) {
+            file = relativePath;
+        }
+    } else if (!isAbsolute(path)) {
+        file = path;
+    }
+    return file.split(sep).join('/');
+}
+
+/**
+ * Describe an error for the user and for telemetry. In addition to what `determineMessage` does, it names the
+ * file of file system errors (relative to the project), treats `EACCES` like `EPERM`, and adds the error code and the
+ * step of the migration, so the failure can be understood without the original stack trace. The result is never empty.
+ *
+ * @param error - the error that was thrown, not necessarily an `Error`
+ * @param projectRoot - absolute path of the project
+ * @param useMessage - whether to use the raw error message. Such a message is a message for the user, technical details are not added
+ * @returns the message, for example `A permission error occurred in webapp/Component.js. Ensure the file is accessible. (code: EACCES, step: applyTemplates)`
+ */
+export function describeError(error: unknown, projectRoot?: string, useMessage?: boolean): string {
+    // Error-like objects are accepted as they are, anything else is turned into an error
+    const err = (typeof error === 'object' && error !== null ? error : new Error(String(error ?? ''))) as Error;
+    const file = getErrorFile(error, projectRoot);
+    let text: string;
+    if (err.name === 'MigrationError') {
+        text = err.message;
+    } else if (err.name === 'SyntaxError') {
+        text = i18nText(file ? 'ERROR_SYNTAX_FILENAME' : 'ERROR_SYNTAX', { filename: file });
+    } else if (isPermissionError(err)) {
+        text = i18nText(file ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename: file });
+    } else {
+        text = (useMessage ? err.message : '') || err.message || err.toString();
+    }
+    text = text || i18nText('ERROR_UNKNOWN');
+
+    // Messages that are written for the user explain themselves, technical details would only add noise
+    if (useMessage || (err as { useMessage?: boolean }).useMessage === true) {
+        return text;
+    }
+    const code = getErrorCode(error);
+    const step = (error as { migrationStep?: unknown } | undefined)?.migrationStep;
+    const details = [
+        code && !text.includes(code) ? `code: ${code}` : undefined,
+        typeof step === 'string' ? `step: ${step}` : undefined
+    ].filter(Boolean);
+    return details.length > 0 ? `${text} (${details.join(', ')})` : text;
 }
 
 /**
@@ -73,7 +202,7 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
 
     if (error.name === 'SyntaxError') {
         errorMessage = i18nText(filename ? 'ERROR_SYNTAX_FILENAME' : 'ERROR_SYNTAX', { filename });
-    } else if (error.message.includes('EPERM')) {
+    } else if (isPermissionError(error)) {
         errorMessage = i18nText(filename ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename });
     }
 

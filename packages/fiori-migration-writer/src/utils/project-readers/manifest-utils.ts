@@ -159,6 +159,8 @@ export function getFlpIntentFromHtml(fs: Editor, htmlFilePath: string): string |
  * Error thrown when project type is not supported for migration
  */
 export class UnsupportedProjectError extends Error {
+    /** The message is written for the user. */
+    readonly useMessage = true;
     constructor(message: string) {
         super(message);
         this.name = 'UnsupportedProjectError';
