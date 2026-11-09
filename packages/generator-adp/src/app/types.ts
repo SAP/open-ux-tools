@@ -350,8 +350,7 @@ export interface JsonInput {
  * CLI JSON for the adaptation project generator (Cloud Foundry target).
  *
  * Selected by `targetEnv: 'CF'`. The `application` field carries the CF base-app id, matched within
- * the apps discovered for the chosen business service / service instance. Exactly one of
- * `businessService` or `serviceInstanceName` must be provided.
+ * the apps discovered for the given service instance. A `serviceInstanceName` is always required.
  */
 export interface CfJsonInput {
     /**
@@ -371,13 +370,10 @@ export interface CfJsonInput {
      */
     applicationTitle?: string;
     /**
-     * Name of the MTA-declared business service to adapt. Mutually exclusive with `serviceInstanceName`.
+     * Name of the live CF service instance to connect to and extend. Always required; identifies the
+     * service whose apps are discovered and that is bound into the generated project.
      */
-    businessService?: string;
-    /**
-     * Name of a live CF service instance to bind and adapt. Mutually exclusive with `businessService`.
-     */
-    serviceInstanceName?: string;
+    serviceInstanceName: string;
     /**
      * Approuter type to configure. When omitted, inherits the existing MTA router type or defaults
      * to the managed HTML5 application runtime for a new MTA.

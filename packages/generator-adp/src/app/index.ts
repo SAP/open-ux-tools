@@ -991,7 +991,6 @@ export default class extends Generator {
         const {
             application: baseApplicationName,
             applicationTitle,
-            businessService,
             serviceInstanceName,
             approuter,
             businessSolutionName,
@@ -1007,13 +1006,12 @@ export default class extends Generator {
         const resolvedApprouter =
             approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
 
-        const serviceName = businessService?.trim() ? businessService : (serviceInstanceName ?? '');
-        const serviceInfo = await getBusinessServiceInfo(serviceName, this.cfConfig, this.logger);
+        const serviceInfo = await getBusinessServiceInfo(serviceInstanceName, this.cfConfig, this.logger);
         if (!serviceInfo) {
             throw new Error(t('error.businessServiceDoesNotExist'));
         }
 
-        const serviceInstance = await this._resolveCfServiceInstance(businessService, serviceInstanceName);
+        const serviceInstance = await this._resolveCfServiceInstance(serviceInstanceName);
 
         const apps: CFApp[] = await getCfApps(serviceInfo.serviceKeys, this.cfConfig, this.logger);
         const baseApp = apps.find((app) => app.appId === baseApplicationName);
@@ -1038,7 +1036,6 @@ export default class extends Generator {
         this.cfServicesAnswers = {
             approuter: resolvedApprouter,
             baseApp,
-            ...(businessService ? { businessService } : {}),
             ...(serviceInstance ? { serviceInstance } : {}),
             ...(businessSolutionName ? { businessSolutionName } : {})
         };
@@ -1086,20 +1083,13 @@ export default class extends Generator {
     }
 
     /**
-     * Resolves the live CF service instance to bind when adapting via a service-instance name. Returns
-     * `undefined` for the business-service branch (no existing-service binding is written).
+     * Resolves the live CF service instance to bind and extend, matched by name within the current
+     * space. Throws when no instance with that name exists.
      *
-     * @param {string} [businessService] - The business service name, when provided.
-     * @param {string} [serviceInstanceName] - The live service instance name, when provided.
-     * @returns {Promise<CfServiceInstanceChoice | undefined>} The matched service instance, or `undefined`.
+     * @param {string} serviceInstanceName - The live service instance name.
+     * @returns {Promise<CfServiceInstanceChoice>} The matched service instance.
      */
-    private async _resolveCfServiceInstance(
-        businessService?: string,
-        serviceInstanceName?: string
-    ): Promise<CfServiceInstanceChoice | undefined> {
-        if (businessService || !serviceInstanceName) {
-            return undefined;
-        }
+    private async _resolveCfServiceInstance(serviceInstanceName: string): Promise<CfServiceInstanceChoice> {
         const instances = await getAdpServiceInstances(this.cfConfig.space.GUID, this.logger);
         const instance = instances.find((inst) => inst.name === serviceInstanceName);
         if (!instance) {

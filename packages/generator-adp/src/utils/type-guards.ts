@@ -50,9 +50,9 @@ export function isAbapJsonInput(value: unknown): value is JsonInput {
 /**
  * Type guard for a Cloud Foundry adaptation project configuration json.
  *
- * Requires `targetEnv === 'CF'`, a non-empty `application` (the CF base-app id) and exactly one
- * non-empty of `businessService` or `serviceInstanceName`. All other fields are optional and, when
- * present, must be of the expected type.
+ * Requires `targetEnv === 'CF'`, a non-empty `application` (the CF base-app id) and a non-empty
+ * `serviceInstanceName` (the live CF service instance to connect to and extend). All other fields are
+ * optional and, when present, must be of the expected type.
  *
  * @param {unknown} value - The value being checked.
  * @returns {boolean} True if the value conforms to the CfJsonInput interface.
@@ -66,10 +66,7 @@ export function isCfJsonInput(value: unknown): value is CfJsonInput {
         return false;
     }
 
-    // Exactly one of businessService / serviceInstanceName must be a non-empty string.
-    const hasBusinessService = isNonEmptyString(value.businessService);
-    const hasServiceInstance = isNonEmptyString(value.serviceInstanceName);
-    if (hasBusinessService === hasServiceInstance) {
+    if (!isNonEmptyString(value.serviceInstanceName)) {
         return false;
     }
 
@@ -84,8 +81,6 @@ export function isCfJsonInput(value: unknown): value is CfJsonInput {
     return (
         isOptionalString(value.id) &&
         isOptionalString(value.applicationTitle) &&
-        isOptionalNonEmptyString(value.businessService) &&
-        isOptionalNonEmptyString(value.serviceInstanceName) &&
         isOptionalString(value.businessSolutionName) &&
         isOptionalString(value.mtaId) &&
         isOptionalString(value.targetFolder) &&
@@ -114,16 +109,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  */
 function isOptionalString(value: unknown): value is string | undefined {
     return typeof value === 'undefined' || isString(value);
-}
-
-/**
- * Type guard for an optional non-empty string.
- *
- * @param {unknown} value - The value being checked.
- * @returns {boolean} True if the value is undefined or a string with non-whitespace content.
- */
-function isOptionalNonEmptyString(value: unknown): value is string | undefined {
-    return value === undefined || isNonEmptyString(value);
 }
 
 /**

@@ -1256,7 +1256,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             const baseJsonInput: CfJsonInput = {
                 targetEnv: 'CF',
                 application: baseApp.appId,
-                businessService: 'test-service',
+                serviceInstanceName: 'test-service',
                 mtaMode: 'existing',
                 targetFolder: cfTestOutputDir
             };
@@ -1270,6 +1270,9 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             beforeEach(() => {
                 mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+                mockGetAdpServiceInstances.mockResolvedValue([
+                    { name: 'test-service', service: 'hana', servicePlan: 'hdi-shared' }
+                ]);
                 mockGetCfApps.mockResolvedValue([baseApp]);
                 mockDownloadAppContent.mockResolvedValue(html5Content);
                 mockGetBackendUrlsFromServiceKeys.mockReturnValue(['https://backend.example.com']);
@@ -1374,7 +1377,6 @@ describe('Adaptation Project Generator Integration Test', () => {
                 await expect(
                     runHeadlessGenerator({
                         ...baseJsonInput,
-                        businessService: undefined,
                         serviceInstanceName: 'live-instance',
                         projectName: 'app.variant.cf',
                         namespace: 'customer.app.variant.cf',
@@ -1420,7 +1422,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                     },
                     { input: { targetFolder: emptyDir }, error: t('error.projectDoesNotExistMta') },
                     {
-                        input: { businessService: undefined, serviceInstanceName: 'missing-instance' },
+                        input: { serviceInstanceName: 'missing-instance' },
                         error: t('error.serviceInstanceNotFound', { name: 'missing-instance' })
                     },
                     { input: { projectName: '../escape' } }

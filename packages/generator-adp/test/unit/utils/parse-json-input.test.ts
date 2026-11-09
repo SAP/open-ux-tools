@@ -84,7 +84,7 @@ describe('parseJsonInput', () => {
         const cfInput = {
             targetEnv: 'CF',
             application: 'base.app.id',
-            businessService: 'my-business-service',
+            serviceInstanceName: 'my-live-instance',
             projectName: 'app.variant'
         };
         expect(parseJsonInput(JSON.stringify(cfInput), logger)).toEqual({ ok: true, input: cfInput });
@@ -94,7 +94,7 @@ describe('parseJsonInput', () => {
         const invalidCf = {
             targetEnv: 'CF',
             application: 'base.app.id'
-            // neither businessService nor serviceInstanceName
+            // missing serviceInstanceName
         };
         expect(parseJsonInput(JSON.stringify(invalidCf), logger)).toEqual({ ok: false, reason: 'cf-shape' });
     });
