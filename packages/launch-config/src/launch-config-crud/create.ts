@@ -107,42 +107,29 @@ async function handleNoDebugOptions(rootFolder: string, fioriOptions: FioriOptio
 }
 
 /**
- * Updates or replaces the `launch.json` file depending on whether the file should be replaced
- * or enhanced with additional configurations. If `replaceWithNew` is true, the entire file
- * content is replaced with the new configurations. Otherwise, the configurations are added
- * to the existing `launch.json`.
+ * Adds launch configurations to an existing `launch.json` file. Existing configurations are kept.
  *
  * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
  * @param {string} launchJSONPath - The path to the existing `launch.json` file.
- * @param {LaunchConfig[]} configurations - An array of new launch configurations to be added or replaced.
- * @param {boolean} replaceWithNew - A flag indicating whether to replace the existing `launch.json`
- *     with new configurations (`true`) or append to the existing ones (`false`).
- * @returns {Promise<void>} - A promise that resolves once the `launch.json` file has been updated or replaced.
+ * @param {LaunchConfig[]} configurations - An array of new launch configurations to be added.
+ * @returns {Promise<void>} - A promise that resolves once the configurations have been added to the file.
  */
-async function handleExistingLaunchJson(
+async function addConfigurationsToLaunchJson(
     fs: Editor,
     launchJSONPath: string,
-    configurations: LaunchConfig[],
-    replaceWithNew: boolean = false
+    configurations: LaunchConfig[]
 ): Promise<void> {
-    if (replaceWithNew) {
-        // replaceWithNew is needed in cases where launch config exists in
-        // `.vscode` but isn't added to the workspace. If `replaceWithNew` is `true`, it indicates that the app is not
-        // in the workspace, so the entire `launch.json` and replaced since launch config is then generated in app folder.
-        writeLaunchJsonFile(fs, launchJSONPath, configurations);
-    } else {
-        const configurationCount = ensureConfigurationsArray(fs, launchJSONPath);
-        for (const config of configurations) {
-            await updateLaunchJSON(
-                config,
-                launchJSONPath,
-                ['configurations', configurationCount + 1],
-                {
-                    isArrayInsertion: true
-                },
-                fs
-            );
-        }
+    const configurationCount = ensureConfigurationsArray(fs, launchJSONPath);
+    for (const config of configurations) {
+        await updateLaunchJSON(
+            config,
+            launchJSONPath,
+            ['configurations', configurationCount + 1],
+            {
+                isArrayInsertion: true
+            },
+            fs
+        );
     }
 }
 
@@ -206,10 +193,12 @@ async function handleDebugOptions(
         })
     );
     const launchJsonWritePath = join(launchJsonPath, DirName.VSCode, LAUNCH_JSON_FILE);
-    if (fs.exists(launchJsonWritePath)) {
-        await handleExistingLaunchJson(fs, launchJsonWritePath, configurations, appNotInWorkspace);
-    } else {
+    if (!fs.exists(launchJsonWritePath) || appNotInWorkspace) {
+        // An existing `launch.json` is replaced if it is in `.vscode` but the app is not added to the workspace,
+        // since the launch config is then generated in the app folder.
         writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
+    } else {
+        await addConfigurationsToLaunchJson(fs, launchJsonWritePath, configurations);
     }
 
     // Conditionally update workspace folders based on the enableVSCodeReload flag
