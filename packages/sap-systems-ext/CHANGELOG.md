@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.52
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Features
+
+- Add `connectionType` and `authenticationType` to system create, update, delete and test connection telemetry events [[db16983](https://github.com/SAP/open-ux-tools/commit/db1698385a513d7f24ea992bfbb8aba1b6377708)]
+
 ## 1.0.51
 
 ### Patch Changes
