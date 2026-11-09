@@ -84,7 +84,9 @@ jobs:
                   git remote add upstream https://github.com/github/awesome-copilot.git
                   git fetch upstream main
                   git reset --hard upstream/main
-                  git push origin main --force
+                  if [ "${{ inputs.dry_run }}" != "true" ]; then
+                    git push origin main --force
+                  fi
 
                   BRANCH="bump/sap-ux-fiori-tools-${VERSION}"
                   git checkout -b "$BRANCH"
@@ -155,4 +157,8 @@ jobs:
               run: |
                   echo "## sap-ux-fiori-tools bumped${OLD_VERSION:+: ${OLD_VERSION} →} to ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
                   echo "" >> "$GITHUB_STEP_SUMMARY"
-                  echo "PR opened on [github/awesome-copilot](https://github.com/github/awesome-copilot/pulls)." >> "$GITHUB_STEP_SUMMARY"
+                  if [ "${{ inputs.dry_run }}" = "true" ]; then
+                    echo "Dry run completed — no PR was opened." >> "$GITHUB_STEP_SUMMARY"
+                  else
+                    echo "PR opened on [github/awesome-copilot](https://github.com/github/awesome-copilot/pulls)." >> "$GITHUB_STEP_SUMMARY"
+                  fi
