@@ -1,7 +1,8 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfJsonInput, JsonInput } from '../app/types.js';
 import { TargetEnv } from '../app/types.js';
-import { isCfJsonInput, isJsonInput, isString } from './type-guards.js';
+import { isCfJsonInput, isAbapJsonInput, isString } from './type-guards.js';
+import { t } from './i18n.js';
 
 /**
  * Returns the first argument from a list of CLI arguments. If the first argument
@@ -23,6 +24,36 @@ export function getFirstArg<T>(args: T | T[]): T | string {
 }
 
 /**
+ * The reason a JSON input string failed to parse into a valid {@link JsonInput} or {@link CfJsonInput}.
+ *
+ * - `syntax` — the string is not valid JSON.
+ * - `cf-shape` — selects the Cloud Foundry environment (`targetEnv: 'CF'`) but does not satisfy {@link isCfJsonInput}.
+ * - `abap-shape` — does not select Cloud Foundry and does not satisfy the ABAP {@link isAbapJsonInput} contract.
+ */
+export type ParseFailure = 'syntax' | 'cf-shape' | 'abap-shape';
+
+/**
+ * Builds the localized error message for a {@link ParseFailure}, keeping the text simple while still
+ * naming the target environment (ABAP / Cloud Foundry) for a shape mismatch. A syntax failure has no
+ * environment, so it uses its own message.
+ *
+ * @param {ParseFailure} reason - Why the JSON input was rejected.
+ * @returns {string} The localized error message.
+ */
+export function getInvalidJsonInputMessage(reason: ParseFailure): string {
+    if (reason === 'syntax') {
+        return t('error.invalidJsonSyntax');
+    }
+    const env = reason === 'cf-shape' ? 'Cloud Foundry' : 'ABAP';
+    return t('error.invalidJsonInput', { env });
+}
+
+/**
+ * Discriminated result of {@link parseJsonInput}: either the parsed input, or the reason it failed.
+ */
+export type ParseJsonResult = { ok: true; input: JsonInput | CfJsonInput } | { ok: false; reason: ParseFailure };
+
+/**
  * Parse a json string as an object conforming to the {@link JsonInput} (ABAP) or {@link CfJsonInput}
  * (Cloud Foundry) interface. Routing is driven by the `targetEnv` discriminator: `'CF'` selects the
  * CF shape, anything else (including an absent `targetEnv`) is treated as ABAP for backwards
@@ -30,26 +61,27 @@ export function getFirstArg<T>(args: T | T[]): T | string {
  *
  * @param {string} jsonString - The json string representation.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {JsonInput | CfJsonInput | undefined} The parsed json object, or `undefined` when the
- * string is not valid json or does not match the expected shape for its target environment.
+ * @returns {ParseJsonResult} `{ ok: true, input }` for a valid input, otherwise `{ ok: false, reason }`
+ * describing whether the failure was a JSON syntax error, a CF-shape mismatch or an ABAP-shape mismatch.
  */
-export function parseJsonInput(jsonString: string, logger: ToolsLogger): JsonInput | CfJsonInput | undefined {
+export function parseJsonInput(jsonString: string, logger: ToolsLogger): ParseJsonResult {
+    let parsed: unknown;
     try {
-        const parsed = JSON.parse(jsonString);
-
-        if (isPlainTargetEnvCf(parsed)) {
-            return isCfJsonInput(parsed) ? parsed : undefined;
-        }
-
-        if (!isJsonInput(parsed)) {
-            return undefined;
-        }
-
-        return parsed;
+        parsed = JSON.parse(jsonString);
     } catch (error) {
         logger.debug(`Failed to parse adp JSON input: ${error.message}`);
-        return undefined;
+        return { ok: false, reason: 'syntax' };
     }
+
+    if (isPlainTargetEnvCf(parsed)) {
+        return isCfJsonInput(parsed) ? { ok: true, input: parsed } : { ok: false, reason: 'cf-shape' };
+    }
+
+    if (!isAbapJsonInput(parsed)) {
+        return { ok: false, reason: 'abap-shape' };
+    }
+
+    return { ok: true, input: parsed };
 }
 
 /**

@@ -1444,13 +1444,16 @@ describe('Adaptation Project Generator Integration Test', () => {
                         expect(mockGenerateCf).not.toHaveBeenCalled();
                     }
 
-                    for (const jsonInput of [
-                        '{"targetEnv":"CF",',
-                        { targetEnv: 'CF', application: baseApp.appId },
-                        { system: 'urlA' }
+                    for (const { jsonInput, expectedError } of [
+                        { jsonInput: '{"targetEnv":"CF",', expectedError: t('error.invalidJsonSyntax') },
+                        {
+                            jsonInput: { targetEnv: 'CF', application: baseApp.appId },
+                            expectedError: t('error.invalidJsonInput', { env: 'Cloud Foundry' })
+                        },
+                        { jsonInput: { system: 'urlA' }, expectedError: t('error.invalidJsonInput', { env: 'ABAP' }) }
                     ]) {
                         jest.clearAllMocks();
-                        await expect(runHeadlessGenerator(jsonInput)).rejects.toThrow(t('error.invalidJsonInput'));
+                        await expect(runHeadlessGenerator(jsonInput)).rejects.toThrow(expectedError);
 
                         expect(promptSpy).not.toHaveBeenCalled();
                         expect(mockIsCfInstalled).not.toHaveBeenCalled();

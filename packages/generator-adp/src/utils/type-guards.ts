@@ -28,7 +28,7 @@ export function isNonEmptyString(value: unknown): value is string {
  * @param {unknown} value - The value being checked.
  * @returns {boolean} True if the value conforms to the AdpJsonInput interface.
  */
-export function isJsonInput(value: unknown): value is JsonInput {
+export function isAbapJsonInput(value: unknown): value is JsonInput {
     if (!isPlainObject(value)) {
         return false;
     }

@@ -1,4 +1,4 @@
-import { isCfJsonInput, isJsonInput, isJsonInputFile, isString } from '../../../src/utils/type-guards.js';
+import { isCfJsonInput, isAbapJsonInput, isJsonInputFile, isString } from '../../../src/utils/type-guards.js';
 
 describe('isString', () => {
     it('should return true for string literals', () => {
@@ -23,15 +23,15 @@ describe('isString', () => {
     });
 });
 
-describe('isJsonInput', () => {
+describe('isAbapJsonInput', () => {
     it('should return true when all required fields are passed', () => {
         const inputWithRequiredFields = {
             system: 'system',
             application: 'application'
         };
-        expect(isJsonInput(inputWithRequiredFields)).toBe(true);
+        expect(isAbapJsonInput(inputWithRequiredFields)).toBe(true);
         expect(
-            isJsonInput({
+            isAbapJsonInput({
                 ...inputWithRequiredFields,
                 targetFolder: 'targetFolder',
                 projectName: 'projectName',
@@ -41,29 +41,29 @@ describe('isJsonInput', () => {
     });
 
     it('should return true when the optional id is a string', () => {
-        expect(isJsonInput({ id: 'correlation-id', system: 'system', application: 'application' })).toBe(true);
+        expect(isAbapJsonInput({ id: 'correlation-id', system: 'system', application: 'application' })).toBe(true);
     });
 
     it('should return false when id is present but not a string', () => {
-        expect(isJsonInput({ id: 123, system: 'system', application: 'application' })).toBe(false);
+        expect(isAbapJsonInput({ id: 123, system: 'system', application: 'application' })).toBe(false);
     });
 
     it('should return false if some of the required fields are missing', () => {
         expect(
-            isJsonInput({
+            isAbapJsonInput({
                 system: 'system'
             })
         ).toBe(false);
-        expect(isJsonInput({})).toBe(false);
+        expect(isAbapJsonInput({})).toBe(false);
     });
 
     it('should return false for non-object types', () => {
-        expect(isJsonInput(null)).toBe(false);
-        expect(isJsonInput(undefined)).toBe(false);
-        expect(isJsonInput('string')).toBe(false);
-        expect(isJsonInput(123)).toBe(false);
-        expect(isJsonInput(['a', 'b'])).toBe(false);
-        expect(isJsonInput(() => {})).toBe(false);
+        expect(isAbapJsonInput(null)).toBe(false);
+        expect(isAbapJsonInput(undefined)).toBe(false);
+        expect(isAbapJsonInput('string')).toBe(false);
+        expect(isAbapJsonInput(123)).toBe(false);
+        expect(isAbapJsonInput(['a', 'b'])).toBe(false);
+        expect(isAbapJsonInput(() => {})).toBe(false);
     });
 
     it('should return false for input object with non-plain prototype', () => {
@@ -74,7 +74,7 @@ describe('isJsonInput', () => {
         input.username = 'username';
         input.password = 'password';
         input.applicationTitle = 'applicationTitle';
-        expect(isJsonInput(input)).toBe(false);
+        expect(isAbapJsonInput(input)).toBe(false);
     });
 
     it('should return false for input objects created with custom constructors', () => {
@@ -86,15 +86,15 @@ describe('isJsonInput', () => {
             password = 'password';
             applicationTitle = 'applicationTitle';
         }
-        expect(isJsonInput(new JsonInput())).toBe(false);
+        expect(isAbapJsonInput(new JsonInput())).toBe(false);
     });
 
     it('should return true when optional id is a string', () => {
-        expect(isJsonInput({ system: 'system', application: 'application', id: '123.5' })).toBe(true);
+        expect(isAbapJsonInput({ system: 'system', application: 'application', id: '123.5' })).toBe(true);
     });
 
     it('should return false when optional id is not a string', () => {
-        expect(isJsonInput({ system: 'system', application: 'application', id: 123 })).toBe(false);
+        expect(isAbapJsonInput({ system: 'system', application: 'application', id: 123 })).toBe(false);
     });
 
     it('should ignore extra keyUserChanges on CLI json', () => {
@@ -103,7 +103,7 @@ describe('isJsonInput', () => {
             application: 'application',
             keyUserChanges: 'not an array'
         };
-        expect(isJsonInput(input)).toBe(true);
+        expect(isAbapJsonInput(input)).toBe(true);
     });
 });
 

@@ -69,7 +69,8 @@ import { initI18n, t } from '../utils/i18n.js';
 import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
-import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput, getInvalidJsonInputMessage } from '../utils/parse-json-input.js';
+import type { ParseFailure } from '../utils/parse-json-input.js';
 import { isCfJsonInput } from '../utils/type-guards.js';
 import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
@@ -174,9 +175,9 @@ export default class extends Generator {
      */
     private readonly jsonInput?: JsonInput | CfJsonInput;
     /**
-     * True when a supplied CLI argument is invalid or incomplete JSON input.
+     * The reason a supplied CLI JSON argument was rejected, or `undefined` when none was supplied or it was valid.
      */
-    private readonly invalidJsonInput: boolean = false;
+    private readonly jsonInputError?: ParseFailure;
     /**
      * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
      */
@@ -285,10 +286,11 @@ export default class extends Generator {
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
 
         const jsonInputString = getFirstArg(args);
-        this.jsonInput = parseJsonInput(jsonInputString, this.logger);
-        this.invalidJsonInput = !!jsonInputString && !this.jsonInput;
+        const parseResult = parseJsonInput(jsonInputString, this.logger);
+        this.jsonInput = parseResult.ok ? parseResult.input : undefined;
+        this.jsonInputError = !!jsonInputString && !parseResult.ok ? parseResult.reason : undefined;
 
-        if (!this.jsonInput && !this.invalidJsonInput) {
+        if (!this.jsonInput && !this.jsonInputError) {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
             });
@@ -309,8 +311,8 @@ export default class extends Generator {
         setYeomanEnvConflicterForce(this.env, this.options.force);
         await initI18n();
 
-        if (this.invalidJsonInput) {
-            throw new Error(t('error.invalidJsonInput'));
+        if (this.jsonInputError) {
+            throw new Error(getInvalidJsonInputMessage(this.jsonInputError));
         }
 
         this.isCli = isCli();
