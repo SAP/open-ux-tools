@@ -28,12 +28,12 @@ describe('isNeedsUserAction', () => {
 
 describe('waitForLogin', () => {
     /** The probe's own timeout — the live-page probe blocks for this long per iteration. */
-    const BRIDGE_PROBE_MS = 8000;
+    const UI5_LOADED_PROBE_MS = 8000;
 
     /**
      * Builds a fake `Page` whose `waitForFunction` is driven by `impl` and whose
      * `isClosed()` reflects `closed`. Lets a test simulate a live page with a slow
-     * probe, a live page whose bridge appears, or a closed/gone target.
+     * probe, a live page whose UI5 loader appears, or a closed/gone target.
      *
      * @param impl The `waitForFunction` behaviour; invoked once per probe iteration.
      * @param closed Whether the page reports itself as closed.
@@ -49,7 +49,7 @@ describe('waitForLogin', () => {
         jest.useRealTimers();
     });
 
-    test('resolves true as soon as the bridge appears', async () => {
+    test('resolves true as soon as the UI5 loader appears', async () => {
         const { page, waitForFunction } = fakePage(() => Promise.resolve(true));
         await expect(waitForLogin(page, 50_000)).resolves.toBe(true);
         expect(waitForFunction).toHaveBeenCalledTimes(1);
@@ -69,12 +69,12 @@ describe('waitForLogin', () => {
         expect(waitForFunction).toHaveBeenCalledTimes(1);
     });
 
-    test('keeps probing a live page whose bridge is not yet present, until the budget elapses', async () => {
+    test('keeps probing a live page whose UI5 loader is not yet present, until the budget elapses', async () => {
         jest.useFakeTimers();
-        // Live page: waitForFunction rejects only after the full BRIDGE_PROBE_MS
+        // Live page: waitForFunction rejects only after the full UI5_LOADED_PROBE_MS
         // (real Playwright timeout), so each iteration takes that long and the loop paces itself.
         const { page, waitForFunction } = fakePage(
-            () => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), BRIDGE_PROBE_MS))
+            () => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), UI5_LOADED_PROBE_MS))
         );
 
         const promise = waitForLogin(page, 50_000);
@@ -83,7 +83,7 @@ describe('waitForLogin', () => {
 
         const iterations = waitForFunction.mock.calls.length;
         expect(iterations).toBeGreaterThan(1);
-        expect(iterations).toBeLessThanOrEqual(Math.ceil(50_000 / BRIDGE_PROBE_MS) + 1);
+        expect(iterations).toBeLessThanOrEqual(Math.ceil(50_000 / UI5_LOADED_PROBE_MS) + 1);
     });
 });
 

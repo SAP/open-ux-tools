@@ -1,7 +1,8 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
+import type { ODataVersion } from '@sap-ux/axios-extension';
+import type { BaseProject, BaseService } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
@@ -84,7 +85,12 @@ export interface EntityConfig {
     };
 }
 
-export interface ProjectMigrate extends Project {
+export interface ProjectMigrate extends BaseProject {
+    enableCodeAssist: boolean;
+    enableEslint: boolean;
+    enableTypeScript: boolean;
+    manifestVersion: string;
+    enableNPMWorkspaces?: boolean;
     flpAppId?: string; // Identifies the application in FLP => SemanticObject-Action will be used in html templates
     appId?: string;
     entityConfig?: EntityConfig;
@@ -240,31 +246,6 @@ export type MigratableFolder = {
 
 export const sapWattCommonSetting = 'sap.watt.common.setting';
 
-export interface Project {
-    targetFolder: string;
-    addDeployConfig?: boolean;
-    addFlpConfig?: boolean;
-    name: string;
-    namespace?: string;
-    title: string;
-    description: string;
-    ui5Theme: string;
-    ui5Version: string;
-    ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
-    localUI5Version: string;
-    sapux?: boolean;
-    skipAnnotations?: boolean;
-    enableCodeAssist: boolean;
-    enableEslint: boolean;
-    enableTypeScript: boolean;
-    manifestVersion: string;
-    formEntry?: boolean;
-    flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
-    minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
-    manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
-    enableNPMWorkspaces?: boolean;
-}
-
 /**
  * User credentials for authentication.
  *
@@ -290,11 +271,6 @@ export const CapType = {
     JAVA: 'Java'
 } as const;
 export type CapType = (typeof CapType)[keyof typeof CapType];
-export const ApiHubType = {
-    apiHub: 'API_HUB',
-    apiHubEnterprise: 'API_HUB_ENTERPRISE'
-} as const;
-export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
 export const SapSystemSourceType = {
     SCP: 'SCP',
     ON_PREM: 'ON_PREM',
@@ -302,21 +278,15 @@ export const SapSystemSourceType = {
 } as const;
 export type SapSystemSourceType = (typeof SapSystemSourceType)[keyof typeof SapSystemSourceType];
 
-export interface Service {
+export interface Service extends BaseService {
     host: string;
-    client?: string;
     scp?: boolean;
     destination?: string;
     destinationInstance?: string;
-    servicePath?: string; // url path of odata or cap service
     edmx: string;
-    annotations?: Annotations[];
     version?: ODataVersion; // Not present for FF no datasource template flow
     source: DatasourceType;
     sapSystemSource?: SapSystemSourceType; // Only used by README
-    localEdmxFilePath?: string; // Only used by README
-    destinationAuthType?: string;
-    ignoreCertError?: boolean;
 }
 
 // Note that only ui5 properties supported by middleware proxy should go here

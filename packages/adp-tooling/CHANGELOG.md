@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.53 → 1.0.54
+
 ## 1.2.0
 
 ### Minor Changes
