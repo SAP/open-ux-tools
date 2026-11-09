@@ -1,5 +1,205 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.18.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+## 10.18.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+## 10.18.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Features
+
+- migrate sap-eslint-disable-count, sap-no-console-log, sap-no-upload, sap-no-core-model-usage, sap-not-localized, sap-concatenated-strings, sap-unescaped-write, sap-browser-api-error, sap-controller-hook-missing-callback-signature, sap-controller-hook-name-convention, and sap-controller-hook-bad-callback-signature rules from eslint-plugin-fiori-custom [[9fe7bdb](https://github.com/SAP/open-ux-tools/commit/9fe7bdb0c5b9af8873411823166f854ddc8d49fa)]
+
+## 10.17.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- Improve `sap-copy-to-clipboard` warning message to explicitly state the forbidden value and its effect [[9ba68ed](https://github.com/SAP/open-ux-tools/commit/9ba68ed05f89094830a663fb4591a7554e3e74a6)]
+
+## 10.17.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- Allow `UI.ReferenceFacet` without an explicit `ID` to produce a table section node; resolve `UI.SelectionPresentationVariant` targets via their inline `PresentationVariant` property [[aaf9884](https://github.com/SAP/open-ux-tools/commit/aaf98847a917f087092a3012077cb92094f8f196)]
+
+## 10.17.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated fast-xml-parser dependencies [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade globals 17.6.0 → 17.13.0 [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
+## 10.17.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-27
+
+#### Bug Fixes
+
+- Detect `disableCopyToClipboard` in Object Page sections whose `UI.Facets` target is a `UI.PresentationVariant` [[e795082](https://github.com/SAP/open-ux-tools/commit/e795082aab45ef5208e43ee5d4d98917e119d38f)]
+
+## 10.17.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Dependency Updates
+
+- Upgrade @humanwhocodes/momoa 3.3.9 → 3.3.13 [[746c126](https://github.com/SAP/open-ux-tools/commit/746c1265c3430849e861ac6c8eec0f07d29cffd7)]
+
+## 10.17.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n, @sap-ux/text-document-utils, @sap-ux/fiori-annotation-api [[35f731a](https://github.com/SAP/open-ux-tools/commit/35f731ae4482c014726fe6bbbfdcac497382715b)]
+
+## 10.17.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-annotation-api [[c22d46a](https://github.com/SAP/open-ux-tools/commit/c22d46a0f58a03ae21947c6d3e66261ce8e07dc5)]
+
+## 10.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-12
+
+#### Features
+
+- add sap-micro-chart-requires-navigation-entity rule to validate that micro chart measures and dimensions use a 1:n navigation entity path [[ac42d39](https://github.com/SAP/open-ux-tools/commit/ac42d39ce4714558b4e9b36f05cc6dc9acda7f38)]
+
+## 10.16.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-09
+
+#### Features
+
+- add sap-no-inline-delete-with-multiselect rule to warn when both inlineDelete and multiselect are enabled in the same tableSettings [[74dba15](https://github.com/SAP/open-ux-tools/commit/74dba15b8d406ab05586deb5433e8324e40f49fe)]
+
+## 10.15.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 10.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Features
+
+- add sap-no-comma-in-section-title rule to prevent commas in object page section titles [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 10.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Features
+
+- Create sap-no-path-hidden-on-interactive-columns rule to check `UI.Hidden` with a dynamic path is not be used on sortable or filterable columns [[88b131d](https://github.com/SAP/open-ux-tools/commit/88b131dd66cb31c471c603154d9becd547d431d5)]
+
+## 10.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-29
+
+#### Bug Fixes
+
+- Remove orphan eslint rules and enable sap-ui5-no-private-prop rule [[d989d4a](https://github.com/SAP/open-ux-tools/commit/d989d4ace191afc1048e6c922f3fe4a0c7c67e12)]
+
 ## 10.12.0
 
 ### Minor Changes

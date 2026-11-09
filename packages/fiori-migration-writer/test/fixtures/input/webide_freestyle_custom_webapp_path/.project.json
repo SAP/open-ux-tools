@@ -1,0 +1,28 @@
+{
+  "generation": [
+    {
+      "templateId": "fioriw4template.fullScreen",
+      "templateVersion": "1.4.0",
+      "dateTimeStamp": "Thu, 19 Mar 2015 15:03:03 GMT"
+    }
+  ],
+  "translation": {
+    "translationDomain": "FN",
+    "supportedLanguages": "en,fr,de",
+    "defaultLanguage": "en",
+    "defaultI18NPropertyFile": "i18n.properties",
+    "resourceModelName": "i18n"
+  },
+  "mockpreview": {
+    "mockUri": "/sap/opu/odata/SAP/FAR_CUSTOMER_LINE_ITEMS",
+    "metadataFilePath": "",
+    "loadJSONFiles": false,
+    "loadCustomRequests": false,
+    "mockRequestsFilePath": ""
+  },
+  "hcpdeploy": {
+    "account": "fiori",
+    "name": "fincentrallistreportreuse",
+    "entryPath": "src/custom/webapp"
+  }
+}

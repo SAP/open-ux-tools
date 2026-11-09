@@ -1,5 +1,6 @@
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
-import { ApiHubType, type TelemetryBusinessHubType, type TelemetrySapSystemType } from '../types/index.js';
+import { ApiHubType } from '@sap-ux/fiori-generator-shared';
+import type { TelemetryBusinessHubType, TelemetrySapSystemType } from '../types/index.js';
 import { isAbapCloud } from './common.js';
 import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 

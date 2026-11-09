@@ -19,6 +19,14 @@ export interface Navigation {
      * If set to true, then the generated route will point to a specific entity, otherwise, it will point to a list of the entities.
      */
     navKey?: boolean;
+
+    /**
+     * Default section configuration for the navigation to the object page.
+     */
+    defaultSection?: {
+        type: 'FacetSection' | 'FacetSubSection' | 'CustomSection' | 'CustomSubSection';
+        id: string;
+    };
 }
 
 /**

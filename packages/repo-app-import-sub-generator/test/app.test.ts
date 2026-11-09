@@ -362,6 +362,7 @@ describe('Repo App Download', () => {
         };
         (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.1' }]);
         (validateQfaJsonFile as jest.Mock).mockReturnValue(true);
+        (downloadUtils.hasQfaJson as jest.Mock).mockReturnValue(true);
         (getAdtDeployConfig as jest.Mock).mockResolvedValue({
             target: { url: 'https://test-url.com', client: '100', destination: 'TEST_DESTINATION' },
             app: { name: appId, package: 'MY_PKG', description: '', transport: 'REPLACE_WITH_TRANSPORT' }
@@ -376,6 +377,7 @@ describe('Repo App Download', () => {
             ui5: { version: '1.145.2' },
             template: { type: 'lrop' }
         });
+        mockSendTelemetry.mockResolvedValue(undefined);
     });
 
     it('Should successfully run app download from repository', async () => {
@@ -418,7 +420,7 @@ describe('Repo App Download', () => {
             MessageType.notification
         );
         expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS,
+            EventName.ADT_QUICK_DEPLOY_COMPLETE,
             TelemetryHelper.createTelemetryData({
                 appType: generatorName
             })
@@ -558,7 +560,7 @@ describe('Repo App Download', () => {
                     })
             ).resolves.not.toThrow();
             expect(mockSendTelemetry).toHaveBeenCalledWith(
-                EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS,
+                EventName.ADT_QUICK_DEPLOY_COMPLETE,
                 TelemetryHelper.createTelemetryData({
                     appType: generatorName
                 })
@@ -785,7 +787,7 @@ describe('Repo App Download', () => {
         expect(fileHelpers.cleanupArtifacts).toHaveBeenCalled();
         expect(getAbapRepoDeployConfig).toHaveBeenCalled();
         expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.ABAP_REPO_DOWNLOAD_SUCCESS,
+            EventName.ABAP_REPO_DOWNLOAD_COMPLETE,
             TelemetryHelper.createTelemetryData({
                 appType: generatorName
             })
@@ -869,7 +871,7 @@ describe('Repo App Download', () => {
         );
     });
 
-    it('should send ADT_QUICK_DEPLOY_DOWNLOAD_FAIL telemetry when writing phase throws for ADTQuickDeploy', async () => {
+    it('should send ADT_QUICK_DEPLOY_APP_WRITING_FAILED telemetry when writing phase throws for ADTQuickDeploy', async () => {
         (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
         (downloadUtils.extractZip as jest.Mock).mockRejectedValue(new Error('extract failed'));
 
@@ -896,14 +898,43 @@ describe('Repo App Download', () => {
         ).rejects.toThrow('extract failed');
 
         expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.ADT_QUICK_DEPLOY_DOWNLOAD_FAIL,
+            EventName.ADT_QUICK_DEPLOY_APP_WRITING_FAILED,
             TelemetryHelper.createTelemetryData({
-                appType: generatorName
+                appType: generatorName,
+                errorMessage: 'extract failed'
             })
         );
     });
 
-    it('should send ABAP_REPO_DOWNLOAD_FAIL telemetry when writing phase throws for AbapRepository', async () => {
+    it('should route to AbapRepository writing flow when downloadType is not explicit and qfa.json is absent', async () => {
+        // CLI invocations default downloadType to ADTQuickDeploy but do not set appDownloadType in data,
+        // so downloadTypeExplicit = false. When the downloaded zip contains no qfa.json, isAdtQuickDeploy
+        // must be false and writing() must call _generateAbapRepositoryApp, not _generateAdtQuickDeployApp.
+        (downloadUtils.hasQfaJson as jest.Mock).mockReturnValue(false);
+
+        const yeomanEnv = env.createEnv();
+        const generator = new RepoAppDownloadGenerator([], {
+            env: yeomanEnv,
+            appWizard: mockAppWizard as AppWizard,
+            logger: {},
+            vscode: mockVSCode
+            // no data.appDownloadType → downloadTypeExplicit = false, downloadType = ADTQuickDeploy
+        });
+
+        const generateAbapRepo = jest
+            .spyOn(generator as any, '_generateAbapRepositoryApp')
+            .mockResolvedValue(undefined);
+        const generateAdtQuickDeploy = jest
+            .spyOn(generator as any, '_generateAdtQuickDeployApp')
+            .mockResolvedValue(undefined);
+
+        await generator.writing();
+
+        expect(generateAbapRepo).toHaveBeenCalled();
+        expect(generateAdtQuickDeploy).not.toHaveBeenCalled();
+    });
+
+    it('should send ABAP_REPO_APP_WRITING_FAILED telemetry when writing phase throws for AbapRepository', async () => {
         (mockIsValidPromptState as jest.Mock).mockReturnValue(true);
         (downloadUtils.extractZip as jest.Mock).mockRejectedValue(new Error('extract failed'));
 
@@ -931,9 +962,10 @@ describe('Repo App Download', () => {
         ).rejects.toThrow('extract failed');
 
         expect(mockSendTelemetry).toHaveBeenCalledWith(
-            EventName.ABAP_REPO_DOWNLOAD_FAIL,
+            EventName.ABAP_REPO_APP_WRITING_FAILED,
             TelemetryHelper.createTelemetryData({
-                appType: generatorName
+                appType: generatorName,
+                errorMessage: 'extract failed'
             })
         );
     });

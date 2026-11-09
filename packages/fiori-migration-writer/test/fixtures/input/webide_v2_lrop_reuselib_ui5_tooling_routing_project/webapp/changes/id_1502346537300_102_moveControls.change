@@ -1,0 +1,69 @@
+{
+	"fileName": "id_1502346537300_102_moveControls",
+	"fileType": "change",
+	"changeType": "moveControls",
+	"reference": "i2d.qm.defect.records1.Component",
+	"packageName": "$TMP",
+	"content": {
+		"movedElements": [{
+			"selector": {
+				"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--edit",
+				"idIsLocal": false
+			},
+			"sourceIndex": 3,
+			"targetIndex": 0
+		}],
+		"source": {
+			"selector": {
+				"aggregation": "actions",
+				"type": "sap.uxap.ObjectPageHeader",
+				"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--objectPageHeader",
+				"idIsLocal": false
+			}
+		},
+		"target": {
+			"selector": {
+				"aggregation": "actions",
+				"type": "sap.uxap.ObjectPageHeader",
+				"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--objectPageHeader",
+				"idIsLocal": false
+			}
+		}
+	},
+	"selector": {
+		"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--objectPageHeader",
+		"idIsLocal": false
+	},
+	"layer": "VENDOR",
+	"texts": {},
+	"namespace": "apps/i2d.qm.defect.records1/changes/",
+	"creation": "2017-08-10T06:29:23.912Z",
+	"originalLanguage": "EN",
+	"conditions": {},
+	"context": "",
+	"support": {
+		"generator": "Change.createInitialFileContent",
+		"service": "",
+		"user": "",
+		"sapui5Version": "1.48.4"
+	},
+	"dependentSelector": {
+		"source": {
+			"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--objectPageHeader",
+			"idIsLocal": false
+		},
+		"target": {
+			"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--objectPageHeader",
+			"idIsLocal": false
+		},
+		"movedElements": [{
+			"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--edit",
+			"idIsLocal": false
+		}]
+	},
+	"validAppVersions": {
+		"creation": "${project.version}",
+		"from": "${project.version}",
+		"to": "${project.version}"
+	}
+}

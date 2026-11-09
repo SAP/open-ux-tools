@@ -81,6 +81,12 @@
     ignoreDeps: ['@sap-ux-private/playwright'],
 
     packageRules: [
+        // GitHub Actions digest updates have no release age concept — exempt them from minimumReleaseAge
+        {
+            matchManagers: ['github-actions'],
+            matchUpdateTypes: ['digest'],
+            minimumReleaseAge: '0 days'
+        },
         // Override: devDependencies should also use 'fix' (not just runtime deps)
         {
             matchDepTypes: ['devDependencies'],

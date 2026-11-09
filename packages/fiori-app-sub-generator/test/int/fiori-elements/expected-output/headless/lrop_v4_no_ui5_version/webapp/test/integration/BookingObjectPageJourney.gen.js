@@ -46,7 +46,7 @@ sap.ui.define([
         });
 
         opaTest("Check the Booking section of the Object Page", function (_Given, When, Then) {
-            When.onTheBookingObjectPageGenerated.iGoToSection({ section: "Booking" });
+            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("Booking");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "Booking" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "BookingID" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: "Booking" }).iCheckField({ property: "BookingDate" });
@@ -59,7 +59,7 @@ sap.ui.define([
         });
 
         opaTest("Check the BookingSupplement section of the Object Page", function (_Given, When, Then) {
-            When.onTheBookingObjectPageGenerated.iGoToSection({ section: "BookingSupplement" });
+            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton("BookingSupplement");
             Then.onTheBookingObjectPageGenerated.iCheckSection({ section: "BookingSupplement" });
             Then.onTheBookingObjectPageGenerated.onTable({ property: "_BookSupplement" }).iCheckColumns(undefined, {"BookingSupplementID":{"header":"Book. Supp. Number"},"SupplementID":{"header":"Product ID"},"Price":{"header":"Product Price"}});
         });

@@ -1,0 +1,204 @@
+/**
+ * Where an RTA command runs: the editor URL and an optional iframe id.
+ * Passed directly on every tool call — no server-side session state is maintained.
+ */
+export interface EditorPage {
+    /** Editor URL returned by `open_adaptation_editor`. */
+    site: string;
+    /** Optional iframe element id (e.g. `"preview"`) to scope the call to. */
+    frameId?: string;
+}
+
+/**
+ * Information about an editable UI5 control reported by Joule's
+ * `getOverlaysInformation` frontend action.
+ */
+export interface Overlay {
+    /** Unique identifier of the overlay element. */
+    overlayId: string;
+    /** UI5 control id (the underlying element). */
+    controlId: string;
+    /** Human-readable label as resolved by the design-time metadata. */
+    label: string;
+    /** UI5 control type, e.g. `sap.m.Button`. */
+    controlType: string;
+    /**
+     * Control id of the closest editable ancestor in the overlay tree, or
+     * `null` when this overlay sits at the editable root.
+     */
+    parentElementId: string | null;
+    /** Aggregation name on the parent that holds this control. */
+    parentAggregationName?: string;
+    /**
+     * 0-based position in the parent's multi-cardinality aggregation. Omitted
+     * for single-cardinality aggregations or when the parent/aggregation
+     * cannot be resolved.
+     */
+    index?: number;
+    /**
+     * Ids of the RTA actions supported on this overlay. The rich per-action
+     * metadata lives in `actionsCatalog` on the enclosing payload so identical
+     * action definitions are not duplicated across overlays.
+     */
+    actionIds: string[];
+}
+
+/**
+ * Single parameter expected by an RTA action's payload.
+ */
+export interface ActionParameter {
+    name: string;
+    type: string;
+    required?: boolean;
+    description?: string;
+}
+
+/**
+ * Available RTA action for a control as listed inside the `actionsCatalog`
+ * of `getOverlaysInformation`. Each overlay references entries here via
+ * its `actionIds`.
+ */
+export interface Action {
+    /** Action id, e.g. `rename`, `remove`, `reveal`, `move`. */
+    id: string;
+    /** Localized label resolved from the `sap.ui.rta` resource bundle. */
+    label?: string;
+    /** Long-form description for the LLM, when supplied by the action service. */
+    description?: string;
+    /** Action parameters; shape comes straight from the action service. */
+    parameters?: ActionParameter[];
+}
+
+/**
+ * One inheritance-chain entry returned by `getContext.aggregationsByClass`.
+ * Aggregations are grouped by the class that defined them so the LLM can
+ * reason about extension points contributed by base classes.
+ */
+export interface AggregationsByClass {
+    /** Fully-qualified name of the class that declared these aggregations. */
+    definedIn: string;
+    /** UI5 library that owns `definedIn`. */
+    libraryName: string;
+    /** Aggregations declared on `definedIn`, with their current content size. */
+    aggregations: Array<{
+        name: string;
+        controlType: string;
+        contentLength: number;
+    }>;
+}
+
+/**
+ * One entry of `getContext.availableModels`, describing a UI5 model attached
+ * to (or propagated onto) the inspected control.
+ */
+export interface AvailableModel {
+    /** Model name (the propagated/binding key), `"undefined"` for the default model. */
+    modelName: string;
+    /** Fully-qualified UI5 class name of the model. */
+    modelClass: string;
+    /** Default binding mode of the model, when exposed. */
+    defaultBindingMode: string | null;
+    /** Binding path active on this element, or `null` when no context is set. */
+    contextPath: string | null;
+    /** OData entity type of the active context, when resolvable. */
+    contextEntityType: string | null;
+}
+
+/**
+ * Element context reported by `getContext`. The structural fields below are
+ * always populated on success; `actionSpecificContext` carries free-form
+ * extensions from the individual action's `getContext` hook.
+ */
+export interface ElementContext {
+    /** Fully-qualified UI5 type of the inspected control, e.g. `sap.m.Button`. */
+    elementType: string;
+    /** Aggregation name on the control's parent that holds this control. */
+    parentAggregationName?: string;
+    /** Parameter declarations for the action, as reported by the action service. */
+    actionParameters?: ActionParameter[];
+    /**
+     * The control's default aggregation together with its current children's
+     * ids. Omitted when the control has no default aggregation.
+     */
+    defaultChildAggregation?: {
+        name: string;
+        controlType: string;
+        content: Array<{ controlId: string }>;
+    };
+    /**
+     * Aggregations declared along the inheritance chain, grouped by the
+     * class that declared them. Populated only when the action accepts an
+     * `aggregation`/`selectedElements` parameter; empty otherwise.
+     */
+    aggregationsByClass: AggregationsByClass[];
+    /** Models reachable from this control (own + propagated). */
+    availableModels: Record<string, AvailableModel>;
+    /** Free-form action-specific extensions returned by the action's `getContext`. */
+    actionSpecificContext: Record<string, unknown>;
+}
+
+/**
+ * Per-action lookup returned alongside `Overlay[]` from `getOverlaysInformation`.
+ * Keyed by action id; entries deduplicate metadata shared across overlays.
+ */
+export type ActionsCatalog = Record<string, Action>;
+
+/**
+ * One node in the UI element tree returned by `describeUi`.
+ */
+export interface UiElementNode {
+    /** UI5 control id. Pass this as `elementId` to `executeUfaAction`. */
+    id: string;
+    /** Fully-qualified UI5 control type, e.g. `sap.m.Button`. */
+    type: string;
+    /** Visible label / text / aria-label resolved for the control. */
+    label?: string;
+    /** Child nodes in the element tree. */
+    children?: UiElementNode[];
+    /**
+     * `true` when this node has children that were omitted because the response
+     * was trimmed to a shallow depth. Call `describe_ui` again with
+     * `rootElementId` set to this node's `id` to retrieve the full subtree.
+     */
+    truncated?: boolean;
+    /** Number of direct children omitted when `truncated` is `true`. */
+    childCount?: number;
+}
+
+/**
+ * Result of the `describeUI` Unified Frontend Action: the list of top-level UI
+ * element nodes (`ActionHelpers.describeUI` returns the page's rendered controls
+ * as a forest, not a single root). `describe_ui` returns this array as `uiTree`,
+ * so callers iterate it and inspect each node's `id`, `children`, etc.
+ */
+export type DescribeUiResult = UiElementNode[];
+
+/**
+ * Result of the `executeAction` Unified Frontend Action.
+ */
+export interface ExecuteUfaActionResult {
+    /** Whether the action was executed successfully end-to-end. */
+    isSuccess: boolean;
+    /** Free-form payload returned by the action (action-specific shape). */
+    result?: unknown;
+}
+
+/**
+ * One OData data source's metadata result:
+ * - `{ url, metadata }` — formatted EDMX returned inline (small enough to fit).
+ * - `{ url, metadataFile, sizeBytes }` — EDMX too large to return inline; written
+ *   to `<appPath>/.context/` and referenced by path so it never overflows the model.
+ * - `{ url, error }` — login page / non-XML / failed fetch, or too large with no
+ *   `appPath` to save it under.
+ */
+export type ODataMetadataEntry =
+    | { url: string; metadata: string }
+    | { url: string; metadataFile: string; sizeBytes: number }
+    | { url: string; error: string };
+
+/**
+ * Result of {@link getODataMetadata}: one entry per requested OData URI.
+ */
+export interface GetODataMetadataResult {
+    entries: ODataMetadataEntry[];
+}

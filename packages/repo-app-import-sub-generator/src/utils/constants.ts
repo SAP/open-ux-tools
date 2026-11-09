@@ -12,6 +12,10 @@ export interface DownloadTypeConfig {
 
 // The source template ID used for filtering the apps in the repository
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
+// Corrected spelling introduced; both IDs must be recognised during the transition period.
+export const adtSourceTemplateIdCorrected = '@sap.adt.servicebinding.deploy:lrop';
+// Both ADT source template IDs (typo and corrected) for backward-compatible matching.
+export const adtSourceTemplateIds: readonly string[] = [adtSourceTemplateId, adtSourceTemplateIdCorrected];
 // The app index field name for the source template ID
 export const sourceTemplateIdField = 'sap.app/sourceTemplate/id';
 
@@ -89,7 +93,8 @@ export const appListResultFields = [
     'url'
 ];
 
-// Fallback for older systems that reject sap.app/sourceTemplate/id with HTTP 400.
+// Fallback for older systems (e.g. ABAP 731) that reject unknown columns with HTTP 400.
+// Drops sourceTemplateIdField and fileType, which older app index versions do not support.
 export const appListFieldsWithoutSourceTemplate = appListResultFields.filter(
-    (field) => field !== sourceTemplateIdField
+    (field) => field !== sourceTemplateIdField && field !== 'fileType'
 );

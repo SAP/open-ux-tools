@@ -29,6 +29,7 @@ export enum UiIcons {
     Chart = 'Chart',
     ChatBubbles = 'ChatBubbles',
     Check = 'Check',
+    CheckboxGroup = 'CheckboxGroup',
     Chevron = 'Chevron',
     ChevronDown = 'ChevronDown',
     Clear = 'Clear',
@@ -185,7 +186,8 @@ export enum UiIcons {
     ZoomIn = 'ZoomIn',
     ZoomOut = 'ZoomOut',
     BuildingBlocks = 'BuildingBlocks',
-    Page = 'Page'
+    Page = 'Page',
+    LinkingTo = 'LinkingTo'
 }
 
 export function initIcons(): void {
@@ -386,6 +388,44 @@ export function initIcons(): void {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M3 1H4V2H12V1H13V2H14C14.5523 2 15 2.44772 15 3V13C15 13.5523 14.5523 14 14 14H2C1.44772 14 1 13.5523 1 13V3C1 2.44772 1.44772 2 2 2H3V1ZM2 3V5H14V3H2ZM14 6H2V13H14V6Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.CheckboxGroup]: (
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path
+                        d="M15 12.5C15.2761 12.5 15.5 12.7239 15.5 13C15.5 13.2761 15.2761 13.5 15 13.5L6 13.5C5.72386 13.5 5.5 13.2761 5.5 13C5.5 12.7239 5.72386 12.5 6 12.5L15 12.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M15 7.5C15.2761 7.5 15.5 7.72386 15.5 8C15.5 8.27614 15.2761 8.5 15 8.5L6 8.5C5.72386 8.5 5.5 8.27614 5.5 8C5.5 7.72386 5.72386 7.5 6 7.5L15 7.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M15 2.5C15.2761 2.5 15.5 2.72386 15.5 3C15.5 3.27614 15.2761 3.5 15 3.5L6 3.5C5.72386 3.5 5.5 3.27614 5.5 3C5.5 2.72386 5.72386 2.5 6 2.5L15 2.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M3 11C3.55228 11 4 11.4477 4 12V14C4 14.5523 3.55228 15 3 15H1C0.447715 15 0 14.5523 0 14V12C0 11.4477 0.447715 11 1 11H3ZM1 12V14H3V12H1Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M3.14645 6.64651C3.34171 6.45125 3.65822 6.45125 3.85348 6.64651C4.04874 6.84177 4.04874 7.15828 3.85348 7.35354L1.85348 9.35354C1.65822 9.5488 1.34171 9.5488 1.14645 9.35354L0.146447 8.35354C-0.0488155 8.15828 -0.0488155 7.84177 0.146447 7.64651C0.341709 7.45125 0.658216 7.45125 0.853478 7.64651L1.49996 8.29299L3.14645 6.64651Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M3 1C3.55228 1 4 1.44772 4 2V4C4 4.55228 3.55228 5 3 5H1C0.447715 5 0 4.55228 0 4V2C0 1.44772 0.447715 1 1 1H3ZM1 2V4H3V2H1Z"
                         fill={COLORS.default}
                     />
                 </svg>
@@ -2584,6 +2624,30 @@ export function initIcons(): void {
                         fill={COLORS.default}
                         fillRule="evenodd"
                         d="M4.007,7 L9.007,7 L9.007,6 L4.007,6 L4.007,7 Z M2,6.5 C2,4.019 4.019,2 6.5,2 C8.981,2 11,4.019 11,6.5 C11,8.981 8.981,11 6.5,11 C4.019,11 2,8.981 2,6.5 L2,6.5 Z M15.008,14.292 L10.727,10.014 C11.521,9.06 12,7.835 12,6.5 C12,3.468 9.533,1 6.5,1 C3.467,1 1,3.468 1,6.5 C1,9.532 3.467,12 6.5,12 C7.838,12 9.065,11.519 10.021,10.721 L14.301,14.999 L15.008,14.292 Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.LinkingTo]: (
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path
+                        d="M4.66318 3H15V2H4.96456C4.91405 2.35307 4.81085 2.68915 4.66318 3Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M7 5H15V6H7V5Z" fill={COLORS.default} />
+                    <path d="M15 8H7V9H15V8Z" fill={COLORS.default} />
+                    <path d="M15 11H1V12H15V11Z" fill={COLORS.default} />
+                    <path d="M15 14H1V15H15V14Z" fill={COLORS.default} />
+                    <path
+                        d="M2 2.91464C2.58261 2.70872 3 2.15311 3 1.5C3 0.67157 2.32843 0 1.5 0C0.67157 0 0 0.67157 0 1.5C0 2.15311 0.417389 2.70872 1 2.91464V5.5C1 5.63261 1.05267 5.75978 1.14645 5.85355L3.29291 8H1V9H4.5C4.77615 9 5 8.77614 5 8.5V5H4V7.29291L2 5.29289V2.91464ZM2 1.5C2 1.77614 1.77615 2 1.5 2C1.22385 2 1 1.77614 1 1.5C1 1.22386 1.22385 1 1.5 1C1.77615 1 2 1.22386 2 1.5Z"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        fill={COLORS.default}
                     />
                 </svg>
             )

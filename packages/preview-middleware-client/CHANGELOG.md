@@ -1,5 +1,71 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.39
+
+## 1.2.38
+
+## 1.2.37
+
+## 1.2.36
+
+## 1.2.35
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Some Actions don't work in the Outline of the Adaptation Project [[8a15549](https://github.com/SAP/open-ux-tools/commit/8a15549a21b324a74b27e69ebb57da2f81ead0aa)]
+
+#### Workspace Updates
+
+- @sap-ux-private/control-property-editor-common 1.0.4 → 1.0.5
+
+## 1.2.34
+
+## 1.2.33
+
+## 1.2.32
+
+## 1.2.31
+
+## 1.2.30
+
+## 1.2.29
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.2.28
+
+## 1.2.27
+
+## 1.2.26
+
+## 1.2.25
+
+## 1.2.24
+
+## 1.2.23
+
+## 1.2.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Bug Fixes
+
+- Resolved an issue where the "Add Subpage" quick action generated a page ID in an incorrect format for ODATA v4 applications. [[f9088c0](https://github.com/SAP/open-ux-tools/commit/f9088c07570be4fb6c2b5d72c97213cabeffde16)]
+
+## 1.2.21
+
+## 1.2.20
+
 ## 1.2.19
 
 ## 1.2.18

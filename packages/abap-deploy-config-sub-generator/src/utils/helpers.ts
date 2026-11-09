@@ -10,6 +10,14 @@ let cachedDestinations: Destinations = {};
 let cachedBackendSystems: BackendSystem[] = [];
 
 /**
+ * Clears the cached backend systems and destinations. Intended for use in tests only.
+ */
+export function clearCache(): void {
+    cachedDestinations = {};
+    cachedBackendSystems = [];
+}
+
+/**
  * Small utility function to check whether the backend system keys are identical.
  *
  * @param backend  - backend system from the store

@@ -27,6 +27,8 @@ function renderListReportJourney(bucket: string, tabs: unknown[], navigatedOPTab
         semanticKey: {},
         textAnnotationColumns: [],
         tableIdentifiers: ['1', '6'],
+        defaultSortOrder: [],
+        defaultFilterValues: [],
         tabs
     });
     return fs.read(out);
@@ -38,7 +40,9 @@ const tabs = [
         entitySet: 'Customer',
         tableColumns: { CompanyCode: { header: 'Company Code' } },
         contactCardColumns: [{ property: 'DataFieldForAnnotation::_UserContactCard::Contact' }],
-        toolBarActions: [{ label: 'Navigate', action: 'Navigate', visible: true, enabled: true }],
+        toolBarActions: [
+            { label: 'Navigate', action: 'Navigate', service: 'NS', unbound: false, visible: true, enabled: true }
+        ],
         createButton: { visible: true },
         deleteButton: { visible: false }
     },
@@ -65,6 +69,24 @@ describe.each(['latest', '1.148'])('ListReportJourney template (%s) - multi-tab'
         expect(content).toContain('onTable("6").iCheckRows()');
     });
 
+    test('emits a self-contained opaTest per tab check and populates the table before row checks', () => {
+        // Each tab's blocks are introduced by a view splitter comment for readability.
+        expect(content).toContain('/// View "1" ///');
+        expect(content).toContain('/// View "6" ///');
+        // Each tab check is its own opaTest (consistent with the single-table split).
+        expect(content).toContain('opaTest("Check the create button in view 1"');
+        expect(content).toContain('opaTest("Check the Navigate action in view 1"');
+        expect(content).toContain('opaTest("Check table columns in view 1"');
+        expect(content).toContain('opaTest("Check table rows in view 1"');
+        // The row check must be preceded by a search so the table has data (fixes the multi-tab iCheckRows timeout).
+        const rowsBlock = content.slice(
+            content.indexOf('opaTest("Check table rows in view 1"'),
+            content.indexOf('opaTest("Check table rows in view 6"')
+        );
+        expect(rowsBlock).toContain('onFilterBar().iExecuteSearch()');
+        expect(rowsBlock.indexOf('iExecuteSearch')).toBeLessThan(rowsBlock.indexOf('onTable("1").iCheckRows()'));
+    });
+
     test('navigates to the object page from the default tab when no originating tab is resolved', () => {
         // No navigatedOPTabKey → fall back to the first tab (tableIdentifiers[0] = "1").
         expect(content).toContain('onTable("1").iPressRow(0)');
@@ -84,7 +106,9 @@ describe('ListReportJourney template (latest) - multi-tab tab-specific checks', 
     const content = renderListReportJourney('latest', tabs);
 
     test('checks the tab-specific toolbar action and create button on its own tab', () => {
-        expect(content).toContain('onTable("1").iCheckAction("Navigate", { enabled: true })');
+        expect(content).toContain(
+            'onTable("1").iCheckAction({ service: "NS", action: "Navigate", unbound: false }, { enabled: true })'
+        );
         expect(content).toContain('onTable("1").iCheckCreate({ visible: true })');
     });
 
@@ -102,3 +126,54 @@ describe('ListReportJourney template (latest) - multi-tab tab-specific checks', 
         );
     });
 });
+
+describe.each(['latest', '1.148', '1.152', '1.84'])(
+    'ListReportJourney template (%s) - defaultFilterValues output',
+    (bucket) => {
+        function renderWithFilters(defaultFilterValues: unknown[]): string {
+            const templatePath = join(__dirname, `../../templates/v4/${bucket}/integration/ListReportJourney.js`);
+            const fs = create(createStorage());
+            const out = join(__dirname, `lr.${bucket}.filters.gen.js`);
+            fs.copyTpl(templatePath, out, {
+                name: 'Travel',
+                startPages: ['TravelList'],
+                startLR: 'TravelList',
+                navigatedOP: 'TravelObjectPage',
+                hideFilterBar: false,
+                serviceUri: '/odata/v4/TestService/',
+                filterBarItems: [],
+                tableColumns: {},
+                contactCardColumns: [],
+                toolBarActions: [],
+                createButton: { visible: false },
+                deleteButton: { visible: false },
+                isALP: false,
+                semanticKey: {},
+                textAnnotationColumns: [],
+                tableIdentifiers: ['defaultTableId'],
+                defaultSortOrder: [],
+                defaultFilterValues,
+                tabs: []
+            });
+            return fs.read(out);
+        }
+
+        test('emits iCheckFilterField with JSON.stringify-safe values for EQ', () => {
+            const content = renderWithFilters([{ property: 'Status', value: 'O' }]);
+            expect(content).toContain('iCheckFilterField({ property: "Status" }, "O")');
+        });
+
+        test('emits both boundaries as an array for BT ranges', () => {
+            const content = renderWithFilters([
+                { property: 'Date', value: '2024-01-01', value2: '2024-12-31', operator: 'BT' }
+            ]);
+            expect(content).toContain('iCheckFilterField({ property: "Date" }, ["2024-01-01","2024-12-31"], "BT")');
+        });
+
+        test('safely escapes values that contain double quotes', () => {
+            const content = renderWithFilters([{ property: 'Name', value: "O'Brien" }]);
+            // JSON.stringify wraps in double quotes; single quotes inside are safe
+            expect(content).toContain(`iCheckFilterField({ property: "Name" }, "O'Brien")`);
+        });
+    }
+);

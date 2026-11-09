@@ -62,6 +62,8 @@ server:
             client: '010'
             url: urlA
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -173,6 +175,8 @@ server:
             client: '010'
             url: urlA
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:

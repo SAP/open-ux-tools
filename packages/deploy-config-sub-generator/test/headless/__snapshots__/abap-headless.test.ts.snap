@@ -184,7 +184,7 @@ builder:
       configuration:
         target:
           url: https://example.abap.backend:44300
-          client: '100'
+          scp: true
         app:
           name: ZTESTREPO
           description: Testing headless ABAP deployment

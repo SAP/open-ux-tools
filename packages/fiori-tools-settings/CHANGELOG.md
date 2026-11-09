@@ -1,5 +1,17 @@
 # @sap-ux/fiori-tools-settings
 
+## 1.1.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Pass suppressErrors glob option to mem-fs delete to prevent ENOTDIR crash when parent directory doesn't exist on disk [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
 ## 1.1.0
 
 ### Minor Changes

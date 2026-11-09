@@ -1,0 +1,32 @@
+{
+  "d": {
+    "__count": "1",
+    "results": [
+      {
+        "__metadata": {
+          "id": "https://uyt928-er9001.example.com/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/C_DefectTaskRecord('%2400000000455')",
+          "uri": "https://uyt928-er9001.example.com/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/C_DefectTaskRecord('%2400000000455')",
+          "type": "QM_DEFECT_RECORD_SRV.C_DefectTaskRecordType"
+        },
+        "QualityTaskInternalId": "$00000000455",
+        "QualityTask": "455",
+        "QualityTaskOrigin": "01",
+        "QualityTaskText": "Task for OPA Test (belong to $00000000372)",
+        "DefectInternalID": "$00000000372",
+        "QualityTaskProcessor": "",
+        "MasterLanguage": "E",
+        "ChangedDateTime": "/Date(1516981736000+0000)/",
+        "Edit_active_i_qualitytasktp_ac": true,
+        "to_DefectQltyTskProcsrNotes": {
+          "__metadata": {
+            "id": "https://uytclnt928:443/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/C_DefectQltyTskProcsrNotes(QualityTaskInternalId='%2400000000455',Language='EN',ItemCounter=1)",
+            "uri": "https://uytclnt928:443/sap/opu/odata/sap/QM_DEFECT_RECORD_SRV/C_DefectQltyTskProcsrNotes(QualityTaskInternalId='%2400000000455',Language='EN',ItemCounter=1)",
+            "type": "QM_DEFECT_RECORD_SRV.C_DefectQltyTskProcsrNotesType"
+          },
+          "QualityTaskProcessorNotes": "test test\ntest test",
+          "QualityTaskProcsrNotesPreview": "test test test test"
+        }
+      }
+    ]
+  }
+}

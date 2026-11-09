@@ -126,7 +126,7 @@ class EmbeddingBuilder {
     }
 
     /**
-     * Load Local markdown documents from data_local directory.
+     * Load Local markdown documents from data_local directory and data_local/skills subdirectories.
      * These files use -------------------------------- as chunk delimiters.
      */
     async loadLocalDocuments(): Promise<void> {
@@ -141,11 +141,30 @@ class EmbeddingBuilder {
             for (const file of mdFiles) {
                 await this.processLocalMarkdownFile(dataLocalPath, file);
             }
-
-            this.logger.info(`✓ Loaded ${this.documents.length} documents`);
         } catch (error) {
             this.logger.warn(`Failed to read data_local directory: ${error.message}`);
         }
+
+        const skillsPath = './data_local/skills_copy';
+
+        try {
+            const skillDirs = await fs.readdir(skillsPath, { withFileTypes: true });
+            for (const entry of skillDirs.filter((e) => e.isDirectory())) {
+                const skillDir = path.join(skillsPath, entry.name);
+                const files = await fs.readdir(skillDir);
+                const mdFiles = files.filter((file) => file.endsWith('.md'));
+
+                this.logger.info(`Found ${mdFiles.length} markdown files in data_local/skills_copy/${entry.name}`);
+
+                for (const file of mdFiles) {
+                    await this.processLocalMarkdownFile(skillDir, file, entry.name);
+                }
+            }
+        } catch (error) {
+            this.logger.warn(`Failed to read data_local/skills_copy directory: ${error.message}`);
+        }
+
+        this.logger.info(`✓ Loaded ${this.documents.length} documents`);
     }
 
     /**
@@ -153,8 +172,9 @@ class EmbeddingBuilder {
      *
      * @param dataLocalPath - Path to the data_local directory
      * @param file - Filename to process
+     * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      */
-    private async processLocalMarkdownFile(dataLocalPath: string, file: string): Promise<void> {
+    private async processLocalMarkdownFile(dataLocalPath: string, file: string, skillName?: string): Promise<void> {
         try {
             const filePath = path.join(dataLocalPath, file);
             const content = await fs.readFile(filePath, 'utf-8');
@@ -165,7 +185,7 @@ class EmbeddingBuilder {
             this.logger.info(`  ${file}: ${chunks.length} chunks`);
 
             for (const [index, chunkContent] of chunks.entries()) {
-                const doc = this.createDocumentFromChunk(file, index, chunkContent);
+                const doc = this.createDocumentFromChunk(file, index, chunkContent, skillName);
                 if (doc) {
                     this.documents.push(doc);
                 }
@@ -181,9 +201,15 @@ class EmbeddingBuilder {
      * @param file - Source filename
      * @param index - Chunk index
      * @param chunkContent - Content of the chunk
+     * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      * @returns Document or null if chunk is empty
      */
-    private createDocumentFromChunk(file: string, index: number, chunkContent: string): Document | null {
+    private createDocumentFromChunk(
+        file: string,
+        index: number,
+        chunkContent: string,
+        skillName?: string
+    ): Document | null {
         const trimmedContent = chunkContent.trim();
         if (!trimmedContent) {
             return null;
@@ -205,12 +231,17 @@ class EmbeddingBuilder {
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ') ?? 'Fiori Elements';
 
+        const idPrefix = skillName
+            ? `local-${skillName}-${file.replace('.md', '')}`
+            : `local-${file.replace('.md', '')}`;
+        const docPath = skillName ? `data_local/skills_copy/${skillName}/${file}` : `data_local/${file}`;
+
         return {
-            id: `local-${file.replace('.md', '')}-${index}`,
+            id: `${idPrefix}-${index}`,
             title,
             content: trimmedContent,
             category,
-            path: `data_local/${file}`,
+            path: docPath,
             tags,
             headers: [],
             lastModified: new Date().toISOString(),

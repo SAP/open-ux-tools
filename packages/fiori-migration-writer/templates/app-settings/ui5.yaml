@@ -1,0 +1,34 @@
+specVersion: '4.0'
+metadata:
+  name: '<%= name.toLowerCase() %>'
+type: application
+server:
+  customMiddleware:
+  - name: fiori-tools-proxy
+    afterMiddleware: compression
+    configuration:
+      ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+      backend:
+      - path: <%= proxyPath %>
+        url: <%= proxyHost %><% if(client) { %>
+        client: '<%= client %>'<% } %><% if(apiHubApiKey) { %>
+        apiHub: true<% } %><% if(scp) { %>
+        scp: <%= scp %><% } %><% if(destination) { %>
+        destination: <%= destination %><% } %><% if(destinationInstance) { %>
+        destinationInstance: <%= destinationInstance %><% } %>
+      ui5:
+        path: 
+        - /resources
+        - /test-resources
+        url: <%= ui5Url %>
+  - name: fiori-tools-appreload
+    afterMiddleware: compression
+    configuration:
+     port: 35729
+     path: webapp
+     delay: 300<% if(appId) { %>
+  - name: fiori-tools-preview
+    afterMiddleware: fiori-tools-appreload
+    configuration:
+      component: <%= appId %>
+      ui5Theme: <%= ui5Theme %><% } %>

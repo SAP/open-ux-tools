@@ -5,7 +5,7 @@ import { readFileSync as realReadFileSync } from 'node:fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Editor, create } from 'mem-fs-editor';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config, CustomMiddleware } from '@sap-ux/ui5-config';
 import type { DescriptorVariant } from '../../../src/types.js';
@@ -120,7 +120,8 @@ const {
     readManifestFromBuildPath,
     loadAppVariant,
     getBaseAppId,
-    getExistingAdpProjectType
+    getExistingAdpProjectType,
+    getDefaultProjectName
 } = await import('../../../src/base/helper.js');
 
 // Import types
@@ -773,6 +774,32 @@ describe('helper', () => {
             expect(mockGetAppType).toHaveBeenCalledWith(basePath);
             expect(mockReadUi5Yaml).toHaveBeenCalledWith(basePath, 'ui5.yaml');
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getDefaultProjectName', () => {
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('should return the base name when no matching directory exists', () => {
+            mockExistsSync.mockReturnValue(false);
+            expect(getDefaultProjectName('/some/path')).toBe('app.variant');
+        });
+
+        test('should increment the suffix when the base name already exists', () => {
+            mockExistsSync.mockReturnValueOnce(true).mockReturnValue(false);
+            expect(getDefaultProjectName('/some/path')).toBe('app.variant2');
+        });
+
+        test('should keep incrementing until a free name is found', () => {
+            mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValue(false);
+            expect(getDefaultProjectName('/some/path')).toBe('app.variant3');
+        });
+
+        test('should use a custom dirName prefix when provided', () => {
+            mockExistsSync.mockReturnValueOnce(true).mockReturnValue(false);
+            expect(getDefaultProjectName('/some/path', 'my.app')).toBe('my.app2');
         });
     });
 });

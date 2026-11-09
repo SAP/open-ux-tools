@@ -25,7 +25,7 @@ import { type OpaPageWriteInfo, addPagesToJourneyRunner } from './utils/journeyR
 import { hasVirtualOPA5, addVirtualTestConfig } from './utils/virtualOpaUtils.js';
 import { addJourneysToOpaJourneyTypes } from './utils/opaJourneyTypesUtils.js';
 import { getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { readHashFromFlpSandbox } from './utils/flpSandboxUtils.js';
+import { resolveFlpSandboxHtmlTarget } from './utils/flpSandboxUtils.js';
 import { getListReportViews, isALPManifestTarget } from './utils/listReportUtils.js';
 import { resolveOriginatingView } from './utils/objectPageUtils.js';
 import { compareUI5VersionGte } from '@sap-ux/ui5-application-writer';
@@ -35,7 +35,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const V4_TEMPLATE_LATEST = 'latest';
 const V4_TEMPLATE_1_84 = '1.84';
 const V4_TEMPLATE_BUCKETS = [
-    { minVersion: '1.149.0', template: V4_TEMPLATE_LATEST },
+    { minVersion: '1.153.0', template: V4_TEMPLATE_LATEST },
+    { minVersion: '1.152.0', template: '1.152' },
     { minVersion: '1.148.0', template: '1.148' }
 ];
 
@@ -54,14 +55,14 @@ function getTemplateUi5Version(ui5Version?: string): string {
 /**
  * Removes action tests the target template bucket cannot render, so journeys omit them instead of
  * emitting assertions that fail on older runtimes:
- * - custom (manifest-declared) actions: rendered only by the `latest` bucket.
- * - menu (drop-down) actions: rendered by `1.148` and `latest`; the `1.84` bucket has no menu template.
+ * - custom (manifest-declared) actions: rendered only by `1.152` and `latest` buckets.
+ * - menu (drop-down) actions: rendered by `1.148`, `1.152`, and `latest`; the `1.84` bucket has no menu template.
  *
  * @param appFeatures - the extracted app feature data (mutated in place)
- * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / 'latest')
+ * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / '1.152' / 'latest')
  */
 export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Version: string): void {
-    const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST;
+    const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST && templateUi5Version !== '1.152';
     const stripMenu = templateUi5Version === V4_TEMPLATE_1_84;
     if (!stripCustom && !stripMenu) {
         return;
@@ -117,7 +118,13 @@ export async function generateOPAFiles(
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const templateUi5Version = getTemplateUi5Version(options.ui5Version);
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`, templateUi5Version);
-    const testOutDirPath = join(await getWebappPath(basePath), 'test');
+    const webappPath = await getWebappPath(basePath);
+    const testOutDirPath = join(webappPath, 'test');
+
+    // use flpSandbox target if none is given by caller; if not resolvable, config.htmlTarget already contains "index.html"
+    if (!options.htmlTarget) {
+        config.htmlTarget = resolveFlpSandboxHtmlTarget(testOutDirPath, webappPath, editor) ?? config.htmlTarget;
+    }
 
     // Access ux-specification to get feature data for OPA test generation
     const appFeatures = await getAppFeatures(basePath, editor, log, metadata, manifest);
@@ -306,7 +313,7 @@ function logModifiedFiles(log: Logger, modifiedFiles: string[]): void {
 
 /**
  * Resolve the standalone-mode write context: detect preexisting integration tests and an
- * incompatible legacy setup, and resolve the htmlTarget from flpSandbox.html if present.
+ * incompatible legacy setup, and preserve the htmlTarget from an existing opaTests.qunit.js if present.
  *
  * @param writeContext - shared write context to base the resolved context on
  * @returns a new WriteContext with the resolved values for the standalone generation
@@ -333,8 +340,8 @@ async function resolveStandaloneWriteContext(writeContext: WriteContext): Promis
 
 /**
  * Resolve the standalone-mode write context for the case where the integration folder is
- * missing entirely: there are no OPA tests yet, the int-test package script may need to be
- * added, and the htmlTarget is resolved from flpSandbox.html if present.
+ * missing entirely: there are no OPA tests yet and the int-test package script may need to be
+ * added.
  *
  * @param writeContext - shared write context to base the resolved context on
  * @returns a new WriteContext with the resolved values for the standalone generation
@@ -348,21 +355,9 @@ async function resolveWriteContextForMissingIntegrationFolder(writeContext: Writ
             writeContext.modifiedFiles.push('package.json');
         }
     }
-    let htmlTarget = writeContext.config.htmlTarget;
-    if (existsSync(join(writeContext.testOutDirPath, 'flpSandbox.html'))) {
-        const hashFromFlpSandbox = readHashFromFlpSandbox(
-            join('test', 'flpSandbox.html'),
-            await getWebappPath(writeContext.basePath),
-            writeContext.editor
-        );
-        if (hashFromFlpSandbox) {
-            htmlTarget = `test/flpSandbox.html#${hashFromFlpSandbox}`;
-        }
-    }
     return {
         ...writeContext,
-        hasPreexistingTests: false,
-        config: { ...writeContext.config, htmlTarget }
+        hasPreexistingTests: false
     };
 }
 
@@ -726,6 +721,8 @@ function writeJourneyFiles(appFeatures: AppFeatures, writeContext: WriteContext)
             {
                 ...journeyParams,
                 ...appFeatures.listReport,
+                defaultSortOrder: appFeatures.listReport.defaultSortOrder ?? [],
+                defaultFilterValues: appFeatures.listReport.defaultFilterValues ?? [],
                 appPath: config.appPath
             },
             undefined,

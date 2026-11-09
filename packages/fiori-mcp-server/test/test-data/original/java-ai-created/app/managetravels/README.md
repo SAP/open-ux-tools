@@ -12,7 +12,7 @@
 |**Application Title**<br>Manage Travels|
 |**Namespace**<br>com.company.managetravels|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.136.7|
+|**UI5 Version**<br>1.148.12|
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|

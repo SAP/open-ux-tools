@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
+import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
@@ -295,4 +295,27 @@ export async function getBaseAppId(basePath: string): Promise<string> {
     } catch (error) {
         throw new Error(`Failed to get app ID: ${(error as Error).message}`);
     }
+}
+
+/** Default prefix used when no `dirName` is passed to {@link getDefaultProjectName}. */
+const DEFAULT_PROJECT_PREFIX = 'app.variant';
+
+/**
+ * Returns a non-colliding project directory name under `basePath`.
+ * Follows the `generator-adp` convention: `app.variant` → `app.variant2` → `app.variant3` …
+ *
+ * @param basePath Base directory to check for existing project folders.
+ * @param dirName Base name prefix; defaults to `"app.variant"`.
+ * @returns The first name in the sequence that does not yet exist on disk.
+ */
+export function getDefaultProjectName(basePath: string, dirName: string = DEFAULT_PROJECT_PREFIX): string {
+    let newDir = dirName;
+    let index = 1;
+
+    while (existsSync(join(basePath, newDir))) {
+        index++;
+        newDir = `${dirName}${index}`;
+    }
+
+    return newDir;
 }
