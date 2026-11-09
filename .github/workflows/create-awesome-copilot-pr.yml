@@ -144,7 +144,7 @@ jobs:
                   cd awesome-copilot
                   git add plugins/external.json .github/plugin/marketplace.json README.md
                   git commit -m "chore(sap-ux-fiori-tools): bump to ${VERSION}"
-                  git push origin "$BRANCH"
+                  git push origin "$BRANCH" --force
 
                   gh pr create \
                     --repo github/awesome-copilot \
