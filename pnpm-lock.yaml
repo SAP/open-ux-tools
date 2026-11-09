@@ -2747,12 +2747,6 @@ importers:
 
   packages/fiori-mcp-server:
     dependencies:
-      '@sap-ux/fe-fpm-writer':
-        specifier: workspace:*
-        version: link:../fe-fpm-writer
-      '@sap-ux/fiori-annotation-api':
-        specifier: workspace:*
-        version: link:../fiori-annotation-api
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
@@ -2793,9 +2787,15 @@ importers:
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
+      '@sap-ux/fiori-annotation-api':
+        specifier: workspace:*
+        version: link:../fiori-annotation-api
       '@sap-ux/fiori-docs-embeddings':
         specifier: workspace:*
         version: link:../fiori-docs-embeddings

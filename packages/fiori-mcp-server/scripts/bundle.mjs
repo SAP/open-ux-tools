@@ -248,13 +248,7 @@ await esbuild.build({
             'const __dirname = __dn(__filename);'
         ].join('\n')
     },
-    external: [
-        'vscode',
-        'chromium-bidi',
-        // fiori-annotation-api → @sap/ux-cds-compiler-facade dynamically loads @sap/cds from the
-        // user's project at runtime — cannot be bundled at build time.
-        '@sap-ux/fiori-annotation-api'
-    ],
+    external: ['vscode', 'chromium-bidi'],
     legalComments: 'linked',
     metafile: true,
     plugins: [
