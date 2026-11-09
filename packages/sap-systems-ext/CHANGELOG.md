@@ -1,5 +1,17 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.51
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[3cd86b7](https://github.com/SAP/open-ux-tools/commit/3cd86b7096d7b9fa54b57fc98d487e58925509f4)]
+
 ## 1.0.50
 
 ### Patch Changes
