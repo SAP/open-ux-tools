@@ -13,7 +13,7 @@ on:
                 required: true
             old_version:
                 description: 'Old plugin version (e.g. 1.16.12)'
-                required: true
+                required: false
             dry_run:
                 description: 'Dry run — skip push and PR creation'
                 required: false
@@ -121,6 +121,7 @@ jobs:
               if: steps.version.outputs.changed == 'true'
               run: |
                   cd awesome-copilot
+                  npm install --ignore-scripts
                   node ./eng/update-readme.mjs
                   node ./eng/generate-marketplace.mjs
 
@@ -142,7 +143,7 @@ jobs:
                     --head "IainSAP:${BRANCH}" \
                     --base main \
                     --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
-                    --body "Automated version bump for \`sap-ux-fiori-tools\` from \`${OLD_VERSION}\` to \`${VERSION}\`.
+                    --body "Automated version bump for \`sap-ux-fiori-tools\`${OLD_VERSION:+ from \`${OLD_VERSION}\`} to \`${VERSION}\`.
 
                   Source: https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori"
 
@@ -152,6 +153,6 @@ jobs:
                   VERSION: ${{ steps.version.outputs.new }}
                   OLD_VERSION: ${{ steps.version.outputs.old }}
               run: |
-                  echo "## sap-ux-fiori-tools bumped: ${OLD_VERSION} → ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
+                  echo "## sap-ux-fiori-tools bumped${OLD_VERSION:+: ${OLD_VERSION} →} to ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
                   echo "" >> "$GITHUB_STEP_SUMMARY"
                   echo "PR opened on [github/awesome-copilot](https://github.com/github/awesome-copilot/pulls)." >> "$GITHUB_STEP_SUMMARY"
