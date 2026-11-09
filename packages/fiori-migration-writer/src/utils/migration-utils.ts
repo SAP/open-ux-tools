@@ -169,6 +169,8 @@ function errorValueToString(value: unknown): string {
             return Object.prototype.toString.call(value);
         }
     }
+    // At this point value is: number, boolean, bigint, symbol, function, or undefined
+    // All of these have safe String() conversions (no '[object Object]' issue)
     return String(value);
 }
 
