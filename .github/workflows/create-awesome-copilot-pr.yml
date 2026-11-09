@@ -11,9 +11,6 @@ on:
             new_version:
                 description: 'New plugin version (e.g. 1.16.13)'
                 required: true
-            old_version:
-                description: 'Old plugin version (e.g. 1.16.12)'
-                required: false
             dry_run:
                 description: 'Dry run — skip push and PR creation'
                 required: false
@@ -30,25 +27,35 @@ jobs:
               id: version
               env:
                   GH_TOKEN: ${{ github.token }}
-                  INPUT_OLD_VERSION: ${{ github.event.inputs.old_version }}
                   INPUT_NEW_VERSION: ${{ github.event.inputs.new_version }}
               run: |
+                  PLUGIN_PATH="plugins-coding-agents/fiori/plugin.json"
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-                    echo "old=${INPUT_OLD_VERSION}" >> "$GITHUB_OUTPUT"
+                    # Find the commit that introduced this version
+                    RELEASE_SHA=""
+                    for COMMIT in $(gh api "repos/SAP/open-ux-tools/commits?path=${PLUGIN_PATH}&per_page=50" --jq 'reverse | .[].sha'); do
+                      VER=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${COMMIT}" --jq '.content' | base64 -d | jq -r .version)
+                      if [ "$VER" = "$INPUT_NEW_VERSION" ]; then
+                        RELEASE_SHA="$COMMIT"
+                        break
+                      fi
+                    done
+                    if [ -z "$RELEASE_SHA" ]; then
+                      echo "Could not find a commit for version ${INPUT_NEW_VERSION} in the last 50 commits" >&2
+                      exit 1
+                    fi
                     echo "new=${INPUT_NEW_VERSION}" >> "$GITHUB_OUTPUT"
+                    echo "sha=${RELEASE_SHA}" >> "$GITHUB_OUTPUT"
                     echo "changed=true" >> "$GITHUB_OUTPUT"
                   else
-                    PLUGIN_PATH="plugins-coding-agents/fiori/plugin.json"
                     NEW=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${{ github.sha }}" --jq '.content' | base64 -d | jq -r .version)
                     OLD=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${{ github.event.before }}" --jq '.content' 2>/dev/null | base64 -d | jq -r .version 2>/dev/null || echo "")
-                    echo "old=$OLD"
-                    echo "new=$NEW"
                     if [ "$OLD" = "$NEW" ] || [ -z "$NEW" ]; then
                       echo "changed=false" >> "$GITHUB_OUTPUT"
                     else
                       echo "changed=true" >> "$GITHUB_OUTPUT"
-                      echo "old=$OLD" >> "$GITHUB_OUTPUT"
                       echo "new=$NEW" >> "$GITHUB_OUTPUT"
+                      echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
                     fi
                   fi
 
@@ -96,7 +103,7 @@ jobs:
               if: steps.version.outputs.changed == 'true'
               env:
                   VERSION: ${{ steps.version.outputs.new }}
-                  COMMIT_SHA: ${{ github.sha }}
+                  COMMIT_SHA: ${{ steps.version.outputs.sha }}
               run: |
                   python3 - <<'PYEOF'
                   import json, os
@@ -131,31 +138,40 @@ jobs:
               if: steps.version.outputs.changed == 'true' && inputs.dry_run != true
               env:
                   GH_TOKEN: ${{ steps.app-token.outputs.token }}
+                  PR_TOKEN: ${{ secrets.AWESOME_COPILOT_PR_TOKEN }}
                   VERSION: ${{ steps.version.outputs.new }}
-                  OLD_VERSION: ${{ steps.version.outputs.old }}
                   BRANCH: ${{ steps.branch.outputs.branch }}
               run: |
                   cd awesome-copilot
                   git add plugins/external.json .github/plugin/marketplace.json README.md
                   git commit -m "chore(sap-ux-fiori-tools): bump to ${VERSION}"
-                  git push origin "$BRANCH"
+                  git push origin "$BRANCH" --force
 
-                  gh pr create \
+                  EXISTING_PR=$(GH_TOKEN="$PR_TOKEN" gh pr list \
                     --repo github/awesome-copilot \
                     --head "IainSAP:${BRANCH}" \
-                    --base main \
-                    --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
-                    --body "Automated version bump for \`sap-ux-fiori-tools\`${OLD_VERSION:+ from \`${OLD_VERSION}\`} to \`${VERSION}\`.
+                    --state open \
+                    --json url \
+                    --jq '.[0].url')
+                  if [ -n "$EXISTING_PR" ]; then
+                    echo "PR already exists: $EXISTING_PR"
+                  else
+                    GH_TOKEN="$PR_TOKEN" gh pr create \
+                      --repo github/awesome-copilot \
+                      --head "IainSAP:${BRANCH}" \
+                      --base main \
+                      --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
+                      --body "Automated version bump for \`sap-ux-fiori-tools\` to \`${VERSION}\`.
 
                   Source: https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori"
+                  fi
 
             - name: Post job summary
               if: steps.version.outputs.changed == 'true'
               env:
                   VERSION: ${{ steps.version.outputs.new }}
-                  OLD_VERSION: ${{ steps.version.outputs.old }}
               run: |
-                  echo "## sap-ux-fiori-tools bumped${OLD_VERSION:+: ${OLD_VERSION} →} to ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
+                  echo "## sap-ux-fiori-tools bumped to ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
                   echo "" >> "$GITHUB_STEP_SUMMARY"
                   if [ "${{ inputs.dry_run }}" = "true" ]; then
                     echo "Dry run completed — no PR was opened." >> "$GITHUB_STEP_SUMMARY"
