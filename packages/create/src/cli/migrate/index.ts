@@ -804,6 +804,121 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
 }
 
 /**
+ * Get the SAP client to migrate with: the entered client or the one that is part of the destination name.
+ *
+ * @param client - client entered or resolved earlier
+ * @param destination - destination name
+ * @returns the SAP client, if any
+ */
+function resolveSapClient(client: string | undefined, destination: string | undefined): string | undefined {
+    if (client) {
+        return client;
+    }
+    return destination ? ProjectAccess.getClientFromDestinationName(destination) || undefined : undefined;
+}
+
+/**
+ * Get the project information that overrides what is read from the legacy project.
+ *
+ * @param options - command options
+ * @param matchedSystem - system matched from the legacy project
+ * @param target - system values to migrate with
+ * @param target.sapClient - SAP client
+ * @param target.destination - destination name
+ * @param target.hostname - backend hostname
+ * @returns the overrides, or undefined if there is nothing to override
+ */
+function getImportProjectInfo(
+    options: MigrateCommandOptions,
+    matchedSystem: MigrationSystem | undefined,
+    { sapClient, destination, hostname }: { sapClient?: string; destination?: string; hostname?: string }
+): Partial<ImportProjectInfo> | undefined {
+    if (!sapClient && !destination && !hostname) {
+        return undefined;
+    }
+    const migrationHostname = hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined);
+    return {
+        ...(sapClient && { sapClient }),
+        ...(destination && { destination }),
+        ...(migrationHostname && { hostname: migrationHostname }),
+        ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
+    };
+}
+
+/**
+ * Migration input that is resolved before the project is migrated.
+ */
+interface MigrationInput {
+    resolvedPath: string;
+    baseUri: string;
+    ui5SnapshotUrl: string;
+    importProjectInfo?: Partial<ImportProjectInfo>;
+    projectInfo?: ImportProjectInfo;
+    ui5Version?: string;
+}
+
+/**
+ * Migrate the project, report the result with telemetry and handle the outcome (log, npm install, error).
+ *
+ * @param input - resolved migration input
+ * @param options - command options
+ * @param summary - run summary that is updated while migrating
+ */
+async function migrateProject(
+    input: MigrationInput,
+    options: MigrateCommandOptions,
+    summary: MigrationRunSummary
+): Promise<void> {
+    const { resolvedPath, projectInfo, ui5Version } = input;
+    const logger = getLogger();
+    const projectEvent = { projectInfo, ui5Version, resolvedPath };
+    const migrationStart = Date.now();
+    let result: Awaited<ReturnType<typeof ProjectMigrator.migrate>>;
+    try {
+        result = await ProjectMigrator.migrate({
+            projectRoot: resolvedPath,
+            baseUri: input.baseUri,
+            ui5SnapshotUrl: input.ui5SnapshotUrl,
+            importProjectInfo: input.importProjectInfo,
+            internalToggle: isInternalFeaturesSettingEnabled() || undefined
+        });
+    } catch (error) {
+        summary.failedMigrations = 1;
+        const messages = getErrorCategoriesForTelemetry([{ type: 'ERROR', description: (error as Error).message }]);
+        await trackProjectResult(false, messages, Date.now() - migrationStart, projectEvent);
+        throw error;
+    }
+
+    const success = isMigrationSuccessful(result.result, result.messages);
+    summary.successfulMigrations = success ? 1 : 0;
+    summary.failedMigrations = success ? 0 : 1;
+    await trackProjectResult(
+        success,
+        getErrorCategoriesForTelemetry(result.messages),
+        Date.now() - migrationStart,
+        projectEvent
+    );
+
+    // Prepare migration log entry
+    const migrationLogEntry: MigrationLogEntry = {
+        timestamp: new Date().toISOString(),
+        projectPath: resolvedPath,
+        projectName: basename(resolvedPath),
+        migrationMessages: result.messages || [],
+        migrationSuccess: result.result
+    };
+
+    if (result.result) {
+        await handleMigrationSuccess(result, options, resolvedPath, migrationLogEntry, logger);
+        if (!options.skipInstall) {
+            summary.npmInstallSuccess = migrationLogEntry.npmInstall?.success ? 'true' : 'false';
+        }
+    } else {
+        handleMigrationFailure(result, migrationLogEntry, logger);
+    }
+}
+
+/**
  * Run the migration steps.
  *
  * @param projectPath - path to the project to migrate
@@ -843,74 +958,24 @@ async function runMigration(
 
     // 5. Get UI5 version
     const ui5Version = await getUI5Version(options.ui5Version);
-    const sapClient =
-        client ?? (destination ? ProjectAccess.getClientFromDestinationName(destination) || undefined : undefined);
+    const sapClient = resolveSapClient(client, destination);
 
     // 6. Execute migration
     logger.info(t('migrate.status.starting'));
 
-    const baseUri = calculateBaseUri(destination, hostname, matchedSystem, !!options.hostname);
-    const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
-    const migrationHostname = hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined);
-
     // Initialize i18n for proper error messages
     await initMigrationI18n();
-    const internalToggle = isInternalFeaturesSettingEnabled();
 
-    // Load project info first, then merge CLI overrides
-    const migrationProjectInfo =
-        sapClient || destination || hostname
-            ? {
-                  ...(sapClient && { sapClient }),
-                  ...(destination && { destination }),
-                  ...(migrationHostname && { hostname: migrationHostname }),
-                  ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
-              }
-            : undefined;
-
-    const projectEvent = { projectInfo, ui5Version, resolvedPath };
-    const migrationStart = Date.now();
-    let result: Awaited<ReturnType<typeof ProjectMigrator.migrate>>;
-    try {
-        result = await ProjectMigrator.migrate({
-            projectRoot: resolvedPath,
-            baseUri,
-            ui5SnapshotUrl,
-            importProjectInfo: migrationProjectInfo,
-            internalToggle: internalToggle || undefined
-        });
-    } catch (error) {
-        summary.failedMigrations = 1;
-        const messages = getErrorCategoriesForTelemetry([{ type: 'ERROR', description: (error as Error).message }]);
-        await trackProjectResult(false, messages, Date.now() - migrationStart, projectEvent);
-        throw error;
-    }
-
-    const success = isMigrationSuccessful(result.result, result.messages);
-    summary.successfulMigrations = success ? 1 : 0;
-    summary.failedMigrations = success ? 0 : 1;
-    await trackProjectResult(
-        success,
-        getErrorCategoriesForTelemetry(result.messages),
-        Date.now() - migrationStart,
-        projectEvent
+    await migrateProject(
+        {
+            resolvedPath,
+            baseUri: calculateBaseUri(destination, hostname, matchedSystem, !!options.hostname),
+            ui5SnapshotUrl: ui5Version ? `https://ui5.sap.com/${ui5Version}` : '',
+            importProjectInfo: getImportProjectInfo(options, matchedSystem, { sapClient, destination, hostname }),
+            projectInfo,
+            ui5Version
+        },
+        options,
+        summary
     );
-
-    // Prepare migration log entry
-    const migrationLogEntry: MigrationLogEntry = {
-        timestamp: new Date().toISOString(),
-        projectPath: resolvedPath,
-        projectName: basename(resolvedPath),
-        migrationMessages: result.messages || [],
-        migrationSuccess: result.result
-    };
-
-    if (result.result) {
-        await handleMigrationSuccess(result, options, resolvedPath, migrationLogEntry, logger);
-        if (!options.skipInstall) {
-            summary.npmInstallSuccess = migrationLogEntry.npmInstall?.success ? 'true' : 'false';
-        }
-    } else {
-        handleMigrationFailure(result, migrationLogEntry, logger);
-    }
 }
