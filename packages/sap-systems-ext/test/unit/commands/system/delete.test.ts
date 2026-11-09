@@ -74,6 +74,37 @@ describe('Test the delete system command handler', () => {
         expect(showInformationMessageSpy).toHaveBeenCalledWith('Connection [Test System] deleted.');
     });
 
+    it('should send telemetry with system, connection and authentication type on deletion success and failure', async () => {
+        const sendTelemetrySpy = jest.spyOn(utils.TelemetryHelper, 'sendTelemetry').mockResolvedValue(undefined);
+        jest.spyOn(utils, 'confirmPrompt').mockResolvedValue(true);
+        systemServiceReadMock.mockResolvedValue({
+            ...backendSystem,
+            connectionType: 'abap_catalog',
+            authenticationType: 'basic'
+        });
+        const expected = {
+            action: 'SYSTEM',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            authenticationType: 'basic'
+        };
+        const handler = deleteSystemCommandHandler(mockContext);
+
+        systemServiceDeleteMock.mockResolvedValue(true);
+        await handler({ url: 'https://example.com', client: '100' });
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            ...expected,
+            status: 'DELETED_SUCCESS'
+        });
+
+        systemServiceDeleteMock.mockResolvedValue(false);
+        await handler({ url: 'https://example.com', client: '100' });
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            ...expected,
+            status: 'DELETED_FAIL'
+        });
+    });
+
     it('should show a warning message if the deletion of the specific system is not successful', async () => {
         const vsCodeWindow = vscodeMod.window;
         const showWarningMessageSpy = jest.spyOn(vsCodeWindow, 'showWarningMessage');

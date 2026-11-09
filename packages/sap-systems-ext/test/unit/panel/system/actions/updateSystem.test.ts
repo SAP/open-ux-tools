@@ -240,6 +240,82 @@ describe('Test Update System Action', () => {
         expect(systemServiceWriteMock).not.toHaveBeenCalled();
     });
 
+    it('should send telemetry with connection and authentication type when a system is created', async () => {
+        const sendTelemetrySpy = jest.spyOn(extUtils.TelemetryHelper, 'sendTelemetry').mockResolvedValue(undefined);
+        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
+        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
+        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(undefined);
+        systemServiceWriteMock.mockResolvedValue(backendSystem);
+
+        await updateSystem(
+            { ...basePanelContext, panelViewType: SystemPanelViewType.Create },
+            {
+                type: 'UPDATE_SYSTEM',
+                payload: { system: { ...backendSystem, authenticationType: 'basic' } }
+            }
+        );
+
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            action: 'SYSTEM',
+            status: 'CREATED_SUCCESS',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            authenticationType: 'basic'
+        });
+    });
+
+    it('should send telemetry with connection and authentication type when a system update succeeds', async () => {
+        const sendTelemetrySpy = jest.spyOn(extUtils.TelemetryHelper, 'sendTelemetry').mockResolvedValue(undefined);
+        jest.spyOn(panelUtils, 'validateSystemName').mockResolvedValue(true);
+        jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
+        jest.spyOn(extUtils, 'getBackendSystem').mockResolvedValue(backendSystem);
+        systemServiceWriteMock.mockResolvedValue(backendSystem);
+        const system: BackendSystem = { ...backendSystem, authenticationType: 'basic' };
+
+        await updateSystem(
+            { ...basePanelContext, backendSystem: system, panelViewType: SystemPanelViewType.View },
+            { type: 'UPDATE_SYSTEM', payload: { system } }
+        );
+
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            action: 'SYSTEM',
+            status: 'UPDATED_SUCCESS',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            authenticationType: 'basic'
+        });
+    });
+
+    it('should send telemetry with connection and authentication type when saving fails', async () => {
+        const sendTelemetrySpy = jest.spyOn(extUtils.TelemetryHelper, 'sendTelemetry').mockResolvedValue(undefined);
+        jest.spyOn(panelUtils, 'validateSystemName').mockRejectedValue(new Error('Validation Error'));
+        const system: BackendSystem = { ...backendSystem, authenticationType: 'reentranceTicket' };
+
+        await updateSystem(
+            { ...basePanelContext, panelViewType: SystemPanelViewType.Create },
+            { type: 'UPDATE_SYSTEM', payload: { system } }
+        );
+        await updateSystem(
+            { ...basePanelContext, panelViewType: SystemPanelViewType.View },
+            { type: 'UPDATE_SYSTEM', payload: { system } }
+        );
+
+        const expected = {
+            action: 'SYSTEM',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            authenticationType: 'reentranceTicket'
+        };
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            ...expected,
+            status: 'CREATED_FAIL'
+        });
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            ...expected,
+            status: 'UPDATED_FAIL'
+        });
+    });
+
     it('should post an error message when validation fails', async () => {
         jest.spyOn(panelUtils, 'validateSystemName').mockRejectedValue(new Error('Validation Error'));
         jest.spyOn(panelUtils, 'validateSystemUrl').mockReturnValue(true);
