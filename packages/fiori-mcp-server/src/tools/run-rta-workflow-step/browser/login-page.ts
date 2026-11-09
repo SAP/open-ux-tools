@@ -1,12 +1,13 @@
 import { type Frame, type Page } from 'playwright-core';
 import { isLoopbackHost } from './origin.js';
+import type { Ui5LoaderWindow } from './frontend-actions.js';
 
 // Backend login / IdP page detection. A CF editor URL may redirect to an XSUAA
-// login page instead of serving the app, in which case the Joule webclient bridge never injects.
+// login page instead of serving the app, in which case UI5 never bootstraps.
 // These helpers let the browser driver tell "slow but valid app" apart from "needs interactive login".
 
-/** Bounded probe for the webclient bridge: generous for a valid app, far below the 60 s action timeout. */
-const BRIDGE_PROBE_MS = 8000;
+/** Bounded probe for the UI5 loader: generous for a valid app, far below the 60 s action timeout. */
+const UI5_LOADED_PROBE_MS = 8000;
 
 /** Markers that positively identify a backend login / IdP page (CF XSUAA, SAML reentrance, generic logon). */
 const LOGIN_PAGE_MARKERS =
@@ -51,15 +52,24 @@ export function isNeedsUserAction(value: unknown): value is NeedsUserActionPaylo
 }
 
 /**
- * Resolves the frame whose iframe element has `id === frameId`, or `undefined`
- * when `frameId` is omitted or no such frame exists. The editor runs inside the
- * `preview` iframe, so the webclient bridge lives on that frame's window.
+ * Resolves the frame whose iframe element has `id === frameId`. Returns
+ * `undefined` when `frameId` is omitted. When `frameId` is given but no matching
+ * frame exists, the result depends on `throwOnMiss`: `false` (the default)
+ * returns `undefined`, `true` throws. The editor runs inside the `preview`
+ * iframe, so UI5 bootstraps on that frame's window.
  *
  * @param page The editor page.
  * @param frameId The iframe element id to resolve (e.g. `preview`).
+ * @param throwOnMiss Throw instead of returning `undefined` when `frameId` is
+ * given but not found. Callers that must run an action in that exact frame pass
+ * `true`; readiness probes that fall back to the top-level page pass `false`.
  * @returns The matching frame, or `undefined`.
  */
-async function resolveFrame(page: Page, frameId: string | undefined): Promise<Frame | undefined> {
+export async function resolveFrame(
+    page: Page,
+    frameId: string | undefined,
+    throwOnMiss = false
+): Promise<Frame | undefined> {
     if (!frameId) {
         return undefined;
     }
@@ -70,31 +80,32 @@ async function resolveFrame(page: Page, frameId: string | undefined): Promise<Fr
             return frame;
         }
     }
+    if (throwOnMiss) {
+        throw new Error(`Frame with id "${frameId}" not found`);
+    }
     return undefined;
 }
 
 /**
- * Probes once (bounded) for the Joule webclient bridge. Checks the `frameId`
+ * Probes once (bounded) for the UI5 loader (`sap.ui.require`). Checks the `frameId`
  * iframe's window when it resolves, else the top-level page. Resolves `true` when
- * the bridge appears within {@link BRIDGE_PROBE_MS}, `false` on timeout — never throws.
+ * the loader appears within {@link UI5_LOADED_PROBE_MS}, `false` on timeout — never throws.
+ *
+ * `sap.ui.require` present means UI5 has bootstrapped and the editor app is being
+ * served (a backend login page is plain HTML and never exposes it). The implementing
+ * action modules may still be loading; the per-action wait in the transport is the
+ * backstop that gates on module availability.
  *
  * @param page The page just navigated to the editor URL.
  * @param frameId Optional iframe element id hosting the editor (e.g. `preview`).
- * @returns `true` if the webclient bridge is present.
+ * @returns `true` if the UI5 loader is present.
  */
-export async function probeBridge(page: Page, frameId?: string): Promise<boolean> {
+export async function probeUi5Loaded(page: Page, frameId?: string): Promise<boolean> {
     const target: Page | Frame = (await resolveFrame(page, frameId)) ?? page;
     try {
-        await target.waitForFunction(
-            () =>
-                !!(
-                    window as unknown as {
-                        sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } };
-                    }
-                ).sapdas?.webclientBridge?.getFrontendActions,
-            undefined,
-            { timeout: BRIDGE_PROBE_MS }
-        );
+        await target.waitForFunction(() => !!(window as unknown as Ui5LoaderWindow).sap?.ui?.require, undefined, {
+            timeout: UI5_LOADED_PROBE_MS
+        });
         return true;
     } catch {
         return false;
@@ -102,27 +113,27 @@ export async function probeBridge(page: Page, frameId?: string): Promise<boolean
 }
 
 /**
- * Keeps the open login window alive and polls {@link probeBridge} while a human
- * logs in, up to `budgetMs`. Resolves `true` the moment the bridge appears,
+ * Keeps the open login window alive and polls {@link probeUi5Loaded} while a human
+ * logs in, up to `budgetMs`. Resolves `true` the moment the UI5 loader appears,
  * `false` if the budget elapses. Never throws and never closes the page.
  *
- * On a live page each probe blocks for `BRIDGE_PROBE_MS`, so the loop paces itself.
+ * On a live page each probe blocks for `UI5_LOADED_PROBE_MS`, so the loop paces itself.
  * A closed page is the exception — its probe rejects instantly and can never
  * recover, so we stop rather than poll a dead target for the whole budget.
  *
  * @param page The page sitting on the backend login screen.
  * @param budgetMs Total time to wait for login before giving up.
  * @param frameId Optional iframe element id hosting the editor (e.g. `preview`).
- * @returns `true` if the bridge appeared within the budget, else `false`.
+ * @returns `true` if the UI5 loader appeared within the budget, else `false`.
  */
 export async function waitForLogin(page: Page, budgetMs: number, frameId?: string): Promise<boolean> {
     const deadline = Date.now() + budgetMs;
     // Always probe at least once so a zero/tiny budget still makes one attempt.
     do {
-        if (await probeBridge(page, frameId)) {
+        if (await probeUi5Loaded(page, frameId)) {
             return true;
         }
-        // A closed page can never serve the bridge — stop instead of spinning.
+        // A closed page can never load UI5 — stop instead of spinning.
         if (page.isClosed()) {
             return false;
         }
@@ -135,7 +146,7 @@ export async function waitForLogin(page: Page, budgetMs: number, frameId?: strin
  * concrete signal — the page navigated off the loopback interface (the editor
  * binds to localhost, so an off-loopback origin is an IdP redirect), or a known
  * login/SAML/OAuth marker appears in the URL, title, or body. Never classifies
- * on bridge-absence alone, so a slow-but-valid app is not mislabelled.
+ * on loader-absence alone, so a slow-but-valid app is not mislabelled.
  *
  * @param url Current page URL (post-redirect).
  * @param title Current page title.

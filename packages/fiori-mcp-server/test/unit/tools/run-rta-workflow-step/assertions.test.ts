@@ -1,5 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    optionalObject,
+    optionalString,
     requireAppPath,
     requireObject,
     requireSite,
@@ -51,6 +53,41 @@ describe('assertions', () => {
         test.each([undefined, null, '', 0, []])('throws when value is %j', (val) => {
             expect(() => requireObject({ key: val } as Record<string, unknown>, 'key')).toThrow(
                 'payload.key is required and must be an object'
+            );
+        });
+    });
+
+    describe('optionalString', () => {
+        test('returns the value when present and non-empty', () => {
+            expect(optionalString({ key: 'value' }, 'key')).toBe('value');
+        });
+
+        test('returns undefined when the key is absent', () => {
+            expect(optionalString({}, 'missing')).toBeUndefined();
+            expect(optionalString(undefined, 'key')).toBeUndefined();
+        });
+
+        test.each([null, '', 0, false, {}, []])('throws when a present value is %j', (val) => {
+            expect(() => optionalString({ key: val } as Record<string, unknown>, 'key')).toThrow(
+                'payload.key must be a non-empty string when provided'
+            );
+        });
+    });
+
+    describe('optionalObject', () => {
+        test('returns the value when it is a plain object', () => {
+            const obj = { a: 1 };
+            expect(optionalObject({ key: obj }, 'key')).toBe(obj);
+        });
+
+        test('returns undefined when the key is absent', () => {
+            expect(optionalObject({}, 'missing')).toBeUndefined();
+            expect(optionalObject(undefined, 'key')).toBeUndefined();
+        });
+
+        test.each([null, '', 0, []])('throws when a present value is %j', (val) => {
+            expect(() => optionalObject({ key: val } as Record<string, unknown>, 'key')).toThrow(
+                'payload.key must be an object when provided'
             );
         });
     });
