@@ -161,6 +161,14 @@ function errorValueToString(value: unknown): string {
     if (value instanceof Error) {
         return value.message;
     }
+    if (typeof value === 'object') {
+        try {
+            return JSON.stringify(value);
+        } catch {
+            // Fallback for objects that can't be stringified (circular refs, etc.)
+            return Object.prototype.toString.call(value);
+        }
+    }
     return String(value);
 }
 
