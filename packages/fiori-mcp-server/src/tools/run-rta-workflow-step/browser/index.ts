@@ -10,4 +10,5 @@ export { httpTransport } from './http-bridge.js';
 export { registerSite } from './session.js';
 export { isNeedsUserAction } from './login-page.js';
 export type { NeedsUserActionPayload } from './login-page.js';
+export { normalizeUfaResult, resolveAction, UFA_PREFIX } from './frontend-actions.js';
 export type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';

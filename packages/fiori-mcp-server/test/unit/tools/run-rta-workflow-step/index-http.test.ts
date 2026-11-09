@@ -29,15 +29,16 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/in
 
 const mockStartRta = jest.fn<typeof rta.startRta>();
 const mockGetOverlays = jest.fn<typeof rta.getOverlays>();
+const mockDescribeUi = jest.fn<typeof rta.describeUi>();
+const mockExecuteUfaAction = jest.fn<typeof rta.executeUfaAction>();
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.js', () => ({
     startRta: mockStartRta,
     getOverlays: mockGetOverlays,
     getElementContext: jest.fn(),
     executeAction: jest.fn(),
     saveChanges: jest.fn(),
-    getPageActions: jest.fn(),
-    callPageAction: jest.fn(),
-    pressInteractive: jest.fn(),
+    describeUi: mockDescribeUi,
+    executeUfaAction: mockExecuteUfaAction,
     getODataMetadata: jest.fn(),
     FrontendActionError: class FrontendActionError extends Error {}
 }));
@@ -184,5 +185,33 @@ describe('runRtaWorkflowStep HTTP dispatcher', () => {
         await expect(runRtaWorkflowStep({ step: 'restart', site: SITE })).rejects.toBe(error);
         expect(mockHttpTransport.reloadPage).toHaveBeenCalledTimes(1);
         expect(mockStartRta).not.toHaveBeenCalled();
+    });
+
+    test('describe_ui is dispatched through the HTTP transport', async () => {
+        const uiTree = [{ id: 'root', type: 'sap.m.Page' }];
+        mockDescribeUi.mockResolvedValue(uiTree);
+        await expect(
+            runRtaWorkflowStep({ step: 'describe_ui', site: SITE, payload: { rootElementId: 'root' } })
+        ).resolves.toEqual({ uiTree });
+        expect(mockRequireEditorSession).toHaveBeenCalledWith(SITE);
+        expect(mockDescribeUi).toHaveBeenCalledWith(mockHttpTransport, { site: SITE, frameId: FRAME }, 'root');
+    });
+
+    test('execute_page_action is dispatched through the HTTP transport', async () => {
+        mockExecuteUfaAction.mockResolvedValue({ isSuccess: true, result: null });
+        await expect(
+            runRtaWorkflowStep({
+                step: 'execute_page_action',
+                site: SITE,
+                payload: { actionName: 'press', elementId: 'btn-1' }
+            })
+        ).resolves.toEqual({ isSuccess: true, result: null });
+        expect(mockExecuteUfaAction).toHaveBeenCalledWith(
+            mockHttpTransport,
+            { site: SITE, frameId: FRAME },
+            'press',
+            'btn-1',
+            undefined
+        );
     });
 });

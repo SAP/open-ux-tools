@@ -5,7 +5,8 @@ import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
-import type { TemplateProperties, SapUxLayer } from '../types.js';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { TemplateProperties } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { writeFile } from './file-access.js';
 import uniq from 'lodash/uniq.js';
@@ -54,11 +55,13 @@ export class MigrationError extends Error {
 }
 
 /**
- * Determine error message based on error type
+ * Determine error message based on error type.
+ * Always returns a non-empty string with fallback to error.message.
  *
- * @param error
- * @param filename
- * @param useMessage
+ * @param error - The error object
+ * @param filename - Optional filename context for file-specific errors
+ * @param useMessage - Whether to use the raw error message
+ * @returns A user-friendly error message, or the original error message as fallback
  */
 export function determineMessage(error: Error, filename?: string, useMessage?: boolean): string {
     let errorMessage = '';
@@ -73,7 +76,9 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
     } else if (error.message.includes('EPERM')) {
         errorMessage = i18nText(filename ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename });
     }
-    return errorMessage;
+
+    // Fallback to original error message if no specific message was determined
+    return errorMessage || error.message || error.toString();
 }
 
 /**
@@ -164,8 +169,8 @@ export function generateToolsId(): string {
  * @param isInternal - Whether the project is internal (SAP-developed)
  * @returns SAP UX layer identifier
  */
-export function determineSapUxLayer(isInternal: boolean): SapUxLayer {
-    return (isInternal ? 'VENDOR' : 'CUSTOMER_BASE') as SapUxLayer;
+export function determineSapUxLayer(isInternal: boolean): UI5FlexLayer {
+    return isInternal ? 'VENDOR' : 'CUSTOMER_BASE';
 }
 
 /**

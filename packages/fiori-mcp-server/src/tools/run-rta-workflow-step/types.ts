@@ -1,25 +1,16 @@
 import type {
     ActionsCatalog,
+    DescribeUiResult,
     ElementContext,
+    ExecuteUfaActionResult,
     GetODataMetadataResult,
-    InteractiveElement,
-    Overlay,
-    PageActionRunResult,
-    RegisteredPageAction
+    Overlay
 } from './rta/types.js';
 
 /**
  * The steps run_rta_workflow_step accepts. Single source of truth — the
  * Zod schema in `types/input.ts` derives its enum from this tuple, so
  * adding a step here is the only place that needs to change.
- *
- * The original six steps drive the RTA workflow itself; the last three
- * (`get_page_actions`, `call_page_action`, `press_interactive`) drive
- * pre-RTA navigation via the FrontendActionRegistry on the page.
- *
- * Action lists per control are no longer exposed as a standalone step —
- * the editor page returns them inline via `get_overlays` (`actionsCatalog`
- * + each overlay's `actionIds`).
  */
 export const STEPS = [
     'start',
@@ -29,9 +20,8 @@ export const STEPS = [
     'save',
     'stop',
     'restart',
-    'get_page_actions',
-    'call_page_action',
-    'press_interactive',
+    'describe_ui',
+    'execute_page_action',
     'get_odata_metadata'
 ] as const;
 
@@ -112,19 +102,13 @@ export interface RestartStepResult {
     message?: string;
 }
 
-export interface GetPageActionsStepResult {
-    registered: RegisteredPageAction[];
-    interactive: InteractiveElement[];
-    /** Set to `true` when the interactive scan hit its internal cap. */
-    interactiveTruncated?: true;
+export interface DescribeUiStepResult {
+    uiTree: DescribeUiResult;
 }
 
-export interface CallPageActionStepResult {
-    result: PageActionRunResult;
-}
-
-export interface PressInteractiveStepResult {
-    result: PageActionRunResult;
+export interface ExecutePageActionStepResult {
+    isSuccess: boolean;
+    result?: ExecuteUfaActionResult['result'];
 }
 
 /**
@@ -141,7 +125,6 @@ export type RunRtaWorkflowStepResult =
     | SaveStepResult
     | StopStepResult
     | RestartStepResult
-    | GetPageActionsStepResult
-    | CallPageActionStepResult
-    | PressInteractiveStepResult
+    | DescribeUiStepResult
+    | ExecutePageActionStepResult
     | GetODataMetadataStepResult;

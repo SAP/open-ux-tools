@@ -124,6 +124,15 @@ describe('preview RTA relay', () => {
         await command.response;
     });
 
+    test('accepts and delivers a Unified Frontend Action name', async () => {
+        const ufa = 'com.sap.ui.unified.frontend.actions.describeUI';
+        const command = await begin(action(ufa));
+        const delivery = await poll().expect(200);
+        expect(delivery.body).toMatchObject({ actionName: ufa });
+        await result(delivery.body.id).expect(200);
+        await command.response;
+    });
+
     test('validates the result owner without consuming the action', async () => {
         const command = await begin(action());
         const delivery = await poll().expect(200);
@@ -486,6 +495,45 @@ describe('relay browser client', () => {
         const client = await runClient([{ id: '1', actionName: ACTION }]);
         expect(JSON.parse(client.fetch.mock.calls[1][1].body ?? '').error).toContain('Frontend action not available');
         expect(client.ui5Require).toHaveBeenCalledTimes(1);
+    });
+
+    test('runs a UFA describe action via ActionHelpers and keeps its raw result as the payload', async () => {
+        const forest = [{ id: 'root', type: 'sap.m.Page' }];
+        const describeUI = jest.fn().mockResolvedValue(forest);
+        const client = await runClient(
+            [
+                {
+                    id: '1',
+                    actionName: 'com.sap.ui.unified.frontend.actions.describeUI',
+                    payload: { includedProperties: ['id'] }
+                }
+            ],
+            { describeUI }
+        );
+        expect(describeUI).toHaveBeenCalledWith({ includedProperties: ['id'] });
+        expect((await waitForResult(client)).result).toEqual({ isSuccess: true, payload: forest, error: null });
+    });
+
+    test('normalizes a bare UFA success into a null payload', async () => {
+        const executeAction = jest.fn().mockResolvedValue({ success: true });
+        const client = await runClient(
+            [{ id: '1', actionName: 'com.sap.ui.unified.frontend.actions.executeAction', payload: {} }],
+            { executeAction }
+        );
+        expect((await waitForResult(client)).result).toEqual({ isSuccess: true, payload: null, error: null });
+    });
+
+    test('surfaces a failed UFA action as a failure envelope with its reason', async () => {
+        const executeAction = jest.fn().mockResolvedValue({ success: false, error: 'element not found' });
+        const client = await runClient(
+            [{ id: '1', actionName: 'com.sap.ui.unified.frontend.actions.executeAction', payload: {} }],
+            { executeAction }
+        );
+        expect((await waitForResult(client)).result).toEqual({
+            isSuccess: false,
+            payload: null,
+            error: { code: 'UFA_ACTION_FAILED', message: 'element not found' }
+        });
     });
 
     test('reloads even when the __reload__ result POST fails', async () => {

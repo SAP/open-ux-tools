@@ -10,6 +10,13 @@
     const APP_LOADED_ENVELOPE_TYPE = 'post-message-action';
     const APP_LOADED_ACTION_TYPE = '[ext] app-loaded';
 
+    // Frontend-action module resolution, mirrored from the Playwright transport's frontend-actions.ts.
+    // Flex actions already return the { isSuccess, payload, error } envelope; UFA actions on
+    // ActionHelpers return raw results, normalized by normalizeUfa() into the same envelope.
+    const FLEX_ACTIONS_MODULE = 'sap/ui/rta/api/FrontendActionsAPI';
+    const UFA_ACTIONS_MODULE = 'sap/ui/joule/frontend/util/ActionHelpers';
+    const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions.';
+
     // Capture currentScript before any await. Deriving endpoints from its URL preserves mount prefixes.
     const script = document.currentScript;
     const token = script.dataset.token;
@@ -62,7 +69,7 @@
         }
     }
 
-    async function resolveApi(targetWindow, deadline) {
+    async function requireModule(targetWindow, moduleId, deadline) {
         while (typeof targetWindow.sap?.ui?.require !== 'function') {
             if (Date.now() >= deadline) {
                 throw new Error('Timed out waiting for UI5');
@@ -70,16 +77,13 @@
             await delay(API_POLL_INTERVAL_MS);
         }
         return await new Promise((resolve, reject) => {
-            const timer = setTimeout(
-                () => reject(new Error('Timed out loading FrontendActionsAPI')),
-                deadline - Date.now()
-            );
+            const timer = setTimeout(() => reject(new Error('Timed out loading ' + moduleId)), deadline - Date.now());
             targetWindow.sap.ui.require(
-                ['sap/ui/rta/api/FrontendActionsAPI'],
+                [moduleId],
                 (api) => {
                     clearTimeout(timer);
                     if (!api) {
-                        reject(new Error('FrontendActionsAPI module resolved to empty'));
+                        reject(new Error(moduleId + ' module resolved to empty'));
                         return;
                     }
                     resolve(api);
@@ -90,6 +94,21 @@
                 }
             );
         });
+    }
+
+    // Normalizes a raw UFA result into the Flex { isSuccess, payload, error } envelope
+    // (mirrors normalizeUfaResult() in the Playwright transport's frontend-actions.ts).
+    function normalizeUfa(raw) {
+        if (raw && typeof raw === 'object' && raw.success === false) {
+            const message =
+                (typeof raw.error === 'string' && raw.error) ||
+                (typeof raw.message === 'string' && raw.message) ||
+                'UFA action failed';
+            return { isSuccess: false, payload: null, error: { code: 'UFA_ACTION_FAILED', message } };
+        }
+        const isBareSuccess =
+            raw && typeof raw === 'object' && raw.success === true && Object.keys(raw).length === 1;
+        return { isSuccess: true, payload: isBareSuccess ? null : raw, error: null };
     }
 
     async function waitForEditorRta(targetWindow, deadline) {
@@ -162,7 +181,16 @@
         }
         const targetWindow = resolveTargetWindow(action.frameId);
         const deadline = Date.now() + ACTION_DEADLINE_MS;
-        const api = await resolveApi(targetWindow, deadline);
+        // UFA navigation (describe_ui / execute_page_action) needs no RuntimeAuthoring, so handle it first.
+        if (action.actionName.startsWith(UFA_PREFIX)) {
+            const method = action.actionName.slice(UFA_PREFIX.length);
+            const helpers = await requireModule(targetWindow, UFA_ACTIONS_MODULE, deadline);
+            if (typeof helpers?.[method] !== 'function') {
+                throw new Error('Frontend action not available: ' + action.actionName);
+            }
+            return normalizeUfa(await helpers[method](action.payload));
+        }
+        const api = await requireModule(targetWindow, FLEX_ACTIONS_MODULE, deadline);
         if (action.actionName === '__ready__' || action.actionName === 'com.sap.ui.flex.startRTA.v1') {
             await waitForAppLoaded(deadline);
             const started = await waitForEditorRta(targetWindow, deadline);
