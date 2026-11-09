@@ -14,6 +14,11 @@ on:
             old_version:
                 description: 'Old plugin version (e.g. 1.16.12)'
                 required: true
+            dry_run:
+                description: 'Dry run — skip push and PR creation'
+                required: false
+                type: boolean
+                default: true
 
 jobs:
     create-pr:
@@ -25,10 +30,12 @@ jobs:
               id: version
               env:
                   GH_TOKEN: ${{ github.token }}
+                  INPUT_OLD_VERSION: ${{ github.event.inputs.old_version }}
+                  INPUT_NEW_VERSION: ${{ github.event.inputs.new_version }}
               run: |
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-                    echo "old=${{ github.event.inputs.old_version }}" >> "$GITHUB_OUTPUT"
-                    echo "new=${{ github.event.inputs.new_version }}" >> "$GITHUB_OUTPUT"
+                    echo "old=${INPUT_OLD_VERSION}" >> "$GITHUB_OUTPUT"
+                    echo "new=${INPUT_NEW_VERSION}" >> "$GITHUB_OUTPUT"
                     echo "changed=true" >> "$GITHUB_OUTPUT"
                   else
                     PLUGIN_PATH="plugins-coding-agents/fiori/plugin.json"
@@ -118,7 +125,7 @@ jobs:
                   node ./eng/generate-marketplace.mjs
 
             - name: Commit, push, and open PR
-              if: steps.version.outputs.changed == 'true'
+              if: steps.version.outputs.changed == 'true' && inputs.dry_run != true
               env:
                   GH_TOKEN: ${{ steps.app-token.outputs.token }}
                   VERSION: ${{ steps.version.outputs.new }}
@@ -126,7 +133,7 @@ jobs:
                   BRANCH: ${{ steps.branch.outputs.branch }}
               run: |
                   cd awesome-copilot
-                  git add plugins/external.json .github/plugin/marketplace.json
+                  git add plugins/external.json .github/plugin/marketplace.json README.md
                   git commit -m "chore(sap-ux-fiori-tools): bump to ${VERSION}"
                   git push origin "$BRANCH"
 
@@ -137,8 +144,7 @@ jobs:
                     --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
                     --body "Automated version bump for \`sap-ux-fiori-tools\` from \`${OLD_VERSION}\` to \`${VERSION}\`.
 
-                  Source: https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori" \
-                  || echo "PR already exists or creation failed — check above for details."
+                  Source: https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori"
 
             - name: Post job summary
               if: steps.version.outputs.changed == 'true'
