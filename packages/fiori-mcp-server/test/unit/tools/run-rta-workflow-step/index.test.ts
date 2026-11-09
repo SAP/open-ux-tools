@@ -85,7 +85,13 @@ describe('runRtaWorkflowStep dispatcher', () => {
 
         test('forwards agentName from payload to startRta', async () => {
             mockStartRta.mockResolvedValue({ rtaStarted: true });
-            await runRtaWorkflowStep({ step: 'start', site: SITE, frameId: FRAME, appPath: '/tmp/app', payload: { agentName: 'Joule' } });
+            await runRtaWorkflowStep({
+                step: 'start',
+                site: SITE,
+                frameId: FRAME,
+                appPath: '/tmp/app',
+                payload: { agentName: 'Joule' }
+            });
             expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, 'Joule');
         });
 
