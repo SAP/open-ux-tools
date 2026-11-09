@@ -1,5 +1,15 @@
 # @sap-ux/generator-adp
 
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+- @sap-ux/inquirer-common 1.0.53 → 1.0.54
+- @sap-ux/adp-tooling 1.2.0 → 1.2.1
+
 ## 1.1.3
 
 ### Patch Changes
