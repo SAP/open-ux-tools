@@ -1,4 +1,5 @@
 import {
+    cleanup,
     describeUi,
     executeAction,
     executeUfaAction,
@@ -47,7 +48,8 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 // Record which project (and whether CF) is starting on this site, so
                 // session seeding is keyed by project and ABAP projects skip it entirely.
                 await registerSite(site, appPath);
-                const result = await startRta(defaultTransport, { site, frameId });
+                const agentName = optionalString(input.payload, 'agentName');
+                const result = await startRta(defaultTransport, { site, frameId }, agentName);
                 return { site, frameId, ...result };
             }
             case 'get_overlays': {
@@ -73,6 +75,11 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'save': {
                 const ok = await saveChanges(defaultTransport, { site, frameId });
                 return { saved: ok };
+            }
+            case 'cleanup': {
+                const reason = optionalString(input.payload, 'reason');
+                const { cleaned } = await cleanup(defaultTransport, { site, frameId }, reason);
+                return { cleaned };
             }
             case 'stop': {
                 await defaultTransport.disconnectSite(site);
