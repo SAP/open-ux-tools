@@ -33,7 +33,7 @@ jobs:
                   if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
                     # Find the commit that introduced this version
                     RELEASE_SHA=""
-                    for COMMIT in $(gh api "repos/SAP/open-ux-tools/commits?path=${PLUGIN_PATH}&per_page=50" --jq '.[].sha'); do
+                    for COMMIT in $(gh api "repos/SAP/open-ux-tools/commits?path=${PLUGIN_PATH}&per_page=50" --jq 'reverse | .[].sha'); do
                       VER=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${COMMIT}" --jq '.content' | base64 -d | jq -r .version)
                       if [ "$VER" = "$INPUT_NEW_VERSION" ]; then
                         RELEASE_SHA="$COMMIT"
@@ -147,14 +147,24 @@ jobs:
                   git commit -m "chore(sap-ux-fiori-tools): bump to ${VERSION}"
                   git push origin "$BRANCH" --force
 
-                  GH_TOKEN="$PR_TOKEN" gh pr create \
+                  EXISTING_PR=$(GH_TOKEN="$PR_TOKEN" gh pr list \
                     --repo github/awesome-copilot \
                     --head "IainSAP:${BRANCH}" \
-                    --base main \
-                    --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
-                    --body "Automated version bump for \`sap-ux-fiori-tools\` to \`${VERSION}\`.
+                    --state open \
+                    --json url \
+                    --jq '.[0].url')
+                  if [ -n "$EXISTING_PR" ]; then
+                    echo "PR already exists: $EXISTING_PR"
+                  else
+                    GH_TOKEN="$PR_TOKEN" gh pr create \
+                      --repo github/awesome-copilot \
+                      --head "IainSAP:${BRANCH}" \
+                      --base main \
+                      --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
+                      --body "Automated version bump for \`sap-ux-fiori-tools\` to \`${VERSION}\`.
 
                   Source: https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori"
+                  fi
 
             - name: Post job summary
               if: steps.version.outputs.changed == 'true'
