@@ -1192,6 +1192,45 @@ describe('migrate command', () => {
             );
         });
 
+        test('should end the run with a clear error and report it as cancelled when no input is available', async () => {
+            const { NoInputError } = await import('../../../src/cli/migrate/ask.js');
+            mockPrompt.mockReset();
+            mockPrompt.mockRejectedValueOnce(new NoInputError());
+
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await expect(command.parseAsync(getArgv(['migrate']))).rejects.toThrow('process.exit called');
+
+            expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('noInput'));
+            expect(mockMigrate).not.toHaveBeenCalled();
+            expect(getEvents().map((event) => event.eventName)).toEqual(['MIGRATION_COMPLETED']);
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.cancelled).toBe('true');
+        });
+
+        test('should not swallow a missing input while matching a BAS destination', async () => {
+            const { NoInputError } = await import('../../../src/cli/migrate/ask.js');
+            mockIsAppStudio.mockReturnValue(true);
+            mockGetProjectInfo.mockResolvedValue({
+                projectInfo: { destination: 'UNKNOWN', hostname: 'shared.example.test', sapClient: '' },
+                messages: []
+            });
+            mockListDestinations.mockResolvedValue({
+                A: { Name: 'A', Host: 'https://shared.example.test', ProxyType: 'OnPremise' },
+                B: { Name: 'B', Host: 'https://shared.example.test', ProxyType: 'OnPremise' }
+            });
+            mockPrompt.mockReset();
+            mockPrompt.mockRejectedValueOnce(new NoInputError());
+
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await expect(command.parseAsync(getArgv(['migrate', testProjectRoot]))).rejects.toThrow(
+                'process.exit called'
+            );
+
+            expect(mockMigrate).not.toHaveBeenCalled();
+            expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('noInput'));
+        });
+
         test('should report a cancelled run when a prompt is cancelled', async () => {
             mockPrompt.mockReset();
             mockPrompt.mockResolvedValueOnce({});

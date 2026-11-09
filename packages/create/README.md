@@ -36,7 +36,7 @@ The `migrate` command collects anonymous usage data to help improve SAP Fiori to
 |---|---|---|
 | `MIGRATION_BACKEND_LOAD` | After the backend system of the project was looked up | `ms` |
 | `MIGRATION_SUCCESS` / `MIGRATION_FAILED` | After the project was migrated | `success`, `floorPlan`, `ui5Theme`, `ui5Version`, `ODataVersion`, `numReuseLibs`, `type`, `messages`, `ms` |
-| `MIGRATION_COMPLETED` | At the end of every run, also if it was cancelled | `successfulMigrations`, `failedMigrations`, `cancelled`, `skipInstall`, `systemResolvedVia`, `forceOverride`, `npmInstallSuccess`, `ms` |
+| `MIGRATION_COMPLETED` | At the end of every run, also if it was cancelled or could not continue because a question could not be answered without a terminal | `successfulMigrations`, `failedMigrations`, `cancelled`, `skipInstall`, `systemResolvedVia`, `forceOverride`, `npmInstallSuccess`, `ms` |
 
 Besides these properties, the common SAP Fiori tools properties are added (for example the Node.js version, whether the internal features are enabled, and the template and deployment type read from the project).
 
