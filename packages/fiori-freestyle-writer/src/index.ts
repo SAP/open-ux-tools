@@ -9,7 +9,7 @@ import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaul
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { getTemplateVersionPath, processDestinationPath, copyTplAndRename } from './utils.js';
+import { getTemplateVersionPath, processDestinationPath, renameInStore } from './utils.js';
 import type { CopyOptionsWithIgnore } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests.js';
@@ -66,19 +66,17 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     const templateVersionPath = getTemplateVersionPath(ffApp);
 
     const copyOptions: CopyOptionsWithIgnore = { globOptions: { ignore, dot: true } };
-    copyTplAndRename(
-        fs,
+    fs.copyTpl(
         join(tmplPath, 'common', 'add', templateVersionPath),
         basePath,
         {
             ...appConfig,
             escapeFLPText
         },
-        processDestinationPath,
+        undefined,
         copyOptions
     );
-    copyTplAndRename(
-        fs,
+    fs.copyTpl(
         join(
             tmplPath,
             ffApp.template.type,
@@ -87,9 +85,13 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         ),
         basePath,
         ffApp,
-        processDestinationPath,
+        undefined,
         copyOptions
     );
+
+    // mem-fs-editor@12 removed copyTpl's processDestinationPath rename callback, so rename the
+    // rendered outputs afterwards (move = copy + delete, leaving `state: 'deleted'` tombstones).
+    renameInStore(fs, basePath, processDestinationPath);
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;

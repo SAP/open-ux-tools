@@ -4,7 +4,7 @@ import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getManifestContent } from './manifest/index.js';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, copyTplAndRename } from './project-utils.js';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, renameInStore } from './project-utils.js';
 import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types.js';
 import { getApplicationType } from '../source/index.js';
 import { writeKeyUserChanges } from '../base/change-utils.js';
@@ -92,15 +92,18 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
 
     // Copy the specified files to target project
     const toGitignore = (filePath: string): string => filePath.replace(/gitignore.tmpl/g, '.gitignore');
-    copyTplAndRename(fs, join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, toGitignore, {
+    fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true }
     });
-    copyTplAndRename(fs, join(tmplPath, '**/package.json'), join(basePath), fullConfig, toGitignore, {
+    fs.copyTpl(join(tmplPath, '**/package.json'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true }
     });
-    copyTplAndRename(fs, join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, toGitignore, {
+    fs.copyTpl(join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true }
     });
+    // mem-fs-editor@12 removed copyTpl's processDestinationPath rename callback, so rename the
+    // rendered outputs afterwards (move = copy + delete, leaving `state: 'deleted'` tombstones).
+    renameInStore(fs, join(basePath), toGitignore);
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {

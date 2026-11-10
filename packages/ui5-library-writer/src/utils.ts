@@ -1,6 +1,5 @@
 import { gte } from 'semver';
-import { join, relative, sep } from 'node:path';
-import { render } from 'ejs';
+import { join } from 'node:path';
 import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
@@ -15,49 +14,34 @@ export type GlobOptionsWithIgnore = NonNullable<NonNullable<Parameters<Editor['c
 };
 
 /**
- * `copy` options with a `globOptions` that accepts `ignore` (honoured at runtime, dropped from v12 types).
+ * `copyTpl` options with a `globOptions` that accepts `ignore` (honoured at runtime, dropped from v12 types).
  */
-export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copy']>[2]>, 'globOptions'> & {
+export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copyTpl']>[3]>, 'globOptions'> & {
     globOptions?: GlobOptionsWithIgnore;
 };
 
 /**
- * Copies template files while renaming them during the copy, mirroring what `copyTpl` does internally.
+ * Renames already-copied files in the mem-fs store by moving each one to its renamed path.
  *
- * `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` rename callback. Doing the rename
- * as a post-copy `fs.move()` would leave `state: 'deleted'` tombstones in the store (move = copy +
- * delete), which surface in `fs.dump()` snapshots. Instead this renders and renames in a single
- * `fs.copy()` pass via its `fileTransform` hook, so no tombstone is created. The rename callback
- * operates on the POSIX (forward-slash) destination path relative to `to`.
+ * `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` rename callback, so renaming is
+ * done after `copyTpl` has rendered the templates. `fs.move()` is a copy + delete, so each renamed
+ * source is left behind as a `state: 'deleted'` tombstone in the store (visible in `fs.dump()`).
  *
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @param {string | string[]} from - Source path(s) / glob(s) to copy.
- * @param {string} to - Destination base path.
- * @param {object} data - EJS template data (as `copyTpl`'s 3rd argument).
- * @param {(posixRelPath: string) => string} rename - Maps a POSIX, `to`-relative destination path to its renamed path.
- * @param {CopyOptionsWithIgnore} [copyOptions] - Optional copy options (e.g. `globOptions`).
+ * @param {string} basePath - The base path the rename callback operates relative to.
+ * @param {(relPath: string) => string} rename - Maps a `basePath`-relative path to its renamed path.
  * @returns {void}
  */
-export function copyTplAndRename(
-    fs: Editor,
-    from: string | string[],
-    to: string,
-    data: object,
-    rename: (posixRelPath: string) => string,
-    copyOptions?: CopyOptionsWithIgnore
-): void {
-    fs.copy(from, to, {
-        ...copyOptions,
-        transformData: data,
-        fileTransform({ destinationPath, sourcePath, contents }) {
-            const renderedPath = render(destinationPath, data, {});
-            // No binary template files exist in this package; text is always safe to render.
-            const processedContents = render(contents.toString(), data, { filename: sourcePath });
-            const strippedPath = renderedPath.endsWith('.ejs') ? renderedPath.replace(/\.ejs$/, '') : renderedPath;
-            const relPosix = relative(to, strippedPath).split(sep).join('/');
-            return { path: join(to, rename(relPosix)), contents: processedContents };
+export function renameInStore(fs: Editor, basePath: string, rename: (relPath: string) => string): void {
+    for (const [absPath, file] of Object.entries(fs.dump(basePath))) {
+        if (file.state === 'deleted') {
+            continue;
         }
-    });
+        const renamed = rename(absPath);
+        if (renamed !== absPath) {
+            fs.move(join(basePath, absPath), join(basePath, renamed));
+        }
+    }
 }
 
 /**

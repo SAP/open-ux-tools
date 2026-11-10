@@ -209,14 +209,14 @@ describe('Project Utils', () => {
         const projectPath = 'project';
 
         const writeFilesSpy = jest.fn();
-        const mockFs = { copy: writeFilesSpy, copyTpl: jest.fn(), dump: jest.fn(() => ({})), move: jest.fn() };
+        const mockFs = { copy: jest.fn(), copyTpl: writeFilesSpy, dump: jest.fn(() => ({})), move: jest.fn() };
 
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2].transformData).toEqual({
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
                 ...data,
                 typesPackage: '@sapui5/types',
                 typesVersion: '~1.136.0'
@@ -229,7 +229,7 @@ describe('Project Utils', () => {
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2].transformData).toEqual({
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
                 ...newData,
                 typesPackage: '@sapui5/types',
                 typesVersion: '~1.136.0'
@@ -238,7 +238,7 @@ describe('Project Utils', () => {
 
         it('should throw error when writing file fails', () => {
             const errMsg = 'Corrupted file.';
-            mockFs.copy.mockImplementation(() => {
+            mockFs.copyTpl.mockImplementation(() => {
                 throw new Error(errMsg);
             });
 

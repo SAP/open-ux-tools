@@ -7,7 +7,7 @@ import cloneDeep from 'lodash/cloneDeep.js';
 import type { UI5LibConfig } from './types.js';
 import { enableTypescript } from './options/index.js';
 import { mergeWithDefaults } from './data/index.js';
-import { getTemplateVersionPath, copyTplAndRename, type CopyOptionsWithIgnore } from './utils.js';
+import { getTemplateVersionPath, renameInStore, type CopyOptionsWithIgnore } from './utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -35,17 +35,16 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     const templateVersionPath = getTemplateVersionPath(reuseLib.frameworkVersion);
 
     const copyOptions: CopyOptionsWithIgnore = { globOptions: { dot: true, ignore } };
-    copyTplAndRename(
-        fs,
-        join(tmplPath, 'common', templateVersionPath, '**/*.*'),
-        basePath,
-        libInput,
-        (filePath) =>
-            filePath
-                .replace('baselibrary', libInput.libraryNamespaceURI)
-                .replace(/gitignore.tmpl/g, '.gitignore')
-                .replace(/karma.conf.tmpl/g, 'karma.conf.js'),
-        copyOptions
+    fs.copyTpl(join(tmplPath, 'common', templateVersionPath, '**/*.*'), basePath, libInput, undefined, copyOptions);
+
+    // mem-fs-editor@12 removed copyTpl's processDestinationPath rename callback, so rename the
+    // rendered outputs afterwards. move = copy + delete, which leaves `state: 'deleted'` tombstones
+    // for the source paths in the store (visible in fs.dump() snapshots).
+    renameInStore(fs, basePath, (filePath) =>
+        filePath
+            .replace('baselibrary', libInput.libraryNamespaceURI)
+            .replace(/gitignore\.tmpl$/, '.gitignore')
+            .replace(/karma\.conf\.tmpl$/, 'karma.conf.js')
     );
 
     if (reuseLib.typescript) {

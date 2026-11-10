@@ -14,6 +14,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "com.sap.myui5lib/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5lib/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
@@ -23,6 +27,10 @@ module.exports = function (config) {
     });
 };",
     "state": "modified",
+  },
+  "com.sap.myui5lib/karma.conf.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5lib/package.json": Object {
     "contents": "{
@@ -47,6 +55,66 @@ module.exports = function (config) {
 }
 ",
     "state": "modified",
+  },
+  "com.sap.myui5lib/src/baselibrary/.library": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/Example.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/ExampleRenderer.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/library.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/messagebundle.properties": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/base/Example.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/base/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_belize/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_belize_plus/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_fiori_3/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/src/baselibrary/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5lib/src/com/sap/myui5lib/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
@@ -353,6 +421,26 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
+  "com.sap.myui5lib/test/baselibrary/Example.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/test/baselibrary/Example.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/test/baselibrary/qunit/Example.qunit.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/test/baselibrary/qunit/testsuite.qunit.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5lib/test/baselibrary/qunit/testsuite.qunit.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5lib/test/com/sap/myui5lib/Example.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
@@ -563,6 +651,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "com.sap.myui5jslib121/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5jslib121/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
@@ -572,6 +664,10 @@ module.exports = function (config) {
     });
 };",
     "state": "modified",
+  },
+  "com.sap.myui5jslib121/karma.conf.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5jslib121/package.json": Object {
     "contents": "{
@@ -596,6 +692,50 @@ module.exports = function (config) {
 }
 ",
     "state": "modified",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/.library": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/Example.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/ExampleRenderer.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/library.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/messagebundle.properties": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/themes/base/Example.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/themes/base/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/themes/sap_fiori_3/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/src/baselibrary/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5jslib121/src/com/sap/myui5jslib121/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
@@ -875,6 +1015,26 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
+  "com.sap.myui5jslib121/test/baselibrary/Example.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/test/baselibrary/Example.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/test/baselibrary/qunit/Example.qunit.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/test/baselibrary/qunit/testsuite.qunit.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jslib121/test/baselibrary/qunit/testsuite.qunit.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5jslib121/test/com/sap/myui5jslib121/Example.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
@@ -1085,6 +1245,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "com.sap.myui5jsliblatest/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5jsliblatest/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
@@ -1094,6 +1258,10 @@ module.exports = function (config) {
     });
 };",
     "state": "modified",
+  },
+  "com.sap.myui5jsliblatest/karma.conf.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5jsliblatest/package.json": Object {
     "contents": "{
@@ -1118,6 +1286,50 @@ module.exports = function (config) {
 }
 ",
     "state": "modified",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/.library": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/Example.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/ExampleRenderer.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/library.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/messagebundle.properties": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/themes/base/Example.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/themes/base/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/themes/sap_fiori_3/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/src/baselibrary/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5jsliblatest/src/com/sap/myui5jsliblatest/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
@@ -1397,6 +1609,26 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
+  "com.sap.myui5jsliblatest/test/baselibrary/Example.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/test/baselibrary/Example.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/test/baselibrary/qunit/Example.qunit.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/test/baselibrary/qunit/testsuite.qunit.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5jsliblatest/test/baselibrary/qunit/testsuite.qunit.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5jsliblatest/test/com/sap/myui5jsliblatest/Example.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
@@ -1616,6 +1848,10 @@ export default [
 ",
     "state": "modified",
   },
+  "com.sap.myui5tslib113/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5tslib113/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
@@ -1625,6 +1861,10 @@ module.exports = function (config) {
     });
 };",
     "state": "modified",
+  },
+  "com.sap.myui5tslib113/karma.conf.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib113/package.json": Object {
     "contents": "{
@@ -1660,6 +1900,70 @@ module.exports = function (config) {
 }
 ",
     "state": "modified",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/.library": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/Example.gen.d.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/Example.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/ExampleRenderer.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/library.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/messagebundle.properties": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/base/Example.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/base/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_belize/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_belize_plus/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_fiori_3/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/src/baselibrary/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib113/src/com/sap/myui5tslib113/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
@@ -1979,6 +2283,26 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
+  "com.sap.myui5tslib113/test/baselibrary/Example.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/test/baselibrary/Example.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/test/baselibrary/qunit/Example.qunit.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/test/baselibrary/qunit/testsuite.qunit.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib113/test/baselibrary/qunit/testsuite.qunit.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5tslib113/test/com/sap/myui5tslib113/Example.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
@@ -2238,6 +2562,10 @@ export default [
 ",
     "state": "modified",
   },
+  "com.sap.myui5tslib/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5tslib/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
@@ -2247,6 +2575,10 @@ module.exports = function (config) {
     });
 };",
     "state": "modified",
+  },
+  "com.sap.myui5tslib/karma.conf.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib/package.json": Object {
     "contents": "{
@@ -2282,6 +2614,70 @@ module.exports = function (config) {
 }
 ",
     "state": "modified",
+  },
+  "com.sap.myui5tslib/src/baselibrary/.library": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/Example.gen.d.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/Example.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/ExampleRenderer.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/library.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/messagebundle.properties": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/base/Example.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/base/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_belize/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_belize_plus/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_fiori_3/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/src/baselibrary/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib/src/com/sap/myui5tslib/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
@@ -2601,6 +2997,26 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
+  "com.sap.myui5tslib/test/baselibrary/Example.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/test/baselibrary/Example.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/test/baselibrary/qunit/Example.qunit.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/test/baselibrary/qunit/testsuite.qunit.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib/test/baselibrary/qunit/testsuite.qunit.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5tslib/test/com/sap/myui5tslib/Example.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
@@ -2860,6 +3276,10 @@ export default [
 ",
     "state": "modified",
   },
+  "com.sap.myui5tslib121/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "com.sap.myui5tslib121/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
@@ -2869,6 +3289,10 @@ module.exports = function (config) {
     });
 };",
     "state": "modified",
+  },
+  "com.sap.myui5tslib121/karma.conf.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib121/package.json": Object {
     "contents": "{
@@ -2904,6 +3328,54 @@ module.exports = function (config) {
 }
 ",
     "state": "modified",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/.library": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/Example.gen.d.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/Example.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/ExampleRenderer.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/library.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/messagebundle.properties": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/themes/base/Example.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/themes/base/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/themes/sap_fiori_3/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/src/baselibrary/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib121/src/com/sap/myui5tslib121/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
@@ -3196,6 +3668,26 @@ ANY_TEXT=AnyText
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
 ",
     "state": "modified",
+  },
+  "com.sap.myui5tslib121/test/baselibrary/Example.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/test/baselibrary/Example.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/test/baselibrary/qunit/Example.qunit.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/test/baselibrary/qunit/testsuite.qunit.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "com.sap.myui5tslib121/test/baselibrary/qunit/testsuite.qunit.ts": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "com.sap.myui5tslib121/test/com/sap/myui5tslib121/Example.html": Object {
     "contents": "<!DOCTYPE html>
