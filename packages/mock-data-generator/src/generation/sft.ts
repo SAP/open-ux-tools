@@ -36,7 +36,7 @@ import { referencedValueLinks } from './referenced-values.js';
 import { generatedRowFlags } from './authored.js';
 import { contributorFillsUnreadably } from './rows.js';
 import { semanticValueIsValid } from './semantic-plan.js';
-import { errorMessage } from '../guards.js';
+import { cellText, errorMessage } from '../guards.js';
 import { compareCodePoints } from '../ordering.js';
 import { withReservedHost } from '../spec/reserved-domains.js';
 
@@ -364,6 +364,29 @@ function residualFields(
 }
 
 /**
+ * The fields of the service whose value lists read one of the related fields of an entity.
+ *
+ * @param graph the service schema
+ * @param entity the value-help entity
+ * @param relatedNames the field and the code fields whose text it is
+ * @returns the referencing fields as `EntitySet.Property`
+ */
+function valueListReferences(graph: SchemaGraph, entity: SchemaEntity, relatedNames: ReadonlySet<string>): Set<string> {
+    const referencedBy = new Set<string>();
+    for (const owner of graph.entities) {
+        for (const field of owner.properties) {
+            if (
+                field.links?.valueListCollection === entity.entitySetName &&
+                field.links.valueListMappings?.some(({ valueListProperty }) => relatedNames.has(valueListProperty))
+            ) {
+                referencedBy.add(`${owner.entitySetName}.${field.name}`);
+            }
+        }
+    }
+    return referencedBy;
+}
+
+/**
  * Preserve graph evidence for the model, including the consumers of reference captions.
  *
  * @param graph
@@ -379,17 +402,7 @@ function fieldRelationshipContext(
         property.name,
         ...entity.properties.filter((owner) => owner.links?.text === property.name).map(({ name }) => name)
     ]);
-    const referencedBy = new Set<string>();
-    for (const owner of graph.entities) {
-        for (const field of owner.properties) {
-            if (
-                field.links?.valueListCollection === entity.entitySetName &&
-                field.links.valueListMappings?.some(({ valueListProperty }) => relatedNames.has(valueListProperty))
-            ) {
-                referencedBy.add(`${owner.entitySetName}.${field.name}`);
-            }
-        }
-    }
+    const referencedBy = valueListReferences(graph, entity, relatedNames);
     const foreignKeyTargets = new Set<string>();
     for (const relationship of graph.relationships) {
         for (const mapping of relationship.mappings) {
@@ -667,7 +680,7 @@ function captionRows(
                     property !== undefined &&
                     validCandidate(property, caption, true) &&
                     code !== undefined &&
-                    normalizedText(String(code)) !== normalizedText(caption)
+                    normalizedText(cellText(code)) !== normalizedText(caption)
                 );
             });
         return usable ? [rowIndex] : [];
@@ -704,10 +717,10 @@ async function verifiedLinkedTextRows(
             resource: context.resource,
             entity: entity.name,
             field: text,
-            value: String(rows[rowIndex]?.[text.name]),
+            value: cellText(rows[rowIndex]?.[text.name]),
             linkedCode: {
                 property: owner.name,
-                value: String(rows[rowIndex]?.[owner.name] ?? fallbackRows[rowIndex]?.[owner.name])
+                value: cellText(rows[rowIndex]?.[owner.name] ?? fallbackRows[rowIndex]?.[owner.name])
             },
             textLink: { codeProperty: owner.name, textProperty: text.name },
             relatedResources: Object.freeze(
@@ -1228,10 +1241,10 @@ async function verifyGeneratedDomain(
             resource: resourceName,
             entity: entity.name,
             field: text,
-            value: String(row[text.name]),
+            value: cellText(row[text.name]),
             linkedCode: {
                 property: owner.name,
-                value: String(row[owner.name] ?? fallbackRows[rowIndex]?.[owner.name])
+                value: cellText(row[owner.name] ?? fallbackRows[rowIndex]?.[owner.name])
             },
             textLink: { codeProperty: owner.name, textProperty: text.name },
             relatedResources: Object.freeze(
@@ -1406,7 +1419,7 @@ function candidateFieldIsValid(
             entity.properties.some(
                 (owner) =>
                     owner.links?.text === name &&
-                    normalizedText(String(candidateRow[owner.name] ?? fallbackRow[owner.name])) ===
+                    normalizedText(cellText(candidateRow[owner.name] ?? fallbackRow[owner.name])) ===
                         normalizedText(value)
             ))
     ) {
@@ -1523,7 +1536,7 @@ function mergeCandidateRow(merge: SftRowMerge, rowIndex: number, fallbackRow: Mo
     if (Object.keys(candidateRow).length === 0) {
         merged.rowsWithoutCandidate += 1;
     }
-    const present = fields.filter(({ name }) => Object.prototype.hasOwnProperty.call(candidateRow, name));
+    const present = fields.filter(({ name }) => Object.hasOwn(candidateRow, name));
     // An instruction echo anywhere in the row means none of its values are trusted.
     if (
         present.some(({ name }) => {
@@ -1609,9 +1622,9 @@ function keepOneTextPerCode(attempt: SftResourceAttempt, merged: MergedSftRows):
             if (code === null || code === undefined) {
                 continue;
             }
-            const first = textByCode.get(String(code));
+            const first = textByCode.get(cellText(code));
             if (first === undefined) {
-                textByCode.set(String(code), row[text.name] as JsonValue);
+                textByCode.set(cellText(code), row[text.name] as JsonValue);
             } else if (row[text.name] !== first) {
                 merged.generatedRows[rowIndex] = Object.freeze({ ...row, [text.name]: first });
                 const accepted = merged.acceptedValues[rowIndex];
@@ -1722,60 +1735,21 @@ function renumbered(value: string, next: bigint): string {
  * @param state receives the accepted slots
  */
 function reuseModelValues(attempt: SftResourceAttempt, merged: MergedSftRows, state: SftRunState): void {
-    const { entity, fields, coupledGroups, linkedTexts, fallbackRows, modelRowCount } = attempt;
+    const { entity, coupledGroups, fallbackRows, modelRowCount } = attempt;
     if (modelRowCount >= fallbackRows.length) {
         return;
     }
     const grouped = new Set(coupledGroups.flat());
-    const units = [
-        ...coupledGroups,
-        ...fields.filter(({ name }) => !grouped.has(name)).map(({ name }) => [name])
-    ].filter((unit) => !linkedTexts.some(({ owner, text }) => unit.includes(text.name) && !unit.includes(owner.name)));
+    const units = reuseUnits(attempt, grouped);
     const sources = units.map((unit) =>
         merged.acceptedValues.filter((values) => values !== undefined && unit.every((name) => name in values))
     );
     const properties = new Map(entity.properties.map((property) => [property.name, property]));
-    // The next number of each form of each ungrouped identifier column, above every number of that form.
-    const nextNumber = new Map<string, Map<string, bigint>>();
-    for (const { name } of fields.filter((field) => !grouped.has(field.name))) {
-        const values = merged.acceptedValues.flatMap((accepted) =>
-            accepted !== undefined && name in accepted ? [accepted[name] as JsonValue] : []
-        );
-        if (distinctIdentifiers(properties.get(name), attempt.likelyRoles.get(name), values)) {
-            const next = new Map<string, bigint>();
-            for (const value of values.map(String)) {
-                const run = lastDigitRun(value);
-                const number = BigInt(run ? value.slice(run.start, run.end) : '0') + 1n;
-                const form = identifierForm(value);
-                next.set(form, number > (next.get(form) ?? 0n) ? number : (next.get(form) ?? 0n));
-            }
-            nextNumber.set(name, next);
-        }
-    }
-    const semanticKey = new Set(entity.semanticKey ?? []);
-    /**
-     * The value a reusing row writes for a field from a model row, or undefined to keep the row's own value.
-     *
-     * @param name the field
-     * @param source the model value
-     * @returns the value
-     */
-    const reusedValue = (name: string, source: JsonValue): JsonValue | undefined => {
-        const forms = nextNumber.get(name);
-        if (forms === undefined) {
-            return semanticKey.has(name) ? undefined : source;
-        }
-        const property = properties.get(name);
-        const role = attempt.likelyRoles.get(name);
-        const form = identifierForm(String(source));
-        const next = forms.get(form) ?? 1n;
-        const value = renumbered(String(source), next);
-        forms.set(form, next + 1n);
-        return property !== undefined &&
-            propertyValueIsValid(property, value) &&
-            (role === undefined || semanticValueIsValid(role, property, value))
-            ? value
-            : undefined;
+    const reuse: ModelValueReuse = {
+        attempt,
+        properties,
+        nextNumber: identifierNumbering(attempt, merged, grouped, properties),
+        semanticKey: new Set(entity.semanticKey ?? [])
     };
     for (const fallbackRow of fallbackRows.slice(modelRowCount)) {
         const rowIndex = merged.generatedRows.length;
@@ -1783,20 +1757,137 @@ function reuseModelValues(attempt: SftResourceAttempt, merged: MergedSftRows, st
         for (const [unitIndex, unit] of units.entries()) {
             const pool = sources[unitIndex] ?? [];
             const source = pool[(rowIndex + unitIndex) % Math.max(1, pool.length)];
-            if (!source) {
-                continue;
-            }
-            for (const name of unit) {
-                const value = reusedValue(name, source[name] as JsonValue);
-                if (value === undefined) {
-                    continue;
-                }
-                row[name] = value;
-                merged.acceptedByField.set(name, (merged.acceptedByField.get(name) ?? 0) + 1);
-                state.acceptedSlots += 1;
+            if (source) {
+                reuseUnitValues(reuse, unit, source, row, merged, state);
             }
         }
         merged.generatedRows.push(Object.freeze(row));
+    }
+}
+
+/** What reusing the model's values in the rows beyond the model's reads and updates. */
+interface ModelValueReuse {
+    attempt: SftResourceAttempt;
+    properties: ReadonlyMap<string, SchemaProperty>;
+    /** The next number of each form of each distinct identifier column; advanced as numbers are taken. */
+    nextNumber: ReadonlyMap<string, Map<string, bigint>>;
+    semanticKey: ReadonlySet<string>;
+}
+
+/**
+ * The units whose values are reused together: each coupled group, and each other field alone. A unit holding the
+ * text of a code without the code is left out, so a text never leaves its code.
+ *
+ * @param attempt the resource attempt
+ * @param grouped the fields of the coupled groups
+ * @returns the units, coupled groups first
+ */
+function reuseUnits(attempt: SftResourceAttempt, grouped: ReadonlySet<string>): ReadonlyArray<ReadonlyArray<string>> {
+    const { fields, coupledGroups, linkedTexts } = attempt;
+    return [...coupledGroups, ...fields.filter(({ name }) => !grouped.has(name)).map(({ name }) => [name])].filter(
+        (unit) => !linkedTexts.some(({ owner, text }) => unit.includes(text.name) && !unit.includes(owner.name))
+    );
+}
+
+/**
+ * The next number of each form of each ungrouped identifier column, above every number of that form.
+ *
+ * @param attempt the resource attempt
+ * @param merged the merged model rows
+ * @param grouped the fields of the coupled groups
+ * @param properties the entity's properties by name
+ * @returns the next numbers by form, by identifier column
+ */
+function identifierNumbering(
+    attempt: SftResourceAttempt,
+    merged: MergedSftRows,
+    grouped: ReadonlySet<string>,
+    properties: ReadonlyMap<string, SchemaProperty>
+): Map<string, Map<string, bigint>> {
+    const nextNumber = new Map<string, Map<string, bigint>>();
+    for (const { name } of attempt.fields.filter((field) => !grouped.has(field.name))) {
+        const values = merged.acceptedValues.flatMap((accepted) =>
+            accepted !== undefined && name in accepted ? [accepted[name] as JsonValue] : []
+        );
+        if (distinctIdentifiers(properties.get(name), attempt.likelyRoles.get(name), values)) {
+            nextNumber.set(name, nextNumbersByForm(values.map(String)));
+        }
+    }
+    return nextNumber;
+}
+
+/**
+ * The number above the highest of each identifier form.
+ *
+ * @param values the identifiers
+ * @returns the next number by form
+ */
+function nextNumbersByForm(values: ReadonlyArray<string>): Map<string, bigint> {
+    const next = new Map<string, bigint>();
+    for (const value of values) {
+        const run = lastDigitRun(value);
+        const number = BigInt(run ? value.slice(run.start, run.end) : '0') + 1n;
+        const form = identifierForm(value);
+        next.set(form, number > (next.get(form) ?? 0n) ? number : (next.get(form) ?? 0n));
+    }
+    return next;
+}
+
+/**
+ * The value a reusing row writes for a field from a model row, or undefined to keep the row's own value: a
+ * distinct identifier takes the next number of its form, a semantic-key member keeps the row's value, and any
+ * other field takes the model value.
+ *
+ * @param reuse the reuse state
+ * @param name the field
+ * @param source the model value
+ * @returns the value
+ */
+function reusedValue(reuse: ModelValueReuse, name: string, source: JsonValue): JsonValue | undefined {
+    const forms = reuse.nextNumber.get(name);
+    if (forms === undefined) {
+        return reuse.semanticKey.has(name) ? undefined : source;
+    }
+    const property = reuse.properties.get(name);
+    const role = reuse.attempt.likelyRoles.get(name);
+    const sourceText = cellText(source);
+    const form = identifierForm(sourceText);
+    const next = forms.get(form) ?? 1n;
+    const value = renumbered(sourceText, next);
+    forms.set(form, next + 1n);
+    return property !== undefined &&
+        propertyValueIsValid(property, value) &&
+        (role === undefined || semanticValueIsValid(role, property, value))
+        ? value
+        : undefined;
+}
+
+/**
+ * Write one unit's reused values from a model row into a reusing row, counting each as the model's.
+ *
+ * @param reuse the reuse state
+ * @param unit the unit's fields
+ * @param source the model row's accepted values
+ * @param row the reusing row; written in place
+ * @param merged receives the accepted counts
+ * @param state receives the accepted slots
+ */
+function reuseUnitValues(
+    reuse: ModelValueReuse,
+    unit: ReadonlyArray<string>,
+    source: Readonly<Record<string, JsonValue>>,
+    row: Record<string, JsonValue>,
+    merged: MergedSftRows,
+    state: SftRunState
+): void {
+    for (const name of unit) {
+        const value = reusedValue(reuse, name, source[name] as JsonValue);
+        if (value === undefined) {
+            continue;
+        }
+        row[name] = value;
+        merged.acceptedByField.set(name, (merged.acceptedByField.get(name) ?? 0) + 1);
+        state.acceptedSlots += 1;
     }
 }
 

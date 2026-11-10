@@ -89,19 +89,42 @@ function authoritativeRows(
     return resources[resource] ?? [];
 }
 
+/** A generated value help that the protected tuples of its owner rows extend, and how. */
+interface ValueListDomainExtension {
+    /** The value-help rows, extended in place. */
+    domain: Array<Record<string, JsonValue>>;
+    targetEntity: SchemaEntity;
+    parameters: ReadonlyArray<SchemaValueListParameter>;
+    ownerProperties: ReadonlyMap<string, SchemaProperty>;
+    /** Whether an owner field's value must be kept, so the value help must hold it. */
+    isProtected: (property: SchemaProperty) => boolean;
+    classifications: ReadonlyMap<string, SemanticClassification>;
+    maxRows: number;
+    /** Whether the domain's descriptive values were verified for their codes. */
+    relevanceVerifiedDomain: boolean;
+    preservesRelationships: (row: MockDataRow) => boolean;
+    reportConflict: () => void;
+}
+
+/** One value-help field and the value an owner row assigns to it. */
+interface AssignedValue {
+    property: string;
+    value: JsonValue | undefined;
+}
+
+/**
+ * Extend a generated value help with the protected tuples of its owner rows that it lacks. A tuple that cannot be
+ * added, for want of capacity, a valid row or verified texts, is reported as a conflict.
+ *
+ * @param ownerRows the generated owner rows
+ * @param extension the value help and how it may grow
+ * @returns true when a row was added
+ */
 function extendGeneratedValueListDomain(
     ownerRows: ReadonlyArray<MockDataRow>,
-    domain: Array<Record<string, JsonValue>>,
-    targetEntity: SchemaEntity,
-    parameters: ReadonlyArray<SchemaValueListParameter>,
-    ownerProperties: ReadonlyMap<string, SchemaProperty>,
-    isProtected: (property: SchemaProperty) => boolean,
-    classifications: ReadonlyMap<string, SemanticClassification>,
-    maxRows: number,
-    relevanceVerifiedDomain: boolean,
-    preservesRelationships: (row: MockDataRow) => boolean,
-    reportConflict: () => void
+    extension: ValueListDomainExtension
 ): boolean {
+    const { domain, targetEntity, parameters, ownerProperties, isProtected } = extension;
     const targetProperties = new Map(targetEntity.properties.map((property) => [property.name, property]));
     const assignments = parameters.filter(({ direction, localProperty, valueListProperty }) => {
         if (
@@ -122,7 +145,7 @@ function extendGeneratedValueListDomain(
     const signatures = new Set(domain.map(signature));
     let changed = false;
     for (const [rowIndex, ownerRow] of ownerRows.entries()) {
-        const values = assignments.map(({ localProperty, valueListProperty }) => ({
+        const values: AssignedValue[] = assignments.map(({ localProperty, valueListProperty }) => ({
             property: valueListProperty as string,
             value: ownerRow[localProperty as string]
         }));
@@ -140,43 +163,64 @@ function extendGeneratedValueListDomain(
         // A descriptive value was verified for its original code only. Reusing it with a protected,
         // previously unseen code would create an unverified pair, so the tuple is reported as a
         // conflict, as when the domain is full, instead of failing the whole service.
-        if (relevanceVerifiedDomain && values.some(({ property }) => targetProperties.get(property)?.links?.text)) {
-            reportConflict();
+        if (
+            (extension.relevanceVerifiedDomain &&
+                values.some(({ property }) => targetProperties.get(property)?.links?.text)) ||
+            domain.length >= extension.maxRows
+        ) {
+            extension.reportConflict();
             continue;
         }
-        if (domain.length >= maxRows) {
-            reportConflict();
-            continue;
-        }
-        let added = false;
-        for (let offset = 0; offset < domain.length; offset += 1) {
-            const base = domain[(rowIndex + offset) % domain.length];
-            const clone: Record<string, JsonValue> = { ...base };
-            values.forEach(({ property, value }) => {
-                clone[property] = value as JsonValue;
-            });
-            const semanticallyValid = targetEntity.properties.every((property) => {
-                const role = classifications.get(semanticPropertyKey(targetEntity.entitySetName, property.name))?.role;
-                return (
-                    Object.prototype.hasOwnProperty.call(clone, property.name) &&
-                    propertyValueIsValid(property, clone[property.name]) &&
-                    (!role || role === 'unknown' || semanticValueIsValid(role, property, clone[property.name]))
-                );
-            });
-            const cloneSignature = signature(clone);
-            if (!signatures.has(cloneSignature) && semanticallyValid && preservesRelationships(clone)) {
-                domain.push(clone);
-                signatures.add(cloneSignature);
-                changed = true;
-                added = true;
-                break;
-            }
-        }
-        if (!added) {
-            reportConflict();
+        if (addAssignedTuple(extension, values, rowIndex, { signature, signatures })) {
+            changed = true;
+        } else {
+            extension.reportConflict();
         }
     }
     return changed;
+}
+
+/**
+ * Add a value-help row holding the assigned values: a copy of an existing row, tried from the owner row's position
+ * on, that is valid for every field and role, takes a new key and keeps every relationship.
+ *
+ * @param extension the value help and how it may grow
+ * @param values the values the owner row assigns
+ * @param rowIndex the owner row, which picks the first row to copy
+ * @param keys the key signature of a row and the signatures the value help holds, extended in place
+ * @param keys.signature the key signature of a row
+ * @param keys.signatures the signatures the value help holds
+ * @returns true when a row was added
+ */
+function addAssignedTuple(
+    extension: ValueListDomainExtension,
+    values: ReadonlyArray<AssignedValue>,
+    rowIndex: number,
+    keys: { signature: (row: MockDataRow) => string; signatures: Set<string> }
+): boolean {
+    const { domain, targetEntity, classifications } = extension;
+    for (let offset = 0; offset < domain.length; offset += 1) {
+        const base = domain[(rowIndex + offset) % domain.length];
+        const clone: Record<string, JsonValue> = { ...base };
+        values.forEach(({ property, value }) => {
+            clone[property] = value as JsonValue;
+        });
+        const semanticallyValid = targetEntity.properties.every((property) => {
+            const role = classifications.get(semanticPropertyKey(targetEntity.entitySetName, property.name))?.role;
+            return (
+                Object.hasOwn(clone, property.name) &&
+                propertyValueIsValid(property, clone[property.name]) &&
+                (!role || role === 'unknown' || semanticValueIsValid(role, property, clone[property.name]))
+            );
+        });
+        const cloneSignature = keys.signature(clone);
+        if (!keys.signatures.has(cloneSignature) && semanticallyValid && extension.preservesRelationships(clone)) {
+            domain.push(clone);
+            keys.signatures.add(cloneSignature);
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -245,7 +289,7 @@ function valueHelpRowIsValid(
     return targetEntity.properties.every((property) => {
         const role = classifications.get(semanticPropertyKey(targetEntity.entitySetName, property.name))?.role;
         return (
-            Object.prototype.hasOwnProperty.call(row, property.name) &&
+            Object.hasOwn(row, property.name) &&
             propertyValueIsValid(property, row[property.name]) &&
             (!role || role === 'unknown' || semanticValueIsValid(role, property, row[property.name]))
         );
@@ -277,6 +321,87 @@ function cloneFitsOwner(
             (fixed === undefined || sameValue(value, fixed))
         );
     });
+}
+
+/** The members of a value list grouped by owner field, and the values the owner row fixes or offers for them. */
+interface OwnerTupleGroups {
+    groups: ReadonlyArray<ReadonlyArray<ValueListTupleMember>>;
+    /** The value an owner field must keep, if any. */
+    fixedValue: (member: ValueListTupleMember) => JsonValue | undefined;
+    /** Whether a value is valid for an owner field. */
+    fits: (local: SchemaProperty, value: JsonValue | undefined) => boolean;
+    /** The owner row's own value of a group's field, when it fits the field. */
+    ownerValue: (group: ReadonlyArray<ValueListTupleMember>) => JsonValue | undefined;
+}
+
+/**
+ * Write one value into every value-help field a group of members fills.
+ *
+ * @param clone the new value-help row
+ * @param group members that fill one owner field
+ * @param value the value
+ */
+function assignGroupValue(
+    clone: Record<string, JsonValue>,
+    group: ReadonlyArray<ValueListTupleMember>,
+    value: JsonValue
+): void {
+    group.forEach(({ valueListProperty }) => {
+        clone[valueListProperty] = value;
+    });
+}
+
+/**
+ * Give every owner field of a new value-help row one value: the fixed value, else the copied row's own when it fits,
+ * else the owner row's.
+ *
+ * @param clone the new value-help row, updated in place
+ * @param tuple the member groups and their values
+ * @returns false when a field can take none of them
+ */
+function completeOwnerGroups(clone: Record<string, JsonValue>, tuple: OwnerTupleGroups): boolean {
+    const { groups, fixedValue, fits, ownerValue } = tuple;
+    for (const group of groups) {
+        const fixed = fixedValue(group[0]);
+        const values = group.map((member) => memberValue(member, clone));
+        const representable =
+            values[0] !== undefined &&
+            fits(group[0].localProperty, values[0]) &&
+            values.every((value) => sameValue(value, values[0]));
+        const value = fixed ?? (representable ? undefined : ownerValue(group));
+        if (fixed === undefined && !representable && value === undefined) {
+            return false;
+        }
+        if (value !== undefined) {
+            assignGroupValue(clone, group, value);
+        }
+    }
+    return true;
+}
+
+/**
+ * Give a new value-help row whose key repeats an existing row the owner row's own values of the key fields that are
+ * not fixed, so it takes a key of its own.
+ *
+ * @param clone the new value-help row, updated in place
+ * @param tuple the member groups and their values
+ * @param targetProperties the value-help fields by name
+ */
+function keepOwnerKeyValues(
+    clone: Record<string, JsonValue>,
+    tuple: OwnerTupleGroups,
+    targetProperties: ReadonlyMap<string, SchemaProperty>
+): void {
+    for (const group of tuple.groups) {
+        const value = tuple.ownerValue(group);
+        if (
+            value !== undefined &&
+            tuple.fixedValue(group[0]) === undefined &&
+            group.some(({ display, valueListProperty }) => !display && targetProperties.get(valueListProperty)?.isKey)
+        ) {
+            assignGroupValue(clone, group, value);
+        }
+    }
 }
 
 /**
@@ -315,14 +440,7 @@ function extendValueListForRow(extension: RowExtension): Record<string, JsonValu
         const value = ownerRow[local.name];
         return value !== undefined && fits(local, value) ? value : undefined;
     };
-    const assign = (
-        clone: Record<string, JsonValue>,
-        group: ReadonlyArray<ValueListTupleMember>,
-        value: JsonValue
-    ): void =>
-        group.forEach(({ valueListProperty }) => {
-            clone[valueListProperty] = value;
-        });
+    const tuple: OwnerTupleGroups = { groups, fixedValue, fits, ownerValue };
     for (let offset = 0; offset < domain.length; offset += 1) {
         const clone: Record<string, JsonValue> = { ...domain[(rowIndex + offset) % domain.length] };
         parameters.forEach(({ constant, valueListProperty }) => {
@@ -330,39 +448,11 @@ function extendValueListForRow(extension: RowExtension): Record<string, JsonValu
                 clone[valueListProperty] = constant;
             }
         });
-        let complete = true;
-        for (const group of groups) {
-            const fixed = fixedValue(group[0]);
-            const values = group.map((member) => memberValue(member, clone));
-            const representable =
-                values[0] !== undefined &&
-                fits(group[0].localProperty, values[0]) &&
-                values.every((value) => sameValue(value, values[0]));
-            const value = fixed ?? (representable ? undefined : ownerValue(group));
-            if (fixed === undefined && !representable && value === undefined) {
-                complete = false;
-                break;
-            }
-            if (value !== undefined) {
-                assign(clone, group, value);
-            }
-        }
-        if (!complete) {
+        if (!completeOwnerGroups(clone, tuple)) {
             continue;
         }
         if (signatures.has(signature(clone))) {
-            for (const group of groups) {
-                const value = ownerValue(group);
-                if (
-                    value !== undefined &&
-                    fixedValue(group[0]) === undefined &&
-                    group.some(
-                        ({ display, valueListProperty }) => !display && targetProperties.get(valueListProperty)?.isKey
-                    )
-                ) {
-                    assign(clone, group, value);
-                }
-            }
+            keepOwnerKeyValues(clone, tuple, targetProperties);
         }
         if (
             valueHelpRowIsValid(targetEntity, clone, extension.classifications) &&
@@ -426,46 +516,80 @@ function solveFailedRowsJointly(
     let changed = false;
     const unresolvedFailures: Array<readonly [string, string]> = [];
     for (const [rowIndex, failures] of failedRows) {
-        const row = rows[rowIndex];
-        const unresolved = new Map(failures);
-        for (const target of failures.keys()) {
-            const failed = lists.find((list) => list.target === target);
-            if (!failed || !unresolved.has(target)) {
-                continue;
-            }
-            const component = sharingComponent(failed, lists).filter((list) => context.domain(list) !== undefined);
-            const outcome = solveTupleChoice(
-                component.map((list) => ({
-                    id: list.target,
-                    members: list.members,
-                    candidates: (context.domain(list) ?? []).filter((candidate) =>
-                        context.adoptable(list, row, candidate)
-                    )
-                })),
-                rowIndex
-            );
-            if (outcome.status !== 'solved') {
-                continue;
-            }
-            const owners = new Map<string, string>();
-            for (const list of component) {
-                for (const { localProperty } of list.members) {
-                    if (!owners.has(localProperty.name)) {
-                        owners.set(localProperty.name, list.target);
-                    }
-                }
-            }
-            for (const list of component) {
-                const chosen = outcome.choices.get(list.target);
-                if (chosen && context.adopt(rowIndex, row, list, chosen, owners)) {
-                    changed = true;
-                }
-                unresolved.delete(list.target);
-            }
+        const outcome = solveRowJointly(rowIndex, rows[rowIndex], failures, lists, context);
+        if (outcome.changed) {
+            changed = true;
         }
-        unresolved.forEach((message, target) => unresolvedFailures.push([target, message]));
+        outcome.unresolved.forEach((message, target) => unresolvedFailures.push([target, message]));
     }
     return { changed, unresolved: unresolvedFailures };
+}
+
+/**
+ * The value list that first determines each owner field of a connected component.
+ *
+ * @param component connected value lists
+ * @returns the owning list's target by owner field name
+ */
+function firstFieldOwners(component: ReadonlyArray<ProjectionList>): Map<string, string> {
+    const owners = new Map<string, string>();
+    for (const list of component) {
+        for (const { localProperty } of list.members) {
+            if (!owners.has(localProperty.name)) {
+                owners.set(localProperty.name, list.target);
+            }
+        }
+    }
+    return owners;
+}
+
+/**
+ * Solve the failed value lists of one owner row jointly with the lists connected to them (see
+ * solveFailedRowsJointly).
+ *
+ * @param rowIndex the owner row index
+ * @param row the owner row (mutated)
+ * @param failures failure message per failed value list of the row
+ * @param lists value lists of the owner entity
+ * @param context domain lookup, adoptability and adoption
+ * @returns whether the row changed, and the failures that remain
+ */
+function solveRowJointly(
+    rowIndex: number,
+    row: Record<string, JsonValue>,
+    failures: ReadonlyMap<string, string>,
+    lists: ReadonlyArray<ProjectionList>,
+    context: JointSolvingContext
+): { changed: boolean; unresolved: ReadonlyMap<string, string> } {
+    let changed = false;
+    const unresolved = new Map(failures);
+    for (const target of failures.keys()) {
+        const failed = lists.find((list) => list.target === target);
+        if (!failed || !unresolved.has(target)) {
+            continue;
+        }
+        const component = sharingComponent(failed, lists).filter((list) => context.domain(list) !== undefined);
+        const outcome = solveTupleChoice(
+            component.map((list) => ({
+                id: list.target,
+                members: list.members,
+                candidates: (context.domain(list) ?? []).filter((candidate) => context.adoptable(list, row, candidate))
+            })),
+            rowIndex
+        );
+        if (outcome.status !== 'solved') {
+            continue;
+        }
+        const owners = firstFieldOwners(component);
+        for (const list of component) {
+            const chosen = outcome.choices.get(list.target);
+            if (chosen && context.adopt(rowIndex, row, list, chosen, owners)) {
+                changed = true;
+            }
+            unresolved.delete(list.target);
+        }
+    }
+    return { changed, unresolved };
 }
 
 /**
@@ -877,6 +1001,51 @@ interface TupleAdoption {
 }
 
 /**
+ * Write one member value of a selected tuple into an owner row, unless the field is protected or bound by another
+ * value list, and record the binding and projection it establishes.
+ *
+ * @param state projection state
+ * @param owner owner entity
+ * @param adoption the owner row and the tuple chosen for it
+ * @param write the member, its value in the tuple (which fits the owner field) and the row's bindings
+ * @param write.member the tuple member
+ * @param write.value the member's value in the tuple
+ * @param write.bindings the projected fields of the owner row, updated in place
+ * @returns true when the row changed
+ */
+function adoptMember(
+    state: ProjectionState,
+    owner: OwnerProjection,
+    adoption: TupleAdoption,
+    write: { member: ValueListTupleMember; value: JsonValue; bindings: Map<string, ProjectedBinding> }
+): boolean {
+    const { row, list, jointOwners } = adoption;
+    const { member, value, bindings } = write;
+    const entitySet = owner.entity.entitySetName;
+    const local = member.localProperty;
+    let rowChanged = false;
+    const binding = bindings.get(local.name);
+    const ownedElsewhere = jointOwners === undefined && binding !== undefined && binding.owner !== list.target;
+    if (!owner.isProtected(local) && !ownedElsewhere && !sameValue(row[local.name], value)) {
+        row[local.name] = value;
+        rowChanged = true;
+        if (member.direction === 'In' || member.display) {
+            markProjected(state, entitySet, local.name, list.target);
+        }
+    }
+    if (!member.display && member.direction !== 'In') {
+        markProjected(state, entitySet, local.name, list.target);
+    }
+    if (!ownedElsewhere) {
+        bindings.set(local.name, {
+            value: row[local.name],
+            owner: jointOwners?.get(local.name) ?? list.target
+        });
+    }
+    return rowChanged;
+}
+
+/**
  * Write a selected tuple into an owner row and record the bindings it establishes.
  *
  * @param state projection state
@@ -885,34 +1054,19 @@ interface TupleAdoption {
  * @returns true when the row changed
  */
 function adoptTuple(state: ProjectionState, owner: OwnerProjection, adoption: TupleAdoption): boolean {
-    const { rowIndex, row, list, selected, jointOwners } = adoption;
+    const { rowIndex, list, selected } = adoption;
     const entitySet = owner.entity.entitySetName;
     let rowChanged = false;
     const key = bindingKey(entitySet, rowIndex);
     const bindings = state.projectedBindings.get(key) ?? new Map<string, ProjectedBinding>();
     for (const member of list.members) {
-        const local = member.localProperty;
         const value = memberValue(member, selected);
-        if (value === undefined || !owner.fits(local, value)) {
-            continue;
-        }
-        const binding = bindings.get(local.name);
-        const ownedElsewhere = jointOwners === undefined && binding !== undefined && binding.owner !== list.target;
-        if (!owner.isProtected(local) && !ownedElsewhere && !sameValue(row[local.name], value)) {
-            row[local.name] = value;
+        if (
+            value !== undefined &&
+            owner.fits(member.localProperty, value) &&
+            adoptMember(state, owner, adoption, { member, value, bindings })
+        ) {
             rowChanged = true;
-            if (member.direction === 'In' || member.display) {
-                markProjected(state, entitySet, local.name, list.target);
-            }
-        }
-        if (!member.display && member.direction !== 'In') {
-            markProjected(state, entitySet, local.name, list.target);
-        }
-        if (!ownedElsewhere) {
-            bindings.set(local.name, {
-                value: row[local.name],
-                owner: jointOwners?.get(local.name) ?? list.target
-            });
         }
     }
     if (bindings.size > 0) {
@@ -1006,24 +1160,26 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
         // shape no generated row.
         const extended = extendGeneratedValueListDomain(
             owner.rows.filter((_, index) => owner.generated[index]),
-            state.generated[collection] ?? [],
-            context.targetEntity,
-            parameters,
-            owner.properties,
-            (local) =>
-                local.isKey ||
-                owner.relationshipProtected.has(local.name) ||
-                projectedByOther(state, entitySet, local.name, target),
-            classifications,
-            maxRows,
-            relevanceVerifiedResources.has(collection),
-            preservesRelationships,
-            () =>
-                reportConflict(
-                    state,
-                    target,
-                    'Generated value-list domain capacity or constraints prevent preserving all protected tuples.'
-                )
+            {
+                domain: state.generated[collection] ?? [],
+                targetEntity: context.targetEntity,
+                parameters,
+                ownerProperties: owner.properties,
+                isProtected: (local) =>
+                    local.isKey ||
+                    owner.relationshipProtected.has(local.name) ||
+                    projectedByOther(state, entitySet, local.name, target),
+                classifications,
+                maxRows,
+                relevanceVerifiedDomain: relevanceVerifiedResources.has(collection),
+                preservesRelationships,
+                reportConflict: () =>
+                    reportConflict(
+                        state,
+                        target,
+                        'Generated value-list domain capacity or constraints prevent preserving all protected tuples.'
+                    )
+            }
         );
         if (extended) {
             changed = true;
@@ -1048,9 +1204,23 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
         maxRows,
         preservesRelationships
     };
+    return projectOwnerRows(state, owner, projection) || changed;
+}
+
+/**
+ * Choose a tuple of a value list for every generated owner row; the caller's rows are published as written, and
+ * a tuple of theirs that the value help does not list is only reported.
+ *
+ * @param state projection state
+ * @param owner owner entity (its rows and failed rows are updated)
+ * @param projection the value list and its domain
+ * @returns true when any owner or value-help row changed
+ */
+function projectOwnerRows(state: ProjectionState, owner: OwnerProjection, projection: ListProjection): boolean {
+    const { list } = projection;
+    let changed = false;
     for (const [rowIndex, row] of owner.rows.entries()) {
         if (!owner.generated[rowIndex]) {
-            // The caller's row is published as written; a tuple the value help does not list is only reported.
             if (!suppliedTupleIsListed(list, row, projection.domain)) {
                 reportConflict(
                     state,
@@ -1482,6 +1652,128 @@ function countValue(property: SchemaProperty, count: number): JsonValue | undefi
     return propertyValueIsValid(property, value) ? value : undefined;
 }
 
+/** What deriving count and presence fields from related rows reads. */
+interface FieldDerivation {
+    graph: SchemaGraph;
+    resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
+    existingData: Readonly<Record<string, ExistingMockData>>;
+    classifications: ReadonlyMap<string, SemanticClassification>;
+    /** `EntitySet\u0000Property` of the fields a relationship binds. */
+    bound: ReadonlySet<string>;
+}
+
+/**
+ * Whether a field holds a count or a presence flag of related rows that may be derived from them. A field governed
+ * by a value list, a key or relationship value, a draft key, a field planned with a format (such as a phone
+ * number) and a value-help column copied by value-list owners are never derived.
+ *
+ * @param derivation the schema, rows and planned roles
+ * @param parent the entity of the field
+ * @param property the field
+ * @returns the kind of derived field, or undefined when the field is not derived
+ */
+function derivedFieldKind(
+    derivation: FieldDerivation,
+    parent: SchemaEntity,
+    property: SchemaProperty
+): { isCount: boolean; isPresence: boolean } | undefined {
+    // A field governed by a value list takes its values from that list's tuples; a count
+    // derived from its name would replace a projected tuple value with one outside the domain.
+    if (isValueListField(parent, property)) {
+        return undefined;
+    }
+    const propertyTokens = new Set(rawTokens(property.name));
+    const isCount =
+        (property.primitiveType === 'int' ||
+            property.primitiveType === 'decimal' ||
+            property.primitiveType === 'string') &&
+        (propertyTokens.has('count') || (propertyTokens.has('number') && propertyTokens.has('of')));
+    const isPresence = property.primitiveType === 'bool' && propertyTokens.has('has');
+    // A key or relationship value identifies rows, and a field planned with a format such as a
+    // phone number cannot hold a count; a derived value must not replace either. A value-help
+    // column copied by value-list owners is a tuple member, not a derived count either.
+    const role = derivation.classifications.get(semanticPropertyKey(parent.entitySetName, property.name))?.role;
+    const validator = role ? semanticRoleDefinition(role)?.validator : undefined;
+    if (
+        (!isCount && !isPresence) ||
+        property.isKey ||
+        DRAFT_KEY_PROPERTY_NAMES.has(property.name.toLowerCase()) ||
+        derivation.bound.has(`${parent.entitySetName}\u0000${property.name}`) ||
+        (validator !== undefined && validator !== 'structural') ||
+        isValueListDomainColumn(derivation.graph, parent, property)
+    ) {
+        return undefined;
+    }
+    return { isCount, isPresence };
+}
+
+/**
+ * Set a count that no modeled child domain backs to zero in every row, and the presence flags describing the same
+ * children to false.
+ *
+ * @param parent the entity of the count
+ * @param property the count field
+ * @param parentRows the entity's rows (mutated)
+ */
+function zeroUnbackedCount(
+    parent: SchemaEntity,
+    property: SchemaProperty,
+    parentRows: Array<Record<string, JsonValue>>
+): void {
+    const zero = countValue(property, 0);
+    const descriptor = tokens(property.name);
+    const presence = parent.properties.filter(
+        (candidate) =>
+            candidate.primitiveType === 'bool' &&
+            rawTokens(candidate.name).includes('has') &&
+            [...descriptor].every((token) => tokens(candidate.name).has(token))
+    );
+    if (zero !== undefined) {
+        parentRows.forEach((row) => {
+            row[property.name] = zero;
+            presence.forEach(({ name }) => {
+                row[name] = false;
+            });
+        });
+    }
+}
+
+/**
+ * Write into every parent row the number of related child rows, or whether there are any.
+ *
+ * @param derivation the schema and rows
+ * @param relationship the relationship from the children to the parent
+ * @param parentRows the parent rows (mutated)
+ * @param field the derived field and whether it is a presence flag
+ * @param field.property the derived field
+ * @param field.isPresence whether it holds presence rather than a count
+ */
+function deriveFromChildren(
+    derivation: FieldDerivation,
+    relationship: SchemaRelationship,
+    parentRows: Array<Record<string, JsonValue>>,
+    field: { property: SchemaProperty; isPresence: boolean }
+): void {
+    const { property, isPresence } = field;
+    const childRows = authoritativeRows(
+        derivation.graph,
+        relationship.fromEntitySet,
+        derivation.resources,
+        derivation.existingData
+    );
+    for (const parentRow of parentRows) {
+        const count = childRows.filter((childRow) =>
+            relationship.mappings.every(({ sourceProperty, targetProperty }) =>
+                sameValue(childRow[sourceProperty], parentRow[targetProperty])
+            )
+        ).length;
+        const derived = isPresence ? count > 0 : countValue(property, count);
+        if (derived !== undefined && propertyValueIsValid(property, derived)) {
+            parentRow[property.name] = derived;
+        }
+    }
+}
+
 function deriveRelationshipFields(
     graph: SchemaGraph,
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>,
@@ -1493,7 +1785,13 @@ function deriveRelationshipFields(
     const generated = Object.fromEntries(
         Object.entries(resources).map(([resource, rows]) => [resource, rows.map((row) => ({ ...row }))])
     );
-    const bound = relationshipBoundProperties(graph);
+    const derivation: FieldDerivation = {
+        graph,
+        resources,
+        existingData,
+        classifications,
+        bound: relationshipBoundProperties(graph)
+    };
     const relationships = [...generationRelationships(graph), ...derivedRelationships(graph)];
     for (const parent of graph.entities) {
         const parentRows = generated[parent.entitySetName];
@@ -1505,74 +1803,22 @@ function deriveRelationshipFields(
                 relationship.toEntitySet === parent.entitySetName && relationship.targetCardinality !== 'many'
         );
         for (const property of parent.properties) {
-            // A field governed by a value list takes its values from that list's tuples; a count
-            // derived from its name would replace a projected tuple value with one outside the domain.
-            if (isValueListField(parent, property)) {
-                continue;
-            }
-            const propertyTokens = new Set(rawTokens(property.name));
-            const isCount =
-                (property.primitiveType === 'int' ||
-                    property.primitiveType === 'decimal' ||
-                    property.primitiveType === 'string') &&
-                (propertyTokens.has('count') || (propertyTokens.has('number') && propertyTokens.has('of')));
-            const isPresence = property.primitiveType === 'bool' && propertyTokens.has('has');
-            // A key or relationship value identifies rows, and a field planned with a format such as a
-            // phone number cannot hold a count; a derived value must not replace either. A value-help
-            // column copied by value-list owners is a tuple member, not a derived count either.
-            const role = classifications.get(semanticPropertyKey(parent.entitySetName, property.name))?.role;
-            const validator = role ? semanticRoleDefinition(role)?.validator : undefined;
-            if (
-                (!isCount && !isPresence) ||
-                property.isKey ||
-                DRAFT_KEY_PROPERTY_NAMES.has(property.name.toLowerCase()) ||
-                bound.has(`${parent.entitySetName}\u0000${property.name}`) ||
-                (validator !== undefined && validator !== 'structural') ||
-                isValueListDomainColumn(graph, parent, property)
-            ) {
+            const kind = derivedFieldKind(derivation, parent, property);
+            if (!kind) {
                 continue;
             }
             const relationship = matchingRelationship(property, incoming, entities);
-            if (!relationship) {
-                if (isCount) {
-                    const target = `${parent.entitySetName}.${property.name}`;
-                    diagnostics.push({
-                        code: 'SEMANTIC_DERIVATION_UNAVAILABLE',
-                        severity: 'warning',
-                        target,
-                        message:
-                            'No unambiguous modeled child domain backs this count; an empty synthetic domain is used, not validated business coverage.'
-                    });
-                    const zero = countValue(property, 0);
-                    const descriptor = tokens(property.name);
-                    const presence = parent.properties.filter(
-                        (candidate) =>
-                            candidate.primitiveType === 'bool' &&
-                            rawTokens(candidate.name).includes('has') &&
-                            [...descriptor].every((token) => tokens(candidate.name).has(token))
-                    );
-                    if (zero !== undefined) {
-                        parentRows.forEach((row) => {
-                            row[property.name] = zero;
-                            presence.forEach(({ name }) => {
-                                row[name] = false;
-                            });
-                        });
-                    }
-                }
-                continue;
-            }
-            const childRows = authoritativeRows(graph, relationship.fromEntitySet, resources, existingData);
-            for (const parentRow of parentRows) {
-                const count = childRows.filter((childRow) =>
-                    relationship.mappings.every(({ sourceProperty, targetProperty }) =>
-                        sameValue(childRow[sourceProperty], parentRow[targetProperty])
-                    )
-                ).length;
-                const derived = isPresence ? count > 0 : countValue(property, count);
-                if (derived !== undefined && propertyValueIsValid(property, derived)) {
-                    parentRow[property.name] = derived;
-                }
+            if (relationship) {
+                deriveFromChildren(derivation, relationship, parentRows, { property, isPresence: kind.isPresence });
+            } else if (kind.isCount) {
+                diagnostics.push({
+                    code: 'SEMANTIC_DERIVATION_UNAVAILABLE',
+                    severity: 'warning',
+                    target: `${parent.entitySetName}.${property.name}`,
+                    message:
+                        'No unambiguous modeled child domain backs this count; an empty synthetic domain is used, not validated business coverage.'
+                });
+                zeroUnbackedCount(parent, property, parentRows);
             }
         }
     }

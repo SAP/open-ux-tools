@@ -48,7 +48,7 @@ function compactName(name: string): string {
  */
 export function isNameForm(property: SchemaProperty): boolean {
     const words = identifierTokens(property.name, { lettersOnly: true });
-    return words.length > 1 && semanticRules().codeTexts.textSuffixes.has(words[words.length - 1]);
+    return words.length > 1 && semanticRules().codeTexts.textSuffixes.has(words.at(-1) ?? '');
 }
 
 /**

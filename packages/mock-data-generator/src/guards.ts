@@ -46,6 +46,17 @@ export function errorMessage(error: unknown): string {
 }
 
 /**
+ * The text of a cell value: a scalar as `String` writes it, a structured value as JSON, so an object never reads
+ * as `[object Object]`.
+ *
+ * @param value the cell value
+ * @returns its text
+ */
+export function cellText(value: unknown): string {
+    return value !== null && typeof value === 'object' ? JSON.stringify(value) : String(value);
+}
+
+/**
  * The Node.js system error code of a caught value, such as `ENOENT`.
  *
  * @param error the caught value

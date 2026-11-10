@@ -181,6 +181,67 @@ export function publishedRows(
 }
 
 /**
+ * The schema entity of an authored resource, after checking the supplied rows can stand: the resource is
+ * declared, holds at most the maximum row count and, as a finite value-help domain, gives every field.
+ *
+ * @param resource the authored resource
+ * @param entity its schema entity, if the schema declares it
+ * @param authored the supplied rows
+ * @param finiteDomain whether the rows are the whole domain of a value help
+ * @returns the entity
+ */
+function authoredEntity(
+    resource: string,
+    entity: SchemaEntity | undefined,
+    authored: ReadonlyArray<MockDataRow>,
+    finiteDomain: boolean
+): SchemaEntity {
+    if (!entity) {
+        throw new MockGenError(
+            MOCKGEN_ERROR_CODE.REQUEST_INVALID,
+            `Authored resource ${resource} is not declared by the service schema`
+        );
+    }
+    if (authored.length > MAX_ROWS_PER_ENTITY) {
+        throw new MockGenError(
+            MOCKGEN_ERROR_CODE.REQUEST_INVALID,
+            `Authored resource ${resource} exceeds the maximum row count`
+        );
+    }
+    if (finiteDomain && authored.some((row) => entity.properties.some(({ name }) => !Object.hasOwn(row, name)))) {
+        throw new MockGenError(MOCKGEN_ERROR_CODE.REQUEST_INVALID, `SEMANTIC_AUTHORED_DOMAIN_INCOMPLETE: ${resource}`);
+    }
+    return entity;
+}
+
+/**
+ * Warn when two supplied rows share a key, as a hand-edited file or another generator may leave them. They are
+ * still the caller's rows, so they are published as written; new rows take keys of their own.
+ *
+ * @param entity the schema entity of the rows
+ * @param resource the authored resource
+ * @param rows the supplied rows
+ * @param diagnostics receives the warning
+ */
+function reportDuplicatedSuppliedKeys(
+    entity: SchemaEntity,
+    resource: string,
+    rows: ReadonlyArray<MockDataRow>,
+    diagnostics: MockDataGeneratorDiagnostic[]
+): void {
+    const keys = entity.properties.filter(({ isKey }) => isKey);
+    const signature = (row: MockDataRow): string => keySignature(keys, row);
+    if (keys.length > 0 && new Set(rows.map(signature)).size !== rows.length) {
+        diagnostics.push({
+            code: 'SUPPLIED_KEY_DUPLICATED',
+            severity: 'warning',
+            target: resource,
+            message: 'Supplied rows share a key; they are published as written, and a key read returns the first.'
+        });
+    }
+}
+
+/**
  * Keep authored target rows and finite value-help domains authoritative in the new snapshot.
  *
  * @param graph
@@ -202,40 +263,11 @@ export function preserveAuthoredRows(
         if (authored.length === 0) {
             continue;
         }
-        const entity = entities.get(resource);
-        if (!entity) {
-            throw new MockGenError(
-                MOCKGEN_ERROR_CODE.REQUEST_INVALID,
-                `Authored resource ${resource} is not declared by the service schema`
-            );
-        }
-        if (authored.length > MAX_ROWS_PER_ENTITY) {
-            throw new MockGenError(
-                MOCKGEN_ERROR_CODE.REQUEST_INVALID,
-                `Authored resource ${resource} exceeds the maximum row count`
-            );
-        }
         const finiteDomain = referencedDomains.has(resource);
-        if (finiteDomain && authored.some((row) => entity.properties.some(({ name }) => !Object.hasOwn(row, name)))) {
-            throw new MockGenError(
-                MOCKGEN_ERROR_CODE.REQUEST_INVALID,
-                `SEMANTIC_AUTHORED_DOMAIN_INCOMPLETE: ${resource}`
-            );
-        }
+        const entity = authoredEntity(resource, entities.get(resource), authored, finiteDomain);
         // Supplied rows are published as the caller wrote them; a field a row leaves out stays out.
         const merged = authored.map((row) => Object.freeze({ ...row }));
-        const keys = entity.properties.filter(({ isKey }) => isKey);
-        const signature = (row: MockDataRow): string => keySignature(keys, row);
-        if (keys.length > 0 && new Set(merged.map(signature)).size !== merged.length) {
-            // Two supplied rows share a key, as a hand-edited file or another generator may leave them. They are
-            // still the caller's rows, so they are published as written; new rows take keys of their own.
-            diagnostics.push({
-                code: 'SUPPLIED_KEY_DUPLICATED',
-                severity: 'warning',
-                target: resource,
-                message: 'Supplied rows share a key; they are published as written, and a key read returns the first.'
-            });
-        }
+        reportDuplicatedSuppliedKeys(entity, resource, merged, diagnostics);
         // The same rows that references resolve against while generating: a generated row that
         // repeats a supplied key is represented by the supplied row.
         const rows = finiteDomain

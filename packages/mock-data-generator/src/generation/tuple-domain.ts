@@ -118,6 +118,75 @@ function hasJointlyCompatibleTuple(
 }
 
 /**
+ * Why a value-list parameter keeps tuple membership from being validated: a missing local property, no value-list
+ * property to pair it with, or value-help rows without that property.
+ *
+ * @param parameter the value-list parameter
+ * @param properties the owner entity's properties by name
+ * @param domain the value-help rows
+ * @returns the messages of the gaps found, in check order
+ */
+function parameterContextGaps(
+    parameter: SchemaValueListParameter,
+    properties: ReadonlyMap<string, SchemaProperty>,
+    domain: ReadonlyArray<MockDataRow>
+): string[] {
+    const gaps: string[] = [];
+    if (parameter.localProperty && !properties.has(parameter.localProperty)) {
+        gaps.push(
+            `Value-list parameter references missing local property ${parameter.localProperty}; tuple membership was not validated.`
+        );
+    }
+    if (
+        parameter.localProperty &&
+        parameter.direction !== 'DisplayOnly' &&
+        parameter.valueListProperty === undefined &&
+        parameter.constant === undefined
+    ) {
+        gaps.push(
+            `Value-list parameter for local property ${parameter.localProperty} names no value-list property; tuple membership was not validated.`
+        );
+    }
+    const valueListProperty = parameter.valueListProperty;
+    if (valueListProperty && domain.some((row) => !(valueListProperty in row))) {
+        gaps.push(
+            `Authored value-list rows do not expose ${parameter.valueListProperty}; tuple membership was not validated.`
+        );
+    }
+    return gaps;
+}
+
+/**
+ * Why the display texts of a value list keep tuple membership from being validated: an unresolved key text link,
+ * or value-help rows without a linked text.
+ *
+ * @param owner the field that declares the value list
+ * @param displayLinks the resolved display links of the list
+ * @param domain the value-help rows
+ * @returns the messages of the gaps found, in check order
+ */
+function displayContextGaps(
+    owner: SchemaProperty,
+    displayLinks: ReturnType<typeof valueListDisplayLinks>,
+    domain: ReadonlyArray<MockDataRow>
+): string[] {
+    const gaps: string[] = [];
+    if (owner.links?.text && displayLinks.length === 0) {
+        gaps.push(
+            `Value-list key text link for ${owner.links.text} could not be resolved; tuple membership was not validated.`
+        );
+    }
+    for (const link of displayLinks) {
+        if (domain.some((row) => !(link.targetTextProperty.name in row))) {
+            gaps.push(
+                `Value-list rows do not expose ${link.targetTextProperty.name}; tuple membership was not validated.`
+            );
+        }
+    }
+    return gaps;
+}
+
+/**
  * Resolve the value lists of an entity, reporting unavailable context. `checked` holds the lists whose membership can
  * be validated, `constraints` every list whose value-help rows are available.
  *
@@ -156,63 +225,15 @@ function checkedValueLists(
             continue;
         }
         const domain = context.rows;
-        let completeContext = true;
-        for (const parameter of parameters) {
-            if (parameter.localProperty && !properties.has(parameter.localProperty)) {
-                completeContext = false;
-                add({
-                    code: 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE',
-                    severity: 'warning',
-                    target,
-                    message: `Value-list parameter references missing local property ${parameter.localProperty}; tuple membership was not validated.`
-                });
-            }
-            if (
-                parameter.localProperty &&
-                parameter.direction !== 'DisplayOnly' &&
-                parameter.valueListProperty === undefined &&
-                parameter.constant === undefined
-            ) {
-                completeContext = false;
-                add({
-                    code: 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE',
-                    severity: 'warning',
-                    target,
-                    message: `Value-list parameter for local property ${parameter.localProperty} names no value-list property; tuple membership was not validated.`
-                });
-            }
-            const valueListProperty = parameter.valueListProperty;
-            if (valueListProperty && domain.some((row) => !(valueListProperty in row))) {
-                completeContext = false;
-                add({
-                    code: 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE',
-                    severity: 'warning',
-                    target,
-                    message: `Authored value-list rows do not expose ${parameter.valueListProperty}; tuple membership was not validated.`
-                });
-            }
-        }
         const displayLinks = valueListDisplayLinks(owner, parameters, properties, context.targetEntity);
-        if (owner.links?.text && displayLinks.length === 0) {
-            completeContext = false;
-            add({
-                code: 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE',
-                severity: 'warning',
-                target,
-                message: `Value-list key text link for ${owner.links.text} could not be resolved; tuple membership was not validated.`
-            });
+        const gaps = [
+            ...parameters.flatMap((parameter) => parameterContextGaps(parameter, properties, domain)),
+            ...displayContextGaps(owner, displayLinks, domain)
+        ];
+        for (const message of gaps) {
+            add({ code: 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE', severity: 'warning', target, message });
         }
-        for (const link of displayLinks) {
-            if (domain.some((row) => !(link.targetTextProperty.name in row))) {
-                completeContext = false;
-                add({
-                    code: 'SEMANTIC_TUPLE_CONTEXT_UNAVAILABLE',
-                    severity: 'warning',
-                    target,
-                    message: `Value-list rows do not expose ${link.targetTextProperty.name}; tuple membership was not validated.`
-                });
-            }
-        }
+        const completeContext = gaps.length === 0;
         const list: CheckedValueList = {
             target,
             collection,
@@ -290,55 +311,95 @@ export function validateTupleDomains(
         if (lists.length === 0) {
             continue;
         }
-        const protectedProperties = protectedPropertyNames(graph, entity);
-        const fits: FieldFit = (local, value) => {
-            if (!propertyValueIsValid(local, value)) {
-                return false;
-            }
-            const role = semanticRoles[`${entity.entitySetName}.${local.name}`];
-            return !role || role === 'unknown' || semanticValueIsValid(role, local, value);
+        const check: TupleRowCheck = {
+            entity,
+            constraints,
+            protectedProperties: protectedPropertyNames(graph, entity),
+            fits: fieldFit(entity, semanticRoles)
         };
         for (const list of lists) {
             for (const row of rows) {
-                if (list.domain.some((candidate) => isMember(list, row, candidate))) {
-                    continue;
+                const diagnostic = tupleRowDiagnostic(check, list, row);
+                if (diagnostic) {
+                    add(diagnostic);
                 }
-                const adoptable = list.domain.some((candidate) =>
-                    isAdoptable(list, row, candidate, protectedProperties, fits)
-                );
-                if (!adoptable) {
-                    const protectedMembers = list.members.some(({ localProperty }) =>
-                        protectedProperties.has(localProperty.name)
-                    );
-                    add({
-                        code: 'SEMANTIC_DOMAIN_CONFLICT',
-                        severity: 'warning',
-                        target: list.target,
-                        message: protectedMembers
-                            ? `Protected assignments in final row ${entity.entitySetName} have no compatible value-list tuple ${list.collection}.`
-                            : `Value-list tuple ${list.collection} has no row that satisfies its constants and fits the fields of ${entity.entitySetName}.`
-                    });
-                    continue;
-                }
-                if (!hasJointlyCompatibleTuple(list, constraints, row, protectedProperties, fits)) {
-                    add({
-                        code: 'SEMANTIC_DOMAIN_CONFLICT',
-                        severity: 'warning',
-                        target: list.target,
-                        message: `Value-list tuple ${list.collection} has no row that agrees with the other value lists sharing fields of ${entity.entitySetName}.`
-                    });
-                    continue;
-                }
-                add({
-                    code: 'SEMANTIC_TUPLE_MEMBERSHIP_INVALID',
-                    severity: 'warning',
-                    target: list.target,
-                    message: `Final row ${entity.entitySetName} is not a member of value-list tuple ${list.collection}.`
-                });
             }
         }
     }
     return diagnostics;
+}
+
+/** What checking the rows of one entity against its value-list tuples reads. */
+interface TupleRowCheck {
+    entity: SchemaEntity;
+    /** Every value list of the entity whose value-help rows are available. */
+    constraints: ReadonlyArray<CheckedValueList>;
+    protectedProperties: ReadonlySet<string>;
+    fits: FieldFit;
+}
+
+/**
+ * Whether a value fits an owner field: its structural constraints and, when a role is planned for the field,
+ * that role's format.
+ *
+ * @param entity the owner entity
+ * @param semanticRoles planned semantic role by `EntitySet.Property`
+ * @returns the field-fit check
+ */
+function fieldFit(entity: SchemaEntity, semanticRoles: Readonly<Record<string, string>>): FieldFit {
+    return (local, value) => {
+        if (!propertyValueIsValid(local, value)) {
+            return false;
+        }
+        const role = semanticRoles[`${entity.entitySetName}.${local.name}`];
+        return !role || role === 'unknown' || semanticValueIsValid(role, local, value);
+    };
+}
+
+/**
+ * The diagnostic for a row that is no member of a value-list tuple: a domain conflict when no tuple can be adopted
+ * alone or together with the lists sharing its fields, an invalid membership otherwise.
+ *
+ * @param check the entity being checked
+ * @param list the value list
+ * @param row the row
+ * @returns the diagnostic, or undefined for a member row
+ */
+function tupleRowDiagnostic(
+    check: TupleRowCheck,
+    list: CheckedValueList,
+    row: MockDataRow
+): MockDataGeneratorDiagnostic | undefined {
+    const { entity, constraints, protectedProperties, fits } = check;
+    if (list.domain.some((candidate) => isMember(list, row, candidate))) {
+        return undefined;
+    }
+    const adoptable = list.domain.some((candidate) => isAdoptable(list, row, candidate, protectedProperties, fits));
+    if (!adoptable) {
+        const protectedMembers = list.members.some(({ localProperty }) => protectedProperties.has(localProperty.name));
+        return {
+            code: 'SEMANTIC_DOMAIN_CONFLICT',
+            severity: 'warning',
+            target: list.target,
+            message: protectedMembers
+                ? `Protected assignments in final row ${entity.entitySetName} have no compatible value-list tuple ${list.collection}.`
+                : `Value-list tuple ${list.collection} has no row that satisfies its constants and fits the fields of ${entity.entitySetName}.`
+        };
+    }
+    if (!hasJointlyCompatibleTuple(list, constraints, row, protectedProperties, fits)) {
+        return {
+            code: 'SEMANTIC_DOMAIN_CONFLICT',
+            severity: 'warning',
+            target: list.target,
+            message: `Value-list tuple ${list.collection} has no row that agrees with the other value lists sharing fields of ${entity.entitySetName}.`
+        };
+    }
+    return {
+        code: 'SEMANTIC_TUPLE_MEMBERSHIP_INVALID',
+        severity: 'warning',
+        target: list.target,
+        message: `Final row ${entity.entitySetName} is not a member of value-list tuple ${list.collection}.`
+    };
 }
 
 /**
@@ -363,33 +424,7 @@ export function adoptCompatibleTuples(
     for (let pass = 0; pass <= graph.entities.length; pass++) {
         let adoptedInPass = 0;
         for (const entity of graph.entities) {
-            const rows = output[entity.entitySetName] ?? [];
-            if (rows.length === 0) {
-                continue;
-            }
-            const { checked: lists, constraints } = checkedValueLists(graph, entity, output, existingData, () => {
-                // Unavailable context is reported by the validator.
-            });
-            if (lists.length === 0) {
-                continue;
-            }
-            const protectedProperties = protectedPropertyNames(graph, entity);
-            const fits: FieldFit = (local, value) => {
-                if (!propertyValueIsValid(local, value)) {
-                    return false;
-                }
-                const role = semanticRoles[`${entity.entitySetName}.${local.name}`];
-                return !role || role === 'unknown' || semanticValueIsValid(role, local, value);
-            };
-            const generated = generatedRowFlags(entity, rows, existingData);
-            const adoptions = rows.map((row, index) =>
-                generated[index] ? adoptRowTuples(row, index, lists, constraints, protectedProperties, fits) : undefined
-            );
-            const count = adoptions.reduce((sum, adoption) => sum + (adoption?.adopted ?? 0), 0);
-            adoptedInPass += count;
-            if (count > 0) {
-                output[entity.entitySetName] = rows.map((row, index) => adoptions[index]?.row ?? row);
-            }
+            adoptedInPass += adoptEntityTuples(graph, entity, output, existingData, semanticRoles);
         }
         adopted += adoptedInPass;
         if (adoptedInPass === 0) {
@@ -397,6 +432,70 @@ export function adoptCompatibleTuples(
         }
     }
     return { resources: output, adopted };
+}
+
+/**
+ * Make the generated rows of one entity members of the value-list tuples they can join, replacing them in the output.
+ *
+ * @param graph schema graph
+ * @param entity the entity
+ * @param output rows by resource; the entity's rows are replaced when a row adopts a tuple
+ * @param existingData authored data by resource
+ * @param semanticRoles planned semantic role by `EntitySet.Property`
+ * @returns the number of tuples adopted
+ */
+function adoptEntityTuples(
+    graph: SchemaGraph,
+    entity: SchemaEntity,
+    output: Record<string, ReadonlyArray<MockDataRow>>,
+    existingData: Readonly<Record<string, ExistingMockData>>,
+    semanticRoles: Readonly<Record<string, string>>
+): number {
+    const rows = output[entity.entitySetName] ?? [];
+    if (rows.length === 0) {
+        return 0;
+    }
+    const { checked: lists, constraints } = checkedValueLists(graph, entity, output, existingData, () => {
+        // Unavailable context is reported by the validator.
+    });
+    if (lists.length === 0) {
+        return 0;
+    }
+    const protectedProperties = protectedPropertyNames(graph, entity);
+    const fits = fieldFit(entity, semanticRoles);
+    const generated = generatedRowFlags(entity, rows, existingData);
+    const adoptions = rows.map((row, index) =>
+        generated[index] ? adoptRowTuples(row, index, lists, constraints, protectedProperties, fits) : undefined
+    );
+    const count = adoptions.reduce((sum, adoption) => sum + (adoption?.adopted ?? 0), 0);
+    if (count > 0) {
+        output[entity.entitySetName] = rows.map((row, index) => adoptions[index]?.row ?? row);
+    }
+    return count;
+}
+
+/**
+ * The owner field values of the chosen tuples of value lists.
+ *
+ * @param component the value lists chosen together
+ * @param choices the chosen value-help row per list target
+ * @returns the values by owner field name
+ */
+function tupleAssignment(
+    component: ReadonlyArray<CheckedValueList>,
+    choices: ReadonlyMap<string, MockDataRow>
+): Record<string, JsonValue> {
+    const assignment: Record<string, JsonValue> = {};
+    for (const member of component) {
+        const choice = choices.get(member.target);
+        for (const tupleMember of member.members) {
+            const value = choice === undefined ? undefined : memberValue(tupleMember, choice);
+            if (value !== undefined) {
+                assignment[tupleMember.localProperty.name] = value;
+            }
+        }
+    }
+    return assignment;
 }
 
 /**
@@ -440,17 +539,7 @@ function adoptRowTuples(
         if (outcome.status !== 'solved') {
             continue;
         }
-        const assignment: Record<string, JsonValue> = {};
-        for (const member of component) {
-            const choice = outcome.choices.get(member.target);
-            for (const tupleMember of member.members) {
-                const value = choice === undefined ? undefined : memberValue(tupleMember, choice);
-                if (value !== undefined) {
-                    assignment[tupleMember.localProperty.name] = value;
-                }
-            }
-        }
-        current = Object.freeze({ ...current, ...assignment });
+        current = Object.freeze({ ...current, ...tupleAssignment(component, outcome.choices) });
         adopted += 1;
     }
     return { row: current, adopted };

@@ -48,6 +48,43 @@ function dateTimeIsValid(value: string, requireOffset: boolean): boolean {
 }
 
 /**
+ * Whether a value is a safe integer within the field's numeric bounds.
+ *
+ * @param property the field
+ * @param value the candidate value
+ * @returns true for a valid integer
+ */
+function integerIsValid(property: SchemaProperty, value: unknown): boolean {
+    return (
+        typeof value === 'number' &&
+        Number.isSafeInteger(value) &&
+        (property.numericMinimum === undefined || value >= property.numericMinimum) &&
+        (property.numericMaximum === undefined || value <= property.numericMaximum)
+    );
+}
+
+/**
+ * Whether a value is a finite number within the field's scale and precision.
+ *
+ * @param property the field
+ * @param value the candidate value
+ * @returns true for a valid decimal
+ */
+function decimalIsValid(property: SchemaProperty, value: unknown): boolean {
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return false;
+    }
+    if (property.scale !== undefined && decimalPlaces(value) > property.scale) {
+        return false;
+    }
+    if (property.precision === undefined) {
+        return true;
+    }
+    const scaled = Math.round(Math.abs(value) * 10 ** (property.scale ?? 0));
+    return scaled.toString().length <= property.precision;
+}
+
+/**
  * Shared structural constraint check used for deterministic and learned candidates.
  *
  * @param property
@@ -63,28 +100,9 @@ export function propertyValueIsValid(property: SchemaProperty, value: unknown): 
     }
     switch (property.primitiveType) {
         case 'int':
-            return (
-                typeof value === 'number' &&
-                Number.isSafeInteger(value) &&
-                (property.numericMinimum === undefined || value >= property.numericMinimum) &&
-                (property.numericMaximum === undefined || value <= property.numericMaximum)
-            );
-        case 'decimal': {
-            if (typeof value !== 'number' || !Number.isFinite(value)) {
-                return false;
-            }
-            if (property.scale !== undefined && decimalPlaces(value) > property.scale) {
-                return false;
-            }
-            if (property.precision !== undefined) {
-                const scale = property.scale ?? 0;
-                const scaled = Math.round(Math.abs(value) * 10 ** scale);
-                if (scaled.toString().length > property.precision) {
-                    return false;
-                }
-            }
-            return true;
-        }
+            return integerIsValid(property, value);
+        case 'decimal':
+            return decimalIsValid(property, value);
         case 'bool':
             return typeof value === 'boolean';
         case 'string':

@@ -12,6 +12,7 @@ import { identifierTokens } from '../naming.js';
 import { freezeRows, isKeyOrEnumerated } from './rows.js';
 import { sha256Uint32 } from '../hash.js';
 import { lazy } from '../lazy.js';
+import { cellText } from '../guards.js';
 
 export interface TemporalConstraint {
     resource: string;
@@ -115,6 +116,85 @@ function laterOfPair(
 }
 
 /**
+ * Whether an explicit constraint names two distinct fields of its resource with the same temporal type.
+ *
+ * @param graph Service schema.
+ * @param constraint The configured ordering.
+ * @returns True for a usable constraint.
+ */
+function explicitConstraintIsValid(graph: SchemaGraph, constraint: TemporalConstraint): boolean {
+    const entity = graph.entities.find(({ entitySetName }) => entitySetName === constraint.resource);
+    const before = entity?.properties.find(({ name }) => name === constraint.before);
+    const after = entity?.properties.find(({ name }) => name === constraint.after);
+    return (
+        before !== undefined &&
+        after !== undefined &&
+        before !== after &&
+        TEMPORAL_TYPES.has(before.primitiveType) &&
+        before.primitiveType === after.primitiveType
+    );
+}
+
+/**
+ * Whether the orderings of a resource lead from a constraint's later field back to its earlier one.
+ *
+ * @param constraints Every planned ordering.
+ * @param constraint The ordering checked.
+ * @returns True when the constraint is part of a cycle.
+ */
+function closesCycle(constraints: readonly PlannedConstraint[], constraint: PlannedConstraint): boolean {
+    const seen = new Set<string>();
+    const reaches = (field: string): boolean => {
+        if (field === constraint.before) {
+            return true;
+        }
+        if (seen.has(field)) {
+            return false;
+        }
+        seen.add(field);
+        return constraints.some(
+            (edge) => edge.resource === constraint.resource && edge.before === field && reaches(edge.after)
+        );
+    };
+    return reaches(constraint.after);
+}
+
+/**
+ * The synthetic orderings an entity's lifecycle words imply: created before changed, and an interval's start
+ * before its end, each between fields of the same temporal type.
+ *
+ * @param entity The entity.
+ * @param vocabulary The lifecycle words of the semantic rule store.
+ * @returns The inferred orderings, in inference order.
+ */
+function lifecycleConstraints(
+    entity: SchemaEntity,
+    vocabulary: ReturnType<typeof semanticRules>['temporalVocabulary']
+): PlannedConstraint[] {
+    const { created, changed, start, end, clock } = vocabulary;
+    const properties = entity.properties.filter(({ primitiveType }) => TEMPORAL_TYPES.has(primitiveType));
+    const inferred: PlannedConstraint[] = [];
+    for (const [early, late, interval] of [
+        [created, changed, false],
+        [start, end, true]
+    ] as const) {
+        for (const before of properties.filter((property) => has(property, early))) {
+            const after = laterOfPair(properties, before, { early, late, clock });
+            if (after && before.primitiveType === after.primitiveType) {
+                inferred.push({
+                    resource: entity.entitySetName,
+                    before: before.name,
+                    after: after.name,
+                    synthetic: true,
+                    interval
+                });
+            }
+        }
+    }
+    return inferred;
+}
+
+/**
  * Compile explicit constraints or conservative, reported synthetic lifecycle assumptions.
  *
  * @param graph Service schema.
@@ -133,26 +213,17 @@ export function compileTemporalPlan(
     const constraints: PlannedConstraint[] = [];
     const diagnostics: MockDataGeneratorDiagnostic[] = [];
     for (const constraint of explicit) {
-        const entity = graph.entities.find(({ entitySetName }) => entitySetName === constraint.resource);
-        const before = entity?.properties.find(({ name }) => name === constraint.before);
-        const after = entity?.properties.find(({ name }) => name === constraint.after);
-        if (
-            !before ||
-            !after ||
-            before === after ||
-            !TEMPORAL_TYPES.has(before.primitiveType) ||
-            before.primitiveType !== after.primitiveType
-        ) {
+        if (explicitConstraintIsValid(graph, constraint)) {
+            constraints.push({ ...constraint, synthetic: false, interval: false });
+        } else {
             diagnostics.push(
                 diagnostic('TEMPORAL_CONSTRAINT_INVALID', constraint, 'Unknown or incompatible temporal fields.')
             );
-        } else {
-            constraints.push({ ...constraint, synthetic: false, interval: false });
         }
     }
     // Lifecycle words of the semantic rule store: administrative created/changed timestamps and interval
     // start/end bounds. Which business event comes before another is not known from words, so none is ordered.
-    const { created, changed, start, end, clock } = semanticRules().temporalVocabulary;
+    const vocabulary = semanticRules().temporalVocabulary;
     for (const entity of graph.entities) {
         if (
             explicit.some(({ resource }) => resource === entity.entitySetName) ||
@@ -160,46 +231,9 @@ export function compileTemporalPlan(
         ) {
             continue;
         }
-        const properties = entity.properties.filter(({ primitiveType }) => TEMPORAL_TYPES.has(primitiveType));
-        const add = (before: SchemaProperty, after: SchemaProperty, interval: boolean): void => {
-            if (before.primitiveType === after.primitiveType) {
-                constraints.push({
-                    resource: entity.entitySetName,
-                    before: before.name,
-                    after: after.name,
-                    synthetic: true,
-                    interval
-                });
-            }
-        };
-        for (const [early, late, interval] of [
-            [created, changed, false],
-            [start, end, true]
-        ] as const) {
-            for (const before of properties.filter((property) => has(property, early))) {
-                const after = laterOfPair(properties, before, { early, late, clock });
-                if (after) {
-                    add(before, after, interval);
-                }
-            }
-        }
+        constraints.push(...lifecycleConstraints(entity, vocabulary));
     }
-    const cyclic = constraints.filter((constraint) => {
-        const seen = new Set<string>();
-        const reaches = (field: string): boolean => {
-            if (field === constraint.before) {
-                return true;
-            }
-            if (seen.has(field)) {
-                return false;
-            }
-            seen.add(field);
-            return constraints.some(
-                (edge) => edge.resource === constraint.resource && edge.before === field && reaches(edge.after)
-            );
-        };
-        return reaches(constraint.after);
-    });
+    const cyclic = constraints.filter((constraint) => closesCycle(constraints, constraint));
     cyclic.forEach((constraint) =>
         diagnostics.push(
             diagnostic(
@@ -210,6 +244,17 @@ export function compileTemporalPlan(
         )
     );
     return { constraints: constraints.filter((constraint) => !cyclic.includes(constraint)), diagnostics };
+}
+
+/**
+ * Whether an earlier time comes no later than a later one. An unparsable time (NaN) is never in order.
+ *
+ * @param earlier the comparable earlier time
+ * @param later the comparable later time
+ * @returns true when the pair is in order
+ */
+function inOrder(earlier: number, later: number): boolean {
+    return earlier <= later;
 }
 
 function comparable(value: JsonValue | undefined, property: SchemaProperty): number {
@@ -246,7 +291,7 @@ export function validateTemporalPlan(
             (row) =>
                 row[constraint.before] != null &&
                 row[constraint.after] != null &&
-                !(comparable(row[constraint.before], property) <= comparable(row[constraint.after], property))
+                !inOrder(comparable(row[constraint.before], property), comparable(row[constraint.after], property))
         ).length;
         if (violations > 0) {
             plan.diagnostics.push(
@@ -364,7 +409,7 @@ function spreadLaterEvents(
         const later = laterEvent(
             row[before.name],
             after,
-            sha256Uint32(`${constraint.resource}:${after.name}:${rowIndex}:${String(row[before.name])}`),
+            sha256Uint32(`${constraint.resource}:${after.name}:${rowIndex}:${cellText(row[before.name])}`),
             !constraint.interval || after.primitiveType === 'date'
         );
         if (later !== undefined && propertyValueIsValid(after, later)) {
@@ -412,7 +457,7 @@ function spreadDeclaredEvents(
             const later = laterEvent(
                 row[twin.name],
                 field,
-                sha256Uint32(`${entity.entitySetName}:${field.name}:${rowIndex}:${String(row[twin.name])}`),
+                sha256Uint32(`${entity.entitySetName}:${field.name}:${rowIndex}:${cellText(row[twin.name])}`),
                 field.primitiveType === 'date'
             );
             if (later !== undefined && propertyValueIsValid(field, later)) {
@@ -678,7 +723,7 @@ function followParentCreation(
     const applied = new Set<Dependence>();
     // A grandchild may follow a child that has just followed its own parent: one pass per dependence settles
     // any chain.
-    for (let pass = 0; pass < dependences.length; pass++) {
+    for (const _pass of dependences) {
         const moved = dependences.filter((dependence) => followParent(dependence, rows));
         moved.forEach((dependence) => applied.add(dependence));
         if (moved.length === 0) {
@@ -747,7 +792,8 @@ function repairOrder(
     generated: Readonly<Record<string, ReadonlyArray<Record<string, JsonValue>>>>,
     fixedIn: (entitySet: string, property: SchemaProperty) => boolean
 ): void {
-    for (let pass = 0; pass < constraints.length; pass++) {
+    // One pass per constraint, so that chained pairs settle.
+    for (const _pass of constraints) {
         for (const constraint of constraints) {
             const entity = graph.entities.find(({ entitySetName }) => entitySetName === constraint.resource);
             const before = entity?.properties.find(({ name }) => name === constraint.before);
@@ -757,21 +803,41 @@ function repairOrder(
             }
             const fixed = (property: SchemaProperty): boolean => fixedIn(constraint.resource, property);
             for (const row of generated[constraint.resource] ?? []) {
-                const first = row[before.name];
-                const last = row[after.name];
-                if (!(comparable(first, before) > comparable(last, after))) {
-                    continue;
-                }
-                if (!fixed(before) && propertyValueIsValid(before, last)) {
-                    row[before.name] = last;
-                    if (!fixed(after) && propertyValueIsValid(after, first)) {
-                        row[after.name] = first;
-                    }
-                } else if (!fixed(after) && propertyValueIsValid(after, first)) {
-                    row[after.name] = first;
-                }
+                repairRowOrder(row, before, after, fixed);
             }
         }
+    }
+}
+
+/**
+ * Put one row's pair in order when its earlier field holds the later value: swap them, or move the free one
+ * onto the fixed one.
+ *
+ * @param row the row; written in place
+ * @param before the field that comes first
+ * @param after the field that comes later
+ * @param fixed whether a field may not be written
+ */
+function repairRowOrder(
+    row: Record<string, JsonValue>,
+    before: SchemaProperty,
+    after: SchemaProperty,
+    fixed: (property: SchemaProperty) => boolean
+): void {
+    const first = row[before.name];
+    const last = row[after.name];
+    // An unparsable value compares as NaN, which is never out of order.
+    const outOfOrder = comparable(first, before) > comparable(last, after);
+    if (!outOfOrder) {
+        return;
+    }
+    if (!fixed(before) && propertyValueIsValid(before, last)) {
+        row[before.name] = last;
+        if (!fixed(after) && propertyValueIsValid(after, first)) {
+            row[after.name] = first;
+        }
+    } else if (!fixed(after) && propertyValueIsValid(after, first)) {
+        row[after.name] = first;
     }
 }
 

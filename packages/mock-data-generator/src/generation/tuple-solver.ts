@@ -65,70 +65,135 @@ export function solveTupleChoice(
     rotation = 0,
     budget = TUPLE_CHOICE_BUDGET
 ): TupleChoiceResult {
-    const prepared = lists.map((list) => {
-        const seen = new Set<string>();
-        const unique = list.candidates.filter((candidate) => {
-            const signature = JSON.stringify(list.members.map((member) => memberValue(member, candidate)));
-            if (seen.has(signature)) {
-                return false;
-            }
-            seen.add(signature);
-            return true;
-        });
-        const offset = unique.length === 0 ? 0 : rotation % unique.length;
-        return { ...list, candidates: [...unique.slice(offset), ...unique.slice(0, offset)] };
-    });
+    const prepared = lists.map((list) => preparedTupleList(list, rotation));
     if (prepared.some(({ candidates }) => candidates.length === 0)) {
         return { status: 'unsatisfiable' };
     }
-    const assigned = new Map<string, JsonValue | undefined>();
-    const choices = new Map<string, MockDataRow>();
-    const consistent = (list: TupleChoiceList, candidate: MockDataRow): boolean =>
-        list.members.every(
-            (member) =>
-                !assigned.has(member.localProperty.name) ||
-                sameValue(assigned.get(member.localProperty.name), memberValue(member, candidate))
-        );
-    let visits = 0;
-    const visit = (): 'solved' | 'unsatisfiable' | 'exhausted' => {
-        let next: { list: TupleChoiceList; options: MockDataRow[] } | undefined;
-        for (const list of prepared) {
-            if (choices.has(list.id)) {
-                continue;
-            }
-            const options = list.candidates.filter((candidate) => consistent(list, candidate));
-            if (options.length === 0) {
-                return 'unsatisfiable';
-            }
-            if (!next || options.length < next.options.length) {
-                next = { list, options };
-            }
+    const search: TupleSearch = { lists: prepared, budget, visits: 0, assigned: new Map(), choices: new Map() };
+    const outcome = visitTupleChoices(search);
+    return outcome === 'solved' ? { status: 'solved', choices: search.choices } : { status: outcome };
+}
+
+/** The state of one backtracking search for consistent tuple choices. */
+interface TupleSearch {
+    lists: ReadonlyArray<TupleChoiceList>;
+    budget: number;
+    /** Candidate visits so far. */
+    visits: number;
+    /** The value assigned to each local property by the choices made. */
+    assigned: Map<string, JsonValue | undefined>;
+    /** The chosen candidate per list id. */
+    choices: Map<string, MockDataRow>;
+}
+
+/**
+ * A list's candidates without repeated member tuples, rotated so different calls start at different candidates.
+ *
+ * @param list the choice list
+ * @param rotation the rotation offset
+ * @returns the list with its prepared candidates
+ */
+function preparedTupleList(list: TupleChoiceList, rotation: number): TupleChoiceList {
+    const seen = new Set<string>();
+    const unique = list.candidates.filter((candidate) => {
+        const signature = JSON.stringify(list.members.map((member) => memberValue(member, candidate)));
+        if (seen.has(signature)) {
+            return false;
         }
-        if (!next) {
-            return 'solved';
+        seen.add(signature);
+        return true;
+    });
+    const offset = unique.length === 0 ? 0 : rotation % unique.length;
+    return { ...list, candidates: [...unique.slice(offset), ...unique.slice(0, offset)] };
+}
+
+/**
+ * Whether a candidate agrees with every value already assigned to the list's members.
+ *
+ * @param search the search
+ * @param list the choice list
+ * @param candidate the candidate row
+ * @returns true for a consistent candidate
+ */
+function consistentCandidate(search: TupleSearch, list: TupleChoiceList, candidate: MockDataRow): boolean {
+    return list.members.every(
+        (member) =>
+            !search.assigned.has(member.localProperty.name) ||
+            sameValue(search.assigned.get(member.localProperty.name), memberValue(member, candidate))
+    );
+}
+
+/**
+ * The unchosen list with the fewest consistent candidates (the first such list on ties).
+ *
+ * @param search the search
+ * @returns that list and its options, `unsatisfiable` when a list has none, or undefined when all are chosen
+ */
+function mostConstrainedList(
+    search: TupleSearch
+): { list: TupleChoiceList; options: MockDataRow[] } | 'unsatisfiable' | undefined {
+    let next: { list: TupleChoiceList; options: MockDataRow[] } | undefined;
+    for (const list of search.lists) {
+        if (search.choices.has(list.id)) {
+            continue;
         }
-        for (const candidate of next.options) {
-            visits += 1;
-            if (visits > budget) {
-                return 'exhausted';
-            }
-            const added: string[] = [];
-            for (const member of next.list.members) {
-                if (!assigned.has(member.localProperty.name)) {
-                    assigned.set(member.localProperty.name, memberValue(member, candidate));
-                    added.push(member.localProperty.name);
-                }
-            }
-            choices.set(next.list.id, candidate);
-            const outcome = visit();
-            if (outcome !== 'unsatisfiable') {
-                return outcome;
-            }
-            added.forEach((name) => assigned.delete(name));
-            choices.delete(next.list.id);
+        const options = list.candidates.filter((candidate) => consistentCandidate(search, list, candidate));
+        if (options.length === 0) {
+            return 'unsatisfiable';
         }
-        return 'unsatisfiable';
-    };
-    const outcome = visit();
-    return outcome === 'solved' ? { status: 'solved', choices } : { status: outcome };
+        if (!next || options.length < next.options.length) {
+            next = { list, options };
+        }
+    }
+    return next;
+}
+
+/**
+ * Assign the member values of a candidate to the properties not assigned yet.
+ *
+ * @param search the search
+ * @param list the choice list
+ * @param candidate the chosen candidate
+ * @returns the properties newly assigned, to undo the choice
+ */
+function assignCandidate(search: TupleSearch, list: TupleChoiceList, candidate: MockDataRow): string[] {
+    const added: string[] = [];
+    for (const member of list.members) {
+        if (!search.assigned.has(member.localProperty.name)) {
+            search.assigned.set(member.localProperty.name, memberValue(member, candidate));
+            added.push(member.localProperty.name);
+        }
+    }
+    return added;
+}
+
+/**
+ * Choose a candidate for the most constrained list and recurse, backtracking on failure.
+ *
+ * @param search the search
+ * @returns `solved` with every list chosen, `unsatisfiable`, or `exhausted` when the budget runs out
+ */
+function visitTupleChoices(search: TupleSearch): 'solved' | 'unsatisfiable' | 'exhausted' {
+    const next = mostConstrainedList(search);
+    if (next === 'unsatisfiable') {
+        return next;
+    }
+    if (!next) {
+        return 'solved';
+    }
+    for (const candidate of next.options) {
+        search.visits += 1;
+        if (search.visits > search.budget) {
+            return 'exhausted';
+        }
+        const added = assignCandidate(search, next.list, candidate);
+        search.choices.set(next.list.id, candidate);
+        const outcome = visitTupleChoices(search);
+        if (outcome !== 'unsatisfiable') {
+            return outcome;
+        }
+        added.forEach((name) => search.assigned.delete(name));
+        search.choices.delete(next.list.id);
+    }
+    return 'unsatisfiable';
 }

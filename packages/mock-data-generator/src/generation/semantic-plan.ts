@@ -67,7 +67,7 @@ export function semanticValueIsValid(role: string, property: SchemaProperty, val
                 return false;
             }
             const digits = (value.slice(4) + value.slice(0, 4)).replace(/[A-Z]/gu, (letter) =>
-                String(letter.charCodeAt(0) - 55)
+                String((letter.codePointAt(0) ?? 0) - 55)
             );
             return BigInt(digits) % 97n === 1n;
         }
@@ -123,30 +123,7 @@ function unevidencedLinkedFields(
         return unevidenced;
     }
     for (const code of entity.properties) {
-        if (!code.links?.text) {
-            continue;
-        }
-        const codeDecision = classifications.get(semanticPropertyKey(entity.entitySetName, code.name));
-        const codeDefinition = codeDecision && semanticRoleDefinition(codeDecision.role);
-        const textDecision = classifications.get(semanticPropertyKey(entity.entitySetName, code.links.text));
-        const textDefinition = textDecision && semanticRoleDefinition(textDecision.role);
-        const isValueHelpDomain =
-            code.links.valueListCollection !== undefined ||
-            graph.entities.some((owner) =>
-                owner.properties.some(
-                    (field) =>
-                        field.links?.valueListCollection === entity.entitySetName &&
-                        field.links.valueListMappings?.some(({ valueListProperty }) => valueListProperty === code.name)
-                )
-            );
-        if (!isValueHelpDomain && codeDefinition?.family !== 'status') {
-            continue;
-        }
-        if (codeDefinition?.family !== 'status' && textDefinition?.family !== 'narrative') {
-            continue;
-        }
-        const validator = codeDefinition?.validator;
-        if (validator !== undefined && validator !== 'structural') {
+        if (!code.links?.text || !linkedMeaningNeedsDomain(graph, entity, code, classifications)) {
             continue;
         }
         if (authoredDomainValues(graph, entity, code, existingData).length === 0) {
@@ -158,6 +135,62 @@ function unevidencedLinkedFields(
         }
     }
     return unevidenced;
+}
+
+/**
+ * Whether a field is the code of a value help: it declares a value list, or another entity's value list maps
+ * one of its fields to it.
+ *
+ * @param graph the service schema
+ * @param entity the code's entity
+ * @param code the code field
+ * @returns true for a value-help code
+ */
+function isValueHelpDomainCode(graph: SchemaGraph, entity: SchemaEntity, code: SchemaProperty): boolean {
+    return (
+        code.links?.valueListCollection !== undefined ||
+        graph.entities.some((owner) =>
+            owner.properties.some(
+                (field) =>
+                    field.links?.valueListCollection === entity.entitySetName &&
+                    field.links.valueListMappings?.some(({ valueListProperty }) => valueListProperty === code.name)
+            )
+        )
+    );
+}
+
+/**
+ * Whether a texted code's recognized meaning needs an authored domain: a status code, or a value-help code
+ * with a narrative text, whose role has no format validator to check its values.
+ *
+ * @param graph the service schema
+ * @param entity the code's entity
+ * @param code the code field, which links a text
+ * @param classifications the recognized roles by semantic key
+ * @returns true when the code and its text need domain evidence
+ */
+function linkedMeaningNeedsDomain(
+    graph: SchemaGraph,
+    entity: SchemaEntity,
+    code: SchemaProperty,
+    classifications: ReadonlyMap<string, SemanticClassification>
+): boolean {
+    const definitionOf = (name: string | undefined): ReturnType<typeof semanticRoleDefinition> => {
+        const decision =
+            name === undefined ? undefined : classifications.get(semanticPropertyKey(entity.entitySetName, name));
+        return decision && semanticRoleDefinition(decision.role);
+    };
+    const codeDefinition = definitionOf(code.name);
+    const textDefinition = definitionOf(code.links?.text);
+    const isStatus = codeDefinition?.family === 'status';
+    if (!isStatus && !isValueHelpDomainCode(graph, entity, code)) {
+        return false;
+    }
+    if (!isStatus && textDefinition?.family !== 'narrative') {
+        return false;
+    }
+    const validator = codeDefinition?.validator;
+    return validator === undefined || validator === 'structural';
 }
 
 /** What reviewing the planned roles of one entity reads, and the plan and diagnostics it updates. */
@@ -391,8 +424,7 @@ function adoptBestEffortRole(
     const reviewed = review.plan.get(key);
     if (
         !detected?.top ||
-        !reviewed ||
-        reviewed.role !== 'unknown' ||
+        reviewed?.role !== 'unknown' ||
         reviewed.source === 'concept' ||
         !BEST_EFFORT_REASONS.has(reviewed.abstentionReason)
     ) {

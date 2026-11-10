@@ -135,6 +135,50 @@ function cappedPower(base: number, exponent: number): number {
 }
 
 /**
+ * The key domain of a string key that metadata declares a digit sequence: zero-padded numbers of the declared
+ * length, at most ten digits.
+ *
+ * @param property the key property
+ * @returns the key domain
+ */
+function digitSequenceKeyDomain(property: SchemaProperty): GovernedStringKeyDomain {
+    const length = Math.min(property.maxLength ?? 8, 10);
+    if (length === 0) {
+        return { cardinality: 0, value: () => '' };
+    }
+    const span = length === 1 ? 10 : 9 * 10 ** (length - 1);
+    return {
+        cardinality: length === 1 ? 10 : cappedPower(10, length - 1),
+        value: (ordinal, offset = 0) => numericStringKey(length, (offset + ordinal) % span)
+    };
+}
+
+/**
+ * The key domain of a serial-number key: `SN` (or `S` in two characters) and an upper-case base-36 ordinal.
+ *
+ * @param property the key property
+ * @returns the key domain
+ */
+function serialNumberKeyDomain(property: SchemaProperty): GovernedStringKeyDomain {
+    const length = Math.min(property.maxLength ?? 18, 18);
+    if (length === 0) {
+        return { cardinality: 0, value: () => '' };
+    }
+    let prefix = '';
+    if (length >= 3) {
+        prefix = 'SN';
+    } else if (length === 2) {
+        prefix = 'S';
+    }
+    const suffixLength = length - prefix.length;
+    const cardinality = cappedPower(36, suffixLength);
+    return {
+        cardinality,
+        value: (ordinal) => `${prefix}${(ordinal % cardinality).toString(36).toUpperCase().padStart(suffixLength, '0')}`
+    };
+}
+
+/**
  * Keep governed key formatting and declared capacity on the same domain definition.
  *
  * @param property
@@ -142,35 +186,11 @@ function cappedPower(base: number, exponent: number): number {
 function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDomain | undefined {
     // A key that metadata declares a digit sequence is a zero-padded number, whatever its name.
     if (stringFacets(property).digits) {
-        const length = Math.min(property.maxLength ?? 8, 10);
-        if (length === 0) {
-            return { cardinality: 0, value: () => '' };
-        }
-        const span = length === 1 ? 10 : 9 * 10 ** (length - 1);
-        return {
-            cardinality: length === 1 ? 10 : cappedPower(10, length - 1),
-            value: (ordinal, offset = 0) => numericStringKey(length, (offset + ordinal) % span)
-        };
+        return digitSequenceKeyDomain(property);
     }
     const words = new Set(identifierTokens(property.name, { splitAcronyms: false }));
     if (words.has('serial')) {
-        const length = Math.min(property.maxLength ?? 18, 18);
-        if (length === 0) {
-            return { cardinality: 0, value: () => '' };
-        }
-        let prefix = '';
-        if (length >= 3) {
-            prefix = 'SN';
-        } else if (length === 2) {
-            prefix = 'S';
-        }
-        const suffixLength = length - prefix.length;
-        const cardinality = cappedPower(36, suffixLength);
-        return {
-            cardinality,
-            value: (ordinal) =>
-                `${prefix}${(ordinal % cardinality).toString(36).toUpperCase().padStart(suffixLength, '0')}`
-        };
+        return serialNumberKeyDomain(property);
     }
     // SAP business-object keys named by the object alone (`Customer`, `Supplier`, `SalesDocument`,
     // `AccountingDocument`) are numeric, like the DDIC types KUNNR, LIFNR, VBELN and BELNR.
@@ -726,13 +746,19 @@ function stringValue(property: SchemaProperty, hash: number, isCode: boolean): s
     return property.nullable ? null : '';
 }
 
+/** The cell a generated value fills: its entity, property and row, and the generation seed. */
+interface GeneratedCell {
+    entity: SchemaEntity;
+    property: SchemaProperty;
+    /** The zero-based row. */
+    rowIndex: number;
+    seed: number;
+}
+
 /**
  * One generated value together with the tier that produced it.
  *
- * @param entity the entity the value belongs to
- * @param property the property being filled
- * @param rowIndex the zero-based row
- * @param seed the generation seed
+ * @param cell the entity, property, row and seed of the value
  * @param role the routed semantic role, when one was accepted
  * @param rowContext the coherent per-row context shared by the value banks
  * @param keyOrdinal the planned ordinal for a key property
@@ -740,15 +766,13 @@ function stringValue(property: SchemaProperty, hash: number, isCode: boolean): s
  * @returns the value and the tier that wrote it
  */
 function sourcedValueFor(
-    entity: SchemaEntity,
-    property: SchemaProperty,
-    rowIndex: number,
-    seed: number,
+    cell: GeneratedCell,
     role: string | undefined,
     rowContext: SemanticRowContext,
     keyOrdinal?: number,
     generationProfile?: KeyGenerationProfile
 ): { value: JsonValue; tier: ValueTier } {
+    const { entity, property, rowIndex, seed } = cell;
     const hash = sha256Uint32(`${seed}:${entity.entitySetName}:${property.name}:${rowIndex}`);
     // A draft-enabled row is an active instance; its draft administration fields say so.
     const draftValue = activeDraftValue(entity, property);
@@ -894,14 +918,8 @@ function finiteKeyCardinality(property: SchemaProperty): number | undefined {
         const range = integerRange(property, 1, property.numericMaximum);
         return Math.min(SATURATED_KEY_CAPACITY, range.maximum - range.minimum + 1);
     }
-    if (property.primitiveType === 'string' && property.maxLength !== undefined) {
-        if (property.maxLength === 0) {
-            return 0;
-        }
-        return governedStringKeyDomain(property)?.cardinality ?? cappedPower(36, property.maxLength);
-    }
     if (property.primitiveType === 'string') {
-        return governedStringKeyDomain(property)?.cardinality;
+        return stringKeyCardinality(property);
     }
     if (property.primitiveType === 'decimal' && property.precision !== undefined) {
         return property.precision >= 4 ? SATURATED_KEY_CAPACITY : 10 ** property.precision;
@@ -910,12 +928,39 @@ function finiteKeyCardinality(property: SchemaProperty): number | undefined {
         return SATURATED_KEY_CAPACITY;
     }
     if (property.primitiveType === 'binary' && property.maxLength !== undefined) {
-        if (property.maxLength === 0) {
-            return 0;
-        }
-        return property.maxLength < 4 ? 1 : SATURATED_KEY_CAPACITY;
+        return binaryKeyCardinality(property.maxLength);
     }
     return undefined;
+}
+
+/**
+ * How many distinct values a string key can take: those of its governed format, else every base-36 string of
+ * its declared length.
+ *
+ * @param property the string key property
+ * @returns the cardinality, or undefined for an unbounded key
+ */
+function stringKeyCardinality(property: SchemaProperty): number | undefined {
+    if (property.maxLength === undefined) {
+        return governedStringKeyDomain(property)?.cardinality;
+    }
+    if (property.maxLength === 0) {
+        return 0;
+    }
+    return governedStringKeyDomain(property)?.cardinality ?? cappedPower(36, property.maxLength);
+}
+
+/**
+ * How many distinct values a binary key of a declared length can take: base64 needs four characters per value.
+ *
+ * @param maxLength the declared length of the encoded key
+ * @returns the cardinality
+ */
+function binaryKeyCardinality(maxLength: number): number {
+    if (maxLength === 0) {
+        return 0;
+    }
+    return maxLength < 4 ? 1 : SATURATED_KEY_CAPACITY;
 }
 
 function keyPlan(
@@ -1205,9 +1250,10 @@ function connectedDomainComponents(
         const [first] = remaining;
         remaining.delete(first);
         const component = [first];
-        for (let index = 0; index < component.length; index += 1) {
-            const current = component[index];
-            for (const candidate of [...remaining]) {
+        // The component grows while it is walked; the array iterator visits the appended domains too.
+        for (const current of component) {
+            // Deleting the visited domain from the set does not disturb the iteration over the others.
+            for (const candidate of remaining) {
                 if (domainsOverlap(current, candidate)) {
                     remaining.delete(candidate);
                     component.push(candidate);
@@ -1254,7 +1300,7 @@ function compatibleDomainCandidates(
     assignment: Readonly<Record<string, JsonValue>>,
     budget: RelationshipSearchBudget
 ): ReadonlyArray<Readonly<Record<string, JsonValue>>> {
-    const sharedNames = domain.propertyNames.filter((name) => Object.prototype.hasOwnProperty.call(assignment, name));
+    const sharedNames = domain.propertyNames.filter((name) => Object.hasOwn(assignment, name));
     if (sharedNames.length === 0) {
         return domain.candidates;
     }
@@ -1300,7 +1346,7 @@ function findCompatibleRelationshipAssignment(
             }
             const candidate = candidates[(rowIndex + offset) % candidates.length];
             const entries = Object.entries(candidate);
-            const added = entries.filter(([name]) => !Object.prototype.hasOwnProperty.call(assignment, name));
+            const added = entries.filter(([name]) => !Object.hasOwn(assignment, name));
             entries.forEach(([name, value]) => (assignment[name] = value));
             if (visit(domainIndex + 1)) {
                 return true;
@@ -1520,10 +1566,7 @@ function initialRow(
             }
             const profile = property.isKey ? keyProfile(entity, property, generationProfiles) : undefined;
             const sourced = sourcedValueFor(
-                entity,
-                property,
-                rowIndex,
-                seed,
+                { entity, property, rowIndex, seed },
                 profile
                     ? keyRole(entity, property, profile, classifications)
                     : routedRole(classifications.get(semanticPropertyKey(entity.entitySetName, property.name))),

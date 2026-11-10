@@ -35,6 +35,94 @@ interface OwnedValueList {
     shared: ReadonlySet<string>;
 }
 
+/** Whether a value fits a field: its constraints and its planned role's format. */
+type FallbackFit = (entity: SchemaEntity, property: SchemaProperty, value: JsonValue) => boolean;
+
+/** What filling the empty generated string cells of one entity reads, and the replacements it collects. */
+interface EntityFallbackFill {
+    entity: SchemaEntity;
+    rows: ReadonlyArray<MockDataRow>;
+    /** Whether each row was generated, not supplied. */
+    generated: ReadonlyArray<boolean>;
+    /** The code field of each code text, by text field name. */
+    codeOf: ReadonlyMap<string, string>;
+    fits: FallbackFit;
+    /** The filled values by row index. */
+    replacements: Map<number, Record<string, JsonValue>>;
+}
+
+/**
+ * Fill a field's empty generated cells with the standard fallback. The text of a code takes the ordinal of the
+ * first row holding the same code, so equal codes get equal texts.
+ *
+ * @param fill the entity being filled
+ * @param property the fillable string field
+ * @returns the number of cells filled
+ */
+function fillPropertyFallbacks(fill: EntityFallbackFill, property: SchemaProperty): number {
+    const { entity, rows, generated, fits, replacements } = fill;
+    const code = fill.codeOf.get(property.name);
+    const firstRowOfCode = new Map<string, number>();
+    rows.forEach((row, index) => {
+        const key = code === undefined ? undefined : JSON.stringify(row[code] ?? null);
+        if (key !== undefined && !firstRowOfCode.has(key)) {
+            firstRowOfCode.set(key, index);
+        }
+    });
+    let filled = 0;
+    for (const [index, row] of rows.entries()) {
+        if (!generated[index] || !isEmpty(row[property.name])) {
+            continue;
+        }
+        const ordinal = code === undefined ? index : (firstRowOfCode.get(JSON.stringify(row[code] ?? null)) ?? index);
+        const value = fallbackValue(entity, property, ordinal);
+        if (value !== undefined && fits(entity, property, value)) {
+            replacements.set(index, { ...replacements.get(index), [property.name]: value });
+            filled += 1;
+        }
+    }
+    return filled;
+}
+
+/**
+ * Copy value-help values into owner rows until nothing changes. A value-help row may itself receive a copy from
+ * its own value help, so copying repeats; each pass only fills empty cells, so there are at most as many
+ * productive passes as lists.
+ *
+ * @param graph service schema
+ * @param lists the owned value lists
+ * @param output the rows by resource, updated in place
+ * @param existingData the caller's existing rows
+ * @param fits whether a value fits a field
+ * @returns the number of cells filled
+ */
+function copyValueHelpFallbacks(
+    graph: SchemaGraph,
+    lists: ReadonlyArray<OwnedValueList>,
+    output: Record<string, ReadonlyArray<MockDataRow>>,
+    existingData: Readonly<Record<string, ExistingMockData>>,
+    fits: FallbackFit
+): number {
+    let filled = 0;
+    for (let pass = 0; pass <= lists.length; pass++) {
+        let copiedInPass = 0;
+        for (const list of lists) {
+            const rows = output[list.entity.entitySetName];
+            if (rows === undefined) {
+                continue;
+            }
+            const copied = copyFromValueHelp(graph, list, rows, output, existingData, fits);
+            output[list.entity.entitySetName] = copied.rows;
+            copiedInPass += copied.filled;
+        }
+        filled += copiedInPass;
+        if (copiedInPass === 0) {
+            break;
+        }
+    }
+    return filled;
+}
+
 /**
  * Fill the generated string cells no tier gave a value the way the standard mock server does
  * ({@link standardFallbackValue}), as the last step. Code texts, value-list tuples, supplied rows, keys, enumerations
@@ -68,10 +156,16 @@ export function applyStandardFallback(
         if (rows === undefined) {
             continue;
         }
-        const generated = generatedRowFlags(entity, rows, existingData);
-        const codeOf = new Map(codeTextPairs(entity).map(({ code, text }) => [text.name, code.name]));
         const excluded = held.get(entity.entitySetName) ?? new Set<string>();
         const governed = coherencePropertyNames(entity, coherence[entity.entitySetName] ?? ['temporal']);
+        const entityFill: EntityFallbackFill = {
+            entity,
+            rows,
+            generated: generatedRowFlags(entity, rows, existingData),
+            codeOf: new Map(codeTextPairs(entity).map(({ code, text }) => [text.name, code.name])),
+            fits,
+            replacements: new Map<number, Record<string, JsonValue>>()
+        };
         // An empty indicator says "no", so it holds a value already, as does a field a coherence rule decides.
         const fillable = entity.properties.filter(
             (property) =>
@@ -80,49 +174,12 @@ export function applyStandardFallback(
                 !governed.has(property.name) &&
                 !holdsTruthValue(roles[semanticPropertyKey(entity.entitySetName, property.name)])
         );
-        const replacements = new Map<number, Record<string, JsonValue>>();
         for (const property of fillable) {
-            const code = codeOf.get(property.name);
-            const firstRowOfCode = new Map<string, number>();
-            rows.forEach((row, index) => {
-                const key = code === undefined ? undefined : JSON.stringify(row[code] ?? null);
-                if (key !== undefined && !firstRowOfCode.has(key)) {
-                    firstRowOfCode.set(key, index);
-                }
-            });
-            for (const [index, row] of rows.entries()) {
-                if (!generated[index] || !isEmpty(row[property.name])) {
-                    continue;
-                }
-                const ordinal =
-                    code === undefined ? index : (firstRowOfCode.get(JSON.stringify(row[code] ?? null)) ?? index);
-                const value = fallbackValue(entity, property, ordinal);
-                if (value !== undefined && fits(entity, property, value)) {
-                    replacements.set(index, { ...replacements.get(index), [property.name]: value });
-                    filled += 1;
-                }
-            }
+            filled += fillPropertyFallbacks(entityFill, property);
         }
-        output[entity.entitySetName] = withReplacements(rows, replacements);
+        output[entity.entitySetName] = withReplacements(rows, entityFill.replacements);
     }
-    // A value-help row may itself receive a copy from its own value help, so copying repeats until nothing
-    // changes. Each pass only fills empty cells, so there are at most as many productive passes as lists.
-    for (let pass = 0; pass <= lists.length; pass++) {
-        let copiedInPass = 0;
-        for (const list of lists) {
-            const rows = output[list.entity.entitySetName];
-            if (rows === undefined) {
-                continue;
-            }
-            const copied = copyFromValueHelp(graph, list, rows, output, existingData, fits);
-            output[list.entity.entitySetName] = copied.rows;
-            copiedInPass += copied.filled;
-        }
-        filled += copiedInPass;
-        if (copiedInPass === 0) {
-            break;
-        }
-    }
+    filled += copyValueHelpFallbacks(graph, lists, output, existingData, fits);
     const checked = undoChangesBreakingFinalChecks(graph, resources, output, existingData, roles);
     return {
         resources: checked.resources,

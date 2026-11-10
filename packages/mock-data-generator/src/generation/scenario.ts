@@ -1,8 +1,9 @@
-import type { SchemaGraph } from '../schema/graph.js';
-import type { ExistingMockData, MockDataGeneratorDiagnostic, SyntheticScenario } from '../types.js';
+import type { SchemaEntity, SchemaGraph, SchemaProperty } from '../schema/graph.js';
+import type { ExistingMockData, JsonValue, MockDataGeneratorDiagnostic, SyntheticScenario } from '../types.js';
 import { propertyValueIsValid } from './constraints.js';
 import { isIbanCountry } from '../semantics/bank-store.js';
 import { hasAuthoritativeRows } from './rows.js';
+import type { AuthoritativeInitialRows } from './rows.js';
 import { MOCKGEN_ERROR_CODE, MockGenError } from '../errors.js';
 
 /**
@@ -20,106 +21,17 @@ export function applyApplicationDomains(
     return {
         ...graph,
         entities: graph.entities.map((entity) => {
-            const domains = new Map<string, ReadonlyArray<string | number | boolean>>();
+            const context: DomainBindingContext = {
+                graph,
+                entity,
+                existingData,
+                diagnostics,
+                domains: new Map<string, ReadonlyArray<ScalarValue>>()
+            };
             for (const owner of entity.properties) {
-                const collection = owner.links?.valueListCollection;
-                const initial = collection ? existingData[collection]?.initialRows : undefined;
-                if (!hasAuthoritativeRows(initial)) {
-                    continue;
-                }
-                if (initial.rows?.length === 0) {
-                    diagnostics.push({
-                        code: 'SEMANTIC_DOMAIN_CONFLICT',
-                        severity: 'warning',
-                        target: `${entity.entitySetName}.${owner.name}`,
-                        message: `Authored value-list collection ${collection} is present but empty; no scalar domain was bound.`
-                    });
-                    continue;
-                }
-                for (const mapping of owner.links?.valueListMappings ?? []) {
-                    const parameter = owner.links?.valueListParameters?.find(
-                        ({ localProperty, valueListProperty }) =>
-                            localProperty === mapping.localProperty && valueListProperty === mapping.valueListProperty
-                    );
-                    if (parameter && parameter.direction !== 'In' && parameter.direction !== 'InOut') {
-                        continue;
-                    }
-                    const property = entity.properties.find(({ name }) => name === mapping.localProperty);
-                    if (!property) {
-                        continue;
-                    }
-                    // Relationship assignment is resolved as a tuple later. Do not turn a
-                    // potentially conflicting value help into an unconditional scalar facet.
-                    if (
-                        graph.relationships.some(
-                            (relationship) =>
-                                (relationship.fromEntitySet === entity.entitySetName &&
-                                    relationship.mappings.some(
-                                        ({ sourceProperty }) => sourceProperty === property.name
-                                    )) ||
-                                (relationship.toEntitySet === entity.entitySetName &&
-                                    relationship.mappings.some(
-                                        ({ targetProperty }) => targetProperty === property.name
-                                    ))
-                        )
-                    ) {
-                        const related = graph.relationships.filter(
-                            (relationship) =>
-                                relationship.fromEntitySet === entity.entitySetName &&
-                                relationship.mappings.some(({ sourceProperty }) => sourceProperty === property.name)
-                        );
-                        if (
-                            related.some((relationship) => {
-                                const targetRows = existingData[relationship.toEntitySet]?.initialRows;
-                                return (
-                                    hasAuthoritativeRows(targetRows) &&
-                                    targetRows.rows.some((targetRow) =>
-                                        relationship.mappings.some(
-                                            ({ sourceProperty, targetProperty }) =>
-                                                sourceProperty === property.name &&
-                                                !initial.rows.some(
-                                                    (candidate) =>
-                                                        candidate[mapping.valueListProperty] ===
-                                                        targetRow[targetProperty]
-                                                )
-                                        )
-                                    )
-                                );
-                            })
-                        ) {
-                            diagnostics.push({
-                                code: 'SEMANTIC_DOMAIN_CONFLICT',
-                                severity: 'warning',
-                                target: `${entity.entitySetName}.${property.name}`,
-                                message: 'Authored value-list tuples cannot satisfy protected relationship assignments.'
-                            });
-                        }
-                        continue;
-                    }
-                    const previous = domains.get(property.name) ?? property.enumValues;
-                    const candidates = initial.rows
-                        .map((row) => row[mapping.valueListProperty])
-                        .filter(
-                            (value): value is string | number | boolean =>
-                                (typeof value === 'string' ||
-                                    typeof value === 'number' ||
-                                    typeof value === 'boolean') &&
-                                propertyValueIsValid(property, value) &&
-                                (!previous || previous.includes(value))
-                        );
-                    const values = [...new Set(candidates)];
-                    if (!values.length) {
-                        diagnostics.push({
-                            code: 'SEMANTIC_DOMAIN_CONFLICT',
-                            severity: 'warning',
-                            target: `${entity.entitySetName}.${property.name}`,
-                            message: 'Authored value-help rows provide no values compatible with the field constraints.'
-                        });
-                    } else {
-                        domains.set(property.name, values);
-                    }
-                }
+                bindOwnerDomains(context, owner);
             }
+            const { domains } = context;
             return {
                 ...entity,
                 properties: entity.properties.map((property) =>
@@ -128,6 +40,166 @@ export function applyApplicationDomains(
             };
         })
     };
+}
+
+/** A scalar domain value. */
+type ScalarValue = string | number | boolean;
+
+/** What binding the authored value-help domains of one entity reads, reports to and fills. */
+interface DomainBindingContext {
+    graph: SchemaGraph;
+    entity: SchemaEntity;
+    existingData: Readonly<Record<string, ExistingMockData>>;
+    diagnostics: MockDataGeneratorDiagnostic[];
+    /** The bound domains of the entity, by property name. */
+    domains: Map<string, ReadonlyArray<ScalarValue>>;
+}
+
+/** A value-list mapping of a value-help field. */
+type ValueListMapping = Readonly<{ localProperty: string; valueListProperty: string }>;
+
+/**
+ * Bind the domains a field's authored, enumerable value-list collection supplies to the fields it maps.
+ *
+ * @param context the entity being bound
+ * @param owner the field that declares the value list
+ */
+function bindOwnerDomains(context: DomainBindingContext, owner: SchemaProperty): void {
+    const { entity, existingData, diagnostics } = context;
+    const collection = owner.links?.valueListCollection;
+    const initial = collection ? existingData[collection]?.initialRows : undefined;
+    if (!hasAuthoritativeRows(initial)) {
+        return;
+    }
+    if (initial.rows?.length === 0) {
+        diagnostics.push({
+            code: 'SEMANTIC_DOMAIN_CONFLICT',
+            severity: 'warning',
+            target: `${entity.entitySetName}.${owner.name}`,
+            message: `Authored value-list collection ${collection} is present but empty; no scalar domain was bound.`
+        });
+        return;
+    }
+    for (const mapping of owner.links?.valueListMappings ?? []) {
+        bindMappingDomain(context, owner, initial, mapping);
+    }
+}
+
+/**
+ * Bind the domain one value-list mapping supplies to its local field, unless the mapping only reads the field,
+ * the field is unknown, or the field takes part in a relationship (whose tuples are resolved later).
+ *
+ * @param context the entity being bound
+ * @param owner the field that declares the value list
+ * @param initial the authored rows of the value-list collection
+ * @param mapping the mapping
+ */
+function bindMappingDomain(
+    context: DomainBindingContext,
+    owner: SchemaProperty,
+    initial: AuthoritativeInitialRows,
+    mapping: ValueListMapping
+): void {
+    const { graph, entity, diagnostics, domains } = context;
+    const parameter = owner.links?.valueListParameters?.find(
+        ({ localProperty, valueListProperty }) =>
+            localProperty === mapping.localProperty && valueListProperty === mapping.valueListProperty
+    );
+    if (parameter && parameter.direction !== 'In' && parameter.direction !== 'InOut') {
+        return;
+    }
+    const property = entity.properties.find(({ name }) => name === mapping.localProperty);
+    if (!property) {
+        return;
+    }
+    // Relationship assignment is resolved as a tuple later. Do not turn a
+    // potentially conflicting value help into an unconditional scalar facet.
+    if (isRelationshipField(graph, entity, property)) {
+        if (relationshipConflictsWithValueList(context, property, initial, mapping)) {
+            diagnostics.push({
+                code: 'SEMANTIC_DOMAIN_CONFLICT',
+                severity: 'warning',
+                target: `${entity.entitySetName}.${property.name}`,
+                message: 'Authored value-list tuples cannot satisfy protected relationship assignments.'
+            });
+        }
+        return;
+    }
+    const previous = domains.get(property.name) ?? property.enumValues;
+    const candidates = initial.rows
+        .map((row) => row[mapping.valueListProperty])
+        .filter(
+            (value): value is ScalarValue =>
+                (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') &&
+                propertyValueIsValid(property, value) &&
+                (!previous || previous.includes(value))
+        );
+    const values = [...new Set(candidates)];
+    if (!values.length) {
+        diagnostics.push({
+            code: 'SEMANTIC_DOMAIN_CONFLICT',
+            severity: 'warning',
+            target: `${entity.entitySetName}.${property.name}`,
+            message: 'Authored value-help rows provide no values compatible with the field constraints.'
+        });
+    } else {
+        domains.set(property.name, values);
+    }
+}
+
+/**
+ * Whether a field is a source or target field of a relationship of its entity.
+ *
+ * @param graph schema graph
+ * @param entity the entity
+ * @param property the field
+ * @returns true for a relationship field
+ */
+function isRelationshipField(graph: SchemaGraph, entity: SchemaEntity, property: SchemaProperty): boolean {
+    return graph.relationships.some(
+        (relationship) =>
+            (relationship.fromEntitySet === entity.entitySetName &&
+                relationship.mappings.some(({ sourceProperty }) => sourceProperty === property.name)) ||
+            (relationship.toEntitySet === entity.entitySetName &&
+                relationship.mappings.some(({ targetProperty }) => targetProperty === property.name))
+    );
+}
+
+/**
+ * Whether an authored target row of a relationship from the field holds a value the value list cannot supply.
+ *
+ * @param context the entity being bound
+ * @param property the relationship source field
+ * @param initial the authored rows of the value-list collection
+ * @param mapping the value-list mapping of the field
+ * @returns true when the value list conflicts with the relationship
+ */
+function relationshipConflictsWithValueList(
+    context: DomainBindingContext,
+    property: SchemaProperty,
+    initial: AuthoritativeInitialRows,
+    mapping: ValueListMapping
+): boolean {
+    const { graph, entity, existingData } = context;
+    const listed = (value: JsonValue | undefined): boolean =>
+        initial.rows.some((candidate) => candidate[mapping.valueListProperty] === value);
+    const related = graph.relationships.filter(
+        (relationship) =>
+            relationship.fromEntitySet === entity.entitySetName &&
+            relationship.mappings.some(({ sourceProperty }) => sourceProperty === property.name)
+    );
+    return related.some((relationship) => {
+        const targetRows = existingData[relationship.toEntitySet]?.initialRows;
+        return (
+            hasAuthoritativeRows(targetRows) &&
+            targetRows.rows.some((targetRow) =>
+                relationship.mappings.some(
+                    ({ sourceProperty, targetProperty }) =>
+                        sourceProperty === property.name && !listed(targetRow[targetProperty])
+                )
+            )
+        );
+    });
 }
 
 /**
@@ -250,7 +322,7 @@ export function applySyntheticScenario(
                 message: 'The field uses an explicitly configured synthetic domain, not an application-derived domain.'
             });
             const domain = values.filter(
-                (value): value is string | number | boolean =>
+                (value): value is ScalarValue =>
                     typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
             );
             return { ...property, enumValues: [...new Set(domain)] };

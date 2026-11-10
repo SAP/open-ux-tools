@@ -377,11 +377,10 @@ function conversionGroup(entity: SchemaEntity): ConversionGroup | undefined {
         : undefined;
 }
 
-/** A lifecycle flag's role, such as `available` or `deleted`, as the rule store's lifecycle profile names it. */
-type LifecycleRole = string;
-
-function lifecycleGroups(entity: SchemaEntity): ReadonlyArray<Readonly<Record<LifecycleRole, SchemaProperty>>> {
-    const groups = new Map<string, Record<LifecycleRole, SchemaProperty>>();
+// Groups are keyed by a lifecycle flag's role, such as `available` or `deleted`, as the rule store's lifecycle
+// profile names it.
+function lifecycleGroups(entity: SchemaEntity): ReadonlyArray<Readonly<Record<string, SchemaProperty>>> {
+    const groups = new Map<string, Record<string, SchemaProperty>>();
     for (const property of entity.properties) {
         if (property.primitiveType !== 'bool') {
             continue;
@@ -495,7 +494,7 @@ function reconcileDates(
  */
 function displayText(code: string): string | undefined {
     const parts = tokens(code);
-    return parts.length > 0 && parts.some((part) => /[a-z]/iu.test(part))
+    return parts.some((part) => /[a-z]/iu.test(part))
         ? parts.map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`).join(' ')
         : undefined;
 }
@@ -632,7 +631,7 @@ interface BalanceTuple {
 
 function balanceTupleIsValid(group: BalanceGroup, tuple: BalanceTuple): boolean {
     return (
-        Math.abs(tuple.opening + tuple.credit - tuple.debit - tuple.closing) < 0.000_001 &&
+        Math.abs(tuple.opening + tuple.credit - tuple.debit - tuple.closing) < 1e-6 &&
         propertyValueIsValid(group.opening, tuple.opening) &&
         propertyValueIsValid(group.debit, tuple.debit) &&
         propertyValueIsValid(group.credit, tuple.credit) &&
@@ -819,7 +818,7 @@ function reconcileConversion(
 
 function reconcileLifecycle(
     rows: ReadonlyArray<MutableRow>,
-    group: Readonly<Record<LifecycleRole, SchemaProperty>>,
+    group: Readonly<Record<string, SchemaProperty>>,
     seed: number,
     protectedProperties: ReadonlySet<string>
 ): void {
@@ -964,6 +963,29 @@ export function applySemanticCoherence(
     reconciled: Set<string> = new Set()
 ): ReadonlyArray<MockDataRow> {
     const rows = inputRows.map((row) => ({ ...row }));
+    const context: CoherencePass = { entity, seed, protectedProperties, rules };
+    reconcileFieldPairs(rows, context, reconciled);
+    reconcileFieldGroups(rows, context);
+    return rows;
+}
+
+/** What one coherence pass reconciles: the entity, the seed, the fields it leaves alone and the selected rules. */
+interface CoherencePass {
+    entity: SchemaEntity;
+    seed: number;
+    protectedProperties: ReadonlySet<string>;
+    rules: readonly SyntheticCoherenceRule[];
+}
+
+/**
+ * Reconcile the date pairs, status code and text pairs, units and monetary groups of the rows.
+ *
+ * @param rows the rows, updated in place
+ * @param context the coherence pass
+ * @param reconciled receives the status fields this pass supplied values for
+ */
+function reconcileFieldPairs(rows: MockDataRow[], context: CoherencePass, reconciled: Set<string>): void {
+    const { entity, seed, protectedProperties, rules } = context;
     for (const [start, end] of rules.includes('temporal') ? datePairs(entity) : []) {
         rows.forEach((row, rowIndex) => reconcileDates(row, start, end, rowIndex, protectedProperties));
     }
@@ -985,6 +1007,16 @@ export function applySemanticCoherence(
             reconcileMonetaryGroup(rows, { ...monetaryGroup, amounts }, protectedProperties);
         }
     }
+}
+
+/**
+ * Reconcile the balance, conversion, lifecycle, draft, processing-status and country-phone groups of the rows.
+ *
+ * @param rows the rows, updated in place
+ * @param context the coherence pass
+ */
+function reconcileFieldGroups(rows: MockDataRow[], context: CoherencePass): void {
+    const { entity, seed, protectedProperties, rules } = context;
     const balance = balanceGroup(entity);
     if (balance && rules.includes('balance')) {
         rows.forEach((row) => reconcileBalance(row, balance, protectedProperties));
@@ -1008,5 +1040,4 @@ export function applySemanticCoherence(
     if (countryPhones.length > 0 && rules.includes('country-phone')) {
         reconcileCountryPhones(rows, countryPhones, seed, protectedProperties);
     }
-    return rows;
 }

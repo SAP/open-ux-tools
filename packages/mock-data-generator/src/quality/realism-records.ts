@@ -2,6 +2,7 @@ import type { SchemaEntity } from '../schema/graph.js';
 import type { JsonValue, MockDataRow } from '../types.js';
 import { generatedRows, heldAs, OutcomeCollector, REALISM_CHECK } from './realism-types.js';
 import type { CheckOutcome, RealismInput } from './realism-types.js';
+import { cellText } from '../guards.js';
 
 /** A kind of record identified by an ISO code, with the host's ICU data to recognise its codes and names. */
 interface RecordKind {
@@ -72,7 +73,7 @@ function checkRecordEntity(
     minimum: number
 ): void {
     const key = entity.properties.find(({ isKey }) => isKey)?.name ?? '';
-    const names = new Set(rows.map((row) => kind.nameOf(String(row[key]))).filter(Boolean));
+    const names = new Set(rows.map((row) => kind.nameOf(cellText(row[key]))).filter(Boolean));
     for (const property of entity.properties.filter(
         ({ isKey, primitiveType }) => !isKey && primitiveType === 'string'
     )) {
@@ -84,7 +85,7 @@ function checkRecordEntity(
             continue;
         }
         const failing = rows.flatMap((row) => {
-            const recorded = codeColumn ? row[key] : kind.nameOf(String(row[key]));
+            const recorded = codeColumn ? row[key] : kind.nameOf(cellText(row[key]));
             const expected = heldAs(property, recorded);
             // A field whose facets cannot hold the record's value (letters in a digit sequence) is not judged.
             const comparable = recorded === undefined || expected !== undefined;
