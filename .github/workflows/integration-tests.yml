@@ -21,26 +21,32 @@ jobs:
                 key: ui5-versions-dummy
                 restore-keys: ui5-versions-
             - name: Checkout code repository
-              if: steps.cache-restore.outputs.cache-hit != 'true'
+              if: steps.cache-restore.outputs.cache-matched-key == ''
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
               with:
                   fetch-depth: 0
             - name: Use Node.js 22.x
-              if: steps.cache-restore.outputs.cache-hit != 'true'
+              if: steps.cache-restore.outputs.cache-matched-key == ''
               uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
               with:
                   node-version: 22.x
             - name: Setup pnpm
-              if: steps.cache-restore.outputs.cache-hit != 'true'
+              if: steps.cache-restore.outputs.cache-matched-key == ''
               uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
             - name: Install pnpm modules
-              if: steps.cache-restore.outputs.cache-hit != 'true'
+              if: steps.cache-restore.outputs.cache-matched-key == ''
               run: pnpm install
             - name: Generate UI5 versions (cache miss fallback)
-              if: steps.cache-restore.outputs.cache-hit != 'true'
+              if: steps.cache-restore.outputs.cache-matched-key == ''
               run: |
                   pnpm --filter @sap-ux/ui5-info... build
                   cd tests/integration/adaptation-editor && pnpm exec node version.js
+            - name: Save generated UI5 versions to cache
+              if: steps.cache-restore.outputs.cache-matched-key == ''
+              uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+              with:
+                  path: tests/integration/adaptation-editor/versions.json
+                  key: ui5-versions-${{ github.run_id }}-${{ github.run_attempt }}
             - name: Output UI5 versions
               id: output-ui5-versions
               run: |
