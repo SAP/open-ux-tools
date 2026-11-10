@@ -1,16 +1,32 @@
+import { isNeedsUserAction, UFA_PREFIX } from '../browser/index.js';
 import type { FrontendActionResult, FrontendActionTransport } from '../browser/index.js';
+import { formatXml, persistMetadata } from '../../../utils/index.js';
+import { buildMetadataUrl, looksLikeEdmx } from './odata-metadata.js';
+import { DEFAULT_DESCRIBE_UI_DEPTH, trimTreeToDepth } from './ui-tree.js';
 import type {
     ActionsCatalog,
+    DescribeUiResult,
     EditorPage,
     ElementContext,
-    InteractiveElement,
+    ExecuteUfaActionResult,
+    GetODataMetadataResult,
+    ODataMetadataEntry,
     Overlay,
-    PageActionRunResult,
-    RegisteredPageAction
+    UiElementNode
 } from './types.js';
 
 const ACTION_PREFIX = 'com.sap.ui.flex';
 const ACTION_VERSION = 'v1';
+
+// describe_ui exists for navigation: the caller needs each node's id (to press),
+// type and label (to recognize the control), and the children structure — never a
+// control's `value`. Left unscoped, describeUI includes `value`, and for some
+// controls `value` is the live UI5 control object itself; serializing one such
+// node produced a ~6 MB payload on a real Object Page (99%+ of it a single node's
+// `value`). Defaulting includedProperties to the navigation-relevant fields drops
+// `value` and keeps the response ~200x smaller. ('text' maps to label, 'Type' to
+// type in UITreeReader's PROP_NAME_MAP; 'children' is always retained by it.)
+const NAVIGATION_PROPERTIES = ['id', 'text', 'Type'];
 
 /**
  * Error raised when a Joule frontend action returns `isSuccess === false`.
@@ -41,7 +57,27 @@ export class FrontendActionError extends Error {
 const action = (name: string): string => `${ACTION_PREFIX}.${name}.${ACTION_VERSION}`;
 
 /**
+ * Raised when a first editor call lands on a backend login page (CF XSUAA / ABAP
+ * reentrance) instead of the app. The browser driver encodes this as a reserved
+ * `backend_login_required` sentinel payload on an otherwise-successful envelope;
+ * {@link unwrap} decodes it centrally so any step — not just `start` — surfaces the
+ * login prompt rather than returning the sentinel as a mistyped result.
+ */
+export class BackendLoginRequiredError extends Error {
+    /**
+     * @param guidance Human-readable instruction for completing the interactive login.
+     */
+    constructor(public readonly guidance: string) {
+        super(guidance);
+        this.name = 'BackendLoginRequiredError';
+    }
+}
+
+/**
  * Returns the result payload on success; throws `FrontendActionError` on failure.
+ * A reserved `backend_login_required` sentinel payload is decoded here and raised as
+ * {@link BackendLoginRequiredError}, so every caller surfaces the login prompt instead
+ * of treating the sentinel as a valid `T`.
  *
  * @param actionName Fully-qualified action name, used in the error message.
  * @param result Frontend action result envelope.
@@ -52,19 +88,48 @@ function unwrap<T>(actionName: string, result: FrontendActionResult<T>): T {
         const code = result.error?.code ?? 'GENERIC_ERROR';
         throw new FrontendActionError(actionName, code, result.error?.message);
     }
+    if (isNeedsUserAction(result.payload)) {
+        throw new BackendLoginRequiredError(result.payload.message);
+    }
     return result.payload as T;
 }
 
 /**
- * Starts Runtime Authoring on the editor page.
+ * Result of a `startRta` call. On the normal path `rtaStarted` is `true`. When
+ * the editor URL served a backend login page (CF XSUAA / ABAP reentrance),
+ * `rtaStarted` is `false` and `needsUserAction` carries the structured signal
+ * so the caller can prompt the human to log in and retry — instead of throwing.
+ */
+export interface StartRtaResult {
+    rtaStarted: boolean;
+    needsUserAction?: 'backend_login_required';
+    message?: string;
+}
+
+/**
+ * Starts Runtime Authoring on the editor page. The caller (the browser driver) awaits the
+ * editor's `app-loaded` signal before invoking this, so `startRTA` does not race
+ * a half-booted RuntimeAuthoring.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns `{ rtaStarted: true }` once RTA has started.
+ * @returns `{ rtaStarted: true }` once RTA has started, or a `backend_login_required` signal.
  */
-export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<{ rtaStarted: boolean }> {
+export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<StartRtaResult> {
     const name = action('startRTA');
-    return unwrap(name, await transport.callFrontendAction<{ rtaStarted: boolean }>(page.site, name, {}, page.frameId));
+    try {
+        // `start`/`restart` is the only path allowed to open a fresh editor page.
+        unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId, true));
+        return { rtaStarted: true };
+    } catch (error) {
+        // `unwrap` decodes the backend-login sentinel into this error for every
+        // caller; `start` is the one that treats it as a benign retry signal
+        // (prompt the user to log in) rather than a hard failure.
+        if (error instanceof BackendLoginRequiredError) {
+            return { rtaStarted: false, needsUserAction: 'backend_login_required', message: error.guidance };
+        }
+        throw error;
+    }
 }
 
 /**
@@ -184,76 +249,130 @@ export async function stopRta(transport: FrontendActionTransport, page?: EditorP
 }
 
 /**
- * Returns currently-applicable registered page actions plus a best-effort
- * scan of press-able controls in the live view (root view, static area,
- * open dialogs/popovers).
+ * Returns a hierarchical tree of the current UI elements via the Unified
+ * Frontend Action `describeUI`. Each node carries a UI5 control id, type,
+ * label, and children. Use the `id` values as `elementId` in `executeUfaAction`.
+ * The response is scoped to {@link NAVIGATION_PROPERTIES} so a large page returns
+ * a navigation-sized tree rather than every control's (potentially huge) value.
  *
- * `interactiveTruncated` is set to `true` when the scanner hit its internal
- * cap; in that case some press-able controls were omitted from `interactive`.
+ * Without `rootElementId` the tree is trimmed to {@link DEFAULT_DESCRIBE_UI_DEPTH}
+ * so a large page returns a shallow overview instead of thousands of nodes; a node
+ * with hidden children is marked `truncated` with a `childCount`. With
+ * `rootElementId` the caller is drilling into a specific (already small) subtree,
+ * so the full depth of that subtree is returned.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns Registered actions, interactive elements, and an optional truncation flag.
+ * @param rootElementId Optional UI5 control id to scope the tree to a subtree.
+ * @returns The UI element tree rooted at the given element (or the page root).
  */
-export async function getPageActions(
+export async function describeUi(
     transport: FrontendActionTransport,
-    page: EditorPage
-): Promise<{
-    registered: RegisteredPageAction[];
-    interactive: InteractiveElement[];
-    interactiveTruncated?: true;
-}> {
-    const name = action('getPageActions');
-    return unwrap(
+    page: EditorPage,
+    rootElementId?: string
+): Promise<DescribeUiResult> {
+    const name = `${UFA_PREFIX}describeUI`;
+    const params: Record<string, unknown> = { includedProperties: NAVIGATION_PROPERTIES };
+    if (rootElementId !== undefined) {
+        params.rootElementId = rootElementId;
+    }
+    // ActionHelpers.describeUI returns the rendered controls as a FOREST (an array of
+    // top-level nodes), not a single root; the transport normalizes it into the Flex
+    // envelope, so `unwrap` yields that array (and throws FrontendActionError if the
+    // runtime reported a failure, e.g. root not found).
+    const forest = unwrap(
         name,
-        await transport.callFrontendAction<{
-            registered: RegisteredPageAction[];
-            interactive: InteractiveElement[];
-            interactiveTruncated?: true;
-        }>(page.site, name, {}, page.frameId)
+        await transport.callFrontendAction<UiElementNode[]>(page.site, name, params, page.frameId)
     );
+    // describeUI has no depth parameter, so trim here: a scoped (rootElementId) call
+    // is an intentional drill-down and returns its full subtree; an unscoped call
+    // returns a shallow overview (each top-level node trimmed) the caller can expand.
+    return rootElementId !== undefined
+        ? forest
+        : forest.map((node) => trimTreeToDepth(node, DEFAULT_DESCRIBE_UI_DEPTH));
 }
 
 /**
- * Invokes a registered page action by id. The action's `isValid` is
- * re-checked before `run()`; a stale "valid" from a previous
- * `getPageActions` falls through as `needs_user_action`.
+ * Executes a Unified Frontend Action (UFA) on the running app. The primary
+ * use-case is navigation: pass `actionName: "press"` and `elementId` set to a
+ * UI5 control id (as returned by `describeUi`) to trigger a click.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @param id Action id, e.g. `loadData`.
- * @returns The page-action run result.
+ * @param actionName UFA action name, e.g. `"press"`.
+ * @param elementId Optional UI5 control id to target.
+ * @param actionParameters Optional free-form key/value parameters for the action.
+ * @returns `{ isSuccess, result }` — `isSuccess` is `false` when the action could not run.
  */
-export async function callPageAction(
+export async function executeUfaAction(
     transport: FrontendActionTransport,
     page: EditorPage,
-    id: string
-): Promise<PageActionRunResult> {
-    const name = action('callPageAction');
-    return unwrap(name, await transport.callFrontendAction<PageActionRunResult>(page.site, name, { id }, page.frameId));
+    actionName: string,
+    elementId?: string,
+    actionParameters?: Record<string, unknown>
+): Promise<ExecuteUfaActionResult> {
+    const name = `${UFA_PREFIX}executeAction`;
+    const params: Record<string, unknown> = { actionName };
+    if (elementId !== undefined) {
+        params.elementId = elementId;
+    }
+    if (actionParameters !== undefined) {
+        params.actionParameters = actionParameters;
+    }
+    // A failed press is not exceptional — the caller decides what to do — so read the
+    // normalized envelope directly instead of unwrapping (which would throw). On success
+    // the raw UFA result is in `payload`; on failure the transport puts the reason in
+    // `error`, so surface that (the skill tells callers to report it to the user).
+    const result = await transport.callFrontendAction<unknown>(page.site, name, params, page.frameId);
+    return {
+        isSuccess: result.isSuccess,
+        result: result.isSuccess ? result.payload : (result.error ?? result.payload)
+    };
 }
 
 /**
- * Triggers a real user-gesture click on the control with `controlId` and
- * waits best-effort for the page to settle. The page probes a handful of
- * observable signals (registered-action set, ObjectPage selected section,
- * focus, open dialogs, location hash) at 200 / 400 / 800 ms after the
- * click; the result `note` describes the change or reports
- * `"no observable state change"`.
+ * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
+ * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
+ * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
+ * `error`, small EDMX is returned inline as `metadata`, and large EDMX is spilled to `.context`
+ * as `{ metadataFile, sizeBytes }` (see `persistMetadata`).
  *
- * @param transport Transport used to deliver the call.
- * @param page Target editor page.
- * @param controlId DOM/UI5 id of the element to press.
- * @returns The page-action run result.
+ * @param transport Transport whose `fetchViaContext` carries the auth cookies.
+ * @param site Editor URL returned by `start`; its origin is the fetch target.
+ * @param uris OData data-source URIs (the `entries[].url` from `read_odata_metadata_adp`).
+ * @param appPath Adaptation project root; large metadata is saved under its `.context`.
+ * @returns One entry per URI: inline `metadata`, a `metadataFile` reference, or an `error`.
  */
-export async function pressInteractive(
+export async function getODataMetadata(
     transport: FrontendActionTransport,
-    page: EditorPage,
-    controlId: string
-): Promise<PageActionRunResult> {
-    const name = action('pressInteractive');
-    return unwrap(
-        name,
-        await transport.callFrontendAction<PageActionRunResult>(page.site, name, { controlId }, page.frameId)
+    site: string,
+    uris: string[],
+    appPath: string
+): Promise<GetODataMetadataResult> {
+    const entries: ODataMetadataEntry[] = await Promise.all(
+        uris.map(async (uri): Promise<ODataMetadataEntry> => {
+            try {
+                const { status, contentType, body } = await transport.fetchViaContext(
+                    site,
+                    buildMetadataUrl(site, uri)
+                );
+                if (status < 200 || status >= 300) {
+                    return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
+                }
+                const isXml = contentType.toLowerCase().includes('xml');
+                const looksEdmx = looksLikeEdmx(body);
+                if (!isXml || !looksEdmx) {
+                    return {
+                        url: uri,
+                        error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
+                    };
+                }
+                const formatted = formatXml(body);
+                return { url: uri, ...persistMetadata(appPath, uri, formatted) };
+            } catch (error) {
+                return { url: uri, error: error instanceof Error ? error.message : String(error) };
+            }
+        })
     );
+    return { entries };
 }

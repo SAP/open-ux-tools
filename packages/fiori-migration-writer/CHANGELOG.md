@@ -1,5 +1,113 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- add `ApiHubType`, `ApiHubConfig`, `BaseProject` and `BaseService` to `@sap-ux/fiori-generator-shared` and use them in `@sap-ux/fiori-app-sub-generator` and `@sap-ux/fiori-migration-writer` instead of duplicated definitions. `ApiHubType` and `ApiHubConfig` are no longer exported from `@sap-ux/fiori-app-sub-generator`, and its unused `Credentials`, `PackageJson` and `Script` types are removed [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+- @sap-ux/adp-tooling 1.2.0 → 1.2.1
+
+## 1.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- use shared types from `@sap-ux/axios-extension`, `@sap-ux/project-access` and `@sap-ux/ui5-config` instead of local duplicates (`ODataVersion`, `UI5FlexLayer`, `Package`, `FioriToolsProxyConfigBackend`) , deprecate the unused `Credentials` type and remove the unused `ApiHubConfig`, `CapService` and `ReadMe` types [[12ffd55](https://github.com/SAP/open-ux-tools/commit/12ffd55d089478b3ca1761c87e269733d6da666e)]
+
+## 0.0.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- (fiori-migration-writer): resolve relative paths to prevent hang [[f8ff029](https://github.com/SAP/open-ux-tools/commit/f8ff02929c38d7c4460bbcdb0ff2900490800c9a)]
+
+## 0.0.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.1 → 1.2.0
+
+## 0.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+
+## 0.0.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Upgrade vscode-uri 3.1.0 → 3.2.0 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/launch-config 1.0.27 → 1.0.28
+
+## 0.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.70 → 1.0.71
+
+## 0.0.11
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.69 → 1.0.70
+- @sap-ux/launch-config 1.0.26 → 1.0.27
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.7
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 0.0.10
 
 ### Patch Changes

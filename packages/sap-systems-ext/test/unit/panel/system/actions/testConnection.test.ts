@@ -3,6 +3,7 @@ import { BackendSystem } from '@sap-ux/store';
 import { testSystemConnection } from '../../../../../src/panel/system/actions/testConnection';
 import * as utils from '../../../../../src/panel/system/utils';
 import { initI18n } from '../../../../../src/utils';
+import * as extUtils from '../../../../../src/utils';
 import { SystemPanelViewType } from '../../../../../src/utils/constants';
 
 jest.mock('../../../../../src/panel/system/utils', () => ({
@@ -41,6 +42,40 @@ describe('Test Connection Action', () => {
         username: 'testuser',
         password: 'password',
         connectionType: 'abap_catalog'
+    });
+
+    it('should send test connection telemetry with system, connection and authentication type', async () => {
+        const sendTelemetrySpy = jest.spyOn(extUtils.TelemetryHelper, 'sendTelemetry').mockResolvedValue(undefined);
+        jest.spyOn(utils, 'validateSystemInfo').mockReturnValue(true);
+        jest.spyOn(utils, 'getCatalogServiceCount').mockResolvedValue({
+            v2Request: { count: 1, error: undefined },
+            v4Request: { count: 0, error: undefined }
+        });
+        const system = new BackendSystem({ ...backendSystem, authenticationType: 'basic' });
+        const panelContext = {
+            postMessage: jest.fn(),
+            isGuidedAnswersEnabled: false,
+            panelViewType: SystemPanelViewType.View,
+            updateBackendSystem: jest.fn(),
+            disposePanel: jest.fn()
+        } as unknown as PanelContext;
+
+        await testSystemConnection(panelContext, { type: 'TEST_CONNECTION', payload: { system } });
+
+        const expected = {
+            action: 'TEST_CONNECTION',
+            systemType: 'OnPrem',
+            connectionType: 'abap_catalog',
+            authenticationType: 'basic'
+        };
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            ...expected,
+            status: 'STARTED'
+        });
+        expect(sendTelemetrySpy).toHaveBeenCalledWith('SYSTEM_DETAILS_VIEW_EVENT', {
+            ...expected,
+            status: 'SUCCEED'
+        });
     });
 
     it('should post message to webview with service summary', async () => {

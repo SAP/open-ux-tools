@@ -4,14 +4,6 @@ import type { FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
 import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-generator';
 
 /**
- * package.json script entries (commands and tasks)
- */
-export type Script = {
-    name: string;
-    command: string;
-};
-
-/**
  * workspace folder
  */
 export type WorkspaceFolder = {

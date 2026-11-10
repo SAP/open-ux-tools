@@ -1,5 +1,115 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.16.0
+
+### Minor Changes
+
+#### Features
+
+- Replace the RTA page-action steps (get_page_actions, call_page_action, press_interactive) with the generic Unified Frontend Actions describe_ui and execute_page_action. These are reached by requiring sap/ui/joule/frontend/util/ActionHelpers directly on the page (like FrontendActionsAPI for the Flex actions), so navigation needs no Joule webclient bridge and no sap-ui-xx-initializeJoule URL flag. [[93a01bf](https://github.com/SAP/open-ux-tools/commit/93a01bf69097d71f49ac69bbd55abb1fbda47836)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Upgrade MCP/AI stack deps (@langchain/mcp-adapters 1.1.3→2.0.1, @sap-ai-sdk 2.14→2.17, @huggingface/transformers 4.2→4.3.2, zod 4.4.3→4.6.7) [[72ce32f](https://github.com/SAP/open-ux-tools/commit/72ce32fdd5cc4dc6731389940ed87c43015a6f2d)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+## 1.15.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-04
+
+#### Bug Fixes
+
+- Support Cloud Foundry adaptation projects across the UI automation flow.
+
+    - `read_odata_metadata_adp` detects CF projects and lists their OData data sources from the built manifest (empty EDMX, as CF has no ABAP backend to proxy `$metadata`).
+    - `run_rta_workflow_step` adds a `get_odata_metadata` step that fetches real EDMX through the editor's authenticated session, reuses an authenticated session per project (keyed by `appPath`), waits for interactive login and the editor's `app-loaded` signal before starting RTA, and makes `appPath` a required input for `start`/`restart`/`get_odata_metadata`.
+    - `open_adaptation_editor` detects CF and allows a longer startup for the embedded approuter. [[a9c5247](https://github.com/SAP/open-ux-tools/commit/a9c524741838a50be7c24e1aeef36a55b5cb95b7)]
+
+## 1.15.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[da67944](https://github.com/SAP/open-ux-tools/commit/da6794455b7a46311c194dbe659fd6cd74344282)]
+
+## 1.15.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Release Date
+
+2026-11-02
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
+## 1.15.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
+## 1.15.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[641aebd](https://github.com/SAP/open-ux-tools/commit/641aebd17bd88af4257d45bc89c675eee0d997ac)]
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
 ## 1.15.19
 
 ### Patch Changes

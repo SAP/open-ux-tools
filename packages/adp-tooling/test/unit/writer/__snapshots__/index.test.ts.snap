@@ -448,7 +448,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -824,7 +827,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -945,7 +951,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1066,7 +1075,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1211,7 +1223,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1351,7 +1366,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1467,7 +1485,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1626,7 +1647,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1786,7 +1810,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1945,7 +1972,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -2130,7 +2160,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },

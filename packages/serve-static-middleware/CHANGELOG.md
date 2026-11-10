@@ -1,5 +1,13 @@
 # @sap-ux/serve-static-middleware
 
+## 1.0.5
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Remove now-unnecessary eslint-disable comments for sonarjs/no-implicit-dependencies rule after eslint-plugin-sonarjs upgrade [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
 ## 1.0.4
 
 ### Patch Changes

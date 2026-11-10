@@ -1,5 +1,163 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.4.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.97 → 3.1.98
+- @sap-ux/fiori-freestyle-writer 3.0.139 → 3.0.140
+- @sap-ux/odata-service-inquirer 3.2.32 → 3.2.32
+
+## 1.4.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.96 → 3.1.97
+- @sap-ux/fiori-freestyle-writer 3.0.138 → 3.0.139
+- @sap-ux/odata-service-inquirer 3.2.32 → 3.2.32
+
+## 1.4.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- add `ApiHubType`, `ApiHubConfig`, `BaseProject` and `BaseService` to `@sap-ux/fiori-generator-shared` and use them in `@sap-ux/fiori-app-sub-generator` and `@sap-ux/fiori-migration-writer` instead of duplicated definitions. `ApiHubType` and `ApiHubConfig` are no longer exported from `@sap-ux/fiori-app-sub-generator`, and its unused `Credentials`, `PackageJson` and `Script` types are removed [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+- @sap-ux/cap-config-writer 1.0.49 → 1.0.50
+- @sap-ux/fiori-elements-writer 3.1.95 → 3.1.96
+- @sap-ux/fiori-freestyle-writer 3.0.137 → 3.0.138
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.32
+- @sap-ux/ui5-application-inquirer 1.0.54 → 1.0.55
+- @sap-ux/fe-fpm-writer 1.4.0 → 1.4.0
+
+## 1.3.97
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.28 → 1.4.0
+- @sap-ux/fiori-elements-writer 3.1.94 → 3.1.95
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.31
+
+## 1.3.96
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.28 → 1.3.28
+- @sap-ux/fiori-elements-writer 3.1.93 → 3.1.94
+- @sap-ux/fiori-freestyle-writer 3.0.136 → 3.0.137
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.31
+
+## 1.3.95
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.92 → 3.1.93
+- @sap-ux/fiori-freestyle-writer 3.0.135 → 3.0.136
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.31
+
+## 1.3.94
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.3.28 → 1.3.28
+- @sap-ux/fiori-elements-writer 3.1.91 → 3.1.92
+- @sap-ux/fiori-freestyle-writer 3.0.134 → 3.0.135
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.31
+
+## 1.3.93
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/fiori-generator-shared 1.2.26 → 1.2.27
+- @sap-ux/odata-service-inquirer 3.2.30 → 3.2.31
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/cap-config-writer 1.0.48 → 1.0.49
+- @sap-ux/fiori-elements-writer 3.1.90 → 3.1.91
+- @sap-ux/fiori-freestyle-writer 3.0.133 → 3.0.134
+- @sap-ux/ui5-application-inquirer 1.0.53 → 1.0.54
+
+## 1.3.92
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/telemetry 2.0.14 → 2.0.15
+- @sap-ux/fiori-elements-writer 3.1.89 → 3.1.90
+- @sap-ux/fiori-freestyle-writer 3.0.132 → 3.0.133
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+- @sap-ux/odata-service-inquirer 3.2.29 → 3.2.30
+- @sap-ux/cap-config-writer 1.0.47 → 1.0.48
+- @sap-ux/ui5-application-inquirer 1.0.52 → 1.0.53
+- @sap-ux/annotation-generator 1.0.35 → 1.0.36
+- @sap-ux/fe-fpm-writer 1.3.27 → 1.3.28
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/launch-config 1.0.27 → 1.0.28
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.26 → 1.0.27
+
+## 1.3.91
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-elements-writer 3.1.88 → 3.1.89
+- @sap-ux/fiori-freestyle-writer 3.0.131 → 3.0.132
+- @sap-ux/odata-service-inquirer 3.2.29 → 3.2.29
+
+## 1.3.90
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.46 → 1.0.47
+- @sap-ux/fe-fpm-writer 1.3.26 → 1.3.27
+- @sap-ux/fiori-elements-writer 3.1.87 → 3.1.88
+- @sap-ux/fiori-freestyle-writer 3.0.130 → 3.0.131
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/launch-config 1.0.26 → 1.0.27
+- @sap-ux/odata-service-inquirer 3.2.28 → 3.2.29
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/ui5-application-inquirer 1.0.51 → 1.0.52
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/telemetry 2.0.13 → 2.0.14
+- @sap-ux/annotation-generator 1.0.34 → 1.0.35
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
 ## 1.3.89
 
 ### Patch Changes

@@ -34,14 +34,13 @@ The first install downloads ~120 MB. Subsequent runs reuse the cache. See the Er
 
 ## Tool Contract
 
-A single tool, dispatched by the `step` argument. `site` is the editor URL from `open_adaptation_editor` — pass it on every step. There is no server-side session; the tool locates the browser page by URL.
+A single tool, dispatched by the `step` argument. `site` is the editor URL from `open_adaptation_editor` — pass it on every step. The tool keeps the browser session server-side, keyed per project (that is why `start`/`restart`/`get_odata_metadata` require `appPath`); each other step locates its page by `site`.
 
 | step | site | frameId | payload | returns |
 |------|------|---------|---------|---------|
 | `start` | required | required (`"preview"`) | — | `{ site, frameId, rtaStarted: true }` |
-| `get_page_actions` | required | carry forward | — | `{ registered: RegisteredPageAction[], interactive: InteractiveElement[], interactiveTruncated?: true }` |
-| `call_page_action` | required | carry forward | `{ id }` | `{ result: PageActionRunResult }` |
-| `press_interactive` | required | carry forward | `{ controlId }` | `{ result: PageActionRunResult }` |
+| `describe_ui` | required | carry forward | `{ rootElementId? }` | `{ uiTree: UiElementNode }` |
+| `execute_page_action` | required | carry forward | `{ actionName, elementId?, actionParameters? }` | `{ isSuccess: boolean, result? }` |
 | `get_overlays` | required | carry forward | — | `{ overlays: Overlay[], actionsCatalog: { [actionId]: Action } }` |
 | `get_context` | required | carry forward | `{ controlId, actionId }` | `{ context }` |
 | `call_action` | required | carry forward | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
@@ -51,15 +50,11 @@ A single tool, dispatched by the `step` argument. `site` is the editor URL from 
 
 `Overlay` = `{ overlayId, controlId, label, controlType, parentElementId, parentAggregationName, index?, actionIds: string[] }` — `index` is the 0-based position within `parentAggregationName` and is omitted when the parent/aggregation can't be resolved or the aggregation is single-cardinality. `actionIds` lists the RTA actions available on this overlay; rich metadata for each id is in the top-level `actionsCatalog`.
 `Action` = `{ id, label, description?, parameters: [{ name, type, required?, description? }] }` — keyed by `actionId` in `actionsCatalog`. The catalog is **deduplicated across all overlays** in a single `get_overlays` response, so an id appears once even when many overlays expose it.
-`RegisteredPageAction` = `{ id, layer: "framework"|"app", label, description }` — high-level page actions contributed by the framework or app (e.g. `loadData`, `navigateToRow`, `navigateToSection`, `navigateBack`). Only currently-applicable actions are returned.
-`InteractiveElement` = `{ controlId, controlType, label, kind: "button"|"input"|"listItem"|"tab"|"link"|"other" }` — best-effort scan of press-able controls in the live view (root view + static area + open dialogs). `interactiveTruncated: true` on the response means the scan cap (100) was hit and more candidates exist than were returned; surface this to the user when the entry they want isn't in the list rather than concluding it doesn't exist.
-`PageActionRunResult` = `{ status: "ok", note?, data? } | { status: "needs_user_action", reason }`.
-- On `press_interactive`, `note` describes the observable change detected after the click (`"registered actions changed"`, `"ObjectPage section changed"`, `"navigation occurred"`, `"dialog/popover opened or closed"`, `"focus moved"`) or `"no observable state change"`. The detector probes at 200 / 400 / 800 ms after the click (cumulative ~1.4 s); a `"no observable state change"` result means *the press didn't move any of those signals within that window*, not that the press failed. It is a soft hint, not an error — re-check `get_page_actions` / `get_overlays` if you expected a context change.
-- On `call_page_action`, `needs_user_action` covers two cases: (a) the action's own `run()` returned that envelope because a precondition (e.g. mandatory filter not set, value help required) can't be met, *or* (b) `run()` *threw* and the server converted the throw into `needs_user_action` with the error message as `reason`. The two are indistinguishable from the surface — if `reason` reads like an exception (`TypeError: …`, `Cannot read property …`), treat it as a runtime error rather than a user-resolvable precondition.
+`UiElementNode` = `{ id, type, label?, children?: UiElementNode[], truncated?, childCount? }` — one node in the UI element tree returned by `describe_ui`. `id` is the UI5 control id; pass it as `elementId` in `execute_page_action`. An unscoped `describe_ui` returns a **shallow overview** (top levels only); a node whose children were omitted is marked `truncated: true` with `childCount`. To see inside it, call `describe_ui` again with `rootElementId` set to that node's `id` — a scoped call returns that subtree at full depth.
 
 For the standard adaptation editor preview iframe, pass `frameId: "preview"` in the `start` step.
 
-> **When to reach for the page-action steps.** The six RTA steps (`get_overlays` → … → `save`) assume the page is already showing the control to edit. In Fiori Elements apps that often isn't true on first load — a List Report shows no rows until "Go" is pressed; an Object Page is only reachable after picking a row. Use `get_page_actions` / `call_page_action` / `press_interactive` to drive these pre-RTA navigations from the skill instead of asking the user to click manually. See **Step 2 — Navigate the app** below.
+> **When to reach for the navigation steps.** The RTA steps (`get_overlays` → … → `save`) assume the page is already showing the control to edit. In Fiori Elements apps that often isn't true on first load — a List Report shows no rows until "Go" is pressed; an Object Page is only reachable after picking a row. Use `describe_ui` / `execute_page_action` to drive these pre-RTA navigations from the skill instead of asking the user to click manually. See **Step 2 — Navigate the app** below.
 
 ## RTA Actions
 
@@ -75,29 +70,27 @@ Three steps require AI judgment: control selection (Step 4), action selection (S
 
 ### Step 1 — Start RTA
 
-Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), and payload `{ site, frameId: "preview" }`. Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once.
+Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), `frameId: "preview"`, and `appPath` (the adaptation project root — the same path passed to `open_adaptation_editor`) — all as **top-level parameters**, not inside `payload`. `appPath` is **required**: it identifies the project so an authenticated Cloud Foundry session is reused per project (and ABAP projects skip session handling). Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once. If `rtaStarted: false` with `needsUserAction: "backend_login_required"`, the editor URL served a login page (CF XSUAA) — surface the message to the user to complete login once in the opened browser, then retry `start`.
 
 ### Step 2 — Navigate the app to the editing target
 
-**When to skip Step 2.** If `get_overlays` already returns the control the user named (the page is on the right view from the start), skip to Step 3. The page-action loop is for navigation, not for editing.
+**When to skip Step 2.** If `get_overlays` already returns the control the user named (the page is on the right view from the start), skip to Step 3. Navigation is for reaching the target, not for editing.
 
-The RTA flow assumes the control to edit is already on screen. For Fiori Elements apps this often isn't true on first load — a List Report shows no rows until the Filter Bar search is triggered; an Object Page is only reachable after picking a row. Drive that navigation through the page-action steps before reaching for `get_overlays`.
+The RTA flow assumes the control to edit is already on screen. For Fiori Elements apps this often isn't true on first load — a List Report shows no rows until the Filter Bar search is triggered; an Object Page is only reachable after picking a row. Drive that navigation through the Unified Frontend Actions (UFA) — the generic UI-introspection/interaction steps `describe_ui` and `execute_page_action` — before reaching for `get_overlays`.
 
-Call `step: "get_page_actions"`. The result has two arrays:
+**Navigation flow (UFA):**
 
-- `registered`: high-level, semantic actions contributed by the framework / app (e.g. `loadData`, `navigateToRow`, `navigateToSection`, `navigateBack`). Each entry is currently applicable — actions whose preconditions don't hold are filtered out server-side.
-- `interactive`: a best-effort scan of press-able elements (buttons, list items, tabs, …) in the live view + static area + open dialogs. Use this only when nothing in `registered` fits.
+1. Call `step: "describe_ui"` to get the current UI element tree. Each node has `id` (UI5 control id), `type`, `label`, and `children`. The unscoped call is a **shallow overview**: a node marked `truncated: true` (with `childCount`) has hidden children — if the control you need is inside one, call `describe_ui` again with `payload: { rootElementId: "<that node's id>" }` to expand just that subtree at full depth, rather than re-describing the whole page.
+2. Pick the element whose `type`/`label` matches the interaction the user's intent needs — the generic rule is "read the tree, choose the control that advances toward the target." (On Fiori Elements that is typically a search/"Go" button to load data, then a row to open its Object Page, then a section link — but treat these as examples, not a fixed script; match on what the tree actually shows.)
+3. Call `step: "execute_page_action"` with `payload: { actionName: "press", elementId: "<id>" }`.
+4. Call `describe_ui` again to confirm the navigation succeeded (new page/section is now on screen).
+5. Loop until the editing target is on screen, or the UI has not changed after a press (then ask the user).
 
-**Decision order (always prefer registered over interactive):**
+**Heuristics for common Fiori Elements navigations (examples, not requirements).** List Report → Object Page usually means: load data first (press the search/"Go" button), then press a row's navigation cell — in the standard responsive table these cell ids often carry an `-imgNav` suffix, and a successful row press changes `window.location.hash` to the entity key. These are hints to speed up recognition in the tree, not mandatory steps; if the tree looks different, follow the tree.
 
-1. **Match user intent against `registered`.** If a registered action matches the navigation step you need (e.g. user said "the order details page" and you're on a List Report → `loadData` then `navigateToRow`), call `step: "call_page_action"` with `payload: { id }`. The action's `run()` resolves only when the page has settled (table loaded, OP rendered).
-2. **Handle `needs_user_action`.** If `result.status === "needs_user_action"`, surface `result.reason` to the user — typically a precondition the framework can't satisfy itself (mandatory filter not set, value help required). Wait for them to resolve it, then call `get_page_actions` again.
-3. **Fall through to `interactive` only when no registered action fits.** Pick the entry whose `label` and `kind` match the user's words and call `step: "press_interactive"` with `payload: { controlId }`. The press uses a real user-gesture click and waits best-effort for the page to change.
-4. **Loop.** After each `call_page_action` / `press_interactive`, call `get_page_actions` again. The `registered` set is the live signal that you've moved to a new context — e.g. `navigateToSection` appearing means you're now on an Object Page. Repeat until the editing target is reachable.
+If `execute_page_action` returns `isSuccess: false`, surface the failure to the user and ask how to proceed.
 
-**`interactive` is a fallback, not the primary path.** A registered action wraps the framework's own knowledge of "what does it mean to load data here"; an interactive press is a generic click. Reach for `press_interactive` only when (a) `registered` is empty for what you need, *or* (b) `call_page_action` returned `needs_user_action` for a reason the user is unlikely to resolve themselves (e.g. a confirmation dialog only the LLM can read).
-
-**Page-action confidence is shallow.** Picking from `registered` is usually unambiguous (small set, semantic ids). Picking from `interactive` is closer to control selection — apply the same rubric as Step 4 control selection: if two interactive entries are within 0.10 confidence of each other, ask.
+**When the UFA approach fails.** If `describe_ui` cannot identify a suitable element (the tree is too large to parse or no obvious control matches the navigation goal), surface that to the user and ask them to navigate manually to the target view, then re-run Step 2.
 
 ### Step 3 — Get overlays
 
@@ -125,10 +118,8 @@ Evidence required (one of):
 
 If neither is present, **do not proceed to action selection.** Resolution order:
 
-1. **Prefer the registered page action.** If a previous `get_page_actions` listed `loadData` (or an equivalent app-contributed action) in `registered`, call `step: "call_page_action"` with `payload: { id: "loadData" }`. Its `run()` resolves only after rows are loaded; on `result.status === "ok"`, re-run `get_overlays` and re-check the gate.
-2. **Fall back to asking** only if no registered loader is available *and* nothing usable shows up in `interactive` (e.g. a "Go" button). The original ask — "trigger data loading (click Go, apply a filter, expand a node), then I'll re-run `get_overlays`" — still applies as a last resort.
-
-Returning `needs_user_action` from `loadData` (typically because a mandatory filter hasn't been set) is a hard ask: surface the reason and wait for the user to resolve it before re-attempting.
+1. **Use UFA navigation.** Call `describe_ui` and press whatever control in the tree triggers data loading for this view — on a Fiori Elements List Report that is typically the search/"Go" button, but choose based on what the tree shows. Press it via `execute_page_action` with `actionName: "press"` and the element's `id`, then re-run `get_overlays` and re-check the gate.
+2. **Fall back to asking** if no obvious trigger is visible in the UFA tree. Surface the situation to the user and ask them to trigger data loading manually.
 
 **The gate is unconditional.** It applies even when the change feels purely structural (adding a column, reordering, renaming, changing a header label). Do not reason about whether data "matters" for this particular change — if the target is a data-bound container and row-level overlays are absent, stop. The `actionIds` exposed by an overlay can differ based on data state, and a structurally-correct change against the wrong action variant is exactly the silent failure this skill is built to prevent. "This is just a structural edit, so the gate doesn't apply" is not a valid exception — it is the rationalization the gate exists to block.
 
@@ -211,6 +202,16 @@ Run this step only if the user's intention involves binding the element to a dat
 - Whether the property is suitable for the target control (type, nullability, length)
 - Any annotation-driven formatting hints that should be applied
 
+**Cloud Foundry (CF) projects — two-call flow.** CF adaptation projects have no ABAP backend to proxy `$metadata`, so for a CF project `read_odata_metadata_adp` returns each OData data source **with an empty `metadata` string** (it still gives you the data-source `id`, `url`, and bound model). To get the real EDMX for a CF project:
+
+1. Call `read_odata_metadata_adp` to list the data sources and collect the `entries[].url` values (the service URIs).
+2. With a live editor session already started (the `start` step of `run_rta_workflow_step` has succeeded), call `run_rta_workflow_step` with `step: "get_odata_metadata"`, `site` (top-level), `appPath` (top-level, **required** — the adaptation project root), and `payload: { uris: [...] }` passing those URIs. It fetches the real EDMX through the editor's authenticated approuter session and returns `{ entries: Array<{ url, metadata } | { url, metadataFile, sizeBytes } | { url, error }> }`:
+   - `{ url, metadata }` — EDMX inline (small services); use it directly.
+   - `{ url, metadataFile, sizeBytes }` — EDMX too large to inline; it was written to `<appPath>/.context/<name>-metadata.xml`. **Read that file** (e.g. with a targeted `jq`/grep for the entity you need) rather than loading the whole multi-megabyte document.
+   - `{ url, error }` — the fetch failed (lost-auth login page, non-XML, or a foreign-origin URI was refused); re-run `start` if the session lapsed.
+
+For the common "what is this control bound to" question you usually need **neither** call — `get_context`'s `availableModels[<name>].contextEntityType` (Step 6) already resolves the bound entity type through the authenticated browser's meta model, for both ABAP and CF. Reach for `get_odata_metadata` only when you need the richer EDMX (full entity sets, navigation paths, annotations, or services outside the current binding context) for a CF project. For an ABAP project, `read_odata_metadata_adp` returns the EDMX directly and no workflow step is needed — small services inline as `metadata`, large ones spilled to `<appPath>/.context/<service>-metadata.xml` and returned as `{ metadataFile, sizeBytes }`, and a service whose metadata fetch fails returned as `{ error }` (the other services are unaffected) — exactly as the CF `get_odata_metadata` step does. Read a spilled file rather than loading the whole document.
+
 Typical triggers:
 
 - Binding a control property to an OData field (e.g. `text="{Customer/Name}"`)
@@ -261,7 +262,7 @@ Call `step: "call_action"`, payload `{ controlId, actionId, actionPayload }`. On
 
 ### Step 10 — Loop for multiple changes
 
-If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `site`+`frameId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run `get_page_actions` if a fresh navigation is needed.
+If the user requested multiple changes, repeat **Steps 3–9 only** (never Steps 1–2, never a fresh `start`) once per change, all under the same `site`+`frameId`. The UI may have changed, so re-run `get_overlays` between changes — and re-run Step 2 navigation if the next target is on a different view.
 A single change request can still require multiple operations and changes to be created.
 If a single request implies multiple operations (e.g. "add a button that calls a function" = fragment + controller extension), execute each as a separate iteration.
 
@@ -316,11 +317,13 @@ Include XML comments inside fragments for context hints:
 After generating all files, call `restart` to reload the current editor browser with the newly written fragment and controller extension files.
 
 ```
-run_rta_workflow_step { step: "restart", site, frameId }
+run_rta_workflow_step { step: "restart", site, frameId, appPath }
 → { site, frameId, rtaStarted: true }
 ```
 
-Store the returned `site` and `frameId`. Navigate back to the editing target (repeat Step 2 as needed) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
+`appPath` is **required** for `restart` (same as `start`) — pass the adaptation project root.
+
+Store the returned `site` and `frameId`. Navigate back to the editing target (repeat Step 2 navigation as needed — `restart` may reset the app to its initial view) and call `get_overlays`. Every control inserted via `CTX_ADDXML` must appear as an overlay — this is the confirmation that the fragment loaded correctly at runtime.
 
 **Child overlay rule (hard rule).** For each control you added via `CTX_ADDXML`, you must find an overlay whose `controlId` matches that control's own id — not its parent's. The parent aggregation container appearing in `get_overlays` is **not** proof that the inserted child was accepted. If the parent is present but no overlay for the new control's id exists, the runtime silently rejected the fragment content (the change file was written and `call_action` returned `success: true`, but the control never rendered). This is a distinct failure state from "fragment not found."
 
@@ -332,7 +335,7 @@ Store the returned `site` and `frameId`. Navigate back to the editing target (re
 
 If an expected control is missing from the overlay list for other reasons (wrong `fragmentPath`, malformed XML, namespace mismatch): inspect the relevant change file and fragment XML, fix the file, call `restart` again with the same `site`+`frameId`, re-navigate, and call `get_overlays` again. Repeat until all inserted controls are confirmed present.
 
-### Step 14 — Cleanup
+### Step 14 — Stop
 
 Call `step: "stop"`. The server closes the session; if it was the last one, the browser shuts down too.
 
@@ -364,7 +367,7 @@ Report to the user: summary of all changes made, files created, any issues encou
 | Save fails | Report error. Inform user changes may be lost. |
 | `adp_controller_extension` Phase 1 (knowledge base) fails | Surface the error and stop. Ask the user to verify `appPath` points to an adaptation project root (a folder containing `webapp/manifest.appdescr_variant`). |
 | `Unknown site` or missing `site` field | Pass the `site` URL from `open_adaptation_editor` to every step. |
-| `Frontend action ... not registered` | The editor hasn't finished loading, or wrong frame. Verify `frameId: "preview"` and retry. |
+| `Frontend action ... not registered` | The editor hasn't finished loading, or wrong frame. Verify `frameId: "preview"` and retry `start`. |
 | `Executable doesn't exist at .../chromium-...` or `browserType.launch: ...` referencing a missing browser | No system Chrome and no Playwright Chromium installed. (1) Prompt the user to run `npx playwright install chromium` (or run it on their behalf if they consent). (2) Retry `start` with the same payload. (3) If still failing, ask the user to set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to a known Chrome/Chromium binary. |
 
 ## Multi-Change Strategy

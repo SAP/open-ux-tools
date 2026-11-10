@@ -11,7 +11,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { FioriToolsProxyConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import { parse, stringify } from 'yaml';
 import { setWebappPath, setAppreloadPath } from '../data/yaml.js';
-import type { TemplateData, BackendConfig, NeoappDestination, Message } from '../types.js';
+import type { TemplateData, NeoappDestination, Message } from '../types.js';
 import { updateNeoYamlBackends, updateYamlBackends } from '../config/backend.js';
 import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './ui5-config-helpers.js';
 
@@ -144,19 +144,19 @@ function buildBackendConfigs(
     if (neoappDestinations && neoappDestinations.length > 0) {
         const tempBackendConfigs = updateNeoYamlBackends(
             neoappDestinations,
-            backends as unknown as BackendConfig[],
+            backends,
             templateData,
             messages || [],
             destination || '',
             firstNeoAppDestination,
             strict
         );
-        backends = tempBackendConfigs as unknown as FioriToolsProxyConfigBackend[];
+        backends = tempBackendConfigs;
     }
 
     // Apply additional backend processing (uses existing helper logic)
     if (backends.length > 0) {
-        const proxyConfigTemp = { backend: backends as unknown as BackendConfig[] };
+        const proxyConfigTemp = { backend: backends };
         const processed = updateYamlBackends(proxyConfigTemp, templateData);
         backends = processed.backend;
     }
