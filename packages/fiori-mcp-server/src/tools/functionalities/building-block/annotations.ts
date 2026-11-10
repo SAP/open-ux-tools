@@ -80,9 +80,15 @@ function qualifierFromMetaPath(metaPath: string | undefined): string {
  * @param entitySetName - Entity set or navigation property name derived from metaPath/contextPath
  * @param rawSchema - Raw schema returned by `annotationService.getSchema()`
  * @param contextEntitySetName
- * @returns Fully qualified OData type name to use as the annotation target
+ * @returns Fully qualified OData type name to use as the annotation target, or undefined when the name
+ *          is a navigation property that resolves ambiguously (same name on several entity types,
+ *          different targets) and no contextPath was given to disambiguate
  */
-function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema, contextEntitySetName?: string): string {
+function resolveAnnotationTarget(
+    entitySetName: string,
+    rawSchema: RawSchema,
+    contextEntitySetName?: string
+): string | undefined {
     const directMatch = rawSchema.schema.entitySets.find((es) => es.name === entitySetName);
     if (directMatch) {
         return directMatch.entityTypeName ?? directMatch.fullyQualifiedName ?? entitySetName;
@@ -92,13 +98,20 @@ function resolveAnnotationTarget(entitySetName: string, rawSchema: RawSchema, co
     const searchEntities = contextEntitySetName
         ? convertedSchema.entitySets.filter((es) => es.name === contextEntitySetName)
         : convertedSchema.entitySets;
-    const navTarget = searchEntities
+    const navMatches = searchEntities
         .flatMap((es) => es.entityType.navigationProperties)
-        .find((nav) => nav.name === entitySetName);
+        .filter((nav) => nav.name === entitySetName);
+    // Distinct target type FQNs the nav name resolves to. Without a contextPath to scope the search, the
+    // same nav name (e.g. "to_Items") can exist on several entity types pointing at different targets —
+    // picking an arbitrary one would write the shell onto the wrong type, so bail and let the caller warn.
+    const distinctTargets = [...new Set(navMatches.map((nav) => nav.targetType.fullyQualifiedName))];
+    if (distinctTargets.length > 1) {
+        return undefined;
+    }
     // The target is the navigation's target entity type FQN. Use targetType.fullyQualifiedName directly rather than
     // looking it up via a top-level entity set — a contained (composition) target type has no own entity set, and the
     // lookup would then wrongly fall back to the bare nav name.
-    return navTarget?.targetType.fullyQualifiedName ?? entitySetName;
+    return distinctTargets[0] ?? entitySetName;
 }
 
 /**
@@ -216,7 +229,12 @@ export async function writeAnnotationShell(
         }
         const contextEntitySetName = contextPath ? entitySetFromContextPath(contextPath) : undefined;
         const fullyQualifiedTarget = resolveAnnotationTarget(entitySetName, rawSchema, contextEntitySetName);
-
+        if (!fullyQualifiedTarget) {
+            logger.warn(
+                `[add_building_block] annotation shell: "${entitySetName}" matches navigation properties on multiple entity types and no contextPath was given to disambiguate, skipping`
+            );
+            return { written: 0, failed: true };
+        }
         if (annotationExists(rawSchema, fullyQualifiedTarget, term, qualifier)) {
             logger.info(`[add_building_block] annotation shell: ${term}${qualifierSuffix} already exists, skipping`);
             return { written: 0 };

@@ -32,6 +32,12 @@ describe('resolveWithinApp', () => {
         // A Windows-style separator in the client input must come back POSIX-normalized.
         expect(resolveWithinApp(base, 'webapp\\ext\\Main.view.xml')).toBe('webapp/ext/Main.view.xml');
     });
+
+    test('rejects a backslash-based traversal that would escape after normalization (POSIX)', () => {
+        // On POSIX `\` is an ordinary filename char: this input must be normalized to real `../` segments
+        // BEFORE the containment check, otherwise it slips through as a single segment and escapes the base.
+        expect(resolveWithinApp(base, 'webapp\\..\\..\\..\\etc/passwd')).toBeUndefined();
+    });
 });
 
 describe('resolveBasePath', () => {

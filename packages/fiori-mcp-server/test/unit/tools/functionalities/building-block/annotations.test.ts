@@ -297,6 +297,81 @@ describe('writeAnnotationShell', () => {
         expect(result).toEqual({ written: 0 });
     });
 
+    test('reports a non-fatal failure when a nav name is ambiguous across entity types (no contextPath)', async () => {
+        const edit = jest.fn();
+        // Both SalesOrder and PurchaseOrder expose a "to_Items" nav pointing at different target types.
+        // With no contextPath to scope the lookup, picking one arbitrarily would annotate the wrong type —
+        // the writer must skip and surface a warning instead.
+        mockConvert.mockReturnValue({
+            entitySets: [
+                {
+                    name: 'SalesOrder',
+                    entityType: {
+                        navigationProperties: [
+                            { name: 'to_Items', targetType: { fullyQualifiedName: 'ns.SalesOrderItem' } }
+                        ]
+                    }
+                },
+                {
+                    name: 'PurchaseOrder',
+                    entityType: {
+                        navigationProperties: [
+                            { name: 'to_Items', targetType: { fullyQualifiedName: 'ns.PurchaseOrderItem' } }
+                        ]
+                    }
+                }
+            ]
+        });
+        mockCreateService.mockResolvedValue(
+            fakeService({ entitySets: [{ name: 'SalesOrder' }, { name: 'PurchaseOrder' }], edit })
+        );
+
+        const result = await writeAnnotationShell(
+            { buildingBlockType: 'table', metaPath: 'to_Items/@com.sap.vocabularies.UI.v1.LineItem' } as any,
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        expect(result).toEqual({ written: 0, failed: true });
+        expect(edit).not.toHaveBeenCalled();
+    });
+
+    test('still writes when a nav name repeats across entity sets but resolves to the same target type', async () => {
+        const edit = jest.fn();
+        mockConvert.mockReturnValue({
+            entitySets: [
+                {
+                    name: 'SalesOrder',
+                    entityType: {
+                        navigationProperties: [{ name: 'to_Root', targetType: { fullyQualifiedName: 'ns.Root' } }]
+                    }
+                },
+                {
+                    name: 'PurchaseOrder',
+                    entityType: {
+                        navigationProperties: [{ name: 'to_Root', targetType: { fullyQualifiedName: 'ns.Root' } }]
+                    }
+                }
+            ]
+        });
+        mockCreateService.mockResolvedValue(
+            fakeService({ entitySets: [{ name: 'SalesOrder' }, { name: 'PurchaseOrder' }], edit })
+        );
+
+        const result = await writeAnnotationShell(
+            { buildingBlockType: 'table', metaPath: 'to_Root/@com.sap.vocabularies.UI.v1.LineItem' } as any,
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        expect(result).toEqual({ written: 1 });
+        expect(edit).toHaveBeenCalledWith(
+            expect.objectContaining({ content: expect.objectContaining({ target: 'ns.Root' }) })
+        );
+    });
+
     test('reports a non-fatal failure when the annotation service throws', async () => {
         mockCreateService.mockRejectedValue(new Error('service boom'));
 

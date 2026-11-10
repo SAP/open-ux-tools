@@ -58,10 +58,13 @@ export function toAppRelativePath(appPath: string, file: string): string {
  * so an absolute path or `../` segments could otherwise point generateBuildingBlock at a file outside
  * the app. Returns undefined when the resolved path escapes the base.
  *
- * The returned value is reconstructed as `relative(resolve(basePath), resolved)` with backslashes
- * normalized to forward slashes — this avoids a Windows drive-letter prefix that `resolve()` prepends
- * to a POSIX-style path (e.g. `/app` → `D:\app` on Windows) and keeps the path relative so
- * generateBuildingBlock can join it with the base.
+ * Backslashes in the input are normalized to forward slashes BEFORE resolving. On POSIX `resolve()`
+ * treats `\` as an ordinary filename character, so an input like `webapp\..\..\..\etc/passwd` would
+ * survive the containment check below as a single segment and only turn into real `../` traversal when
+ * backslashes were replaced afterwards — escaping the app root. Normalizing first makes the check run on
+ * the true relative path. The returned value is `relative(root, resolved)`, also POSIX-normalized, which
+ * avoids the Windows drive-letter prefix `resolve()` prepends to a POSIX-style path (e.g. `/app` →
+ * `D:\app`) and keeps the path relative so generateBuildingBlock can join it with the base.
  *
  * @param basePath - Absolute application base path (the generateBuildingBlock basePath)
  * @param viewOrFragmentPath - Client-supplied view/fragment path (absolute or relative to basePath)
@@ -69,12 +72,13 @@ export function toAppRelativePath(appPath: string, file: string): string {
  */
 export function resolveWithinApp(basePath: string, viewOrFragmentPath: string): string | undefined {
     const root = resolve(basePath);
-    const resolved = isAbsolute(viewOrFragmentPath) ? resolve(viewOrFragmentPath) : resolve(root, viewOrFragmentPath);
-    const rel = relative(root, resolved);
+    const normalizedInput = viewOrFragmentPath.replaceAll('\\', '/');
+    const resolved = isAbsolute(normalizedInput) ? resolve(normalizedInput) : resolve(root, normalizedInput);
+    const rel = relative(root, resolved).replaceAll('\\', '/');
     if (rel.startsWith('..') || isAbsolute(rel)) {
         return undefined;
     }
-    return rel.replaceAll('\\', '/');
+    return rel;
 }
 
 /**
