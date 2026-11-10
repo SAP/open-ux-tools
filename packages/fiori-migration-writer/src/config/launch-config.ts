@@ -55,7 +55,7 @@ export async function generateLaunchConfiguration(
 
     // Build Fiori options
     const fioriOptions: FioriOptions = {
-        name: basename(projectPath),
+        name: projectName,
         projectRoot: projectPath,
         debugOptions
     };
