@@ -14,7 +14,7 @@
     "scripts": {
         "build": "npm-run-all -l -p build:type-check build:component",
         "build:type-check": "tsc --noEmit",
-        "build:component": "rimraf dist && ui5 build --exclude-task minify --exclude-task generateComponentPreload",
+        "build:component": "ui5 build --clean-dest --exclude-task minify --exclude-task generateComponentPreload",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
@@ -42,8 +42,7 @@
         "@jest/globals": "30.5.2",
         "ui5-tooling-transpile": "3.11.3",
         "vscode-languageserver-textdocument": "1.0.15",
-        "@ui5/manifest": "1.89.0",
-        "rimraf": "6.1.3"
+        "@ui5/manifest": "1.89.0"
     },
     "browserslist": "defaults"
 }
