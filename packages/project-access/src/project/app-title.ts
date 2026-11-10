@@ -49,7 +49,7 @@ export async function resolveApplicationTitle(
         const i18nPaths = await getI18nPropertiesPaths(manifestPath, manifest, memFs);
         const bundle = await getPropertiesI18nBundle(i18nPaths['sap.app'], memFs);
 
-        if (i18nKey) {
+        if (i18nKey && /^\s*\{\{[^{}]+\}\}\s*$/.test(rawTitle)) {
             // Full {{key}} pattern — single lookup
             return bundle[i18nKey]?.[0]?.value?.value;
         }
@@ -58,7 +58,7 @@ export async function resolveApplicationTitle(
         let allResolved = true;
         const resolved = rawTitle.replace(/\{\{([^{}]+)\}\}/g, (_match, key) => {
             const value = bundle[key.trim()]?.[0]?.value?.value;
-            if (!value) {
+            if (value === undefined) {
                 allResolved = false;
             }
             return value ?? '';
