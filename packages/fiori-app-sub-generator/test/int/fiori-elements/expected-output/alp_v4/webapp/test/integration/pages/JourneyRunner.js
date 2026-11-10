@@ -13,6 +13,7 @@ sap.ui.define([
 			onTheSalesOrderItemObjectPageGenerated: SalesOrderItemObjectPageGenerated,
 			onTheMaterialDetailsObjectPageGenerated: MaterialDetailsObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
