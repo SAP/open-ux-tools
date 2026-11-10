@@ -5,7 +5,8 @@ import {
     prepareProjectAndServiceData,
     prepareSanitizedNames
 } from '../../../src/project/project-data.js';
-import { DatasourceType, ODataVersion, type ImportProjectInfo } from '../../../src/migration-types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import { DatasourceType, type ImportProjectInfo } from '../../../src/migration-types.js';
 
 function createProjectInfo(overrides: Partial<ImportProjectInfo> = {}): ImportProjectInfo {
     return {

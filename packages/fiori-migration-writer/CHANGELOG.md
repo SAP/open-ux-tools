@@ -1,5 +1,44 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.1.0
+
+### Minor Changes
+
+#### Bug Fixes
+
+- add `ApiHubType`, `ApiHubConfig`, `BaseProject` and `BaseService` to `@sap-ux/fiori-generator-shared` and use them in `@sap-ux/fiori-app-sub-generator` and `@sap-ux/fiori-migration-writer` instead of duplicated definitions. `ApiHubType` and `ApiHubConfig` are no longer exported from `@sap-ux/fiori-app-sub-generator`, and its unused `Credentials`, `PackageJson` and `Script` types are removed [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+- @sap-ux/adp-tooling 1.2.0 → 1.2.1
+
+## 1.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- use shared types from `@sap-ux/axios-extension`, `@sap-ux/project-access` and `@sap-ux/ui5-config` instead of local duplicates (`ODataVersion`, `UI5FlexLayer`, `Package`, `FioriToolsProxyConfigBackend`) , deprecate the unused `Credentials` type and remove the unused `ApiHubConfig`, `CapService` and `ReadMe` types [[12ffd55](https://github.com/SAP/open-ux-tools/commit/12ffd55d089478b3ca1761c87e269733d6da666e)]
+
+## 0.0.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Bug Fixes
+
+- (fiori-migration-writer): resolve relative paths to prevent hang [[f8ff029](https://github.com/SAP/open-ux-tools/commit/f8ff02929c38d7c4460bbcdb0ff2900490800c9a)]
+
 ## 0.0.15
 
 ### Patch Changes
