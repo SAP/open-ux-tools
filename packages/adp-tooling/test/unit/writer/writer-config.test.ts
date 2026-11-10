@@ -11,9 +11,11 @@ import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-e
 const mockGetProviderConfig = jest.fn() as jest.Mock;
 const mockGetSupportedProject = jest.fn() as jest.Mock;
 
-const realSystems = await import('../../../src/source/systems.js');
+const realAbapConfig = await import('../../../dist/abap/config.js');
+const realSystems = await import('../../../dist/source/systems.js');
 
 jest.unstable_mockModule('../../../src/abap/config', () => ({
+    SystemNotFoundError: realAbapConfig.SystemNotFoundError,
     getProviderConfig: mockGetProviderConfig
 }));
 

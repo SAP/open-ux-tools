@@ -79,6 +79,7 @@ export type FEV4ManifestTarget = {
             entitySet?: string;
             contextPath?: string;
             hideFilterBar?: boolean;
+            defaultTemplateAnnotationPath?: string;
             navigation?: {
                 [id: string]: {
                     detail?: {
@@ -130,6 +131,21 @@ export interface FFOPAConfig {
     useVirtualPreviewEndpoints?: boolean;
 }
 
+export type SortOrderItem = {
+    property: string;
+    descending: boolean;
+};
+
+export type FilterDefaultValue = {
+    property: string;
+    /** Low value of the EQ/LE/GE/LT/GT/NE range, normalized (IsDigitSequence zero-padded to maxLength). */
+    value: string;
+    /** High value for BT (between) ranges. */
+    value2?: string;
+    /** MDC condition operator string (e.g. 'EQ', 'BT', 'LE'). Omitted for EQ (default). */
+    operator?: string;
+};
+
 export type ObjectPageNavigationParent = {
     name: string;
     navigationProperty: string;
@@ -147,6 +163,7 @@ export type SectionFormField = {
     connectedFields?: string;
     fieldGroup?: string;
     targetAnnotation?: string;
+    checkBoxGroup?: boolean;
 };
 
 export type TableColumn = {
@@ -236,6 +253,7 @@ export type ListReportTab = {
     deleteButton: { enabled?: boolean | string; visible?: boolean; dynamicPath?: string };
     textAnnotationColumns: TextAnnotationColumn[];
     columnPersonalizationSupported?: boolean;
+    defaultSortOrder?: SortOrderItem[];
 };
 
 export type ListReportFeatures = {
@@ -279,6 +297,8 @@ export type ListReportFeatures = {
         semanticKeyProperties?: string[];
         missingFromFilterBar?: string[];
     };
+    defaultSortOrder?: SortOrderItem[];
+    defaultFilterValues?: FilterDefaultValue[];
 };
 
 export interface ActionButtonState {

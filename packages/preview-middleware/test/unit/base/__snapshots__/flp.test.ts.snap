@@ -2355,15 +2355,18 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
 
         <!-- Hides Rta native toolbar  -->
     <style>
-        #shell-header, .sapUiRtaToolbar {
-            visibility: hidden;
-            height: 1px;
+        #shell-header {
+            display: none;
         }
         .sapUshellShellCanvas {
             top: 0 !important;
         }
         .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
             background-color: transparent !important;
+        }
+        .sapUiRtaToolbar {
+            height: 1px !important;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -2512,15 +2515,18 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
 
         <!-- Hides Rta native toolbar  -->
     <style>
-        #shell-header, .sapUiRtaToolbar {
-            visibility: hidden;
-            height: 1px;
+        #shell-header {
+            display: none;
         }
         .sapUshellShellCanvas {
             top: 0 !important;
         }
         .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
             background-color: transparent !important;
+        }
+        .sapUiRtaToolbar {
+            height: 1px !important;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -2603,15 +2609,18 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
 
         <!-- Hides Rta native toolbar  -->
     <style>
-        #shell-header, .sapUiRtaToolbar {
-            visibility: hidden;
-            height: 1px;
+        #shell-header {
+            display: none;
         }
         .sapUshellShellCanvas {
             top: 0 !important;
         }
         .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
             background-color: transparent !important;
+        }
+        .sapUiRtaToolbar {
+            height: 1px !important;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -2832,15 +2841,18 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
 
         <!-- Hides Rta native toolbar  -->
     <style>
-        #shell-header, .sapUiRtaToolbar {
-            visibility: hidden;
-            height: 1px;
+        #shell-header {
+            display: none;
         }
         .sapUshellShellCanvas {
             top: 0 !important;
         }
         .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
             background-color: transparent !important;
+        }
+        .sapUiRtaToolbar {
+            height: 1px !important;
+            visibility: hidden;
         }
     </style>
 </head>

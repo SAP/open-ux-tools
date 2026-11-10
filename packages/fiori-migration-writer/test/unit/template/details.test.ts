@@ -6,6 +6,7 @@ import { extractTemplateDetails } from '../../../src/template/details.js';
 import type { Manifest } from '../../../src/project-spec-types.js';
 import { FioriElementsVersion } from '../../../src/project-spec-types.js';
 import { initI18n } from '../../../src/index.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -47,6 +48,7 @@ describe('template/details', () => {
 
             // when
             const result = await extractTemplateDetails(
+                createMemFsEditor(),
                 baseManifest,
                 testOutputDir,
                 '',
@@ -65,6 +67,7 @@ describe('template/details', () => {
 
             // when
             const result = await extractTemplateDetails(
+                createMemFsEditor(),
                 baseManifest,
                 testOutputDir,
                 '',
@@ -87,6 +90,7 @@ describe('template/details', () => {
 
             // when
             const result = await extractTemplateDetails(
+                createMemFsEditor(),
                 resolvedManifest,
                 testOutputDir,
                 '',
@@ -105,6 +109,7 @@ describe('template/details', () => {
 
             // when
             const result = await extractTemplateDetails(
+                createMemFsEditor(),
                 baseManifest,
                 testOutputDir,
                 '',
@@ -126,6 +131,7 @@ describe('template/details', () => {
 
             // when
             const result = await extractTemplateDetails(
+                createMemFsEditor(),
                 manifest,
                 testOutputDir,
                 '',

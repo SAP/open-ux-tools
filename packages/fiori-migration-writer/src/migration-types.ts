@@ -1,20 +1,14 @@
 import type { FioriElementsVersion, SapAppSourceTemplate, Manifest } from './project-spec-types.js';
 import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { ODataVersion } from '@sap-ux/axios-extension';
+import type { BaseProject, BaseService } from '@sap-ux/fiori-generator-shared';
+import type { Editor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
 export { isProjectFolderArray } from './types/project-folder.js';
 
-/**
- * OData versions supported by the catalog service
- */
-export const ODataVersion = {
-    v2: '2',
-    v4: '4'
-} as const;
-export type ODataVersion = (typeof ODataVersion)[keyof typeof ODataVersion];
 /**
  * package.json script entries (commands and tasks)
  */
@@ -22,12 +16,6 @@ export type Script = {
     name: string;
     command: string;
 };
-
-export const SapUxLayer = {
-    VENDOR: 'VENDOR',
-    CUSTOMER_BASE: 'CUSTOMER_BASE'
-} as const;
-export type SapUxLayer = (typeof SapUxLayer)[keyof typeof SapUxLayer];
 
 /** package.json interface */
 export interface PackageJson {
@@ -49,7 +37,7 @@ export interface PackageJson {
     localStartFile?: string; // relative path to local start html
     runTasks?: Script[];
     enableEslint: boolean;
-    sapuxLayer?: SapUxLayer;
+    sapuxLayer?: UI5FlexLayer;
 }
 
 // Common constants defs used throughout
@@ -87,17 +75,6 @@ export type NeoappDestination = {
     entryPath?: string;
 };
 
-export interface BackendConfig {
-    path: string;
-    url?: string;
-    client?: string;
-    destination?: string;
-    destinationInstance?: string;
-    pathPrefix?: string;
-}
-
-// NOTE: EntityConfig duplicates types from @sap-ux/app-gen-core
-// Consolidate when app-gen-core types are published to @sap-ux scope - track in package migration roadmap
 export interface EntityConfig {
     mainEntity?: { entityName: string; type?: any };
     filterEntityType?: string;
@@ -108,7 +85,12 @@ export interface EntityConfig {
     };
 }
 
-export interface ProjectMigrate extends Project {
+export interface ProjectMigrate extends BaseProject {
+    enableCodeAssist: boolean;
+    enableEslint: boolean;
+    enableTypeScript: boolean;
+    manifestVersion: string;
+    enableNPMWorkspaces?: boolean;
     flpAppId?: string; // Identifies the application in FLP => SemanticObject-Action will be used in html templates
     appId?: string;
     entityConfig?: EntityConfig;
@@ -236,7 +218,6 @@ export type TemplateMap = {
 export interface TemplateData<P extends ProjectMigrate = ProjectMigrate, S extends Service = Service> {
     project: Partial<P>;
     service: Partial<S>;
-    readMe?: Partial<ReadMe>; // Customisation point for readme.txt
     ui5Yaml?: Partial<Ui5Yaml> & Partial<Ui5MockYaml>; // Customisation point for ui5Yaml
     packageJson?: Partial<PackageJsonMigrate>; // Customisation point for package.json
     appId?: string;
@@ -265,37 +246,14 @@ export type MigratableFolder = {
 
 export const sapWattCommonSetting = 'sap.watt.common.setting';
 
-export interface Project {
-    targetFolder: string;
-    addDeployConfig?: boolean;
-    addFlpConfig?: boolean;
-    name: string;
-    namespace?: string;
-    title: string;
-    description: string;
-    ui5Theme: string;
-    ui5Version: string;
-    ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
-    localUI5Version: string;
-    sapux?: boolean;
-    skipAnnotations?: boolean;
-    enableCodeAssist: boolean;
-    enableEslint: boolean;
-    enableTypeScript: boolean;
-    manifestVersion: string;
-    formEntry?: boolean;
-    flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
-    minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
-    manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
-    enableNPMWorkspaces?: boolean;
-}
-
 /**
  * User credentials for authentication.
  *
  * SECURITY: This interface contains sensitive authentication data.
  * The `password` field must NEVER be logged, included in error messages,
  * or transmitted to telemetry systems.
+ *
+ * @deprecated Not used by the migration writer. Will be removed in a future release.
  */
 export interface Credentials {
     /** Username for authentication */
@@ -313,28 +271,6 @@ export const CapType = {
     JAVA: 'Java'
 } as const;
 export type CapType = (typeof CapType)[keyof typeof CapType];
-export const ApiHubType = {
-    apiHub: 'API_HUB',
-    apiHubEnterprise: 'API_HUB_ENTERPRISE'
-} as const;
-export type ApiHubType = (typeof ApiHubType)[keyof typeof ApiHubType];
-/**
- * Defines the api hub service properties or enterprise and non-enterprise versions
- */
-export interface ApiHubConfig {
-    apiHubKey: string;
-    apiHubType: ApiHubType;
-}
-
-export interface CapService {
-    projectPath: string; // The CAP Project Root
-    serviceName: string;
-    appPath?: string; // Optional custom CAP app folder
-    serviceCdsPath?: string; // relative path to cap service cds file
-    capType?: CapType; // CAP implementation type,
-    capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
-}
-
 export const SapSystemSourceType = {
     SCP: 'SCP',
     ON_PREM: 'ON_PREM',
@@ -342,47 +278,15 @@ export const SapSystemSourceType = {
 } as const;
 export type SapSystemSourceType = (typeof SapSystemSourceType)[keyof typeof SapSystemSourceType];
 
-export interface Service {
+export interface Service extends BaseService {
     host: string;
-    client?: string;
     scp?: boolean;
     destination?: string;
     destinationInstance?: string;
-    servicePath?: string; // url path of odata or cap service
     edmx: string;
-    annotations?: Annotations[];
     version?: ODataVersion; // Not present for FF no datasource template flow
-    capService?: CapService;
     source: DatasourceType;
     sapSystemSource?: SapSystemSourceType; // Only used by README
-    localEdmxFilePath?: string; // Only used by README
-    destinationAuthType?: string;
-    apiHubConfig?: ApiHubConfig;
-    ignoreCertError?: boolean;
-}
-
-/** README.txt base definition */
-export interface ReadMe {
-    genDate: string;
-    genPlatform: string;
-    dataSourceLabel: string;
-    metadataFilename?: string;
-    serviceUrl: string;
-    projectName: string;
-    projectTitle: string;
-    projectNamespace: string;
-    projectDescription: string;
-    ui5Theme: string;
-    projectUI5Version: string;
-    enableCodeAssist: boolean;
-    enableEslint: boolean;
-    enableTypeScript: boolean;
-    showMockDataInfo?: boolean;
-    genId: string;
-    genVersion: string;
-    templateLabel: string; // The template/floorplan selected
-    additionalEntries?: { label: string; value: string }[]; // Read me line entries
-    launchText?: string;
 }
 
 // Note that only ui5 properties supported by middleware proxy should go here
@@ -426,7 +330,7 @@ export interface UI5ConfigOptions {
     localUI5Version?: string;
     ui5Version?: string;
     ui5Theme: string;
-    ui5SnapshotUrl: string;
+    ui5SnapshotUrl?: string;
     ui5VersionRequestInfo: any;
 }
 
@@ -546,6 +450,7 @@ export interface TemplateModuleInfo {
  * Context for assembleTemplateData function
  */
 export interface TemplateAssemblyContext {
+    fs: Editor;
     projectInfo: ImportProjectInfo;
     rootPath: string;
     projectData: any;
@@ -562,7 +467,7 @@ export interface TemplateAssemblyContext {
  * Service for project data operations (package.json, entities, UI5 tooling)
  */
 export interface ProjectDataService {
-    getPackageJson: (projectRoot: string) => Promise<any>;
+    getPackageJson: (projectRoot: string) => any;
     getMainEntity: (manifest: Manifest) => string;
     hasUI5Tooling: (packageJson: any) => boolean;
 }
@@ -586,7 +491,7 @@ export interface BackendConfigService {
         scp?: boolean;
         sapClient?: string;
     };
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
+    getFlpIntentFromHtml: (path: string) => string | undefined;
     getDestinationFromNeoApp: (
         projectRoot: string,
         destination: string
@@ -605,6 +510,7 @@ export interface BackendConfigService {
  * Context for processRegularProject function
  */
 export interface RegularProjectContext {
+    fs: Editor;
     projectRoot: string;
     manifest: Manifest;
     defaultProjectInfo: ImportProjectInfo;

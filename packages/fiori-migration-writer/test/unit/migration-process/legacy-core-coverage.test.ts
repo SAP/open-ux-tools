@@ -5,6 +5,7 @@ import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { migrateLegacyFolderStructure } from '../../../src/migration-process/legacy.js';
 import { initI18n, ProjectMigrator } from '../../../src/index.js';
 import { loadProjectIntoMemFs } from '../../helpers/mem-fs-helper.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 import { DUMMY_BACKEND_URL, UI5_SNAPSHOT_URL } from '../../test-constants.js';
 import type { ImportProjectInfo } from '../../../src/types.js';
 
@@ -30,7 +31,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
             };
 
             const fs = loadProjectIntoMemFs(testOutputDir);
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, '/test/project');
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, '/test/project');
 
             expect(result.keepIndex).toBe(false);
             expect(result.webappPath).toBe('webapp');
@@ -42,7 +43,13 @@ describe('Legacy Migration Core - Coverage Tests', () => {
                 rootPath: '/test/nonexistent'
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, '/test/nonexistent');
+            const fs = createMemFsEditor();
+
+            const result = await migrateLegacyFolderStructure(
+                fs,
+                projectInfo as ImportProjectInfo,
+                '/test/nonexistent'
+            );
 
             expect(result.webappPath).toBe('src/main/webapp');
         });
@@ -62,7 +69,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
             const fs = loadProjectIntoMemFs(testProjectPath);
 
             // Should not throw - just skip processing
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -91,7 +98,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -118,7 +125,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
     });
@@ -135,7 +142,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
             };
 
             // Should not throw
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -163,7 +170,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
     });
@@ -180,7 +187,7 @@ describe('Legacy Migration Core - Coverage Tests', () => {
             };
 
             // Should not throw
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -201,7 +208,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
     });
@@ -217,7 +224,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -245,7 +252,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
     });
@@ -261,7 +268,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -288,7 +295,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
     });
@@ -304,7 +311,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result.keepIndex).toBe(false);
         });
 
@@ -336,7 +343,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result.keepIndex).toBe(true);
         });
 
@@ -359,7 +366,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result.keepIndex).toBe(true);
         });
 
@@ -384,7 +391,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result.keepIndex).toBe(false);
         });
     });
@@ -396,7 +403,9 @@ dist/
                 rootPath: ''
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, '');
+            const fs = createMemFsEditor();
+
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, '');
             expect(result).toBeDefined();
         });
 
@@ -410,7 +419,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -437,7 +446,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -467,7 +476,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -495,7 +504,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -514,7 +523,11 @@ dist/
 
             // Should complete without throwing, or throw MigrationError
             try {
-                const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+                const result = await migrateLegacyFolderStructure(
+                    fs,
+                    projectInfo as ImportProjectInfo,
+                    testProjectPath
+                );
                 expect(result).toBeDefined();
             } catch (error) {
                 // Expected: MigrationError for missing qunit runner
@@ -536,7 +549,11 @@ dist/
             };
 
             try {
-                const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+                const result = await migrateLegacyFolderStructure(
+                    fs,
+                    projectInfo as ImportProjectInfo,
+                    testProjectPath
+                );
                 expect(result).toBeDefined();
             } catch (error) {
                 // May throw MigrationError if .gitignore is a directory
@@ -564,7 +581,7 @@ dist/
                 rootPath: testProjectPath
             };
 
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
         });
 
@@ -579,7 +596,7 @@ dist/
             };
 
             // In mem-fs mode, updateTestFilePaths returns early (line 190)
-            const result = await migrateLegacyFolderStructure(projectInfo as ImportProjectInfo, testProjectPath);
+            const result = await migrateLegacyFolderStructure(fs, projectInfo as ImportProjectInfo, testProjectPath);
             expect(result).toBeDefined();
             // Migration completes and moves webapp to root
             expect(result.webappPath).toBe('webapp');

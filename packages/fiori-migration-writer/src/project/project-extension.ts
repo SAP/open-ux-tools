@@ -3,10 +3,11 @@
  */
 import { join } from 'node:path';
 import { DirName } from '../project-spec-types.js';
-import type { Manifest, Package } from '../project-spec-types.js';
+import type { Manifest } from '../project-spec-types.js';
 import type { ImportProjectInfo, NeoappDestination } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { getMinUI5VersionAsArray } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
 
 /**
  * Configuration for processing project extension
@@ -42,7 +43,7 @@ export interface ProcessProjectExtensionConfig {
         url?: string;
     };
     getClientFromDestinationName: (destination: string) => string;
-    getFlpIntentFromHtml: (path: string) => Promise<string | undefined>;
+    getFlpIntentFromHtml: (path: string) => string | undefined;
     getManifestJson: (projectRoot: string, webappPath: string) => Promise<Manifest>;
 }
 
@@ -142,7 +143,9 @@ export async function processProjectExtension(config: ProcessProjectExtensionCon
         neoappDestinations,
         extensionProjectSettings,
         ui5Version,
-        appVersion
+        appVersion,
+        targetMockHtmlFile: 'test/flpSandboxMockServer.html',
+        ...(projectInfo.flpSandboxFlpIntent ? { flpSandboxFlpIntent: projectInfo.flpSandboxFlpIntent } : {})
     };
     if (manifest) {
         result.manifestUI5Version = getMinUI5VersionAsArray(manifest, true)[0] || '';

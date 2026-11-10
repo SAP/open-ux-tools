@@ -1,5 +1,13 @@
 # @sap-ux/odata-annotation-core-types
 
+## 1.0.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/text-document-utils 1.0.4 → 1.0.5
+
 ## 1.0.4
 
 ### Patch Changes

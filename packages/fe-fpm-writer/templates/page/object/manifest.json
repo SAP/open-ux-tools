@@ -20,7 +20,8 @@
                             "navigation": {
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>"
+                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>"<%if (navigation.defaultSection) { %>,
+                                        "targetControlId": <%- JSON.stringify(`fe::${navigation.defaultSection.type}::${navigation.defaultSection.id}`) %><% } %>
                                     }
                                 }
                             }

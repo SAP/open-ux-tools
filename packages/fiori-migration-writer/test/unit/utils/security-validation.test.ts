@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { validateRootDirectory } from '../../../src/migration-process/legacy-helpers.js';
 import { validateGitRelativePath } from '../../../src/utils/path-validation.js';
 import { renderTemplate } from '../../../src/utils/template/template-renderer.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 describe('Path Validation Security', () => {
     const testRoot = join(tmpdir(), 'fiori-migration-test-' + Date.now());
@@ -120,29 +121,38 @@ describe('Path Validation Security', () => {
         });
 
         test('should render valid template within root', () => {
-            const result = renderTemplate(templateRoot, validTemplate, { name: 'World' }, {}, true);
+            const result = renderTemplate(
+                createMemFsEditor(),
+                templateRoot,
+                validTemplate,
+                { name: 'World' },
+                {},
+                true
+            );
             expect(result).toBe('Hello World!');
         });
 
         test('should return raw content when isRendered is false', () => {
-            const result = renderTemplate(templateRoot, validTemplate, {}, {}, false);
+            const result = renderTemplate(createMemFsEditor(), templateRoot, validTemplate, {}, {}, false);
             expect(result).toBe('Hello <%= name %>!');
         });
 
         test('should reject path traversal with ../', () => {
-            expect(() => renderTemplate(templateRoot, '../../../etc/passwd', {}, {}, false)).toThrow(
-                'Invalid template path'
-            );
+            expect(() =>
+                renderTemplate(createMemFsEditor(), templateRoot, '../../../etc/passwd', {}, {}, false)
+            ).toThrow('Invalid template path');
         });
 
         test('should reject path traversal with nested ../', () => {
-            expect(() => renderTemplate(templateRoot, 'foo/../../../etc/passwd', {}, {}, false)).toThrow(
-                'Invalid template path'
-            );
+            expect(() =>
+                renderTemplate(createMemFsEditor(), templateRoot, 'foo/../../../etc/passwd', {}, {}, false)
+            ).toThrow('Invalid template path');
         });
 
         test('should reject absolute paths outside root', () => {
-            expect(() => renderTemplate(templateRoot, '/etc/passwd', {}, {}, false)).toThrow('Invalid template path');
+            expect(() => renderTemplate(createMemFsEditor(), templateRoot, '/etc/passwd', {}, {}, false)).toThrow(
+                'Invalid template path'
+            );
         });
     });
 });

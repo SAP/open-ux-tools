@@ -1,0 +1,180 @@
+name: Create Awesome Copilot PR on plugin version bump
+
+# Fires when the version commit pushed by the `version` CI job touches plugin.json.
+on:
+    push:
+        branches: [main]
+        paths:
+            - 'plugins-coding-agents/fiori/plugin.json'
+    workflow_dispatch:
+        inputs:
+            new_version:
+                description: 'New plugin version (e.g. 1.16.13)'
+                required: true
+            dry_run:
+                description: 'Dry run — skip push and PR creation'
+                required: false
+                type: boolean
+                default: true
+
+jobs:
+    create-pr:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Detect version change
+              id: version
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  INPUT_NEW_VERSION: ${{ github.event.inputs.new_version }}
+              run: |
+                  PLUGIN_PATH="plugins-coding-agents/fiori/plugin.json"
+                  if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+                    # Find the commit that introduced this version
+                    RELEASE_SHA=""
+                    for COMMIT in $(gh api "repos/SAP/open-ux-tools/commits?path=${PLUGIN_PATH}&per_page=50" --jq 'reverse | .[].sha'); do
+                      VER=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${COMMIT}" --jq '.content' | base64 -d | jq -r .version)
+                      if [ "$VER" = "$INPUT_NEW_VERSION" ]; then
+                        RELEASE_SHA="$COMMIT"
+                        break
+                      fi
+                    done
+                    if [ -z "$RELEASE_SHA" ]; then
+                      echo "Could not find a commit for version ${INPUT_NEW_VERSION} in the last 50 commits" >&2
+                      exit 1
+                    fi
+                    echo "new=${INPUT_NEW_VERSION}" >> "$GITHUB_OUTPUT"
+                    echo "sha=${RELEASE_SHA}" >> "$GITHUB_OUTPUT"
+                    echo "changed=true" >> "$GITHUB_OUTPUT"
+                  else
+                    NEW=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${{ github.sha }}" --jq '.content' | base64 -d | jq -r .version)
+                    OLD=$(gh api "repos/SAP/open-ux-tools/contents/${PLUGIN_PATH}?ref=${{ github.event.before }}" --jq '.content' 2>/dev/null | base64 -d | jq -r .version 2>/dev/null || echo "")
+                    if [ "$OLD" = "$NEW" ] || [ -z "$NEW" ]; then
+                      echo "changed=false" >> "$GITHUB_OUTPUT"
+                    else
+                      echo "changed=true" >> "$GITHUB_OUTPUT"
+                      echo "new=$NEW" >> "$GITHUB_OUTPUT"
+                      echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+                    fi
+                  fi
+
+            - name: Generate GitHub App token
+              if: steps.version.outputs.changed == 'true'
+              id: app-token
+              uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2
+              with:
+                  app-id: ${{ secrets.AWESOME_COPILOT_APP_ID }}
+                  private-key: ${{ secrets.AWESOME_COPILOT_APP_PRIVATE_KEY }}
+                  owner: IainSAP
+                  repositories: awesome-copilot
+
+            - name: Checkout awesome-copilot fork
+              if: steps.version.outputs.changed == 'true'
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+              with:
+                  repository: IainSAP/awesome-copilot
+                  token: ${{ steps.app-token.outputs.token }}
+                  path: awesome-copilot
+                  fetch-depth: 0
+
+            - name: Sync fork with upstream and create update branch
+              if: steps.version.outputs.changed == 'true'
+              id: branch
+              env:
+                  VERSION: ${{ steps.version.outputs.new }}
+              run: |
+                  cd awesome-copilot
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  git remote add upstream https://github.com/github/awesome-copilot.git
+                  git fetch upstream main
+                  git reset --hard upstream/main
+                  if [ "${{ inputs.dry_run }}" != "true" ]; then
+                    git push origin main --force
+                  fi
+
+                  BRANCH="bump/sap-ux-fiori-tools-${VERSION}"
+                  git checkout -b "$BRANCH"
+                  echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+            - name: Update plugins/external.json
+              if: steps.version.outputs.changed == 'true'
+              env:
+                  VERSION: ${{ steps.version.outputs.new }}
+                  COMMIT_SHA: ${{ steps.version.outputs.sha }}
+              run: |
+                  python3 - <<'PYEOF'
+                  import json, os
+
+                  version = os.environ["VERSION"]
+                  sha = os.environ["COMMIT_SHA"]
+                  path = "awesome-copilot/plugins/external.json"
+
+                  with open(path) as f:
+                      data = json.load(f)
+
+                  for entry in data:
+                      if entry.get("name") == "sap-ux-fiori-tools":
+                          entry["version"] = version
+                          entry["source"]["sha"] = sha
+                          break
+
+                  with open(path, "w") as f:
+                      json.dump(data, f, indent=2, ensure_ascii=False)
+                      f.write("\n")
+                  PYEOF
+
+            - name: Regenerate marketplace.json and README
+              if: steps.version.outputs.changed == 'true'
+              run: |
+                  cd awesome-copilot
+                  npm install --ignore-scripts
+                  node ./eng/update-readme.mjs
+                  node ./eng/generate-marketplace.mjs
+
+            - name: Commit, push, and open PR
+              if: steps.version.outputs.changed == 'true' && inputs.dry_run != true
+              env:
+                  GH_TOKEN: ${{ steps.app-token.outputs.token }}
+                  PR_TOKEN: ${{ secrets.AWESOME_COPILOT_PR_TOKEN }}
+                  VERSION: ${{ steps.version.outputs.new }}
+                  BRANCH: ${{ steps.branch.outputs.branch }}
+              run: |
+                  cd awesome-copilot
+                  git add plugins/external.json .github/plugin/marketplace.json README.md
+                  git commit -m "chore(sap-ux-fiori-tools): bump to ${VERSION}"
+                  git push origin "$BRANCH" --force
+
+                  EXISTING_PR=$(GH_TOKEN="$PR_TOKEN" gh pr list \
+                    --repo github/awesome-copilot \
+                    --head "IainSAP:${BRANCH}" \
+                    --state open \
+                    --json url \
+                    --jq '.[0].url')
+                  if [ -n "$EXISTING_PR" ]; then
+                    echo "PR already exists: $EXISTING_PR"
+                  else
+                    GH_TOKEN="$PR_TOKEN" gh pr create \
+                      --repo github/awesome-copilot \
+                      --head "IainSAP:${BRANCH}" \
+                      --base main \
+                      --title "chore(sap-ux-fiori-tools): bump to ${VERSION}" \
+                      --body "Automated version bump for \`sap-ux-fiori-tools\` to \`${VERSION}\`.
+
+                  Source: https://github.com/SAP/open-ux-tools/tree/main/plugins-coding-agents/fiori"
+                  fi
+
+            - name: Post job summary
+              if: steps.version.outputs.changed == 'true'
+              env:
+                  VERSION: ${{ steps.version.outputs.new }}
+              run: |
+                  echo "## sap-ux-fiori-tools bumped to ${VERSION}" >> "$GITHUB_STEP_SUMMARY"
+                  echo "" >> "$GITHUB_STEP_SUMMARY"
+                  if [ "${{ inputs.dry_run }}" = "true" ]; then
+                    echo "Dry run completed — no PR was opened." >> "$GITHUB_STEP_SUMMARY"
+                  else
+                    echo "PR opened on [github/awesome-copilot](https://github.com/github/awesome-copilot/pulls)." >> "$GITHUB_STEP_SUMMARY"
+                  fi

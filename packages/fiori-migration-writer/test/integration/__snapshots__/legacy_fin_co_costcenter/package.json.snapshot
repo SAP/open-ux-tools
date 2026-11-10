@@ -21,7 +21,8 @@ exports[`Migration Integration Tests Legacy Folder Structure Migration should mi
 		\\"build\\": \\"ui5 build -a --clean-dest --include-task=generateCachebusterInfo\\",
 		\\"deploy\\": \\"fiori verify\\",
 		\\"deploy-config\\": \\"fiori add deploy-config\\",
-		\\"start-mock\\": \\"fiori run --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#CostCenter-manageCostCenters\\\\\\"\\"
+		\\"start-mock\\": \\"fiori run --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#CostCenter-manageCostCenters\\\\\\"\\",
+		\\"suite-tests\\": \\"fiori run --open \\\\\\"test/testsuite.qunit.html\\\\\\"\\"
 	},
 	\\"devDependencies\\": {
         \\"@ui5/cli\\": \\"^4.0.0\\",

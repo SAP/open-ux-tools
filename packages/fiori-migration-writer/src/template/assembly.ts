@@ -33,6 +33,7 @@ export interface AssembledTemplateData {
  */
 export async function assembleTemplateData(context: TemplateAssemblyContext): Promise<AssembledTemplateData> {
     const {
+        fs,
         projectInfo,
         rootPath,
         projectData,
@@ -64,10 +65,7 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
     const testFlpSandboxHtml = 'test/flpSandbox.html';
 
     // Prepare FLP sandbox configuration and intents
-    const { flpSandboxAvailable, appIntent, appMockIntent } = await prepareFlpConfiguration(
-        projectInfo,
-        semanticObject
-    );
+    const { flpSandboxAvailable, appIntent, appMockIntent } = prepareFlpConfiguration(fs, projectInfo, semanticObject);
 
     // Generate URL parameters for different scenarios
     const urlParam = buildUrlParam(sapClientParam, disableCacheParam);
@@ -81,7 +79,7 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
     // Read manifest.json
     let manifestJSON;
     try {
-        manifestJSON = await readManifest(rootPath, projectInfo.webappPath, projectInfo.uiAdaptation);
+        manifestJSON = await readManifest(rootPath, projectInfo.webappPath, projectInfo.uiAdaptation, fs);
     } catch (e) {
         throw new MigrationError(e, FileName.Manifest);
     }
@@ -94,7 +92,7 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
         ...devDependencies
     };
 
-    const packageJson: PackageJsonMigrate = await generatePackageJsonConfig({
+    const packageJson: PackageJsonMigrate = generatePackageJsonConfig(fs, {
         projectInfo,
         moduleName,
         moduleDescription,

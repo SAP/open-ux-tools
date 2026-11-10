@@ -12,7 +12,7 @@ import semver from 'semver';
  */
 export async function resolveUI5VersionsForMigration(
     projectInfo: ImportProjectInfo,
-    ui5SnapshotUrl: string
+    ui5SnapshotUrl?: string
 ): Promise<any> {
     // Remove snapshot suffixes from UI5 version
     const ui5VersionWithoutSnapshot = projectInfo.ui5Version?.replace(/snapshot-untested|snapshot/gi, '');
@@ -34,7 +34,7 @@ export async function resolveUI5VersionsForMigration(
         onlyVersionNumbers: true,
         onlyNpmVersion: true,
         ui5SelectedVersion: ui5VersionMinForProject,
-        ...(ui5SnapshotUrl && { url: ui5SnapshotUrl })
+        ...(ui5SnapshotUrl && { snapshotVersionsHost: ui5SnapshotUrl })
     });
 
     return ui5Versions;

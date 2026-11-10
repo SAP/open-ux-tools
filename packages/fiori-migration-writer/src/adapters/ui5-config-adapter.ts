@@ -11,7 +11,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { FioriToolsProxyConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import { parse, stringify } from 'yaml';
 import { setWebappPath, setAppreloadPath } from '../data/yaml.js';
-import type { TemplateData, BackendConfig, NeoappDestination, Message } from '../types.js';
+import type { TemplateData, NeoappDestination, Message } from '../types.js';
 import { updateNeoYamlBackends, updateYamlBackends } from '../config/backend.js';
 import { buildMainBackend, buildProxyConfig, buildPreviewMiddleware } from './ui5-config-helpers.js';
 
@@ -65,15 +65,15 @@ function addMockserverMiddleware(orderedYaml: any, templateData: TemplateData): 
         }
     };
 
-    // Find index of fiori-tools-proxy and insert before it
+    // Find index of fiori-tools-proxy and insert after it
     const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
         (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
     );
     if (proxyIndex >= 0) {
-        orderedYaml.server.customMiddleware.splice(proxyIndex, 0, mockserverMiddleware);
+        orderedYaml.server.customMiddleware.splice(proxyIndex + 1, 0, mockserverMiddleware);
     } else {
-        // If proxy not found, add at beginning
-        orderedYaml.server.customMiddleware.unshift(mockserverMiddleware);
+        // If proxy not found, add at end
+        orderedYaml.server.customMiddleware.push(mockserverMiddleware);
     }
 }
 
@@ -144,19 +144,19 @@ function buildBackendConfigs(
     if (neoappDestinations && neoappDestinations.length > 0) {
         const tempBackendConfigs = updateNeoYamlBackends(
             neoappDestinations,
-            backends as unknown as BackendConfig[],
+            backends,
             templateData,
             messages || [],
             destination || '',
             firstNeoAppDestination,
             strict
         );
-        backends = tempBackendConfigs as unknown as FioriToolsProxyConfigBackend[];
+        backends = tempBackendConfigs;
     }
 
     // Apply additional backend processing (uses existing helper logic)
     if (backends.length > 0) {
-        const proxyConfigTemp = { backend: backends as unknown as BackendConfig[] };
+        const proxyConfigTemp = { backend: backends };
         const processed = updateYamlBackends(proxyConfigTemp, templateData);
         backends = processed.backend;
     }
@@ -309,25 +309,77 @@ export async function generateUI5MockYamlContent(
 ): Promise<string> {
     const config = await createBaseConfig(templateData);
 
-    // Add fiori-tools-proxy middleware with UI5 version if provided
-    const proxyConfig: FioriToolsProxyConfig = {
-        ignoreCertErrors: false,
-        backend: [],
-        ui5: {
-            path: ['/resources', '/test-resources'],
-            url: templateData.ui5Yaml?.ui5Url || ''
-        }
-    };
-
-    // Add UI5 version to proxy if provided and setUI5Version is true
-    if (setUI5Version && templateData.ui5Yaml?.ui5Version) {
-        proxyConfig.ui5!.version = templateData.ui5Yaml.ui5Version;
-    }
-
+    // Add fiori-tools-proxy middleware with the main backend (ui5-mock.yaml uses only the
+    // primary backend, not the per-service neo-app destinations that ui5.yaml carries).
+    const mainBackend = buildMainBackend(templateData);
+    const backends: FioriToolsProxyConfigBackend[] = mainBackend ? [mainBackend] : [];
+    const proxyConfig: FioriToolsProxyConfig = buildProxyConfig(backends, templateData, setUI5Version);
     config.addFioriToolsProxyMiddleware(proxyConfig);
 
     // Add fiori-tools-appreload middleware
     config.addFioriToolsAppReloadMiddleware();
 
-    return postProcessYaml(config.toString(), webappPath);
+    // Add fiori-tools-preview middleware if configured
+    const previewMiddleware = buildPreviewMiddleware(templateData);
+    if (previewMiddleware) {
+        config.addCustomMiddleware(previewMiddleware);
+    }
+
+    const yamlContent = config.toString();
+    const yamlJson = parse(yamlContent);
+    const orderedYaml: any = { specVersion: '4.0' };
+    Object.keys(yamlJson).forEach((key) => {
+        orderedYaml[key] = yamlJson[key];
+    });
+
+    // Add sap-fe-mockserver middleware (the core of ui5-mock.yaml) when a service is configured.
+    if (templateData.ui5Yaml?.servicePath) {
+        addMockServerServicesMiddleware(orderedYaml, templateData);
+    }
+
+    // Apply webappPath if provided
+    if (webappPath) {
+        setWebappPath(orderedYaml, webappPath);
+        setAppreloadPath(orderedYaml, webappPath);
+    }
+
+    return stringify(orderedYaml);
+}
+
+/**
+ * Add a sap-fe-mockserver middleware (mountPath/services[] shape used by ui5-mock.yaml)
+ * before the fiori-tools-proxy middleware.
+ *
+ * @param orderedYaml - Parsed YAML object to mutate
+ * @param templateData - Template data with the service/mock configuration
+ */
+function addMockServerServicesMiddleware(orderedYaml: any, templateData: TemplateData): void {
+    orderedYaml.server ??= { customMiddleware: [] };
+    orderedYaml.server.customMiddleware ??= [];
+
+    const mockserverMiddleware = {
+        name: 'sap-fe-mockserver',
+        beforeMiddleware: 'fiori-tools-proxy',
+        configuration: {
+            mountPath: '/',
+            services: [
+                {
+                    urlPath: (templateData.ui5Yaml?.servicePath ?? '').replace(/\/$/, ''),
+                    metadataPath: templateData.ui5Yaml?.metadataXmlPath || '',
+                    mockdataPath: templateData.ui5Yaml?.mockdataRootPath || '',
+                    generateMockData: templateData.ui5Yaml?.generateMockData ?? true,
+                    annotations: []
+                }
+            ]
+        }
+    };
+
+    const proxyIndex = orderedYaml.server.customMiddleware.findIndex(
+        (mw: { name: string }) => mw.name === 'fiori-tools-proxy'
+    );
+    if (proxyIndex >= 0) {
+        orderedYaml.server.customMiddleware.splice(proxyIndex + 1, 0, mockserverMiddleware);
+    } else {
+        orderedYaml.server.customMiddleware.push(mockserverMiddleware);
+    }
 }

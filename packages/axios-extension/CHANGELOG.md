@@ -1,5 +1,57 @@
 # @sap-ux/axios-extension
 
+## 2.1.6
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Surface the Gateway error reason (message and code) on the error thrown when a UI5 ABAP repository application lookup fails, so the underlying 4xx/5xx cause is visible at normal log levels; the full response body is still logged at debug level only (#4272) [[da67944](https://github.com/SAP/open-ux-tools/commit/da6794455b7a46311c194dbe659fd6cd74344282)]
+
+## 2.1.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade proxy-from-env 1.1.0 → 2.1.0 [[641aebd](https://github.com/SAP/open-ux-tools/commit/641aebd17bd88af4257d45bc89c675eee0d997ac)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+## 2.1.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Bug Fixes
+
+- Normalize ADT schema workspace to array to support older ABAP systems (e.g. ABAP 731) that return a single workspace object instead of an array [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Release Date
+
+2026-10-28
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.10.1 → 5.11.2 [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+## 2.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+
 ## 2.1.2
 
 ### Patch Changes

@@ -51,6 +51,8 @@ const mockIsCfInstalled = jest.fn<typeof realAdpTooling.isCfInstalled>();
 const mockLoadCfConfig = jest.fn<typeof realAdpTooling.loadCfConfig>();
 const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
 const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
+const mockGetCfApps = jest.fn<typeof realAdpTooling.getCfApps>();
 const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
 const mockGetApprouterType = jest.fn<typeof realAdpTooling.getApprouterType>();
 const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
@@ -60,6 +62,7 @@ const mockGetOrCreateServiceInstanceKeys = jest.fn<typeof realAdpTooling.getOrCr
 const mockStoreCredentials = jest.fn<typeof realAdpTooling.storeCredentials>();
 const mockGetSupportedProject = jest.fn<typeof realAdpTooling.getSupportedProject>();
 const mockGetCfBaseAppInbounds = jest.fn<typeof realAdpTooling.getCfBaseAppInbounds>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>().mockResolvedValue(false);
 const mockGetPackageInfo = jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' });
 const mockInstallDependencies = jest.fn().mockResolvedValue(undefined);
 const mockSendTelemetry = jest.fn().mockResolvedValue(undefined);
@@ -158,6 +161,8 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     loadCfConfig: mockLoadCfConfig,
     isLoggedInCf: mockIsLoggedInCf,
     getMtaServices: mockGetMtaServices,
+    getAdpServiceInstances: mockGetAdpServiceInstances,
+    getCfApps: mockGetCfApps,
     getModuleNames: mockGetModuleNames,
     getApprouterType: mockGetApprouterType,
     hasApprouter: mockHasApprouter,
@@ -167,6 +172,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     storeCredentials: mockStoreCredentials,
     getSupportedProject: mockGetSupportedProject,
     getCfBaseAppInbounds: mockGetCfBaseAppInbounds,
+    isAuthRequired: mockIsAuthRequired,
     // generateCf calls adjustMtaYaml which internally requires '../services/api.js' via CJS.
     // jest.unstable_mockModule cannot intercept relative CJS requires inside compiled dist packages,
     // so the real generateCf would invoke live CF APIs. The mock avoids that.
@@ -257,7 +263,7 @@ const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 const { default: adpGenerator } = await import('../src/app/index.js');
 const { ConfigPrompter } = await import('../src/app/questions/configuration.js');
 const { KeyUserImportPrompter } = await import('../src/app/questions/key-user.js');
-const { TargetEnv } = await import('../src/app/types.js');
+const { TargetEnv, MtaMode } = await import('../src/app/types.js');
 const { EventName } = await import('../src/telemetry/index.js');
 const { initI18n, t } = await import('../src/utils/i18n.js');
 const { workspaceChoices } = await import('../src/utils/workspace.js');
@@ -435,7 +441,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
             mockValidateUI5VersionExists.mockReturnValue(true);
             jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
-            jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
             jest.spyOn(SystemLookup.prototype, 'getSystemByName').mockResolvedValue({
                 Name: 'SystemA',
                 Client: '010',
@@ -1057,7 +1062,11 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             mockLoadCfConfig.mockReturnValue(cfConfig);
             mockGetModuleNames.mockReturnValue(['module1', 'module2']);
-            mockGetMtaServices.mockResolvedValue(['service1', 'service2']);
+            mockGetMtaServices.mockResolvedValue(['test-service']);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'test-service', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+            mockGetCfApps.mockResolvedValue([baseApp]);
             mockGetApprouterType.mockReturnValue(AppRouterType.MANAGED);
             mockHasApprouter.mockReturnValue(false);
 
@@ -1116,6 +1125,47 @@ describe('Adaptation Project Generator Integration Test', () => {
                 expect.any(String)
             );
             expect(executeCommandSpy).not.toHaveBeenCalled();
+        });
+
+        it('should bind a live CF service instance for a new MTA without a declared service', async () => {
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+
+            // New-MTA mode scaffolds the project inside a parent folder; use a clean subfolder (the
+            // beforeEach seeds cfTestOutputDir itself with an mta.yaml, which would hide the MTA name prompt).
+            const newMtaParent = join(cfTestOutputDir, 'new-mta-parent');
+            fs.mkdirSync(newMtaParent, { recursive: true });
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({
+                    ...answersCf,
+                    projectLocation: newMtaParent,
+                    mtaMode: MtaMode.New,
+                    mtaId: 'my-mta',
+                    businessService: undefined,
+                    serviceInstance: { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
+                });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['my-instance'] },
+                expect.any(Object)
+            );
+            expect(mockGenerateCf).toHaveBeenCalledWith(
+                join(newMtaParent, 'my-mta'),
+                expect.any(Object),
+                expect.any(Object),
+                expect.any(Object)
+            );
         });
 
         it('should call composeWith for FLP sub-generator when CF inbounds are available', async () => {
