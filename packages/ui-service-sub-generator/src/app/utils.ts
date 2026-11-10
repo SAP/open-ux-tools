@@ -21,7 +21,7 @@ import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth, VSCode
  * dropped its index signature, so the fields accessed here are declared explicitly.
  */
 type PostGenHookOptions = {
-    data?: (PromptOptions & { appGenLaunchCommand?: string }) | undefined;
+    data?: PromptOptions & { appGenLaunchCommand?: string };
     vscode?: VSCodeInstance;
 };
 
