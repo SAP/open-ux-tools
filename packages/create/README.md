@@ -628,7 +628,7 @@ Options:
 
 ## [`telemetry`](#telemetry)
 
-Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools.
+Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools extensions.
 
 --------------------------------
 

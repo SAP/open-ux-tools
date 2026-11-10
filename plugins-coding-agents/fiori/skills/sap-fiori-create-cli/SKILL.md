@@ -4,7 +4,7 @@ description: Invokes the @sap-ux/create CLI — generate, add, convert, remove, 
 argument-hint: command and subcommand (e.g., add mockserver-config, generate adaptation-project)
 metadata:
   author: sap-fiori-tools
-  version: "1.5.18"
+  version: "1.5.19"
 ---
 
 ## How to use this CLI
@@ -155,7 +155,7 @@ Migrate legacy WebIDE Fiori project to modern Fiori tools format. In BAS, a dest
 
 ## `telemetry`
 
-Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools.
+Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools extensions.
 
 | Subcommand | Description |
 |---|---|
