@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { randomBytes } from 'node:crypto';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { v4 as uuidv4 } from 'uuid';
@@ -997,8 +998,13 @@ export default class extends Generator {
             approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
 
         // A managed approuter with no existing router writes destinations keyed on the business solution name.
+        // When the caller omits it, generate a unique default; when supplied, validate it.
+        let resolvedBusinessSolutionName = businessSolutionName?.trim() ?? '';
         if (resolvedApprouter === AppRouterType.MANAGED && !this._hasExistingApprouter(mtaMode, projectPath)) {
-            assertValidationPassed(validateBusinessSolutionName(businessSolutionName ?? ''));
+            if (!resolvedBusinessSolutionName) {
+                resolvedBusinessSolutionName = this._generateBusinessSolutionName();
+            }
+            assertValidationPassed(validateBusinessSolutionName(resolvedBusinessSolutionName));
         }
 
         const serviceInfo = await getBusinessServiceInfo(serviceInstanceName, this.cfConfig, this.logger);
@@ -1034,7 +1040,7 @@ export default class extends Generator {
             approuter: resolvedApprouter,
             baseApp,
             ...(serviceInstance ? { serviceInstance } : {}),
-            ...(businessSolutionName ? { businessSolutionName } : {})
+            ...(resolvedBusinessSolutionName ? { businessSolutionName: resolvedBusinessSolutionName } : {})
         };
 
         const projectName = this.attributeAnswersProjectName(requestedProjectName);
@@ -1096,6 +1102,17 @@ export default class extends Generator {
         } catch {
             return false;
         }
+    }
+
+    /**
+     * Generates a unique default business solution name for the headless CF flow when the caller
+     * omits one. The `solution-` prefix plus 10 hex characters stays short (the value is written into
+     * the CF `sap.cloud.service` destination property) and satisfies the business-solution-name charset.
+     *
+     * @returns {string} A unique default business solution name, e.g. `solution-a1b2c3d4e5`.
+     */
+    private _generateBusinessSolutionName(): string {
+        return `solution-${randomBytes(5).toString('hex')}`;
     }
 
     /**

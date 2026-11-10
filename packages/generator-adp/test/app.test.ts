@@ -1405,30 +1405,33 @@ describe('Adaptation Project Generator Integration Test', () => {
                 );
             });
 
-            it('should reject a new managed-approuter MTA when businessSolutionName is missing', async () => {
+            it('should generate a default businessSolutionName for a new managed-approuter MTA when it is missing', async () => {
                 const newMtaParent = join(cfTestOutputDir, 'headless-new-mta-no-solution');
                 fs.mkdirSync(newMtaParent, { recursive: true });
                 mockGetAdpServiceInstances.mockResolvedValue([
                     { name: 'live-instance', guid: 'inst-guid', service: 'hana', servicePlan: 'hdi-shared' }
                 ]);
-                const promptSpy = jest.spyOn(Generator.prototype, 'prompt');
 
-                try {
-                    await expect(
-                        runHeadlessGenerator({
-                            ...baseJsonInput,
-                            serviceInstanceName: 'live-instance',
-                            mtaMode: 'new',
-                            mtaId: 'brand-new-mta',
-                            targetFolder: newMtaParent
+                await expect(
+                    runHeadlessGenerator({
+                        ...baseJsonInput,
+                        serviceInstanceName: 'live-instance',
+                        mtaMode: 'new',
+                        mtaId: 'brand-new-mta',
+                        targetFolder: newMtaParent
+                    })
+                ).resolves.not.toThrow();
+
+                expect(mockGenerateCf).toHaveBeenCalledWith(
+                    join(newMtaParent, 'brand-new-mta'),
+                    expect.objectContaining({
+                        cf: expect.objectContaining({
+                            businessSolutionName: expect.stringMatching(/^solution-[0-9a-f]{10}$/)
                         })
-                    ).rejects.toThrow(t('error.updatingApp'));
-
-                    expect(promptSpy).not.toHaveBeenCalled();
-                    expect(mockGenerateCf).not.toHaveBeenCalled();
-                } finally {
-                    promptSpy.mockRestore();
-                }
+                    }),
+                    expect.any(Object),
+                    expect.any(Object)
+                );
             });
 
             it('should reject invalid JSON and report headless generation failures without prompting or generating', async () => {
