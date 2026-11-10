@@ -90,6 +90,18 @@ sap.ui.define([
 
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
+<%
+    // Below 1.120 the section/column level assertions are unavailable, so a table section with
+    // no actions, create/delete buttons, sub-sections or form fields would leave an opaTest body
+    // with only a When call. OPA5 rejects a test that runs zero assertions, so skip emitting the
+    // block entirely in that case.
+    const _hasVisibleAction = (section.actions || []).some(function(a) { return a.visible; });
+    const _hasTableButton = section.isTable && section.navigationProperty && (section.createButton?.visible || section.deleteButton?.visible);
+    const _hasSubSectionAssertion = (section.subSections?.length > 1) || (section.subSections || []).some(function(s) { return s.fields && s.fields.length > 0; });
+    const _hasFormFields = !(section.subSections?.length > 0) && section.fields && section.fields.length > 0;
+    const _hasSectionAssertion = _hasVisibleAction || _hasTableButton || _hasSubSectionAssertion || _hasFormFields;
+-%>
+<% if (_hasSectionAssertion) { -%>
         opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1) { %>When<% } else { %>_When<% } %>, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
@@ -146,9 +158,10 @@ sap.ui.define([
 <% } -%>
         });
 
+<% } -%>
 <% }) -%>
 <% } -%>
-        opaTest("Teardown", function (Given, When, Then) { 
+        opaTest("Teardown", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
