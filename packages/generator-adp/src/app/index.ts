@@ -879,10 +879,7 @@ export default class extends Generator {
      * Initialize the project generator from a json.
      */
     private async _initFromJson(): Promise<void> {
-        if (!this.jsonInput || isCfJsonInput(this.jsonInput)) {
-            return;
-        }
-        const jsonInput: JsonInput = this.jsonInput;
+        const jsonInput = this.jsonInput as JsonInput;
 
         if (jsonInput.id) {
             this.jsonInputFile = await readJsonInputFile(jsonInput.id);
