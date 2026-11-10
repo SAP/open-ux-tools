@@ -1,5 +1,15 @@
 # @sap-ux/create
 
+## 1.5.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.39 → 1.2.40
+- @sap-ux/app-config-writer 1.1.33 → 1.1.33
+- @sap-ux/ui5-test-writer 1.19.13 → 1.19.14
+
 ## 1.5.20
 
 ### Patch Changes
