@@ -96,10 +96,10 @@ export async function classifySchema(
             signal.throwIfAborted();
             const batch = entries.slice(offset, offset + batchSize);
             try {
-                const results = await classifier.classifyBatch(
-                    batch.map(({ input }) => input),
-                    signal
-                );
+                const inputs = batch.map(({ input }) => input);
+                // One inference session classifies the batches in order, checking for cancellation between them.
+                // Sequential: one inference session.
+                const results = await classifier.classifyBatch(inputs, signal); // NOSONAR
                 signal.throwIfAborted();
                 if (results.length !== batch.length || results.some((result) => !validClassification(result))) {
                     throw new TypeError('Invalid semantic classification batch');
@@ -112,13 +112,13 @@ export async function classifySchema(
                 // The batch failure is recovered field by field: each field is classified on its own, and a
                 // field that still fails reports its own cause.
                 for (const entry of batch) {
-                    await classifyOne(entry);
+                    await classifyOne(entry); // NOSONAR: sequential, one inference session
                 }
             }
         }
     } else {
         for (const entry of entries) {
-            await classifyOne(entry);
+            await classifyOne(entry); // NOSONAR: sequential, one inference session
         }
     }
     return Object.freeze({

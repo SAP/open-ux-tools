@@ -186,23 +186,24 @@ export async function acquireProjectLock(parent: string, options: ProjectLockOpt
     let delay = FIRST_RETRY_MS;
     for (;;) {
         try {
-            await mkdir(lockPath);
+            await mkdir(lockPath); // NOSONAR: sequential, lock retry with backoff
             break;
         } catch (error) {
             if (errnoCode(error) !== 'EEXIST') {
                 throw error;
             }
         }
-        const current = await readOwner(lockPath);
-        if (await isStale(lockPath, current)) {
-            await removeLock(lockPath, current?.token);
+        const current = await readOwner(lockPath); // NOSONAR: sequential, lock retry with backoff
+        const stale = await isStale(lockPath, current); // NOSONAR: sequential, lock retry with backoff
+        if (stale) {
+            await removeLock(lockPath, current?.token); // NOSONAR: sequential, lock retry with backoff
             continue;
         }
         const remaining = deadline - Date.now();
         if (remaining <= 0) {
             throw heldError(lockPath, current, timeoutMs);
         }
-        await sleep(Math.min(delay, remaining));
+        await sleep(Math.min(delay, remaining)); // NOSONAR: sequential, lock retry with backoff
         delay = Math.min(delay * 2, LONGEST_RETRY_MS);
     }
     try {

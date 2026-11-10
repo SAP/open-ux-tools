@@ -756,20 +756,18 @@ async function advanceSequences(
             inputIds.set(fed, row * step);
         });
         const pastLength = length;
-        const output = await runSession(
-            decoder,
-            {
-                inputIds,
-                attentionMask: new Int32Array(active.length * (pastLength + step)).fill(1),
-                positionIds: Int32Array.from(
-                    { length: active.length * step },
-                    (_unused, index) => pastLength + (index % step)
-                ),
-                pastKeyValues: cache,
-                batchSize: active.length
-            },
-            signal
-        );
+        const feeds = {
+            inputIds,
+            attentionMask: new Int32Array(active.length * (pastLength + step)).fill(1),
+            positionIds: Int32Array.from(
+                { length: active.length * step },
+                (_unused, index) => pastLength + (index % step)
+            ),
+            pastKeyValues: cache,
+            batchSize: active.length
+        };
+        // Autoregressive decoding: every step feeds the cache of the step before.
+        const output = await runSession(decoder, feeds, signal); // NOSONAR: sequential, autoregressive decoding
         signal.throwIfAborted();
         cache = output.presentKeyValues;
         length += step;

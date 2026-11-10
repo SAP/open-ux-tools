@@ -491,7 +491,8 @@ function abortContext(parent: AbortSignal, budgetMs: number): { signal: AbortSig
 
 async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
     if (signal.aborted) {
-        return Promise.reject(signal.reason);
+        // An async function turns the throw into a rejection, as callers expect.
+        throw signal.reason;
     }
     return new Promise<T>((resolve, reject) => {
         const abort = (): void => reject(signal.reason);
@@ -674,12 +675,10 @@ async function generateRowsTogether(
     const missing = completions.flatMap((completion, rowIndex) => (completion === undefined ? [rowIndex] : []));
     for (let start = 0; start < missing.length && !context.signal.aborted; start += SFT_BATCH_ROWS) {
         const group = missing.slice(start, start + SFT_BATCH_ROWS);
-        const generatedRows = await generateRows.call(
-            options.textGenerator,
-            request,
-            group.map((rowIndex) => seeds[rowIndex] ?? input.seed),
-            context.signal
-        );
+        const groupSeeds = group.map((rowIndex) => seeds[rowIndex] ?? input.seed);
+        // One model decodes the groups in order, so a cancelled or exhausted budget stops the next group.
+        // Sequential: one model decodes in order.
+        const generatedRows = await generateRows.call(options.textGenerator, request, groupSeeds, context.signal); // NOSONAR
         group.forEach((rowIndex, position) => {
             completions[rowIndex] = generatedRows[position];
         });
@@ -746,7 +745,8 @@ async function generateChunkRowByRow(
 ): Promise<void> {
     for (let rowIndex = 0; rowIndex < call.input.rowCount; rowIndex += 1) {
         try {
-            const partial = await generateRowFields(call, fields, rowIndex, String(chunkIndex));
+            // Sequential: one model decodes in order.
+            const partial = await generateRowFields(call, fields, rowIndex, String(chunkIndex)); // NOSONAR
             const row = call.rows[rowIndex];
             if (!row) {
                 throw new RangeError('SFT row index is outside its established bounds');
@@ -824,9 +824,11 @@ async function generateRows(
     try {
         for (const [chunkIndex, fields] of fieldChunks.entries()) {
             if (batchable) {
-                await generateChunkTogether(call, fields, String(chunkIndex));
+                // Sequential: one model decodes in order.
+                await generateChunkTogether(call, fields, String(chunkIndex)); // NOSONAR
             } else {
-                await generateChunkRowByRow(call, fields, chunkIndex, fieldChunks.length);
+                // Sequential: one model decodes in order.
+                await generateChunkRowByRow(call, fields, chunkIndex, fieldChunks.length); // NOSONAR
             }
             if (context.signal.aborted) {
                 break;

@@ -42,6 +42,7 @@ export function t(key: string, options?: TOptions): string {
     return (i18nInstance.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // The resources are inline and synchronous; initialization cannot fail for want of a backend.
-});
+// With `initAsync: false` and inline resources, `init` completes before it returns, so the module is ready once
+// loaded and no top-level await holds back importers (or breaks `require` of this ES module). Without a backend
+// there is nothing to load, so the returned promise cannot reject.
+void i18nInstance.init();

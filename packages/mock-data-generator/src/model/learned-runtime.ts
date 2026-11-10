@@ -438,7 +438,7 @@ export async function createLearnedRuntime(
                     message: 'The learned-model cache is incomplete or failed verification.'
                 })
             ]),
-            dispose: async () => undefined
+            dispose: (): Promise<void> => Promise.resolve()
         });
     }
 
@@ -464,14 +464,16 @@ export async function createLearnedRuntime(
             installed ??= readInstalledRuntime(manifest.runtime);
             const selectedRuntime = installedRuntimeModule(manifest.runtime, installed, component);
             if (component.kind === 'classifier') {
-                const loaded = await componentFactories.classifier(component, files, selectedRuntime);
+                // Sequential: components load one at a time.
+                const loaded = await componentFactories.classifier(component, files, selectedRuntime); // NOSONAR
                 runtime.classifier = loaded.value;
                 runtime.candidateVerifier = loaded.candidateVerifier;
                 if (loaded.dispose) {
                     disposers.push(loaded.dispose);
                 }
             } else {
-                const loaded = await componentFactories.sft(component, files, selectedRuntime);
+                // Sequential: components load one at a time.
+                const loaded = await componentFactories.sft(component, files, selectedRuntime); // NOSONAR
                 runtime.sft = loaded.value;
                 if (loaded.dispose) {
                     disposers.push(loaded.dispose);

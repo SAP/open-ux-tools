@@ -2057,7 +2057,7 @@ async function applySftToGeneratedRows(request: SftGenerationRequest): Promise<S
         const attempt = scheduleSftAttempt(resource, request, state, schedule);
         if (attempt) {
             notifyProgress(onProgress, { ...attempt.progress, tier: 'T2', phase: 'start' });
-            await runSftAttempt(attempt, request, state);
+            await runSftAttempt(attempt, request, state); // NOSONAR: sequential, resources share one model and budget
         }
     }
     return sftRunResult(state, schedule.budgetSkipped);

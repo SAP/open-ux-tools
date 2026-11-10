@@ -112,8 +112,10 @@ if (
     (resolve(process.argv[1]) === modulePath ||
         (await realpath(process.argv[1]).catch((): undefined => undefined)) === modulePath)
 ) {
-    runMockgenCli(process.argv.slice(2)).catch(() => {
+    try {
+        await runMockgenCli(process.argv.slice(2));
+    } catch {
         // runMockgenCli has logged the failure.
         process.exitCode = 1;
-    });
+    }
 }

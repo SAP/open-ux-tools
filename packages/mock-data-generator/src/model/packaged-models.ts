@@ -458,29 +458,51 @@ async function verifyDatasetFiles(
     for (const dataset of datasets) {
         signal?.throwIfAborted();
         const path = resolve(canonicalRoot, relativePath(dataset));
-        try {
-            const details = await lstat(path);
-            if (
-                !isPathInside(canonicalRoot, path) ||
-                !details.isFile() ||
-                details.isSymbolicLink() ||
-                !isPathInside(canonicalRoot, await realpath(path)) ||
-                details.size !== dataset.bytes ||
-                (await sha256File(path, signal)) !== dataset.sha256
-            ) {
-                failures.push({ id: dataset.id, reason: 'invalid' });
-            }
-        } catch (error) {
-            signal?.throwIfAborted();
-            // File-system failures (missing, unreadable, a dangling link) make the dataset unusable; any
-            // other failure is a defect and propagates.
-            if (errnoCode(error) === undefined) {
-                throw error;
-            }
-            failures.push({ id: dataset.id, reason: 'missing-or-unreadable' });
+        // One file after the other, to bound I/O and stop promptly when aborted.
+        // Sequential: bounded I/O, prompt abort.
+        const reason = await datasetFileFailure(canonicalRoot, path, dataset, signal); // NOSONAR
+        if (reason) {
+            failures.push({ id: dataset.id, reason });
         }
     }
     return Object.freeze(failures);
+}
+
+/**
+ * Why a dataset file cannot be used, if it cannot: it must be a regular file inside the root with the declared
+ * size and checksum.
+ *
+ * @param canonicalRoot the resolved resource root
+ * @param path the dataset file
+ * @param dataset the dataset declaration
+ * @param signal aborts the checksum
+ * @returns `invalid`, `missing-or-unreadable`, or undefined for a usable file
+ */
+async function datasetFileFailure(
+    canonicalRoot: string,
+    path: string,
+    dataset: PackagedDataset,
+    signal?: AbortSignal
+): Promise<'invalid' | 'missing-or-unreadable' | undefined> {
+    try {
+        const details = await lstat(path);
+        const valid =
+            isPathInside(canonicalRoot, path) &&
+            details.isFile() &&
+            !details.isSymbolicLink() &&
+            isPathInside(canonicalRoot, await realpath(path)) &&
+            details.size === dataset.bytes &&
+            (await sha256File(path, signal)) === dataset.sha256;
+        return valid ? undefined : 'invalid';
+    } catch (error) {
+        signal?.throwIfAborted();
+        // File-system failures (missing, unreadable, a dangling link) make the dataset unusable; any
+        // other failure is a defect and propagates.
+        if (errnoCode(error) === undefined) {
+            throw error;
+        }
+        return 'missing-or-unreadable';
+    }
 }
 
 /**
@@ -528,6 +550,42 @@ export async function verifyDatasetsBelowResourceRoot(
 }
 
 /**
+ * Why a model artifact cannot be used, if it cannot: it must be a regular file inside the root with the declared
+ * size and checksum.
+ *
+ * @param canonicalRoot the resolved resource root
+ * @param filePath the artifact, inside the root
+ * @param file the artifact declaration
+ * @param signal aborts the checksum
+ * @returns `not-file`, `size`, `checksum`, `missing` or `unreadable`, or undefined for a usable artifact
+ */
+async function componentFileFailure(
+    canonicalRoot: string,
+    filePath: string,
+    file: PackagedModelFile,
+    signal?: AbortSignal
+): Promise<string | undefined> {
+    try {
+        const details = await lstat(filePath);
+        const canonicalFile = await realpath(filePath);
+        if (!details.isFile() || details.isSymbolicLink() || !isPathInside(canonicalRoot, canonicalFile)) {
+            return 'not-file';
+        }
+        if (details.size !== file.bytes) {
+            return 'size';
+        }
+        return (await sha256File(filePath, signal)) === file.sha256 ? undefined : 'checksum';
+    } catch (error) {
+        signal?.throwIfAborted();
+        // Only file-system failures mark the artifact missing or unreadable; any other failure propagates.
+        if (errnoCode(error) === undefined) {
+            throw error;
+        }
+        return errnoCode(error) === 'ENOENT' ? 'missing' : 'unreadable';
+    }
+}
+
+/**
  * Check size, checksum and containment of each package artifact without allocating native sessions.
  *
  * @param resourceRoot
@@ -555,29 +613,13 @@ export async function verifyPackagedModels(
             if (!isPathInside(canonicalRoot, filePath)) {
                 throw new TypeError('Packaged model path escapes resource root');
             }
-            try {
-                const details = await lstat(filePath);
-                const canonicalFile = await realpath(filePath);
-                if (!details.isFile() || details.isSymbolicLink() || !isPathInside(canonicalRoot, canonicalFile)) {
-                    failures.push({ componentId: component.id, role: file.role, reason: 'not-file' });
-                } else if (details.size !== file.bytes) {
-                    failures.push({ componentId: component.id, role: file.role, reason: 'size' });
-                } else if ((await sha256File(filePath, signal)) !== file.sha256) {
-                    failures.push({ componentId: component.id, role: file.role, reason: 'checksum' });
-                } else {
-                    componentFiles.set(file.role, filePath);
-                }
-            } catch (error) {
-                signal?.throwIfAborted();
-                // Only file-system failures mark the artifact missing or unreadable; any other failure propagates.
-                if (errnoCode(error) === undefined) {
-                    throw error;
-                }
-                failures.push({
-                    componentId: component.id,
-                    role: file.role,
-                    reason: errnoCode(error) === 'ENOENT' ? 'missing' : 'unreadable'
-                });
+            // One file after the other, to bound I/O and stop promptly when aborted.
+            // Sequential: bounded I/O, prompt abort.
+            const reason = await componentFileFailure(canonicalRoot, filePath, file, signal); // NOSONAR
+            if (reason) {
+                failures.push({ componentId: component.id, role: file.role, reason });
+            } else {
+                componentFiles.set(file.role, filePath);
             }
         }
         if (componentFiles.size === component.files.length) {

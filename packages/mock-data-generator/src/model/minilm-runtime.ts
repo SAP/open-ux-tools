@@ -49,14 +49,19 @@ export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedder
     if (!Number.isSafeInteger(options.hiddenSize) || options.hiddenSize <= 0) {
         throw new TypeError('MiniLM hidden size must be a positive integer');
     }
-    for (const [path, expected] of [
-        [options.modelPath, options.expectedEncoderSha256],
-        [options.vocabularyPath, options.expectedVocabularySha256]
-    ]) {
-        if (path && expected) {
-            if ((await sha256File(path)) !== expected) {
-                throw new TypeError('MiniLM artifact fingerprint mismatch');
-            }
+    const fingerprintChecks = [
+        { path: options.modelPath, expected: options.expectedEncoderSha256 },
+        { path: options.vocabularyPath, expected: options.expectedVocabularySha256 }
+    ].filter((check): check is { path: string; expected: string } => Boolean(check.path && check.expected));
+    // The artifacts are hashed concurrently; the outcomes are judged in artifact order, so the reported failure
+    // is the same as for one check after the other.
+    const digests = await Promise.allSettled(fingerprintChecks.map(({ path }) => sha256File(path)));
+    for (const [index, digest] of digests.entries()) {
+        if (digest.status === 'rejected') {
+            throw digest.reason;
+        }
+        if (digest.value !== fingerprintChecks[index].expected) {
+            throw new TypeError('MiniLM artifact fingerprint mismatch');
         }
     }
     const tokenizer = createMiniLmTokenizer(await readFile(options.vocabularyPath, 'utf8'), options.maxWordPieceTokens);
@@ -75,7 +80,7 @@ export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedder
                     const encoded = tokenizer.encodeForModel(text);
                     const sequenceLength = encoded.inputIds.length;
                     const dimensions = [1, sequenceLength];
-                    const output = await session.run({
+                    const feeds = {
                         'input_ids': options.backend.tensor(
                             'int64',
                             BigInt64Array.from(encoded.inputIds, BigInt),
@@ -91,7 +96,9 @@ export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedder
                             BigInt64Array.from(encoded.tokenTypeIds, BigInt),
                             dimensions
                         )
-                    });
+                    };
+                    // One ONNX session embeds one text at a time.
+                    const output = await session.run(feeds); // NOSONAR: sequential, one ONNX session
                     signal.throwIfAborted();
                     const hidden = output.last_hidden_state;
                     if (!hidden || !(hidden.data instanceof Float32Array)) {

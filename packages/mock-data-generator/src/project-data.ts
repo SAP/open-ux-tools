@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
+import type { Stats } from 'node:fs';
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { withProjectLock } from './project-lock.js';
@@ -58,7 +59,7 @@ async function assertSafeContents(path: string): Promise<void> {
             throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_PATH_UNSAFE, t('projectData.linksOrSpecialFiles'));
         }
         if (entry.isDirectory()) {
-            await assertSafeContents(join(path, entry.name));
+            await assertSafeContents(join(path, entry.name)); // NOSONAR: sequential, ordered file-system transaction
         }
     }
 }
@@ -69,14 +70,16 @@ async function assertSafeExistingParents(root: string, parts: ReadonlyArray<stri
         current = join(current, part);
         let details;
         try {
-            details = await lstat(current);
+            details = await lstat(current); // NOSONAR: sequential, ordered file-system transaction
         } catch (error) {
             if (errnoCode(error) === 'ENOENT') {
                 return;
             }
             throw error;
         }
-        if (!details.isDirectory() || details.isSymbolicLink() || !isPathInside(root, await realpath(current))) {
+        // Sequential: ordered file-system transaction.
+        const safe = await isSafeDirectory(root, current, details); // NOSONAR
+        if (!safe) {
             throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_PATH_UNSAFE, t('projectData.unsafeParent'));
         }
     }
@@ -92,9 +95,10 @@ async function directoryFingerprint(path: string): Promise<string> {
             const relativePath = relative(path, target).split(sep).join('/');
             if (entry.isDirectory() && !entry.isSymbolicLink()) {
                 digest.update(`directory:${relativePath}\n`);
-                await visit(target);
+                await visit(target); // NOSONAR: sequential, ordered file-system transaction
             } else if (entry.isFile() && !entry.isSymbolicLink()) {
-                digest.update(`file:${relativePath}:${await sha256File(target)}\n`);
+                // Sequential: ordered file-system transaction.
+                digest.update(`file:${relativePath}:${await sha256File(target)}\n`); // NOSONAR
             } else {
                 throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_PATH_UNSAFE, t('projectData.linksOrSpecialFiles'));
             }
@@ -104,17 +108,38 @@ async function directoryFingerprint(path: string): Promise<string> {
     return digest.digest('hex');
 }
 
+/**
+ * Whether a path is a real directory inside a root: no link, no special file, and not resolving outside it.
+ *
+ * @param root the root the directory must stay inside
+ * @param path the path
+ * @param details the path's `lstat` details
+ * @returns true for a safe directory
+ */
+async function isSafeDirectory(root: string, path: string, details: Stats): Promise<boolean> {
+    return details.isDirectory() && !details.isSymbolicLink() && isPathInside(root, await realpath(path));
+}
+
+/**
+ * Accept a directory that exists already when creating one.
+ *
+ * @param error the `mkdir` failure
+ */
+function ignoreExistingDirectory(error: NodeJS.ErrnoException): void {
+    if (error.code !== 'EEXIST') {
+        throw error;
+    }
+}
+
 async function ensureSafeParent(root: string, parts: ReadonlyArray<string>): Promise<string> {
     let current = root;
     for (const part of parts) {
         current = join(current, part);
-        await mkdir(current).catch((error: NodeJS.ErrnoException) => {
-            if (error.code !== 'EEXIST') {
-                throw error;
-            }
-        });
-        const details = await lstat(current);
-        if (!details.isDirectory() || details.isSymbolicLink() || !isPathInside(root, await realpath(current))) {
+        await mkdir(current).catch(ignoreExistingDirectory); // NOSONAR: sequential, ordered file-system transaction
+        const details = await lstat(current); // NOSONAR: sequential, ordered file-system transaction
+        // Sequential: ordered file-system transaction.
+        const safe = await isSafeDirectory(root, current, details); // NOSONAR
+        if (!safe) {
             throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_PATH_UNSAFE, t('projectData.unsafeParent'));
         }
     }
@@ -237,46 +262,77 @@ async function readProjectJournal(transactionRoot: string): Promise<ProjectJourn
  */
 async function recoverProjectTransactions(parent: string, directory: string, targetName: string): Promise<void> {
     for (const entry of await readdir(parent, { withFileTypes: true })) {
-        if (!entry.isDirectory() || entry.isSymbolicLink()) {
-            continue;
+        if (entry.isDirectory() && !entry.isSymbolicLink()) {
+            // One entry after the other: recovering a transaction may move the project data directory.
+            // Sequential: ordered file-system transaction.
+            await recoverProjectEntry(parent, entry.name, directory, targetName); // NOSONAR
         }
-        if (entry.name.startsWith(REMOVED_TRANSACTION_PREFIX)) {
-            await rm(join(parent, entry.name), { recursive: true, force: true });
-            continue;
-        }
-        if (!entry.name.startsWith(TRANSACTION_PREFIX)) {
-            continue;
-        }
-        const transactionRoot = join(parent, entry.name);
-        const journal = await readProjectJournal(transactionRoot);
-        if (journal === undefined || journal.phase === 'staging') {
-            // Nothing outside the transaction was touched yet.
-            await removeTransaction(parent, transactionRoot);
-            continue;
-        }
-        if (journal.targetName !== targetName) {
-            continue;
-        }
-        const backup = join(transactionRoot, 'backup');
-        const backupExists = await existingDirectory(backup);
-        if (journal.phase !== 'installed' && backupExists) {
-            if (await existingDirectory(directory)) {
-                if ((await directoryFingerprint(directory)) !== journal.stagedSha256) {
-                    throw new MockGenError(
-                        MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED,
-                        t('recovery.changedAfterInterruption', { directory })
-                    );
-                }
-                await rename(directory, join(transactionRoot, 'interrupted-output'));
-            }
-            await rename(backup, directory);
-        } else if (journal.phase === 'installed' && !(await existingDirectory(directory))) {
-            throw new MockGenError(
-                MOCKGEN_ERROR_CODE.PROJECT_RECOVERY_REQUIRED,
-                t('recovery.completedDataMissing', { directory })
-            );
-        }
+    }
+}
+
+/**
+ * Finish or undo one entry an interrupted run left in a parent directory: a removed transaction is deleted, a
+ * transaction of this project data directory is rolled back or completed, and any other entry is left alone.
+ *
+ * @param parent directory that holds the project data directories
+ * @param name name of the entry, a directory
+ * @param directory the project data directory of this run
+ * @param targetName last path segment of that directory
+ */
+async function recoverProjectEntry(parent: string, name: string, directory: string, targetName: string): Promise<void> {
+    if (name.startsWith(REMOVED_TRANSACTION_PREFIX)) {
+        await rm(join(parent, name), { recursive: true, force: true });
+        return;
+    }
+    if (!name.startsWith(TRANSACTION_PREFIX)) {
+        return;
+    }
+    const transactionRoot = join(parent, name);
+    const journal = await readProjectJournal(transactionRoot);
+    if (journal === undefined || journal.phase === 'staging') {
+        // Nothing outside the transaction was touched yet.
         await removeTransaction(parent, transactionRoot);
+        return;
+    }
+    if (journal.targetName !== targetName) {
+        return;
+    }
+    await restoreInterruptedTransaction(transactionRoot, directory, journal);
+    await removeTransaction(parent, transactionRoot);
+}
+
+/**
+ * Bring the project data directory to the state a journaled transaction left consistent: before installation
+ * the backup is put back (keeping output written since aside, unless it changed after the interruption);
+ * after installation the installed directory must exist.
+ *
+ * @param transactionRoot directory of the transaction
+ * @param directory the project data directory of this run
+ * @param journal the transaction's journal, past staging
+ */
+async function restoreInterruptedTransaction(
+    transactionRoot: string,
+    directory: string,
+    journal: ProjectJournal
+): Promise<void> {
+    const backup = join(transactionRoot, 'backup');
+    const backupExists = await existingDirectory(backup);
+    if (journal.phase !== 'installed' && backupExists) {
+        if (await existingDirectory(directory)) {
+            if ((await directoryFingerprint(directory)) !== journal.stagedSha256) {
+                throw new MockGenError(
+                    MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED,
+                    t('recovery.changedAfterInterruption', { directory })
+                );
+            }
+            await rename(directory, join(transactionRoot, 'interrupted-output'));
+        }
+        await rename(backup, directory);
+    } else if (journal.phase === 'installed' && !(await existingDirectory(directory))) {
+        throw new MockGenError(
+            MOCKGEN_ERROR_CODE.PROJECT_RECOVERY_REQUIRED,
+            t('recovery.completedDataMissing', { directory })
+        );
     }
 }
 
@@ -408,7 +464,8 @@ async function replaceProjectData(
                 throw new TypeError(`MockGen did not generate resource ${name}`);
             }
             const filename = `${name}.json`;
-            await writeFile(join(staged, filename), `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' });
+            // Sequential: ordered file-system transaction.
+            await writeFile(join(staged, filename), `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' }); // NOSONAR
             files.push(`${parts.join('/')}/${filename}`);
         }
         input.request.signal?.throwIfAborted();
