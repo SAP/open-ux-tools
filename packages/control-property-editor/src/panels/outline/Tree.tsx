@@ -418,7 +418,7 @@ export const Tree = (): ReactElement => {
                             textOverflow: 'ellipsis',
                             display: 'block'
                         }}
-                        title={cellName ?? ''}>
+                        title={cellName}>
                         {cellName}
                     </div>
                 </span>
