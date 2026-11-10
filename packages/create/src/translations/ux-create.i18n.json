@@ -123,7 +123,7 @@
         }
     },
     "telemetry": {
-        "notice": "SAP Fiori tools collects anonymous usage data to improve the product. Project paths, host names and system names are not collected. To opt out, run `npx @sap-ux/create telemetry disable` or set the environment variable DO_NOT_TRACK=1. This notice is shown only once.",
+        "notice": "SAP Fiori tools collects anonymous usage data to improve the product. Project paths, host names, and system names are not collected. To opt out, run `npx @sap-ux/create telemetry disable` or set the environment variable DO_NOT_TRACK=1. This notice is shown only once.",
         "command": {
             "description": "Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools extensions.",
             "enable": "Enable the collection of anonymous usage data",
