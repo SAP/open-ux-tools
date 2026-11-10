@@ -268,17 +268,26 @@ describe('Test handleCreateFioriCommand()', () => {
     });
 
     test('Execute command create-fiori telemetry status, should initialize telemetry and print the setting', async () => {
-        const mockLogger = { error: jest.fn(), debug: jest.fn(), info: jest.fn() };
-        mockGetLogger.mockReturnValue(mockLogger);
-        mockInitTelemetrySettings.mockResolvedValue(undefined);
-        mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: false });
+        // Clear environment variables to test the setting-based status (not env-based)
+        const originalEnv = { ...process.env };
+        delete process.env.DO_NOT_TRACK;
+        delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
 
-        await handleCreateFioriCommand([process.argv[0], 'create-fiori', 'telemetry', 'status']);
+        try {
+            const mockLogger = { error: jest.fn(), debug: jest.fn(), info: jest.fn() };
+            mockGetLogger.mockReturnValue(mockLogger);
+            mockInitTelemetrySettings.mockResolvedValue(undefined);
+            mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: false });
 
-        expect(mockInitTelemetrySettings).toHaveBeenCalledWith(
-            expect.objectContaining({ consumerModule: expect.objectContaining({ name: '@sap-ux/create' }) })
-        );
-        expect(mockLogger.info).toHaveBeenCalledWith('telemetry.status.disabled');
+            await handleCreateFioriCommand([process.argv[0], 'create-fiori', 'telemetry', 'status']);
+
+            expect(mockInitTelemetrySettings).toHaveBeenCalledWith(
+                expect.objectContaining({ consumerModule: expect.objectContaining({ name: '@sap-ux/create' }) })
+            );
+            expect(mockLogger.info).toHaveBeenCalledWith('telemetry.status.disabled');
+        } finally {
+            process.env = { ...originalEnv };
+        }
     });
 
     test('Execute commands that do not use telemetry, should not initialize telemetry', async () => {
