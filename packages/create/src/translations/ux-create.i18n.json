@@ -87,7 +87,7 @@
             "ui5VersionInvalid": "UI5 version must follow semantic versioning format (e.g., 1.120.0)",
             "fieldRequired": "{{fieldName}} is required",
             "operationCancelled": "Operation cancelled by user",
-            "noInput": "A question could not be answered because no input is available, for example when running without a terminal. Run the command in a terminal or provide all required options (for example --hostname, --client and --force)."
+            "noInput": "A question could not be answered because no input is available, for example when running without a terminal. Run the command in a terminal or provide all required options, for example --hostname, --client, and --force."
         },
         "prompts": {
             "confirmCurrentDir": "Migrate project at current directory: {{path}}?",
@@ -125,7 +125,7 @@
     "telemetry": {
         "notice": "SAP Fiori tools collects anonymous usage data to improve the product. Project paths, host names and system names are not collected. To opt out, run `npx @sap-ux/create telemetry disable` or set the environment variable DO_NOT_TRACK=1. This notice is shown only once.",
         "command": {
-            "description": "Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools.",
+            "description": "Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools extensions.",
             "enable": "Enable the collection of anonymous usage data",
             "disable": "Disable the collection of anonymous usage data",
             "status": "Show whether the collection of anonymous usage data is enabled"
