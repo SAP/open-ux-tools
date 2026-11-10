@@ -83,6 +83,15 @@
         .sapUshellShellCanvas {
             top: 0 !important;
         }
+        /* The RTA Stretch plugin adds `sapUiRtaStretchPaddingTop` (padding-top:
+           var(--sapContent_Space_Medium)) to the stretched root. In this viewport-locked,
+           overflow:hidden preview that top padding shifts the app down and pushes the
+           bottom of the page (e.g. a sap.m.Page footer and its buttons) out of view.
+           The native RTA toolbar is hidden here, so the compensating padding is removed. */
+        .sapUiRtaRoot .sapUiRtaStretchPaddingTop,
+        .sapUiRtaRoot.sapUiRtaStretchPaddingTop {
+            padding-top: 0 !important;
+        }
         .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
             background-color: transparent !important;
         }
