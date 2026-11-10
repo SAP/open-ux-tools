@@ -13,7 +13,6 @@ jobs:
         steps:
             - name: Read UI5 versions from cache
               id: cache-restore
-              if: false # temporary: force fallback path for testing
               uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
                 path: |
