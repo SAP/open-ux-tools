@@ -442,7 +442,7 @@ export default class extends Generator {
             this._collectTelemetryData();
 
             if (this.isCfEnv) {
-                await this._generateAdpProjectArtifactsCF(this._getCfArtifactInputs());
+                await this._generateAdpProjectArtifactsCF();
                 return;
             }
 
@@ -770,15 +770,16 @@ export default class extends Generator {
     /**
      * Generates the ADP project artifacts for the CF environment.
      *
-     * @param {CfArtifactInputs} inputs - Base-app values (manifest + derived GUIDs/URLs) sourced
-     * either from the interactive prompter or the headless JSON discovery.
+     * Base-app values (manifest + derived GUIDs/URLs) are sourced via {@link _getCfArtifactInputs},
+     * from either the interactive prompter or the headless JSON discovery.
      */
-    private async _generateAdpProjectArtifactsCF(inputs: CfArtifactInputs): Promise<void> {
+    private async _generateAdpProjectArtifactsCF(): Promise<void> {
         const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
         this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(publicVersions) });
 
-        const { manifest, html5RepoRuntimeGuid, serviceInstanceGuid, backendUrls, oauthPaths } = inputs;
+        const { manifest, html5RepoRuntimeGuid, serviceInstanceGuid, backendUrls, oauthPaths } =
+            this._getCfArtifactInputs();
         if (!manifest) {
             throw new Error('Manifest not found for base app.');
         }
