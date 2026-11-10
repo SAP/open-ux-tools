@@ -4,7 +4,7 @@ import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service
 import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
 import type { Project, Service, State } from '../../../src/types/index.js';
-import { ApiHubType, FloorplanFE, FloorplanFF, PLATFORMS } from '../../../src/types/index.js';
+import { FloorplanFE, FloorplanFF, PLATFORMS } from '../../../src/types/index.js';
 import type { FioriElementsApp } from '@sap-ux/fiori-elements-writer';
 import type { FreestyleApp } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
@@ -33,7 +33,7 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
 }));
 
 const { transformState } = await import('../../../src/fiori-app-generator/transforms.js');
-const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { hostEnvironment, ApiHubType } = await import('@sap-ux/fiori-generator-shared');
 
 describe('Test transform state', () => {
     const baseState: State = {

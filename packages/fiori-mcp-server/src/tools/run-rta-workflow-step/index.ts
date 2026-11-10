@@ -1,19 +1,27 @@
 import {
-    callPageAction,
+    cleanup,
+    describeUi,
     executeAction,
+    executeUfaAction,
     FrontendActionError,
     getElementContext,
     getODataMetadata,
     getOverlays,
-    getPageActions,
-    pressInteractive,
     saveChanges,
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
 import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
-import { requireAppPath, requireObject, requireSite, requireString, requireStringArray } from './assertions.js';
+import {
+    optionalObject,
+    optionalString,
+    requireAppPath,
+    requireObject,
+    requireSite,
+    requireString,
+    requireStringArray
+} from './assertions.js';
 
 /**
  * Runs one step of the RTA workflow. Dispatches by `input.step` and forwards
@@ -31,14 +39,17 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
         const frameId = input.frameId ?? 'preview';
         switch (input.step) {
             case 'start': {
+                // Validate all input BEFORE disconnecting: a bad value must not
+                // tear down an existing working page for a call that then throws.
+                const appPath = requireAppPath(input.appPath);
+                const agentName = optionalString(input.payload, 'agentName');
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
                 await defaultTransport.disconnectSite(site);
                 // Record which project (and whether CF) is starting on this site, so
                 // session seeding is keyed by project and ABAP projects skip it entirely.
-                const appPath = requireAppPath(input.appPath);
                 await registerSite(site, appPath);
-                const result = await startRta(defaultTransport, { site, frameId });
+                const result = await startRta(defaultTransport, { site, frameId }, agentName);
                 return { site, frameId, ...result };
             }
             case 'get_overlays': {
@@ -65,6 +76,11 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const ok = await saveChanges(defaultTransport, { site, frameId });
                 return { saved: ok };
             }
+            case 'cleanup': {
+                const reason = optionalString(input.payload, 'reason');
+                const { cleaned } = await cleanup(defaultTransport, { site, frameId }, reason);
+                return { cleaned };
+            }
             case 'stop': {
                 await defaultTransport.disconnectSite(site);
                 if (isRegistryEmpty()) {
@@ -74,34 +90,33 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             }
             case 'restart': {
                 const page = { site, frameId };
+                // Validate required input BEFORE disconnecting: a bad appPath must not
+                // tear down the running editor page for a call that then throws.
+                const appPath = requireAppPath(input.appPath);
                 await defaultTransport.disconnectSite(site);
                 // disconnectSite forgot the site meta; re-register so the reloaded
                 // editor keeps its project identity / CF session keying.
-                const appPath = requireAppPath(input.appPath);
                 await registerSite(site, appPath);
                 const result = await startRta(defaultTransport, page);
                 return { site, frameId, ...result };
             }
-            case 'get_page_actions': {
-                const { registered, interactive, interactiveTruncated } = await getPageActions(defaultTransport, {
-                    site,
-                    frameId
-                });
-                return {
-                    registered,
-                    interactive,
-                    ...(interactiveTruncated && { interactiveTruncated })
-                };
+            case 'describe_ui': {
+                const rootElementId = optionalString(input.payload, 'rootElementId');
+                const uiTree = await describeUi(defaultTransport, { site, frameId }, rootElementId);
+                return { uiTree };
             }
-            case 'call_page_action': {
-                const id = requireString(input.payload, 'id');
-                const result = await callPageAction(defaultTransport, { site, frameId }, id);
-                return { result };
-            }
-            case 'press_interactive': {
-                const controlId = requireString(input.payload, 'controlId');
-                const result = await pressInteractive(defaultTransport, { site, frameId }, controlId);
-                return { result };
+            case 'execute_page_action': {
+                const actionName = requireString(input.payload, 'actionName');
+                const elementId = optionalString(input.payload, 'elementId');
+                const actionParameters = optionalObject(input.payload, 'actionParameters');
+                const ufaResult = await executeUfaAction(
+                    defaultTransport,
+                    { site, frameId },
+                    actionName,
+                    elementId,
+                    actionParameters
+                );
+                return { isSuccess: ufaResult.isSuccess, result: ufaResult.result };
             }
             case 'get_odata_metadata': {
                 const uris = requireStringArray(input.payload, 'uris');

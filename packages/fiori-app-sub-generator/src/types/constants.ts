@@ -36,11 +36,6 @@ export const SAP_CLIENT_KEY = 'sap-client';
 export const API_HUB_API_KEY = 'API_HUB_API_KEY';
 export const API_HUB_TYPE = 'API_HUB_TYPE';
 
-export const enum ApiHubType {
-    apiHub = 'API_HUB',
-    apiHubEnterprise = 'API_HUB_ENTERPRISE'
-}
-
 export const STEP_FLOORPLAN = 'FLOORPLAN';
 export const STEP_DATASOURCE_AND_SERVICE = 'DATASOURCE_AND_SERVICE';
 export const STEP_ENTITY = 'ENTITY';
