@@ -14579,6 +14579,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated,
 			onTheBookingObjectPageGenerated: BookingObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
