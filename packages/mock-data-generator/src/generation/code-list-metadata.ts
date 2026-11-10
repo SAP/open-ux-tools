@@ -83,7 +83,7 @@ function localeOf(value: JsonValue | undefined, fallback: string): string {
     if (typeof value !== 'string' || value.length === 0) {
         return fallback;
     }
-    const normalized = value.replace(/_/gu, '-');
+    const normalized = value.replaceAll('_', '-');
     return unlessUnsupported(() => Intl.getCanonicalLocales(normalized)[0]) ?? fallback;
 }
 

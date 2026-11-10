@@ -37,6 +37,7 @@ import { generatedRowFlags } from './authored.js';
 import { contributorFillsUnreadably } from './rows.js';
 import { semanticValueIsValid } from './semantic-plan.js';
 import { errorMessage } from '../guards.js';
+import { compareCodePoints } from '../ordering.js';
 import { withReservedHost } from '../spec/reserved-domains.js';
 
 const SFT_PRIMITIVE_TYPES = new Set<SchemaProperty['primitiveType']>(['string', 'int', 'decimal']);
@@ -91,7 +92,7 @@ function normalizedText(value: string): string {
 }
 
 function escapedRegExp(value: string): string {
-    return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+    return value.replace(/[.*+?^${}()|[\]\\]/gu, String.raw`\$&`);
 }
 
 /**
@@ -179,7 +180,7 @@ function validCandidate(property: SchemaProperty, value: unknown, strictNarrativ
     return (
         typeof value === 'string' &&
         /[\p{L}\p{N}]/u.test(value) &&
-        !/^\s*[\[{]/u.test(value) &&
+        !/^\s*[[{]/u.test(value) &&
         !isStructuralFragment(value) &&
         (!strictNarrative || !isNarrativePlaceholder(property, value))
     );
@@ -401,8 +402,10 @@ function fieldRelationshipContext(
         }
     }
     return {
-        ...(referencedBy.size ? { referencedBy: Object.freeze([...referencedBy].sort()) } : {}),
-        ...(foreignKeyTargets.size ? { foreignKeyTargets: Object.freeze([...foreignKeyTargets].sort()) } : {}),
+        ...(referencedBy.size ? { referencedBy: Object.freeze([...referencedBy].sort(compareCodePoints)) } : {}),
+        ...(foreignKeyTargets.size
+            ? { foreignKeyTargets: Object.freeze([...foreignKeyTargets].sort(compareCodePoints)) }
+            : {}),
         ...(property.links?.valueListCollection
             ? { valueHelpTargets: Object.freeze([property.links.valueListCollection]) }
             : {}),
@@ -708,7 +711,9 @@ async function verifiedLinkedTextRows(
             },
             textLink: { codeProperty: owner.name, textProperty: text.name },
             relatedResources: Object.freeze(
-                [...new Set((text.referencedBy ?? []).map((reference) => reference.split('.')[0]))].sort()
+                [...new Set((text.referencedBy ?? []).map((reference) => reference.split('.')[0]))].sort(
+                    compareCodePoints
+                )
             )
         }))
     );
@@ -1230,7 +1235,9 @@ async function verifyGeneratedDomain(
             },
             textLink: { codeProperty: owner.name, textProperty: text.name },
             relatedResources: Object.freeze(
-                [...new Set((text.referencedBy ?? []).map((reference) => reference.split('.')[0]))].sort()
+                [...new Set((text.referencedBy ?? []).map((reference) => reference.split('.')[0]))].sort(
+                    compareCodePoints
+                )
             )
         }));
     });
@@ -1616,8 +1623,47 @@ function keepOneTextPerCode(attempt: SftResourceAttempt, merged: MergedSftRows):
     }
 }
 
-/** The last run of digits in a value. */
-const LAST_DIGIT_RUN = /(\d+)(?!.*\d)/u;
+/** Characters that end a line, as for `.` in a regular expression. */
+const LINE_TERMINATORS = new Set(['\n', '\r', '\u2028', '\u2029']);
+
+/**
+ * The last run of ASCII digits of a value, as offsets `[start, end)`. Within a value of several lines, it is the
+ * last run of the first line that holds a digit. One linear scan, so long values cannot make it backtrack.
+ *
+ * @param value the value
+ * @returns the run's offsets, or undefined when the value holds no digit
+ */
+export function lastDigitRun(value: string): { start: number; end: number } | undefined {
+    let start = -1;
+    let end = -1;
+    for (let index = 0; index < value.length; index++) {
+        const character = value.charAt(index);
+        if (start >= 0 && LINE_TERMINATORS.has(character)) {
+            break;
+        }
+        if (character >= '0' && character <= '9') {
+            if (end !== index) {
+                start = index;
+            }
+            end = index + 1;
+        }
+    }
+    return start >= 0 ? { start, end } : undefined;
+}
+
+/**
+ * Replace the last run of digits of a value (see `lastDigitRun`).
+ *
+ * @param value the value
+ * @param replacement the replacement for the run's digits
+ * @returns the value with its run replaced, or the value itself when it holds no digit
+ */
+function replaceLastDigitRun(value: string, replacement: (run: string) => string): string {
+    const run = lastDigitRun(value);
+    return run
+        ? `${value.slice(0, run.start)}${replacement(value.slice(run.start, run.end))}${value.slice(run.end)}`
+        : value;
+}
 
 /**
  * Whether the model's values of a field are distinct identifiers: a string field with no role or an identifier role,
@@ -1638,7 +1684,7 @@ function distinctIdentifiers(
         (role === undefined || semanticRoleDefinition(role)?.family === 'identifier') &&
         values.length > 1 &&
         new Set(values).size === values.length &&
-        values.every((value) => typeof value === 'string' && /^\S+$/u.test(value) && LAST_DIGIT_RUN.test(value))
+        values.every((value) => typeof value === 'string' && /^\S+$/u.test(value) && lastDigitRun(value) !== undefined)
     );
 }
 
@@ -1650,7 +1696,7 @@ function distinctIdentifiers(
  * @returns its form
  */
 function identifierForm(value: string): string {
-    return value.replace(LAST_DIGIT_RUN, '#');
+    return replaceLastDigitRun(value, () => '#');
 }
 
 /**
@@ -1663,7 +1709,7 @@ function identifierForm(value: string): string {
  * @returns the identifier
  */
 function renumbered(value: string, next: bigint): string {
-    return value.replace(LAST_DIGIT_RUN, (run) => next.toString().padStart(run.length, '0'));
+    return replaceLastDigitRun(value, (run) => next.toString().padStart(run.length, '0'));
 }
 
 /**
@@ -1698,7 +1744,8 @@ function reuseModelValues(attempt: SftResourceAttempt, merged: MergedSftRows, st
         if (distinctIdentifiers(properties.get(name), attempt.likelyRoles.get(name), values)) {
             const next = new Map<string, bigint>();
             for (const value of values.map(String)) {
-                const number = BigInt(LAST_DIGIT_RUN.exec(value)?.[1] ?? '0') + 1n;
+                const run = lastDigitRun(value);
+                const number = BigInt(run ? value.slice(run.start, run.end) : '0') + 1n;
                 const form = identifierForm(value);
                 next.set(form, number > (next.get(form) ?? 0n) ? number : (next.get(form) ?? 0n));
             }

@@ -75,7 +75,9 @@ function byteAlphabet(): { bytesToCharacters: string[]; charactersToBytes: Reado
 }
 
 const { bytesToCharacters: BYTE_CHARACTER, charactersToBytes: CHARACTER_BYTE } = byteAlphabet();
-const GPT2_SPLIT = /'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/gu;
+// The GPT-2 pre-tokenizer pattern of the model's tokenizer.json, kept verbatim: any other split changes the token ids
+// the model was trained on, so its regex complexity is accepted.
+const GPT2_SPLIT = /'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/gu; // NOSONAR
 
 function splitDigits(text: string): string[] {
     const result: string[] = [];
@@ -147,11 +149,11 @@ export function createSmolLm2Tokenizer(value: unknown): SmolLm2Tokenizer {
         tokenById.set(id, content);
     }
     const specialContents = [...specialTokens.keys()].sort((left, right) => right.length - left.length);
+    const escapedSpecialContents = specialContents.map((content) =>
+        content.replace(/[.*+?^${}()|[\]\\]/gu, String.raw`\$&`)
+    );
     const specialPattern = specialContents.length
-        ? new RegExp(
-              `(${specialContents.map((content) => content.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')).join('|')})`,
-              'gu'
-          )
+        ? new RegExp(`(${escapedSpecialContents.join('|')})`, 'gu')
         : undefined;
 
     const encodeOrdinary = (text: string, ids: number[]): void => {

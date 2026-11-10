@@ -2,6 +2,7 @@ import type { SchemaEntity, SchemaRelationship } from '../schema/graph.js';
 import type { JsonValue, MockDataRow } from '../types.js';
 import { generatedRows, heldAs, OutcomeCollector, REALISM_CHECK } from './realism-types.js';
 import type { CheckOutcome, RealismInput } from './realism-types.js';
+import { compareCodePoints } from '../ordering.js';
 
 /** One relationship mapping whose source and target both name a local text field. */
 interface TextedMapping {
@@ -276,7 +277,7 @@ export function checkSemanticKeys(input: RealismInput): CheckOutcome {
 function declaredIdentifiers(input: RealismInput): Map<string, string[][]> {
     const identifiers = new Map<string, Map<string, string[]>>();
     const add = (entitySet: string, names: ReadonlyArray<string>): void => {
-        const sorted = [...names].sort();
+        const sorted = [...names].sort(compareCodePoints);
         const byName = identifiers.get(entitySet) ?? new Map<string, string[]>();
         byName.set(sorted.join('\u0000'), sorted);
         identifiers.set(entitySet, byName);

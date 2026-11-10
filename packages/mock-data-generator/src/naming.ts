@@ -4,6 +4,13 @@
  * kept whole.
  */
 
+/**
+ * The boundary inside a run of capitals before a capitalised word, as in `HTTP|Server`. Replacing it with a space
+ * splits acronyms like `replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')` does, but with fixed-width lookarounds that
+ * cannot backtrack.
+ */
+export const ACRONYM_BOUNDARY = /(?<=[A-Z])(?=[A-Z][a-z])/gu;
+
 /** How an identifier is split into words. */
 export interface IdentifierWordOptions {
     /**
@@ -31,8 +38,7 @@ export interface IdentifierTokenOptions extends IdentifierWordOptions {
  * @returns the non-empty words in order
  */
 export function identifierWords(identifier: string, options: IdentifierWordOptions = {}): string[] {
-    const acronymsSplit =
-        options.splitAcronyms === false ? identifier : identifier.replace(/([A-Z]+)([A-Z][a-z])/gu, '$1 $2');
+    const acronymsSplit = options.splitAcronyms === false ? identifier : identifier.replace(ACRONYM_BOUNDARY, ' ');
     return acronymsSplit
         .replace(/([a-z\d])([A-Z])/gu, '$1 $2')
         .replace(/[_-]+/gu, ' ')

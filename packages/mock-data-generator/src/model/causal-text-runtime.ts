@@ -397,6 +397,28 @@ interface DecodingSequence {
     cutFields: Set<string>;
 }
 
+/** Separators a shortened text does not end with, besides whitespace. */
+const TRAILING_SEPARATORS = new Set([',', ';', ':', '&', '+', '/', '(', '-', '–', '—']);
+
+/**
+ * Remove the whitespace and separators a text ends with, scanning back once so long runs cannot make a
+ * regular expression backtrack.
+ *
+ * @param value the text
+ * @returns the text without its trailing whitespace and separators
+ */
+export function trimTrailingSeparators(value: string): string {
+    let end = value.length;
+    while (end > 0) {
+        const character = value.charAt(end - 1);
+        if (!TRAILING_SEPARATORS.has(character) && !/\s/u.test(character)) {
+            break;
+        }
+        end--;
+    }
+    return value.slice(0, end);
+}
+
 /**
  * A string cut at its maximum length, shortened to its last complete word: the text before the last
  * whitespace, without trailing separators; a code without whitespace keeps its complete segments. A
@@ -413,7 +435,7 @@ export function trimToWordBoundary(value: string): string {
         const code = separator > 0 ? value.slice(0, separator) : value;
         return /[\p{L}\p{N}]/u.test(code) && code.length * 2 >= value.length ? code : value;
     }
-    const trimmed = value.slice(0, boundary).replace(/[\s,;:&+/(\-\u2013\u2014]+$/u, '');
+    const trimmed = trimTrailingSeparators(value.slice(0, boundary));
     return /[\p{L}\p{N}]/u.test(trimmed) && trimmed.length * 3 >= value.length ? trimmed : value;
 }
 

@@ -3,6 +3,7 @@ import type { FieldContextV3, SemanticClassifierInput } from '../types.js';
 import { compareCodePoints } from '../ordering.js';
 import { VOCABULARY_TERM_SUFFIX } from '../spec/odata.js';
 import { canonicalJson, sha256 } from '../hash.js';
+import { ACRONYM_BOUNDARY } from '../naming.js';
 
 const FIELD_CONTEXT_SERIALIZER_VERSION = 'field-context-v3-priority-text-v4' as const;
 export const FIELD_CONTEXT_SERIALIZER_FINGERPRINT = sha256(FIELD_CONTEXT_SERIALIZER_VERSION);
@@ -130,7 +131,7 @@ function identifierWords(identifier: string): string {
     return identifier
         .replace(/[_\-./]+/gu, ' ')
         .replace(/([a-z0-9])([A-Z])/gu, '$1 $2')
-        .replace(/([A-Z]+)([A-Z][a-z])/gu, '$1 $2')
+        .replace(ACRONYM_BOUNDARY, ' ')
         .replace(/\s+/gu, ' ')
         .trim();
 }

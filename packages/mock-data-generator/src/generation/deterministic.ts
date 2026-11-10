@@ -383,7 +383,7 @@ function commonKeyProperty(properties: ReadonlyArray<SchemaProperty>): SchemaPro
 function relationshipSignature(relationship: SchemaRelationship): string {
     return `${relationship.fromEntitySet}->${relationship.toEntitySet}:${relationship.mappings
         .map(({ sourceProperty, targetProperty }) => `${sourceProperty}->${targetProperty}`)
-        .sort()
+        .sort(compareCodePoints)
         .join('|')}`;
 }
 
@@ -589,7 +589,7 @@ function relationshipKeyProfiles(graph: SchemaGraph): ReadonlyMap<string, KeyGen
         if (!property) {
             continue;
         }
-        const sortedReferences = [...references].sort();
+        const sortedReferences = [...references].sort(compareCodePoints);
         const scope = `relationship:${sha256(sortedReferences.join('|'))}`;
         const referencing = sortedReferences.flatMap((reference) => referencingProperties.get(reference) ?? []);
         const narrowed = narrowedKeyProperty(property, referencing);
@@ -1798,7 +1798,7 @@ function assignRelationships(
             diagnostics.push(Object.freeze(diagnostic));
         }
     };
-    const sourceNames = [...relationshipsBySource.keys()].sort();
+    const sourceNames = [...relationshipsBySource.keys()].sort(compareCodePoints);
     const maximumPasses = Math.max(1, sourceNames.length + 1);
     for (let pass = 0; pass < maximumPasses; pass += 1) {
         let changed = false;

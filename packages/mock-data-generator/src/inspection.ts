@@ -14,6 +14,7 @@ import type {
     SemanticClassification,
     ValueTier
 } from './types.js';
+import { compareCodePoints } from './ordering.js';
 import { canonicalJson, sha256 } from './hash.js';
 
 function rowsForHash(initialRows: ExistingInitialRows): ReadonlyArray<unknown> | undefined {
@@ -182,7 +183,7 @@ function sourceOwnershipReport(
         ...request.targets.map((target) => target.name),
         ...Object.keys(request.existingData)
             .filter((name) => !targets.has(name))
-            .sort()
+            .sort(compareCodePoints)
     ];
     return resourceNames.map((resource) => {
         const existing = request.existingData[resource];

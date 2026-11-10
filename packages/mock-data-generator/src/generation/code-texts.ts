@@ -236,7 +236,7 @@ function isUsableText(value: JsonValue | undefined, code: string): value is stri
     const letters = semanticRules().codeTexts.minimumTextLetters;
     return (
         typeof value === 'string' &&
-        new RegExp(`\\p{L}{${letters},}`, 'u').test(value) &&
+        new RegExp(String.raw`\p{L}{${letters},}`, 'u').test(value) &&
         value.trim().toUpperCase() !== code.toUpperCase()
     );
 }

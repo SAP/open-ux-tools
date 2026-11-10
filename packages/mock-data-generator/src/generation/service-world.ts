@@ -1379,7 +1379,7 @@ function derivedRelationships(graph: SchemaGraph): ReadonlyArray<SchemaRelations
             (relationship) =>
                 `${relationship.fromEntitySet}->${relationship.toEntitySet}:${relationship.mappings
                     .map(({ sourceProperty, targetProperty }) => `${sourceProperty}:${targetProperty}`)
-                    .sort()
+                    .sort(compareCodePoints)
                     .join('|')}`
         )
     );
@@ -1404,7 +1404,7 @@ function derivedRelationships(graph: SchemaGraph): ReadonlyArray<SchemaRelations
             }
             const signature = `${relationship.fromEntitySet}->${relationship.toEntitySet}:${relationship.mappings
                 .map(({ sourceProperty, targetProperty }) => `${sourceProperty}:${targetProperty}`)
-                .sort()
+                .sort(compareCodePoints)
                 .join('|')}`;
             if (!signatures.has(signature)) {
                 signatures.add(signature);

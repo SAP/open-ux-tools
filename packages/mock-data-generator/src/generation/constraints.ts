@@ -26,15 +26,23 @@ function calendarDateIsValid(value: string): boolean {
     return parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day;
 }
 
+/** The shape of an ISO 8601 date-time: date, time of day with optional fraction, and optional offset. */
+const DATE_TIME_SHAPE = /^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?)(Z|[+-]\d{2}:\d{2})?$/;
+/** A time of day from `00:00:00` to `23:59:59`, with an optional fraction of a second. */
+const TIME_OF_DAY = /^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?$/;
+/** A UTC offset: `Z`, or from `-14:00` to `+14:00` with minutes up to 59 below 14 hours. */
+const UTC_OFFSET = /^(?:Z|[+-](?:(?:0\d|1[0-3]):[0-5]\d|14:00))$/;
+
 function dateTimeIsValid(value: string, requireOffset: boolean): boolean {
-    const match =
-        /^(\d{4}-\d{2}-\d{2})T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(Z|[+-](?:(?:0\d|1[0-3]):[0-5]\d|14:00))?$/.exec(
-            value
-        );
+    const match = DATE_TIME_SHAPE.exec(value);
+    if (match === null) {
+        return false;
+    }
+    const [, date, time, offset] = match;
     return (
-        match !== null &&
-        (!requireOffset || match[2] !== undefined) &&
-        calendarDateIsValid(match[1]) &&
+        TIME_OF_DAY.test(time) &&
+        (offset === undefined ? !requireOffset : UTC_OFFSET.test(offset)) &&
+        calendarDateIsValid(date) &&
         !Number.isNaN(Date.parse(value))
     );
 }
