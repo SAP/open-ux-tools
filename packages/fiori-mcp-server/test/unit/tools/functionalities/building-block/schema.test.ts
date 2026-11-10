@@ -1,25 +1,32 @@
 import {
     buildBuildingBlockSchema,
-    buildHandWrittenMembers
+    buildBuildingBlockMembers
 } from '../../../../../src/tools/functionalities/building-block/schema.js';
 
 const schema = buildBuildingBlockSchema();
 
-describe('hand-written members: no stray metaPath/contextPath (issue #39379 / review C3)', () => {
-    const members = buildHandWrittenMembers();
+describe('lean schema: no member advertises metaPath/contextPath (issue #39379 / review C3)', () => {
+    const members = buildBuildingBlockMembers();
 
-    test('Page and RichTextEditorButtonGroups declare neither metaPath nor contextPath', () => {
-        for (const type of ['page', 'rich-text-editor-button-groups'] as const) {
-            const keys = Object.keys((members[type] as any).shape);
-            expect(keys).not.toContain('metaPath');
-            expect(keys).not.toContain('contextPath');
+    test('no building block member declares metaPath or contextPath', () => {
+        for (const [type, member] of Object.entries(members)) {
+            const keys = Object.keys((member as any).shape);
+            expect(`${type}:metaPath=${keys.includes('metaPath')}`).toBe(`${type}:metaPath=false`);
+            expect(`${type}:contextPath=${keys.includes('contextPath')}`).toBe(`${type}:contextPath=false`);
         }
     });
 
-    test('RichTextEditor keeps metaPath (it binds to data) but drops contextPath', () => {
-        const keys = Object.keys((members['rich-text-editor'] as any).shape);
-        expect(keys).toContain('metaPath');
-        expect(keys).not.toContain('contextPath');
+    test('members declare only the discriminant, id, and their required fields', () => {
+        expect(Object.keys((members['page'] as any).shape).sort()).toEqual(['buildingBlockType', 'id']);
+        expect(Object.keys((members['rich-text-editor-button-groups'] as any).shape).sort()).toEqual([
+            'buildingBlockType',
+            'id'
+        ]);
+        expect(Object.keys((members['custom-column'] as any).shape).sort()).toEqual([
+            'buildingBlockType',
+            'header',
+            'id'
+        ]);
     });
 });
 
@@ -30,13 +37,22 @@ describe('buildBuildingBlockSchema', () => {
             aggregationPath: '/mvc:View/content',
             buildingBlockData: {
                 buildingBlockType: 'table',
-                metaPath: '/Products/@com.sap.vocabularies.UI.v1.LineItem',
                 // not declared in the schema — must still be preserved for generateBuildingBlock
+                metaPath: '/Products/@com.sap.vocabularies.UI.v1.LineItem',
                 filterBar: 'myFilterBar'
             }
         }) as any;
         expect(result.buildingBlockData.metaPath).toBe('/Products/@com.sap.vocabularies.UI.v1.LineItem');
         expect(result.buildingBlockData.filterBar).toBe('myFilterBar');
+    });
+
+    test('accepts a minimal Page (title not required at the schema level — semantics via search_docs)', () => {
+        const result = schema.parse({
+            viewOrFragmentPath: 'v.xml',
+            aggregationPath: '/mvc:View/Page',
+            buildingBlockData: { buildingBlockType: 'page', title: 'My Page' }
+        }) as any;
+        expect(result.buildingBlockData.title).toBe('My Page');
     });
 
     test('requires header for a CustomColumn', () => {
@@ -64,42 +80,6 @@ describe('buildBuildingBlockSchema', () => {
                 buildingBlockData: { buildingBlockType: 'action', key: 'k', text: 'Do it' }
             })
         ).toBeDefined();
-    });
-
-    test('requires a title for a Page and does not declare metaPath/contextPath', () => {
-        expect(() =>
-            schema.parse({
-                viewOrFragmentPath: 'v.xml',
-                aggregationPath: '/mvc:View/Page',
-                buildingBlockData: { buildingBlockType: 'page' }
-            })
-        ).toThrow();
-        const result = schema.parse({
-            viewOrFragmentPath: 'v.xml',
-            aggregationPath: '/mvc:View/Page',
-            buildingBlockData: { buildingBlockType: 'page', title: 'My Page', templateType: 'basic' }
-        }) as any;
-        expect(result.buildingBlockData.title).toBe('My Page');
-        expect(result.buildingBlockData.templateType).toBe('basic');
-    });
-
-    test('requires buttonGroups for RichTextEditorButtonGroups', () => {
-        expect(() =>
-            schema.parse({
-                viewOrFragmentPath: 'v.xml',
-                aggregationPath: '/x',
-                buildingBlockData: { buildingBlockType: 'rich-text-editor-button-groups' }
-            })
-        ).toThrow();
-        const result = schema.parse({
-            viewOrFragmentPath: 'v.xml',
-            aggregationPath: '/x',
-            buildingBlockData: {
-                buildingBlockType: 'rich-text-editor-button-groups',
-                buttonGroups: [{ name: 'font-style', buttons: 'bold,italic,underline' }]
-            }
-        }) as any;
-        expect(result.buildingBlockData.buttonGroups[0].name).toBe('font-style');
     });
 
     test('rejects an unknown buildingBlockType', () => {
