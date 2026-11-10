@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import { randomBytes } from 'node:crypto';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,8 +15,6 @@ import {
     generateCf,
     getCfBaseAppInbounds,
     getApprouterType,
-    getModuleNames,
-    hasApprouter,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
@@ -33,7 +30,6 @@ import {
     storeCredentials,
     getDefaultProjectName,
     getOrCreateServiceInstanceKeys,
-    getAdpServiceInstances,
     getBusinessServiceInfo,
     getCfApps,
     downloadAppContent,
@@ -59,7 +55,6 @@ import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input
 import type {
     CfConfig,
     CfServicesAnswers,
-    CfServiceInstanceChoice,
     CFApp,
     AttributesAnswers,
     ConfigAnswers,
@@ -92,11 +87,13 @@ import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
 import { CFServicesPrompter } from './questions/cf-services.js';
 import { ConfigPrompter } from './questions/configuration.js';
-import { getDefaultNamespace } from './questions/helper/default-values.js';
+import {
+    generateBusinessSolutionName,
+    getDefaultNamespace,
+    resolveProjectName
+} from './questions/helper/default-values.js';
 import {
     validateJsonInput,
-    validateMtaId,
-    validateProjectPath,
     validateBusinessSolutionName,
     assertValidationPassed
 } from './questions/helper/validators.js';
@@ -116,6 +113,7 @@ import {
 import { getMtaIdPrompt, getMtaModePrompt, getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
 import type { AdpTelemetryData } from '../types.js';
 import { KeyUserImportPrompter } from './questions/key-user.js';
+import { hasExistingApprouter, resolveCfProjectPath, resolveCfServiceInstance } from './headless/cf.js';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';
@@ -992,7 +990,7 @@ export default class extends Generator {
             namespace: requestedNamespace
         } = jsonInput;
 
-        const projectPath = this._resolveCfProjectPath(mtaMode, targetFolder, mtaId);
+        const projectPath = resolveCfProjectPath(mtaMode, targetFolder, this.logger, this.cfConfig, mtaId);
         this.destinationRoot(projectPath);
         const resolvedApprouter =
             approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
@@ -1000,9 +998,9 @@ export default class extends Generator {
         // A managed approuter with no existing router writes destinations keyed on the business solution name.
         // When the caller omits it, generate a unique default; when supplied, validate it.
         let resolvedBusinessSolutionName = businessSolutionName?.trim() ?? '';
-        if (resolvedApprouter === AppRouterType.MANAGED && !this._hasExistingApprouter(mtaMode, projectPath)) {
+        if (resolvedApprouter === AppRouterType.MANAGED && !hasExistingApprouter(mtaMode, projectPath)) {
             if (!resolvedBusinessSolutionName) {
-                resolvedBusinessSolutionName = this._generateBusinessSolutionName();
+                resolvedBusinessSolutionName = generateBusinessSolutionName();
             }
             assertValidationPassed(validateBusinessSolutionName(resolvedBusinessSolutionName));
         }
@@ -1012,7 +1010,7 @@ export default class extends Generator {
             throw new Error(t('error.businessServiceDoesNotExist'));
         }
 
-        const serviceInstance = await this._resolveCfServiceInstance(serviceInstanceName);
+        const serviceInstance = await resolveCfServiceInstance(serviceInstanceName, this.cfConfig, this.logger);
 
         const apps: CFApp[] = await getCfApps(serviceInfo.serviceKeys, this.cfConfig, this.logger);
         const baseApp = apps.find((app) => app.appId === baseApplicationName);
@@ -1043,7 +1041,7 @@ export default class extends Generator {
             ...(resolvedBusinessSolutionName ? { businessSolutionName: resolvedBusinessSolutionName } : {})
         };
 
-        const projectName = this.attributeAnswersProjectName(requestedProjectName);
+        const projectName = resolveProjectName(this.destinationPath(), requestedProjectName);
         const title = applicationTitle ?? manifest['sap.app']?.title ?? t('prompts.appTitleDefault');
         const namespace = requestedNamespace ?? getDefaultNamespace(projectName, this.isCustomerBase);
 
@@ -1058,87 +1056,6 @@ export default class extends Generator {
             ui5Version: '',
             enableTypeScript: false
         };
-    }
-
-    /**
-     * Validates the MTA inputs and resolves the destination project path for the headless CF flow.
-     *
-     * For `new` MTA mode the folder is created inside `targetFolder` under `mtaId`; for `existing`
-     * mode `targetFolder` is the MTA root.
-     *
-     * @param {MtaMode} mtaMode - The MTA mode.
-     * @param {string} targetFolder - The target folder (MTA root for existing, parent for new).
-     * @param {string} [mtaId] - The MTA id/name for new-MTA mode.
-     * @returns {string} The resolved absolute project path.
-     */
-    private _resolveCfProjectPath(mtaMode: MtaMode, targetFolder: string, mtaId?: string): string {
-        assertValidationPassed(validateProjectPath(targetFolder, this.logger, mtaMode, this.cfConfig));
-
-        if (mtaMode === MtaMode.New) {
-            if (!mtaId) {
-                throw new Error(t('error.mtaIdRequired'));
-            }
-            assertValidationPassed(validateMtaId(mtaId, targetFolder));
-            return join(targetFolder, mtaId);
-        }
-
-        return fs.realpathSync(targetFolder, 'utf-8');
-    }
-
-    /**
-     * Whether the target MTA already declares an approuter module. A new MTA never does; for an existing
-     * MTA the modules are read from its `mta.yaml`. Mirrors the interactive flow's `detectExistingApprouter`.
-     *
-     * @param {MtaMode} mtaMode - The MTA mode.
-     * @param {string} projectPath - The resolved project/MTA path.
-     * @returns {boolean} True if an approuter module already exists.
-     */
-    private _hasExistingApprouter(mtaMode: MtaMode, projectPath: string): boolean {
-        if (mtaMode === MtaMode.New) {
-            return false;
-        }
-        try {
-            return hasApprouter(getModuleNames(projectPath));
-        } catch {
-            return false;
-        }
-    }
-
-    /**
-     * Generates a unique default business solution name for the headless CF flow when the caller
-     * omits one. The `solution-` prefix plus 10 hex characters stays short (the value is written into
-     * the CF `sap.cloud.service` destination property) and satisfies the business-solution-name charset.
-     *
-     * @returns {string} A unique default business solution name, e.g. `solution-a1b2c3d4e5`.
-     */
-    private _generateBusinessSolutionName(): string {
-        return `solution-${randomBytes(5).toString('hex')}`;
-    }
-
-    /**
-     * Resolves the live CF service instance to bind and extend, matched by name within the current
-     * space. Throws when no instance with that name exists.
-     *
-     * @param {string} serviceInstanceName - The live service instance name.
-     * @returns {Promise<CfServiceInstanceChoice>} The matched service instance.
-     */
-    private async _resolveCfServiceInstance(serviceInstanceName: string): Promise<CfServiceInstanceChoice> {
-        const instances = await getAdpServiceInstances(this.cfConfig.space.GUID, this.logger);
-        const instance = instances.find((inst) => inst.name === serviceInstanceName);
-        if (!instance) {
-            throw new Error(t('error.serviceInstanceNotFound', { name: serviceInstanceName }));
-        }
-        return instance;
-    }
-
-    /**
-     * Derives the project (sub-module) name for the CF flow from JSON input or a default.
-     *
-     * @param {string} [requested] - The explicit project name from JSON input, when provided.
-     * @returns {string} The project name.
-     */
-    private attributeAnswersProjectName(requested?: string): string {
-        return requested ?? getDefaultProjectName(this.destinationPath());
     }
 
     /**
