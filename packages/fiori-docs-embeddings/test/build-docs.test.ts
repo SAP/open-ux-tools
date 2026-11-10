@@ -24,6 +24,10 @@ jest.unstable_mockModule('node-fetch', () => ({
     default: mockFetch
 }));
 
+// The source now uses the Node.js built-in global fetch (node-fetch was removed).
+// Assign our mock to global.fetch so tests that spy on network calls still work.
+global.fetch = mockFetch as unknown as typeof fetch;
+
 // Import real gray-matter before mocking to avoid recursive resolution
 const realGrayMatter = await import('gray-matter');
 jest.unstable_mockModule('gray-matter', () => ({
