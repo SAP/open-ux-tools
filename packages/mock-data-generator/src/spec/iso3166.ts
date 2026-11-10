@@ -280,9 +280,7 @@ export const ISO_3166_NUMERIC: Readonly<Record<string, string>> = Object.freeze(
  * @returns the three-digit code, or undefined for an unknown code
  */
 export function countryNumericCode(alpha2: string): string | undefined {
-    return Object.prototype.hasOwnProperty.call(ISO_3166_NUMERIC, alpha2.toUpperCase())
-        ? ISO_3166_NUMERIC[alpha2.toUpperCase()]
-        : undefined;
+    return Object.hasOwn(ISO_3166_NUMERIC, alpha2.toUpperCase()) ? ISO_3166_NUMERIC[alpha2.toUpperCase()] : undefined;
 }
 
 /** The numeric codes the table holds. */

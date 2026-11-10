@@ -63,7 +63,7 @@ export function isReservedHost(host: string): boolean {
     const normalized = host.toLowerCase().replace(/\.$/u, '');
     const labels = normalized.split('.');
     return (
-        RESERVED_TOP_LEVEL_DOMAINS.includes(labels[labels.length - 1] ?? '') ||
+        RESERVED_TOP_LEVEL_DOMAINS.includes(labels.at(-1) ?? '') ||
         RESERVED_SECOND_LEVEL_DOMAINS.some((domain) => normalized === domain || normalized.endsWith(`.${domain}`))
     );
 }

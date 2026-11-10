@@ -179,32 +179,7 @@ function metadataLinks(
     )?.String;
     const parameters = valueListPropertyValues.find((propertyValue) => propertyValue.Property === 'Parameters');
     const parameterRecords = asArray(isRecord(parameters?.Collection) ? parameters.Collection.Record : undefined);
-    const valueListParameters: SchemaValueListParameter[] = parameterRecords.flatMap((record) => {
-        const values = asArray(record.PropertyValue);
-        const localProperty = values.find((value) => value.Property === 'LocalDataProperty')?.PropertyPath;
-        const valueListProperty = values.find((value) => value.Property === 'ValueListProperty')?.String;
-        const constant = values.find((value) => value.Property === 'Constant');
-        const constantEntry = constant
-            ? ['String', 'Bool', 'Int', 'Float', 'Decimal'].find((key) => constant[key] !== undefined)
-            : undefined;
-        const constantValue = constantEntry
-            ? typedExpressionValue(constantEntry, constant?.[constantEntry])
-            : undefined;
-        const direction = typeof record.Type === 'string' ? valueListParameterDirection(record.Type) : undefined;
-        const parameter: SchemaValueListParameter = {
-            // Older metadata omits the ValueListParameter type. Treat that
-            // mapping as InOut conservatively while retaining explicit types.
-            direction: direction ?? 'InOut',
-            ...(typeof localProperty === 'string' ? { localProperty } : {}),
-            ...(typeof valueListProperty === 'string' ? { valueListProperty } : {}),
-            ...(typeof constantValue === 'string' ||
-            typeof constantValue === 'number' ||
-            typeof constantValue === 'boolean'
-                ? { constant: constantValue }
-                : {})
-        };
-        return [parameter];
-    });
+    const valueListParameters: SchemaValueListParameter[] = parameterRecords.map(valueListParameter);
     const valueListMappings = valueListParameters.flatMap(({ localProperty, valueListProperty }) =>
         localProperty && valueListProperty ? [{ localProperty, valueListProperty }] : []
     );
@@ -215,25 +190,89 @@ function metadataLinks(
     const standardCode = pathForTerm('.standardcode');
     const valueListCollection =
         typeof collectionPath === 'string' && collectionPath.length > 0 ? collectionPath : undefined;
-    return text ||
-        unit ||
-        currency ||
-        scale ||
-        standardCode ||
-        valueListCollection ||
-        valueListMappings.length > 0 ||
-        valueListParameters.length > 0
-        ? Object.freeze({
-              ...(text ? { text } : {}),
-              ...(unit ? { unit } : {}),
-              ...(currency ? { currency } : {}),
-              ...(scale ? { scale } : {}),
-              ...(standardCode ? { standardCode } : {}),
-              ...(valueListCollection ? { valueListCollection } : {}),
-              ...(valueListMappings.length > 0 ? { valueListMappings: Object.freeze(valueListMappings) } : {}),
-              ...(valueListParameters.length > 0 ? { valueListParameters: Object.freeze(valueListParameters) } : {})
-          })
+    return frozenLinks({
+        text,
+        unit,
+        currency,
+        scale,
+        standardCode,
+        valueListCollection,
+        valueListMappings,
+        valueListParameters
+    });
+}
+
+/**
+ * One `Common.ValueListParameter*` record as a schema value-list parameter.
+ *
+ * @param record the parameter record
+ * @returns the parameter; a record without a type maps both ways
+ */
+function valueListParameter(record: XmlRecord): SchemaValueListParameter {
+    const values = asArray(record.PropertyValue);
+    const localProperty = values.find((value) => value.Property === 'LocalDataProperty')?.PropertyPath;
+    const valueListProperty = values.find((value) => value.Property === 'ValueListProperty')?.String;
+    const constant = values.find((value) => value.Property === 'Constant');
+    const constantEntry = constant
+        ? ['String', 'Bool', 'Int', 'Float', 'Decimal'].find((key) => constant[key] !== undefined)
         : undefined;
+    const constantValue = constantEntry ? typedExpressionValue(constantEntry, constant?.[constantEntry]) : undefined;
+    const direction = typeof record.Type === 'string' ? valueListParameterDirection(record.Type) : undefined;
+    return {
+        // Older metadata omits the ValueListParameter type. Treat that
+        // mapping as InOut conservatively while retaining explicit types.
+        direction: direction ?? 'InOut',
+        ...(typeof localProperty === 'string' ? { localProperty } : {}),
+        ...(typeof valueListProperty === 'string' ? { valueListProperty } : {}),
+        ...(typeof constantValue === 'string' || typeof constantValue === 'number' || typeof constantValue === 'boolean'
+            ? { constant: constantValue }
+            : {})
+    };
+}
+
+/**
+ * The links of a property, without the ones it lacks, or undefined when it has none.
+ *
+ * @param links the property's resolved links
+ * @param links.text the path of its text property
+ * @param links.unit the path of its unit property
+ * @param links.currency the path of its currency property
+ * @param links.scale the path of its unit-specific scale
+ * @param links.standardCode the path of its standard code
+ * @param links.valueListCollection the collection of its value list
+ * @param links.valueListMappings the value-list mappings with both ends
+ * @param links.valueListParameters all value-list parameters
+ * @returns the frozen links, or undefined
+ */
+function frozenLinks(links: {
+    text: string | undefined;
+    unit: string | undefined;
+    currency: string | undefined;
+    scale: string | undefined;
+    standardCode: string | undefined;
+    valueListCollection: string | undefined;
+    valueListMappings: ReadonlyArray<Readonly<{ localProperty: string; valueListProperty: string }>>;
+    valueListParameters: ReadonlyArray<SchemaValueListParameter>;
+}): SchemaProperty['links'] | undefined {
+    const { text, unit, currency, scale, standardCode, valueListCollection, valueListMappings, valueListParameters } =
+        links;
+    const hasLinks =
+        [text, unit, currency, scale, standardCode, valueListCollection].some(Boolean) ||
+        valueListMappings.length > 0 ||
+        valueListParameters.length > 0;
+    if (!hasLinks) {
+        return undefined;
+    }
+    return Object.freeze({
+        ...(text ? { text } : {}),
+        ...(unit ? { unit } : {}),
+        ...(currency ? { currency } : {}),
+        ...(scale ? { scale } : {}),
+        ...(standardCode ? { standardCode } : {}),
+        ...(valueListCollection ? { valueListCollection } : {}),
+        ...(valueListMappings.length > 0 ? { valueListMappings: Object.freeze(valueListMappings) } : {}),
+        ...(valueListParameters.length > 0 ? { valueListParameters: Object.freeze(valueListParameters) } : {})
+    });
 }
 
 /**
@@ -785,32 +824,50 @@ function parseComplexTypes(
     types: SchemaTypeIndex,
     externalAnnotationNodes: ReadonlyMap<string, ReadonlyArray<XmlRecord>>
 ): SchemaComplexType[] {
-    const { structuredTypes, enumMembers } = types;
     const complexTypes: SchemaComplexType[] = [];
     for (const schema of schemas) {
         const namespace = requiredString(schema.Namespace, 'schema namespace');
         for (const complexType of asArray(schema.ComplexType)) {
-            const name = requiredString(complexType.Name, 'complex type name');
-            const qualifiedName = `${namespace}.${name}`;
-            const properties: SchemaProperty[] = [];
-            const structuredProperties: SchemaStructuredProperty[] = [];
-            for (const property of asArray(complexType.Property)) {
-                const propertyName = requiredString(property.Name, 'property name');
-                const annotationsForProperty = externalAnnotationNodes.get(`${qualifiedName}/${propertyName}`) ?? [];
-                const parsed = parseProperty(property, new Set(), structuredTypes, enumMembers, annotationsForProperty);
-                if (parsed.kind === 'scalar') {
-                    properties.push(parsed.property);
-                } else if (parsed.kind === 'structured') {
-                    const structured = parseStructuredProperty(property, structuredTypes, annotationsForProperty);
-                    if (structured) {
-                        structuredProperties.push(structured);
-                    }
-                }
-            }
-            complexTypes.push({ name, qualifiedName, properties, structuredProperties });
+            complexTypes.push(parseComplexType(namespace, complexType, types, externalAnnotationNodes));
         }
     }
     return complexTypes;
+}
+
+/**
+ * Parse one complex type into its scalar and structured properties.
+ *
+ * @param namespace - The namespace of the complex type's schema.
+ * @param complexType - The complex type node.
+ * @param types - The type index of the document.
+ * @param externalAnnotationNodes - Annotations by canonical `Type/Property` target.
+ * @returns The complex type.
+ */
+function parseComplexType(
+    namespace: string,
+    complexType: XmlRecord,
+    types: SchemaTypeIndex,
+    externalAnnotationNodes: ReadonlyMap<string, ReadonlyArray<XmlRecord>>
+): SchemaComplexType {
+    const { structuredTypes, enumMembers } = types;
+    const name = requiredString(complexType.Name, 'complex type name');
+    const qualifiedName = `${namespace}.${name}`;
+    const properties: SchemaProperty[] = [];
+    const structuredProperties: SchemaStructuredProperty[] = [];
+    for (const property of asArray(complexType.Property)) {
+        const propertyName = requiredString(property.Name, 'property name');
+        const annotationsForProperty = externalAnnotationNodes.get(`${qualifiedName}/${propertyName}`) ?? [];
+        const parsed = parseProperty(property, new Set(), structuredTypes, enumMembers, annotationsForProperty);
+        if (parsed.kind === 'scalar') {
+            properties.push(parsed.property);
+        } else if (parsed.kind === 'structured') {
+            const structured = parseStructuredProperty(property, structuredTypes, annotationsForProperty);
+            if (structured) {
+                structuredProperties.push(structured);
+            }
+        }
+    }
+    return { name, qualifiedName, properties, structuredProperties };
 }
 
 /**
@@ -1130,8 +1187,8 @@ function collectContainedEntities(context: EdmxParseContext, collection: EntityS
             new Set([context.entityTypes.get(qualifiedType)?.qualifiedType ?? qualifiedType])
         ])
     );
-    for (let index = 0; index < collection.entitySets.length; index++) {
-        const { entitySet, entitySetName, qualifiedType } = collection.entitySets[index];
+    // The loop also visits the contained entities appended to the array while it runs.
+    for (const { entitySet, entitySetName, qualifiedType } of collection.entitySets) {
         const hierarchy = entityTypeHierarchy(context.entityTypes, qualifiedType);
         const containing = pathTypes.get(entitySetName) ?? new Set<string>();
         const navigations =
@@ -1503,6 +1560,86 @@ function navigationRelationship(
 }
 
 /**
+ * Read the relationships of the navigation properties of one entity set, in declaration order along its type
+ * hierarchy. Navigations to contained entities are left out: a contained row lives in its container's row.
+ *
+ * @param declared - The entity set with its container node and entity type.
+ * @param context - The parsed document.
+ * @param collection - The generatable entity sets.
+ * @param indexes - The associations and generatable entities, by name.
+ * @param indexes.associations - The associations, by qualified name.
+ * @param indexes.entitiesBySet - The generatable entities, by entity set name.
+ * @returns The resolved relationships of the entity set.
+ */
+function entitySetNavigationRelationships(
+    declared: DeclaredEntitySet,
+    context: EdmxParseContext,
+    collection: EntitySetCollection,
+    indexes: { associations: ReadonlyMap<string, XmlRecord>; entitiesBySet: ReadonlyMap<string, SchemaEntity> }
+): NavigationRelationship[] {
+    const { entitySet, entitySetName, qualifiedType } = declared;
+    const hierarchy = entityTypeHierarchy(context.entityTypes, qualifiedType);
+    const sourceTypes = typeof hierarchy === 'string' ? [] : hierarchy.map(({ entityType }) => entityType);
+    const bindings = new Map(
+        asArray(entitySet.NavigationPropertyBinding).map((binding) => [
+            requiredString(binding.Path, 'navigation binding path').split('/')[0],
+            unqualifiedName(requiredString(binding.Target, 'navigation binding target'))
+        ])
+    );
+    // A contained row lives in its container's row, so no key mapping links them.
+    const navigations = sourceTypes
+        .flatMap((sourceType) => asArray(sourceType.NavigationProperty))
+        .filter(({ Name }) => !collection.containedNavigations.has(`${entitySetName}/${String(Name)}`));
+    const resolved: NavigationRelationship[] = [];
+    for (const navigation of navigations) {
+        const name = requiredString(navigation.Name, 'navigation property name');
+        const target = associationTarget(navigation, indexes.associations);
+        const source = navigationSource(navigation, name, target, entitySetName, bindings);
+        const relationship = navigationRelationship(source, target, context, collection, indexes);
+        if (relationship) {
+            resolved.push(relationship);
+        }
+    }
+    return resolved;
+}
+
+/**
+ * Describe a navigation property for resolving its relationship.
+ *
+ * @param navigation - The navigation property node.
+ * @param name - The navigation property's name.
+ * @param target - The association end it navigates to, for OData V2.
+ * @param entitySetName - The entity set the navigation starts from.
+ * @param bindings - The entity set's navigation bindings, by navigation name.
+ * @returns The navigation source.
+ */
+function navigationSource(
+    navigation: XmlRecord,
+    name: string,
+    target: ReturnType<typeof associationTarget>,
+    entitySetName: string,
+    bindings: ReadonlyMap<string, string>
+): NavigationSource {
+    const targetCardinality = target
+        ? associationTargetCardinality(target.targetEnd?.Multiplicity)
+        : navigationTargetCardinality(navigation);
+    return {
+        navigation,
+        name,
+        entitySetName,
+        bindings,
+        navigationDetails: {
+            ...(targetCardinality ? { targetCardinality } : {}),
+            ...(navigation.ContainsTarget === true || navigation.ContainsTarget === 'true'
+                ? { containsTarget: true }
+                : {}),
+            ...(typeof navigation.Partner === 'string' ? { partner: navigation.Partner } : {})
+        },
+        targetType: entityTypeName(target ? target.targetEnd?.Type : navigation.Type)
+    };
+}
+
+/**
  * Read the relationships of every navigation property of the generatable entity sets, in document order. A navigation
  * without a referential constraint resolves as the SAP Fiori elements mockserver does: through a declared back
  * reference, else through keys both declare by name.
@@ -1512,51 +1649,13 @@ function navigationRelationship(
  * @returns The relationships, before filtering to generatable ones.
  */
 function collectRelationships(context: EdmxParseContext, collection: EntitySetCollection): SchemaRelationship[] {
-    const associations = indexAssociations(context.schemas);
-    const resolved: NavigationRelationship[] = [];
-    const entitiesBySet = new Map(collection.entities.map((entity) => [entity.entitySetName, entity]));
-    for (const { entitySet, entitySetName, qualifiedType } of collection.entitySets) {
-        const hierarchy = entityTypeHierarchy(context.entityTypes, qualifiedType);
-        const sourceTypes = typeof hierarchy === 'string' ? [] : hierarchy.map(({ entityType }) => entityType);
-        const bindings = new Map(
-            asArray(entitySet.NavigationPropertyBinding).map((binding) => [
-                requiredString(binding.Path, 'navigation binding path').split('/')[0],
-                unqualifiedName(requiredString(binding.Target, 'navigation binding target'))
-            ])
-        );
-        // A contained row lives in its container's row, so no key mapping links them.
-        const navigations = sourceTypes
-            .flatMap((sourceType) => asArray(sourceType.NavigationProperty))
-            .filter(({ Name }) => !collection.containedNavigations.has(`${entitySetName}/${String(Name)}`));
-        for (const navigation of navigations) {
-            const name = requiredString(navigation.Name, 'navigation property name');
-            const target = associationTarget(navigation, associations);
-            const targetCardinality = target
-                ? associationTargetCardinality(target.targetEnd?.Multiplicity)
-                : navigationTargetCardinality(navigation);
-            const source: NavigationSource = {
-                navigation,
-                name,
-                entitySetName,
-                bindings,
-                navigationDetails: {
-                    ...(targetCardinality ? { targetCardinality } : {}),
-                    ...(navigation.ContainsTarget === true || navigation.ContainsTarget === 'true'
-                        ? { containsTarget: true }
-                        : {}),
-                    ...(typeof navigation.Partner === 'string' ? { partner: navigation.Partner } : {})
-                },
-                targetType: entityTypeName(target ? target.targetEnd?.Type : navigation.Type)
-            };
-            const relationship = navigationRelationship(source, target, context, collection, {
-                associations,
-                entitiesBySet
-            });
-            if (relationship) {
-                resolved.push(relationship);
-            }
-        }
-    }
+    const indexes = {
+        associations: indexAssociations(context.schemas),
+        entitiesBySet: new Map(collection.entities.map((entity) => [entity.entitySetName, entity]))
+    };
+    const resolved = collection.entitySets.flatMap((declared) =>
+        entitySetNavigationRelationships(declared, context, collection, indexes)
+    );
     const typeOf = new Map(
         collection.entitySets.map(({ entitySetName, qualifiedType }) => [
             entitySetName,
@@ -1726,17 +1825,22 @@ export function parseEdmx(content: string): SchemaGraph {
     const collection = collectEntitySets(context);
     const { entities, skippedEntitySets } = collection;
     const relationships = collectRelationships(context, collection);
+    const sortedEntities = entities.toSorted((left, right) =>
+        compareCodePoints(left.entitySetName, right.entitySetName)
+    );
 
     return {
         namespace: requiredString(schemas[0].Namespace, 'schema namespace'),
-        entities: entities.sort((left, right) => compareCodePoints(left.entitySetName, right.entitySetName)),
-        relationships: generatableRelationships(entities, relationships).sort((left, right) =>
+        entities: sortedEntities,
+        relationships: generatableRelationships(sortedEntities, relationships).toSorted((left, right) =>
             compareCodePoints(`${left.fromEntitySet}.${left.name}`, `${right.fromEntitySet}.${right.name}`)
         ),
-        complexTypes: complexTypes.sort((left, right) => compareCodePoints(left.qualifiedName, right.qualifiedName)),
+        complexTypes: complexTypes.toSorted((left, right) =>
+            compareCodePoints(left.qualifiedName, right.qualifiedName)
+        ),
         ...(skippedEntitySets.length > 0
             ? {
-                  skippedEntitySets: skippedEntitySets.sort((left, right) =>
+                  skippedEntitySets: skippedEntitySets.toSorted((left, right) =>
                       compareCodePoints(left.entitySetName, right.entitySetName)
                   )
               }

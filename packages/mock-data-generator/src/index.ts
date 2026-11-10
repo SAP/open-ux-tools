@@ -335,17 +335,7 @@ function assertGeneratedTarget(
 ): void {
     const targetName = target.name;
     if (!entity && skippedEntitySets.has(targetName)) {
-        if (result.resources[targetName] !== undefined) {
-            throw new TypeError(`Generated resource ${targetName} belongs to an entity set that cannot be generated`);
-        }
-        if (
-            !result.diagnostics.some(
-                ({ code, target: diagnosticTarget }) =>
-                    code === 'SCHEMA_ENTITY_SET_SKIPPED' && diagnosticTarget === targetName
-            )
-        ) {
-            throw new TypeError(`Skipped target ${targetName} is not reported in the diagnostics`);
-        }
+        assertSkippedTarget(result, targetName);
         return;
     }
     if (!entity) {
@@ -358,37 +348,19 @@ function assertGeneratedTarget(
     if (rows.length > MAX_ROWS_PER_ENTITY || (target.kind === 'singleton' && rows.length > 1)) {
         throw new TypeError(`Generated resource ${targetName} has an invalid row count`);
     }
-    const properties = new Map(entity.properties.map((property) => [property.name, property]));
     const keyProperties = entity.properties.filter((property) => property.isKey);
     const keys = new Set<string>();
     // Supplied rows lead the resource and are published as the caller wrote them, including
     // columns the schema no longer declares and values it would not generate.
     const supplied = authoredRows(request.existingData[targetName]);
-    const suppliedCell = (rowIndex: number, propertyName: string, value: JsonValue | undefined): boolean =>
-        rowIndex < supplied.length &&
-        Object.hasOwn(supplied[rowIndex], propertyName) &&
-        canonicalJson(supplied[rowIndex][propertyName]) === canonicalJson(value);
+    const check: GeneratedRowCheck = {
+        targetName,
+        entity,
+        declared: new Set(entity.properties.map((property) => property.name)),
+        supplied
+    };
     for (const [rowIndex, row] of rows.entries()) {
-        for (const propertyName of Object.keys(row)) {
-            if (!properties.has(propertyName) && !suppliedCell(rowIndex, propertyName, row[propertyName])) {
-                throw new TypeError(`Generated resource ${targetName} contains unknown property ${propertyName}`);
-            }
-        }
-        for (const property of entity.properties) {
-            if (!Object.prototype.hasOwnProperty.call(row, property.name)) {
-                // A supplied row is published as the caller wrote it, so a field it leaves out stays out.
-                if (rowIndex < supplied.length) {
-                    continue;
-                }
-                throw new TypeError(`Generated resource ${targetName} is missing property ${property.name}`);
-            }
-            if (
-                !propertyValueIsValid(property, row[property.name]) &&
-                !suppliedCell(rowIndex, property.name, row[property.name])
-            ) {
-                throw new TypeError(`Generated resource ${targetName} has an invalid value for ${property.name}`);
-            }
-        }
+        assertGeneratedRow(check, rowIndex, row);
         if (keyProperties.length > 0) {
             const key = canonicalJson(keyProperties.map((property) => row[property.name]));
             // Supplied rows may share a key among themselves (reported as SUPPLIED_KEY_DUPLICATED); a generated row may not.
@@ -396,6 +368,97 @@ function assertGeneratedTarget(
                 throw new TypeError(`Generated resource ${targetName} contains a duplicate key`);
             }
             keys.add(key);
+        }
+    }
+}
+
+/**
+ * Check that a skipped entity set has no rows and is reported as skipped.
+ *
+ * @param result the generated result
+ * @param targetName the skipped target
+ * @throws {TypeError} when it has rows or no `SCHEMA_ENTITY_SET_SKIPPED` diagnostic
+ */
+function assertSkippedTarget(result: MockDataGeneratorResult, targetName: string): void {
+    if (result.resources[targetName] !== undefined) {
+        throw new TypeError(`Generated resource ${targetName} belongs to an entity set that cannot be generated`);
+    }
+    if (
+        !result.diagnostics.some(
+            ({ code, target: diagnosticTarget }) =>
+                code === 'SCHEMA_ENTITY_SET_SKIPPED' && diagnosticTarget === targetName
+        )
+    ) {
+        throw new TypeError(`Skipped target ${targetName} is not reported in the diagnostics`);
+    }
+}
+
+/** What the rows of one generated resource are checked against. */
+interface GeneratedRowCheck {
+    targetName: string;
+    entity: SchemaGraph['entities'][number];
+    /** Names of the properties the entity declares. */
+    declared: ReadonlySet<string>;
+    /** The caller's rows, which lead the resource. */
+    supplied: ReadonlyArray<Readonly<Record<string, JsonValue>>>;
+}
+
+/**
+ * Whether a cell is the caller's own: the row is supplied and holds that value for the property.
+ *
+ * @param check the resource being checked
+ * @param rowIndex the row's index in the resource
+ * @param propertyName the cell's property
+ * @param value the published value
+ * @returns true for a supplied cell published as written
+ */
+function isSuppliedCell(
+    check: GeneratedRowCheck,
+    rowIndex: number,
+    propertyName: string,
+    value: JsonValue | undefined
+): boolean {
+    const { supplied } = check;
+    return (
+        rowIndex < supplied.length &&
+        Object.hasOwn(supplied[rowIndex], propertyName) &&
+        canonicalJson(supplied[rowIndex][propertyName]) === canonicalJson(value)
+    );
+}
+
+/**
+ * Check one published row: no undeclared property unless supplied, and every declared property present (a
+ * supplied row may leave one out) with a valid value unless supplied as written.
+ *
+ * @param check the resource being checked
+ * @param rowIndex the row's index in the resource
+ * @param row the row
+ * @throws {TypeError} when the row breaks one of these rules
+ */
+function assertGeneratedRow(
+    check: GeneratedRowCheck,
+    rowIndex: number,
+    row: Readonly<Record<string, JsonValue>>
+): void {
+    const { targetName, entity, declared, supplied } = check;
+    for (const propertyName of Object.keys(row)) {
+        if (!declared.has(propertyName) && !isSuppliedCell(check, rowIndex, propertyName, row[propertyName])) {
+            throw new TypeError(`Generated resource ${targetName} contains unknown property ${propertyName}`);
+        }
+    }
+    for (const property of entity.properties) {
+        if (!Object.hasOwn(row, property.name)) {
+            // A supplied row is published as the caller wrote it, so a field it leaves out stays out.
+            if (rowIndex < supplied.length) {
+                continue;
+            }
+            throw new TypeError(`Generated resource ${targetName} is missing property ${property.name}`);
+        }
+        if (
+            !propertyValueIsValid(property, row[property.name]) &&
+            !isSuppliedCell(check, rowIndex, property.name, row[property.name])
+        ) {
+            throw new TypeError(`Generated resource ${targetName} has an invalid value for ${property.name}`);
         }
     }
 }
@@ -656,6 +719,17 @@ function withinDeadline(options: MockDataGeneratorOptions, elapsedMs: number): M
     };
 }
 
+/**
+ * Whether an optional count or duration is set but not a safe integer from 1 to a maximum.
+ *
+ * @param value the option value, if set
+ * @param maximum the largest valid value
+ * @returns true for a set value outside the range
+ */
+function outsidePositiveRange(value: number | undefined, maximum: number): boolean {
+    return value !== undefined && (!Number.isSafeInteger(value) || value <= 0 || value > maximum);
+}
+
 function validateOptions(options: MockDataGeneratorOptions): void {
     if (options.seed !== undefined && !Number.isSafeInteger(options.seed)) {
         throw new MockGenError(MOCKGEN_ERROR_CODE.REQUEST_INVALID, t('options.seed'));
@@ -671,56 +745,31 @@ function validateOptions(options: MockDataGeneratorOptions): void {
             t('options.rowCounts', { maximum: MAX_ROWS_PER_ENTITY })
         );
     }
-    if (
-        options.sftTimeoutMs !== undefined &&
-        (!Number.isSafeInteger(options.sftTimeoutMs) ||
-            options.sftTimeoutMs <= 0 ||
-            options.sftTimeoutMs > MAX_SFT_TIME_LIMIT_MS)
-    ) {
+    if (outsidePositiveRange(options.sftTimeoutMs, MAX_SFT_TIME_LIMIT_MS)) {
         throw new MockGenError(
             MOCKGEN_ERROR_CODE.REQUEST_INVALID,
             t('options.sftTimeout', { maximum: MAX_SFT_TIME_LIMIT_MS })
         );
     }
-    if (
-        options.sftBudgetMs !== undefined &&
-        (!Number.isSafeInteger(options.sftBudgetMs) ||
-            options.sftBudgetMs <= 0 ||
-            options.sftBudgetMs > MAX_SFT_TIME_LIMIT_MS)
-    ) {
+    if (outsidePositiveRange(options.sftBudgetMs, MAX_SFT_TIME_LIMIT_MS)) {
         throw new MockGenError(
             MOCKGEN_ERROR_CODE.REQUEST_INVALID,
             t('options.sftBudget', { maximum: MAX_SFT_TIME_LIMIT_MS })
         );
     }
-    if (
-        options.sftDeadlineMs !== undefined &&
-        (!Number.isSafeInteger(options.sftDeadlineMs) ||
-            options.sftDeadlineMs <= 0 ||
-            options.sftDeadlineMs > MAX_SFT_DEADLINE_MS)
-    ) {
+    if (outsidePositiveRange(options.sftDeadlineMs, MAX_SFT_DEADLINE_MS)) {
         throw new MockGenError(
             MOCKGEN_ERROR_CODE.REQUEST_INVALID,
             t('options.sftDeadline', { maximum: MAX_SFT_DEADLINE_MS })
         );
     }
-    if (
-        options.sftModelRows !== undefined &&
-        (!Number.isSafeInteger(options.sftModelRows) ||
-            options.sftModelRows <= 0 ||
-            options.sftModelRows > MAX_ROWS_PER_ENTITY)
-    ) {
+    if (outsidePositiveRange(options.sftModelRows, MAX_ROWS_PER_ENTITY)) {
         throw new MockGenError(
             MOCKGEN_ERROR_CODE.REQUEST_INVALID,
             t('options.sftModelRows', { maximum: MAX_ROWS_PER_ENTITY })
         );
     }
-    if (
-        options.sftFieldsPerCall !== undefined &&
-        (!Number.isSafeInteger(options.sftFieldsPerCall) ||
-            options.sftFieldsPerCall <= 0 ||
-            options.sftFieldsPerCall > MAX_SFT_FIELDS_PER_CALL)
-    ) {
+    if (outsidePositiveRange(options.sftFieldsPerCall, MAX_SFT_FIELDS_PER_CALL)) {
         throw new MockGenError(
             MOCKGEN_ERROR_CODE.REQUEST_INVALID,
             t('options.sftFieldsPerCall', { maximum: MAX_SFT_FIELDS_PER_CALL })

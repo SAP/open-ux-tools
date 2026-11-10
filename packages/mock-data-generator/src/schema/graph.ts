@@ -13,9 +13,12 @@ export const PRIMITIVE_TYPES = [
 ] as const;
 export type PrimitiveType = (typeof PRIMITIVE_TYPES)[number];
 
+/** A scalar value of the schema: an annotation value, an enumeration member or a constant. */
+export type SchemaScalar = string | number | boolean;
+
 export interface SchemaAnnotation {
     term: string;
-    value?: string | number | boolean;
+    value?: SchemaScalar;
     expressionKind?: string;
 }
 
@@ -33,7 +36,7 @@ export interface SchemaProperty {
     label?: string;
     description?: string;
     dataElement?: string;
-    enumValues?: ReadonlyArray<string | number | boolean>;
+    enumValues?: ReadonlyArray<SchemaScalar>;
     /**
      * A value help is declared for the field without an inline collection (V2 `sap:value-list`), so its
      * values come from a code list. Kept apart from `annotations`, which feed the classifier.
@@ -71,7 +74,7 @@ export interface SchemaValueListParameter {
     direction: SchemaValueListParameterDirection;
     localProperty?: string;
     valueListProperty?: string;
-    constant?: string | number | boolean;
+    constant?: SchemaScalar;
 }
 
 export interface SchemaStructuredProperty {

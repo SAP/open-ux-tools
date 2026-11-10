@@ -148,7 +148,7 @@ async function ensureSafeParent(root: string, parts: ReadonlyArray<string>): Pro
 
 const TRANSACTION_PREFIX = '.mockgen-project-';
 const REMOVED_TRANSACTION_PREFIX = '.mockgen-trash-';
-const JOURNAL_PHASES: ReadonlyArray<string> = ['staging', 'prepared', 'backed-up', 'installed'];
+const JOURNAL_PHASES: ReadonlySet<string> = new Set(['staging', 'prepared', 'backed-up', 'installed']);
 
 /**
  * The record of a project data transaction, written as soon as its directory exists. `staging`: files are
@@ -177,7 +177,7 @@ function isProjectJournal(value: unknown): value is ProjectJournal {
     return (
         journal.formatVersion === 1 &&
         typeof journal.targetName === 'string' &&
-        JOURNAL_PHASES.includes(String(journal.phase)) &&
+        JOURNAL_PHASES.has(String(journal.phase)) &&
         (journal.phase === 'staging' ? journal.stagedSha256 === undefined : isSha256Hex(journal.stagedSha256))
     );
 }
@@ -407,6 +407,89 @@ interface ProjectDataLocation {
 }
 
 /**
+ * Check that the project data directory is as it was before generation: present or absent as before, inside the
+ * project, free of links and special files, and with the contents it had.
+ *
+ * @param location where the data lives and what it held before generation
+ * @throws {MockGenError} `PROJECT_DATA_CHANGED` or `PROJECT_PATH_UNSAFE` when it is not
+ */
+async function assertUnchangedDuringGeneration(location: ProjectDataLocation): Promise<void> {
+    const { root, directory, originallyPresent, initialFingerprint } = location;
+    if ((await existingDirectory(directory)) !== originallyPresent) {
+        throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED, t('projectData.directoryChanged'));
+    }
+    if (!originallyPresent) {
+        return;
+    }
+    if (!isPathInside(root, await realpath(directory))) {
+        throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_PATH_UNSAFE, t('projectData.resolvesOutside'));
+    }
+    await assertSafeContents(directory);
+    if ((await directoryFingerprint(directory)) !== initialFingerprint) {
+        throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED, t('projectData.changedDuringGeneration'));
+    }
+}
+
+/**
+ * Whether the project data directory changed since generation began: it appeared or disappeared, or its
+ * contents differ.
+ *
+ * @param directory the project data directory
+ * @param originallyPresent whether it existed before generation
+ * @param initialFingerprint its fingerprint before generation, or null when absent
+ * @returns true when it changed
+ */
+async function projectDataChanged(
+    directory: string,
+    originallyPresent: boolean,
+    initialFingerprint: string | null
+): Promise<boolean> {
+    return (
+        (await existingDirectory(directory)) !== originallyPresent ||
+        (originallyPresent && (await directoryFingerprint(directory)) !== initialFingerprint)
+    );
+}
+
+/**
+ * Write the generated rows of each target into the staging directory, one JSON file per resource. A target the
+ * schema skipped keeps any existing file.
+ *
+ * @param staged the staging directory
+ * @param targetNames the requested resources, in request order
+ * @param generation the validated generation result
+ * @param parts the data directory's path segments below the project
+ * @returns the project-relative paths of the files written, in request order
+ * @throws {TypeError} when a target that was not skipped has no rows
+ */
+async function stageGeneratedFiles(
+    staged: string,
+    targetNames: ReadonlyArray<string>,
+    generation: StandaloneGenerationResult,
+    parts: ReadonlyArray<string>
+): Promise<string[]> {
+    const files: string[] = [];
+    for (const name of targetNames) {
+        const rows = generation.resources[name];
+        if (!rows) {
+            // The schema cannot describe rows for a skipped entity set; any existing file stays untouched.
+            if (
+                generation.diagnostics.some(
+                    ({ code, target }) => code === 'SCHEMA_ENTITY_SET_SKIPPED' && target === name
+                )
+            ) {
+                continue;
+            }
+            throw new TypeError(`MockGen did not generate resource ${name}`);
+        }
+        const filename = `${name}.json`;
+        // Sequential: ordered file-system transaction.
+        await writeFile(join(staged, filename), `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' }); // NOSONAR
+        files.push(`${parts.join('/')}/${filename}`);
+    }
+    return files;
+}
+
+/**
  * Replace the project data directory with the generated files through a journaled transaction. The caller
  * holds the project lock of the parent directory.
  *
@@ -420,20 +503,9 @@ async function replaceProjectData(
     generation: StandaloneGenerationResult,
     location: ProjectDataLocation
 ): Promise<GeneratedProjectData> {
-    const { parts, root, parent, directory, targetName, originallyPresent, initialFingerprint } = location;
+    const { parts, parent, directory, targetName, originallyPresent, initialFingerprint } = location;
     const targetNames = input.request.targets.map(({ name }) => name);
-    if ((await existingDirectory(directory)) !== originallyPresent) {
-        throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED, t('projectData.directoryChanged'));
-    }
-    if (originallyPresent) {
-        if (!isPathInside(root, await realpath(directory))) {
-            throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_PATH_UNSAFE, t('projectData.resolvesOutside'));
-        }
-        await assertSafeContents(directory);
-        if ((await directoryFingerprint(directory)) !== initialFingerprint) {
-            throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED, t('projectData.changedDuringGeneration'));
-        }
-    }
+    await assertUnchangedDuringGeneration(location);
 
     const transactionRoot = await mkdtemp(join(parent, TRANSACTION_PREFIX));
     const staged = join(transactionRoot, 'staged');
@@ -449,25 +521,7 @@ async function replaceProjectData(
         } else {
             await mkdir(staged);
         }
-        const files: string[] = [];
-        for (const name of targetNames) {
-            const rows = generation.resources[name];
-            if (!rows) {
-                // The schema cannot describe rows for a skipped entity set; any existing file stays untouched.
-                if (
-                    generation.diagnostics.some(
-                        ({ code, target }) => code === 'SCHEMA_ENTITY_SET_SKIPPED' && target === name
-                    )
-                ) {
-                    continue;
-                }
-                throw new TypeError(`MockGen did not generate resource ${name}`);
-            }
-            const filename = `${name}.json`;
-            // Sequential: ordered file-system transaction.
-            await writeFile(join(staged, filename), `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' }); // NOSONAR
-            files.push(`${parts.join('/')}/${filename}`);
-        }
+        const files = await stageGeneratedFiles(staged, targetNames, generation, parts);
         input.request.signal?.throwIfAborted();
         const journal: ProjectJournal = {
             formatVersion: 1,
@@ -476,10 +530,7 @@ async function replaceProjectData(
             stagedSha256: await directoryFingerprint(staged)
         };
         await writeProjectJournal(journalPath, journal);
-        if (
-            (await existingDirectory(directory)) !== originallyPresent ||
-            (originallyPresent && (await directoryFingerprint(directory)) !== initialFingerprint)
-        ) {
+        if (await projectDataChanged(directory, originallyPresent, initialFingerprint)) {
             throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED, t('projectData.changedBeforeReplacement'));
         }
         if (originallyPresent) {

@@ -442,6 +442,46 @@ function property(name: string, declared: CsnRecord, resolved: CsnRecord): Schem
  * @throws {MockGenError} `METADATA_INVALID` when the document is not CSN JSON, several services match or two definitions resolve to the same entity set name
  */
 export function parseCsn(content: string, selection: CsnServiceSelection = {}): SchemaGraph {
+    const definitions = csnDefinitions(content);
+    const service = selectService(definitions, selection);
+    const entityDefinitions = Object.entries(definitions).filter(
+        ([qualifiedName, definition]) =>
+            definition.kind === 'entity' && (service === undefined || qualifiedName.startsWith(`${service}.`))
+    );
+    const names = entitySetNames(
+        entityDefinitions.map(([qualifiedName]) => qualifiedName),
+        service
+    );
+    const entities: SchemaEntity[] = [];
+    const relationships: SchemaRelationship[] = [];
+    for (const [qualifiedName, definition] of entityDefinitions) {
+        const entitySetName = names.get(qualifiedName);
+        if (entitySetName) {
+            entities.push(csnEntity({ definitions, names, relationships }, entitySetName, definition));
+        }
+    }
+
+    return Object.freeze({
+        namespace: 'CAPService',
+        entities: Object.freeze(
+            entities.toSorted((left, right) => compareCodePoints(left.entitySetName, right.entitySetName))
+        ),
+        relationships: Object.freeze(
+            relationships.toSorted((left, right) =>
+                compareCodePoints(`${left.fromEntitySet}.${left.name}`, `${right.fromEntitySet}.${right.name}`)
+            )
+        )
+    });
+}
+
+/**
+ * The record definitions of a JSON-serialized CAP CSN document.
+ *
+ * @param content the CSN document
+ * @returns the definitions that are records, by qualified name
+ * @throws {MockGenError} `METADATA_INVALID` when the document is not JSON or has no definitions object
+ */
+function csnDefinitions(content: string): Record<string, CsnRecord> {
     let parsed: unknown;
     try {
         parsed = JSON.parse(content);
@@ -457,100 +497,117 @@ export function parseCsn(content: string, selection: CsnServiceSelection = {}): 
     if (!isRecord(parsed) || !isRecord(parsed.definitions)) {
         throw new MockGenError(MOCKGEN_ERROR_CODE.METADATA_INVALID, 'CAP CSN must contain a definitions object');
     }
-    const definitions = Object.fromEntries(
+    return Object.fromEntries(
         Object.entries(parsed.definitions).filter((entry): entry is [string, CsnRecord] => isRecord(entry[1]))
     );
-    const service = selectService(definitions, selection);
-    const entityDefinitions = Object.entries(definitions).filter(
-        ([qualifiedName, definition]) =>
-            definition.kind === 'entity' && (service === undefined || qualifiedName.startsWith(`${service}.`))
-    );
-    const names = entitySetNames(
-        entityDefinitions.map(([qualifiedName]) => qualifiedName),
-        service
-    );
-    const entities: SchemaEntity[] = [];
-    const relationships: SchemaRelationship[] = [];
+}
 
-    for (const [qualifiedName, definition] of entityDefinitions) {
-        const entitySetName = names.get(qualifiedName);
-        if (!entitySetName) {
-            continue;
-        }
-        const elements = isRecord(definition.elements) ? definition.elements : {};
-        const scalarProperties: SchemaProperty[] = [];
-        for (const [name, candidate] of Object.entries(elements)) {
-            if (!isRecord(candidate) || isAssociation(candidate)) {
-                continue;
-            }
-            scalarProperties.push(property(name, candidate, resolveElement(candidate, definitions)));
-        }
+/** What reading the entities of a CSN document shares. */
+interface CsnEntityContext {
+    /** The record definitions, by qualified name. */
+    definitions: Record<string, CsnRecord>;
+    /** The entity set name of each entity of the selected service, by qualified name. */
+    names: ReadonlyMap<string, string>;
+    /** Receives the relationships of the entities read. */
+    relationships: SchemaRelationship[];
+}
 
-        for (const [associationName, candidate] of Object.entries(elements)) {
-            if (!isRecord(candidate) || !isAssociation(candidate) || typeof candidate.target !== 'string') {
-                continue;
-            }
-            const targetEntitySet = names.get(candidate.target);
-            const targetDefinition = definitions[candidate.target];
-            const targetElements =
-                targetDefinition && isRecord(targetDefinition.elements) ? targetDefinition.elements : {};
-            // A target outside the selected service is not navigable, but its foreign key is still a column.
-            if (!Array.isArray(candidate.keys)) {
-                continue;
-            }
-            const mappings: Array<{ sourceProperty: string; targetProperty: string }> = [];
-            for (const key of candidate.keys) {
-                if (!isRecord(key) || !Array.isArray(key.ref)) {
-                    continue;
-                }
-                const reference: unknown[] = key.ref;
-                const targetProperty = reference.at(-1);
-                if (typeof targetProperty !== 'string') {
-                    continue;
-                }
-                const sourceProperty = typeof key.as === 'string' ? key.as : `${associationName}_${targetProperty}`;
-                const targetElement = targetElements[targetProperty];
-                if (!isRecord(targetElement) || isAssociation(targetElement)) {
-                    continue;
-                }
-                if (!scalarProperties.some((candidateProperty) => candidateProperty.name === sourceProperty)) {
-                    const inherited = property(sourceProperty, {}, resolveElement(targetElement, definitions));
-                    scalarProperties.push({ ...inherited, nullable: candidate.notNull !== true, isKey: false });
-                }
-                mappings.push({ sourceProperty, targetProperty });
-            }
-            if (targetEntitySet && mappings.length > 0) {
-                relationships.push({
-                    name: associationName,
-                    fromEntitySet: entitySetName,
-                    toEntitySet: targetEntitySet,
-                    mappings: Object.freeze(mappings),
-                    provenance: 'explicit',
-                    confidence: 1
-                });
-            }
+/**
+ * Read one CSN entity: its scalar elements, then the foreign keys and relationships of its managed associations.
+ *
+ * @param context the definitions, entity set names and relationships being collected
+ * @param entitySetName the entity set name of the entity
+ * @param definition the entity definition
+ * @returns the schema entity
+ */
+function csnEntity(context: CsnEntityContext, entitySetName: string, definition: CsnRecord): SchemaEntity {
+    const elements = isRecord(definition.elements) ? definition.elements : {};
+    const scalarProperties: SchemaProperty[] = [];
+    for (const [name, candidate] of Object.entries(elements)) {
+        if (isRecord(candidate) && !isAssociation(candidate)) {
+            scalarProperties.push(property(name, candidate, resolveElement(candidate, context.definitions)));
         }
-
-        const semanticKey = csnSemanticKey(definition, new Set(scalarProperties.map(({ name }) => name)));
-        entities.push({
-            name: entitySetName,
-            entitySetName,
-            ...(semanticKey ? { semanticKey } : {}),
-            properties: Object.freeze(
-                withMeasureLinks(scalarProperties).sort((left, right) => compareCodePoints(left.name, right.name))
-            )
-        });
     }
 
-    return Object.freeze({
-        namespace: 'CAPService',
-        entities: Object.freeze(
-            entities.sort((left, right) => compareCodePoints(left.entitySetName, right.entitySetName))
-        ),
-        relationships: Object.freeze(
-            relationships.sort((left, right) =>
-                compareCodePoints(`${left.fromEntitySet}.${left.name}`, `${right.fromEntitySet}.${right.name}`)
-            )
+    for (const [associationName, candidate] of Object.entries(elements)) {
+        if (!isRecord(candidate) || !isAssociation(candidate)) {
+            continue;
+        }
+        const { target, keys } = candidate;
+        // A target outside the selected service is not navigable, but its foreign key is still a column.
+        if (typeof target !== 'string' || !Array.isArray(keys)) {
+            continue;
+        }
+        const targetEntitySet = context.names.get(target);
+        const mappings = associationMappings(
+            context,
+            { name: associationName, target, keys, element: candidate },
+            scalarProperties
+        );
+        if (targetEntitySet && mappings.length > 0) {
+            context.relationships.push({
+                name: associationName,
+                fromEntitySet: entitySetName,
+                toEntitySet: targetEntitySet,
+                mappings: Object.freeze(mappings),
+                provenance: 'explicit',
+                confidence: 1
+            });
+        }
+    }
+
+    const semanticKey = csnSemanticKey(definition, new Set(scalarProperties.map(({ name }) => name)));
+    return {
+        name: entitySetName,
+        entitySetName,
+        ...(semanticKey ? { semanticKey } : {}),
+        properties: Object.freeze(
+            withMeasureLinks(scalarProperties).toSorted((left, right) => compareCodePoints(left.name, right.name))
         )
-    });
+    };
+}
+
+/**
+ * The foreign-key mappings of a managed association. A foreign key the entity does not declare is added to its
+ * scalar properties, typed like the target element it refers to.
+ *
+ * @param context the definitions being read
+ * @param association the association element with its name, target and keys
+ * @param association.name the association element's name
+ * @param association.target the qualified name of the target entity
+ * @param association.keys the association's foreign keys
+ * @param association.element the association element
+ * @param scalarProperties the entity's scalar properties; receives the undeclared foreign keys
+ * @returns the mappings from foreign key to target element, in key order
+ */
+function associationMappings(
+    context: CsnEntityContext,
+    association: Readonly<{ name: string; target: string; keys: ReadonlyArray<unknown>; element: CsnRecord }>,
+    scalarProperties: SchemaProperty[]
+): Array<{ sourceProperty: string; targetProperty: string }> {
+    const associationName = association.name;
+    const targetDefinition = context.definitions[association.target];
+    const targetElements = targetDefinition && isRecord(targetDefinition.elements) ? targetDefinition.elements : {};
+    const mappings: Array<{ sourceProperty: string; targetProperty: string }> = [];
+    for (const key of association.keys) {
+        if (!isRecord(key) || !Array.isArray(key.ref)) {
+            continue;
+        }
+        const reference: unknown[] = key.ref;
+        const targetProperty = reference.at(-1);
+        if (typeof targetProperty !== 'string') {
+            continue;
+        }
+        const sourceProperty = typeof key.as === 'string' ? key.as : `${associationName}_${targetProperty}`;
+        const targetElement = targetElements[targetProperty];
+        if (!isRecord(targetElement) || isAssociation(targetElement)) {
+            continue;
+        }
+        if (!scalarProperties.some((candidateProperty) => candidateProperty.name === sourceProperty)) {
+            const inherited = property(sourceProperty, {}, resolveElement(targetElement, context.definitions));
+            scalarProperties.push({ ...inherited, nullable: association.element.notNull !== true, isKey: false });
+        }
+        mappings.push({ sourceProperty, targetProperty });
+    }
+    return mappings;
 }

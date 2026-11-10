@@ -267,6 +267,98 @@ export function actualExecutionMode(
         : 'hybrid';
 }
 
+/** An entity of the parsed schema. */
+type CoverageEntity = SchemaGraph['entities'][number];
+
+/** What the semantic coverage of a generation is counted from. */
+interface CoverageContext {
+    request: MockDataServiceRequest;
+    result: MockDataGeneratorResult;
+    graph: SchemaGraph;
+    /** Fields the fine-tuned model wrote at least one accepted value of, as `EntitySet.Property`. */
+    sftFields: ReadonlySet<string>;
+    /** Fields a best-effort role filled, which count as abstained. */
+    bestEffortFields: ReadonlySet<string | undefined>;
+}
+
+/** How one field counts towards the semantic coverage. */
+interface FieldCoverage {
+    evidenceVerified: boolean;
+    routed: boolean;
+    syntheticUnverified: boolean;
+    structuralOnly: boolean;
+    formatValidated: boolean;
+}
+
+/**
+ * Whether every generated value of a field is a value the metadata or the caller's rows declare for it.
+ *
+ * @param context the request, result and graph
+ * @param entity the field's entity
+ * @param property the field
+ * @returns true when the entity has rows and each value is declared
+ */
+function fieldHasEvidence(
+    context: CoverageContext,
+    entity: CoverageEntity,
+    property: CoverageEntity['properties'][number]
+): boolean {
+    const rows = context.result.resources[entity.entitySetName] ?? [];
+    if (rows.length === 0) {
+        return false;
+    }
+    const allowed = [
+        ...(property.enumValues ?? []),
+        ...authoredDomainValues(context.graph, entity, property, context.request.existingData)
+    ];
+    return rows.every((row) => {
+        const value = row[property.name];
+        return allowed.includes(value);
+    });
+}
+
+/**
+ * How one field counts towards the semantic coverage.
+ *
+ * @param context the request, result, graph and per-field routing facts
+ * @param entity the field's entity
+ * @param property the field
+ * @returns the field's coverage flags
+ */
+function fieldCoverage(
+    context: CoverageContext,
+    entity: CoverageEntity,
+    property: CoverageEntity['properties'][number]
+): FieldCoverage {
+    const { result } = context;
+    const evidenceVerified = fieldHasEvidence(context, entity, property);
+    const uncovered: FieldCoverage = {
+        evidenceVerified,
+        routed: false,
+        syntheticUnverified: false,
+        structuralOnly: false,
+        formatValidated: false
+    };
+    const key = `${entity.entitySetName}.${property.name}`;
+    const role = context.bestEffortFields.has(key) ? undefined : result.semanticRoles?.[key];
+    if (!role) {
+        return { ...uncovered, syntheticUnverified: !evidenceVerified && context.sftFields.has(key) };
+    }
+    const definition = semanticRoleDefinition(role);
+    if (!definition) {
+        return uncovered;
+    }
+    const structuralOnly = definition.validator === 'structural';
+    return {
+        evidenceVerified,
+        routed: true,
+        syntheticUnverified: !evidenceVerified,
+        structuralOnly,
+        // validateGeneratedResult has checked every generated value against this validator.
+        formatValidated: !structuralOnly && (result.resources[entity.entitySetName]?.length ?? 0) > 0
+    };
+}
+
 function semanticCoverage(
     request: MockDataServiceRequest,
     result: MockDataGeneratorResult,
@@ -274,81 +366,35 @@ function semanticCoverage(
 ): StandaloneGenerationResult['semanticCoverage'] {
     const graph = parsedGraph ?? parseServiceMetadata(request.metadata, request.service);
     const targets = new Set(request.targets.map(({ name }) => name));
-    let eligibleFields = 0;
-    let routedFields = 0;
-    let formatValidatedFields = 0;
-    let structuralOnlyFields = 0;
-    let evidenceVerifiedFields = 0;
-    let syntheticUnverifiedFields = 0;
-    const hasEvidence = (
-        entity: (typeof graph.entities)[number],
-        property: (typeof entity.properties)[number]
-    ): boolean => {
-        const rows = result.resources[entity.entitySetName] ?? [];
-        if (rows.length === 0) {
-            return false;
-        }
-        const allowed = [
-            ...(property.enumValues ?? []),
-            ...authoredDomainValues(graph, entity, property, request.existingData)
-        ];
-        return rows.every((row) => {
-            const value = row[property.name];
-            return allowed.some((candidate) => candidate === value);
-        });
-    };
-    const sftFields = new Set(
-        result.statistics.sft.assignments.flatMap(({ resource, fields }) =>
-            fields.filter(({ acceptedSlots }) => acceptedSlots > 0).map(({ name }) => `${resource}.${name}`)
+    const context: CoverageContext = {
+        request,
+        result,
+        graph,
+        sftFields: new Set(
+            result.statistics.sft.assignments.flatMap(({ resource, fields }) =>
+                fields.filter(({ acceptedSlots }) => acceptedSlots > 0).map(({ name }) => `${resource}.${name}`)
+            )
+        ),
+        // A best-effort role fills a field no role was certain for; routing counts that field as abstained, so
+        // coverage does too.
+        bestEffortFields: new Set(
+            result.diagnostics.filter(({ code }) => code === 'SEMANTIC_ROLE_BEST_EFFORT').map(({ target }) => target)
         )
-    );
-    // A best-effort role fills a field no role was certain for; routing counts that field as abstained, so
-    // coverage does too.
-    const bestEffortFields = new Set(
-        result.diagnostics.filter(({ code }) => code === 'SEMANTIC_ROLE_BEST_EFFORT').map(({ target }) => target)
-    );
-    for (const entity of graph.entities) {
-        if (!targets.has(entity.entitySetName)) {
-            continue;
-        }
-        for (const property of entity.properties) {
-            eligibleFields++;
-            const evidenceVerified = hasEvidence(entity, property);
-            if (evidenceVerified) {
-                evidenceVerifiedFields++;
-            }
-            const key = `${entity.entitySetName}.${property.name}`;
-            const role = bestEffortFields.has(key) ? undefined : result.semanticRoles?.[key];
-            if (!role) {
-                if (!evidenceVerified && sftFields.has(`${entity.entitySetName}.${property.name}`)) {
-                    syntheticUnverifiedFields++;
-                }
-                continue;
-            }
-            const definition = semanticRoleDefinition(role);
-            if (!definition) {
-                continue;
-            }
-            routedFields++;
-            if (!evidenceVerified) {
-                syntheticUnverifiedFields++;
-            }
-            if (definition.validator === 'structural') {
-                structuralOnlyFields++;
-            } else if ((result.resources[entity.entitySetName]?.length ?? 0) > 0) {
-                // validateGeneratedResult has checked every generated value against this validator.
-                formatValidatedFields++;
-            }
-        }
-    }
+    };
+    const fields = graph.entities
+        .filter((entity) => targets.has(entity.entitySetName))
+        .flatMap((entity) => entity.properties.map((property) => fieldCoverage(context, entity, property)));
+    const count = (flag: keyof FieldCoverage): number => fields.filter((field) => field[flag]).length;
+    const eligibleFields = fields.length;
+    const routedFields = count('routed');
     return Object.freeze({
         eligibleFields,
         routedFields,
-        formatValidatedFields,
-        structuralOnlyFields,
+        formatValidatedFields: count('formatValidated'),
+        structuralOnlyFields: count('structuralOnly'),
         unsupportedFields: eligibleFields - routedFields,
-        evidenceVerifiedFields,
-        syntheticUnverifiedFields
+        evidenceVerifiedFields: count('evidenceVerified'),
+        syntheticUnverifiedFields: count('syntheticUnverified')
     });
 }
 

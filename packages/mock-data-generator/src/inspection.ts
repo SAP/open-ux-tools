@@ -62,6 +62,64 @@ function domainValidationStatus(result: MockDataGeneratorResult): 'passed' | 'fa
         : 'passed';
 }
 
+/**
+ * The role a field's final classification routes to: a known role that is best effort or meets its threshold.
+ *
+ * @param finalClassification the field's final classification, if any
+ * @returns the accepted role, or undefined when the field abstains
+ */
+function acceptedRoleOf(finalClassification: SemanticClassification | undefined): string | undefined {
+    const threshold = finalClassification?.routeThreshold ?? semanticRules().thresholds.statistics;
+    if (
+        finalClassification &&
+        finalClassification.role !== 'unknown' &&
+        (finalClassification.bestEffort === true || finalClassification.confidence >= threshold)
+    ) {
+        return finalClassification.role;
+    }
+    return undefined;
+}
+
+/**
+ * Why a field without an accepted role abstains.
+ *
+ * @param finalClassification the field's final classification, if any
+ * @returns the stated reason, or the reason implied by the classification
+ */
+function abstentionReasonOf(
+    finalClassification: SemanticClassification | undefined
+): MockDataGeneratorFieldDecisionInspection['abstentionReason'] {
+    if (finalClassification?.abstentionReason) {
+        return finalClassification.abstentionReason;
+    }
+    if (!finalClassification) {
+        return 'no-candidate';
+    }
+    return finalClassification.role === 'unknown' ? 'classifier-unknown' : 'below-threshold';
+}
+
+/**
+ * The classifier's own prediction for a field, as reported.
+ *
+ * @param rawClassification the classifier's classification of the field
+ * @returns the frozen prediction, with its routing threshold and prediction set when known
+ */
+function classifierPrediction(
+    rawClassification: SemanticClassification
+): NonNullable<MockDataGeneratorFieldDecisionInspection['classifierPrediction']> {
+    return Object.freeze({
+        role: rawClassification.role,
+        confidence: rawClassification.confidence,
+        ...(rawClassification.routeThreshold === undefined ? {} : { routeThreshold: rawClassification.routeThreshold }),
+        ...(rawClassification.predictionSetSize === undefined
+            ? {}
+            : { predictionSetSize: rawClassification.predictionSetSize }),
+        ...(rawClassification.predictionSet === undefined
+            ? {}
+            : { predictionSet: Object.freeze([...rawClassification.predictionSet]) })
+    });
+}
+
 function decision(
     resource: string,
     entity: SchemaGraph['entities'][number],
@@ -71,27 +129,8 @@ function decision(
     finalClassification: SemanticClassification | undefined,
     valueTier?: MockDataGeneratorFieldDecisionInspection['valueTier']
 ): MockDataGeneratorFieldDecisionInspection {
-    const threshold = finalClassification?.routeThreshold ?? semanticRules().thresholds.statistics;
-    let acceptedRole: string | undefined;
-    if (
-        finalClassification &&
-        finalClassification.role !== 'unknown' &&
-        (finalClassification.bestEffort === true || finalClassification.confidence >= threshold)
-    ) {
-        acceptedRole = finalClassification.role;
-    }
-    let abstentionReason: MockDataGeneratorFieldDecisionInspection['abstentionReason'];
-    if (!acceptedRole) {
-        if (finalClassification?.abstentionReason) {
-            abstentionReason = finalClassification.abstentionReason;
-        } else if (!finalClassification) {
-            abstentionReason = 'no-candidate';
-        } else if (finalClassification.role === 'unknown') {
-            abstentionReason = 'classifier-unknown';
-        } else {
-            abstentionReason = 'below-threshold';
-        }
-    }
+    const acceptedRole = acceptedRoleOf(finalClassification);
+    const abstentionReason = acceptedRole ? undefined : abstentionReasonOf(finalClassification);
     const candidates = rawTop(rawClassification);
     const detectedRole =
         detectedClassification?.role && detectedClassification.role !== 'unknown'
@@ -105,21 +144,7 @@ function decision(
         isKey: property.isKey,
         rawTop: Object.freeze(candidates.map((candidate) => Object.freeze({ ...candidate }))),
         ...(rawClassification?.source === 'classifier'
-            ? {
-                  classifierPrediction: Object.freeze({
-                      role: rawClassification.role,
-                      confidence: rawClassification.confidence,
-                      ...(rawClassification.routeThreshold === undefined
-                          ? {}
-                          : { routeThreshold: rawClassification.routeThreshold }),
-                      ...(rawClassification.predictionSetSize === undefined
-                          ? {}
-                          : { predictionSetSize: rawClassification.predictionSetSize }),
-                      ...(rawClassification.predictionSet === undefined
-                          ? {}
-                          : { predictionSet: Object.freeze([...rawClassification.predictionSet]) })
-                  })
-              }
+            ? { classifierPrediction: classifierPrediction(rawClassification) }
             : {}),
         ...(detectedRole ? { detectedRole, detectionSource: detectedClassification?.source } : {}),
         acceptedRole,
@@ -148,7 +173,7 @@ function decision(
 
 export interface ServiceInspectionExecution {
     locale?: string;
-    artifactIdentity?: MockDataGeneratorInspectionV1['artifactIdentity'];
+    artifactIdentity?: NonNullable<MockDataGeneratorInspectionV1['artifactIdentity']>;
     syntheticInputs: MockDataGeneratorInspectionV1['syntheticInputs'];
     result: MockDataGeneratorResult;
     graph?: SchemaGraph;
@@ -329,21 +354,19 @@ function invariantsReport(result: MockDataGeneratorResult): MockDataGeneratorIns
     return Object.freeze([
         Object.freeze({ name: 'generated-result' as const, passed: true as const }),
         Object.freeze({ name: 'relationships' as const, passed: true as const }),
-        ...[
-            Object.freeze({ name: 'semantic-formats' as const, passed: true }),
-            Object.freeze({
-                name: 'temporal-ordering' as const,
-                passed: !result.diagnostics.some(({ code }) => code.startsWith('TEMPORAL_CONSTRAINT_')),
-                status: result.diagnostics.some(({ code }) => code.startsWith('TEMPORAL_CONSTRAINT_'))
-                    ? ('failed' as const)
-                    : ('passed' as const)
-            }),
-            Object.freeze({
-                name: 'semantic-domains' as const,
-                passed: domainValidationStatus(result) === 'passed',
-                status: domainValidationStatus(result)
-            })
-        ]
+        Object.freeze({ name: 'semantic-formats' as const, passed: true }),
+        Object.freeze({
+            name: 'temporal-ordering' as const,
+            passed: !result.diagnostics.some(({ code }) => code.startsWith('TEMPORAL_CONSTRAINT_')),
+            status: result.diagnostics.some(({ code }) => code.startsWith('TEMPORAL_CONSTRAINT_'))
+                ? ('failed' as const)
+                : ('passed' as const)
+        }),
+        Object.freeze({
+            name: 'semantic-domains' as const,
+            passed: domainValidationStatus(result) === 'passed',
+            status: domainValidationStatus(result)
+        })
     ]);
 }
 
