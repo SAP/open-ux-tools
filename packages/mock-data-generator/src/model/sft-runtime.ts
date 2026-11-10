@@ -433,6 +433,26 @@ function firstJsonObject(text: string): Record<string, JsonValue> {
     if (start < 0) {
         throw new TypeError('SFT completion does not contain a JSON object');
     }
+    const end = objectEnd(text, start);
+    if (end < 0) {
+        throw new TypeError('SFT completion contains an unterminated JSON object');
+    }
+    const parsed: unknown = JSON.parse(text.slice(start, end + 1));
+    if (!isRecord(parsed)) {
+        throw new TypeError('SFT completion row must be an object');
+    }
+    // JSON.parse yields only JSON values, so every field of the parsed object is a JsonValue.
+    return parsed as Record<string, JsonValue>;
+}
+
+/**
+ * The offset of the brace that closes the JSON object opening at an offset, skipping braces inside strings.
+ *
+ * @param text the completion text
+ * @param start the offset of the opening brace
+ * @returns the offset of the closing brace, or -1 when the object is not terminated
+ */
+function objectEnd(text: string, start: number): number {
     let depth = 0;
     let quoted = false;
     let escaped = false;
@@ -440,35 +460,21 @@ function firstJsonObject(text: string): Record<string, JsonValue> {
         const character = text[index];
         if (escaped) {
             escaped = false;
-            continue;
-        }
-        if (quoted && character === '\\') {
-            escaped = true;
-            continue;
-        }
-        if (character === '"') {
-            quoted = !quoted;
-            continue;
-        }
-        if (quoted) {
-            continue;
-        }
-        if (character === '{') {
+        } else if (quoted) {
+            escaped = character === '\\';
+            quoted = character !== '"';
+        } else if (character === '"') {
+            quoted = true;
+        } else if (character === '{') {
             depth += 1;
-        }
-        if (character === '}') {
+        } else if (character === '}') {
             depth -= 1;
             if (depth === 0) {
-                const parsed: unknown = JSON.parse(text.slice(start, index + 1));
-                if (!isRecord(parsed)) {
-                    throw new TypeError('SFT completion row must be an object');
-                }
-                // JSON.parse yields only JSON values, so every field of the parsed object is a JsonValue.
-                return parsed as Record<string, JsonValue>;
+                return index;
             }
         }
     }
-    throw new TypeError('SFT completion contains an unterminated JSON object');
+    return -1;
 }
 
 function abortContext(parent: AbortSignal, budgetMs: number): { signal: AbortSignal; dispose(): void } {

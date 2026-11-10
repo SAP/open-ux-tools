@@ -253,7 +253,7 @@ function sample(
         maximum = Math.max(maximum, score(id));
     }
     if (!Number.isFinite(maximum)) {
-        throw new Error('SFT runtime returned no finite allowed logits');
+        throw new TypeError('SFT runtime returned no finite allowed logits');
     }
     let total = 0;
     for (let index = 0; index < candidates.length; index += 1) {

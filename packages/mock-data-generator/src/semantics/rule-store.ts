@@ -422,6 +422,44 @@ function parseAbbreviations(value: unknown): ReadonlyArray<SapAbbreviation> {
 }
 
 /**
+ * The word groups a word rule requires: each `all` group, then the `any` group.
+ *
+ * @param input the rule
+ * @param label the rule's position, for the error message
+ * @returns the groups in order
+ */
+function parseRuleWordGroups(input: Readonly<Record<string, unknown>>, label: string): ReadonlySet<string>[] {
+    const groups: ReadonlySet<string>[] = [];
+    if (input.all !== undefined) {
+        if (!Array.isArray(input.all) || input.all.length === 0) {
+            throw new TypeError(`${label}.all must be a non-empty list`);
+        }
+        input.all.forEach((group: unknown, index) =>
+            groups.push(wordSet(typeof group === 'string' ? [group] : group, `${label}.all[${index}]`))
+        );
+    }
+    if (input.any !== undefined) {
+        groups.push(wordSet(input.any, `${label}.any`));
+    }
+    return groups;
+}
+
+/**
+ * The primitive types a word rule is limited to.
+ *
+ * @param value candidate list
+ * @param label the list's position, for the error message
+ * @returns the types
+ */
+function parseRulePrimitiveTypes(value: unknown, label: string): ReadonlySet<PrimitiveType> {
+    const types = nonEmptyStrings(value, label);
+    if (!types.every(isPrimitiveType)) {
+        throw new TypeError(`${label} names an unknown primitive type`);
+    }
+    return new Set(types);
+}
+
+/**
  * One lexical rule: a word rule, or a first-word rule whose role is the word it finds.
  *
  * @param entry candidate rule
@@ -448,29 +486,14 @@ function parseLexicalRule(entry: unknown, label: string): LexicalRule {
     if (input.adjacent !== undefined && (typeof input.adjacent !== 'boolean' || input.all === undefined)) {
         throw new TypeError(`${label}.adjacent must be a boolean on a rule with all`);
     }
-    const groups: ReadonlySet<string>[] = [];
-    if (input.all !== undefined) {
-        if (!Array.isArray(input.all) || input.all.length === 0) {
-            throw new TypeError(`${label}.all must be a non-empty list`);
-        }
-        input.all.forEach((group: unknown, index) =>
-            groups.push(wordSet(typeof group === 'string' ? [group] : group, `${label}.all[${index}]`))
-        );
-    }
-    if (input.any !== undefined) {
-        groups.push(wordSet(input.any, `${label}.any`));
-    }
+    const groups = parseRuleWordGroups(input, label);
     if (groups.length === 0 && input.lastWord === undefined) {
         throw new TypeError(`${label} needs all, any or lastWord`);
     }
-    let primitiveTypes: ReadonlySet<PrimitiveType> | undefined;
-    if (input.primitiveTypes !== undefined) {
-        const types = nonEmptyStrings(input.primitiveTypes, `${label}.primitiveTypes`);
-        if (!types.every(isPrimitiveType)) {
-            throw new TypeError(`${label}.primitiveTypes names an unknown primitive type`);
-        }
-        primitiveTypes = new Set(types);
-    }
+    const primitiveTypes =
+        input.primitiveTypes === undefined
+            ? undefined
+            : parseRulePrimitiveTypes(input.primitiveTypes, `${label}.primitiveTypes`);
     if (input.notes !== undefined) {
         nonEmptyString(input.notes, `${label}.notes`);
     }

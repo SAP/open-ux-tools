@@ -26,6 +26,18 @@ type RecordFieldValue<Type extends RecordFieldType> = Type extends 'integer' | '
 type BankRecord<Fields extends RecordFields> = {
     readonly [Name in keyof Fields]: RecordFieldValue<Fields[Name]>;
 };
+
+/**
+ * Whether a list holds a value; an unknown value is simply not found, so the list's element type need not admit it.
+ *
+ * @param values the list
+ * @param value the candidate
+ * @returns true when the list holds the value
+ */
+function includesValue(values: ReadonlyArray<unknown>, value: unknown): boolean {
+    return values.includes(value);
+}
+
 const RECORD_FIELD_TYPES: ReadonlyArray<RecordFieldType> = [
     'string',
     'integer',
@@ -42,7 +54,7 @@ const RECORD_FIELD_TYPES: ReadonlyArray<RecordFieldType> = [
  * @returns true for a record field type
  */
 function isRecordFieldType(value: unknown): value is RecordFieldType {
-    return RECORD_FIELD_TYPES.some((type) => type === value);
+    return includesValue(RECORD_FIELD_TYPES, value);
 }
 
 interface BankIdentity {
@@ -122,7 +134,7 @@ const ROLE_STRING_KINDS: ReadonlyArray<StringValueBank['valueKind']> = ['code', 
  * @returns true for a concept value kind
  */
 function isConceptValueKind(value: unknown): value is ConceptBank['valueKind'] {
-    return CONCEPT_VALUE_KINDS.some((kind) => kind === value);
+    return includesValue(CONCEPT_VALUE_KINDS, value);
 }
 
 /**
@@ -132,7 +144,7 @@ function isConceptValueKind(value: unknown): value is ConceptBank['valueKind'] {
  * @returns true for a role string value kind
  */
 function isRoleStringKind(value: unknown): value is StringValueBank['valueKind'] {
-    return ROLE_STRING_KINDS.some((kind) => kind === value);
+    return includesValue(ROLE_STRING_KINDS, value);
 }
 
 /**
@@ -310,7 +322,9 @@ function parseConceptBank(input: Record<string, unknown>, label: string, id: str
             typeof min !== 'number' ||
             typeof max !== 'number' ||
             typeof scale !== 'number' ||
-            !(min <= max) ||
+            min > max ||
+            Number.isNaN(min) ||
+            Number.isNaN(max) ||
             !Number.isInteger(scale) ||
             scale < 0
         ) {
@@ -507,7 +521,7 @@ const IBAN_COUNTRIES: ReadonlyArray<IbanCountry> = ['CZ', 'DE', 'IE', 'IT'];
  * @returns true for a country of {@link IbanCountry}
  */
 export function isIbanCountry(value: unknown): value is IbanCountry {
-    return typeof value === 'string' && IBAN_COUNTRIES.some((country) => country === value);
+    return typeof value === 'string' && includesValue(IBAN_COUNTRIES, value);
 }
 
 /**

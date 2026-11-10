@@ -231,7 +231,7 @@ export const packagedRoleRegistry: () => PackagedRoleRegistry = lazy(() => {
 
 export function semanticRoleDefinition(role: string): SemanticRoleDefinition | undefined {
     const { roles } = packagedRoleRegistry();
-    return Object.prototype.hasOwnProperty.call(roles, role) ? roles[role] : undefined;
+    return Object.hasOwn(roles, role) ? roles[role] : undefined;
 }
 
 function semanticRoleCompatibility(
@@ -242,7 +242,7 @@ function semanticRoleCompatibility(
     if (!definition) {
         return 'unsupported-role';
     }
-    if (!definition.compatiblePrimitiveTypes.some((primitiveType) => primitiveType === property.primitiveType)) {
+    if (!definition.compatiblePrimitiveTypes.includes(property.primitiveType)) {
         return 'incompatible-type';
     }
     if (property.isKey && definition.keyPolicy === 'forbidden') {

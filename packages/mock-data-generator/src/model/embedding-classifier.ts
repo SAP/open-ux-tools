@@ -332,7 +332,8 @@ function applyHead(
               for (let dimension = 0; dimension < vector.length; dimension += 1) {
                   sum += vector[dimension] * weights[dimension];
               }
-              return sum > 0 ? sum : 0;
+              // ReLU; a NaN sum gives 0, as `sum > 0 ? sum : 0` does.
+              return Number.isNaN(sum) ? 0 : Math.max(sum, 0);
           })
         : vector;
     const logits = head.labels.map((_label, classIndex) => {
@@ -393,6 +394,40 @@ function applyHead(
 }
 
 /**
+ * Embed texts the cache does not hold and classify each, adding the concept match where a concept head is set.
+ *
+ * @param options the classifier options: embedder, heads and roles
+ * @param uncachedTexts distinct serialized field texts to classify
+ * @param primitiveTypes the primitive type of each text's field
+ * @param resolved receives the classification of each text
+ * @param signal aborts the embedding
+ */
+async function classifyUncachedTexts(
+    options: EmbeddingSemanticClassifierOptions,
+    uncachedTexts: ReadonlyArray<string>,
+    primitiveTypes: ReadonlyMap<string, string>,
+    resolved: Map<string, SemanticClassification>,
+    signal: AbortSignal
+): Promise<void> {
+    const vectors = await options.embedder.embed(uncachedTexts, signal);
+    signal.throwIfAborted();
+    if (vectors.length !== uncachedTexts.length) {
+        throw new TypeError('Embedding runtime returned an invalid batch size');
+    }
+    for (const [index, text] of uncachedTexts.entries()) {
+        const vector = vectors[index];
+        if (!vector) {
+            throw new TypeError('Embedding runtime returned no vector');
+        }
+        const classification = applyHead(vector, options.head, options.v3Roles);
+        const primitiveType = primitiveTypes.get(text);
+        const concept =
+            options.conceptHead && primitiveType ? matchConcept(options.conceptHead, vector, primitiveType) : undefined;
+        resolved.set(text, concept ? Object.freeze({ ...classification, concept }) : classification);
+    }
+}
+
+/**
  * Build the classifier around the embedding and calibrated-head contract.
  *
  * @param options
@@ -422,25 +457,8 @@ export function createEmbeddingSemanticClassifier(options: EmbeddingSemanticClas
         }
         const uncachedTexts = [...new Set(texts.filter((text) => !resolved.has(text)))];
         if (uncachedTexts.length > 0) {
-            const vectors = await options.embedder.embed(uncachedTexts, signal);
-            signal.throwIfAborted();
-            if (vectors.length !== uncachedTexts.length) {
-                throw new TypeError('Embedding runtime returned an invalid batch size');
-            }
             const primitiveTypes = new Map(inputs.map((input, index) => [texts[index], input.primitiveType]));
-            for (const [index, text] of uncachedTexts.entries()) {
-                const vector = vectors[index];
-                if (!vector) {
-                    throw new TypeError('Embedding runtime returned no vector');
-                }
-                const classification = applyHead(vector, options.head, options.v3Roles);
-                const primitiveType = primitiveTypes.get(text);
-                const concept =
-                    options.conceptHead && primitiveType
-                        ? matchConcept(options.conceptHead, vector, primitiveType)
-                        : undefined;
-                resolved.set(text, concept ? Object.freeze({ ...classification, concept }) : classification);
-            }
+            await classifyUncachedTexts(options, uncachedTexts, primitiveTypes, resolved, signal);
             for (const text of uncachedTexts) {
                 const classification = resolved.get(text);
                 if (classification) {

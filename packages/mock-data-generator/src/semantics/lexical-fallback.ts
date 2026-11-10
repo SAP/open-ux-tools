@@ -180,6 +180,62 @@ function specializedUnitRole(
 }
 
 /**
+ * The role of a field that is the text of another field naming a currency or a country.
+ *
+ * @param property the field
+ * @param entity the owning entity
+ * @returns `currency_name`, `country_name`, or undefined
+ */
+function textOwnerRole(property: SchemaProperty, entity: SchemaGraph['entities'][number]): string | undefined {
+    const textOwner = entity.properties.find((candidate) => candidate.links?.text === property.name);
+    if (!textOwner) {
+        return undefined;
+    }
+    const ownerWords = new Set(identifierTokens(textOwner.name));
+    if (entity.codeList === 'currency' || has(ownerWords, 'currency', 'waers')) {
+        return 'currency_name';
+    }
+    return has(ownerWords, 'country', 'nation') ? 'country_name' : undefined;
+}
+
+/**
+ * The role an annotation states without ambiguity: a non-negative display format, a vocabulary term with a role,
+ * `Measures.Unit` on a measured field, or a V2 `sap:semantics` value with a role. A disabled annotation states none.
+ *
+ * @param annotation the annotation
+ * @returns the role, or undefined
+ */
+function annotationRole(annotation: SchemaProperty['annotations'][number]): string | undefined {
+    if (annotation.value === false || annotation.value === 'false') {
+        return undefined;
+    }
+    const term = annotation.term.toLowerCase();
+    if (
+        (term === SAP_V2_TERM.displayFormat || term.endsWith(VOCABULARY_TERM_SUFFIX.displayFormat)) &&
+        typeof annotation.value === 'string' &&
+        annotation.value.toLowerCase() === SAP_V2_DISPLAY_FORMAT.nonNegative
+    ) {
+        return 'numeric_identifier';
+    }
+    const termRole = semanticRules().metadataRoles.vocabularyTerms.find(({ termSuffix }) =>
+        term.endsWith(termSuffix)
+    )?.role;
+    if (termRole) {
+        return termRole;
+    }
+    if (term.endsWith(VOCABULARY_TERM_SUFFIX.unit) && term.includes('measures')) {
+        return 'quantity';
+    }
+    if (term === SAP_V2_TERM.semantics && typeof annotation.value === 'string') {
+        const sapSemanticRole = semanticRules().metadataRoles.sapSemantics.get(annotation.value.toLowerCase());
+        if (sapSemanticRole) {
+            return sapSemanticRole;
+        }
+    }
+    return undefined;
+}
+
+/**
  * Resolve only authoritative semantic markers whose meaning is unambiguous.
  *
  * @param property - Canonical schema property.
@@ -191,15 +247,9 @@ function explicitMetadataRole(property: SchemaProperty, entity?: SchemaGraph['en
     if (codeListField && 'role' in codeListField) {
         return codeListField.role;
     }
-    const textOwner = entity?.properties.find((candidate) => candidate.links?.text === property.name);
-    if (textOwner) {
-        const ownerWords = new Set(identifierTokens(textOwner.name));
-        if (entity?.codeList === 'currency' || has(ownerWords, 'currency', 'waers')) {
-            return 'currency_name';
-        }
-        if (has(ownerWords, 'country', 'nation')) {
-            return 'country_name';
-        }
+    const textRole = entity ? textOwnerRole(property, entity) : undefined;
+    if (textRole) {
+        return textRole;
     }
     const links = property.links;
     if (links?.currency && (property.primitiveType === 'decimal' || property.primitiveType === 'int')) {
@@ -209,31 +259,9 @@ function explicitMetadataRole(property: SchemaProperty, entity?: SchemaGraph['en
         return 'currency';
     }
     for (const annotation of property.annotations) {
-        if (annotation.value === false || annotation.value === 'false') {
-            continue;
-        }
-        const term = annotation.term.toLowerCase();
-        if (
-            (term === SAP_V2_TERM.displayFormat || term.endsWith(VOCABULARY_TERM_SUFFIX.displayFormat)) &&
-            typeof annotation.value === 'string' &&
-            annotation.value.toLowerCase() === SAP_V2_DISPLAY_FORMAT.nonNegative
-        ) {
-            return 'numeric_identifier';
-        }
-        const termRole = semanticRules().metadataRoles.vocabularyTerms.find(({ termSuffix }) =>
-            term.endsWith(termSuffix)
-        )?.role;
-        if (termRole) {
-            return termRole;
-        }
-        if (term.endsWith(VOCABULARY_TERM_SUFFIX.unit) && term.includes('measures')) {
-            return 'quantity';
-        }
-        if (term === SAP_V2_TERM.semantics && typeof annotation.value === 'string') {
-            const sapSemanticRole = semanticRules().metadataRoles.sapSemantics.get(annotation.value.toLowerCase());
-            if (sapSemanticRole) {
-                return sapSemanticRole;
-            }
+        const role = annotationRole(annotation);
+        if (role) {
+            return role;
         }
     }
     const dataElementRole = property.dataElement
@@ -382,15 +410,9 @@ export function semanticRoleCandidate(
     if (has(words, 'country') && has(words, 'name', 'text', 'description')) {
         return 'country_name';
     }
-    const textOwner = entity.properties.find((candidate) => candidate.links?.text === property.name);
-    if (textOwner) {
-        const ownerWords = new Set(identifierTokens(textOwner.name));
-        if (entity.codeList === 'currency' || has(ownerWords, 'currency', 'waers')) {
-            return 'currency_name';
-        }
-        if (has(ownerWords, 'country', 'nation')) {
-            return 'country_name';
-        }
+    const textRole = textOwnerRole(property, entity);
+    if (textRole) {
+        return textRole;
     }
     if (property.primitiveType === 'string' && lexicalRole(property) === 'numeric_identifier') {
         return 'numeric_identifier';
@@ -405,17 +427,24 @@ export function semanticRoleCandidate(
     if (hasOrganizationDisplayEvidence(entity, property)) {
         return 'org_name';
     }
-    // Generic display labels are weaker evidence than an explicit technical semantic name.
-    if (/^(?:description|text|name)$/iu.test(property.label ?? '')) {
-        const technical = lexicalRoleForText(property.name, property.primitiveType);
-        if (
-            technical &&
-            ['person_full_name', 'person_first_name', 'person_last_name', 'region_name'].includes(technical)
-        ) {
-            return technical;
-        }
+    return technicalNameRole(property) ?? lexicalRole(property) ?? preferredLexicalRole(property);
+}
+
+/**
+ * The person or region name role of a field's technical name when its label is only a generic display label,
+ * which is weaker evidence than an explicit technical semantic name.
+ *
+ * @param property the field
+ * @returns the role, or undefined
+ */
+function technicalNameRole(property: SchemaProperty): string | undefined {
+    if (!/^(?:description|text|name)$/iu.test(property.label ?? '')) {
+        return undefined;
     }
-    return lexicalRole(property) ?? preferredLexicalRole(property);
+    const technical = lexicalRoleForText(property.name, property.primitiveType);
+    return technical && ['person_full_name', 'person_first_name', 'person_last_name', 'region_name'].includes(technical)
+        ? technical
+        : undefined;
 }
 
 /** The compatibility of a candidate role with a field. */
@@ -454,6 +483,67 @@ function lexicalFallbackOr(
 }
 
 /**
+ * The decision for a classifier role that fails its gates: a calibrated head carries its own per-role and
+ * per-family route threshold (conformal calibration plus support floors), the registry default only governs
+ * decisions that arrive without one, and the prediction set must hold the role alone.
+ *
+ * @param candidates the field's candidates
+ * @param classifier the classifier's decision
+ * @param classifierRole the classifier's compatible role
+ * @returns the lexical fallback or abstention, or undefined when the role passes its gates
+ */
+function classifierGateFailure(
+    candidates: FieldCandidates,
+    classifier: SemanticClassification,
+    classifierRole: string
+): SemanticClassification | undefined {
+    const threshold =
+        classifier.routeThreshold ??
+        semanticRoleDefinition(classifierRole)?.routeThreshold ??
+        semanticRules().thresholds.route;
+    const outsideSet = classifier.predictionSetSize !== undefined && classifier.predictionSetSize !== 1;
+    const contradictsSet =
+        classifier.predictionSet !== undefined &&
+        (classifier.predictionSet.length !== 1 || classifier.predictionSet[0] !== classifierRole);
+    if (classifier.confidence < threshold || outsideSet || contradictsSet) {
+        return lexicalFallbackOr(
+            candidates,
+            classifier.confidence < threshold ? 'below-threshold' : 'conflicting-candidates'
+        );
+    }
+    return undefined;
+}
+
+/**
+ * The decision for a classifier role that passed its gates: accepted when no compatible lexical role disagrees,
+ * or when it outweighs a disagreeing one by its conflict threshold.
+ *
+ * @param candidates the field's candidates
+ * @param classifier the classifier's decision
+ * @param classifierRole the classifier's compatible role
+ * @returns the decision
+ */
+function classifierAgainstLexical(
+    candidates: FieldCandidates,
+    classifier: SemanticClassification,
+    classifierRole: string
+): SemanticClassification {
+    const { compatibleLexicalRole } = candidates;
+    if (!compatibleLexicalRole || classifierRole === compatibleLexicalRole) {
+        return acceptedClassification(classifierRole, 'classifier', classifier);
+    }
+    const definition = semanticRoleDefinition(classifierRole);
+    const conflictThreshold = Math.max(
+        classifier.routeThreshold ?? definition?.routeThreshold ?? semanticRules().thresholds.route,
+        definition?.conflictThreshold ?? semanticRules().thresholds.conflict
+    );
+    if (classifier.predictionSetSize === 1 && classifier.confidence >= conflictThreshold) {
+        return acceptedClassification(classifierRole, 'classifier', classifier);
+    }
+    return lexicalFallbackOr(candidates, 'conflicting-candidates');
+}
+
+/**
  * Decide between the classifier's and the lexical candidate of a field the classifier did not abstain
  * on: a classifier role must pass its route threshold and prediction set, and must outweigh a
  * disagreeing lexical role by its conflict threshold.
@@ -465,43 +555,10 @@ function arbitrateCandidates(candidates: FieldCandidates): SemanticClassificatio
     const { classifier, classifierCompatibility, classifierRole, lexicalRole, lexicalCompatibility } = candidates;
     const { compatibleLexicalRole } = candidates;
     if (classifierRole && classifier) {
-        // A calibrated head carries its own per-role and per-family route threshold
-        // (conformal calibration plus support floors); the registry default only
-        // governs decisions that arrive without one.
-        const threshold =
-            classifier.routeThreshold ??
-            semanticRoleDefinition(classifierRole)?.routeThreshold ??
-            semanticRules().thresholds.route;
-        const outsideSet = classifier.predictionSetSize !== undefined && classifier.predictionSetSize !== 1;
-        const contradictsSet =
-            classifier.predictionSet !== undefined &&
-            (classifier.predictionSet.length !== 1 || classifier.predictionSet[0] !== classifierRole);
-        if (classifier.confidence < threshold || outsideSet || contradictsSet) {
-            return lexicalFallbackOr(
-                candidates,
-                classifier.confidence < threshold ? 'below-threshold' : 'conflicting-candidates'
-            );
-        }
-    }
-
-    if (classifierRole && compatibleLexicalRole && classifier) {
-        if (classifierRole === compatibleLexicalRole) {
-            return acceptedClassification(classifierRole, 'classifier', classifier);
-        }
-        const definition = semanticRoleDefinition(classifierRole);
-        const conflictThreshold = Math.max(
-            classifier.routeThreshold ?? definition?.routeThreshold ?? semanticRules().thresholds.route,
-            definition?.conflictThreshold ?? semanticRules().thresholds.conflict
+        return (
+            classifierGateFailure(candidates, classifier, classifierRole) ??
+            classifierAgainstLexical(candidates, classifier, classifierRole)
         );
-        if (classifier.predictionSetSize === 1 && classifier.confidence >= conflictThreshold) {
-            return acceptedClassification(classifierRole, 'classifier', classifier);
-        }
-        return lexicalFallbackOr(candidates, 'conflicting-candidates');
-    }
-
-    if (classifierRole && classifier) {
-        // The confidence and prediction-set gates above have already passed.
-        return acceptedClassification(classifierRole, 'classifier', classifier);
     }
 
     if (compatibleLexicalRole) {

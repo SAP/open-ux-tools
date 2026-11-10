@@ -411,6 +411,63 @@ function defaultFactories(
     };
 }
 
+/** The learned components loaded so far. */
+interface LoadedLearnedRuntime {
+    classifier?: SemanticClassifier;
+    sft?: SftGenerator;
+    candidateVerifier?: SftCandidateRelevanceVerifier;
+}
+
+/**
+ * The diagnostic of a component that is unavailable, so the lower tiers stand in for it.
+ *
+ * @param component the component
+ * @param cause message of the error that stopped it from loading, if one was raised
+ * @returns the diagnostic
+ */
+function componentUnavailable(component: PackagedModelComponent, cause?: string): LearnedRuntimeDiagnostic {
+    return {
+        code: component.kind === 'classifier' ? 'CLASSIFIER_RUNTIME_UNAVAILABLE' : 'SFT_RUNTIME_UNAVAILABLE',
+        componentId: component.id,
+        message: `The ${component.kind} runtime is unavailable; lower tiers remain active.`,
+        ...(cause === undefined ? {} : { cause })
+    };
+}
+
+/**
+ * Load one component with its factory into the runtime, keeping its disposer.
+ *
+ * @param factories the component factories
+ * @param component the component
+ * @param files the component's verified files by role
+ * @param selectedRuntime the installed ONNX runtime the component runs on
+ * @param target receives the loaded component and its disposer
+ * @param target.runtime the learned components loaded so far
+ * @param target.disposers disposers of the loaded components
+ */
+async function loadComponent(
+    factories: LearnedComponentFactories,
+    component: PackagedModelComponent,
+    files: ReadonlyMap<string, string>,
+    selectedRuntime: LearnedRuntimeModule,
+    target: { runtime: LoadedLearnedRuntime; disposers: Array<() => Promise<void> | void> }
+): Promise<void> {
+    if (component.kind === 'classifier') {
+        const loaded = await factories.classifier(component, files, selectedRuntime);
+        target.runtime.classifier = loaded.value;
+        target.runtime.candidateVerifier = loaded.candidateVerifier;
+        if (loaded.dispose) {
+            target.disposers.push(loaded.dispose);
+        }
+    } else {
+        const loaded = await factories.sft(component, files, selectedRuntime);
+        target.runtime.sft = loaded.value;
+        if (loaded.dispose) {
+            target.disposers.push(loaded.dispose);
+        }
+    }
+}
+
 /**
  * Build independently degradable classifier and SFT runtimes from a verified package-local artifacts.
  *
@@ -442,50 +499,23 @@ export async function createLearnedRuntime(
         });
     }
 
-    const runtime: {
-        classifier?: SemanticClassifier;
-        sft?: SftGenerator;
-        candidateVerifier?: SftCandidateRelevanceVerifier;
-    } = {};
+    const runtime: LoadedLearnedRuntime = {};
     const diagnostics: LearnedRuntimeDiagnostic[] = [];
     const disposers: Array<() => Promise<void> | void> = [];
     let installed: InstalledRuntime | undefined;
     for (const component of manifest.components) {
         const files = cache.files.get(component.id);
         if (!files) {
-            diagnostics.push({
-                code: component.kind === 'classifier' ? 'CLASSIFIER_RUNTIME_UNAVAILABLE' : 'SFT_RUNTIME_UNAVAILABLE',
-                componentId: component.id,
-                message: `The ${component.kind} runtime is unavailable; lower tiers remain active.`
-            });
+            diagnostics.push(componentUnavailable(component));
             continue;
         }
         try {
             installed ??= readInstalledRuntime(manifest.runtime);
             const selectedRuntime = installedRuntimeModule(manifest.runtime, installed, component);
-            if (component.kind === 'classifier') {
-                // Sequential: components load one at a time.
-                const loaded = await componentFactories.classifier(component, files, selectedRuntime); // NOSONAR
-                runtime.classifier = loaded.value;
-                runtime.candidateVerifier = loaded.candidateVerifier;
-                if (loaded.dispose) {
-                    disposers.push(loaded.dispose);
-                }
-            } else {
-                // Sequential: components load one at a time.
-                const loaded = await componentFactories.sft(component, files, selectedRuntime); // NOSONAR
-                runtime.sft = loaded.value;
-                if (loaded.dispose) {
-                    disposers.push(loaded.dispose);
-                }
-            }
+            // Sequential: components load one at a time.
+            await loadComponent(componentFactories, component, files, selectedRuntime, { runtime, disposers }); // NOSONAR
         } catch (error) {
-            diagnostics.push({
-                code: component.kind === 'classifier' ? 'CLASSIFIER_RUNTIME_UNAVAILABLE' : 'SFT_RUNTIME_UNAVAILABLE',
-                componentId: component.id,
-                message: `The ${component.kind} runtime is unavailable; lower tiers remain active.`,
-                cause: errorMessage(error)
-            });
+            diagnostics.push(componentUnavailable(component, errorMessage(error)));
         }
     }
     return Object.freeze({

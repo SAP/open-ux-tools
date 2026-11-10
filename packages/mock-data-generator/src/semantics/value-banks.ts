@@ -169,7 +169,7 @@ function subscriberDigits(hash: number, length: number): string {
 
 export interface SemanticRowContext {
     dataset: SyntheticSampleDataset;
-    ibanCountry?: SyntheticScenario['ibanCountry'];
+    ibanCountry?: NonNullable<SyntheticScenario['ibanCountry']>;
     givenName: string;
     familyName: string;
     location: PackagedBanks['locations'][number];
@@ -252,7 +252,8 @@ function utcOffsetName(timeZone: string): string {
         return 'UTC';
     }
     const [, sign, hours, minutes] = match;
-    return `UTC${sign}${Number(hours)}${minutes === '00' ? '' : `:${minutes}`}`;
+    const minuteSuffix = minutes === '00' ? '' : `:${minutes}`;
+    return `UTC${sign}${Number(hours)}${minuteSuffix}`;
 }
 
 function catalogSample(role: string, index: number): string | undefined {
@@ -565,7 +566,9 @@ function bankOrDocumentValue(
             const { bbanTemplate } = packagedBanks().ibanFormats[country];
             const bankPart = bbanTemplate.slice(0, bbanTemplate.indexOf('#'));
             const bban = `${bankPart}${fixedDigits(hash, bbanTemplate.length - bankPart.length)}`;
-            const digits = `${bban}${country}00`.replace(/[A-Z]/gu, (letter) => String(letter.charCodeAt(0) - 55));
+            const digits = `${bban}${country}00`.replace(/[A-Z]/gu, (letter) =>
+                String((letter.codePointAt(0) ?? 0) - 55)
+            );
             return `${country}${String(98n - (BigInt(digits) % 97n)).padStart(2, '0')}${bban}`;
         }
         case 'bic':
@@ -673,6 +676,35 @@ export function semanticValue(
         return boundedNumericValue(property, hash, range.minimum, range.maximum);
     }
     switch (role) {
+        case 'date':
+        case 'datetime':
+        case 'start_date':
+        case 'end_date':
+            return dateRoleValue(role, property, context, hash);
+        case 'time':
+            return timeRoleValue(property, context);
+        default:
+            return scalarRoleValue(role, property, context, hash);
+    }
+}
+
+/**
+ * A value of a role with a scalar domain: a year, a boolean flag, a field-control state, a number of decimal
+ * places or a dimension exponent.
+ *
+ * @param role the role
+ * @param property the field
+ * @param context the row's context
+ * @param hash the field's hash
+ * @returns the value, or undefined for another role or a field that cannot hold it
+ */
+function scalarRoleValue(
+    role: string,
+    property: SchemaProperty,
+    context: SemanticRowContext,
+    hash: number
+): JsonValue | undefined {
+    switch (role) {
         case 'year':
             if (property.primitiveType === 'int') {
                 return context.startDate.getUTCFullYear();
@@ -692,46 +724,66 @@ export function semanticValue(
             const exponent = drawn(semanticRules().generationRanges.dimensionExponent, hash);
             return boundedNumericValue(property, 0, exponent, exponent);
         }
-        case 'date':
-        case 'datetime':
-        case 'start_date':
-        case 'end_date': {
-            const textFormat = stringDateFormat(property);
-            if (!['date', 'datetime', 'datetimeoffset'].includes(property.primitiveType) && !textFormat) {
-                return undefined;
-            }
-            const date = new Date(context.startDate);
-            if (role === 'end_date') {
-                date.setUTCDate(date.getUTCDate() + drawn(semanticRules().generationRanges.endDateGapDays, hash));
-            }
-            if (property.primitiveType === 'string' && textFormat) {
-                // A string column carries the date in the fixed-width format its length implies.
-                const iso = date.toISOString();
-                const digits = iso.replace(/[-:T]/gu, '').slice(0, 14);
-                const text: Readonly<Record<typeof textFormat, string>> = {
-                    yyyymmdd: digits.slice(0, 8),
-                    'iso-date': iso.slice(0, 10),
-                    yyyymmddhhmmss: digits,
-                    'iso-datetime': iso.slice(0, 19)
-                };
-                return text[textFormat];
-            }
-            return property.primitiveType === 'date' ? date.toISOString().slice(0, 10) : date.toISOString();
-        }
-        case 'time': {
-            // The time of the row's start, so a time agrees with the row's timestamps.
-            const [hours, minutes, seconds] = context.startDate.toISOString().slice(11, 19).split(':');
-            if (property.primitiveType === 'time') {
-                return `${hours}:${minutes}:${seconds}`;
-            }
-            // A string column carries the time in the fixed-width format its length implies.
-            const format = stringTimeFormat(property);
-            if (format === 'hhmmss') {
-                return `${hours}${minutes}${seconds}`;
-            }
-            return format === 'iso-time' ? `${hours}:${minutes}:${seconds}` : undefined;
-        }
         default:
             return undefined;
     }
+}
+
+/**
+ * A date of a date role: the row's start, or for an end date the start plus a drawn gap, in the field's type or,
+ * for a string field, in the fixed-width format its length implies.
+ *
+ * @param role `date`, `datetime`, `start_date` or `end_date`
+ * @param property the field
+ * @param context the row's context
+ * @param hash the field's hash
+ * @returns the date, or undefined for a field that cannot hold one
+ */
+function dateRoleValue(
+    role: string,
+    property: SchemaProperty,
+    context: SemanticRowContext,
+    hash: number
+): JsonValue | undefined {
+    const textFormat = stringDateFormat(property);
+    if (!['date', 'datetime', 'datetimeoffset'].includes(property.primitiveType) && !textFormat) {
+        return undefined;
+    }
+    const date = new Date(context.startDate);
+    if (role === 'end_date') {
+        date.setUTCDate(date.getUTCDate() + drawn(semanticRules().generationRanges.endDateGapDays, hash));
+    }
+    if (property.primitiveType === 'string' && textFormat) {
+        // A string column carries the date in the fixed-width format its length implies.
+        const iso = date.toISOString();
+        const digits = iso.replace(/[-:T]/gu, '').slice(0, 14);
+        const text: Readonly<Record<typeof textFormat, string>> = {
+            yyyymmdd: digits.slice(0, 8),
+            'iso-date': iso.slice(0, 10),
+            yyyymmddhhmmss: digits,
+            'iso-datetime': iso.slice(0, 19)
+        };
+        return text[textFormat];
+    }
+    return property.primitiveType === 'date' ? date.toISOString().slice(0, 10) : date.toISOString();
+}
+
+/**
+ * The time of the row's start, so a time agrees with the row's timestamps, in the field's type or, for a string
+ * field, in the fixed-width format its length implies.
+ *
+ * @param property the field
+ * @param context the row's context
+ * @returns the time, or undefined for a field that cannot hold one
+ */
+function timeRoleValue(property: SchemaProperty, context: SemanticRowContext): JsonValue | undefined {
+    const [hours, minutes, seconds] = context.startDate.toISOString().slice(11, 19).split(':');
+    if (property.primitiveType === 'time') {
+        return `${hours}:${minutes}:${seconds}`;
+    }
+    const format = stringTimeFormat(property);
+    if (format === 'hhmmss') {
+        return `${hours}${minutes}${seconds}`;
+    }
+    return format === 'iso-time' ? `${hours}:${minutes}:${seconds}` : undefined;
 }

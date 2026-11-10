@@ -11,6 +11,18 @@ function hasDetectedRole(candidate: SemanticClassification | undefined): candida
     );
 }
 
+/** The routing counts, updated while the fields are counted. */
+interface RoutingCounts {
+    totalFields: number;
+    metadataAccepted: number;
+    classifierAccepted: number;
+    lexicalAccepted: number;
+    conceptAccepted: number;
+    abstained: number;
+    providerBound: number;
+    detectedButUnbound: number;
+}
+
 /**
  * Count detection sources independently from executable provider bindings.
  *
@@ -26,7 +38,7 @@ export function routingStatistics(
     bound: ReadonlyMap<string, SemanticClassification>
 ): MockDataGeneratorRoutingStatistics {
     const requested = new Set(targets.map(({ name }) => name));
-    const counts = {
+    const counts: RoutingCounts = {
         totalFields: 0,
         metadataAccepted: 0,
         classifierAccepted: 0,
@@ -41,31 +53,44 @@ export function routingStatistics(
             continue;
         }
         for (const property of entity.properties) {
-            counts.totalFields++;
             const key = semanticPropertyKey(entity.entitySetName, property.name);
-            const decision = detected.get(key);
-            if (decision?.source === 'concept') {
-                counts.conceptAccepted++;
-                continue;
-            }
-            const accepted = hasDetectedRole(decision);
-            if (!accepted || decision.source === 'unknown') {
-                counts.abstained++;
-                continue;
-            }
-            if (decision.source === 'metadata') {
-                counts.metadataAccepted++;
-            } else if (decision.source === 'classifier') {
-                counts.classifierAccepted++;
-            } else {
-                counts.lexicalAccepted++;
-            }
-            if (hasDetectedRole(bound.get(key))) {
-                counts.providerBound++;
-            } else {
-                counts.detectedButUnbound++;
-            }
+            countField(counts, detected.get(key), bound.get(key));
         }
     }
     return Object.freeze(counts);
+}
+
+/**
+ * Count one field by the source of its detected role and whether a provider is bound to it.
+ *
+ * @param counts the counts so far, updated in place
+ * @param decision the field's detected role, if any
+ * @param binding the field's provider binding, if any
+ */
+function countField(
+    counts: RoutingCounts,
+    decision: SemanticClassification | undefined,
+    binding: SemanticClassification | undefined
+): void {
+    counts.totalFields++;
+    if (decision?.source === 'concept') {
+        counts.conceptAccepted++;
+        return;
+    }
+    if (!hasDetectedRole(decision) || decision.source === 'unknown') {
+        counts.abstained++;
+        return;
+    }
+    if (decision.source === 'metadata') {
+        counts.metadataAccepted++;
+    } else if (decision.source === 'classifier') {
+        counts.classifierAccepted++;
+    } else {
+        counts.lexicalAccepted++;
+    }
+    if (hasDetectedRole(binding)) {
+        counts.providerBound++;
+    } else {
+        counts.detectedButUnbound++;
+    }
 }

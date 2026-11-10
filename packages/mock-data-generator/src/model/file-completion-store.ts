@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import type { Stats } from 'node:fs';
 import {
     appendFileSync,
     closeSync,
@@ -66,6 +67,68 @@ function parseEntry(line: string): [string, string] | undefined {
 }
 
 /**
+ * The store file's details, if it exists.
+ *
+ * @param path the store file
+ * @returns its `lstat` details, or undefined when there is no file yet
+ */
+function existingStoreFile(path: string): Stats | undefined {
+    try {
+        return lstatSync(path);
+    } catch (error) {
+        // No file yet: the store starts empty. Other failures are reported as the store's failure.
+        if (errnoCode(error) !== 'ENOENT') {
+            throw error;
+        }
+        return undefined;
+    }
+}
+
+/**
+ * Read the answers of a store file, without following a link, skipping torn or corrupt lines.
+ *
+ * @param path the store file
+ * @param remember receives each answer in file order
+ */
+function readStoreEntries(path: string, remember: (key: string, answer: string) => void): void {
+    const descriptor = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    let content: string;
+    try {
+        content = readFileSync(descriptor, 'utf8');
+    } finally {
+        closeSync(descriptor);
+    }
+    for (const line of content.split('\n')) {
+        const entry = line ? parseEntry(line) : undefined;
+        if (entry) {
+            remember(entry[0], entry[1]);
+        }
+    }
+}
+
+/**
+ * Append one answer line to the store file, creating it if needed and never following a link.
+ *
+ * @param path the store file
+ * @param line the serialized answer, with its newline
+ */
+function appendStoreLine(path: string, line: string): void {
+    const descriptor = openSync(
+        path,
+        constants.O_WRONLY | constants.O_APPEND | constants.O_CREAT | constants.O_NOFOLLOW,
+        0o600
+    );
+    try {
+        if (!fstatSync(descriptor).isFile()) {
+            throw new TypeError('the answer cache file is not a regular file');
+        }
+        appendFileSync(descriptor, line);
+    } finally {
+        closeSync(descriptor);
+    }
+}
+
+/**
  * Open (or create) a bounded, append-only answer store in a caller-owned directory, one `{"k": <sha256 key>, "v":
  * <completion>}` line per answer. An oversized file is reset or rewritten atomically with the newest entries, and any
  * file error leaves a working in-memory store and records `failure`.
@@ -94,7 +157,8 @@ export function openFileCompletionStore(options: OpenFileCompletionStoreOptions)
             keptBytes += lineBytes;
         }
         const temporary = `${path}.${process.pid}.${randomBytes(6).toString('hex')}.tmp`;
-        writeFileSync(temporary, kept.reverse().join(''), { mode: 0o600, flag: 'wx' });
+        kept.reverse();
+        writeFileSync(temporary, kept.join(''), { mode: 0o600, flag: 'wx' });
         try {
             renameSync(temporary, path);
         } catch (error) {
@@ -108,34 +172,13 @@ export function openFileCompletionStore(options: OpenFileCompletionStoreOptions)
             throw new TypeError('the answer cache directory must be absolute');
         }
         mkdirSync(options.directory, { recursive: true, mode: 0o700 });
-        let existing: ReturnType<typeof lstatSync> | undefined;
-        try {
-            existing = lstatSync(path);
-        } catch (error) {
-            // No file yet: the store starts empty. Other failures are reported as the store's failure below.
-            if (errnoCode(error) !== 'ENOENT') {
-                throw error;
-            }
-            existing = undefined;
-        }
+        const existing = existingStoreFile(path);
         if (existing) {
             if (!existing.isFile() || existing.isSymbolicLink()) {
                 throw new TypeError('the answer cache file is not a regular file');
             }
             if (existing.size <= maximumBytes) {
-                const descriptor = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
-                let content: string;
-                try {
-                    content = readFileSync(descriptor, 'utf8');
-                } finally {
-                    closeSync(descriptor);
-                }
-                for (const line of content.split('\n')) {
-                    const entry = line ? parseEntry(line) : undefined;
-                    if (entry) {
-                        remember(entry[0], entry[1]);
-                    }
-                }
+                readStoreEntries(path, remember);
                 bytes = existing.size;
             } else {
                 rewrite();
@@ -163,19 +206,7 @@ export function openFileCompletionStore(options: OpenFileCompletionStoreOptions)
                 if (bytes + Buffer.byteLength(line) > maximumBytes) {
                     rewrite();
                 } else {
-                    const descriptor = openSync(
-                        path,
-                        constants.O_WRONLY | constants.O_APPEND | constants.O_CREAT | constants.O_NOFOLLOW,
-                        0o600
-                    );
-                    try {
-                        if (!fstatSync(descriptor).isFile()) {
-                            throw new TypeError('the answer cache file is not a regular file');
-                        }
-                        appendFileSync(descriptor, line);
-                    } finally {
-                        closeSync(descriptor);
-                    }
+                    appendStoreLine(path, line);
                     bytes += Buffer.byteLength(line);
                 }
             } catch (error) {

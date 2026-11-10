@@ -1,5 +1,10 @@
 import type { SchemaGraph } from '../schema/graph.js';
-import type { MockDataGeneratorDiagnostic, SemanticClassification, SemanticClassifier } from '../types.js';
+import type {
+    FieldContextV3,
+    MockDataGeneratorDiagnostic,
+    SemanticClassification,
+    SemanticClassifier
+} from '../types.js';
 import { createFieldContextV3 } from './field-context.js';
 import { DEFAULT_CLASSIFIER_BATCH_SIZE, MAX_CLASSIFIER_BATCH_SIZE } from '../limits.js';
 import { errorMessage } from '../guards.js';
@@ -51,6 +56,51 @@ function failureDiagnostic(target: string, error: unknown): MockDataGeneratorDia
     });
 }
 
+/** One property to classify, keyed as `EntitySet.Property`. */
+interface ClassifierEntry {
+    target: string;
+    input: FieldContextV3;
+}
+
+/** What classifying a batch of properties needs from its run. */
+interface BatchClassificationContext {
+    classifyBatch: NonNullable<SemanticClassifier['classifyBatch']>;
+    /** Classifies one property, recording its classification or failure diagnostic. */
+    classifyOne: (entry: ClassifierEntry) => Promise<void>;
+    classifications: Map<string, SemanticClassification>;
+    signal: AbortSignal;
+}
+
+/**
+ * Classify a batch of properties in one call. A failed or invalid batch is recovered field by field: each field
+ * is classified on its own, and a field that still fails reports its own cause.
+ *
+ * @param batch the properties
+ * @param context the batch classifier and the run's results
+ */
+async function classifyEntryBatch(
+    batch: ReadonlyArray<ClassifierEntry>,
+    context: BatchClassificationContext
+): Promise<void> {
+    const { signal, classifications } = context;
+    try {
+        const results = await context.classifyBatch(
+            batch.map(({ input }) => input),
+            signal
+        );
+        signal.throwIfAborted();
+        if (results.length !== batch.length || results.some((result) => !validClassification(result))) {
+            throw new TypeError('Invalid semantic classification batch');
+        }
+        results.forEach((result, index) => classifications.set(batch[index].target, Object.freeze({ ...result })));
+    } catch {
+        signal.throwIfAborted();
+        for (const entry of batch) {
+            await context.classifyOne(entry); // NOSONAR: sequential, one inference session
+        }
+    }
+}
+
 /**
  * Classify every property exactly once for one immutable schema snapshot.
  *
@@ -73,7 +123,7 @@ export async function classifySchema(
             input: createFieldContextV3(graph, entity, property)
         }))
     );
-    const classifyOne = async ({ target, input }: (typeof entries)[number]): Promise<void> => {
+    const classifyOne = async ({ target, input }: ClassifierEntry): Promise<void> => {
         signal.throwIfAborted();
         try {
             const result = await classifier.classify(input, signal);
@@ -91,30 +141,18 @@ export async function classifySchema(
     if (!Number.isSafeInteger(batchSize) || batchSize < 1 || batchSize > MAX_CLASSIFIER_BATCH_SIZE) {
         throw new TypeError(`Classifier batch size must be an integer between 1 and ${MAX_CLASSIFIER_BATCH_SIZE}`);
     }
-    if (classifier.classifyBatch) {
+    const classifyBatch = classifier.classifyBatch;
+    if (classifyBatch) {
+        const context: BatchClassificationContext = {
+            classifyBatch: (inputs, batchSignal) => classifyBatch.call(classifier, inputs, batchSignal),
+            classifyOne,
+            classifications,
+            signal
+        };
         for (let offset = 0; offset < entries.length; offset += batchSize) {
             signal.throwIfAborted();
-            const batch = entries.slice(offset, offset + batchSize);
-            try {
-                const inputs = batch.map(({ input }) => input);
-                // One inference session classifies the batches in order, checking for cancellation between them.
-                // Sequential: one inference session.
-                const results = await classifier.classifyBatch(inputs, signal); // NOSONAR
-                signal.throwIfAborted();
-                if (results.length !== batch.length || results.some((result) => !validClassification(result))) {
-                    throw new TypeError('Invalid semantic classification batch');
-                }
-                results.forEach((result, index) =>
-                    classifications.set(batch[index].target, Object.freeze({ ...result }))
-                );
-            } catch {
-                signal.throwIfAborted();
-                // The batch failure is recovered field by field: each field is classified on its own, and a
-                // field that still fails reports its own cause.
-                for (const entry of batch) {
-                    await classifyOne(entry); // NOSONAR: sequential, one inference session
-                }
-            }
+            // One inference session classifies the batches in order, checking for cancellation between them.
+            await classifyEntryBatch(entries.slice(offset, offset + batchSize), context); // NOSONAR
         }
     } else {
         for (const entry of entries) {

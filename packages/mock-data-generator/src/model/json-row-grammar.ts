@@ -242,31 +242,8 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
     switch (state.phase) {
         case 'before-open':
             return character === '{' ? { ...state, phase: 'before-key-or-close' } : state;
-        case 'before-key-or-close': {
-            if (character === '}') {
-                return { ...state, phase: 'done' };
-            }
-            if (character !== '"') {
-                return state;
-            }
-            const [next, ...remaining] = state.remaining;
-            if (!next) {
-                return state;
-            }
-            return {
-                ...state,
-                phase: 'in-key',
-                remaining,
-                keyTarget: `${next.name}"`,
-                keyMatched: 0,
-                valueKind: next.valueKind,
-                nullable: next.nullable,
-                maximumStringLength: next.maxLength,
-                numberFormat: next.numberFormat,
-                steerWithin: Math.max(0, next.steerWithin ?? 0),
-                fieldName: next.name
-            };
-        }
+        case 'before-key-or-close':
+            return advanceBeforeKeyOrClose(state, character);
         case 'in-key': {
             const keyMatched = state.keyMatched + 1;
             return keyMatched === state.keyTarget.length
@@ -278,50 +255,114 @@ function advanceCharacter(state: JsonRowGrammarState, character: string): JsonRo
                 ? { ...state, phase: 'before-value', separatorSpace: state.separators === 'spaced' }
                 : state;
         case 'before-value':
-            if (character === '"') {
-                return {
-                    ...state,
-                    phase: 'in-string-value',
-                    escaped: false,
-                    stringHasAlphanumeric: false,
-                    stringLength: 0
-                };
-            }
-            return startAllowed(state, character)
-                ? { ...state, phase: 'in-nonstring-value', literalText: character }
-                : state;
+            return advanceBeforeValue(state, character);
         case 'in-string-value':
-            if (state.escaped) {
-                return { ...state, escaped: false, stringLength: state.stringLength + 1 };
-            }
-            if (character === '\\') {
-                return { ...state, escaped: true };
-            }
-            if (character === '"') {
-                return { ...state, phase: 'after-value' };
-            }
-            return {
-                ...state,
-                stringHasAlphanumeric: state.stringHasAlphanumeric || LETTER_OR_NUMBER.test(character),
-                stringLength: state.stringLength + 1
-            };
+            return advanceInStringValue(state, character);
         case 'in-nonstring-value':
             return literalPrefixAllowed(state, `${state.literalText}${character}`)
                 ? { ...state, literalText: `${state.literalText}${character}` }
                 : advanceCharacter({ ...state, phase: 'after-value' }, character);
         case 'after-value':
-            if (character === ',') {
-                return { ...state, phase: 'before-key-or-close', separatorSpace: state.separators === 'spaced' };
-            }
-            if (character === '}') {
-                return { ...state, phase: 'done' };
-            }
-            return state;
+            return advanceAfterValue(state, character);
         case 'done':
             return state;
         default:
             return state;
     }
+}
+
+/**
+ * Advance past a character where a key or the closing brace is expected: a quote opens the next field's key.
+ *
+ * @param state the state before the character
+ * @param character the character
+ * @returns the state after it
+ */
+function advanceBeforeKeyOrClose(state: JsonRowGrammarState, character: string): JsonRowGrammarState {
+    if (character === '}') {
+        return { ...state, phase: 'done' };
+    }
+    if (character !== '"') {
+        return state;
+    }
+    const [next, ...remaining] = state.remaining;
+    if (!next) {
+        return state;
+    }
+    return {
+        ...state,
+        phase: 'in-key',
+        remaining,
+        keyTarget: `${next.name}"`,
+        keyMatched: 0,
+        valueKind: next.valueKind,
+        nullable: next.nullable,
+        maximumStringLength: next.maxLength,
+        numberFormat: next.numberFormat,
+        steerWithin: Math.max(0, next.steerWithin ?? 0),
+        fieldName: next.name
+    };
+}
+
+/**
+ * Advance past the first character of a value: a quote opens a string, an allowed start opens a literal.
+ *
+ * @param state the state before the character
+ * @param character the character
+ * @returns the state after it
+ */
+function advanceBeforeValue(state: JsonRowGrammarState, character: string): JsonRowGrammarState {
+    if (character === '"') {
+        return {
+            ...state,
+            phase: 'in-string-value',
+            escaped: false,
+            stringHasAlphanumeric: false,
+            stringLength: 0
+        };
+    }
+    return startAllowed(state, character) ? { ...state, phase: 'in-nonstring-value', literalText: character } : state;
+}
+
+/**
+ * Advance past a character inside a string value, tracking escapes, length and whether it holds a letter or digit.
+ *
+ * @param state the state before the character
+ * @param character the character
+ * @returns the state after it
+ */
+function advanceInStringValue(state: JsonRowGrammarState, character: string): JsonRowGrammarState {
+    if (state.escaped) {
+        return { ...state, escaped: false, stringLength: state.stringLength + 1 };
+    }
+    if (character === '\\') {
+        return { ...state, escaped: true };
+    }
+    if (character === '"') {
+        return { ...state, phase: 'after-value' };
+    }
+    return {
+        ...state,
+        stringHasAlphanumeric: state.stringHasAlphanumeric || LETTER_OR_NUMBER.test(character),
+        stringLength: state.stringLength + 1
+    };
+}
+
+/**
+ * Advance past a character after a value: a comma expects the next key, a closing brace ends the row.
+ *
+ * @param state the state before the character
+ * @param character the character
+ * @returns the state after it
+ */
+function advanceAfterValue(state: JsonRowGrammarState, character: string): JsonRowGrammarState {
+    if (character === ',') {
+        return { ...state, phase: 'before-key-or-close', separatorSpace: state.separators === 'spaced' };
+    }
+    if (character === '}') {
+        return { ...state, phase: 'done' };
+    }
+    return state;
 }
 
 const VALUE_PHASES: ReadonlySet<Phase> = new Set(['before-value', 'in-string-value', 'in-nonstring-value']);

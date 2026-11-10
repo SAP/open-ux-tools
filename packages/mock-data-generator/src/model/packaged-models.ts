@@ -167,24 +167,9 @@ export function assertReleaseClassifier(manifest: unknown, head: unknown): void 
         isRecord(classifier) && Array.isArray(classifier.files) ? classifier.files : [];
     const encoder = files.find((file: unknown) => isRecord(file) && file.role === 'encoder');
     const vocabulary = files.find((file: unknown) => isRecord(file) && file.role === 'vocabulary');
-    const labels = isRecord(head) && Array.isArray(head.labels) ? head.labels : undefined;
-    const auxiliary: ReadonlyArray<unknown> =
-        isRecord(head) && Array.isArray(head.auxiliaryLabels) ? head.auxiliaryLabels : [];
-    const support = isRecord(head) && isRecord(head.calibrationSupport) ? head.calibrationSupport : undefined;
-    const supportRoles = support && isRecord(support.roles) ? support.roles : {};
-    const minimumPerRole = support?.minimumCorrectPerRole;
-    // Auxiliary labels are trained but never routed; every routable label must carry its own
-    // calibration support at the floors the head declares. A floor that is not an integer fails
-    // `hasCalibrationSupport` below, so the release is rejected either way.
-    const routableSupported =
-        labels !== undefined &&
-        auxiliary.every((label) => typeof label === 'string' && labels.includes(label) && label !== 'unknown') &&
-        labels
-            .filter((label) => label !== 'unknown' && !auxiliary.includes(label))
-            .every((label) => {
-                const count = typeof label === 'string' ? supportRoles[label] : undefined;
-                return isSafeInteger(count) && isSafeInteger(minimumPerRole) && count >= minimumPerRole;
-            });
+    const labels: ReadonlyArray<unknown> | undefined =
+        isRecord(head) && Array.isArray(head.labels) ? head.labels : undefined;
+    const routableSupported = routableLabelsSupported(head, labels);
     const valid =
         classifiers.length === 1 &&
         routableSupported &&
@@ -211,6 +196,48 @@ export function assertReleaseClassifier(manifest: unknown, head: unknown): void 
         qualification.partitionPolicyVersion === 'family-disjoint-v2' &&
         isSha256Hex(qualification.artifactFingerprint) &&
         isSha256Hex(qualification.sealedDatasetFingerprint) &&
+        sealedEvaluationPasses(evaluation);
+    if (!valid) {
+        throw new TypeError('A new release requires one qualified classifier with passing sealed evidence');
+    }
+}
+
+/**
+ * Whether every routable label of a classifier head carries its own calibration support at the floor the head
+ * declares. Auxiliary labels are trained but never routed, so they need none, but must be labels of the head.
+ * A floor that is not an integer also fails `hasCalibrationSupport`, so the release is rejected either way.
+ *
+ * @param head the parsed classifier head
+ * @param labels the head's labels, when it declares an array of them
+ * @returns true when every routable label is supported
+ */
+function routableLabelsSupported(head: unknown, labels: ReadonlyArray<unknown> | undefined): boolean {
+    const auxiliary: ReadonlyArray<unknown> =
+        isRecord(head) && Array.isArray(head.auxiliaryLabels) ? head.auxiliaryLabels : [];
+    const support = isRecord(head) && isRecord(head.calibrationSupport) ? head.calibrationSupport : undefined;
+    const supportRoles = support && isRecord(support.roles) ? support.roles : {};
+    const minimumPerRole = support?.minimumCorrectPerRole;
+    return (
+        labels !== undefined &&
+        auxiliary.every((label) => typeof label === 'string' && labels.includes(label) && label !== 'unknown') &&
+        labels
+            .filter((label) => label !== 'unknown' && !auxiliary.includes(label))
+            .every((label) => {
+                const count = typeof label === 'string' ? supportRoles[label] : undefined;
+                return isSafeInteger(count) && isSafeInteger(minimumPerRole) && count >= minimumPerRole;
+            })
+    );
+}
+
+/**
+ * Whether the sealed evaluation of a classifier passes the release floors: breadth of services and domains,
+ * accepted-role precision, supported-field and status recall, and the critical false-positive rate.
+ *
+ * @param evaluation the qualification's `sealedEvaluation`
+ * @returns true for passing evidence
+ */
+function sealedEvaluationPasses(evaluation: unknown): boolean {
+    return (
         isRecord(evaluation) &&
         isInteger(evaluation.services) &&
         evaluation.services >= 2 &&
@@ -233,10 +260,8 @@ export function assertReleaseClassifier(manifest: unknown, head: unknown): void 
         // `passingRatio` above already required an integer, positive accepted total.
         isInteger(evaluation.criticalFalsePositives) &&
         isInteger(evaluation.acceptedRoles.total) &&
-        evaluation.criticalFalsePositives / evaluation.acceptedRoles.total <= 0.03;
-    if (!valid) {
-        throw new TypeError('A new release requires one qualified classifier with passing sealed evidence');
-    }
+        evaluation.criticalFalsePositives / evaluation.acceptedRoles.total <= 0.03
+    );
 }
 
 /**

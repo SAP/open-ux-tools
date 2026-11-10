@@ -75,6 +75,50 @@ function parseConcept(
 }
 
 /**
+ * Validate the similarity and margin thresholds of a concept head.
+ *
+ * @param value the parsed `thresholds` member
+ * @returns a similarity in (0, 1] and a margin in [0, 1)
+ */
+function parseThresholds(value: unknown): { similarity: number; margin: number } {
+    const { similarity, margin } = record(value, 'concept head thresholds');
+    if (
+        typeof similarity !== 'number' ||
+        typeof margin !== 'number' ||
+        !(similarity > 0 && similarity <= 1) ||
+        !(margin >= 0 && margin < 1)
+    ) {
+        throw new TypeError('concept head thresholds are invalid');
+    }
+    return { similarity, margin };
+}
+
+/**
+ * Decode the base64 little-endian float32 prototypes of a concept head.
+ *
+ * @param value the parsed `prototypes` member
+ * @param length number of floats the concepts and dimension require
+ * @returns the finite prototype values
+ */
+function parsePrototypes(value: unknown, length: number): Float32Array {
+    if (typeof value !== 'string') {
+        throw new TypeError('concept head prototypes must be base64 float32 data');
+    }
+    const bytes = Buffer.from(value, 'base64');
+    if (bytes.length !== length * 4) {
+        throw new TypeError('concept head prototypes do not match the concept count and dimension');
+    }
+    const prototypes = new Float32Array(length);
+    for (let index = 0; index < prototypes.length; index++) {
+        prototypes[index] = bytes.readFloatLE(index * 4);
+    }
+    if (prototypes.some((entry) => !Number.isFinite(entry))) {
+        throw new TypeError('concept head prototypes contain non-finite values');
+    }
+    return prototypes;
+}
+
+/**
  * Validate a packaged prototype head against the encoder contract it must share with head A.
  *
  * @param value parsed JSON document
@@ -106,16 +150,7 @@ export function parseConceptHead(
             throw new TypeError(`concept head ${key} does not match the classifier contract`);
         }
     }
-    const thresholds = record(input.thresholds, 'concept head thresholds');
-    const { similarity, margin } = thresholds;
-    if (
-        typeof similarity !== 'number' ||
-        typeof margin !== 'number' ||
-        !(similarity > 0 && similarity <= 1) ||
-        !(margin >= 0 && margin < 1)
-    ) {
-        throw new TypeError('concept head thresholds are invalid');
-    }
+    const { similarity, margin } = parseThresholds(input.thresholds);
     if (!Array.isArray(input.concepts) || input.concepts.length === 0) {
         throw new TypeError('concept head has no concepts');
     }
@@ -123,20 +158,7 @@ export function parseConceptHead(
     if (new Set(concepts.map((concept) => concept.id)).size !== concepts.length) {
         throw new TypeError('concept head contains duplicate concept ids');
     }
-    if (typeof input.prototypes !== 'string') {
-        throw new TypeError('concept head prototypes must be base64 float32 data');
-    }
-    const bytes = Buffer.from(input.prototypes, 'base64');
-    if (bytes.length !== concepts.length * contract.dim * 4) {
-        throw new TypeError('concept head prototypes do not match the concept count and dimension');
-    }
-    const prototypes = new Float32Array(concepts.length * contract.dim);
-    for (let index = 0; index < prototypes.length; index++) {
-        prototypes[index] = bytes.readFloatLE(index * 4);
-    }
-    if (prototypes.some((entry) => !Number.isFinite(entry))) {
-        throw new TypeError('concept head prototypes contain non-finite values');
-    }
+    const prototypes = parsePrototypes(input.prototypes, concepts.length * contract.dim);
     return Object.freeze({
         format: 'mockgen-concept-head',
         version: 2,
@@ -182,7 +204,8 @@ export function matchConcept(
         norm += entry * entry;
     }
     norm = Math.sqrt(norm);
-    if (!(norm > 0)) {
+    // A vector holding NaN has a NaN norm and is rejected as well.
+    if (norm <= 0 || Number.isNaN(norm)) {
         return undefined;
     }
     let best = -Infinity;
