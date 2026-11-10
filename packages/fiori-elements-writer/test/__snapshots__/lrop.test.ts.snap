@@ -18755,7 +18755,7 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -18870,7 +18870,7 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -22637,13 +22637,8 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
-            Then.onTheBookingObjectPageGenerated.iCheckNumberOfSections(2);
-        });
-
         opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
             When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
-            Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingID\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"BookingDate\\" });
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"CustomerID\\" });
@@ -22654,13 +22649,7 @@ sap.ui.define([
             Then.onTheBookingObjectPageGenerated.onForm({ section: \\"Booking\\" }).iCheckField({ property: \\"DestinationRisk\\" });
         });
 
-        opaTest(\\"Check the BookingSupplement section of the Object Page\\", function (_Given, When, Then) {
-            When.onTheBookingObjectPageGenerated.iPressSectionIconTabFilterButton(\\"BookingSupplement\\");
-            Then.onTheBookingObjectPageGenerated.iCheckSection({ section: \\"BookingSupplement\\" });
-            Then.onTheBookingObjectPageGenerated.onTable({ property: \\"_BookSupplement\\" }).iCheckColumns(undefined, {\\"BookingSupplementID\\":{\\"header\\":\\"Book. Supp. Number\\"},\\"SupplementID\\":{\\"header\\":\\"Product ID\\"},\\"Price\\":{\\"header\\":\\"Product Price\\"}});
-        });
-
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -22690,9 +22679,8 @@ sap.ui.define([
 
 sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
-    \\"./pages/JourneyRunner\\",
-    \\"sap/ui/core/library\\"
-], function (opaTest, runner, coreLibrary) {
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
     function journey() {
@@ -22768,14 +22756,6 @@ sap.ui.define([
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction(\\"Set Cancel Date to Tomorrow\\", { enabled: false });
         });
 
-        opaTest(\\"Check table columns\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {\\"TravelID\\":{\\"header\\":\\"Travel ID\\"},\\"AgencyID\\":{\\"header\\":\\"Agency ID\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"BeginDate\\":{\\"header\\":\\"Starting Date\\"},\\"EndDate\\":{\\"header\\":\\"End Date\\"},\\"BookingFee\\":{\\"header\\":\\"Booking Fee\\"},\\"TotalPrice\\":{\\"header\\":\\"Total Price\\"},\\"LatestCancellationDate\\":{\\"header\\":\\"Latest Cancellation Date\\"},\\"Memo\\":{\\"header\\":\\"Description\\"},\\"Status\\":{\\"header\\":\\"Travel Status\\"}});
-        });
-
-        opaTest(\\"Check default sort order from PresentationVariant\\", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: \\"TravelID\\" }, coreLibrary.SortOrder.Descending, true);
-        });
-
         opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
@@ -22849,13 +22829,8 @@ sap.ui.define([
         });
 
 
-        opaTest(\\"Check the number of sections of the Object Page\\", function (_Given, _When, Then) {
-            Then.onTheTravelObjectPageGenerated.iCheckNumberOfSections(2);
-        });
-
         opaTest(\\"Check the Travel section of the Object Page\\", function (_Given, When, Then) {
             When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Travel\\");
-            Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Travel\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"TravelID\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"AgencyID\\" });
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"CustomerID\\" });
@@ -22868,13 +22843,7 @@ sap.ui.define([
             Then.onTheTravelObjectPageGenerated.onForm({ section: \\"Travel\\" }).iCheckField({ property: \\"Status\\" });
         });
 
-        opaTest(\\"Check the Booking section of the Object Page\\", function (_Given, When, Then) {
-            When.onTheTravelObjectPageGenerated.iPressSectionIconTabFilterButton(\\"Booking\\");
-            Then.onTheTravelObjectPageGenerated.iCheckSection({ section: \\"Booking\\" });
-            Then.onTheTravelObjectPageGenerated.onTable({ property: \\"_Booking\\" }).iCheckColumns(undefined, {\\"BookingID\\":{\\"header\\":\\"Booking Number\\"},\\"BookingDate\\":{\\"header\\":\\"Booking Date\\"},\\"CustomerID\\":{\\"header\\":\\"Customer ID\\"},\\"AirlineID\\":{\\"header\\":\\"Airline ID\\"},\\"ConnectionID\\":{\\"header\\":\\"Flight Number\\"},\\"FlightDate\\":{\\"header\\":\\"Flight Date\\"},\\"FlightPrice\\":{\\"header\\":\\"Flight Price\\"},\\"DestinationRisk\\":{\\"header\\":\\"Destination Risk\\"}});
-        });
-
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -26320,7 +26289,7 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
@@ -26435,7 +26404,7 @@ sap.ui.define([
 
 
 
-        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
