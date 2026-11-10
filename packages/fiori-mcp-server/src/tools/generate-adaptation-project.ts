@@ -341,6 +341,7 @@ export async function generateAdaptationProject(
         }
 
         const projectPath = join(finalTargetFolder, jsonInput.projectName);
+
         return {
             status: 'Success',
             message: `Adaptation project generated successfully at ${projectPath}.`,
