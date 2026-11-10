@@ -655,15 +655,26 @@ describe('OutlinePanel', () => {
         });
 
         test('extension point leaf with default content has tooltip showing full label including suffix', () => {
+            // The extension point must be a CHILD of a parent so it renders via onRenderCell
+            // (title={cellName}). A top-level childless node renders via onRenderHeader instead.
             const { container } = render(<OutlinePanel />, {
                 initialState: {
                     outline: [
                         {
-                            name: 'MyExtPoint',
-                            controlId: '04',
-                            children: [],
-                            controlType: 'sap.ui.extensionpoint',
-                            hasDefaultContent: true,
+                            name: 'Parent',
+                            controlId: 'parent-01',
+                            children: [
+                                {
+                                    name: 'MyExtPoint',
+                                    controlId: '04',
+                                    children: [],
+                                    controlType: 'sap.ui.extensionpoint',
+                                    hasDefaultContent: true,
+                                    editable: true,
+                                    visible: true
+                                }
+                            ],
+                            controlType: 'name.space.parent',
                             editable: true,
                             visible: true
                         }
