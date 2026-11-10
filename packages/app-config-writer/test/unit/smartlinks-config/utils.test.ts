@@ -188,7 +188,7 @@ describe('utils', () => {
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock.mock.calls.length).toBe(1);
-                expect(debugMock.mock.calls[0][0]).toContain(`Request failed.`);
+                expect(debugMock.mock.calls[0][0]).toContain('Request failed with status code 404');
                 expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
             }
         });
