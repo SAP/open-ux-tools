@@ -7139,12 +7139,6 @@ packages:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
 
-  '@fluentui/react-hooks@8.10.4':
-    resolution: {integrity: sha512-nwJfVHccX7wcPaY2JGLyzzZBlg5DSAPxNpET0t1d2dduQsRJMo/fbSpblpgTwF0z3bP0kPAxAXgb1vz34Sud2Q==}
-    peerDependencies:
-      '@types/react': '>=16.8.0 <20.0.0'
-      react: '>=16.8.0 <20.0.0'
-
   '@fluentui/react-portal-compat-context@9.0.17':
     resolution: {integrity: sha512-zfRwL3EeOXCNELCd4C+Yz2LsdVVnyvh0+pyXLDPDxN+r7Hj434dFdS5D4HWv/k0EYzkfoBbACfilmB6h9kviJg==}
     peerDependencies:
@@ -10169,9 +10163,6 @@ packages:
 
   '@types/react-redux@7.1.34':
     resolution: {integrity: sha512-GdFaVjEbYv4Fthm2ZLvj1VSCedV7TqE5y1kNwnjSdBOTXuRSgowux6J8TAct15T3CKBr63UMk+2CO7ilRhyrAQ==}
-
-  '@types/react-redux@7.1.35':
-    resolution: {integrity: sha512-iA6Q3vvIh0O5lm/E41bwvXMTVmUb0FW7HYAEt2k1SljUZV4Q9jTtEC17Bg/4t2pttPzJRZ0fxP/j0YhMNGjIFQ==}
 
   '@types/react-transition-group@4.4.12':
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
@@ -20625,15 +20616,6 @@ snapshots:
       react: 16.14.0
       tslib: 2.8.1
 
-  '@fluentui/react-hooks@8.10.4(@types/react@16.14.69)(react@16.14.0)':
-    dependencies:
-      '@fluentui/react-window-provider': 2.3.2(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/set-version': 8.2.24
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
-      '@types/react': 16.14.69
-      react: 16.14.0
-      tslib: 2.8.1
-
   '@fluentui/react-portal-compat-context@9.0.17(@types/react@16.14.69)(react@16.14.0)':
     dependencies:
       '@swc/helpers': 0.5.19
@@ -20655,7 +20637,7 @@ snapshots:
       '@fluentui/foundation-legacy': 8.6.9(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/merge-styles': 8.6.16
       '@fluentui/react-focus': 8.10.9(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/react-hooks': 8.10.4(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/react-hooks': 8.10.3(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/react-portal-compat-context': 9.0.17(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/react-window-provider': 2.3.2(@types/react@16.14.69)(react@16.14.0)
       '@fluentui/set-version': 8.2.24
@@ -24204,13 +24186,6 @@ snapshots:
       '@types/react': 16.14.69
 
   '@types/react-redux@7.1.34':
-    dependencies:
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@16.14.69)
-      '@types/react': 16.14.69
-      hoist-non-react-statics: 3.3.2
-      redux: 4.0.4
-
-  '@types/react-redux@7.1.35':
     dependencies:
       '@types/hoist-non-react-statics': 3.3.7(@types/react@16.14.69)
       '@types/react': 16.14.69
@@ -31920,7 +31895,7 @@ snapshots:
   react-redux@7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
     dependencies:
       '@babel/runtime': 7.29.2
-      '@types/react-redux': 7.1.35
+      '@types/react-redux': 7.1.34
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
       prop-types: 15.8.1
