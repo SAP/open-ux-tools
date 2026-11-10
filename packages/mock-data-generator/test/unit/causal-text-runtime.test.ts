@@ -33,7 +33,7 @@ function prefillFixture() {
         const previous = input.pastKeyValues.get(0);
         const marker = previous?.key[0] ?? input.inputIds[0];
         expect(input.positionIds[0]).toBe(previous?.value[0] ?? 0);
-        expect(input.attentionMask.length).toBe((previous?.value[0] ?? 0) + input.inputIds.length);
+        expect(input.attentionMask).toHaveLength((previous?.value[0] ?? 0) + input.inputIds.length);
         const length = (previous?.value[0] ?? 0) + input.inputIds.length;
         previous?.key.fill(-999);
         previous?.value.fill(-999);

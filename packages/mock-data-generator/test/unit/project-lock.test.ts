@@ -57,6 +57,7 @@ describe('project lock', () => {
 
         const lock = await acquireProjectLock(parent, { timeoutMs: 1_000 });
         await lock.release();
+        expect(await readdir(parent)).toEqual([]);
     });
 
     it('times out on a live lock with the lock path, its owner and how to recover', async () => {

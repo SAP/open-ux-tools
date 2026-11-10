@@ -10,6 +10,17 @@ import {
 } from '../../src/model/packaged-models.js';
 
 describe('packaged model verification', () => {
+    let root: string;
+
+    beforeEach(async () => {
+        root = await mkdtemp(join(tmpdir(), 'mockgen-package-models-'));
+        await mkdir(join(root, 'classifier'));
+    });
+
+    afterEach(async () => {
+        await rm(root, { recursive: true, force: true });
+    });
+
     test('rejects an unqualified or contract-mismatched v3 head before native allocation', () => {
         expect(() => assertPackagedClassifierHead({ inputFormat: 'v3' }, 'v3')).toThrow(/qualified/);
         expect(() =>
@@ -204,17 +215,6 @@ describe('packaged model verification', () => {
         expect(() =>
             assertReleaseRelevanceHead({ qualification: { ...qualification, sealedEvaluation: undefined } })
         ).toThrow(/relevance/u);
-    });
-
-    let root: string;
-
-    beforeEach(async () => {
-        root = await mkdtemp(join(tmpdir(), 'mockgen-package-models-'));
-        await mkdir(join(root, 'classifier'));
-    });
-
-    afterEach(async () => {
-        await rm(root, { recursive: true, force: true });
     });
 
     const manifest = (sha256: string) => ({

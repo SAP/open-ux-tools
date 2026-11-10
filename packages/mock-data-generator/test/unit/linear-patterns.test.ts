@@ -4,12 +4,13 @@ import { lastDigitRun } from '../../src/generation/sft.js';
 import { propertyValueIsValid } from '../../src/generation/constraints.js';
 import type { SchemaProperty } from '../../src/schema/graph.js';
 
-// Each linear rewrite is checked against the backtracking regular expression it replaced, kept here as the oracle.
-const ORACLE_ACRONYM = /([A-Z]+)([A-Z][a-z])/gu;
-const ORACLE_TRAILING = /[\s,;:&+/(\-–—]+$/u;
-const ORACLE_LAST_DIGIT_RUN = /(\d+)(?!.*\d)/u;
+// Each linear rewrite is checked against the backtracking regular expression it replaced, kept here verbatim as the
+// oracle; their slowness and complexity are the point, hence NOSONAR.
+const ORACLE_ACRONYM = /([A-Z]+)([A-Z][a-z])/gu; // NOSONAR
+const ORACLE_TRAILING = /[\s,;:&+/(\-–—]+$/u; // NOSONAR
+const ORACLE_LAST_DIGIT_RUN = /(\d+)(?!.*\d)/u; // NOSONAR
 const ORACLE_DATE_TIME =
-    /^(\d{4}-\d{2}-\d{2})T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(Z|[+-](?:(?:0\d|1[0-3]):[0-5]\d|14:00))?$/;
+    /^(\d{4}-\d{2}-\d{2})T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(Z|[+-](?:(?:0\d|1[0-3]):[0-5]\d|14:00))?$/; // NOSONAR
 
 /**
  * Deterministic pseudo-random strings over an alphabet, so every run checks the same inputs.

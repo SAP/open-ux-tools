@@ -320,9 +320,9 @@ describe('invalid facets', () => {
         const result = await generateServiceForTesting(serviceRequest, semanticV2);
 
         // Then the counter holds whole numbers and the result validates
-        expect(parseEdmx(content).entities[0]?.properties.find(({ name }) => name === 'EntryCounter')?.precision).toBe(
-            undefined
-        );
+        expect(
+            parseEdmx(content).entities[0]?.properties.find(({ name }) => name === 'EntryCounter')?.precision
+        ).toBeUndefined();
         expect((result.resources.Queues ?? []).every(({ EntryCounter }) => Number.isInteger(EntryCounter))).toBe(true);
         expect(() => validateGeneratedResult(serviceRequest, result, semanticV2)).not.toThrow();
     });
