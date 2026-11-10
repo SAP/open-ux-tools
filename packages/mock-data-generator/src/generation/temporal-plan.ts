@@ -723,7 +723,7 @@ function followParentCreation(
     const applied = new Set<Dependence>();
     // A grandchild may follow a child that has just followed its own parent: one pass per dependence settles
     // any chain.
-    for (const _pass of dependences) {
+    for (let remainingPasses = dependences.length; remainingPasses > 0; remainingPasses--) {
         const moved = dependences.filter((dependence) => followParent(dependence, rows));
         moved.forEach((dependence) => applied.add(dependence));
         if (moved.length === 0) {
@@ -793,7 +793,7 @@ function repairOrder(
     fixedIn: (entitySet: string, property: SchemaProperty) => boolean
 ): void {
     // One pass per constraint, so that chained pairs settle.
-    for (const _pass of constraints) {
+    for (let remainingPasses = constraints.length; remainingPasses > 0; remainingPasses--) {
         for (const constraint of constraints) {
             const entity = graph.entities.find(({ entitySetName }) => entitySetName === constraint.resource);
             const before = entity?.properties.find(({ name }) => name === constraint.before);

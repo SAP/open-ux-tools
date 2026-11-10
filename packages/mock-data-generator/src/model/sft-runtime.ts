@@ -683,7 +683,6 @@ async function generateRowsTogether(
         const group = missing.slice(start, start + SFT_BATCH_ROWS);
         const groupSeeds = group.map((rowIndex) => seeds[rowIndex] ?? input.seed);
         // One model decodes the groups in order, so a cancelled or exhausted budget stops the next group.
-        // Sequential: one model decodes in order.
         const generatedRows = await generateRows.call(options.textGenerator, request, groupSeeds, context.signal); // NOSONAR
         group.forEach((rowIndex, position) => {
             completions[rowIndex] = generatedRows[position];
