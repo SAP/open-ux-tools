@@ -205,6 +205,7 @@ export {
     ui5LtsVersion_1_120,
     ui5LtsVersion_1_71,
     processDestinationPath,
-    getTemplateVersionPath
+    getTemplateVersionPath,
+    renameInStore
 } from './utils.js';
 export { getManifestVersion } from './data/defaults.js';

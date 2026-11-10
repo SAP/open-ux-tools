@@ -1,7 +1,6 @@
 import type { FreestyleApp } from './types.js';
 import { TemplateType } from './types.js';
 import { gte } from 'semver';
-import { join } from 'node:path';
 import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
@@ -22,30 +21,6 @@ export type GlobOptionsWithIgnore = NonNullable<NonNullable<Parameters<Editor['c
 export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copyTpl']>[3]>, 'globOptions'> & {
     globOptions?: GlobOptionsWithIgnore;
 };
-
-/**
- * Renames already-copied files in the mem-fs store by moving each one to its renamed path.
- *
- * `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` rename callback, so renaming is
- * done after `copyTpl` has rendered the templates. `fs.move()` is a copy + delete, so each renamed
- * source is left behind as a `state: 'deleted'` tombstone in the store (visible in `fs.dump()`).
- *
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @param {string} basePath - The base path the rename callback operates relative to.
- * @param {(relPath: string) => string} rename - Maps a `basePath`-relative POSIX path to its renamed path.
- * @returns {void}
- */
-export function renameInStore(fs: Editor, basePath: string, rename: (relPath: string) => string): void {
-    for (const [absPath, file] of Object.entries(fs.dump(basePath))) {
-        if (file.state === 'deleted') {
-            continue;
-        }
-        const renamed = rename(absPath);
-        if (renamed !== absPath) {
-            fs.move(join(basePath, absPath), join(basePath, renamed));
-        }
-    }
-}
 
 /**
  * Compares two UI5 versions to determine if the first is greater than or equal to the second.

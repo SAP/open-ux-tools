@@ -21,11 +21,12 @@ export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copyTpl'
 };
 
 /**
- * Renames already-copied files in the mem-fs store by moving each one to its renamed path.
+ * Applies a path rename to files already present in the mem-fs store.
  *
- * `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` rename callback, so renaming is
- * done after `copyTpl` has rendered the templates. `fs.move()` is a copy + delete, so each renamed
- * source is left behind as a `state: 'deleted'` tombstone in the store (visible in `fs.dump()`).
+ * `copyTpl` in `mem-fs-editor@12` no longer accepts the `processDestinationPath` callback that
+ * used to rename files during the copy, so the rename happens here once the templates are
+ * rendered. Because `fs.move()` is implemented as a copy followed by a delete, every renamed
+ * origin stays in the store as a `state: 'deleted'` entry and is therefore visible in `fs.dump()`.
  *
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} basePath - The base path the rename callback operates relative to.
@@ -33,14 +34,15 @@ export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copyTpl'
  * @returns {void}
  */
 export function renameInStore(fs: Editor, basePath: string, rename: (relPath: string) => string): void {
-    for (const [absPath, file] of Object.entries(fs.dump(basePath))) {
-        if (file.state === 'deleted') {
+    const livePaths = Object.entries(fs.dump(basePath))
+        .filter(([, entry]) => entry.state !== 'deleted')
+        .map(([path]) => path);
+    for (const originalPath of livePaths) {
+        const targetPath = rename(originalPath);
+        if (targetPath === originalPath) {
             continue;
         }
-        const renamed = rename(absPath);
-        if (renamed !== absPath) {
-            fs.move(join(basePath, absPath), join(basePath, renamed));
-        }
+        fs.move(join(basePath, originalPath), join(basePath, targetPath));
     }
 }
 

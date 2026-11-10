@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { render } from 'ejs';
-import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project, renameInStore } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { TemplateType } from './types.js';
@@ -9,7 +9,7 @@ import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaul
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
-import { getTemplateVersionPath, processDestinationPath, renameInStore } from './utils.js';
+import { getTemplateVersionPath, processDestinationPath } from './utils.js';
 import type { CopyOptionsWithIgnore } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests.js';
