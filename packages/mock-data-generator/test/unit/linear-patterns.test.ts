@@ -125,8 +125,7 @@ describe('linear rewrites of backtracking patterns', () => {
         for (const input of inputs) {
             const match = ORACLE_DATE_TIME.exec(input);
             const expected =
-                match !== null &&
-                match[2] !== undefined &&
+                match?.[2] !== undefined &&
                 !Number.isNaN(Date.parse(input)) &&
                 (() => {
                     const [year, month, day] = match[1].split('-').map(Number);
