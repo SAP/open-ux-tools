@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 3.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Features
+
+- Add CheckboxGroup icon to UiIcons [[3cd86b7](https://github.com/SAP/open-ux-tools/commit/3cd86b7096d7b9fa54b57fc98d487e58925509f4)]
+
+## 3.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Features
+
+- Add a new LinkingTo icon to UiIcons [[28edb94](https://github.com/SAP/open-ux-tools/commit/28edb94c6324bc2526374f7dfc4ddeb6e194038a)]
+
 ## 3.0.21
 
 ### Patch Changes

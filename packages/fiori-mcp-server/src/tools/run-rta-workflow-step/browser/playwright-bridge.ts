@@ -6,13 +6,15 @@ import {
     isBackendLoginPage,
     LOGIN_REQUIRED_MESSAGE,
     LOGIN_WAIT_MESSAGE,
-    probeBridge,
+    probeUi5Loaded,
+    resolveFrame,
     waitForLogin,
     type NeedsUserActionPayload
 } from './login-page.js';
 import { originKey } from './origin.js';
 import { buildContextOptions, forgetSite, persistSessionState } from './session.js';
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
+import { normalizeUfaResult, resolveAction, runActionInPage, type Ui5LoaderWindow } from './frontend-actions.js';
 
 // Browser driver for the adaptation-editor automation.
 //
@@ -21,11 +23,11 @@ import type { FetchViaContextResult, FrontendActionResult, FrontendActionTranspo
 // runs frontend actions by evaluating into the page. It drives the browser — it
 // is not itself a "bridge".
 //
-// The one thing here that is literally a bridge is the editor's own in-page
-// object, `window.sapdas.webclientBridge` (SAP/Joule-injected), whose
-// `getFrontendActions()` we detect (readiness) and call (to start/drive RTA).
-// Wherever a comment below says "bridge" it means that webclient bridge, never
-// this module.
+// Frontend actions (Flex `FrontendActionsAPI` and UFA `ActionHelpers`) are reached
+// by `sap.ui.require`-ing the implementing UI5 module on the page and calling the
+// method directly — there is no Joule webclient bridge in this transport. Readiness
+// is therefore keyed off the UI5 loader (`sap.ui.require`) being present, not off
+// any injected bridge object.
 
 /** Outcome of classifying a freshly-navigated editor page. */
 type EditorReadiness = { outcome: 'ready' | 'login-timed-out' } | { outcome: 'error'; status: number | undefined };
@@ -62,23 +64,15 @@ interface PageRPC {
 }
 
 /**
- * Shape of the Joule webclient bridge as exposed on the editor page's
- * `window` object. Only the surface we use is typed.
- */
-interface WebclientBridgeWindow {
-    sapdas?: {
-        webclientBridge?: {
-            getFrontendActions?: () => Array<{
-                frontend_action_name: string;
-                function: (arg: unknown) => unknown;
-            }>;
-        };
-    };
-}
-
-/**
- * Wraps a Playwright `Page` in an RPC handle that invokes Joule frontend
- * actions through `window.sapdas.webclientBridge.getFrontendActions()`.
+ * Wraps a Playwright `Page` in an RPC handle that invokes frontend actions by
+ * `sap.ui.require`-ing the implementing module on the page and calling the
+ * method directly.
+ *
+ * Flex actions already return the `{ isSuccess, payload, error }` envelope. UFA
+ * actions (`ActionHelpers`) return raw results, so this layer normalizes them
+ * into the same envelope: a `{ success: false, error }` result becomes
+ * `{ isSuccess: false, error }`; anything else becomes `{ isSuccess: true,
+ * payload: <raw> }`. Callers therefore see one consistent shape.
  *
  * @param page The Playwright page to wrap.
  * @param context The BrowserContext that owns the page; closed together with the page on `rpc.close()`.
@@ -96,52 +90,37 @@ async function createPageRPC(page: Page, context: BrowserContext, fullUrl: strin
         let executionContext: Page | Frame = page;
 
         if (frameId) {
-            let matched: Frame | undefined;
-            for (const frame of page.frames()) {
-                const element = await frame.frameElement().catch(() => undefined);
-                if (!element) {
-                    continue;
-                }
-                const id = await element.getAttribute('id');
-                if (id === frameId) {
-                    matched = frame;
-                    break;
-                }
-            }
-            if (!matched) {
-                throw new Error(`Frame with id "${frameId}" not found`);
-            }
-            executionContext = matched;
+            // throwOnMiss: an action must run in the requested frame, so a missing
+            // frame is a hard error rather than a silent fall back to the top page.
+            executionContext = (await resolveFrame(page, frameId, true)) as Frame;
         }
 
-        // Wait up to 60 s for the webclient bridge to be registered (RTA needs time to start).
-        await (executionContext as Page | Frame).waitForFunction(
-            () =>
-                !!(
-                    window as unknown as {
-                        sapdas?: { webclientBridge?: { getFrontendActions?: () => unknown } };
-                    }
-                ).sapdas?.webclientBridge?.getFrontendActions,
-            undefined,
-            { timeout: 60000 }
-        );
+        const { module, method, ufa } = resolveAction(actionName);
 
-        const response = await executionContext.evaluate(
-            async ({ name, p }: { name: string; p: Record<string, unknown> }) => {
-                const bridge = (window as unknown as WebclientBridgeWindow).sapdas?.webclientBridge;
-                if (!bridge?.getFrontendActions) {
-                    throw new Error('window.sapdas.webclientBridge.getFrontendActions is not available on the page');
-                }
-                const actions = bridge.getFrontendActions();
-                const entry = actions.find((a) => a.frontend_action_name === name);
-                if (!entry) {
-                    throw new Error(`Frontend action "${name}" not registered`);
-                }
-                return await entry.function(p);
-            },
-            { name: actionName, p: payload }
-        );
-        return response as FrontendActionResult<TReturn>;
+        let serialized: string;
+        try {
+            // Wait up to 60 s for the UI5 loader (`sap.ui.require`) to be present; RTA
+            // needs time to start before the implementing modules can be required. This
+            // is inside the try so a loader timeout surfaces as a FrontendActionError
+            // (per the catch below) rather than escaping as a fatal exception.
+            await (executionContext as Page | Frame).waitForFunction(
+                () => !!(window as unknown as Ui5LoaderWindow).sap?.ui?.require,
+                undefined,
+                { timeout: 60000 }
+            );
+            serialized = await executionContext.evaluate(runActionInPage, { mod: module, fn: method, p: payload });
+        } catch (error) {
+            // Any failure from the page (loader never appeared, module not loaded, method
+            // missing, require unavailable, or the action throwing) is returned as a failure
+            // envelope so the command layer surfaces it as a FrontendActionError instead of
+            // letting a raw page exception escape as a fatal error.
+            const message = error instanceof Error ? error.message : String(error);
+            return { isSuccess: false, payload: null, error: { code: 'FRONTEND_ACTION_THREW', message } };
+        }
+        // `undefined` return (a void action) stringifies to the JS value undefined, not a
+        // string — treat it as a null raw result so normalizeUfaResult sees "no payload".
+        const response: unknown = serialized === undefined ? null : JSON.parse(serialized);
+        return normalizeUfaResult(response, ufa) as FrontendActionResult<TReturn>;
     };
 
     const close = async (): Promise<void> => {
@@ -245,8 +224,8 @@ function editorNotLoadedError(status: number | undefined, site: string): Error {
 
 /**
  * Classifies a navigated editor page without owning its teardown. Probes for the
- * webclient bridge (in the editor iframe); if absent, distinguishes a backend
- * login page from a hard HTTP error from a slow-but-valid app.
+ * UI5 loader (`sap.ui.require`, in the editor iframe); if absent, distinguishes a
+ * backend login page from a hard HTTP error from a slow-but-valid app.
  *
  * @param page The navigated editor page.
  * @param response The navigation response (for its HTTP status), or `null`.
@@ -258,7 +237,7 @@ async function classifyEditorReadiness(
     response: Awaited<ReturnType<Page['goto']>>,
     frameId: string | undefined
 ): Promise<EditorReadiness> {
-    if (await probeBridge(page, frameId)) {
+    if (await probeUi5Loaded(page, frameId)) {
         return { outcome: 'ready' };
     }
     const landedUrl = page.url();
@@ -275,18 +254,19 @@ async function classifyEditorReadiness(
     if (isEditorErrorStatus(response?.status())) {
         return { outcome: 'error', status: response?.status() };
     }
-    // Slow-but-valid app: proceed and let the per-action webclient-bridge wait be the backstop.
+    // Slow-but-valid app: proceed and let the per-action readiness wait be the backstop.
     return { outcome: 'ready' };
 }
 
 /**
- * Invokes a Joule frontend action on the page hosting `site`, reusing a registered
- * page or (only when `allowOpen`) opening a new one. Returns the result envelope;
- * throws on transport/lookup failures.
+ * Invokes a frontend action (Flex or UFA) on the page hosting `site` by requiring
+ * the implementing UI5 module (`FrontendActionsAPI` or `ActionHelpers`) on the
+ * page. Reuses a registered page or (only when `allowOpen`) opens a new one.
+ * Returns the result envelope; throws on transport/lookup failures.
  *
  * @param site URL to load (typically the adaptation editor URL).
- * @param actionName Frontend action identifier, e.g. `com.sap.ui.flex.startRTA.v1`.
- * @param payload Object payload forwarded to the frontend action function.
+ * @param actionName Frontend action contract name, e.g. `com.sap.ui.flex.startRTA.v1`.
+ * @param payload Object payload forwarded to the frontend action.
  * @param frameId Optional frame element id to scope the call to an iframe.
  * @param allowOpen Open a page when none is registered (the `start`/`restart` path);
  * otherwise reject. Defaults to `false`.

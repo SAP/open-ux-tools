@@ -4,13 +4,12 @@ import type {
 } from '../../../../../src/tools/run-rta-workflow-step/browser/types.js';
 import {
     FrontendActionError,
-    callPageAction,
+    describeUi,
     executeAction,
+    executeUfaAction,
     getElementContext,
     getODataMetadata,
     getOverlays,
-    getPageActions,
-    pressInteractive,
     saveChanges,
     startRta,
     startVisualization,
@@ -33,6 +32,14 @@ const fail = (code: string, message: string): FrontendActionResult<never> => ({
     payload: null,
     error: { code, message }
 });
+
+// UFA actions (describeUI/executeAction) are reached by requiring ActionHelpers
+// directly; the transport normalizes their raw result into the same
+// { isSuccess, payload, error } envelope as the Flex actions. `ok`/`fail` above
+// already model that envelope, so UFA tests use them directly:
+//   - describeUI success → ok(<tree>)                 (payload is the UI tree)
+//   - executeAction success → ok(null)                (bare mutation success → null payload)
+//   - any failure → fail(code, message)               (isSuccess:false)
 
 interface FakeTransport extends FrontendActionTransport {
     callFrontendAction: jest.MockedFunction<FrontendActionTransport['callFrontendAction']>;
@@ -189,42 +196,6 @@ describe('rta/commands', () => {
         expect(transport.disconnectSite).not.toHaveBeenCalled();
     });
 
-    test('getPageActions calls getPageActions action', async () => {
-        const registered = [{ id: 'loadData', layer: 'framework', label: 'Load Data', description: '' }];
-        const interactive = [{ controlId: 'btn1', controlType: 'sap.m.Button', label: 'Go', kind: 'button' }];
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ registered, interactive }));
-        const result = await getPageActions(transport, { site: SITE, frameId: FRAME });
-        expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.getPageActions.v1', {}, FRAME);
-        expect(result.registered).toEqual(registered);
-        expect(result.interactive).toEqual(interactive);
-    });
-
-    test('callPageAction calls callPageAction action with id', async () => {
-        const runResult = { status: 'ok' as const };
-        transport.callFrontendAction.mockResolvedValueOnce(ok(runResult));
-        const result = await callPageAction(transport, { site: SITE }, 'loadData');
-        expect(transport.callFrontendAction).toHaveBeenCalledWith(
-            SITE,
-            'com.sap.ui.flex.callPageAction.v1',
-            { id: 'loadData' },
-            undefined
-        );
-        expect(result).toEqual(runResult);
-    });
-
-    test('pressInteractive calls pressInteractive action with controlId', async () => {
-        const runResult = { status: 'ok' as const, note: 'registered actions changed' };
-        transport.callFrontendAction.mockResolvedValueOnce(ok(runResult));
-        const result = await pressInteractive(transport, { site: SITE, frameId: FRAME }, 'btn1');
-        expect(transport.callFrontendAction).toHaveBeenCalledWith(
-            SITE,
-            'com.sap.ui.flex.pressInteractive.v1',
-            { controlId: 'btn1' },
-            FRAME
-        );
-        expect(result).toEqual(runResult);
-    });
-
     test('FrontendActionError uses GENERIC_ERROR code when error has no code', async () => {
         transport.callFrontendAction.mockResolvedValueOnce({
             isSuccess: false,
@@ -234,6 +205,119 @@ describe('rta/commands', () => {
         await expect(startRta(transport, { site: SITE })).rejects.toMatchObject({
             name: 'FrontendActionError'
         });
+    });
+
+    // --- Unified Frontend Actions (describeUi / executeUfaAction) ---
+    // Reached via ActionHelpers; the transport normalizes their raw results into
+    // the { isSuccess, payload, error } envelope, so these use ok()/fail().
+
+    test('describeUi calls the UFA describeUI action with navigation-scoped properties and returns a shallow forest', async () => {
+        // describeUI returns a FOREST (array of top-level nodes). Deeper than the default
+        // depth (2) so trimming is observable: root → section → field.
+        const forest = [
+            {
+                id: 'root',
+                type: 'objectPage',
+                children: [{ id: 'section', type: 'section', children: [{ id: 'field', type: 'input' }] }]
+            }
+        ];
+        transport.callFrontendAction.mockResolvedValueOnce(ok(forest));
+        const result = await describeUi(transport, { site: SITE, frameId: FRAME });
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.unified.frontend.actions.describeUI',
+            { includedProperties: ['id', 'text', 'Type'] },
+            FRAME
+        );
+        // Default (unscoped) call trims each top-level node to depth 2: the section is kept
+        // but its children are replaced by a truncated marker so the model knows to drill in.
+        expect(result).toEqual([
+            {
+                id: 'root',
+                type: 'objectPage',
+                children: [{ id: 'section', type: 'section', truncated: true, childCount: 1 }]
+            }
+        ]);
+    });
+
+    test('describeUi forwards rootElementId alongside the navigation-scoped properties and returns the subtree at full depth', async () => {
+        const subtree = [{ id: 'sub', type: 'section', children: [{ id: 'field', type: 'input' }] }];
+        transport.callFrontendAction.mockResolvedValueOnce(ok(subtree));
+        const result = await describeUi(transport, { site: SITE }, 'sub');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.unified.frontend.actions.describeUI',
+            { includedProperties: ['id', 'text', 'Type'], rootElementId: 'sub' },
+            undefined
+        );
+        // A scoped drill-down returns the subtree untrimmed (no truncated markers).
+        expect(result).toEqual(subtree);
+    });
+
+    test('describeUi throws FrontendActionError when the action fails', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(fail('UFA_ACTION_FAILED', 'Control not found: sub'));
+        await expect(describeUi(transport, { site: SITE }, 'sub')).rejects.toMatchObject({
+            name: 'FrontendActionError',
+            message: expect.stringContaining('Control not found: sub')
+        });
+    });
+
+    test('executeUfaAction maps a successful press to isSuccess:true', async () => {
+        // The transport normalizes a bare mutation success to a null payload.
+        transport.callFrontendAction.mockResolvedValueOnce(ok(null));
+        const result = await executeUfaAction(transport, { site: SITE, frameId: FRAME }, 'press', 'go-btn');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.unified.frontend.actions.executeAction',
+            { actionName: 'press', elementId: 'go-btn' },
+            FRAME
+        );
+        expect(result.isSuccess).toBe(true);
+        expect(result.result).toBeNull();
+    });
+
+    test('executeUfaAction maps a failed press to isSuccess:false and surfaces the error reason', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(
+            fail('UFA_ACTION_FAILED', "Control does not support 'press' action")
+        );
+        const result = await executeUfaAction(transport, { site: SITE }, 'press', 'label-1');
+        expect(result.isSuccess).toBe(false);
+        // The failure reason lives in the envelope's error, not payload — it must be surfaced.
+        expect(result.result).toMatchObject({ message: "Control does not support 'press' action" });
+    });
+
+    test('executeUfaAction forwards actionParameters when provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ success: true }));
+        await executeUfaAction(transport, { site: SITE }, 'setValue', 'field-1', { value: 'X' });
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.unified.frontend.actions.executeAction',
+            { actionName: 'setValue', elementId: 'field-1', actionParameters: { value: 'X' } },
+            undefined
+        );
+    });
+
+    test('executeUfaAction omits elementId from the params when not provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ success: true }));
+        await executeUfaAction(transport, { site: SITE }, 'refresh');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.unified.frontend.actions.executeAction',
+            { actionName: 'refresh' },
+            undefined
+        );
+    });
+
+    test('executeUfaAction falls back to payload when a failure carries no error', async () => {
+        // isSuccess:false with error:null — the result should fall back to payload.
+        transport.callFrontendAction.mockResolvedValueOnce({
+            isSuccess: false,
+            payload: { note: 'nothing happened' },
+            error: null
+        });
+        const result = await executeUfaAction(transport, { site: SITE }, 'press', 'x');
+        expect(result.isSuccess).toBe(false);
+        expect(result.result).toEqual({ note: 'nothing happened' });
     });
 
     describe('getODataMetadata', () => {

@@ -1,7 +1,7 @@
 import type { AuthenticationType } from '@sap-ux/store';
-import type { Annotations, ExternalService } from '@sap-ux/axios-extension';
+import type { ExternalService } from '@sap-ux/axios-extension';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { TableSelectionMode } from '@sap-ux/fiori-elements-writer';
 import type {
     CapService,
@@ -10,37 +10,12 @@ import type {
     OdataServiceAnswers,
     OdataVersion
 } from '@sap-ux/odata-service-inquirer';
-import type { ApiHubType, SapSystemSourceType } from '../types/constants.js';
-import type { Script } from './common.js';
-import type { AppGenInfo, Floorplan } from '@sap-ux/fiori-generator-shared';
+import type { SapSystemSourceType } from '../types/constants.js';
+import type { AppGenInfo, BaseProject, BaseService, Floorplan } from '@sap-ux/fiori-generator-shared';
 
-export interface Project {
-    targetFolder: string;
-    addDeployConfig?: boolean;
-    addFlpConfig?: boolean;
-    name: string;
-    namespace?: string;
-    title: string;
-    description: string;
+export interface Project extends BaseProject {
     enableVirtualEndpoints?: boolean; // whether to use virtual endpoints for preview
-    ui5Theme: string;
-    ui5Version: string;
-    ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
-    localUI5Version: string;
-    sapux?: boolean;
-    skipAnnotations?: boolean;
-    enableEslint?: boolean;
-    enableTypeScript?: boolean;
-    formEntry?: boolean;
-    flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
-    minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
-    manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
     addCdsUi5Plugin?: boolean; // add cds ui5 plugin to the project (will also enable npm workspaces)
-}
-
-export interface Credentials {
-    username: string;
-    password?: string;
 }
 
 /**
@@ -48,14 +23,9 @@ export interface Credentials {
  * May be possible to replace this type with `@sap-ux/odata-service-inquirer` `service` type in future.
  *
  */
-export interface Service {
-    host?: string;
-    client?: string;
+export interface Service extends BaseService {
     destinationName?: string;
-    servicePath?: string; // url path of odata or cap service
     serviceId?: string; // id of the service
-    edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
-    annotations?: Annotations[];
     version?: OdataVersion; // Not present for FF no datasource template flow
     /**
      * While the required type `CapServiceCdsInfo` mandates `cdsUi5PluginInfo` when writing to cap config, this information is not intially available.
@@ -64,7 +34,6 @@ export interface Service {
     capService?: Omit<CapServiceCdsInfo, 'cdsUi5PluginInfo'> & { cdsUi5PluginInfo?: CdsUi5PluginInfo };
     source: DatasourceType;
     sapSystemSource?: SapSystemSourceType;
-    localEdmxFilePath?: string;
     /**
      * Connected system information, used for preview settings and deploy configurations
      */
@@ -73,11 +42,6 @@ export interface Service {
      * Only used by adaptors to specify the authentication type, use `connectedSystem.destination.Authentication` instead
      */
     destinationAuthType?: string;
-    apiHubConfig?: ApiHubConfig;
-    ignoreCertError?: boolean;
-    /**
-     * Value list references for the service when the user opts to download value helps.
-     */
     /**
      * Downloaded external service metadata including value helps with their metadata content.
      * Populated when user opts to download value help metadata during generation.
@@ -92,40 +56,9 @@ export interface Service {
     };
 }
 
-/**
- * Defines the api hub service properties or enterprise and non-enterprise versions
- */
-export interface ApiHubConfig {
-    apiHubKey: string;
-    apiHubType: ApiHubType;
-}
-
 // @deprecated Use { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 export interface CapServiceCdsInfoInternal extends CapService {
     capCdsInfo?: CdsUi5PluginInfo; // Has min @sap/cds version, NPM Workspces and cds plugin configured
-}
-
-/** package.json interface */
-export interface PackageJson {
-    name: string;
-    description: string;
-    startCommand: string;
-    startLocalCommand: string;
-    startNoFlpCommand: string;
-    startVariantsCommand: string;
-    addMockCommand?: boolean;
-    sapClientParam?: string;
-    flpAppId?: string; // Identifies the application in FLP => SemanticObject-Action
-    devDependencies: {
-        [key: string]: string;
-    };
-    ui5Dependencies: string[];
-    sapux?: boolean;
-    startFile?: string; // relative path to start html
-    localStartFile?: string; // relative path to local start html
-    runTasks?: Script[];
-    enableEslint: boolean;
-    sapuxLayer?: UI5FlexLayer;
 }
 
 export interface State {
