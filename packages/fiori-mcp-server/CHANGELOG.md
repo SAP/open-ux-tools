@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.16.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Features
+
+- Add agentName parameter to start step, add cleanup step, remove startVisualization [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
 ## 1.16.0
 
 ### Minor Changes
