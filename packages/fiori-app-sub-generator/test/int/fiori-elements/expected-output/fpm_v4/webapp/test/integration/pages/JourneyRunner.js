@@ -9,6 +9,7 @@ sap.ui.define([
         pages: {
 			onTheTravelMainGenerated: TravelMainGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 

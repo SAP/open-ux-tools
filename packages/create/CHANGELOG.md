@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 1.5.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.19.12 → 1.19.13
+
 ## 1.5.19
 
 ### Patch Changes
