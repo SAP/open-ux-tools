@@ -418,7 +418,7 @@ export const Tree = (): ReactElement => {
                             textOverflow: 'ellipsis',
                             display: 'block'
                         }}
-                        title={isExtensionPoint ? item?.name : ''}>
+                        title={cellName ?? ''}>
                         {cellName}
                     </div>
                 </span>
@@ -515,7 +515,7 @@ export const Tree = (): ReactElement => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}
-                        title={isExtensionPoint ? groupName : ''}>
+                        title={headerName}>
                         {headerName}
                     </div>
                 </span>
