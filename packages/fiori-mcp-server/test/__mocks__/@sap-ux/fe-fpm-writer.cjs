@@ -1,19 +1,6 @@
 // Stub for @sap-ux/fe-fpm-writer — prevents the fe-fpm-writer → fiori-annotation-api →
 // @sap/ux-cds-compiler-facade CJS require chain triggered by the ux-specification.mjs mock.
 // Only the symbols imported by the building-block tools need to be present.
-
-// Minimal PromptsAPI: returns no questions so prompt-derived-schema falls back to the hand-written
-// members. The question→Zod conversion itself is covered by unit tests that call the converter
-// directly with synthetic questions.
-class PromptsAPI {
-    static async init() {
-        return new PromptsAPI();
-    }
-    async getPrompts() {
-        return { questions: [] };
-    }
-}
-
 module.exports = {
     generateBuildingBlock: async () => ({ commit: async () => {}, dump: () => ({}) }),
     createIdGenerator: async () => () => 'generated-id',
@@ -35,16 +22,5 @@ module.exports = {
         RichTextEditor: 'rich-text-editor',
         RichTextEditorButtonGroups: 'rich-text-editor-button-groups',
         Action: 'action'
-    },
-    PromptsType: {
-        FilterBar: 'filter-bar',
-        Form: 'form',
-        Chart: 'chart',
-        Table: 'table',
-        Page: 'page',
-        BuildingBlocks: 'building-blocks',
-        RichTextEditor: 'rich-text-editor',
-        RichTextEditorButtonGroups: 'rich-text-editor-button-groups'
-    },
-    PromptsAPI
+    }
 };
