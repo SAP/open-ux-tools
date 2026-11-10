@@ -29,6 +29,7 @@ const mockGetOverlays = jest.fn<any>();
 const mockGetElementContext = jest.fn<any>();
 const mockExecuteAction = jest.fn<any>();
 const mockSaveChanges = jest.fn<any>();
+const mockCleanup = jest.fn<any>();
 const mockDescribeUi = jest.fn<any>();
 const mockExecuteUfaAction = jest.fn<any>();
 const mockGetODataMetadata = jest.fn<any>();
@@ -39,6 +40,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
     getElementContext: mockGetElementContext,
     executeAction: mockExecuteAction,
     saveChanges: mockSaveChanges,
+    cleanup: mockCleanup,
     describeUi: mockDescribeUi,
     executeUfaAction: mockExecuteUfaAction,
     getODataMetadata: mockGetODataMetadata,
@@ -77,8 +79,27 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 appPath: '/tmp/app'
             });
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
-            expect(mockStartRta).toHaveBeenCalled();
+            expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, undefined);
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
+        });
+
+        test('forwards agentName from payload to startRta', async () => {
+            mockStartRta.mockResolvedValue({ rtaStarted: true });
+            await runRtaWorkflowStep({
+                step: 'start',
+                site: SITE,
+                frameId: FRAME,
+                appPath: '/tmp/app',
+                payload: { agentName: 'Joule' }
+            });
+            expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, 'Joule');
+        });
+
+        test('throws when payload.agentName is present but empty, without disconnecting the existing session', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'start', site: SITE, appPath: '/tmp/app', payload: { agentName: '' } })
+            ).rejects.toThrow('payload.agentName must be a non-empty string when provided');
+            expect(mockDisconnectSite).not.toHaveBeenCalled();
         });
 
         test('registers the site with appPath before starting', async () => {
@@ -209,6 +230,21 @@ describe('runRtaWorkflowStep dispatcher', () => {
             mockSaveChanges.mockResolvedValue(true);
             const result = await runRtaWorkflowStep({ step: 'save', site: SITE });
             expect(result).toEqual({ saved: true });
+        });
+    });
+
+    describe('cleanup step', () => {
+        test('calls cleanup without a reason and returns cleaned flag', async () => {
+            mockCleanup.mockResolvedValue({ cleaned: true });
+            const result = await runRtaWorkflowStep({ step: 'cleanup', site: SITE });
+            expect(mockCleanup).toHaveBeenCalledWith(expect.anything(), expect.anything(), undefined);
+            expect(result).toEqual({ cleaned: true });
+        });
+
+        test('forwards reason from payload', async () => {
+            mockCleanup.mockResolvedValue({ cleaned: true });
+            await runRtaWorkflowStep({ step: 'cleanup', site: SITE, payload: { reason: 'done' } });
+            expect(mockCleanup).toHaveBeenCalledWith(expect.anything(), expect.anything(), 'done');
         });
     });
 
