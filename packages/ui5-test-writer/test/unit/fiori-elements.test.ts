@@ -2129,11 +2129,9 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
-            // 1.151.x range resolves to the 1.148 bucket, which does not render them.
-
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
-            // test; they still emit coreLibrary/SortOrder when a PresentationVariant has a SortOrder.
+            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation
+            // sort test (it ships only in the latest bucket); they still emit coreLibrary/SortOrder when a
+            // PresentationVariant has a SortOrder. The 1.151.x range resolves to the 1.148 bucket.
             it.each([
                 ['1.84 bucket', '1.108.0'],
                 ['1.120 bucket', '1.120.0'],
@@ -2240,11 +2238,9 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the sort tests: the
-            // 1.151.x range resolves to the 1.148 bucket, which does not render them.
-
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
-            // test; they still emit SortOrder when a PresentationVariant has a SortOrder.
+            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation
+            // sort test (it ships only in the latest bucket); they still emit SortOrder when a
+            // PresentationVariant has a SortOrder. The 1.151.x range resolves to the 1.148 bucket.
             it.each([
                 ['1.84 bucket', '1.108.0'],
                 ['1.120 bucket', '1.120.0'],
