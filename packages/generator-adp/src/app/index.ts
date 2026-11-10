@@ -872,15 +872,15 @@ export default class extends Generator {
             return;
         }
 
-        await this._initFromJson();
+        await this._initFromJson(jsonInput);
     }
 
     /**
      * Initialize the project generator from a json.
+     *
+     * @param {JsonInput} jsonInput - The parsed ABAP JSON input.
      */
-    private async _initFromJson(): Promise<void> {
-        const jsonInput = this.jsonInput as JsonInput;
-
+    private async _initFromJson(jsonInput: JsonInput): Promise<void> {
         if (jsonInput.id) {
             this.jsonInputFile = await readJsonInputFile(jsonInput.id);
         }
