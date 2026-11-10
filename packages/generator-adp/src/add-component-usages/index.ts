@@ -69,7 +69,7 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
             getPromptsForAddComponentUsages(
                 this.projectPath,
                 this.variant.layer
-            ) as unknown as PromptQuestions<AddComponentUsageAnswers>
+            ) as PromptQuestions<AddComponentUsageAnswers>
         );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }

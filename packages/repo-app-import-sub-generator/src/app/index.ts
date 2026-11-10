@@ -139,7 +139,7 @@ export default class extends Generator<Record<string, unknown>, RepoAppDownloadO
             isCli(),
             this.downloadType
         );
-        const answers = await this.prompt(questions as unknown as PromptQuestions<RepoAppDownloadAnswers>);
+        const answers = await this.prompt(questions as PromptQuestions<RepoAppDownloadAnswers>);
         const { targetFolder } = answers;
         if (quickDeployedAppConfig?.appId) {
             // Handle quick deployed app download where prompts for system selection and app selection are not displayed

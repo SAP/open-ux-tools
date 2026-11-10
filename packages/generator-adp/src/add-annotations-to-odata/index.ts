@@ -52,7 +52,7 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
                 getPromptsForAddAnnotationsToOData(
                     this.projectPath,
                     this.dataSources
-                ) as unknown as PromptQuestions<AddAnnotationsAnswers>
+                ) as PromptQuestions<AddAnnotationsAnswers>
             );
             this.logger.log(`Current OData services\n${JSON.stringify(this.answers, null, 2)}`);
         } catch (e) {

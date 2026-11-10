@@ -140,7 +140,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
             let requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined;
             if (this.requiresAuth) {
                 const credentials = (await this.prompt(
-                    getCredentialsPrompts(this.abapTarget, this.logger) as unknown as PromptQuestions<Credentials>
+                    getCredentialsPrompts(this.abapTarget, this.logger) as PromptQuestions<Credentials>
                 )) as Credentials;
                 requestOptions = { auth: { username: credentials.username, password: credentials.password } };
             }

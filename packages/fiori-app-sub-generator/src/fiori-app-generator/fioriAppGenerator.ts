@@ -251,7 +251,7 @@ export class FioriAppGenerator extends Generator<Record<string, unknown>, FioriA
                     getHostEnvironment() !== hostEnvironment.cli
                 );
                 const entityRelatedAnswers = await this.prompt<EntityRelatedAnswers>(
-                    entityQuestions as unknown as PromptQuestions<EntityRelatedAnswers>
+                    entityQuestions as PromptQuestions<EntityRelatedAnswers>
                 );
                 // Some state may have been assigned by adaptors, and then certain prompts hidden, so we must merge the answers
                 this.state.entityRelatedConfig = Object.assign(

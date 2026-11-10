@@ -188,9 +188,10 @@ export class ODataDownloadGenerator extends Generator<Record<string, unknown>, O
                 answers: { application, odataQueryResult, odataServiceAnswers },
                 questions
             } = await getODataDownloaderPrompts(this.options?.data);
-            const promptAnswers = (await this.prompt(
-                questions as unknown as PromptQuestions<Record<string, unknown>>
-            )) as Record<string, unknown>;
+            const promptAnswers = (await this.prompt(questions as PromptQuestions<Record<string, unknown>>)) as Record<
+                string,
+                unknown
+            >;
             this.state.entityOData = odataQueryResult.odata;
             this.state.entityPropertyToEntitySet = application.relatedEntityChoices.entitySetsFlat;
             this.state.appRootPath = application.appAccess?.getAppRoot();
@@ -231,7 +232,7 @@ export class ODataDownloadGenerator extends Generator<Record<string, unknown>, O
                     odataServiceAnswers.metadata,
                     odataServiceAnswers.connectedSystem?.serviceProvider as AbapServiceProvider
                 );
-                await this.prompt(valueHelpQuestions as unknown as PromptQuestions<Record<string, unknown>>);
+                await this.prompt(valueHelpQuestions as PromptQuestions<Record<string, unknown>>);
                 this.state.valueHelpData = valueHelpData;
             }
         } catch (error) {
@@ -427,7 +428,7 @@ export class ODataDownloadGenerator extends Generator<Record<string, unknown>, O
 
             const refConsPrompts = getMissingReferentialConstraintsPrompts(entitiesWithMissingConstraints);
             const refConsAnswers = (await this.prompt(
-                refConsPrompts as unknown as PromptQuestions<Record<string, string>>
+                refConsPrompts as PromptQuestions<Record<string, string>>
             )) as Record<string, string>;
             const allEntities = [
                 application.referencedEntities?.listEntity,

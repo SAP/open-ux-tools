@@ -116,7 +116,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
                 this.variant.layer,
                 this.logger,
                 this.appWizard
-            )) as unknown as PromptQuestions<NewModelAnswers>
+            )) as PromptQuestions<NewModelAnswers>
         );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }

@@ -147,7 +147,7 @@ export default class extends Generator<Record<string, unknown>, UiServiceGenerat
                 UiServiceGenLogger.logger as unknown as Logger
             );
             const systemSelectionAnswers = await this.prompt(
-                systemPrompts.prompts as unknown as PromptQuestions<SystemSelectionAnswers>
+                systemPrompts.prompts as PromptQuestions<SystemSelectionAnswers>
             );
             Object.assign(this.answers, systemSelectionAnswers);
             Object.assign(this.systemSelectionAnswers, systemPrompts.answers);
@@ -167,7 +167,7 @@ export default class extends Generator<Record<string, unknown>, UiServiceGenerat
             UiServiceGenLogger.logger as unknown as Logger
         );
 
-        const configAnswers = await this.prompt(configPrompts.prompts as unknown as PromptQuestions<ServiceConfig>);
+        const configAnswers = await this.prompt(configPrompts.prompts as PromptQuestions<ServiceConfig>);
         Object.assign(this.answers, configAnswers);
         Object.assign(this.serviceConfigAnswers, configPrompts.answers);
     }

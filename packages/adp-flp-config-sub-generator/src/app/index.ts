@@ -172,7 +172,7 @@ export default class AdpFlpConfigGenerator extends Generator<Record<string, unkn
                 this.isCfProject
             )
         );
-        this.answers = await this.prompt(prompts as unknown as PromptQuestions<FLPConfigAnswers>);
+        this.answers = await this.prompt(prompts as PromptQuestions<FLPConfigAnswers>);
     }
 
     async writing(): Promise<void> {
@@ -259,7 +259,7 @@ export default class AdpFlpConfigGenerator extends Generator<Record<string, unkn
             }
         ]);
         // yeoman v8 narrows `prompt`'s question type; YUIQuestion carries the same inquirer shape with extra GUI fields
-        await this.prompt(prompts as unknown as PromptQuestions<CredentialsAnswers>);
+        await this.prompt(prompts as PromptQuestions<CredentialsAnswers>);
         await this._fetchSystemUI5Version();
     }
 
@@ -474,7 +474,7 @@ export default class AdpFlpConfigGenerator extends Generator<Record<string, unkn
         };
         const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
 
-        return this.prompt(tileSettingsPrompts as unknown as PromptQuestions<TileSettingsAnswers>);
+        return this.prompt(tileSettingsPrompts as PromptQuestions<TileSettingsAnswers>);
     }
 
     /**

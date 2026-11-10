@@ -166,7 +166,7 @@ export default class extends Generator<Record<string, unknown>, FlpConfigOptions
 
         // yeoman v8 types `this.prompt` with its own PromptQuestions/answers shape; these prompts are
         // inquirer questions producing FLPConfigAnswers, so bridge both ends through the expected types.
-        const answers = await this.prompt(questions as unknown as PromptQuestions<FLPConfigAnswers>);
+        const answers = await this.prompt(questions as PromptQuestions<FLPConfigAnswers>);
         if (answers.s4Continue === false || (answers.overwrite === false && !silentOverwrite)) {
             this.abort = true;
             process.exit(0); // only relevant for CLI

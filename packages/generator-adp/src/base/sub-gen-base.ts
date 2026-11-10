@@ -99,9 +99,7 @@ export default class SubGeneratorBase extends Generator<Record<string, unknown>,
      * @returns {Promise<void>} A promise that resolves when the error is handled.
      */
     protected async handleRuntimeCrash(errorMessage: string): Promise<void> {
-        await this.prompt([this._getErrorMessagePrompt(errorMessage)] as unknown as PromptQuestions<
-            Record<string, unknown>
-        >);
+        await this.prompt([this._getErrorMessagePrompt(errorMessage)] as PromptQuestions<Record<string, unknown>>);
     }
 
     /**

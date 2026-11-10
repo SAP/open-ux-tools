@@ -305,9 +305,7 @@ export default class extends Generator<Record<string, unknown>, AdpGeneratorOpti
                 systemValidationCli: { hide: !this.isCli },
                 shouldCreateExtProject: { isExtensibilityExtInstalled }
             });
-            this.configAnswers = await this.prompt<ConfigAnswers>(
-                configQuestions as unknown as PromptQuestions<ConfigAnswers>
-            );
+            this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions as PromptQuestions<ConfigAnswers>);
             this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
 
             this.logger.info(`System: ${this.configAnswers.system}`);
@@ -335,9 +333,7 @@ export default class extends Generator<Record<string, unknown>, AdpGeneratorOpti
                 importKeyUserChanges: { hide: this.shouldCreateExtProject }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), optionalPromptsConfig, options);
-            this.attributeAnswers = await this.prompt(
-                attributesQuestions as unknown as PromptQuestions<AttributesAnswers>
-            );
+            this.attributeAnswers = await this.prompt(attributesQuestions as PromptQuestions<AttributesAnswers>);
 
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
             this._updateWizardStepsAfterNavigation();
@@ -356,7 +352,7 @@ export default class extends Generator<Record<string, unknown>, AdpGeneratorOpti
                     keyUserAdaptationValidationCli: { hide: !this.isCli },
                     keyUserRestrictedViewsLabel: { hide: this.isCli }
                 });
-                await this.prompt(keyUserQuestions as unknown as PromptQuestions<Record<string, unknown>>);
+                await this.prompt(keyUserQuestions as PromptQuestions<Record<string, unknown>>);
             }
 
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
@@ -543,7 +539,7 @@ export default class extends Generator<Record<string, unknown>, AdpGeneratorOpti
                 getMtaModePrompt(),
                 getProjectPathPrompt(this.logger, this.vscode, this.cfConfig),
                 getMtaIdPrompt()
-            ] as unknown as PromptQuestions<ProjectLocationAnswers>);
+            ] as PromptQuestions<ProjectLocationAnswers>);
             const selectedLocation = fs.realpathSync(pathAnswers.projectLocation, 'utf-8');
             const resolvedRoot =
                 pathAnswers.mtaMode === MtaMode.New && pathAnswers.mtaId
@@ -606,7 +602,7 @@ export default class extends Generator<Record<string, unknown>, AdpGeneratorOpti
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
             getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig)
-        ] as unknown as PromptQuestions<TargetEnvAnswers>);
+        ] as PromptQuestions<TargetEnvAnswers>);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
         this.isCfEnv = this.targetEnv === TargetEnv.CF;
@@ -650,12 +646,12 @@ export default class extends Generator<Record<string, unknown>, AdpGeneratorOpti
             options
         );
 
-        this.attributeAnswers = await this.prompt(attributesQuestions as unknown as PromptQuestions<AttributesAnswers>);
+        this.attributeAnswers = await this.prompt(attributesQuestions as PromptQuestions<AttributesAnswers>);
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(
-            cfServicesQuestions as unknown as PromptQuestions<CfServicesAnswers>
+            cfServicesQuestions as PromptQuestions<CfServicesAnswers>
         );
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
 

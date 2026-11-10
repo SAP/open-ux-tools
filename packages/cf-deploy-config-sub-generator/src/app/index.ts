@@ -198,7 +198,7 @@ export default class extends DeploymentGenerator {
             this.appRouterAnswers = await this.prompt(
                 (await getCAPMTAQuestions({
                     projectRoot: this.projectRoot ?? process.cwd()
-                })) as unknown as PromptQuestions<CfAppRouterDeployConfigAnswers>
+                })) as PromptQuestions<CfAppRouterDeployConfigAnswers>
             );
             if ((this.appRouterAnswers as Answers).addCapMtaContinue !== true) {
                 this.abort = true;
@@ -215,7 +215,7 @@ export default class extends DeploymentGenerator {
             await this._handleApiHubConfig();
             const questions = await this._getCFQuestions();
             this.answers = await this.prompt(
-                questions as unknown as PromptQuestions<CfDeployConfigAnswers & Partial<CFAppConfig>>
+                questions as PromptQuestions<CfDeployConfigAnswers & Partial<CFAppConfig>>
             );
         }
     }

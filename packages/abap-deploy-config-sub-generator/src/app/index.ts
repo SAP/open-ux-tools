@@ -224,9 +224,9 @@ export default class extends DeploymentGenerator {
                 promptOptions,
                 promptModule: (this.env?.adapter as InquirerAdapter | undefined)?.promptModule
             });
-            const prompAnswers = (await this.prompt(
+            const prompAnswers = await this.prompt(
                 abapDeployConfigPrompts as PromptQuestions<AbapDeployConfigAnswersInternal>
-            )) as AbapDeployConfigAnswersInternal;
+            );
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
         }
         await this._reconcileAnswersWithOptions();
