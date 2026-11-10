@@ -13,7 +13,8 @@ import type {
 import type { Editor } from 'mem-fs-editor';
 import { generateNewFioriLaunchConfig } from './utils.js';
 import { updateLaunchJSON } from './writer.js';
-import { applyEdits, modify, parse } from 'jsonc-parser';
+import { applyEdits, modify, parse, stripComments } from 'jsonc-parser';
+import type { ParseError } from 'jsonc-parser';
 import { handleWorkspaceConfig } from '../debug-config/workspaceManager.js';
 import { configureLaunchJsonFile } from '../debug-config/config.js';
 import type { Logger } from '@sap-ux/logger';
@@ -42,11 +43,24 @@ function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations:
  * @param fs - The file system editor used to read and write the `launch.json` file.
  * @param launchJSONPath - The full path to the `launch.json` file.
  * @returns The number of launch configurations the file contains.
- * @throws If the file has a `configurations` property that is not an array.
+ * @throws If the file has a `configurations` property that is not an array or if the file is malformed.
  */
 function ensureConfigurationsArray(fs: Editor, launchJSONPath: string): number {
     const content = fs.read(launchJSONPath);
-    const launchJson: unknown = parse(content);
+    const errors: ParseError[] = [];
+    const launchJson: unknown = parse(content, errors);
+
+    // Check if the file is truly empty (only whitespace and/or comments)
+    const strippedContent = stripComments(content).trim();
+    const isEmptyOrCommentsOnly = strippedContent.length === 0;
+
+    // If there are parse errors and the file is not empty/comments-only, throw an error
+    if (errors.length > 0 && !isEmptyOrCommentsOnly) {
+        throw new Error(
+            t('error.malformedLaunchJson', { file: launchJSONPath, interpolation: { escapeValue: false } })
+        );
+    }
+
     const formattingOptions = { tabSize: 4, insertSpaces: true };
     if (typeof launchJson !== 'object' || launchJson === null || Array.isArray(launchJson)) {
         const completed = { version: LAUNCH_JSON_VERSION, configurations: [] };

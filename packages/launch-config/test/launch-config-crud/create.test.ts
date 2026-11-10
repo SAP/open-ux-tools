@@ -550,5 +550,15 @@ describe('create', () => {
             );
             expect(memFs.read(launchJSONPath)).toBe('{ "version": "0.2.0", "configurations": "oops" }');
         });
+
+        test('fails with a clear message if launch.json is malformed', async () => {
+            writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": [}');
+
+            await expect(createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs)).rejects.toThrow(
+                `The file ${launchJSONPath} contains syntax errors and cannot be parsed. Please fix the JSON syntax before proceeding.`
+            );
+            // File should not be modified
+            expect(memFs.read(launchJSONPath)).toBe('{ "version": "0.2.0", "configurations": [}');
+        });
     });
 });
