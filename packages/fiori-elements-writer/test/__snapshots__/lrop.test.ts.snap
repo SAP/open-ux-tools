@@ -15,6 +15,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop2\\",
@@ -3651,6 +3655,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -7298,6 +7306,10 @@ export default [
 ",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
@@ -10799,6 +10811,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -14361,6 +14377,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop194\\",
@@ -17922,6 +17942,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_add_test_virtual_endpoints\\",
@@ -19290,6 +19314,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -25351,6 +25379,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_annotation_reuse_lib\\",
@@ -26944,6 +26976,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -30506,6 +30542,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felropui5\\",
@@ -34067,6 +34107,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -37707,6 +37751,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"felrop4\\",
@@ -40767,6 +40815,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -44405,6 +44457,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -48053,6 +48109,10 @@ export default [
 ",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_108\\",
@@ -51552,6 +51612,10 @@ export default [
 ];
 ",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -55053,6 +55117,10 @@ export default [
 ",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_113\\",
@@ -58544,6 +58612,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
@@ -59018,6 +59090,10 @@ resources
 archive.zip
 .*_mta_build_tmp",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
