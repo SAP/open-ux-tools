@@ -15094,6 +15094,7 @@ const runner = new JourneyRunner({
             CustomEmployeesCustomPageTargetGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -17566,6 +17567,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -19274,6 +19276,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
