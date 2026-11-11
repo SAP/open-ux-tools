@@ -38,7 +38,9 @@ const activeTransport = isSimpleBrowserRelayEnabled() ? httpTransport : defaultT
 function requireSite(site: string | undefined): string {
     if (activeTransport === httpTransport) {
         if (typeof site !== 'string' || site.length === 0) {
-            throw new Error('site is required for this step. Pass the site URL returned by the "start" step.');
+            throw new Error(
+                'site is required for this step. Pass the exact editor URL returned by open_adaptation_editor.'
+            );
         }
         requireEditorSession(site);
         return site;

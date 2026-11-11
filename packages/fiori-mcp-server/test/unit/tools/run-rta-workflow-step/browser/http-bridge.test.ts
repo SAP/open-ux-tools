@@ -250,6 +250,16 @@ describe('browser/http-bridge', () => {
             expect(fetchMock).toHaveBeenCalledTimes(2);
         });
 
+        test('treats a 504 carrying the relay timeout error body as client-absent, not RELAY_ERROR', async () => {
+            // The real relay returns 504 WITH { error: "Timeout…" }; it must still engage login-wait.
+            respondWith({ error: 'Timeout: browser client did not respond within 60 s' }, 504);
+            respondWith({ result: success, clientId: CLIENT_ID });
+            const result = httpTransport.callFrontendAction(SITE, START, {}, 'preview');
+            await jest.advanceTimersByTimeAsync(2000);
+            await expect(result).resolves.toEqual(success);
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
         test('returns the backend-login sentinel when the login budget elapses with no client', async () => {
             process.env.SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS = '0';
             respondWith({}, 504);
@@ -288,7 +298,7 @@ describe('browser/http-bridge', () => {
             expect(fetchMock).toHaveBeenCalledTimes(2);
             expect(fetchMock.mock.calls.map(([, options]) => options?.body)).toEqual([
                 JSON.stringify({ actionName: '__reload__', payload: {} }),
-                JSON.stringify({ actionName: '__ready__', payload: {} })
+                JSON.stringify({ actionName: '__ready__', payload: {}, frameId: 'preview' })
             ]);
             expect(requireEditorSessionMock.mock.calls).toEqual([[SITE], [SITE]]);
         });

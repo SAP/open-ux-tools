@@ -74,6 +74,11 @@ async function requestRelay(
     if (typeof body !== 'object' || body === null || Array.isArray(body)) {
         throw new Error('Invalid editor relay response');
     }
+    // 504 means the browser client never answered (likely on the backend login screen). Throw
+    // before the error-body check so isClientAbsent sees it and the login-wait path can engage.
+    if (response.status === 504) {
+        throw new Error('Editor relay HTTP 504');
+    }
     if ('error' in body && typeof body.error === 'string') {
         return { error: body.error };
     }
@@ -214,7 +219,9 @@ async function reloadPageHttp(site: string): Promise<void> {
     if (reloaded.error || !reloaded.clientId) {
         throw new Error(`Editor reload failed: ${reloaded.error ?? 'missing document acknowledgement'}`);
     }
-    const ready = await requestRelay(site, '__ready__');
+    // Target the default preview frame: __ready__ resolves the editor window via frameId, so a
+    // top-level editor with a child preview frame needs it; an in-frame client ignores it.
+    const ready = await requestRelay(site, '__ready__', {}, 'preview');
     const readyError = isFrontendResult(ready.result) ? ready.result.error?.message : undefined;
     if (
         ready.error ||
