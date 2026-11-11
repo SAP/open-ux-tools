@@ -390,6 +390,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -819,6 +820,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -1225,6 +1227,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -1631,6 +1634,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -1972,6 +1976,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
         pages: {
 			onTheEmployeesListGenerated: EmployeesListGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -2304,6 +2309,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
         pages: {
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -2641,6 +2647,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
         pages: {
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -3094,6 +3101,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onThePositionsObjectPageGenerated: PositionsObjectPageGenerated,
 			onTheTrainingsObjectPageGenerated: TrainingsObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -3621,6 +3629,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onThePositionsObjectPageGenerated: PositionsObjectPageGenerated,
 			onTheTrainingsObjectPageGenerated: TrainingsObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -4158,6 +4167,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onTheEmployeesObjectPageTargetGenerated: EmployeesObjectPageTargetGenerated,
 			onTheEmployeesCustomPageTargetGenerated: EmployeesCustomPageTargetGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -5915,6 +5925,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -7612,6 +7623,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -9436,6 +9448,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -11266,6 +11279,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -11676,6 +11690,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
         pages: {
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -12101,6 +12116,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -12564,6 +12580,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -13027,6 +13044,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -13424,6 +13442,7 @@ const runner = new JourneyRunner({
             CustomEmployeesListGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -13946,6 +13965,7 @@ const runner = new JourneyRunner({
             CustomTrainingsObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -14540,6 +14560,7 @@ const runner = new JourneyRunner({
             CustomEmployeesCustomPageTargetGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -15073,6 +15094,7 @@ const runner = new JourneyRunner({
             CustomEmployeesCustomPageTargetGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -15596,6 +15618,7 @@ const runner = new JourneyRunner({
             CustomEmployeesCustomPageTargetGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -16119,6 +16142,7 @@ const runner = new JourneyRunner({
             CustomEmployeesCustomPageTargetGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -16595,6 +16619,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -17008,6 +17033,7 @@ sap.ui.define(['sap/fe/test/ObjectPage', 'sap/ui/test/actions/Press'], function(
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -17414,6 +17440,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 			onTheEmployeesListGenerated: EmployeesListGenerated,
 			onTheEmployeesObjectPageGenerated: EmployeesObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -17827,6 +17854,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -18300,6 +18328,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -18763,6 +18792,7 @@ const runner = new JourneyRunner({
             CustomEmployeesObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 
@@ -20636,6 +20666,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -22512,6 +22543,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
@@ -24383,6 +24415,7 @@ sap.ui.require(
 			onTheTravelListGenerated: TravelListGenerated,
 			onTheTravelObjectPageGenerated: TravelObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
