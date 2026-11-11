@@ -1,5 +1,29 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.16.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[75d0823](https://github.com/SAP/open-ux-tools/commit/75d0823084c6499c04fa4c564ea28a76b9e32df4)]
+
+## 1.16.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Features
+
+- Add agentName parameter to start step, add cleanup step, remove startVisualization [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
 ## 1.16.0
 
 ### Minor Changes

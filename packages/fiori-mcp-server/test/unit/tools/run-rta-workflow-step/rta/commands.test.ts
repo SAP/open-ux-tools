@@ -4,6 +4,7 @@ import type {
 } from '../../../../../src/tools/run-rta-workflow-step/browser/types.js';
 import {
     FrontendActionError,
+    cleanup,
     describeUi,
     executeAction,
     executeUfaAction,
@@ -12,7 +13,6 @@ import {
     getOverlays,
     saveChanges,
     startRta,
-    startVisualization,
     stopRta
 } from '../../../../../src/tools/run-rta-workflow-step/rta/commands.js';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
@@ -69,6 +69,18 @@ describe('rta/commands', () => {
         const result = await startRta(transport, { site: SITE, frameId: FRAME });
         expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.startRTA.v1', {}, FRAME, true);
         expect(result).toEqual({ rtaStarted: true });
+    });
+
+    test('startRta forwards agentName in the payload when provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ rtaStarted: true }));
+        await startRta(transport, { site: SITE, frameId: FRAME }, 'Joule');
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(
+            SITE,
+            'com.sap.ui.flex.startRTA.v1',
+            { agentName: 'Joule' },
+            FRAME,
+            true
+        );
     });
 
     test('startRta surfaces backend_login_required without throwing', async () => {
@@ -158,16 +170,22 @@ describe('rta/commands', () => {
         );
     });
 
-    test('startVisualization calls startVisualization with empty payload', async () => {
-        transport.callFrontendAction.mockResolvedValueOnce(ok({ visualizationStarted: true }));
-        const result = await startVisualization(transport, { site: SITE });
+    test('cleanup calls cleanup with empty payload when no reason', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ cleaned: true }));
+        const result = await cleanup(transport, { site: SITE });
+        expect(transport.callFrontendAction).toHaveBeenCalledWith(SITE, 'com.sap.ui.flex.cleanup.v1', {}, undefined);
+        expect(result).toEqual({ cleaned: true });
+    });
+
+    test('cleanup forwards reason in the payload when provided', async () => {
+        transport.callFrontendAction.mockResolvedValueOnce(ok({ cleaned: true }));
+        await cleanup(transport, { site: SITE, frameId: FRAME }, 'done');
         expect(transport.callFrontendAction).toHaveBeenCalledWith(
             SITE,
-            'com.sap.ui.flex.startVisualization.v1',
-            {},
-            undefined
+            'com.sap.ui.flex.cleanup.v1',
+            { reason: 'done' },
+            FRAME
         );
-        expect(result).toEqual({ visualizationStarted: true });
     });
 
     test('an isSuccess=false result throws a FrontendActionError carrying the code', async () => {

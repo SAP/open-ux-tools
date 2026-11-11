@@ -18,6 +18,7 @@ export const STEPS = [
     'get_context',
     'call_action',
     'save',
+    'cleanup',
     'stop',
     'restart',
     'describe_ui',
@@ -82,6 +83,10 @@ export interface SaveStepResult {
     saved: boolean;
 }
 
+export interface CleanupStepResult {
+    cleaned: boolean;
+}
+
 export interface StopStepResult {
     stopped: true;
 }
@@ -117,6 +122,7 @@ export type RunRtaWorkflowStepResult =
     | GetContextStepResult
     | CallActionStepResult
     | SaveStepResult
+    | CleanupStepResult
     | StopStepResult
     | RestartStepResult
     | DescribeUiStepResult
