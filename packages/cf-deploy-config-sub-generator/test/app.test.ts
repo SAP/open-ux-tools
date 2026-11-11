@@ -1053,7 +1053,7 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({})
                 .run()
         ).resolves.not.toThrow();
-        expect(mockHasbinSync).toHaveBeenCalledWith('mta');
+        expect(mockHasbinSync).toHaveBeenCalledWith('mta', { nothrow: true });
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
     });
 
