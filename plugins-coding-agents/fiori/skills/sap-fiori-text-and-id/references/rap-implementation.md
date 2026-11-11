@@ -227,14 +227,7 @@ Add this annotation to the **value help view**:
 @Consumption.valueHelpDefault.fetchValues: #AUTOMATICALLY_WHEN_DISPLAYED
 define view entity Z_I_SOSTATUS_VH
   as select from zzsosalesorder
-{CRITICAL: Changes value help from dialog to dropdown**
-- `@Consumption.valueHelpDefault.fetchValues: #AUTOMATICALLY_WHEN_DISPLAYED` — preloads values automatically
-- `@UI.textArrangement: #TEXT_ONLY` on Status field — shows only text, hides code
-- `@ObjectModel.text.element: [ 'StatusText' ]` — links Status to its description
-- `@Semantics.text: true` on StatusText — marks it as the text provider
-
-**Without `#XS`:** Opens a value help dialog  
-**With `#XS`:** Shows a dropdown list
+{
       @Semantics.text: true
       status as StatusText
 }
@@ -257,7 +250,7 @@ On the projection view (`ZC_*`):
 ```abap
 @Consumption.valueHelpDefinition: [{
   entity.name: 'Z_I_SOSTATUS_VH',
-  entity.element: 'StatusCode',
+  entity.element: 'Status',
   useForValidation: true
 }]
 @ObjectModel.text.element: ['StatusText']

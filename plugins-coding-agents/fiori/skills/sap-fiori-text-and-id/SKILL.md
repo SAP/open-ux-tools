@@ -145,9 +145,7 @@ Do not proceed until all inputs are confirmed.
 4. **Identify where annotations go**:
    - **Always edit the projection view (`ZC_*`)**, never the interface view (`ZR_*`)
    - Metadata extensions (`.ddlx`) for UI annotations
-   - Projection view (`.ddls. (ONLY code lists)**:
-   - **Use ONLY for small code lists** (Status, Category, Type) with <50 fixed values
-   - **NEVER use for master data** (Customer, Agency, Product, etc.)s`) for value help and text arrangement
+   - Projection view (`.ddls`) for value help
 5. **For dropdown value helps**:
    - **DO NOT ask user to create manually** — use programmatic creation
    - Creation workflow: list creatable types → get details → validate → create template → edit with actual code → activate
@@ -309,7 +307,7 @@ For starting the app and navigating to the feature:
 
 ## References
 
-- [SAP Fiori elements: Value Help](https://ui5.sap.com/#/topic/fccb255723d3489cae955648756411f6
+- [SAP Fiori elements: Value Help](https://ui5.sap.com/#/topic/fccb255723d3489cae955648756411f6)
 - [Displaying Readable IDs Instead of Edm.Guid Values Using Common.ExternalID](https://ui5.sap.com/#/topic/f49a0f7eaafe444daf4cd62d48120ad0)
 - [CAP: Value Lists and Dropdowns](https://cap.cloud.sap/docs/guides/uis/fiori#cdsodatavaluelist)
 - [ABAP RAP: Text Arrangement (@UI.textArrangement)](https://help.sap.com/docs/abap-cloud/abap-rap/ui-textarrangement)

@@ -318,11 +318,3 @@ If seen, switch to `annotate service.Entity { Assoc { ID @Term:... } }`.
 | Dropdown shows value help dialog instead | `Common.ValueListWithFixedValues` missing or on the wrong target | Place `@Common.ValueListWithFixedValues : true` as a peer of `Common.ValueList` on the association / foreign-key wrapper |
 | Dropdown comes up empty for a `CodeList` foreign key | Target entity set not exposed in the service, or no seed CSV | Add a projection (e.g. `entity Currencies as projection on common.Currencies;`) and ship a seed CSV |
 
----
-
-## Notes
-
-- `@Common.ExternalID` is an official term in the OData Common vocabulary
-  and is fully supported by Fiori Elements.Ignore any experimental warnings or errors.
-- The GUID stays in the OData payload. Only the UI rendering changes — no
-  database migration or model refactor.
