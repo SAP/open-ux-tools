@@ -1,5 +1,237 @@
 # @sap-ux/preview-middleware
 
+## 1.2.40
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[489c3d0](https://github.com/SAP/open-ux-tools/commit/489c3d0a83ddb4e8e10e5631b2f9e04db6eccbeb)]
+
+## 1.2.39
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[3cd86b7](https://github.com/SAP/open-ux-tools/commit/3cd86b7096d7b9fa54b57fc98d487e58925509f4)]
+
+#### Release Date
+
+2026-11-09
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.0 → 1.2.1
+
+## 1.2.38
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[28edb94](https://github.com/SAP/open-ux-tools/commit/28edb94c6324bc2526374f7dfc4ddeb6e194038a)]
+
+## 1.2.37
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.1 → 1.2.0
+
+## 1.2.36
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `ui-components` dependency Update [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
+## 1.2.35
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Some Actions don't work in the Outline of the Adaptation Project [[8a15549](https://github.com/SAP/open-ux-tools/commit/8a15549a21b324a74b27e69ebb57da2f81ead0aa)]
+
+#### Release Date
+
+2026-11-03
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.1.0 → 1.1.1
+- @sap-ux/system-access 1.0.19 → 1.0.20
+
+## 1.2.34
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.71 → 1.1.0
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.2.33
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Remove now-unnecessary eslint-disable comments for sonarjs/no-implicit-dependencies rule after eslint-plugin-sonarjs upgrade [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.70 → 1.0.71
+
+## 1.2.32
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/control-property-editor (i18next 26.5.11) [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.69 → 1.0.70
+- @sap-ux/system-access 1.0.18 → 1.0.19
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.2.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.68 → 1.0.69
+
+## 1.2.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/adp-tooling 1.0.67 → 1.0.68
+- @sap-ux/system-access 1.0.17 → 1.0.18
+
+## 1.2.29
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.66 → 1.0.67
+
+## 1.2.28
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/bas-sdk 3.13.10 → 3.13.16 [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/adp-tooling 1.0.65 → 1.0.66
+- @sap-ux/system-access 1.0.16 → 1.0.17
+
+## 1.2.27
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.64 → 1.0.65
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.2.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.63 → 1.0.64
+- @sap-ux/system-access 1.0.14 → 1.0.15
+
+## 1.2.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/adp-tooling 1.0.62 → 1.0.63
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.2.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.61 → 1.0.62
+
+## 1.2.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+- @sap-ux/adp-tooling 1.0.60 → 1.0.61
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.2.22
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolved an issue where the "Add Subpage" quick action generated a page ID in an incorrect format for ODATA v4 applications. [[f9088c0](https://github.com/SAP/open-ux-tools/commit/f9088c07570be4fb6c2b5d72c97213cabeffde16)]
+
+## 1.2.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.0.59 → 1.0.60
+
 ## 1.2.20
 
 ### Patch Changes

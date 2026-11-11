@@ -14,6 +14,187 @@ export { listSapSystems } from './list-sap-systems.js';
 export { downloadODataServiceMetadata } from './download-odata-service-metadata.js';
 export { generateFioriAppOData } from './generate-fiori-app-odata.js';
 export { generateFioriAppCap } from './generate-fiori-app-cap.js';
+export { generateAdaptationProject } from './generate-adaptation-project.js';
+export { openAdaptationEditor } from './open-adaptation-editor.js';
+export { adpControllerExtension } from './adp-controller-extension/index.js';
+export { runRtaWorkflowStep } from './run-rta-workflow-step/index.js';
+export { readODataMetadataAdp } from './read-odata-metadata.js';
+export { downloadBaseApp } from './download-base-app.js';
+export { lookupUi5Documentation } from './lookup-ui5-documentation/index.js';
+
+const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
+
+const adpTools = [
+    {
+        name: 'lookup_ui5_documentation',
+        description: `Looks up UI5 control documentation from a library's designtime api.json.
+
+        This tool:
+        - Reads ui5.yaml (discovered from the provided appPath) to resolve the configured UI5 base URL and version, falling back to the public https://ui5.sap.com when none is found
+        - Fetches (and caches) the control's api.json and extracts the requested piece of documentation
+        - Currently supports lookupType "aggregation" (type, cardinality, visibility, since, description), "property" (type, defaultValue, group, bindable, visibility, since, description), and "event" (parameters, visibility, since, description). Inherited members are resolved by walking the control's inheritance chain across libraries.
+
+        Use this when creating controller extensions or fragments and you need the exact metadata of a control's aggregation, property or event (e.g. the type of "customToolbar" on a SmartTable) rather than guessing.`,
+        annotations: {
+            title: 'Look up UI5 Documentation',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: true
+        },
+        inputSchema: convertToSchema(Input.LookupUi5DocumentationInputSchema),
+        outputSchema: convertToSchema(Output.LookupUi5DocumentationOutputSchema)
+    },
+    {
+        name: 'generate_adaptation_project',
+        description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
+
+        This tool requires:
+        - system: The name of the SAP system (from list_sap_systems)
+        - application: The application ID to adapt
+        - appPath: The current working directory — the project subfolder is created INSIDE this folder
+
+        The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
+
+        Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
+
+        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
+        which type they want — in that case pass their choice through on the first call. When the selected system
+        AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
+        unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
+        you receive 'InputRequired', ask the user which type they want, then call this tool again with
+        projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
+        it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
+        Passing a projectType the system or application cannot support returns status 'Error'.
+
+        Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
+        changes from LREP (using the same system) and include them in the generated
+        project. Generation aborts if the fetch fails or no DEFAULT adaptation exists.
+
+        Use 'list_sap_systems' first to discover available systems.
+        The generator will be executed with the provided JSON configuration.`,
+        annotations: {
+            title: 'Generate Adaptation Project',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema),
+        outputSchema: convertToSchema(Output.GenerateAdaptationProjectOutputSchema)
+    },
+    {
+        name: 'open_adaptation_editor',
+        description: `Starts the adaptation editor server by running 'npx fiori run /test/adaptation-editor.html' in the adaptation project directory.
+
+        This tool:
+        - Spawns the editor server process in the background
+        - Extracts the server URL and editor path from the command output
+        - Returns the full editor URL and process ID
+        - Provides instructions on how to stop the editor process
+
+        The editor server will run independently in the background. Use the returned process ID or port to stop it if needed.`,
+        annotations: {
+            title: 'Open Adaptation Editor',
+            readOnlyHint: false,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.OpenAdaptationEditorInputSchema),
+        outputSchema: convertToSchema(Output.OpenAdaptationEditorOutputSchema)
+    },
+    {
+        name: 'adp_controller_extension',
+        description: `Processes AI-generated controller extensions and fragments for SAPUI5 Adaptation Projects.
+
+        This tool:
+        - Validates that the project is an adaptation project (has manifest.appdescr_variant)
+        - Reads manifest.appdescr_variant to determine layer and namespace requirements
+        - Extracts files from the AI response (markdown code blocks with **Path:** markers)
+        - Writes controller extension files, fragments, and other code files
+        - Does NOT write change files (.change) - these are handled separately
+
+        CRITICAL: The 'aiResponse' parameter must contain pre-generated code with markdown code blocks,
+        each preceded by "**Path:** fullFilePath" on its own line.
+        Call this tool first without 'aiResponse' to receive detailed generation rules and project context.`,
+        annotations: {
+            title: 'ADP Controller Extension',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.AdpControllerExtensionInputSchema),
+        outputSchema: convertToSchema(Output.AdpControllerExtensionOutputSchema)
+    },
+    {
+        name: 'run_rta_workflow_step',
+        description: `Drives Runtime Authoring (RTA) in the SAP Fiori adaptation editor through a dispatched step protocol. Each call advances one step of the workflow; steps must be called in sequence. \`site\` is the editor URL from \`open_adaptation_editor\` — pass it on every step.
+
+        Steps:
+        - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`), \`appPath\` (required, top-level — absolute path to the adaptation project root, the same path used to open the editor; it identifies the project so an authenticated CF session is reused per project and ABAP projects skip session handling). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step. Optional payload: \`{ agentName?: string }\` — driver name adopted by the status reporter.
+        - **get_overlays** — site + optional frameId. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
+        - **get_context** — site + optional frameId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
+        - **call_action** — site + optional frameId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
+        - **save** — site + optional frameId. Returns \`{ saved: boolean }\`.
+        - **cleanup** — site + optional frameId, payload: \`{ reason?: string }\` (optional informational reason). Removes the page's blocking status overlay so interaction can resume. Returns \`{ cleaned: boolean }\`.
+        - **stop** — site + optional frameId. Closes the page for the given site; if no pages remain open, the browser shuts down. Returns \`{ stopped: true }\`.
+        - **restart** — site + optional frameId + \`appPath\` (required, top-level, same as \`start\`). Closes the current page, reloads the editor (picks up files written since \`start\`), and returns \`{ site, frameId?, rtaStarted: true }\`. Use this instead of \`stop\`+\`start\` when you need the editor to reload mid-workflow (e.g. after writing fragment files for validation).
+        - **describe_ui** — site + optional frameId, payload: \`{ rootElementId?: string }\`. Returns \`{ uiTree }\` — an array of the current UI element nodes; each node carries \`id\` (UI5 control id), \`type\`, \`label\`, and \`children\`. Without \`rootElementId\` the result is a SHALLOW overview (top levels only): a node whose children were omitted is marked \`truncated: true\` with a \`childCount\` — call \`describe_ui\` again with \`rootElementId\` set to that node's \`id\` to expand just that subtree at full depth. Use this to inspect what is on screen and get element ids for \`execute_page_action\`.
+        - **execute_page_action** — site + optional frameId, payload: \`{ actionName: string, elementId?: string, actionParameters?: object }\`. Executes a Unified Frontend Action. To press a UI element (button, row, link), pass \`actionName: "press"\` and \`elementId\` from \`describe_ui\`. Use this for ALL in-app navigation (pressing "Go", pressing a row to open an Object Page, pressing back). Returns \`{ isSuccess: boolean, result? }\`. If \`isSuccess\` is \`false\`, ask the user how to proceed.
+        - **get_odata_metadata** — site + optional frameId + \`appPath\` (required, top-level), payload: \`{ uris: string[] }\`. Fetches real OData \`$metadata\` (EDMX) for the given data-source URIs through the editor's authenticated session — the way to get real metadata for a Cloud Foundry adaptation project, where \`read_odata_metadata_adp\` returns empty EDMX. Pass the \`entries[].url\` values from \`read_odata_metadata_adp\`. Requires a prior \`start\`. Returns \`{ entries: Array<{ url, metadata } | { url, metadataFile, sizeBytes } | { url, error }> }\`; metadata larger than ~100 KB is written to \`<appPath>/.context/\` and returned as \`metadataFile\` (read it from disk) instead of inline.`,
+        annotations: {
+            title: 'Run RTA Workflow Step',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: true
+        },
+        inputSchema: convertToSchema(Input.RunRtaWorkflowStepInputSchema)
+    },
+    {
+        name: 'read_odata_metadata_adp',
+        description: `Reads the OData metadata for the specified Adaptation Project.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Lists the OData data sources of the merged app descriptor, each with its id, service URL, and bound UI5 model
+        - For ABAP (on-premise / CloudReady) projects: connects to the SAP system, fetches the real EDMX metadata for each data source, and persists it under \`<appPath>/.context\`. Each entry is one of: \`{ id, url, model, metadata }\` (EDMX inline for small services), \`{ id, url, model, metadataFile, sizeBytes }\` (EDMX too large to inline — written to \`.context\` and referenced by path; read that file), or \`{ id, url, model, error }\` (that service's metadata fetch failed; the other services are unaffected).
+        - For Cloud Foundry (CF) projects: there is NO ABAP service provider to proxy the \`$metadata\` request, so each entry is returned with an EMPTY \`metadata\` string and nothing is written to disk. Empty \`metadata\` on a CF project is the expected result, NOT a successful fetch — do not parse it as an EDMX document.
+
+        Note: for ABAP projects this tool writes metadata files under \`<appPath>/.context\`; it is not purely read-only.
+
+        To obtain the real EDMX for a CF project, call the \`run_rta_workflow_step\` tool's \`get_odata_metadata\` step (after \`start\`), passing the \`entries[].url\` values returned here; it fetches the metadata through the editor's authenticated browser session. For the bound entity type alone, the \`get_context\` step's runtime model context is usually sufficient.
+
+        Use this tool when you need to read the OData metadata for an Adaptation Project.`,
+        annotations: {
+            title: 'Read OData Metadata for Adaptation Project',
+            destructiveHint: true,
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.ReadODataMetadataInputSchema),
+        outputSchema: convertToSchema(Output.ReadODataMetadataOutputSchema)
+    },
+    {
+        name: 'download_base_app_adp',
+        description: `Downloads the base app resources for the specified Adaptation Project.
+
+        This tool:
+        - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
+        - Connects to the SAP system and downloads the base app resources
+        - Returns the downloaded base app resources for the Adaptation Project
+
+        Use this tool when you need to download the base app resources for an Adaptation Project.`,
+        annotations: {
+            title: 'Download Base App Resources for Adaptation Project',
+            destructiveHint: true,
+            idempotentHint: true,
+            openWorldHint: false
+        },
+        inputSchema: convertToSchema(Input.DownloadAppResourcesInputSchema),
+        outputSchema: convertToSchema(Output.DownloadAppResourcesOutputSchema)
+    }
+] as Tool[];
 
 export const tools = [
     {
@@ -59,11 +240,11 @@ export const tools = [
     },
     {
         name: 'list_sap_systems',
-        description: `Lists all SAP systems from the user's environment. This tool should only be used if the Service Center MCP tool list systems is unavailable. 
+        description: `Lists all SAP systems from the user's environment. This tool should only be used if the Service Center MCP tool list systems is unavailable.
                     **ALWAYS** use the Service Center MCP tool 'list_systems' first if it is available. This tool is a fallback for environments where the Service Center MCP tool is not available.
                     Also use this tool when the user asks to 'list systems', 'list backends', or any equivalent phrasing.
                     Use this tool when the user references a SAP system by name or when you need to discover available systems
-                    before calling 'download_odata_service_metadata' or generating a Fiori application.`,
+                    before calling 'download_odata_service_metadata', 'generate_adaptation_project', or generating a Fiori application.`,
         annotations: {
             title: 'List SAP Systems',
             readOnlyHint: true,
@@ -82,7 +263,7 @@ export const tools = [
                     Note: this tool replaces the old 'fetch-service-metadata' functionality that was previously available via the 'execute_functionality' workflow — use this tool directly instead.
 
                     Usage guidelines:
-                    - Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference and a service path. 
+                    - Use this before calling 'generate_fiori_app_odata' when the user provides a SAP system reference and a service path.
                     - If a service name or technical id is provided instead of a service path DO NOT USE THIS TOOL. Instead use the Service Center MCP server tool to retrieve the service metadata and then pass it to 'generate_fiori_app_odata'.
                     - If a service path is provided by the user, use it directly via servicePath parameter.
                     - If the user provides a system name or host, use 'list_sap_systems' first to resolve it.
@@ -115,7 +296,7 @@ export const tools = [
         1. Examine the inputSchema below to understand the EXACT structure required
         2. The input MUST match the schema type 'GeneratorConfigOData' with these TOP-LEVEL properties:
            - floorplan (must be: 'FE_LROP', 'FE_OVP', 'FE_ALP', 'FE_WORKLIST', 'FE_FEOP', 'FE_FPM', 'FF_SIMPLE', required)
-           - project (object, required) — includes name, title, description, targetFolder, ui5Version, enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
+           - project (object, required) — includes name, title, description, targetFolder, ui5Version (optional), enableTypeScript (default false), namespace (optional), viewName (FF_SIMPLE only, optional)
            - service (object, optional)
            - entityConfig (object, optional)
         3. DO NOT create properties like "config", or any other structure - use ONLY the properties defined in inputSchema
@@ -125,7 +306,7 @@ export const tools = [
            - **IMPORTANT** ALWAYS use the app config schema defined by the type 'GeneratorConfigOData' to create the input structure. NEVER create an input in any other format.
            - The input MUST use the exact property names defined in the inputSchema: floorplan, project, service, entityConfig.
            - **ONLY** if the Service Center MCP is NOT available and the user provided a SAP system reference or URL with a **service path**, you **MUST** first call 'download_odata_service_metadata'.
-           - If the Service Center MCP is available and the user provided a **service name or technical service id**, you **MUST** call the Service Center MCP server tool to retrieve the metadata and properties required for the service property of the input. 
+           - If the Service Center MCP is available and the user provided a **service name or technical service id**, you **MUST** call the Service Center MCP server tool to retrieve the metadata and properties required for the service property of the input.
            - Use the data returned to provide the required values (host, servicePath, client, destination, metadataFilePath) directly in the service property of the input.
            - If the Service Center MCP was used both host and destination **MUST** be passed in the service property of the input.
            - If Fiori MCP 'download_odata_service_metadata' was used and returns a host URL — pass it as service.host. If the host is not provided, you **MUST** ask for it.
@@ -138,7 +319,7 @@ export const tools = [
 
         3. Generate the application once the config is complete and valid.
 
-        Example of CORRECT input structure:
+        Example of CORRECT input structure (ui5Version is optional — omit to let the MCP server resolve the latest stable version from ui5.sap.com):
         {
           "floorplan": "FE_LROP",
           "project": {
@@ -146,7 +327,6 @@ export const tools = [
             "title": "My Travel App",
             "description": "Travel management application",
             "targetFolder": "/home/user/projects",
-            "ui5Version": "1.136.7",
             "enableTypeScript": false,
             "namespace": "com.mycompany"
           },
@@ -245,5 +425,8 @@ export const tools = [
         },
         inputSchema: convertToSchema(Input.ExecuteFunctionalityInputSchema),
         outputSchema: convertToSchema(Output.ExecuteFunctionalityOutputSchema)
-    }
+    },
+    ...(adpToolsEnabled ? adpTools : [])
 ] as Tool[];
+
+export const adpToolNames = new Set(adpTools.map((t) => t.name));

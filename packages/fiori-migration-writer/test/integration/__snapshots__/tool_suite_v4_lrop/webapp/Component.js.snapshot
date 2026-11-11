@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests LROP v4 Migration should migrate tool_suite_v4_lrop 1`] = `
+"/* global hasher */
+sap.ui.define(['sap/fe/core/AppComponent'], function (AppComponent) {
+    'use strict';
+
+    return AppComponent.extend('namespace1.v4catalog.Component', {
+        metadata: {
+            manifest: 'json'
+        }
+    });
+});
+"
+`;

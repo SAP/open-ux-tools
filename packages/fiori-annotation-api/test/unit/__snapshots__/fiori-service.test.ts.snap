@@ -1837,6 +1837,35 @@ exports[`fiori annotation service insert reference delete and insert in the same
 "
 `;
 
+exports[`fiori annotation service insert reference external metadata service namespace auto-insert inserts edmx:Reference for external VH service namespace 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"/srvd_f4/dmo/i_priority/0001/$metadata\\">
+        <edmx:Include Namespace=\\"com.sap.gateway.srvd_f4.dmo.i_priority.v0001\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"Common\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.Incidents/priority_code\\">
+                <Annotation Term=\\"Common.ValueListReferences\\">
+                    <Collection>
+                        <String>../../../../srvd_f4/dmo/i_priority/0001;ps='srvd-dmo-sd_incidents-0001';va='com.sap.gateway.srvd.dmo.sd_incidents.v0001.et-incidents.priority'/$metadata</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"com.sap.gateway.srvd_f4.dmo.i_priority.v0001.I_PriorityType/Priority\\">
+                <Annotation Term=\\"Common.ExternalID\\" Path=\\"PriorityText\\"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service insert reference new vocabulary CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 

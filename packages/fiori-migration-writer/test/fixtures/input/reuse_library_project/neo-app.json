@@ -1,0 +1,71 @@
+{
+  "welcomeFile": "index.html",
+  "routes": [
+    {
+      "path": "/resources/sap/example/lib/featuretoggle",
+      "target": {
+        "type": "application",
+        "name": "FEATURETOGGLES1"
+      },
+      "description": ""
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "application",
+        "name": "FEATURETOGGLES1",
+        "entryPath": "test"
+      },
+      "description": ""
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/resources",
+        "version": "1.44.13"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources",
+        "version": "1.44.13"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/test-resources",
+        "version": "1.44.13"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources",
+        "version": "1.44.13"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "EXAMPLE_DEST",
+        "entryPath": "/sap/opu/odata"
+      },
+      "description": "EXAMPLE_DEST"
+    }
+  ]
+}

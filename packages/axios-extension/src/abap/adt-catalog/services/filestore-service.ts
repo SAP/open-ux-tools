@@ -26,7 +26,7 @@ export class FileStoreService extends AdtService {
     }
 
     /**
-     * If target `path` is a file, the file content is returned as string type.
+     * If target `path` is a file, the file content is returned as Buffer type.
      * If target `path` is a folder, files and folders in this folder are returned as an array
      * of ArchiveFileNode objects.
      *
@@ -39,19 +39,21 @@ export class FileStoreService extends AdtService {
      * @param path
      *   Default value is empty string. In this case the output would be folder structure information of the root folder.
      *   Otherwise provide path to a folder or a file in the deployed archive. E.g. `/webapp/index.html`.
-     * @returns Folder content (ArchiveFileNode[]) | file content (string)
+     * @returns Folder content (ArchiveFileNode[]) | file content (Buffer)
      */
     public async getAppArchiveContent<T extends ArchiveFileNodeType>(
         type: T,
         appName: string,
         path = ''
     ): Promise<ArchiveFileContentType<T>> {
-        const contentType = type === 'folder' ? 'application/atom+xml' : 'application/octet-stream';
+        const isFile = type === 'file';
         const config = {
             headers: {
                 Accept: 'application/xml',
-                'Content-Type': contentType
-            }
+                'Content-Type': isFile ? 'application/octet-stream' : 'application/atom+xml'
+            },
+            // Binary files are requested as arraybuffer to prevent UTF-8 re-encoding corruption.
+            ...(isFile && { responseType: 'arraybuffer' as const })
         };
         if (path && !path.startsWith('/')) {
             throw new Error('Input argument "path" needs to start with /');
@@ -62,27 +64,27 @@ export class FileStoreService extends AdtService {
     }
 
     /**
-     * Parse response data from ADT service. If the content is XML document of
-     * folder structure, this method returns a list of `ArchiveFileNode` object. If the content
-     * is text string, this method returns the text cotent.
+     * Parse response data from ADT service. If the content is a file, returns a Buffer.
+     * If the content is XML folder structure, returns a list of ArchiveFileNode objects.
      *
      * @see ArchiveFileNode
      * @param appName Deployed Fiori app name
      * @param responseData Response from ADT service
-     * @param type Reponse data is the file content or folder content.
-     * @returns Folder content (ArchiveFileNode[]) | file content (string)
+     * @param type Whether response data is file content or folder content.
+     * @returns Folder content (ArchiveFileNode[]) | file content (Buffer)
      */
     private parseArchiveContentResponse<T extends ArchiveFileNodeType>(
         appName: string,
-        responseData: string,
+        responseData: string | ArrayBuffer,
         type: T
     ): ArchiveFileContentType<T> {
-        // File content that is not xml data.
+        // File content is received as arraybuffer to preserve binary data (images, fonts, etc.).
         if (type === 'file') {
-            return responseData as ArchiveFileContentType<T>;
+            return Buffer.from(responseData as ArrayBuffer) as ArchiveFileContentType<T>;
         }
         // A list of file/folder items in the response data as xml string.
-        if (XMLValidator.validate(responseData) !== true) {
+        const xmlData = responseData as string;
+        if (XMLValidator.validate(xmlData) !== true) {
             throw new Error('Invalid XML content');
         }
         const options = {
@@ -93,7 +95,7 @@ export class FileStoreService extends AdtService {
             removeNSPrefix: true
         };
         const parser: XMLParser = new XMLParser(options);
-        const parsed = parser.parse(responseData, true);
+        const parsed = parser.parse(xmlData, true);
 
         let fileNodeArray: AdtFileNode[] = [];
 

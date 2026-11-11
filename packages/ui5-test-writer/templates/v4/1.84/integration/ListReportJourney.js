@@ -15,11 +15,12 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
+<%_ const needsSortOrder = startLR && (defaultSortOrder && defaultSortOrder.length > 0); -%>
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>,
+    "./pages/JourneyRunner"<% if (needsSortOrder) { %>,
     "sap/ui/core/library"<% } %>
-], function (opaTest, runner<% if (textAnnotationColumns && textAnnotationColumns.length > 0) { %>, coreLibrary<% } %>) {
+], function (opaTest, runner<% if (needsSortOrder) { %>, coreLibrary<% } %>) {
     "use strict";
 
     function journey() {
@@ -49,11 +50,11 @@ sap.ui.define([
 <%_ } -%>
 <%_ if (semanticKey && semanticKey.missingFromFilterBar && semanticKey.missingFromFilterBar.length > 0) { %>
         opaTest("Add semantic key properties to filter bar", function (Given, When, Then) {
-            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation();
+            When.onThe<%- startLR%>Generated.onFilterBar().iOpenFilterAdaptation()
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iAddAdaptationFilterField({ property: "<%- property %>" });
+                .and.iAddAdaptationFilterField({ property: "<%- property %>" })
             <%_ }); -%>
-            When.onThe<%- startLR%>Generated.onFilterBar().iConfirmFilterAdaptation();
+                .and.iConfirmFilterAdaptation();
             <%_ semanticKey.missingFromFilterBar.forEach(function(property) { _%>
             Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- property %>" });
             <%_ }); -%>
@@ -76,38 +77,51 @@ sap.ui.define([
         //     Then.onThe<%- startLR%>Generated.onFilterBar().iCheckSearchField(undefined);
         // });
 
-<%_ if ((toolBarActions && toolBarActions.length > 0 ) || (tableColumns && Object.keys(tableColumns).length > 0)) { -%>
-        opaTest("Check table columns and actions", function (Given, When, Then) {
-            <%_ if (toolBarActions && toolBarActions.length > 0) { -%>
-            <%_ if (createButton.visible && !isALP) { _%>
+<%_ if (createButton.visible && !isALP) { -%>
+        opaTest("Check the create button", function (Given, When, Then) {
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckCreate({ visible: true });
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressCreate();
-            <%_ } _%>
-            <%_ if (deleteButton.visible) { _%>
+        });
+
+<%_ } -%>
+<%_ if (deleteButton.visible) { -%>
+        opaTest("Check the delete button", function (Given, When, Then) {
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressDelete();
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckDelete({ visible: true });
-            <%_ } _%>
-            <%_ toolBarActions.forEach(function(item) { _%>
-            <%_ if (item.visible) { _%>
+        });
+
+<%_ } -%>
+<%_ (toolBarActions || []).forEach(function(item) { -%>
+<%_ if (item.visible) { -%>
+        opaTest(<%- JSON.stringify("Check the " + item.label + " action") %>, function (Given, When, Then) {
             // When.onThe<%- startLR%>Generated.onTable(defaultTableId).iPressAction("<%- item.label %>");
             Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckAction("<%- item.label %>", { enabled: <%- item.enabled === true %> });
-            <%_ } _%>
-            <%_ }); -%>
-            <%_ } -%>
-            <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-            <%_ } -%>
         });
-<%_ } -%>
-<%_ if (startLR && textAnnotationColumns && textAnnotationColumns.length > 0) { -%>
-        opaTest("Check text annotation for columns", function (Given, When, Then) {
-            <%_ textAnnotationColumns.forEach(function(column) { _%>
-            When.onThe<%- startLR%>Generated.onTable(defaultTableId).iChangeSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending);
-            Then.onThe<%- startLR%>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- column.textProperty %>" }, coreLibrary.SortOrder.Ascending, true);
-            <%_ }); -%>
-        });
-<%_ } -%>
 
+<%_ } -%>
+<%_ }); -%>
+<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
+        opaTest("Check table columns", function (Given, When, Then) {
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+        });
+
+<%_ } -%>
+<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
+        opaTest("Check default sort order from PresentationVariant", function (Given, When, Then) {
+            <%_ defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
+<%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
+        opaTest("Check default filter values from SelectionVariant", function (Given, When, Then) {
+            <%_ defaultFilterValues.forEach(function(filter) { _%>
+            Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: <%- JSON.stringify(filter.property) %> }, <%- filter.value2 !== undefined ? JSON.stringify([filter.value, filter.value2]) : JSON.stringify(filter.value) %><%- filter.operator ? ', ' + JSON.stringify(filter.operator) : '' %>);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
 <%_ if (startLR) { -%>
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data

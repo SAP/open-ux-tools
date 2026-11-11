@@ -1,0 +1,7 @@
+{
+    "name": "migrated-project",
+    "version": "0.0.1",
+    "devDependencies": {
+        "@sap/ux-ui5-tooling": "1.0.0"
+    }
+}

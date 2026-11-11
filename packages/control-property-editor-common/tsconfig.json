@@ -6,7 +6,6 @@
         "strictNullChecks": true,
         "outDir": "dist",
         "rootDir": "src",
-        "baseUrl": ".",
         "types": ["node", "jest"],
         "useUnknownInCatchVariables": false
     },

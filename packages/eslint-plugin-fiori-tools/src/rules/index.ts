@@ -11,6 +11,7 @@ import {
     ENABLE_PASTE,
     STATE_PRESERVATION_MODE,
     NO_DATA_FIELD_INTENT_BASED_NAVIGATION,
+    NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS,
     CONDENSED_TABLE_LAYOUT,
     TABLE_COLUMN_VERTICAL_ALIGNMENT,
     TABLE_PERSONALIZATION,
@@ -18,6 +19,9 @@ import {
     STRICT_UOM_FILTERING,
     NO_LIVE_MODE,
     CLOUD_DEV_ADAPTATION_STATUS,
+    MICRO_CHART_REQUIRES_NAVIGATION_ENTITY,
+    NO_INLINE_DELETE_WITH_MULTISELECT,
+    NO_COMMA_IN_SECTION_TITLE,
     FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION,
     NO_SINGLE_FACET_IN_COLLECTION,
     NO_DEEP_COLLECTION_FACETS
@@ -80,19 +84,45 @@ import enablePaste from './sap-enable-paste.js';
 import tablePersonalization from './sap-table-personalization.js';
 import tableColumnVerticalAlignment from './sap-table-column-vertical-alignment.js';
 import noDataFieldIntentBasedNavigation from './sap-no-data-field-intent-based-navigation.js';
+import noPathHiddenOnInteractiveColumns from './sap-no-path-hidden-on-interactive-columns.js';
 import condensedTableLayout from './sap-condensed-table-layout.js';
 import textArrangementHidden from './sap-text-arrangement-hidden.js';
 import noLiveMode from './sap-no-live-mode.js';
 import cloudDevAdaptationStatus from './sap-cloud-dev-adaptation-status.js';
+import microChartRequiresNavigationEntity from './sap-micro-chart-requires-navigation-entity.js';
+import noInlineDeleteWithMultiselect from './sap-no-inline-delete-with-multiselect.js';
+import noCommaInSectionTitle from './sap-no-comma-in-section-title.js';
 import fieldGroupInTableTypeRestriction from './sap-field-group-in-table-type-restriction.js';
 import noSingleFacetInCollection from './sap-no-single-facet-in-collection.js';
 import noDeepCollectionFacets from './sap-no-deep-collection-facets.js';
+import sapBrowserApiError from './sap-browser-api-error.js';
+import sapConcatenatedStrings from './sap-concatenated-strings.js';
+import sapControllerHookBadCallbackSignature from './sap-controller-hook-bad-callback-signature.js';
+import sapControllerHookMissingCallbackSignature from './sap-controller-hook-missing-callback-signature.js';
+import sapControllerHookNameConvention from './sap-controller-hook-name-convention.js';
+import sapEslintDisableCount from './sap-eslint-disable-count.js';
+import sapNoConsoleLog from './sap-no-console-log.js';
+import sapNoCoreModelUsage from './sap-no-core-model-usage.js';
+import sapNoUpload from './sap-no-upload.js';
+import sapNotLocalized from './sap-not-localized.js';
+import sapUnescapedWrite from './sap-unescaped-write.js';
 
 import type { Rule } from 'eslint';
 
 export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | FioriXMLRuleDefinition> = {
     'sap-bookmark-performance': sapBookmarkPerformance,
+    'sap-browser-api-error': sapBrowserApiError,
     'sap-browser-api-warning': sapBrowserApiWarning,
+    'sap-concatenated-strings': sapConcatenatedStrings,
+    'sap-controller-hook-bad-callback-signature': sapControllerHookBadCallbackSignature,
+    'sap-controller-hook-missing-callback-signature': sapControllerHookMissingCallbackSignature,
+    'sap-controller-hook-name-convention': sapControllerHookNameConvention,
+    'sap-eslint-disable-count': sapEslintDisableCount,
+    'sap-no-console-log': sapNoConsoleLog,
+    'sap-no-core-model-usage': sapNoCoreModelUsage,
+    'sap-no-upload': sapNoUpload,
+    'sap-not-localized': sapNotLocalized,
+    'sap-unescaped-write': sapUnescapedWrite,
     'sap-cross-application-navigation': sapCrossApplicationNavigation,
     'sap-forbidden-window-property': sapForbiddenWindowProperty,
     'sap-message-toast': sapMessageToast,
@@ -144,6 +174,7 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [CREATION_MODE_FOR_TABLE]: creationModeForTable,
     [STATE_PRESERVATION_MODE]: statePreservationMode,
     [NO_DATA_FIELD_INTENT_BASED_NAVIGATION]: noDataFieldIntentBasedNavigation,
+    [NO_PATH_HIDDEN_ON_INTERACTIVE_COLUMNS]: noPathHiddenOnInteractiveColumns,
     [CONDENSED_TABLE_LAYOUT]: condensedTableLayout,
     [STRICT_UOM_FILTERING]: strictUomFilteringRule,
     [TABLE_COLUMN_VERTICAL_ALIGNMENT]: tableColumnVerticalAlignment,
@@ -151,6 +182,9 @@ export const rules: Record<string, Rule.RuleModule | FioriRuleDefinition | Fiori
     [TEXT_ARRANGEMENT_HIDDEN]: textArrangementHidden,
     [NO_LIVE_MODE]: noLiveMode,
     [CLOUD_DEV_ADAPTATION_STATUS]: cloudDevAdaptationStatus,
+    [MICRO_CHART_REQUIRES_NAVIGATION_ENTITY]: microChartRequiresNavigationEntity,
+    [NO_INLINE_DELETE_WITH_MULTISELECT]: noInlineDeleteWithMultiselect,
+    [NO_COMMA_IN_SECTION_TITLE]: noCommaInSectionTitle,
     [FIELD_GROUP_IN_TABLE_TYPE_RESTRICTION]: fieldGroupInTableTypeRestriction,
     [NO_SINGLE_FACET_IN_COLLECTION]: noSingleFacetInCollection,
     [NO_DEEP_COLLECTION_FACETS]: noDeepCollectionFacets

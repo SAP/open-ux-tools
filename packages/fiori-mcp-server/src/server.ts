@@ -20,8 +20,17 @@ import {
     downloadODataServiceMetadata,
     generateFioriAppOData,
     generateFioriAppCap,
-    tools
+    generateAdaptationProject,
+    openAdaptationEditor,
+    adpControllerExtension,
+    runRtaWorkflowStep,
+    readODataMetadataAdp,
+    lookupUi5Documentation,
+    tools,
+    adpToolNames,
+    downloadBaseApp
 } from './tools/index.js';
+import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
 import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
 import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
@@ -30,7 +39,14 @@ import type {
     DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput,
-    DownloadODataServiceMetadataInput
+    DownloadODataServiceMetadataInput,
+    GenerateAdaptationProjectInput,
+    OpenAdaptationEditorInput,
+    AdpControllerExtensionInput,
+    RunRtaWorkflowStepInput,
+    DownloadAppResourcesInput,
+    LookupUi5DocumentationInput,
+    ReadODataMetadataInput
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
@@ -44,10 +60,24 @@ type ToolArgs =
     | DownloadODataServiceMetadataInput
     | GeneratorConfigOData
     | GeneratorConfigCAP
+    | GenerateAdaptationProjectInput
+    | OpenAdaptationEditorInput
+    | AdpControllerExtensionInput
+    | RunRtaWorkflowStepInput
+    | ReadODataMetadataInput
+    | DownloadAppResourcesInput
+    | LookupUi5DocumentationInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
 
+/**
+ * Picks a protocol version to report back: the requested one if supported, else
+ * the fallback, else the newest supported version.
+ *
+ * @param requested Protocol version the client asked for.
+ * @returns The negotiated protocol version.
+ */
 function negotiateProtocolVersion(requested: string): string {
     if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
         return requested;
@@ -106,10 +136,13 @@ export class FioriFunctionalityServer {
      */
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
-        process.on('SIGINT', async () => {
+        const shutdown = async (): Promise<void> => {
+            await stopBrowser();
             await this.server.close();
             process.exit(0);
-        });
+        };
+        process.on('SIGINT', shutdown);
+        process.on('SIGTERM', shutdown);
     }
 
     /**
@@ -254,6 +287,10 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
+                if (adpToolNames.has(name) && process.env.SAP_FIORI_MCP_ADP_TOOLS !== 'true') {
+                    throw new Error(`Tool ${name} is disabled. Set SAP_FIORI_MCP_ADP_TOOLS=true to enable ADP tools.`);
+                }
+
                 switch (name) {
                     case 'search_docs':
                         result = await docSearch(args as DocSearchInput, true);
@@ -273,6 +310,27 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     case 'generate_fiori_app_cap':
                         result = await generateFioriAppCap(args as GeneratorConfigCAP);
                         break;
+                    case 'generate_adaptation_project':
+                        result = await generateAdaptationProject(args as GenerateAdaptationProjectInput);
+                        break;
+                    case 'open_adaptation_editor':
+                        result = await openAdaptationEditor(args as OpenAdaptationEditorInput);
+                        break;
+                    case 'adp_controller_extension':
+                        result = await adpControllerExtension(args as AdpControllerExtensionInput);
+                        break;
+                    case 'run_rta_workflow_step':
+                        result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
+                        break;
+                    case 'read_odata_metadata_adp':
+                        result = await readODataMetadataAdp(args as ReadODataMetadataInput);
+                        break;
+                    case 'download_base_app_adp':
+                        result = await downloadBaseApp(args as DownloadAppResourcesInput);
+                        break;
+                    case 'lookup_ui5_documentation':
+                        result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
+                        break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
                         break;
@@ -285,9 +343,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                     default:
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
-                        throw new Error(
-                            `Unknown tool: ${name}. Try one of: search_docs, list_fiori_apps, list_sap_systems, download_odata_service_metadata, generate_fiori_app_odata, generate_fiori_app_cap, list_functionality, get_functionality_details, execute_functionality.`
-                        );
+                        throw new Error(`Unknown tool: ${name}. Try one of: ${tools.map((t) => t.name).join(', ')}.`);
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
                 const convertedResult = this.convertResultToCallToolResult(result);

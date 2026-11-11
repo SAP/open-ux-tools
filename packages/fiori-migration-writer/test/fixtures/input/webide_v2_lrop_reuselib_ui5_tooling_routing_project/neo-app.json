@@ -1,0 +1,210 @@
+{
+	"welcomeFile": "/webapp/test/flpSandbox.html",
+	"headerWhiteList": ["objecttype", "objectkey", "slug", "MarkForDeletion", "documentType", "documentNumber", "documentVersion",
+		"documentPart", "semanticobjecttype"
+	],
+	"routes": [{
+		"path": "/webapp/resources/sap/ssuite/fnd/om/outputcontrol",
+		"target": {
+			"type": "application",
+			"name": "ssuitefndomoutputcontrol"
+		},
+		"description": "{{description}}"
+	}, {
+		"path": "/resources/sap/ssuite/fnd/om/outputcontrol",
+		"target": {
+			"type": "application",
+			"name": "ssuitefndomoutputcontrol"
+		},
+		"description": "{{description}}"
+	}, {
+		"path": "/webapp/resources",
+		"target": {
+			"type": "application",
+			"name": "nwcorechangedocslibreuse"
+		},
+		"description": "{{documentation}}"
+	}, {
+		"path": "/resources",
+		"target": {
+			"type": "application",
+			"name": "nwcorechangedocslibreuse"
+		},
+		"description": "{{documentation}}"
+	}, {
+		"path": "/resources/sap/nw/core/changedocs/lib/reuse",
+		"target": {
+			"type": "application",
+			"name": "nwcorechangedocslibreuse",
+			"preferLocal": true
+		},
+		"description": "{{documentation}}"
+	}, {
+		"path": "/webapp/resources/sap/nw/core/changedocs/lib/reuse",
+		"target": {
+			"type": "application",
+			"name": "nwcorechangedocslibreuse",
+			"preferLocal": true
+		},
+		"description": "{{documentation}}"
+	}, {
+		"path": "/webapp/resources/sap/s4h/cfnd/featuretoggle",
+		"target": {
+			"type": "application",
+			"name": "saps4hcfndfeaturetoggle"
+		},
+		"description": "Feature Toggle Library"
+	}, {
+		"path": "/resources/sap/s4h/cfnd/featuretoggle",
+		"target": {
+			"type": "application",
+			"name": "saps4hcfndfeaturetoggle"
+		},
+		"description": "Feature Toggle Library"
+	}, {
+		"path": "/webapp/resources/sap/se/mi/plm/lib/attachmentservice",
+		"target": {
+			"type": "application",
+			"name": "sapsemiplmlibattachmentservice"
+		},
+		"description": "{{description}}"
+	}, {
+		"path": "/resources/sap/se/mi/plm/lib/attachmentservice",
+		"target": {
+			"type": "application",
+			"name": "sapsemiplmlibattachmentservice"
+		},
+		"description": "{{description}}"
+	}, {
+		"path": "/sap/opu/odata",
+		"target": {
+			"type": "destination",
+			"name": "BACKEND_SYSTEM",
+			"entryPath": "/sap/opu/odata"
+		},
+		"description": "BACKEND_SYSTEM"
+	}, {
+		"path": "/sap/bc/lrep",
+		"target": {
+			"type": "destination",
+			"name": "BACKEND_SYSTEM",
+			"entryPath": "/sap/bc/lrep"
+		},
+		"description": "BACKEND_SYSTEM"
+	}, {
+		"path": "/resources",
+		"target": {
+			"type": "application",
+			"name": "sapui5preview",
+			"entryPath": "/resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Resources"
+	}, {
+		"path": "/resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"preferLocal": true,
+			"entryPath": "/resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Resources"
+	}, {
+		"path": "/sap/ui5/1/resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"preferLocal": true,
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 dist layer resources"
+	}, {
+		"path": "/webapp/resources",
+		"target": {
+			"type": "application",
+			"name": "sapui5preview",
+			"entryPath": "/resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Resources"
+	}, {
+		"path": "/webapp/resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"entryPath": "/resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Resources"
+	}, {
+		"path": "/webapp/test-resources",
+		"target": {
+			"type": "application",
+			"name": "sapui5preview",
+			"entryPath": "/test-resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Test Resources"
+	}, {
+		"path": "/webapp/test-resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"entryPath": "/test-resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Test Resources"
+	}, {
+		"path": "/test-resources",
+		"target": {
+			"type": "application",
+			"name": "sapui5preview",
+			"entryPath": "/test-resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Test Resources"
+	}, {
+		"path": "/test-resources",
+		"target": {
+			"type": "service",
+			"name": "sapui5",
+			"entryPath": "/test-resources",
+			"version": "snapshot"
+		},
+		"description": "SAPUI5 Test Resources"
+	}, {
+		"path": "/",
+		"target": {
+			"type": "application",
+			"name": "flpsandbox",
+			"preferLocal": true
+		},
+		"description": "Subscribed Fiori LaunchPad"
+	}, {
+		"path": "/webapp/resources/sap/se/mi/plm/lib/attachmentservice",
+		"target": {
+			"type": "application",
+			"name": "semiplmlibattachmentservice",
+			"preferLocal": true
+		},
+		"description": "Reuse Library for Attachment Control Component (River RDE)"
+	}, {
+		"path": "/resources/sap/se/mi/plm/lib/attachmentservice",
+		"target": {
+			"type": "application",
+			"name": "semiplmlibattachmentservice",
+			"preferLocal": true
+		},
+		"description": "Reuse Library for Attachment Control Component (River RDE)"
+	}, {
+		"path": "/src/main/webapp/resources",
+		"target": {
+			"type": "application",
+			"name": "semiplmlibattachmentservice",
+			"preferLocal": true
+		},
+		"description": "Reuse Library for Attachment Control Component (River RDE)"
+	}],
+	"sendWelcomeFileRedirect": true
+}

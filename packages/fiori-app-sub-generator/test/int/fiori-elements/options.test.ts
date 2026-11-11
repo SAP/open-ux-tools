@@ -4,8 +4,10 @@ import { readdirSync, readFileSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { ApiHubConfig, Project, Service, State } from '../../../src/types/index.js';
-import { ApiHubType, FloorplanFE } from '../../../src/types/index.js';
+import { ApiHubType } from '@sap-ux/fiori-generator-shared';
+import type { ApiHubConfig } from '@sap-ux/fiori-generator-shared';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { FloorplanFE } from '../../../src/types/index.js';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils/index.js';
 import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils.js';
 
