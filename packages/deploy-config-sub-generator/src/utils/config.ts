@@ -3,7 +3,7 @@ import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { DeployConfigOptions } from '../types/index.js';
 
 /**

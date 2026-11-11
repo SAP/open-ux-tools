@@ -1,10 +1,26 @@
-import { sep } from 'node:path';
 import type { FreestyleApp } from './types.js';
 import { TemplateType } from './types.js';
 import { gte } from 'semver';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
 export const ui5LtsVersion_1_120 = '1.120.0';
+
+/**
+ * `mem-fs-editor@12` narrows `globOptions` to a subset of `tinyglobby`'s options that omits
+ * `ignore`, even though `ignore` is still honoured at runtime. Re-add it for the call sites
+ * that rely on it.
+ */
+export type GlobOptionsWithIgnore = NonNullable<NonNullable<Parameters<Editor['copyTpl']>[3]>['globOptions']> & {
+    ignore?: string | readonly string[];
+};
+
+/**
+ * `copyTpl` options with the `globOptions.ignore` gap re-added (see {@link GlobOptionsWithIgnore}).
+ */
+export type CopyOptionsWithIgnore = Omit<NonNullable<Parameters<Editor['copyTpl']>[3]>, 'globOptions'> & {
+    globOptions?: GlobOptionsWithIgnore;
+};
 
 /**
  * Compares two UI5 versions to determine if the first is greater than or equal to the second.
@@ -45,9 +61,11 @@ export function getTemplateVersionPath(ffApp: FreestyleApp<unknown>): string {
 /**
  * Processes the destination path by removing specific version segments.
  *
+ * Operates on POSIX (forward-slash) mem-fs store keys, so the separator is hardcoded to `/`.
+ *
  * @param {string} filePath - The file path to process.
  * @returns {string} - The processed file path.
  */
 export function processDestinationPath(filePath: string): string {
-    return filePath.replace(`${sep}1.120.0`, '').replace(`${sep}1.71.0`, '');
+    return filePath.replace(/(^|\/)1\.120\.0\//, '$1').replace(/(^|\/)1\.71\.0\//, '$1');
 }

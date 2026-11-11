@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { getAllUi5YamlFileNames, readUi5Yaml, FileName } from '@sap-ux/project-access';
 import type {

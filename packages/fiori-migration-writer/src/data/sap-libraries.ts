@@ -2,7 +2,7 @@
  * Helper functions for extracting and filtering SAP libraries from manifest
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { fileExists, readFile } from '../utils/index.js';
 import { sapUI5LibsNS } from '../utils/constants.js';
 

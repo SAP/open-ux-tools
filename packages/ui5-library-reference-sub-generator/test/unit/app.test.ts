@@ -11,7 +11,6 @@ const testDirname = dirname(fileURLToPath(import.meta.url));
 const testOutputDir = join(testDirname, '..', 'test-output', 'app');
 const originalCwd = process.cwd();
 const refLibGenPath = join(testDirname, '../../src/app');
-let yoEnv4 = false;
 
 // Pre-import actual modules for spreading
 const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
@@ -47,22 +46,6 @@ jest.unstable_mockModule('@sap-ux/ui5-library-reference-inquirer', () => ({
     ...actualUi5LibRefInquirer,
     prompt: mockPrompt
 }));
-
-// Mock the yeoman-test adapter - this is a CJS module
-jest.unstable_mockModule('yeoman-test/lib/adapter', () => {
-    // We need the actual adapter from CJS
-    const actualAdapter = jest.requireActual('yeoman-test/lib/adapter') as any;
-    return {
-        TestAdapter: function TestAdapter() {
-            const testAdapter = new actualAdapter.TestAdapter();
-            if (yoEnv4) {
-                Object.assign(testAdapter, { actualAdapter: {} });
-            }
-            return testAdapter;
-        },
-        DummyPrompt: actualAdapter.DummyPrompt
-    };
-});
 
 const yeomanTest = (await import('yeoman-test')).default;
 const RefLibGenerator = (await import('../../src/app/index.js')).default;
@@ -171,12 +154,15 @@ describe('Test reference generator', () => {
         } as unknown as UI5LibraryReferenceAnswers;
         mockGenerate.mockImplementationOnce(async () => ({}) as any);
         mockPrompt.mockResolvedValueOnce(promptAnswers as unknown as UI5LibraryReferenceAnswers);
-        // Use the mocked adapter representing yeoman-environment@4
-        yoEnv4 = true;
+        // Represent yeoman-environment@4: adapter exposes a nested actualAdapter that the
+        // generator unwraps in prompting() (see src/app/index.ts).
         await expect(
             yeomanTest
                 .run(RefLibGenerator, {
                     resolved: refLibGenPath
+                })
+                .onEnvironment((environment) => {
+                    (environment.adapter as unknown as { actualAdapter: unknown }).actualAdapter = environment.adapter;
                 })
                 .withOptions({ skipInstall: false })
         ).resolves.not.toThrow();

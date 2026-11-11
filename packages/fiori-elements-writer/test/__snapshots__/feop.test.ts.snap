@@ -15,6 +15,10 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"fefeop1\\",
@@ -3571,6 +3575,10 @@ export default [
 ];
 ",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{

@@ -1,8 +1,8 @@
-import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { DeploymentGeneratorOptions } from '@sap-ux/deploy-config-generator-shared';
 
-export interface CfApprouterGenOptions extends Generator.GeneratorOptions {
+export type CfApprouterGenOptions = DeploymentGeneratorOptions & {
     destinationRoot?: string;
     appWizard?: AppWizard;
     skipInstall?: boolean;
-}
+};

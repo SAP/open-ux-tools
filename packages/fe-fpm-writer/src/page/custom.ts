@@ -1,6 +1,6 @@
 import { join, relative, dirname } from 'node:path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types.js';

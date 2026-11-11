@@ -3,9 +3,8 @@ import type { Annotations } from '@sap-ux/axios-extension';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import memFs from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import memFsEditor from 'mem-fs-editor';
+import { create as createStore } from 'mem-fs';
+import { create as createEditor, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types/index.js';
 import { ApiHubType } from '@sap-ux/fiori-generator-shared';
@@ -277,8 +276,8 @@ describe('Test utils', () => {
     });
 
     describe('generateLaunchConfig', () => {
-        const store = memFs.create();
-        const editor = memFsEditor.create(store);
+        const store = createStore();
+        const editor = createEditor(store);
         const mockVsCode = {
             workspace: {
                 getConfiguration: jest.fn().mockReturnValue({

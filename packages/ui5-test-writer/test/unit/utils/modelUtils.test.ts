@@ -13,7 +13,7 @@ import {
     getAppFeatures,
     parseDataFieldForAnnotationName
 } from '../../../src/utils/modelUtils.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 
 describe('Test getListReportPage()', () => {

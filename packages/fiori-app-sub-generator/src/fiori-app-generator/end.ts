@@ -21,7 +21,7 @@ import {
     type BackendSystemKey,
     getService
 } from '@sap-ux/store';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { buildSapClientParam, generateLaunchConfig, runHooks, t } from '../utils/index.js';
 

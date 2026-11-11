@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { join as joinPosix } from 'node:path/posix';
 
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 // xml-formatter types are not callable under NodeNext; cast to function type once so call sites are clean
 import _fmt from 'xml-formatter';
 const xmlFormatter = _fmt as unknown as (xml: string, options?: object) => string;

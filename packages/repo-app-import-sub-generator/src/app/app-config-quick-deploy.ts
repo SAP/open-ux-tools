@@ -1,7 +1,7 @@
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { t } from '../utils/i18n.js';
 import type { AppInfo, AppDownloadContext, AdtQuickDeployContext } from '../app/types.js';
 import { readManifest } from '../utils/file-helpers.js';

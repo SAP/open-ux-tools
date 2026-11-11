@@ -1,4 +1,5 @@
 import Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import type { Prompts, AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import { AppWizard } from '@sap-devx/yeoman-ui-types';
 
@@ -14,7 +15,8 @@ import type { GeneratorOpts } from '../utils/opts.js';
 /**
  * Shared base class for all ADP generators.
  */
-export default class SubGeneratorBase extends Generator {
+export default class SubGeneratorBase extends Generator<Record<string, unknown>, GeneratorOpts> {
+    declare options: GeneratorOpts;
     public setPromptsCallback: (fn: any) => void;
     public prompts: Prompts;
 
@@ -49,7 +51,7 @@ export default class SubGeneratorBase extends Generator {
      * @param {Generator.GeneratorOptions} opts - The options for the generator.
      * @param {GeneratorTypes} type - The type of generator.
      */
-    constructor(args: string | string[], opts: GeneratorOpts, type: GeneratorTypes) {
+    constructor(args: string[], opts: GeneratorOpts, type: GeneratorTypes) {
         super(args, opts);
         this.type = type;
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
@@ -97,7 +99,7 @@ export default class SubGeneratorBase extends Generator {
      * @returns {Promise<void>} A promise that resolves when the error is handled.
      */
     protected async handleRuntimeCrash(errorMessage: string): Promise<void> {
-        await this.prompt([this._getErrorMessagePrompt(errorMessage)]);
+        await this.prompt([this._getErrorMessagePrompt(errorMessage)] as PromptQuestions<Record<string, unknown>>);
     }
 
     /**

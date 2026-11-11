@@ -3,7 +3,7 @@
  */
 
 import { basename, join, relative } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getReuseLibs, ReuseLibType } from '../file-discovery.js';
 import { createMemFsEditor } from '../fs-adapter.js';
 import { readJSON } from '../../index.js';

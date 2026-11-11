@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../../src/index.js';
 import { WriterFactory } from '../../../../src/writer/changes/writer-factory.js';

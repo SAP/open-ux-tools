@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { render } from 'ejs';
-import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project, renameInStore } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import cloneDeep from 'lodash/cloneDeep.js';
 import { TemplateType } from './types.js';
@@ -10,12 +10,13 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n.js';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils.js';
+import type { CopyOptionsWithIgnore } from './utils.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import { generateOPATests } from './generateOPATests.js';
 import type { Logger } from '@sap-ux/logger';
 import { addVirtualTestConfig } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { BasicAppSettings, FreestyleApp } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -64,6 +65,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     };
     const templateVersionPath = getTemplateVersionPath(ffApp);
 
+    const copyOptions: CopyOptionsWithIgnore = { globOptions: { ignore, dot: true } };
     fs.copyTpl(
         join(tmplPath, 'common', 'add', templateVersionPath),
         basePath,
@@ -72,10 +74,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             escapeFLPText
         },
         undefined,
-        {
-            globOptions: { ignore, dot: true },
-            processDestinationPath: processDestinationPath
-        }
+        copyOptions
     );
     fs.copyTpl(
         join(
@@ -87,34 +86,23 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         basePath,
         ffApp,
         undefined,
-        {
-            globOptions: { ignore, dot: true },
-            processDestinationPath: processDestinationPath
-        }
+        copyOptions
     );
+
+    // mem-fs-editor@12 removed copyTpl's processDestinationPath rename callback, so rename the
+    // rendered outputs afterwards (move = copy + delete, leaving `state: 'deleted'` tombstones).
+    renameInStore(fs, basePath, processDestinationPath);
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
-        fs.copyTpl(
-            join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`),
-            viewTarget,
-            ffApp,
-            undefined,
-            {
-                processDestinationPath: processDestinationPath
-            }
-        );
+        fs.copyTpl(join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/View.xml`), viewTarget, ffApp);
         const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
         fs.copyTpl(
             join(tmplPath, ffApp.template.type, `custom/${templateVersionPath}/Controller.${ext}`),
             controllerTarget,
-            ffApp,
-            undefined,
-            {
-                processDestinationPath: processDestinationPath
-            }
+            ffApp
         );
     }
 

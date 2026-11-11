@@ -2,7 +2,7 @@
  * Helper functions for extracting template details from manifest and pom.xml
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { TemplateFileName } from '../index.js';
 import { readFile, fileExists } from '../utils/index.js';
 import type { Manifest, ManifestNamespace, FioriElementsVersion } from '../project-spec-types.js';

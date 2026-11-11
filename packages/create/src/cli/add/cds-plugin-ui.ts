@@ -43,7 +43,7 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
         const fs = await enableCdsUi5Plugin(basePath);
         await traceChanges(fs);
         if (!simulate) {
-            await new Promise<void>((resolve) => fs.commit(resolve));
+            await fs.commit();
             logger.info(`Changes to enable cds-plugin-ui5 written`);
             if (skipInstall) {
                 logger.warn('To finish enablement of cds-plugin-ui5 run commands:');

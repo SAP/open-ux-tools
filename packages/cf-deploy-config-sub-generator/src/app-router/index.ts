@@ -3,6 +3,7 @@ import * as hasbin from 'hasbin';
 import { platform } from 'node:os';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
+import type { PromptQuestions } from 'yeoman-generator';
 import {
     DeploymentGenerator,
     ERROR_TYPE,
@@ -27,6 +28,7 @@ import type {
  * @extends DeploymentGenerator
  */
 export default class extends DeploymentGenerator {
+    declare options: CfApprouterGenOptions;
     private readonly appWizard: AppWizardType;
     private readonly prompts: PromptsType;
     private answers: CfAppRouterDeployConfigAnswers;
@@ -40,10 +42,9 @@ export default class extends DeploymentGenerator {
      * @param args - arguments passed to the generator
      * @param opts - cf app router options passed to the generator
      */
-    constructor(args: string | string[], opts: CfApprouterGenOptions) {
+    constructor(args: string[], opts: CfApprouterGenOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
-        this.options = opts;
 
         this.appWizard.setHeaderTitle(generatorTitle);
         this.prompts = new Prompts(prompts);
@@ -85,7 +86,7 @@ export default class extends DeploymentGenerator {
         };
 
         const prompts = await getAppRouterPrompts(appRouterPromptOptions);
-        this.answers = await this.prompt(prompts);
+        this.answers = await this.prompt(prompts as PromptQuestions<CfAppRouterDeployConfigAnswers>);
     }
 
     public async writing(): Promise<void> {
@@ -119,16 +120,17 @@ export default class extends DeploymentGenerator {
         await generateBaseConfig(cfBaseConfig, this.fs, DeploymentGenerator.logger as unknown as Logger);
     }
 
-    public install(): void {
-        this._install();
+    public async install(): Promise<void> {
+        await this._install();
     }
 
-    private _install(): void {
+    private async _install(): Promise<void> {
         if (!this.abort && !this.options.skipInstall) {
             const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
 
             // install dependencies in project root
-            this.spawnCommand(
+            // yeoman v8 renamed the args-array form of `spawnCommand` to `spawn`
+            await this.spawn(
                 npm,
                 ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'],
                 {

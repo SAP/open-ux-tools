@@ -1,7 +1,7 @@
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { createExtensionProjectManifest, createWebappFolderAndMigrateFiles } from '../../../src/files/webapp.js';
 import type { ImportProjectInfo } from '../../../src/types.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';

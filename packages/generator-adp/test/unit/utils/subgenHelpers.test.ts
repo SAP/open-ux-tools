@@ -198,7 +198,7 @@ describe('Sub-generator helpers', () => {
             expect(composeWith).toHaveBeenCalledWith(
                 '@bas-dev/extensibility-sub',
                 expect.objectContaining({
-                    arguments: [JSON.stringify(fakeData)]
+                    generatorArgs: [JSON.stringify(fakeData)]
                 })
             );
             expect(logger.info).toHaveBeenCalled();

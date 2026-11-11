@@ -4,7 +4,7 @@ import { create } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 
 const mockYamlNewInstance = jest.fn() as jest.Mock;

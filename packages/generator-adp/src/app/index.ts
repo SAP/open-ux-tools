@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
+import type { PromptQuestions } from 'yeoman-generator';
 import { v4 as uuidv4 } from 'uuid';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 import type { IPrompt, AppWizard as AppWizardType, Prompts as YeomanUiStepsType } from '@sap-devx/yeoman-ui-types';
@@ -93,7 +94,8 @@ const generatorTitle = 'Adaptation Project';
  *
  * @extends Generator
  */
-export default class extends Generator {
+export default class extends Generator<Record<string, unknown>, AdpGeneratorOptions> {
+    declare options: AdpGeneratorOptions;
     setPromptsCallback: (fn: object) => void;
     private readonly appWizard: AppWizardType;
     private readonly vscode: any;
@@ -220,14 +222,13 @@ export default class extends Generator {
      * @param {string | string[]} args - The arguments passed to the generator.
      * @param {AdpGeneratorOptions} opts - The options for the generator.
      */
-    constructor(args: string | string[], opts: AdpGeneratorOptions) {
+    constructor(args: string[], opts: AdpGeneratorOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
         this.vscode = opts.vscode;
         this._setupLogging();
-        this.options = opts;
 
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
 
@@ -235,9 +236,6 @@ export default class extends Generator {
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
         if (!this.jsonInput) {
-            this.env.lookup({
-                packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
-            });
             setHeaderTitle(opts, this.logger, generatorTitle);
 
             initCache(this.logger, this.appWizard);
@@ -251,6 +249,11 @@ export default class extends Generator {
     }
 
     async initializing(): Promise<void> {
+        if (!this.jsonInput) {
+            await this.env.lookup({
+                packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
+            });
+        }
         // Force the generator to overwrite existing files without additional prompting
         setYeomanEnvConflicterForce(this.env, this.options.force);
         await initI18n();
@@ -302,7 +305,7 @@ export default class extends Generator {
                 systemValidationCli: { hide: !this.isCli },
                 shouldCreateExtProject: { isExtensibilityExtInstalled }
             });
-            this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
+            this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions as PromptQuestions<ConfigAnswers>);
             this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
 
             this.logger.info(`System: ${this.configAnswers.system}`);
@@ -330,7 +333,7 @@ export default class extends Generator {
                 importKeyUserChanges: { hide: this.shouldCreateExtProject }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), optionalPromptsConfig, options);
-            this.attributeAnswers = await this.prompt(attributesQuestions);
+            this.attributeAnswers = await this.prompt(attributesQuestions as PromptQuestions<AttributesAnswers>);
 
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
             this._updateWizardStepsAfterNavigation();
@@ -349,7 +352,7 @@ export default class extends Generator {
                     keyUserAdaptationValidationCli: { hide: !this.isCli },
                     keyUserRestrictedViewsLabel: { hide: this.isCli }
                 });
-                await this.prompt(keyUserQuestions);
+                await this.prompt(keyUserQuestions as PromptQuestions<Record<string, unknown>>);
             }
 
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
@@ -536,7 +539,7 @@ export default class extends Generator {
                 getMtaModePrompt(),
                 getProjectPathPrompt(this.logger, this.vscode, this.cfConfig),
                 getMtaIdPrompt()
-            ]);
+            ] as PromptQuestions<ProjectLocationAnswers>);
             const selectedLocation = fs.realpathSync(pathAnswers.projectLocation, 'utf-8');
             const resolvedRoot =
                 pathAnswers.mtaMode === MtaMode.New && pathAnswers.mtaId
@@ -599,7 +602,7 @@ export default class extends Generator {
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
             getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig)
-        ]);
+        ] as PromptQuestions<TargetEnvAnswers>);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
         this.isCfEnv = this.targetEnv === TargetEnv.CF;
@@ -643,11 +646,13 @@ export default class extends Generator {
             options
         );
 
-        this.attributeAnswers = await this.prompt(attributesQuestions);
+        this.attributeAnswers = await this.prompt(attributesQuestions as PromptQuestions<AttributesAnswers>);
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);
-        this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
+        this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(
+            cfServicesQuestions as PromptQuestions<CfServicesAnswers>
+        );
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
 
         const selectedApp = this.cfServicesAnswers.baseApp;

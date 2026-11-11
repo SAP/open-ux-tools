@@ -2,7 +2,7 @@
  * Helper functions for processing FLP sandbox HTML files
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { fileExists, readFile } from '../../utils/index.js';
 
 /**

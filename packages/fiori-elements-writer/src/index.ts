@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -37,6 +37,14 @@ import { generateFpmConfig } from './fpmConfig.js';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { writeAnnotations } from './writeAnnotations.js';
+
+/**
+ * `globOptions` accepted by `copyTpl`, augmented with `ignore`. mem-fs-editor v12 narrows the
+ * `globOptions` type and drops `ignore`, but tinyglobby still honours it at runtime.
+ */
+type GlobOptionsWithIgnore = NonNullable<NonNullable<Parameters<Editor['copyTpl']>[3]>['globOptions']> & {
+    ignore?: string | readonly string[];
+};
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -143,6 +151,7 @@ async function generate<T extends {}>(
         // if using virtual endpoints for preview, ignore the files within webapp/test (flpSandbox.html, changes_loader (v2), changes_preview (v2))
         ...(feApp.appOptions?.useVirtualPreviewEndpoints ? ['**/webapp/test/**'] : [])
     ];
+    const globOptions: GlobOptionsWithIgnore = { ignore, dot: true };
 
     if (feApp.appOptions?.useVirtualPreviewEndpoints) {
         setVirtualEndpointDefaults(feApp);
@@ -177,7 +186,7 @@ async function generate<T extends {}>(
         },
         undefined,
         {
-            globOptions: { ignore, dot: true }
+            globOptions
         }
     );
 
@@ -191,7 +200,7 @@ async function generate<T extends {}>(
         },
         undefined,
         {
-            globOptions: { ignore, dot: true }
+            globOptions
         }
     );
 
@@ -212,13 +221,7 @@ async function generate<T extends {}>(
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
-                fs!.copyTpl(
-                    join(templatePath, '**/*.*'),
-                    basePath,
-                    feApp,
-                    {},
-                    { ignoreNoMatch: true, globOptions: { ignore, dot: true } }
-                );
+                fs!.copyTpl(join(templatePath, '**/*.*'), basePath, feApp, {}, { ignoreNoMatch: true, globOptions });
             }
         );
     }

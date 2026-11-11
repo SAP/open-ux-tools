@@ -1,6 +1,6 @@
 import { dirname, join } from 'node:path';
 import { createRequire } from 'node:module';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const require = createRequire(import.meta.url);
 

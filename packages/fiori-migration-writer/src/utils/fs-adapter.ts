@@ -5,7 +5,7 @@
  * threaded explicitly through the call tree (as in the other open-ux-tools writers),
  * so there is no implicit/global context here.
  */
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create as createMemFs } from 'mem-fs';
 import { create as createEditor } from 'mem-fs-editor';
 import fastGlob from 'fast-glob';
@@ -24,7 +24,7 @@ type EditorWithStore = Editor & { store: EditorStore };
  * @returns New mem-fs editor instance
  */
 export function createMemFsEditor(): Editor {
-    const store = createMemFs();
+    const store = createMemFs<VinylMemFsEditorFile>();
     return createEditor(store);
 }
 

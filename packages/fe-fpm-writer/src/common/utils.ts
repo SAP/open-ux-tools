@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import os from 'node:os';
 import { join } from 'node:path';
 import { coerce, minor } from 'semver';

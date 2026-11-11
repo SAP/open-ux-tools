@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import path, { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -209,7 +209,7 @@ describe('Project Utils', () => {
         const projectPath = 'project';
 
         const writeFilesSpy = jest.fn();
-        const mockFs = { copyTpl: writeFilesSpy };
+        const mockFs = { copy: jest.fn(), copyTpl: writeFilesSpy, dump: jest.fn(() => ({})), move: jest.fn() };
 
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);

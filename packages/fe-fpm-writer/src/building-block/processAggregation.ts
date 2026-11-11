@@ -14,7 +14,7 @@ import {
 import format from 'xml-formatter';
 import * as xpath from 'xpath';
 import { coerce, lt } from 'semver';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import {

@@ -1,6 +1,6 @@
 import { checkPrerequisites } from './prerequisites.js';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files.js';
 import { updatePreviewMiddlewareConfigs, updateDefaultTestConfig } from './ui5-yaml.js';
 import { updateVariantsCreationScript } from './package-json.js';

@@ -15,6 +15,26 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "1.120.0/webapp/model/models.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.120.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/model/models.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"nods1\\",
@@ -6799,6 +6819,26 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "1.120.0/webapp/model/models.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.120.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/model/models.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"nods1\\",
@@ -10191,6 +10231,26 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "1.120.0/webapp/model/models.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.120.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/model/models.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"nods1\\",
@@ -13156,6 +13216,22 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "1.120.0/webapp/model/models.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.120.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/model/models.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "eslint.config.mjs": Object {
     "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
@@ -13164,6 +13240,10 @@ export default [
 ];
 ",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
@@ -16571,6 +16651,22 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
+  "1.120.0/webapp/model/models.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.120.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/model/models.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "1.71.0/webapp/test/flpSandbox.html": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "eslint.config.mjs": Object {
     "contents": "import fioriTools from '@sap-ux/eslint-plugin-fiori-tools';
 
@@ -16579,6 +16675,10 @@ export default [
 ];
 ",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{

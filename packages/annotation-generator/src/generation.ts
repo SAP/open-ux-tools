@@ -8,7 +8,7 @@ import {
 } from '@sap-ux/fiori-annotation-api';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { convert } from '@sap-ux/annotation-converter';
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';

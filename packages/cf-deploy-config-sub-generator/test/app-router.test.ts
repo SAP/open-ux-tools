@@ -1,47 +1,13 @@
 import { jest } from '@jest/globals';
-import path, { join, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 import fs from 'node:fs';
-import * as memfs from 'memfs';
+import os from 'node:os';
 import yaml from 'js-yaml';
 import yeomanTest from 'yeoman-test';
 import { TestFixture } from './fixtures/index.js';
-import type { Editor } from 'mem-fs-editor';
 
-const require = createRequire(import.meta.url);
 const __testdirname = dirname(fileURLToPath(import.meta.url));
-
-// CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
-// jest.mock is hoisted, so we use require() inside the factory
-jest.mock('fs', () => {
-    const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const vol = require('memfs').vol;
-    const _fs = new Union().use(fsLib);
-    const unionFs = _fs.use(vol as unknown as typeof fs);
-    unionFs.constants = fsLib.constants;
-    unionFs.realpath = fsLib.realpath;
-    unionFs.realpathSync = fsLib.realpathSync;
-    return unionFs;
-});
-
-// ESM mock for 'node:fs' — intercepted by ESM imports (e.g., mock-mta.ts)
-// Build a separate unionfs instance but sharing the same memfs.vol singleton
-const realFs = { ...fs };
-const esmUnionFs = new (await import('unionfs')).Union()
-    .use(realFs as unknown as typeof fs)
-    .use(memfs.vol as unknown as typeof fs);
-(esmUnionFs as any).constants = fs.constants;
-(esmUnionFs as any).realpath = fs.realpath;
-(esmUnionFs as any).realpathSync = fs.realpathSync;
-
-jest.unstable_mockModule('node:fs', () => ({
-    ...esmUnionFs,
-    default: esmUnionFs
-}));
 
 const mockHasbinSync = jest.fn() as jest.Mock;
 
@@ -50,7 +16,6 @@ jest.unstable_mockModule('hasbin', () => ({
     sync: mockHasbinSync
 }));
 
-// Import MockMta AFTER fs mocks are set up so it gets the mocked fs
 const { MockMta } = await import('./utils/mock-mta.js');
 
 jest.unstable_mockModule('@sap/mta-lib', () => ({
@@ -85,27 +50,19 @@ const { initI18n } = await import('../src/utils/index.js');
 const { ErrorHandler, ERROR_TYPE } = await import('@sap-ux/deploy-config-generator-shared');
 const { RouterModuleType } = await import('@sap-ux/cf-deploy-config-writer');
 
-// Use memfs.fs to read files written to virtual paths by the generator
-const mockedFs = memfs.fs;
-
 const sapUxTest = 'sap-ux-test';
 
 // Increase timeout for heavy generator lifecycle execution in ESM mode
 jest.setTimeout(60000);
 
 describe('App router generator tests', () => {
-    let cwd: string;
-    const OUTPUT_DIR_PREFIX = join(`/output`);
     const testFixture = new TestFixture();
     const appRouterGenPath = join(__testdirname, '../src/app-router');
+    let outputDir: string;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        memfs.vol.reset();
-        const mockChdir = jest.spyOn(process, 'chdir');
-        mockChdir.mockImplementation((dir): void => {
-            cwd = dir;
-        });
+        outputDir = fs.mkdtempSync(join(os.tmpdir(), 'cf-app-router-'));
         // Delegate to real implementations by default
         mockGetAppRouterPrompts.mockImplementation((...args) =>
             (realCfConfigInquirer.getAppRouterPrompts as Function)(...args)
@@ -121,11 +78,12 @@ describe('App router generator tests', () => {
 
     afterEach(() => {
         jest.resetAllMocks();
+        fs.rmSync(outputDir, { recursive: true, force: true });
     });
 
     it('Generate app router project with minimum configuration', async () => {
         mockHasbinSync.mockReturnValue(true);
-        const targetFolder = (cwd = join(`${OUTPUT_DIR_PREFIX}/${sapUxTest}`));
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -151,7 +109,7 @@ describe('App router generator tests', () => {
 
         const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
 
-        const mtaContent = mockedFs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
         const mtaConfig = yaml.load(mtaContent as string);
 
         const expectMtaContent = testFixture.getContents('sap-ux-test/mta.minimum.yaml');
@@ -162,7 +120,7 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with connectivity config', async () => {
         mockHasbinSync.mockReturnValue(true);
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -188,14 +146,14 @@ describe('App router generator tests', () => {
 
         const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
 
-        const mtaContent = mockedFs.readFileSync(join(`${appRouterDir}/mta.yaml`), 'utf-8');
+        const mtaContent = fs.readFileSync(join(`${appRouterDir}/mta.yaml`), 'utf-8');
         const mtaConfig = yaml.load(mtaContent as string);
 
         const expectMtaContent = testFixture.getContents(join(`${sapUxTest}/mta.connectivity.yaml`));
         const expectMtaConfig = yaml.load(expectMtaContent);
         expect(mtaConfig).toEqual(expectMtaConfig);
 
-        const xsappContent = mockedFs.readFileSync(join(`${appRouterDir}/router/xs-app.json`), 'utf-8');
+        const xsappContent = fs.readFileSync(join(`${appRouterDir}/router/xs-app.json`), 'utf-8');
         const xsapp = JSON.parse(xsappContent as string);
         const expectXsappContent = testFixture.getContents(join(`${sapUxTest}/router/xs-app.json`));
         const expectXsapp = JSON.parse(expectXsappContent);
@@ -205,7 +163,7 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with direct abap service config', async () => {
         mockHasbinSync.mockReturnValue(true);
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -232,14 +190,14 @@ describe('App router generator tests', () => {
 
         const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
 
-        const mtaContent = mockedFs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
         const mtaConfig = yaml.load(mtaContent as string);
 
         const expectMtaContent = testFixture.getContents('sap-ux-test/mta.abapservice.yaml');
         const expectMtaConfig = yaml.load(expectMtaContent);
         expect(mtaConfig).toEqual(expectMtaConfig);
 
-        const xsappContent = mockedFs.readFileSync(`${appRouterDir}/router/xs-app.json`, 'utf-8');
+        const xsappContent = fs.readFileSync(`${appRouterDir}/router/xs-app.json`, 'utf-8');
         const xsapp = JSON.parse(xsappContent as string);
         const expectXsappContent = testFixture.getContents('sap-ux-test/router/xs-app-direct-binding.json');
         const expectXsapp = JSON.parse(expectXsappContent);
@@ -249,7 +207,7 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with maximum mta config', async () => {
         mockHasbinSync.mockReturnValue(true);
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -276,13 +234,13 @@ describe('App router generator tests', () => {
 
         const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
 
-        const mtaContent = mockedFs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
         const mtaConfig = yaml.load(mtaContent as string);
         const expectMtaContent = testFixture.getContents('sap-ux-test/mta.maximum.yaml');
         const expectMtaConfig = yaml.load(expectMtaContent);
         expect(mtaConfig).toEqual(expectMtaConfig);
 
-        const xsappContent = mockedFs.readFileSync(`${appRouterDir}/router/xs-app.json`, 'utf-8');
+        const xsappContent = fs.readFileSync(`${appRouterDir}/router/xs-app.json`, 'utf-8');
         const xsapp = JSON.parse(xsappContent as string);
         const expectXsappContent = testFixture.getContents('sap-ux-test/router/xs-app-direct-binding.json');
         const expectXsapp = JSON.parse(expectXsappContent);
@@ -292,7 +250,7 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with managed app router', async () => {
         mockHasbinSync.mockReturnValue(true);
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -319,7 +277,7 @@ describe('App router generator tests', () => {
 
         const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
 
-        const mtaContent = mockedFs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
         const mtaConfig = yaml.load(mtaContent as string);
         const expectMtaContent = testFixture.getContents('sap-ux-test/mta.managed.yaml');
         const expectMtaConfig = yaml.load(expectMtaContent);
@@ -328,7 +286,7 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with app frontend service', async () => {
         mockHasbinSync.mockReturnValue(true);
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -353,12 +311,12 @@ describe('App router generator tests', () => {
 
         const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
 
-        const mtaContent = mockedFs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
         const mtaConfig = yaml.load(mtaContent as string);
         const expectMtaContent = testFixture.getContents('sap-ux-test/mta.appfront.yaml');
         const expectMtaConfig = yaml.load(expectMtaContent);
         expect(mtaConfig).toEqual(expectMtaConfig);
-        expect(mockedFs.readFileSync(`${appRouterDir}/xs-security.json`, 'utf-8')).toMatchInlineSnapshot(`
+        expect(fs.readFileSync(`${appRouterDir}/xs-security.json`, 'utf-8')).toMatchInlineSnapshot(`
             "{
               "description": "Security profile of called application",
               "scopes": [],
@@ -375,7 +333,7 @@ describe('App router generator tests', () => {
         mockHandleErrorMessage.mockImplementationOnce(() => {
             throw new Error(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN));
         });
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -399,7 +357,7 @@ describe('App router generator tests', () => {
             // logs no mta bin error
         });
 
-        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        const targetFolder = outputDir;
         await expect(
             yeomanTest
                 .create(
@@ -420,14 +378,14 @@ describe('App router generator tests', () => {
     });
 });
 
-function commonChecks(testFixture: TestFixture, OUTPUT_DIR_PREFIX: string): void {
-    const rootPackageJsonContent = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/package.json`, 'utf-8');
+function commonChecks(testFixture: TestFixture, appRouterDir: string): void {
+    const rootPackageJsonContent = fs.readFileSync(`${appRouterDir}/package.json`, 'utf-8');
     const rootPackageJson = JSON.parse(rootPackageJsonContent as string);
     const expectRootPackageJsonContent = testFixture.getContents('sap-ux-test/package.json');
     const expectRootPackageJson = JSON.parse(expectRootPackageJsonContent);
     expect(rootPackageJson).toEqual(expectRootPackageJson);
 
-    const routerPackageJsonContent = mockedFs.readFileSync(`${OUTPUT_DIR_PREFIX}/router/package.json`, 'utf-8');
+    const routerPackageJsonContent = fs.readFileSync(`${appRouterDir}/router/package.json`, 'utf-8');
     const routerPackageJson = JSON.parse(routerPackageJsonContent as string);
     const expectRouterPackageJsonContent = testFixture.getContents('sap-ux-test/router/package.json');
     const expectRouterPackageJson = JSON.parse(expectRouterPackageJsonContent);

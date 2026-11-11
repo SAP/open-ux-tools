@@ -1,9 +1,10 @@
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import type Generator from 'yeoman-generator';
-import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { BaseOptions } from 'yeoman-generator';
+import type { ILogWrapper, TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
-export interface FlpConfigOptions extends Generator.GeneratorOptions {
+import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
+export type FlpConfigOptions = BaseOptions & {
     /**
      * VSCode instance
      */
@@ -43,7 +44,19 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      * Flag indicating whether this is a CF environment project
      */
     isCfProject?: boolean;
-}
+    /**
+     * VSCode extension logger
+     */
+    logger?: IVSCodeExtLogger;
+    /**
+     * Log level for the generator
+     */
+    logLevel?: LogLevel;
+    /**
+     * Log wrapper instance
+     */
+    logWrapper?: ILogWrapper;
+};
 
 export interface State {
     provider?: AbapServiceProvider;

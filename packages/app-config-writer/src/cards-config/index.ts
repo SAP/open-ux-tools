@@ -1,5 +1,5 @@
 import { join, basename } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview, readManifest } from '../common/utils.js';

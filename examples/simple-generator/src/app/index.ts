@@ -1,5 +1,6 @@
 import { join } from 'node:path';
 import Generator from 'yeoman-generator';
+import type { BaseOptions, BaseFeatures } from 'yeoman-generator';
 
 import type { Template, LROPSettings, OVPSettings, FPMSettings } from '@sap-ux/fiori-elements-writer';
 import { generate as generateFE, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
@@ -31,13 +32,18 @@ export default class extends Generator {
      * @param options yo options
      * @param features yo features
      */
-    constructor(
-        args: string | string[],
-        options: Generator.GeneratorOptions,
-        features?: Generator.GeneratorFeatures | undefined
-    ) {
+    constructor(args: string[], options: BaseOptions, features?: BaseFeatures) {
         super(args, options, features);
         this.option('typescript');
+    }
+
+    /**
+     * Reads the --typescript CLI flag off the parsed yeoman options.
+     *
+     * @returns true if the typescript option was set
+     */
+    private get typescript(): boolean {
+        return Boolean((this.options as { typescript?: boolean }).typescript);
     }
 
     /**
@@ -45,7 +51,7 @@ export default class extends Generator {
      */
     initializing(): void {
         this.log('Example of a simple Fiori generator allowing to create basic UI5 or Fiori elements applications.');
-        if (this.options.typescript) {
+        if (this.typescript) {
             this.log('Typescript is set via CLI.');
         }
     }
@@ -59,7 +65,7 @@ export default class extends Generator {
                 validate: (answer) => !!answer
             },
             {
-                type: 'list',
+                type: 'select',
                 name: 'template',
                 message: 'Template',
                 choices: [
@@ -82,7 +88,7 @@ export default class extends Generator {
             type: 'input',
             name: 'entity',
             message: 'Main entity',
-            default: this.config.get('entity'),
+            default: this.config.get('entity') as string | undefined,
             validate: (answer) => !!answer
         });
 
@@ -150,7 +156,7 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         const appOptions = {
-            typescript: this.options.typescript
+            typescript: this.typescript
         };
         if (this.template.type === FreestyleTemplateType.Basic) {
             // generate a plain UI5 application
@@ -183,6 +189,10 @@ export default class extends Generator {
 
         // adding karma configuration using the mockserver middleware
         this.copyTemplate(this.templatePath('karma.conf.js'), this.destinationPath('karma.conf.js'));
-        this.fs.extendJSON(this.destinationPath('package.json'), this.fs.readJSON(this.templatePath('package.json')));
+        // readJSON returns `object`; extendJSON wants a Record. The `{}` default guarantees a non-undefined object.
+        this.fs.extendJSON(
+            this.destinationPath('package.json'),
+            this.fs.readJSON(this.templatePath('package.json'), {}) as Record<string, unknown>
+        );
     }
 }

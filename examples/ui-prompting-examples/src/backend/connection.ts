@@ -11,7 +11,7 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'node:util';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';

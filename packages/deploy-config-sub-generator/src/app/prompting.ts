@@ -4,8 +4,8 @@ import type { ApiHubConfig, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-conf
 import type { Answers } from 'inquirer';
 import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types/index.js';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
-import type { GeneratorOptions } from 'yeoman-generator';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
+import type Generator from 'yeoman-generator';
 
 /**
  * Determines the target deployment and runs all prompting if required.
@@ -29,7 +29,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
 export async function promptDeployConfigQuestions(
     fs: Editor,
     options: DeployConfigOptions,
-    prompt: GeneratorOptions['prompt'],
+    prompt: Generator['prompt'],
     {
         launchDeployConfigAsSubGenerator,
         launchStandaloneFromYui,
@@ -75,11 +75,15 @@ export async function promptDeployConfigQuestions(
             },
             targetDeployment
         );
-        const subGenAnswers = await prompt(questions);
+        const subGenAnswers = await prompt(questions as unknown as Parameters<typeof prompt>[0]);
         Object.assign(answers, subGenAnswers, abapAnswers);
         answers.overwrite = subGenAnswers.overwriteAbapConfig ?? subGenAnswers.overwriteCfConfig;
     } else {
-        answers = await prompt(getDeployTargetQuestion([...supportedTargets], options.projectRoot));
+        answers = await prompt(
+            getDeployTargetQuestion([...supportedTargets], options.projectRoot) as unknown as Parameters<
+                typeof prompt
+            >[0]
+        );
     }
     const target = supportedTargets.find(
         (t) => t.name === (answers as Answers)?.targetName || t.name === targetDeployment

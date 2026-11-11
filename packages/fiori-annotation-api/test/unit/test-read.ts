@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { getProject } from '@sap-ux/project-access';
 import type { Change } from '../../src/types/index.js';
 import { FioriAnnotationService } from '../../src/fiori-service.js';

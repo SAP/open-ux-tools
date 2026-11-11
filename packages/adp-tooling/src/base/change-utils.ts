@@ -1,6 +1,6 @@
 import type { Dirent } from 'node:fs';
 import path from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';

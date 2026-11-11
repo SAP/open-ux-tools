@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -31,7 +31,7 @@ jest.unstable_mockModule('prompts', () => ({ default: jest.fn(), prompt: jest.fn
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create(_store: Store) {
         return {
-            commit: jest.fn().mockImplementation((cb) => cb()),
+            commit: jest.fn().mockResolvedValue(undefined),
             dump: jest.fn(),
             read: jest.fn(),
             readJSON: jest.fn(),
@@ -49,7 +49,7 @@ jest.unstable_mockModule('mem-fs-editor', () => ({
 }));
 
 const mockGenerate = jest.fn().mockResolvedValue({
-    commit: jest.fn().mockImplementation((cb) => cb()),
+    commit: jest.fn().mockResolvedValue(undefined),
     dump: jest.fn()
 } as Partial<Editor> as Editor);
 const mockPromptGeneratorInput = jest.fn() as jest.Mock;

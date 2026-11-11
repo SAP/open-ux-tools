@@ -549,7 +549,9 @@ describe('Test abap deploy configuration generator', () => {
                 transport: ''
             },
             lrep: 'apps/workcenter/appVariants/customer.app.variant',
-            target: {},
+            target: {
+                url: ''
+            },
             exclude: ['/test/', '/localService/']
         });
     });

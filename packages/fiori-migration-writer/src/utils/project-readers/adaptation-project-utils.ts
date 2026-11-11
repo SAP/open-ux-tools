@@ -4,7 +4,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { fileExists, readJSON } from '../../index.js';
 import { sapWattCommonSetting } from '../../types.js';
 

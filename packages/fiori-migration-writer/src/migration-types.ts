@@ -3,7 +3,7 @@ import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { ODataVersion } from '@sap-ux/axios-extension';
 import type { BaseProject, BaseService } from '@sap-ux/fiori-generator-shared';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';

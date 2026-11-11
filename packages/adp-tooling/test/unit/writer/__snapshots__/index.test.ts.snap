@@ -455,6 +455,10 @@ dist/
 *.zip",
     "state": "modified",
   },
+  "../minimal/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "../minimal/package.json": Object {
     "contents": "{
     \\"name\\": \\"my-test-app\\",
@@ -834,6 +838,10 @@ dist/
 *.zip",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
     \\"name\\": \\"my-test-app\\",
@@ -958,6 +966,10 @@ dist/
 *.zip",
     "state": "modified",
   },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "package.json": Object {
     "contents": "{
     \\"name\\": \\"my-test-app\\",
@@ -1081,6 +1093,10 @@ dist/
 .adp
 *.zip",
     "state": "modified",
+  },
+  "../deploy/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "../deploy/package.json": Object {
     "contents": "{
@@ -1230,6 +1246,10 @@ dist/
 *.zip",
     "state": "modified",
   },
+  "../fiori-tools/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "../fiori-tools/package.json": Object {
     "contents": "{
     \\"name\\": \\"my-test-app\\",
@@ -1373,6 +1393,10 @@ dist/
 *.zip",
     "state": "modified",
   },
+  "../minimal/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "../minimal/package.json": Object {
     "contents": "{
     \\"name\\": \\"my-test-app\\",
@@ -1491,6 +1515,10 @@ dist/
 .adp
 *.zip",
     "state": "modified",
+  },
+  "../s4hana/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "../s4hana/package.json": Object {
     "contents": "{
@@ -1653,6 +1681,10 @@ dist/
 .adp
 *.zip",
     "state": "modified",
+  },
+  "../s4hanaDestination/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "../s4hanaDestination/package.json": Object {
     "contents": "{
@@ -1817,6 +1849,10 @@ dist/
 *.zip",
     "state": "modified",
   },
+  "../s4hanaWithInboundId/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "../s4hanaWithInboundId/package.json": Object {
     "contents": "{
     \\"name\\": \\"my-test-app\\",
@@ -1978,6 +2014,10 @@ dist/
 .adp
 *.zip",
     "state": "modified",
+  },
+  "../ts-support/gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "../ts-support/package.json": Object {
     "contents": "{
@@ -2166,6 +2206,10 @@ dist/
 .adp
 *.zip",
     "state": "modified",
+  },
+  "gitignore.tmpl": Object {
+    "contents": null,
+    "state": "deleted",
   },
   "neo-app.json": Object {
     "contents": null,

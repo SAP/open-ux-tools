@@ -50,7 +50,7 @@ jest.unstable_mockModule('../../../src/writer/editors', () => ({
 }));
 
 import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 

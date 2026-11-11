@@ -1,12 +1,13 @@
 import Generator from 'yeoman-generator';
 import { initI18n } from '../utils/index.js';
 import { DefaultLogger, LogWrapper, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import type { DeploymentGeneratorOptions } from './types.js';
 import type { LogLevel, IVSCodeExtLogger } from '@vscode-logging/logger';
 
 /**
  * Base class for deployment generators.
  */
-export abstract class DeploymentGenerator extends Generator {
+export abstract class DeploymentGenerator extends Generator<Record<string, unknown>, DeploymentGeneratorOptions> {
     private static _logger: ILogWrapper = DefaultLogger;
 
     /**
@@ -15,7 +16,7 @@ export abstract class DeploymentGenerator extends Generator {
      * @param args - arguments passed to the generator
      * @param options - options passed to the generator
      */
-    constructor(args: string | string[], options: Generator.GeneratorOptions) {
+    constructor(args: string[], options: DeploymentGeneratorOptions) {
         super(args, options, {
             unique: 'namespace'
         });
@@ -45,7 +46,7 @@ export abstract class DeploymentGenerator extends Generator {
      * @param vscode - vscode instance
      * @returns - log wrapper instance
      */
-    private _configureLogging(logLevel: LogLevel, vscLogger: IVSCodeExtLogger, vscode?: object): ILogWrapper {
+    private _configureLogging(logLevel?: LogLevel, vscLogger?: IVSCodeExtLogger, vscode?: object): ILogWrapper {
         return new LogWrapper(this.rootGeneratorName(), this.log, logLevel, vscLogger, vscode);
     }
 }

@@ -1,7 +1,7 @@
 import { basename, join } from 'node:path';
 import { getRTAUrlParameters, getRTAUrl } from './utils.js';
 import { getCLIForPreview } from '../common/utils.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 

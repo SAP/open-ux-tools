@@ -7,7 +7,7 @@
 
 import type { ImportProjectInfo, Message, TemplateData, NeoappDestination } from '../types.js';
 import type { SapAppSourceTemplate } from '../project-spec-types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../project-spec-types.js';
 import { MigrationTypes, distVar } from '../utils/constants.js';
 

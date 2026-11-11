@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { JSONPath, ModificationOptions } from 'jsonc-parser';
 import { applyEdits, modify } from 'jsonc-parser';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Writes changes for 'launch.json'.

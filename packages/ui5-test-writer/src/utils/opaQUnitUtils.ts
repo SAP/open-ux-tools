@@ -5,7 +5,7 @@
  */
 
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { readHashFromFlpSandbox } from './flpSandboxUtils.js';
 import { MAX_FILE_CONTENT_LENGTH } from './fileWritingUtils.js';

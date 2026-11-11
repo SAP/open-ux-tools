@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { updateRootPackage } from '../utils.js';
 import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config/index.js';
 import { waitForMtaFile } from '../mta-config/wait-for-mta.js';

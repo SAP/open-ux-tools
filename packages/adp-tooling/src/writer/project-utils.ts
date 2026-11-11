@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 import { getTemplatePath } from '../templates.js';
 import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
@@ -101,6 +101,30 @@ export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
 }
 
 /**
+ * Renames already-copied files in the mem-fs store by moving each one to its renamed path.
+ *
+ * `mem-fs-editor@12` removed `copyTpl`'s `processDestinationPath` rename callback, so renaming is
+ * done after `copyTpl` has rendered the templates. `fs.move()` is a copy + delete, so each renamed
+ * source is left behind as a `state: 'deleted'` tombstone in the store (visible in `fs.dump()`).
+ *
+ * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
+ * @param {string} basePath - The base path the rename callback operates relative to.
+ * @param {(relPath: string) => string} rename - Maps a `basePath`-relative POSIX path to its renamed path.
+ * @returns {void}
+ */
+export function renameInStore(fs: Editor, basePath: string, rename: (relPath: string) => string): void {
+    for (const [absPath, file] of Object.entries(fs.dump(basePath))) {
+        if (file.state === 'deleted') {
+            continue;
+        }
+        const renamed = rename(absPath);
+        if (renamed !== absPath) {
+            fs.move(join(basePath, absPath), join(basePath, renamed));
+        }
+    }
+}
+
+/**
  * Writes a given project template files within a specified folder in the project directory.
  *
  * @param {string} baseTmplPath - The root path of the templates folder.
@@ -123,9 +147,11 @@ export function writeTemplateToFolder(
 
     try {
         fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
-            globOptions: { dot: true },
-            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+            globOptions: { dot: true }
         });
+        // mem-fs-editor@12 removed copyTpl's processDestinationPath rename callback, so rename the
+        // rendered outputs afterwards (move = copy + delete, leaving `state: 'deleted'` tombstones).
+        renameInStore(fs, projectPath, (filePath) => filePath.replace(/gitignore.tmpl/g, '.gitignore'));
 
         if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');

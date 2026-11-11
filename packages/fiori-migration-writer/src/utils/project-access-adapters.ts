@@ -3,7 +3,7 @@
  * or compatibility with legacy @sap/ux-project-access
  */
 import { hasDependency, findFilesByExtension } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readJSON } from './file-access.js';
 import { dirname, join, sep } from 'node:path';
 

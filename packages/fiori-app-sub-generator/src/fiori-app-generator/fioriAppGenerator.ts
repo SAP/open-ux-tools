@@ -30,8 +30,8 @@ import { initTelemetrySettings } from '@sap-ux/telemetry';
 import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { getUI5Versions, latestVersionString, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { join } from 'node:path';
-import type { Adapter } from 'yeoman-environment';
 import Generator from 'yeoman-generator';
+import type { PromptQuestion, PromptQuestions } from 'yeoman-generator';
 import type { FioriStep, Service, State, YeomanUiStepConfig } from '../types/index.js';
 import {
     defaultNavActionDisplay,
@@ -82,7 +82,7 @@ export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
  * The root generator for Fiori Elements and Fiori Freestyle generators.
  * All common functionality is implemented here.
  */
-export class FioriAppGenerator extends Generator {
+export class FioriAppGenerator extends Generator<Record<string, unknown>, FioriAppGeneratorOptions> {
     private readonly vscode: unknown;
     // Performance measurement
     private generationTime0: number; // start of writing phase millisecond timestamp
@@ -105,7 +105,7 @@ export class FioriAppGenerator extends Generator {
      * @param args
      * @param opts
      */
-    constructor(args: string | string[], opts: FioriAppGeneratorOptions) {
+    constructor(args: string[], opts: FioriAppGeneratorOptions) {
         super(args, opts, {
             unique: 'namespace'
         });
@@ -143,7 +143,7 @@ export class FioriAppGenerator extends Generator {
 
         TelemetryHelper.createTelemetryData({
             ...this.options.telemetryData
-        });
+        } as Parameters<typeof TelemetryHelper.createTelemetryData>[0]);
 
         /**
          * Preloading UI5 versions to be retreived from cache later in generation flow
@@ -165,7 +165,7 @@ export class FioriAppGenerator extends Generator {
 
         // Configuration of steps in YUI and their interdependance
         this.fioriSteps = this.options.fioriSteps ?? FIORI_STEPS;
-        this.yeomanUiStepConfig = this.options.yeomanUiStepConfig;
+        this.yeomanUiStepConfig = this.options.yeomanUiStepConfig as YeomanUiStepConfig;
         this.prompts = this.yeomanUiStepConfig?.activeSteps;
     }
 
@@ -191,7 +191,7 @@ export class FioriAppGenerator extends Generator {
                 let serviceAnswers = await promptOdataServiceAnswers(
                     options,
                     FioriAppGenerator.logger as Logger,
-                    this.env.adapter as unknown as Adapter,
+                    this.env.adapter as unknown as Parameters<typeof promptOdataServiceAnswers>[2],
                     cachedService?.connectedSystem
                 );
                 /** Back button handling */
@@ -227,7 +227,9 @@ export class FioriAppGenerator extends Generator {
 
             // Freestyle templates require a view name
             if (isFioriFreestyleTemplate) {
-                const viewNameAnswer: ViewNameAnswer = await this.prompt([getViewQuestion()]);
+                const viewNameAnswer = await this.prompt<ViewNameAnswer>([
+                    getViewQuestion() as unknown as PromptQuestion<ViewNameAnswer>
+                ]);
                 this.state.viewName = viewNameAnswer.viewName;
             } else if (this.state.service.edmx) {
                 // Fiori Elements templates require entity and related settings
@@ -248,7 +250,9 @@ export class FioriAppGenerator extends Generator {
                     FioriAppGenerator.logger as Logger,
                     getHostEnvironment() !== hostEnvironment.cli
                 );
-                const entityRelatedAnswers: EntityRelatedAnswers = await this.prompt(entityQuestions);
+                const entityRelatedAnswers = await this.prompt<EntityRelatedAnswers>(
+                    entityQuestions as PromptQuestions<EntityRelatedAnswers>
+                );
                 // Some state may have been assigned by adaptors, and then certain prompts hidden, so we must merge the answers
                 this.state.entityRelatedConfig = Object.assign(
                     this.state.entityRelatedConfig ?? {},
@@ -286,7 +290,7 @@ export class FioriAppGenerator extends Generator {
                             promptExtension: generatorOptions.extensions
                         },
                         [this.yeomanUiStepConfig],
-                        this.env.adapter as unknown as Adapter
+                        this.env.adapter as unknown as Parameters<typeof promptUI5ApplicationAnswers>[2]
                     );
                 this.state.project = Object.assign(this.state.project ?? {}, ui5AppAnswers, {
                     ui5Version: ui5AppAnswers?.ui5Version || localUI5Version,
@@ -350,8 +354,8 @@ export class FioriAppGenerator extends Generator {
                     },
                     this.composeWith.bind(this),
                     FioriAppGenerator.logger,
-                    generatorOptions.vscode,
                     this.appWizard,
+                    generatorOptions.vscode,
                     generatorOptions.promptSettings?.['@sap-ux/flp-config-sub-generator']
                 );
             }

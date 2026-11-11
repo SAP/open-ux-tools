@@ -1,5 +1,5 @@
 import type { Data } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { TemplateFileName } from '../../index.js';
 import { FileName } from '../../project-spec-types.js';
 import { handleGitIgnoreFile, handlePackageJsonFile, handleLocateReuseLibsFile } from '../template-generators/index.js';

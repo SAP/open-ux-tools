@@ -63,7 +63,7 @@ async function convertEslintConfig(
                 logger.info(`Deleting \`package-lock.json\` to avoid conflicts.`);
                 fs.delete(join(basePath, 'package-lock.json'));
             }
-            await new Promise<void>((resolve) => fs.commit(resolve));
+            await fs.commit();
             logger.info(
                 `ESlint configuration converted. Ensure the new configuration is working correctly before deleting old configuration files like '.eslintrc.json' or '.eslintignore'.`
             );

@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { getWebappPath } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml.js';
 import { deleteFiles } from '../common/utils.js';
@@ -32,12 +32,15 @@ export async function renameSandbox(fs: Editor, basePath: string, path: string, 
         fs.move(filePath, filePath.replace('.html', '_old.html'));
         logger?.info(renameMessage(path));
     } else if (
-        //checks if there is a file with the same name which has already been deleted/renamed to _old.html
+        // checks if the file has already been renamed to _old.html: after a move, mem-fs-editor
+        // keeps the original path in the surviving file's history while that file now lives at a
+        // different path. A plain lookup of a missing file also records a history entry, so both
+        // the different path and a non-deleted state are required to recognise a genuine rename.
         Object.keys(
             fs.dump(undefined, (file) => {
-                return file.history.includes(filePath) && file.state !== 'deleted';
+                return file.path !== filePath && file.history.includes(filePath) && file.state !== 'deleted';
             })
-        ).length === 0
+        ).length > 0
     ) {
         logger?.debug(`The file '${path}', has already been renamed. Skipping renaming.`);
     } else {

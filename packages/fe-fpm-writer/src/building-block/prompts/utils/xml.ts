@@ -5,7 +5,7 @@ import {
     type Node as XmldomNode,
     type Element as XmldomElement
 } from '@xmldom/xmldom';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import * as xpath from 'xpath';
 import { MACROS_NAMESPACE_URI } from '../../types.js';
 

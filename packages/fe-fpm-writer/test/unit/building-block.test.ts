@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
-import { create, type Editor } from 'mem-fs-editor';
+import { create, type MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Document as XmldomDocument, Element as XmldomElement } from '@xmldom/xmldom';
@@ -65,7 +65,6 @@ describe('Building Blocks', () => {
     });
 
     beforeEach(async () => {
-        jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
         findFilesByExtensionMock.mockResolvedValue([]);
         generateId = jest.fn((baseId: string, validatedIds: string[] = []) => {

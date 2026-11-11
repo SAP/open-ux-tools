@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import yaml from 'js-yaml';

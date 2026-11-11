@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { t } from './i18n.js';
 import RepoAppDownloadLogger from './logger.js';
 import type { QfaJsonConfig, AbapRepoAppConfig } from '../app/types.js';

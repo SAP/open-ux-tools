@@ -3,7 +3,7 @@
  * Extracted from common.ts generateTemplate function to reduce complexity
  */
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile, fileExists, readJSON, deleteFile } from '../file-access.js';
 import { createMemFsEditor } from '../fs-adapter.js';
 import { commitFileSystemChanges } from '../../files/file-system.js';

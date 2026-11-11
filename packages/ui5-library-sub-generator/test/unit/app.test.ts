@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import 'jest-extended';
 import { rimraf } from 'rimraf';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const testDir = dirname(fileURLToPath(import.meta.url));
 
@@ -65,23 +65,6 @@ jest.unstable_mockModule('@sap-ux/fiori-tools-settings', () => ({
 }));
 
 let yoEnv4 = false;
-
-// Mock yeoman-test/lib/adapter
-jest.unstable_mockModule('yeoman-test/lib/adapter', async () => {
-    const actual = await import('yeoman-test/lib/adapter');
-    return {
-        ...actual,
-        TestAdapter: function TestAdapter() {
-            // @ts-expect-error - CJS interop
-            const ActualTestAdapter = actual.TestAdapter || (actual as any).default?.TestAdapter;
-            const testAdapter = new ActualTestAdapter();
-            if (yoEnv4) {
-                Object.assign(testAdapter, { actualAdapter: {} });
-            }
-            return testAdapter;
-        }
-    };
-});
 
 // Dynamic imports after mocks
 const yeomanTest = await import('yeoman-test');
@@ -274,7 +257,7 @@ describe('Test generator methods', () => {
         };
         mockGenerate.mockResolvedValueOnce({} as Editor);
         mockPrompt.mockResolvedValue(promptAnswers);
-        // Use the mocked adapter representing yeoman-environment@4
+        // Simulate a yeoman-environment@4 adapter shape (nested actualAdapter)
         yoEnv4 = true;
         await expect(
             yeomanTest.default
@@ -282,6 +265,13 @@ describe('Test generator methods', () => {
                     resolved: reuseLibGenPath
                 })
                 .withOptions({ skipInstall: false })
+                .withEnvironment((env) => {
+                    if (yoEnv4) {
+                        Object.assign((env as unknown as { adapter: Record<string, unknown> }).adapter, {
+                            actualAdapter: {}
+                        });
+                    }
+                })
         ).resolves.not.toThrow();
         expect(mockPrompt).toHaveBeenCalled();
     });

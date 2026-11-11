@@ -1,4 +1,5 @@
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { PromptQuestions } from 'yeoman-generator';
 import type { ChangeDataSourceAnswers } from '@sap-ux/adp-tooling';
 import { getPromptsForChangeDataSource, generateChange, ChangeType } from '@sap-ux/adp-tooling';
 
@@ -25,7 +26,7 @@ class OdataServiceGenerator extends SubGeneratorWithAuthBase {
      * @param {string | string[]} args - The arguments for the generator.
      * @param {GeneratorOpts} opts - The options for the generator.
      */
-    constructor(args: string | string[], opts: GeneratorOpts) {
+    constructor(args: string[], opts: GeneratorOpts) {
         super(args, opts, GeneratorTypes.CHANGE_DATA_SOURCE);
     }
 
@@ -37,7 +38,9 @@ class OdataServiceGenerator extends SubGeneratorWithAuthBase {
         try {
             const manifest = await this.getManifest();
             this.dataSources = manifest?.['sap.app']?.dataSources ?? {};
-            this.answers = await this.prompt(getPromptsForChangeDataSource(this.dataSources));
+            this.answers = await this.prompt(
+                getPromptsForChangeDataSource(this.dataSources) as PromptQuestions<ChangeDataSourceAnswers>
+            );
             this.logger.log(`Current OData services\n${JSON.stringify(this.answers, null, 2)}`);
         } catch (error) {
             await this.handleRuntimeCrash(error.message);

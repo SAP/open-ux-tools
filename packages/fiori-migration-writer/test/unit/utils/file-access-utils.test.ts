@@ -13,8 +13,7 @@ import {
 } from '../../../src/index.js';
 import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
-const commit = (fs: ReturnType<typeof createMemFsEditor>): Promise<void> =>
-    new Promise<void>((resolve, reject) => fs.commit((err) => (err ? reject(err) : resolve())));
+const commit = (fs: ReturnType<typeof createMemFsEditor>): Promise<void> => fs.commit();
 
 describe('File Access Utilities', () => {
     const testRoot = join(tmpdir(), 'file-access-test-' + Date.now());

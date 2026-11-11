@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml.js';
 import { addVariantsManagementScript } from './package-json.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getProjectType, findCapProjectRoot } from '@sap-ux/project-access';
 import { readManifest } from '../common/utils.js';

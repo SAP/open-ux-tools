@@ -26,7 +26,7 @@ import type {
     OperationType,
     CommonAdditionalChangeInfoProperties
 } from '../types.js';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
     addXmlFragment,

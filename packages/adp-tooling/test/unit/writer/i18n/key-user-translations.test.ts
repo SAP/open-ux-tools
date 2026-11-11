@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import path from 'node:path';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
 import type { KeyUserTextTranslations } from '@sap-ux/axios-extension';

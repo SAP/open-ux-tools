@@ -1,5 +1,5 @@
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Project } from '@sap-ux/project-access';
 import type {
     PromptQuestion,

@@ -1,7 +1,7 @@
 import { findInstalledPackages } from '@sap-ux/nodejs-utils';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-import type { GeneratorOptions } from 'yeoman-generator';
 import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
+import type { CreateEnv } from './types.js';
 
 /**
  * Find fiori generator extension generators and return the path to the first one found.
@@ -32,14 +32,14 @@ async function getExtensionGenPath(vscode?: VSCodeInstance): Promise<string | un
  * @returns - the extension prompt options
  */
 export async function getExtensionGenPromptOpts(
-    createEnv: GeneratorOptions['env.create'],
+    createEnv: CreateEnv,
     rootGeneratorName: string,
     vscode?: VSCodeInstance
 ): Promise<Record<string, CommonPromptOptions> | undefined> {
     let extGenPromptOpts;
     const extensionGenPath = await getExtensionGenPath(vscode);
     if (extensionGenPath) {
-        const generatorExtension = createEnv(extensionGenPath, []) as any;
+        const generatorExtension = (await createEnv(extensionGenPath)) as any;
         extGenPromptOpts =
             typeof generatorExtension._getExtensions === 'function'
                 ? generatorExtension._getExtensions()?.[rootGeneratorName]

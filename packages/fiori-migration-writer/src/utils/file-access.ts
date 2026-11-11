@@ -7,7 +7,7 @@
  */
 // @ts-expect-error - no type definitions available
 import parseJson from 'json-parse-even-better-errors';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { existsSync } from 'node:fs';
 import { editorHasPath } from './fs-adapter.js';
 

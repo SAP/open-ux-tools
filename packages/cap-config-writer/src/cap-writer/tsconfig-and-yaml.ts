@@ -1,5 +1,5 @@
 import { FileName } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'node:path';

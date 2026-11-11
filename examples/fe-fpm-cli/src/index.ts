@@ -7,10 +7,9 @@ import type {
 } from '@sap-ux/fe-fpm-writer';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { promisify } from 'node:util';
 
 const sampleAppPath = join(__dirname, '../sample/fe-app');
 const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
@@ -21,11 +20,11 @@ const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
  * @returns {Promise<Editor>} the memfs editor object
  */
 async function initialize(): Promise<Editor> {
-    const fs = create(createStorage());
+    const fs = create(createStorage<VinylMemFsEditorFile>());
 
     fs.copy([join(sampleAppPath)], join(testAppPath));
 
-    await promisify(fs.commit).call(fs);
+    await fs.commit();
     return fs;
 }
 
@@ -103,7 +102,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
             default:
                 break;
         }
-        await promisify(fs.commit).call(fs);
+        await fs.commit();
     } catch (error) {
         console.error(error.message);
     }

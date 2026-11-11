@@ -4,10 +4,15 @@ import { MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { type CapService, DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
-import yeomanTest from 'yeoman-test';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createEnv } from 'yeoman-environment';
 import type { Project, Service } from '../../../src/types/index.js';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/index.js';
 import type { AppWizardCache } from '../../../src/utils/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const generatorResolved = join(__dirname, '../../../src/fiori-app-generator/index.ts');
 
 // Pre-import actuals
 const actualPrompting = await import('../../../src/fiori-app-generator/prompting.js');
@@ -136,7 +141,9 @@ describe('Test FioriAppGenerator', () => {
             appWizard: {
                 showError: jest.fn()
             } as unknown as AppWizard,
-            env: (yeomanTest as any).createEnv([]), // Latest @types/yeoman-test are not up to date with yeoman-test@6.3.0
+            namespace: '@sap/fiori:app',
+            resolved: generatorResolved,
+            env: createEnv(),
             telemetryData: { data1: 'value1' },
             floorplan: FloorplanFE.FE_OVP,
             yeomanUiStepConfig: allYUIStepsConfig
@@ -648,8 +655,8 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.any(Function),
             expect.objectContaining({ debug: expect.any(Function) }),
-            undefined,
             { '$fiori-cache': {}, showError: expect.any(Function) },
+            undefined,
             { 'semanticObject': { hide: true } }
         );
 
@@ -681,8 +688,8 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.any(Function),
             expect.objectContaining({ debug: expect.any(Function) }),
-            undefined,
             { '$fiori-cache': {}, showError: expect.any(Function) },
+            undefined,
             undefined
         );
         expect(mockUpdateDependentStep).toHaveBeenCalledTimes(1);
@@ -728,8 +735,9 @@ describe('Test FioriAppGenerator', () => {
         mockPromptOdataServiceAnswers.mockClear();
         mockPromptUI5ApplicationAnswers.mockClear();
         options.fioriSteps = FIORI_STEPS.filter((step) => step.key !== STEP_DATASOURCE_AND_SERVICE);
-        await fioriAppGen.initializing();
-        await fioriAppGen.prompting();
+        const fioriAppGenNoDatasource = new FioriAppGenerator([], options);
+        await fioriAppGenNoDatasource.initializing();
+        await fioriAppGenNoDatasource.prompting();
 
         expect(mockPromptOdataServiceAnswers).not.toHaveBeenCalled();
         expect(mockPromptUI5ApplicationAnswers).toHaveBeenCalled();
@@ -737,8 +745,9 @@ describe('Test FioriAppGenerator', () => {
         mockPromptOdataServiceAnswers.mockClear();
         mockPromptUI5ApplicationAnswers.mockClear();
         options.fioriSteps = FIORI_STEPS.filter((step) => step.key !== STEP_PROJECT_ATTRIBUTES);
-        await fioriAppGen.initializing();
-        await fioriAppGen.prompting();
+        const fioriAppGenNoProjectAttrs = new FioriAppGenerator([], options);
+        await fioriAppGenNoProjectAttrs.initializing();
+        await fioriAppGenNoProjectAttrs.prompting();
 
         expect(mockPromptOdataServiceAnswers).toHaveBeenCalled();
         expect(mockPromptUI5ApplicationAnswers).not.toHaveBeenCalled();

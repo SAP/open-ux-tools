@@ -1,5 +1,5 @@
 import { existsSync, promises } from 'node:fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { extname } from 'node:path';
 import { compareStrings, compareJson } from './compare.js';
 import { getLogger } from './logger.js';
@@ -29,6 +29,11 @@ export async function traceChanges(fs: Editor): Promise<void> {
         if (discContent === memContent) {
             logger.info(`File '${changedFile}' unchanged`);
             logger.debug(`File content:\n${memContent}`);
+            continue;
+        }
+        if (memContent === null) {
+            logger.info(`File '${changedFile}' modified`);
+            logger.debug(`Can't compare file. New file content is empty.`);
             continue;
         }
         logger.info(`File '${changedFile}' modified`);

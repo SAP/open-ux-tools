@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { dirname, join } from 'node:path';
 import type { EdmxOdataService, OdataService, ProjectPaths } from './types.js';
 import { FileName, getWebappPath } from '@sap-ux/project-access';

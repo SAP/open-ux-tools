@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { updateJSON, fileExists, deleteFile } from '../utils/index.js';
 import { FileName } from '../project-spec-types.js';
 import type { ImportProjectInfo } from '../types.js';

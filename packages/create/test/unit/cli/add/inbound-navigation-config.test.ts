@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { createProjectAccessMock } from '../__mocks__/project-access-mock.js';
@@ -50,7 +50,7 @@ jest.unstable_mockModule('../../../../src/validation/validation', () => ({
     hasFileDeletes: jest.fn()
 }));
 
-const commitMock = jest.fn().mockImplementation((callback) => callback());
+const commitMock = jest.fn().mockResolvedValue(undefined);
 jest.unstable_mockModule('mem-fs-editor', () => ({
     create(_store: Store) {
         return {
@@ -173,7 +173,7 @@ describe('Test command add navigation-config with ADP scenario', () => {
         mockSetLogLevelVerbose.mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
-            commit: jest.fn().mockImplementation((callback) => callback())
+            commit: jest.fn().mockResolvedValue(undefined)
         } as Partial<Editor> as Editor;
 
         mockGenerateInboundConfig.mockResolvedValue(fsMock);
