@@ -9,6 +9,7 @@ sap.ui.define([
         pages: {
 			onTheBooksObjectPageGenerated: BooksObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 
