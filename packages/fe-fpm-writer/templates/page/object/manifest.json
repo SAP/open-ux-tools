@@ -5,7 +5,7 @@
         },
         "routing": {
             "targets": {
-                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>": {
+                <%if (!locals.reuseExisting) {%>"<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>": {
                     "type": "Component",
                     "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>",
                     "name": "<%- template %>",<%if (locals.controlAggregation) {%>
@@ -14,7 +14,7 @@
                         "settings": <%- JSON.stringify(settings) %>
                     }
                 }<%if (locals.navigation) {%>,
-                "<%- navigation.sourcePage %>": {
+                <% } %><% } %><%if (locals.navigation) {%>"<%- navigation.sourcePage %>": {
                     "options": {
                         "settings": {
                             "navigation": {

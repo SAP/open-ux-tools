@@ -474,6 +474,27 @@ describe('ObjectPage', () => {
 
                 expect(result).toBe(fs);
             });
+
+            test('does not render main target settings when reuseExisting is true', async () => {
+                const manifestWithCustomTarget = JSON.parse(testAppManifest);
+                manifestWithCustomTarget['sap.ui5'].routing.targets.RootEntityObjectPage = {
+                    type: 'Component',
+                    id: 'RootEntityObjectPage',
+                    name: 'custom.Special.ObjectPage',
+                    options: { settings: { entitySet: minimalInput.entity } }
+                };
+                const target = join(testDir, 'reuse-no-target-overwrite');
+                fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(manifestWithCustomTarget, null, 2));
+
+                await generate(
+                    target,
+                    { ...minimalInput, id: 'RootEntityObjectPage', navigation: reuseNav, reuseExisting: true },
+                    fs
+                );
+
+                const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+                expect(manifest['sap.ui5'].routing.targets.RootEntityObjectPage.name).toBe('custom.Special.ObjectPage');
+            });
         });
     });
 

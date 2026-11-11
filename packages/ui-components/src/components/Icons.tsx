@@ -1072,8 +1072,8 @@ export function initIcons(): void {
             [UiIcons.FioriApp]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M15 0C15.5523 0 16 0.447708 16 1V5L15 4.5V4H1V15H4.5L5 16H1C0.447723 16 0 15.5523 0 15V1C0 0.447708 0.447723 0 1 0H15ZM15 1H1V3H15V1Z"
                         fill={COLORS.default}
                     />

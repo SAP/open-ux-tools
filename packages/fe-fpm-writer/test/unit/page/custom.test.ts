@@ -653,5 +653,22 @@ describe('CustomPage', () => {
 
             expect(result).toBe(fs);
         });
+
+        test('does not render main target settings when reuseExisting is true', async () => {
+            const manifestWithCustomTarget = JSON.parse(manifestWithOrphan);
+            manifestWithCustomTarget['sap.ui5'].routing.targets[orphanedPageId] = {
+                type: 'Component',
+                id: orphanedPageId,
+                name: 'custom.Special.Page',
+                options: { settings: { contextPath: '/Products' } }
+            };
+            const target = join(testDir, 'reuse-no-target-overwrite');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(manifestWithCustomTarget, null, 2));
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            expect(manifest['sap.ui5'].routing.targets[orphanedPageId].name).toBe('custom.Special.Page');
+        });
     });
 });

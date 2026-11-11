@@ -315,8 +315,12 @@ export function prepareToReuseExistingPage(
     }
 
     const navigation = (page as unknown as TargetOptionsAddition).options?.settings?.navigation;
-    if (navigation?.[data.entity]) {
-        delete navigation[data.entity];
+    const navEntity = data.navigation?.navEntity;
+    if (!navEntity) {
+        throw new Error(`Invalid data. Navigation entity name is missing!`);
+    }
+    if (navigation?.[navEntity]) {
+        delete navigation[navEntity];
         fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, data.tabInfo));
     }
 }
@@ -346,6 +350,7 @@ export async function extendPageJSON(
 
     const config = enhanceDataFn(data, manifest);
 
+    // clean up outbound detail in the navigation settings if outbound link is already defined
     deleteOutboundNavigationDetail(manifestPath, manifest, data, fs);
 
     // enhance manifest.json

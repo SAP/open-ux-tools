@@ -179,11 +179,12 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     const fnGenerateId = await createIdGenerator({ basePath, fsEditor: fs });
     const config = enhanceData(data, manifestPath, fs);
 
+    // clean up outbound detail in the navigation settings if outbound link is already defined
+    deleteOutboundNavigationDetail(manifestPath, manifest, data, fs);
+
     if (data.reuseExisting) {
         prepareToReuseExistingPage(manifestPath, manifest, data, fs);
     }
-
-    deleteOutboundNavigationDetail(manifestPath, manifest, data, fs);
 
     // merge content into existing files
     const root = getTemplateRoot(data.minUI5Version);
