@@ -4728,4 +4728,3 @@ describe('generateBuildingBlockAggregation error cases', () => {
         ).rejects.toThrow(/Page element.*not found/);
     });
 });
-
