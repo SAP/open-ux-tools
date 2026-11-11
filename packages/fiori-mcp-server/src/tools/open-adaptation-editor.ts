@@ -19,20 +19,10 @@ import { isSimpleBrowserRelayEnabled } from '../utils/simple-browser-relay.js';
 
 /** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
 const ABAP_TIMEOUT_MS = 30000;
-/**
- * Startup timeout for CF projects. The CF editor (`ui5 serve`) fetches service
- * keys and boots the embedded approuter before it prints its URL — observed to
- * take ~40s even on the no-build path — so it needs far more headroom than ABAP.
- */
+/** Startup timeout for CF projects: the editor boots the embedded approuter (~40s) before printing its URL. */
 const CF_TIMEOUT_MS = 300000;
 
-/**
- * Editor entry path. This is the production editor path that generated
- * adaptation projects expose (see `@sap-ux/adp-tooling` writer `editors` config)
- * for both ABAP and CF — the server serves it regardless of scenario. (Open-source
- * middleware test setups may also expose `/local/editor.html`, but that is a
- * testing artifact, not what production projects use.)
- */
+/** Production editor entry path exposed by generated ABAP and CF adaptation projects. */
 const EDITOR_PATH = '/test/adaptation-editor.html';
 
 /**
@@ -86,10 +76,10 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
     const fioriBin = join(appPath, 'node_modules', '.bin', 'fiori');
 
     if (existsSync(fioriBinTarget)) {
-        return { command: process.execPath, args: [fioriBinTarget, 'run', '/test/adaptation-editor.html'] };
+        return { command: process.execPath, args: [fioriBinTarget, 'run', EDITOR_PATH] };
     }
     if (existsSync(fioriBin) || existsSync(`${fioriBin}.cmd`)) {
-        return { command: 'fiori', args: ['run', '/test/adaptation-editor.html'] };
+        return { command: 'fiori', args: ['run', EDITOR_PATH] };
     }
     return { command: 'npm', args: ['run', 'start-editor'] };
 }

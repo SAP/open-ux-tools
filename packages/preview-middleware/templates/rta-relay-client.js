@@ -7,12 +7,11 @@
     const RTA_POLL_INTERVAL_MS = 250;
     const RETRY_DELAY_MS = 1000;
     const APP_LOADED_POLL_INTERVAL_MS = 200;
-    const APP_LOADED_ENVELOPE_TYPE = 'post-message-action';
+    const POST_MESSAGE_ACTION_ENVELOPE_TYPE = 'post-message-action';
     const APP_LOADED_ACTION_TYPE = '[ext] app-loaded';
+    const RELOAD_ACTION_TYPE = '[ext] reload-application';
 
-    // Frontend-action module resolution, mirrored from the Playwright transport's frontend-actions.ts.
-    // Flex actions already return the { isSuccess, payload, error } envelope; UFA actions on
-    // ActionHelpers return raw results, normalized by normalizeUfa() into the same envelope.
+    // Frontend-action modules, mirrored from the Playwright transport's frontend-actions.ts.
     const FLEX_ACTIONS_MODULE = 'sap/ui/rta/api/FrontendActionsAPI';
     const UFA_ACTIONS_MODULE = 'sap/ui/joule/frontend/util/ActionHelpers';
     const UFA_PREFIX = 'com.sap.ui.unified.frontend.actions.';
@@ -34,7 +33,7 @@
             const data = event.data;
             if (
                 data &&
-                data.type === APP_LOADED_ENVELOPE_TYPE &&
+                data.type === POST_MESSAGE_ACTION_ENVELOPE_TYPE &&
                 data.action &&
                 data.action.type === APP_LOADED_ACTION_TYPE
             ) {
@@ -96,8 +95,7 @@
         });
     }
 
-    // Normalizes a raw UFA result into the Flex { isSuccess, payload, error } envelope
-    // (mirrors normalizeUfaResult() in the Playwright transport's frontend-actions.ts).
+    // Normalizes a raw UFA result into the Flex { isSuccess, payload, error } envelope (mirrors frontend-actions.ts).
     function normalizeUfa(raw) {
         if (raw && typeof raw === 'object' && raw.success === false) {
             const message =
@@ -138,8 +136,7 @@
     }
 
     async function fetchViaContext(payload) {
-        // Same-origin only: the editor page may fetch its own origin (the preview-middleware
-        // proxy forwards authenticated backend requests), never a foreign host.
+        // Same-origin only: the editor page fetches its own origin (proxied to the backend), never a foreign host.
         const target = new URL(String(payload?.url ?? ''), location.href);
         if (target.origin !== location.origin) {
             return {
@@ -165,9 +162,7 @@
         if (frame && frame.contentWindow) {
             return frame.contentWindow;
         }
-        // No child frame. If this script runs inside a frame, this window IS the editor frame
-        // (expected in-frame injection). Only in the top document is a missing child frame a real
-        // load-order race, surfaced as a clear error instead of silently targeting the wrong window.
+        // No child frame: in-frame injection targets this window; in the top document it's a load-order race.
         if (window.self !== window.top) {
             return window;
         }
@@ -240,8 +235,8 @@
                     if (shell) {
                         shell.postMessage(
                             {
-                                type: 'post-message-action',
-                                action: { type: '[ext] reload-application', payload: { save: false } }
+                                type: POST_MESSAGE_ACTION_ENVELOPE_TYPE,
+                                action: { type: RELOAD_ACTION_TYPE, payload: { save: false } }
                             },
                             location.origin
                         );

@@ -63,16 +63,13 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'start': {
                 const agentName = optionalString(input.payload, 'agentName');
                 if (activeTransport === httpTransport) {
-                    // The relay carries its own editor-session and its `start` is not given an
-                    // appPath, so skip the Playwright project seeding entirely.
+                    // Relay carries its own editor-session and gets no appPath; skip Playwright seeding.
                     await activeTransport.disconnectSite(site);
                 } else {
-                    // Validate required input BEFORE disconnecting: a bad appPath must not
-                    // tear down an existing working page for a call that then throws.
+                    // Validate appPath before disconnecting, so a bad path can't tear down a working page.
                     const appPath = requireAppPath(input.appPath);
                     await activeTransport.disconnectSite(site);
-                    // Record which project (and whether CF) is starting on this site, so
-                    // session seeding is keyed by project and ABAP projects skip it entirely.
+                    // Key session seeding by project (and CF-ness); ABAP projects skip it.
                     await registerSite(site, appPath);
                 }
                 const result = await startRta(activeTransport, { site, frameId }, agentName);
@@ -115,7 +112,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                     return { stopped: true, editorServerStopped };
                 }
                 // Transports that own the browser close it directly.
-                if (activeTransport !== httpTransport && isRegistryEmpty()) {
+                if (isRegistryEmpty()) {
                     await activeTransport.stopBrowser();
                 }
                 return { stopped: true };
@@ -124,18 +121,15 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 const page = { site, frameId };
                 if (activeTransport === httpTransport) {
                     await activeTransport.disconnectSite(site);
-                    // Relay: ask the editor page to reload so it re-reads the on-disk
-                    // webapp/changes (new fragment / controller files).
+                    // Relay: reload the editor page so it re-reads on-disk webapp/changes.
                     if (activeTransport.reloadPage) {
                         await activeTransport.reloadPage(site);
                     }
                 } else {
-                    // Validate required input BEFORE disconnecting: a bad appPath must not
-                    // tear down the running editor page for a call that then throws.
+                    // Validate appPath before disconnecting, so a bad path can't tear down the running page.
                     const appPath = requireAppPath(input.appPath);
                     await activeTransport.disconnectSite(site);
-                    // disconnectSite forgot the site meta; re-register so the reloaded
-                    // editor keeps its project identity / CF session keying.
+                    // disconnectSite dropped the site meta; re-register to keep project identity / CF keying.
                     await registerSite(site, appPath);
                 }
                 const result = await startRta(activeTransport, page);
