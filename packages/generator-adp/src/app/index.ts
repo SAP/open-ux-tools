@@ -994,13 +994,13 @@ export default class extends Generator {
             approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
 
         // A managed approuter with no existing router writes destinations keyed on the business solution name.
-        // When the caller omits it, generate a unique default; when supplied, validate it.
-        let resolvedBusinessSolutionName = businessSolutionName?.trim() ?? '';
+        let businessSolution = businessSolutionName?.trim() ?? '';
         if (resolvedApprouter === AppRouterType.MANAGED && !hasExistingApprouter(mtaMode, projectPath)) {
-            if (!resolvedBusinessSolutionName) {
-                resolvedBusinessSolutionName = generateBusinessSolutionName();
+            if (businessSolution) {
+                assertValidationPassed(validateBusinessSolutionName(businessSolution));
+            } else {
+                businessSolution = generateBusinessSolutionName();
             }
-            assertValidationPassed(validateBusinessSolutionName(resolvedBusinessSolutionName));
         }
 
         const serviceInfo = await getBusinessServiceInfo(serviceInstanceName, this.cfConfig, this.logger);
@@ -1036,7 +1036,7 @@ export default class extends Generator {
             approuter: resolvedApprouter,
             baseApp,
             ...(serviceInstance ? { serviceInstance } : {}),
-            ...(resolvedBusinessSolutionName ? { businessSolutionName: resolvedBusinessSolutionName } : {})
+            ...(businessSolution ? { businessSolutionName: businessSolution } : {})
         };
 
         const projectName = resolveProjectName(this.destinationPath(), requestedProjectName);
