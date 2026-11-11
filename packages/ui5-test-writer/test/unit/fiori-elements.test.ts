@@ -2013,27 +2013,14 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — JS', () => {
-            it('bucket 1.84 generates correct output (JS)', async () => {
+            it.each([
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s generates correct output (JS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.108.0' }, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.120 generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.120.0' }, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.148 generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.148.0' }, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
+                fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
@@ -2551,42 +2538,19 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — TS', () => {
-            it('bucket 1.84 generates correct output (TS)', async () => {
+            it.each([
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s generates correct output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('FullScreenLROPContextPath');
                 fs = await generateOPAFiles(
                     projectDir,
-                    { ui5Version: '1.108.0', enableTypeScript: true },
+                    ui5Version ? { ui5Version, enableTypeScript: true } : { enableTypeScript: true },
                     metadata,
                     fs
                 );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.120 generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version: '1.120.0', enableTypeScript: true },
-                    metadata,
-                    fs
-                );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.148 generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version: '1.148.0', enableTypeScript: true },
-                    metadata,
-                    fs
-                );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
