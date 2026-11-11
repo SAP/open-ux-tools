@@ -89,91 +89,14 @@ Do not proceed until all inputs are confirmed.
 
 ---
 
-## Pick a Reference
+## Implementation
 
-| Stack | Reference |
-|---|---|
-| **CAP** | 📖 [`./references/cap-implementation.md`](./references/cap-implementation.md) |
-| **ABAP RAP** (projection views) | 📖 [`./references/rap-implementation.md`](./references/rap-implementation.md) |
+Follow the reference guide for your backend:
 
----
-
-## Workflow (CAP)
-
-1. **Gather required inputs** (items 1-5 above)
-2. **Ask about text arrangement preference** (item 6):
-   - Present options based on field type (code list vs master data)
-   - Provide recommendations and examples for each option
-   - Show how it will appear in different UI contexts (table, form, dropdown)
-3. **Ask about value help dialog columns** (item 7):
-   - Check if value list already exists and what columns it has
-   - Include 3-5 most relevant fields that help users search and identify records
-   - Preserve existing columns unless user wants to change them
-4. **Ask about field placement** (item 8):
-   - Filter bar, Object Page, Both, or Line Item table
-5. **Ask about dropdown ONLY for small code lists** (item 8):
-   - **ONLY** if the field is a code list (Status, Category, Type) with <50 entries
-   - **NEVER** ask for master data (Customer, Agency, Product, etc.) — always use value help dialog
-5. **Follow the appropriate reference** (CAP or RAP implementation)
-6. **Configure value help and text arrangement**:
-   - `Common.ValueList` — enables value help dialog in filter bar and forms
-   - `Common.Text` + `Common.TextArrangement` — renders with chosen arrangement
-   - `Common.ValueListWithFixedValues` — converts to dropdown (if chosen)
-7. **Apply text arrangement to foreign key fields**:
-   - For unmanaged associations: use nested syntax on the FK field itself
-   - For managed associations: annotation on target entity may be sufficient
-8. **Add to UI annotations** based on user's choice:
-   - Filter bar → add to `UI.SelectionFields` (value help enabled for search/filter)
-   - Object page → ensure it's in `UI.FieldGroup` or facet (value help enabled in form)
-   - Line item table on List report page → add to `UI.LineItem` (text arrangement displays; no interactive value help)
-9. **Validate** with CDS compilation or service preview
-
-## Workflow (ABAP RAP)
-
-1. **Gather required inputs** (items 1-8 above)
-2. **Check for existing value help entities** (CRITICAL STEP):
-   - **Search for existing value help views** in the system using `abap_repository_search_object` with patterns like:
-     - `*<ENTITY>*VH*` (e.g., `*AGENCY*VH*`, `*CUSTOMER*VH*`)
-     - Standard SAP value helps: `/DMO/I_*_STDVH`, `I_*VH`, `I_*_VH`
-   - **Check if value help is already exposed in the service definition** by reading the service definition file
-   - **Ask the user to choose**:
-     - **Option 1: Reuse existing value help** — Use SAP standard or existing custom value help (faster, less maintenance)
-     - **Option 2: Create new custom value help** — Build a new value help view in the user's package with custom columns and configuration
-     - **Option 3: User provides entity name** — User already knows which value help entity to use
-   - If reusing: Validate that the entity has appropriate columns and annotations for the use case
-   - If creating new: Proceed with creation workflow (list creatable types → get details → validate → create → populate CDS code → activate)
-4. **Identify where annotations go**:
-   - **Always edit the projection view (`ZC_*`)**, never the interface view (`ZR_*`)
-   - Metadata extensions (`.ddlx`) for UI annotations
-   - Projection view (`.ddls`) for value help
-5. **For dropdown value helps**:
-   - **DO NOT ask user to create manually** — use programmatic creation
-   - Creation workflow: list creatable types → get details → validate → create template → edit with actual code → activate
-   - Key annotation: `@ObjectModel.resultSet.sizeCategory: #XS` for dropdown
-   - MUST expose in service definition: `expose Z_I_*_VH as *ValueHelp;`
-   - Republish service after changes
-6. **Configure value help**:
-   - **Value Help View**: Add `@ObjectModel.dataCategory: #VALUE_HELP`
-   - **Text arrangement in RAP is handled by the framework**:
-     - Configure `@ObjectModel.text.element: ['Name']` and `@UI.textArrangement` in the **value help view only**
-     - The framework automatically applies this text arrangement when the value help is referenced via `@Consumption.valueHelpDefinition`
-     - **DO NOT** duplicate text arrangement annotations (`@ObjectModel.text.element`, `@UI.textArrangement`) in the consuming projection view
-     - **DO NOT** add extra fields like `_Agency.Name as AgencyName` to the projection view for text display
-     - The value help view configuration is sufficient for both the value help dialog AND the field display in forms/tables
-   - **Projection View Field**: Add `@Consumption.valueHelpDefinition` to enable the value help dialog
-7. **Add to UI positions** based on user's choice:
-   - Filter bar → ensure in `@UI.selectionField`
-   - Object page → ensure in `@UI.fieldGroup`
-8. **Activate and republish**:
-   - Activate projection view and metadata extension
-   - Activate value help view (if modified)
-   - Activate service definition (if exposing new value help)
-   - Unpublish and republish service binding
-9. **Update SAP Fiori metadata** (if app exists):
-   ```bash
-   npx --yes @sap-ux/create@latest update service-metadata .
-   ```
-10. **Validate**: Hard reload SAP Fiori app (Cmd+Shift+R / Ctrl+Shift+R)
+| Stack | Reference | Quick Summary |
+|---|---|---|
+| **CAP** | 📖 [`./references/cap-implementation.md`](./references/cap-implementation.md) | 3-step process: Hide GUID with `@Common.ExternalID`, configure text arrangement on business key, add value help to UI annotations |
+| **ABAP RAP** | 📖 [`./references/rap-implementation.md`](./references/rap-implementation.md) | Configure value help view with text arrangement, link via `@Consumption.valueHelpDefinition`, activate and republish |
 
 ---
 
@@ -190,47 +113,14 @@ After completing the implementation steps, verify:
 - [ ] **After Step 7** — For dropdowns: `@Common.ValueListWithFixedValues: true` added (CAP) or `@ObjectModel.resultSet.sizeCategory: #XS` on value help view (RAP)
 - [ ] **After Step 8** — Field added to `UI.SelectionFields` (filter bar) and/or `UI.FieldGroup`/`UI.LineItem` (object page/table) as requested
 
-### Build & Metadata
-
-- [ ] CDS compilation succeeds without errors (CAP: `cds build`, RAP: activate all objects)
-- [ ] RAP only: Service definition includes value help entity if newly created
-- [ ] RAP only: Service binding unpublished and republished
-- [ ] SAP Fiori app metadata updated (`npx @sap-ux/create update service-metadata .`)
-
-### Runtime
-
-- [ ] **Business ID displays** instead of UUID/GUID in tables, forms, and filter bar
-- [ ] **Text arrangement renders correctly** in all contexts (table cells, form fields, filter chips)
-- [ ] **Value help dialog opens** when clicking the field or magnifying glass icon
-- [ ] **Value help columns** show business ID + text + any additional search fields
-- [ ] **No duplicate columns** in value help dialog (e.g., AgencyID appears once, not twice)
-- [ ] **For dropdowns**: Filter bar field shows a dropdown (chevron icon), not a value help dialog trigger
-- [ ] **For dropdowns**: All expected values appear in the dropdown list
-- [ ] **Selection works**: Selecting from value help or dropdown populates the field correctly
-
-### Regression
-
-- [ ] UUID fields remain hidden (RAP: `@UI.hidden: true` applied)
-- [ ] Other foreign keys not modified by this change still work
-- [ ] Existing filters, navigation, and CRUD operations unaffected
-
 ---
 
 ## Testing
 
-For starting the app and navigating to the feature:
-
-- **CAP projects**: Consult the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill for `cds watch` and `watch-<app>` commands
-- **ABAP RAP projects**: Consult the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill for live backend vs. mock server startup
-- **Hard reload**: After backend changes (CDS model, service republish), always hard reload the app (Cmd+Shift+R / Ctrl+Shift+R) to refresh metadata
-
-**Where to validate the feature:**
-
-1. **Filter bar** (List Report) — If configured as selection field: Field shows value help icon or dropdown; text arrangement displays in filter chips after selection
-2. **Table columns** (List Report) — Text arrangement renders in `UI.LineItem` columns (e.g., "70007 (Hot Socks Travel)")
-3. **Form fields** (Object Page) — Value help opens on click; selected value displays with text arrangement
-4. **Value help dialog** — Opens with correct columns (business ID, text, search fields); no duplicates; selection populates field
-5. **Dropdown (code lists only)** — Filter bar field shows chevron icon; clicking opens inline dropdown; no value help dialog
+Refer to the **Application Preview Guidelines** section in the `sap-fiori-app-development` skill for detailed testing instructions, including:
+- CAP project testing with watch scripts
+- Standalone Fiori project testing with live backend vs. mock mode
+- Metadata refresh procedures after backend changes
 
 ---
 
@@ -261,26 +151,6 @@ For starting the app and navigating to the feature:
     ValueListProperty: 'AgencyID' }
   ```
 
-**CAP: Text arrangement not rendering**
-- Cause: `@Common.Text` and `@Common.TextArrangement` placed on the wrong element (GUID instead of business key)
-- Fix: Apply annotations to the readable business key field:
-  ```cds
-  // ❌ Wrong — on the GUID
-  annotate service.Travels {
-      Agency @Common.Text: Agency.Name;
-  };
-  
-  // ✅ Correct — on the business key
-  annotate service.TravelAgencies {
-      AgencyID @Common.Text: Name
-                @Common.TextArrangement: #TextLast;
-  };
-  ```
-
-**RAP: "Element AGENCYID must not be search enabled in a hierarchy node"**
-- Cause: `@Search.defaultSearchElement` or `@Search.searchable` on a field used in `@ObjectModel.text.element`
-- Fix: Remove all `@Search` annotations from the hierarchy node field and the text element in the value help projection view
-
 **RAP: Value help entity not appearing in service**
 - Cause: Entity created but not exposed in service definition
 - Fix: Add expose statement and republish:
@@ -298,10 +168,6 @@ For starting the app and navigating to the feature:
 - Cause (RAP): Missing `@ObjectModel.resultSet.sizeCategory: #XS` on the value help view
 - Cause (Both): Value list has >100 entries (too large for dropdown)
 - Fix: Verify annotation placement and check row count in value help entity. Use dropdown only for small code lists.
-
-**Both: Hard reload required after metadata changes**
-- Cause: Browser cached old `$metadata` or `annotations.xml`
-- Fix: Always hard reload (Cmd+Shift+R / Ctrl+Shift+R) after CDS changes, service republish, or annotation updates. For RAP, also run `npx @sap-ux/create update service-metadata .` before reload.
 
 ---
 
