@@ -28,6 +28,47 @@ export function requireString(payload: Record<string, unknown> | undefined, key:
 }
 
 /**
+ * Reads `key` from `payload` and, when present, asserts it is a non-empty string.
+ * Returns `undefined` when the key is absent. Unlike coercing with `String(...)`,
+ * a non-string value (object, array, number) is rejected rather than stringified
+ * into a bogus id such as `[object Object]`.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The string value, or `undefined` when the key is absent.
+ */
+export function optionalString(payload: Record<string, unknown> | undefined, key: string): string | undefined {
+    const value = payload?.[key];
+    if (value === undefined) {
+        return undefined;
+    }
+    return assertNonEmptyString(value, `payload.${key} must be a non-empty string when provided`);
+}
+
+/**
+ * Reads `key` from `payload` and, when present, asserts it is a plain object.
+ * Returns `undefined` when the key is absent. Anything that is not a plain object
+ * (array, primitive, null) is rejected rather than silently dropped.
+ *
+ * @param payload The step payload, possibly undefined.
+ * @param key Property name to read.
+ * @returns The object value, or `undefined` when the key is absent.
+ */
+export function optionalObject(
+    payload: Record<string, unknown> | undefined,
+    key: string
+): Record<string, unknown> | undefined {
+    const value = payload?.[key];
+    if (value === undefined) {
+        return undefined;
+    }
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        throw new Error(`payload.${key} must be an object when provided`);
+    }
+    return value as Record<string, unknown>;
+}
+
+/**
  * Asserts the top-level `appPath` is a non-empty string. Required for the
  * `start` and `restart` steps (project identity + CF session keying).
  *

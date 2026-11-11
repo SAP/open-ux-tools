@@ -1,5 +1,39 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.16.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Features
+
+- Add agentName parameter to start step, add cleanup step, remove startVisualization [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
+## 1.16.0
+
+### Minor Changes
+
+#### Features
+
+- Replace the RTA page-action steps (get_page_actions, call_page_action, press_interactive) with the generic Unified Frontend Actions describe_ui and execute_page_action. These are reached by requiring sap/ui/joule/frontend/util/ActionHelpers directly on the page (like FrontendActionsAPI for the Flex actions), so navigation needs no Joule webclient bridge and no sap-ui-xx-initializeJoule URL flag. [[93a01bf](https://github.com/SAP/open-ux-tools/commit/93a01bf69097d71f49ac69bbd55abb1fbda47836)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Upgrade MCP/AI stack deps (@langchain/mcp-adapters 1.1.3→2.0.1, @sap-ai-sdk 2.14→2.17, @huggingface/transformers 4.2→4.3.2, zod 4.4.3→4.6.7) [[72ce32f](https://github.com/SAP/open-ux-tools/commit/72ce32fdd5cc4dc6731389940ed87c43015a6f2d)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
 ## 1.15.24
 
 ### Patch Changes

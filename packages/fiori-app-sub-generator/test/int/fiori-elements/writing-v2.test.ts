@@ -5,8 +5,9 @@ import { readdirSync } from 'node:fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ApiHubType } from '@sap-ux/fiori-generator-shared';
 import type { Project, Service, State } from '../../../src/types/index.js';
-import { ApiHubType, FloorplanFE } from '../../../src/types/index.js';
+import { FloorplanFE } from '../../../src/types/index.js';
 import {
     cleanTestDir,
     getTestData,

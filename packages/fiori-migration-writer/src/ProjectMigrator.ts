@@ -5,7 +5,7 @@ import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
 import { enableTypescript, ui5TSSupport } from '@sap-ux/ui5-application-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 // Migration-specific functions
 import {
@@ -20,7 +20,7 @@ import {
 } from './migration-process/index.js';
 
 // File operations
-import { copyAdaptationFiles, copyLibraryFiles } from './files/index.js';
+import { copyAdaptationFiles, copyLibraryFiles, commitFileSystemChanges } from './files/index.js';
 
 // Template functions
 import { assembleTemplateData } from './template/index.js';
@@ -46,7 +46,7 @@ export interface MigrateOptions {
     /** Base URI for backend services */
     baseUri: string;
     /** URL for UI5 snapshot version */
-    ui5SnapshotUrl: string;
+    ui5SnapshotUrl?: string;
     /** Optional partial project information */
     importProjectInfo?: Partial<ImportProjectInfo>;
     /** Optional VS Code context */
@@ -70,7 +70,7 @@ export class ProjectMigrator {
         options: MigrateOptions
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
         const {
-            projectRoot,
+            projectRoot: projectRootInput,
             baseUri: baseUriOpt,
             ui5SnapshotUrl: ui5SnapshotUrlOpt,
             importProjectInfo: importProjectInfoOpt,
@@ -79,6 +79,9 @@ export class ProjectMigrator {
             fs: fsOpt,
             strict: strictOpt = false
         } = options;
+
+        // Resolve relative paths to absolute to avoid issues with path traversal
+        const projectRoot = resolve(projectRootInput);
 
         // Create a new isolated editor instance for this migration if not provided
         // This enables concurrent migrations without shared state corruption
@@ -102,6 +105,9 @@ export class ProjectMigrator {
             );
             messages = messages.concat(projectInfoMessages);
 
+            // Ensure projectInfo.rootPath uses the resolved absolute path
+            // This is critical when importProjectInfo is provided with a relative rootPath
+            projectInfo.rootPath = projectRoot;
             projectInfo.baseUri = baseUriOpt;
 
             // Resolve UI5 versions for migration
@@ -134,9 +140,7 @@ export class ProjectMigrator {
         // Commit only when we own the editor; otherwise the caller commits (matches other writers).
         if (ownsEditor && migrationResult.result) {
             try {
-                await new Promise<void>((resolve, reject) =>
-                    migrationResult.fs.commit((error) => (error ? reject(error) : resolve()))
-                );
+                await commitFileSystemChanges(migrationResult.fs);
             } catch (error) {
                 migrationResult.result = false;
                 migrationResult.messages.push({
@@ -165,7 +169,7 @@ export class ProjectMigrator {
         editor: Editor,
         projectInfo: ImportProjectInfo,
         messages: Message[],
-        opts: { vscode: any; ui5SnapshotUrl: string; internalToggle: boolean; strict: boolean }
+        opts: { vscode: any; ui5SnapshotUrl?: string; internalToggle: boolean; strict: boolean }
     ): Promise<{ result: boolean; messages: Message[] }> {
         const isSupportedApp =
             projectInfo.isSAPApp ||
@@ -218,7 +222,7 @@ export class ProjectMigrator {
         fs: Editor,
         projectInfo: ImportProjectInfo,
         vscode: any,
-        ui5SnapshotUrl: string,
+        ui5SnapshotUrl?: string,
         internalToggle: boolean = false,
         strict: boolean = false
     ): Promise<{ result: boolean; messages: Message[] }> {
@@ -357,7 +361,7 @@ export class ProjectMigrator {
     private static async copyAdaptationFiles(
         fs: Editor,
         projectInfo: ImportProjectInfo,
-        snapshotUrl: string
+        snapshotUrl?: string
     ): Promise<{ fs: Editor; result: boolean; messages: Message[] }> {
         return copyAdaptationFiles(fs, projectInfo, snapshotUrl);
     }

@@ -1,5 +1,23 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.63
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+#### Release Date
+
+2026-11-09
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+- @sap-ux/inquirer-common 1.0.53 → 1.0.54
+- @sap-ux/odata-service-inquirer 3.2.31 → 3.2.32
+
 ## 0.3.62
 
 ### Patch Changes
