@@ -313,6 +313,7 @@ describe('relay browser client', () => {
               }
             : { setTimeout, clearTimeout };
         const reload = jest.fn();
+        const parentPostMessage = jest.fn();
         const log = jest.fn();
         const fetch = jest.fn(async (url: URL | string, options: { body?: string } = {}) => {
             const href = url.toString();
@@ -334,6 +335,7 @@ describe('relay browser client', () => {
         const win: Record<string, unknown> = { sap: { ui: { require: ui5Require } } };
         win.self = win;
         win.top = topLevel ? win : {};
+        win.parent = topLevel ? win : { postMessage: parentPostMessage };
         const messageHandlers: Array<(event: { origin: string; data: unknown }) => void> = [];
         win.addEventListener = (type: string, handler: (event: { origin: string; data: unknown }) => void) => {
             if (type === 'message') {
@@ -364,7 +366,7 @@ describe('relay browser client', () => {
                 handler(event);
             }
         };
-        return { fetch, reload, log, ui5Require, dispatchMessage };
+        return { fetch, reload, parentPostMessage, log, ui5Require, dispatchMessage };
     };
 
     const waitForResult = async (client: { fetch: jest.Mock }) => {
@@ -484,12 +486,24 @@ describe('relay browser client', () => {
             const client = await runClient([{ id: '1', actionName }]);
             expect(client.fetch).toHaveBeenCalledTimes(2);
             expect(client.ui5Require).not.toHaveBeenCalled();
-            expect(client.reload).toHaveBeenCalledTimes(actionName === '__reload__' ? 1 : 0);
+            expect(client.reload).not.toHaveBeenCalled();
             expect(JSON.parse(client.fetch.mock.calls[1][1].body ?? '').result).toEqual(
                 actionName === '__reload__' ? { reloaded: true } : { stopped: true }
             );
         }
     );
+
+    test('__reload__ reloads via CPE reloadApplication posted to the editor shell', async () => {
+        const client = await runClient([{ id: '1', actionName: '__reload__' }]);
+        expect(client.parentPostMessage).toHaveBeenCalledWith(
+            {
+                type: 'post-message-action',
+                action: { type: '[ext] reload-application', payload: { save: false } }
+            },
+            'https://preview.test'
+        );
+        expect(client.reload).not.toHaveBeenCalled();
+    });
 
     test('reports an unavailable action without replaying it', async () => {
         const client = await runClient([{ id: '1', actionName: ACTION }]);
@@ -538,7 +552,7 @@ describe('relay browser client', () => {
 
     test('reloads even when the __reload__ result POST fails', async () => {
         const client = await runClient([{ id: '1', actionName: '__reload__' }], {}, undefined, true);
-        expect(client.reload).toHaveBeenCalledTimes(1);
+        expect(client.parentPostMessage).toHaveBeenCalledTimes(1);
         expect(client.log).toHaveBeenCalled();
     });
 

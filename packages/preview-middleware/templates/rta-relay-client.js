@@ -236,7 +236,18 @@
                     console.error('[rta-relay] lifecycle result POST failed:', error);
                 }
                 if (action.actionName === '__reload__') {
-                    location.reload();
+                    const shell = window.parent && window.parent !== window ? window.parent : undefined;
+                    if (shell) {
+                        shell.postMessage(
+                            {
+                                type: 'post-message-action',
+                                action: { type: '[ext] reload-application', payload: { save: false } }
+                            },
+                            location.origin
+                        );
+                    } else {
+                        location.reload();
+                    }
                 }
                 return;
             }
