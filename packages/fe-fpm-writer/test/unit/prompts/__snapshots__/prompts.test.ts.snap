@@ -1892,24 +1892,26 @@ Object {
     },
     Object {
       "choices": [Function],
+      "filter": [Function],
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select a target property",
         "selectType": "dynamic",
       },
       "message": "Number",
-      "name": "buildingBlockData.targetProperty",
+      "name": "buildingBlockData.number",
       "type": "list",
     },
     Object {
       "choices": [Function],
+      "filter": [Function],
       "guiOptions": Object {
         "mandatory": false,
         "placeholder": "Select a target property",
         "selectType": "dynamic",
       },
       "message": "Unit",
-      "name": "buildingBlockData.targetProperty",
+      "name": "buildingBlockData.unit",
       "type": "list",
     },
     Object {

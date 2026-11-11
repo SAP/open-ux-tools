@@ -61,6 +61,7 @@ export async function getKPITagBuildingBlockPrompts(context: PromptContext): Pro
             getTargetPropertiesPrompt(context, {
                 name: 'buildingBlockData.number',
                 message: t('number') as string,
+                filter: (val: string) => (val ? `{${val}}` : val),
                 guiOptions: {
                     mandatory: true
                 }
@@ -68,6 +69,7 @@ export async function getKPITagBuildingBlockPrompts(context: PromptContext): Pro
             getTargetPropertiesPrompt(context, {
                 name: 'buildingBlockData.unit',
                 message: t('unit') as string,
+                filter: (val: string) => (val ? `{${val}}` : val),
                 guiOptions: {
                     mandatory: false
                 }
