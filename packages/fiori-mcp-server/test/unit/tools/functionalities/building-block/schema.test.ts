@@ -16,17 +16,14 @@ describe('lean schema: no member advertises metaPath/contextPath (issue #39379 /
         }
     });
 
-    test('members declare only the discriminant, id, and their required fields', () => {
-        expect(Object.keys((members['page'] as any).shape).sort()).toEqual(['buildingBlockType', 'id']);
-        expect(Object.keys((members['rich-text-editor-button-groups'] as any).shape).sort()).toEqual([
-            'buildingBlockType',
-            'id'
-        ]);
-        expect(Object.keys((members['custom-column'] as any).shape).sort()).toEqual([
-            'buildingBlockType',
-            'header',
-            'id'
-        ]);
+    test('every member declares only the discriminant and id — no per-type field overrides', () => {
+        for (const [type, member] of Object.entries(members)) {
+            expect(
+                `${type}:${Object.keys((member as any).shape)
+                    .sort()
+                    .join(',')}`
+            ).toBe(`${type}:buildingBlockType,id`);
+        }
     });
 });
 
@@ -55,31 +52,38 @@ describe('buildBuildingBlockSchema', () => {
         expect(result.buildingBlockData.title).toBe('My Page');
     });
 
-    test('requires header for a CustomColumn', () => {
+    test('accepts a CustomColumn without a header — semantics (required fields) come from search_docs', () => {
+        const result = schema.parse({
+            viewOrFragmentPath: 'v.xml',
+            aggregationPath: '/x',
+            buildingBlockData: { buildingBlockType: 'custom-column', header: 'My Column' }
+        }) as any;
+        expect(result.buildingBlockData.header).toBe('My Column');
+        // No header is also accepted at the schema level (not an override).
         expect(() =>
             schema.parse({
                 viewOrFragmentPath: 'v.xml',
                 aggregationPath: '/x',
                 buildingBlockData: { buildingBlockType: 'custom-column' }
             })
-        ).toThrow();
+        ).not.toThrow();
     });
 
-    test('requires key and text for an Action', () => {
+    test('accepts an Action and passes key/text/anchor/placement through (looseObject, not overrides)', () => {
+        const result = schema.parse({
+            viewOrFragmentPath: 'v.xml',
+            aggregationPath: '/x',
+            buildingBlockData: { buildingBlockType: 'action', key: 'k', text: 'Do it', anchor: 'a', placement: 'After' }
+        }) as any;
+        expect(result.buildingBlockData).toMatchObject({ key: 'k', text: 'Do it', anchor: 'a', placement: 'After' });
+        // key/text are no longer required at the schema level.
         expect(() =>
             schema.parse({
                 viewOrFragmentPath: 'v.xml',
                 aggregationPath: '/x',
-                buildingBlockData: { buildingBlockType: 'action', key: 'k' }
+                buildingBlockData: { buildingBlockType: 'action' }
             })
-        ).toThrow();
-        expect(
-            schema.parse({
-                viewOrFragmentPath: 'v.xml',
-                aggregationPath: '/x',
-                buildingBlockData: { buildingBlockType: 'action', key: 'k', text: 'Do it' }
-            })
-        ).toBeDefined();
+        ).not.toThrow();
     });
 
     test('rejects an unknown buildingBlockType', () => {

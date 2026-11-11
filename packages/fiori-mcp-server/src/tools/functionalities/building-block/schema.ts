@@ -14,17 +14,15 @@ const idField = zod
 /**
  * Builds the per-type member schemas for the building block discriminated union.
  *
- * The schema is intentionally lean: each member validates only the discriminant (`buildingBlockType`)
- * and the optional `id`, and uses `zod.looseObject` so every other property the LLM sends
- * (`metaPath`, `title`, `buttonGroups`, and all other bb_macro_api.md-documented attributes) passes
- * straight through to generateBuildingBlock. Full property semantics live in bb_macro_api.md and are
- * fetched via `search_docs` — they are deliberately not duplicated here.
+ * The schema is intentionally as lean as possible: every member validates ONLY the discriminant
+ * (`buildingBlockType`) and the optional `id`, and uses `zod.looseObject` so every other property the LLM
+ * sends (`metaPath`, `title`, `header`, `key`, `buttonGroups`, and all other bb_macro_api.md-documented
+ * attributes) passes straight through to generateBuildingBlock. All property semantics — including which
+ * fields are required for which type — live in bb_macro_api.md and are fetched via `search_docs`; they are
+ * deliberately NOT duplicated or overridden here (no per-type field overrides, no partial field configs).
  *
- * No member declares `metaPath` or `contextPath`: nothing should advertise `contextPath` (the tool
- * always leaves it unset), and advertising `metaPath` only on some types caused Page /
- * RichTextEditorButtonGroups to surface fields they do not use. The only extra declared fields are the
- * handful the LLM must always provide for the aggregation children + Action, kept so the schema fails
- * fast instead of letting generateBuildingBlock produce bad output.
+ * No member declares `metaPath` or `contextPath`: nothing should advertise `contextPath` (the tool always
+ * leaves it unset), and advertising `metaPath` only on some types surfaced fields they do not use.
  *
  * @returns Exhaustive map of BuildingBlockType → member schema.
  */
@@ -35,39 +33,10 @@ export function buildBuildingBlockMembers(): Record<BuildingBlockType, BuildingB
             id: idField
         });
 
-    // Overrides declare the fields the LLM must always provide (surfaced in the JSON schema so they
-    // are required). Everything else still flows through via looseObject.
-    const customColumn = zod.looseObject({
-        buildingBlockType: zod.literal(BuildingBlockType.CustomColumn),
-        id: idField,
-        header: zod.string().describe('Column header label shown in the table.')
-    });
-    const customFilterField = zod.looseObject({
-        buildingBlockType: zod.literal(BuildingBlockType.CustomFilterField),
-        id: idField,
-        label: zod.string().describe('Label shown for the filter field.'),
-        property: zod.string().describe('The entity property this filter field filters on.')
-    });
-    const customFormField = zod.looseObject({
-        buildingBlockType: zod.literal(BuildingBlockType.CustomFormField),
-        id: idField,
-        property: zod.string().describe('The entity property path this form field displays.')
-    });
-    const action = zod.looseObject({
-        buildingBlockType: zod.literal(BuildingBlockType.Action),
-        id: idField,
-        key: zod.string().describe('Unique key identifying the action within the table actions aggregation.'),
-        text: zod.string().describe('Text displayed on the action button in the toolbar.'),
-        anchor: zod.string().optional().describe('Key of an existing action to place this action relative to.'),
-        placement: zod
-            .enum(['Before', 'After'])
-            .optional()
-            .describe('Whether to place this action Before or After the anchor action.')
-    });
-
-    // Exhaustive per-type map. `satisfies Record<BuildingBlockType, …>` forces an entry for every
-    // BuildingBlockType — if @sap-ux/fe-fpm-writer adds a new type upstream, this breaks the build
-    // instead of silently falling back to a bare base schema (issue #39379 AC4).
+    // Exhaustive per-type map. Every type uses the same lean base — property semantics come from
+    // `search_docs`, not the schema. `satisfies Record<BuildingBlockType, …>` forces an entry for every
+    // BuildingBlockType — if @sap-ux/fe-fpm-writer adds a new type upstream, this breaks the build instead
+    // of silently omitting it (issue #39379 AC4).
     const buildingBlockSchemaByType = {
         [BuildingBlockType.Table]: baseSchema(BuildingBlockType.Table),
         [BuildingBlockType.Chart]: baseSchema(BuildingBlockType.Chart),
@@ -77,10 +46,10 @@ export function buildBuildingBlockMembers(): Record<BuildingBlockType, BuildingB
         [BuildingBlockType.Page]: baseSchema(BuildingBlockType.Page),
         [BuildingBlockType.RichTextEditor]: baseSchema(BuildingBlockType.RichTextEditor),
         [BuildingBlockType.RichTextEditorButtonGroups]: baseSchema(BuildingBlockType.RichTextEditorButtonGroups),
-        [BuildingBlockType.CustomFormField]: customFormField,
-        [BuildingBlockType.CustomColumn]: customColumn,
-        [BuildingBlockType.CustomFilterField]: customFilterField,
-        [BuildingBlockType.Action]: action
+        [BuildingBlockType.CustomFormField]: baseSchema(BuildingBlockType.CustomFormField),
+        [BuildingBlockType.CustomColumn]: baseSchema(BuildingBlockType.CustomColumn),
+        [BuildingBlockType.CustomFilterField]: baseSchema(BuildingBlockType.CustomFilterField),
+        [BuildingBlockType.Action]: baseSchema(BuildingBlockType.Action)
     } satisfies Record<BuildingBlockType, BuildingBlockMemberSchema>;
 
     return buildingBlockSchemaByType;
