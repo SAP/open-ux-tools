@@ -1,4 +1,5 @@
 import {
+    cleanup,
     describeUi,
     executeAction,
     executeUfaAction,
@@ -60,8 +61,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
         const frameId = input.frameId ?? 'preview';
         switch (input.step) {
             case 'start': {
-                // Always disconnect any existing page for this URL before starting fresh.
-                // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
+                const agentName = optionalString(input.payload, 'agentName');
                 if (activeTransport === httpTransport) {
                     // The relay carries its own editor-session and its `start` is not given an
                     // appPath, so skip the Playwright project seeding entirely.
@@ -75,7 +75,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                     // session seeding is keyed by project and ABAP projects skip it entirely.
                     await registerSite(site, appPath);
                 }
-                const result = await startRta(activeTransport, { site, frameId });
+                const result = await startRta(activeTransport, { site, frameId }, agentName);
                 return { site, frameId, ...result };
             }
             case 'get_overlays': {
@@ -101,6 +101,11 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
             case 'save': {
                 const ok = await saveChanges(activeTransport, { site, frameId });
                 return { saved: ok };
+            }
+            case 'cleanup': {
+                const reason = optionalString(input.payload, 'reason');
+                const { cleaned } = await cleanup(activeTransport, { site, frameId }, reason);
+                return { cleaned };
             }
             case 'stop': {
                 await activeTransport.disconnectSite(site);

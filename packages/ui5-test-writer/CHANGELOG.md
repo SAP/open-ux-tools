@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.39 → 1.2.40
+
+## 1.19.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Bug Fixes
+
+- Configure OPA5 JourneyRunner with autoWait: true (best practice) [[3ec03ef](https://github.com/SAP/open-ux-tools/commit/3ec03efa8602776cdaedbf19155ca4e62005f665)]
+
 ## 1.19.12
 
 ### Patch Changes

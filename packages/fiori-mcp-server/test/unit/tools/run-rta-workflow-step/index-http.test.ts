@@ -37,6 +37,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
     getElementContext: jest.fn(),
     executeAction: jest.fn(),
     saveChanges: jest.fn(),
+    cleanup: jest.fn(),
     describeUi: mockDescribeUi,
     executeUfaAction: mockExecuteUfaAction,
     getODataMetadata: jest.fn(),
@@ -91,7 +92,7 @@ describe('runRtaWorkflowStep HTTP dispatcher', () => {
             expect(mockRequireEditorSession).toHaveBeenCalledTimes(1);
             expect(mockRequireEditorSession).toHaveBeenCalledWith(site);
             expect(mockHttpTransport.disconnectSite).toHaveBeenCalledWith(site);
-            expect(mockStartRta).toHaveBeenCalledWith(mockHttpTransport, { site, frameId: FRAME });
+            expect(mockStartRta).toHaveBeenCalledWith(mockHttpTransport, { site, frameId: FRAME }, undefined);
             expect(mockRequireEditorSession.mock.invocationCallOrder[0]).toBeLessThan(
                 mockHttpTransport.disconnectSite.mock.invocationCallOrder[0]
             );
