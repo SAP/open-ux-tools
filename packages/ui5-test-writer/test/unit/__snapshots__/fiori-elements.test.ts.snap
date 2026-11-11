@@ -12152,12 +12152,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -12614,12 +12619,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -13076,12 +13086,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -13471,12 +13486,17 @@ import type { actions as EmployeesListGeneratedCustomActions, assertions as Empl
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -14052,12 +14072,17 @@ import type { actions as TrainingsObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -14588,12 +14613,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -15122,12 +15152,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -15644,12 +15679,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -16166,12 +16206,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -17877,12 +17922,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -18351,12 +18401,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -18813,12 +18868,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
