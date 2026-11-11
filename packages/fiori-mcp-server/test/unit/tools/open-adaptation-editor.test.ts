@@ -186,6 +186,23 @@ describe('openAdaptationEditor', () => {
         );
     });
 
+    test('launches the fiori editor on a free port so a stale server on the default port is never mistaken for it', async () => {
+        mockExistsSync.mockImplementation((p: unknown) => typeof p === 'string' && p.includes('fiori.cjs'));
+        const child = new FakeChildProcess(44);
+        mockSpawn.mockReturnValue(fakeSubprocess(child));
+
+        const promise = openAdaptationEditor({ appPath: '/tmp/myapp' });
+        setImmediate(() => {
+            child.emitLine('URL: http://localhost:8081');
+        });
+        await promise;
+
+        const args = mockSpawn.mock.calls[0][1] as string[];
+        const portIndex = args.indexOf('--port');
+        expect(portIndex).toBeGreaterThan(-1);
+        expect(Number.parseInt(args[portIndex + 1], 10)).toBeGreaterThan(0);
+    });
+
     test('falls back to .bin/fiori when fiori.cjs missing but .bin/fiori exists', async () => {
         mockExistsSync.mockImplementation(
             (p: unknown) => typeof p === 'string' && p.includes('.bin') && p.includes('fiori')

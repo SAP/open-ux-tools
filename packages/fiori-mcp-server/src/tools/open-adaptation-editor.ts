@@ -1,5 +1,6 @@
 import type { OpenAdaptationEditorOutput, OpenAdaptationEditorInput } from '../types/index.js';
 import { type ChildProcess } from 'node:child_process';
+import { createServer } from 'node:net';
 import { randomBytes } from 'node:crypto';
 import spawn from 'nano-spawn';
 import { createInterface } from 'node:readline';
@@ -94,6 +95,24 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
 }
 
 /**
+ * Finds a free TCP port by binding to port 0 on the loopback interface.
+ *
+ * @returns A promise resolving to an unused port.
+ */
+function findFreePort(): Promise<number> {
+    return new Promise((resolve, reject) => {
+        const server = createServer();
+        server.unref();
+        server.on('error', reject);
+        server.listen(0, '127.0.0.1', () => {
+            const address = server.address();
+            const port = typeof address === 'object' && address ? address.port : 0;
+            server.close(() => (port ? resolve(port) : reject(new Error('Could not determine a free port'))));
+        });
+    });
+}
+
+/**
  * Resolves how to launch the editor for a project. The mechanism is the same for
  * ABAP and CF (`resolveFioriBin`); CF differs only in needing a prior build (when
  * `dist/` is missing, a `reason` is returned so the caller fails fast) and a
@@ -104,9 +123,12 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
  */
 async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: string }> {
     const { command, args } = resolveFioriBin(appPath);
+    // Bind the editor to a free port so a stale server left on the default port can never
+    // be mistaken for this one. The npm fallback runs a fixed script and takes no port flag.
+    const launchArgs = command === 'npm' ? args : [...args, '--port', String(await findFreePort())];
     const isCf = await isCFEnvironment(appPath);
     if (!isCf) {
-        return { command, args, timeoutMs: ABAP_TIMEOUT_MS };
+        return { command, args: launchArgs, timeoutMs: ABAP_TIMEOUT_MS };
     }
 
     if (!existsSync(join(appPath, 'dist'))) {
@@ -117,7 +139,7 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
         };
     }
 
-    return { command, args, timeoutMs: CF_TIMEOUT_MS };
+    return { command, args: launchArgs, timeoutMs: CF_TIMEOUT_MS };
 }
 
 /**
