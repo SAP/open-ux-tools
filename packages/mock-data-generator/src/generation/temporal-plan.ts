@@ -180,7 +180,7 @@ function lifecycleConstraints(
     ] as const) {
         for (const before of properties.filter((property) => has(property, early))) {
             const after = laterOfPair(properties, before, { early, late, clock });
-            if (after && before.primitiveType === after.primitiveType) {
+            if (before.primitiveType === after?.primitiveType) {
                 inferred.push({
                     resource: entity.entitySetName,
                     before: before.name,

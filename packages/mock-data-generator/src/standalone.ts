@@ -307,14 +307,11 @@ function fieldHasEvidence(
     if (rows.length === 0) {
         return false;
     }
-    const allowed = [
+    const allowed = new Set<unknown>([
         ...(property.enumValues ?? []),
         ...authoredDomainValues(context.graph, entity, property, context.request.existingData)
-    ];
-    return rows.every((row) => {
-        const value = row[property.name];
-        return allowed.includes(value);
-    });
+    ]);
+    return rows.every((row) => allowed.has(row[property.name]));
 }
 
 /**
