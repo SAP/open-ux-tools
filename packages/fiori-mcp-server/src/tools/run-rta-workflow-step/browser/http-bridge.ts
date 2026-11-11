@@ -25,6 +25,10 @@ function relayLoginWaitMs(): number {
     return Number.isFinite(raw) && raw >= 0 ? raw : DEFAULT_RELAY_LOGIN_WAIT_MS;
 }
 
+/**
+ * @param ms Milliseconds to wait.
+ * @returns A promise that resolves after `ms` milliseconds.
+ */
 function delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -128,9 +132,58 @@ function isClientAbsent(error: unknown): boolean {
 }
 
 /**
- * Calls a frontend action over the relay. Non-start actions are single-shot. The `startRTA` start
- * path keeps its bounded key-user retry and waits a login budget for the browser client to return
- * from the backend login screen, returning the backend-login sentinel if it never does.
+ * Retries startRTA until it succeeds, the permission-check budget is exhausted,
+ * or the login-wait deadline elapses. Uses recursion rather than a loop so each
+ * attempt is a distinct async frame (no `await` inside a loop construct).
+ *
+ * @param site Registered editor URL.
+ * @param payload Action parameters.
+ * @param frameId Optional target frame.
+ * @param deadline Absolute timestamp after which a missing client prompts for login.
+ * @param permissionRetries Retries consumed so far for the key-user permission check.
+ * @returns Frontend result envelope.
+ */
+async function startRtaWithRetry<TReturn>(
+    site: string,
+    payload: Record<string, unknown>,
+    frameId: string | undefined,
+    deadline: number,
+    permissionRetries: number
+): Promise<FrontendActionResult<TReturn>> {
+    try {
+        const result = toFrontendResult<TReturn>(await requestRelay(site, START_RTA_ACTION, payload, frameId));
+        if (
+            result.isSuccess ||
+            permissionRetries >= MAX_PERMISSION_RETRIES ||
+            !/key user permission/i.test(result.error?.message ?? '')
+        ) {
+            return result;
+        }
+        logger.debug(
+            `HTTP relay: startRTA key-user check not ready, retry ${permissionRetries + 1}/${MAX_PERMISSION_RETRIES}`
+        );
+        await delay(START_RETRY_DELAY_MS);
+        return startRtaWithRetry(site, payload, frameId, deadline, permissionRetries + 1);
+    } catch (error) {
+        if (!isClientAbsent(error)) {
+            throw error;
+        }
+        if (Date.now() >= deadline) {
+            logger.debug('HTTP relay: login wait budget elapsed with no editor client; prompting for login');
+            const loginPayload: NeedsUserActionPayload = {
+                __needsUserAction: 'backend_login_required',
+                message: RELAY_LOGIN_REQUIRED_MESSAGE
+            };
+            return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
+        }
+        await delay(START_RETRY_DELAY_MS);
+        return startRtaWithRetry(site, payload, frameId, deadline, permissionRetries);
+    }
+}
+
+/**
+ * Calls a frontend action over the relay. Non-start actions are single-shot. The `startRTA`
+ * path delegates to `startRtaWithRetry` for its bounded key-user and login-wait logic.
  *
  * @param site Registered editor URL.
  * @param actionName Fully-qualified frontend action.
@@ -147,38 +200,7 @@ async function callFrontendActionHttp<TReturn = unknown>(
     if (actionName !== START_RTA_ACTION) {
         return toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
     }
-    const deadline = Date.now() + relayLoginWaitMs();
-    let permissionRetries = 0;
-    for (;;) {
-        try {
-            const result = toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
-            if (
-                result.isSuccess ||
-                permissionRetries >= MAX_PERMISSION_RETRIES ||
-                !/key user permission/i.test(result.error?.message ?? '')
-            ) {
-                return result;
-            }
-            permissionRetries++;
-            logger.debug(
-                `HTTP relay: startRTA key-user check not ready, retry ${permissionRetries}/${MAX_PERMISSION_RETRIES}`
-            );
-            await delay(START_RETRY_DELAY_MS);
-        } catch (error) {
-            if (!isClientAbsent(error)) {
-                throw error;
-            }
-            if (Date.now() >= deadline) {
-                logger.debug('HTTP relay: login wait budget elapsed with no editor client; prompting for login');
-                const loginPayload: NeedsUserActionPayload = {
-                    __needsUserAction: 'backend_login_required',
-                    message: RELAY_LOGIN_REQUIRED_MESSAGE
-                };
-                return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
-            }
-            await delay(START_RETRY_DELAY_MS);
-        }
-    }
+    return startRtaWithRetry<TReturn>(site, payload, frameId, Date.now() + relayLoginWaitMs(), 0);
 }
 
 /**
