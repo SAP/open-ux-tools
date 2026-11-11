@@ -11,6 +11,7 @@ const ns1 = {
                 'choices': {
                     'chart': 'Chart',
                     'filterBar': 'Filter Bar',
+                    'kpiTag': 'KPI Tag',
                     'table': 'Table'
                 }
             },
@@ -254,6 +255,31 @@ const ns1 = {
             'valueSource': 'Value Source',
             'entitySet': 'Entity',
             'targetProperty': 'Target Property',
+            'aggregation': 'Aggregation Path'
+        },
+        'kpiTag': {
+            'id': {
+                'message': 'Building Block ID',
+                'validation': 'An ID is required to generate the KPI Tag building block.'
+            },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validate': 'A view or fragment is required to generate the KPI Tag building block.'
+            },
+            'bindingContextType': 'Binding Context',
+            'entity': 'Entity',
+            'number': 'Number',
+            'unit': 'Unit',
+            'status': {
+                'message': 'Status',
+                'choices': {
+                    'none': 'None',
+                    'success': 'Success',
+                    'error': 'Error',
+                    'warning': 'Warning',
+                    'information': 'Information'
+                }
+            },
             'aggregation': 'Aggregation Path'
         },
         'richTextEditorButtonGroups': {

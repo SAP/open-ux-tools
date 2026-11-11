@@ -2,6 +2,7 @@ export * from './building-blocks.js';
 export * from './chart.js';
 export * from './filter-bar.js';
 export * from './form.js';
+export * from './kpi-tag.js';
 export * from './table.js';
 export * from './page.js';
 export * from './richTextEditor.js';

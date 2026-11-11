@@ -11,6 +11,7 @@ import type {
     Field,
     FilterBar,
     Form,
+    KPITag,
     Table,
     CustomColumn,
     CustomFilterField,
@@ -4346,6 +4347,104 @@ describe('Building Blocks', () => {
             expect(result.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('page-bb-agg-wraps-loose-into-items');
         });
     });
+
+    describe('KPITag building block', () => {
+        test('generate KPITag building block with number only', async () => {
+            const basePath = join(testAppPath, 'generate-kpitag-number-only');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: KPITag = {
+                id: 'testKPITag',
+                generateId,
+                buildingBlockType: BuildingBlockType.KPITag,
+                number: '{TotalPrice}'
+            };
+
+            await generateBuildingBlock<KPITag>(
+                basePath,
+                { viewOrFragmentPath: xmlViewFilePath, aggregationPath, buildingBlockData },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-kpitag-number-only');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate KPITag building block with number and unit', async () => {
+            const basePath = join(testAppPath, 'generate-kpitag-number-unit');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: KPITag = {
+                id: 'testKPITag',
+                generateId,
+                buildingBlockType: BuildingBlockType.KPITag,
+                number: '{TotalPrice}',
+                unit: '{CurrencyCode_code}'
+            };
+
+            await generateBuildingBlock<KPITag>(
+                basePath,
+                { viewOrFragmentPath: xmlViewFilePath, aggregationPath, buildingBlockData },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-kpitag-number-unit');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate KPITag building block with all properties', async () => {
+            const basePath = join(testAppPath, 'generate-kpitag-all-properties');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: KPITag = {
+                id: 'testKPITag',
+                generateId,
+                buildingBlockType: BuildingBlockType.KPITag,
+                number: '{TotalPrice}',
+                unit: '{CurrencyCode_code}',
+                status: 'Success'
+            };
+
+            await generateBuildingBlock<KPITag>(
+                basePath,
+                { viewOrFragmentPath: xmlViewFilePath, aggregationPath, buildingBlockData },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-kpitag-all-properties');
+            await writeFilesForDebugging(fs);
+        });
+
+        test('generate KPITag building block with status None omitted from XML', async () => {
+            const basePath = join(testAppPath, 'generate-kpitag-status-none');
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+            const buildingBlockData: KPITag = {
+                id: 'testKPITag',
+                generateId,
+                buildingBlockType: BuildingBlockType.KPITag,
+                number: '{TotalPrice}',
+                status: 'None'
+            };
+
+            await generateBuildingBlock<KPITag>(
+                basePath,
+                { viewOrFragmentPath: xmlViewFilePath, aggregationPath, buildingBlockData },
+                fs
+            );
+
+            expect(fs.dump(testAppPath)).toMatchSnapshot('generate-kpitag-status-none');
+            await writeFilesForDebugging(fs);
+        });
+    });
 });
 
 describe('resolveAggregationPath', () => {
@@ -4629,3 +4728,4 @@ describe('generateBuildingBlockAggregation error cases', () => {
         ).rejects.toThrow(/Page element.*not found/);
     });
 });
+

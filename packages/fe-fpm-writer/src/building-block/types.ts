@@ -31,7 +31,8 @@ export enum BuildingBlockType {
     CustomColumn = 'custom-column',
     RichTextEditor = 'rich-text-editor',
     RichTextEditorButtonGroups = 'rich-text-editor-button-groups',
-    Action = 'action'
+    Action = 'action',
+    KPITag = 'kpi-tag'
 }
 
 /**
@@ -239,6 +240,28 @@ export interface Form extends BuildingBlock {
      * The title of the form control.
      */
     title?: string;
+}
+
+/**
+ * Building block used to create a KPI tag.
+ *
+ * @example
+ * <macros:KPITag id="MyKpi" number="{TotalPrice}" unit="{CurrencyCode_code}" status="Success" />
+ * @extends {BuildingBlock}
+ */
+export interface KPITag extends BuildingBlock {
+    /**
+     * Entity property binding for the numeric value to display. Required.
+     */
+    number: string;
+    /**
+     * Entity property binding for the unit of measure. Optional; omitted when blank.
+     */
+    unit?: string;
+    /**
+     * Semantic status indicator. Optional; omitted when 'None' (the runtime default).
+     */
+    status?: 'None' | 'Success' | 'Error' | 'Warning' | 'Information';
 }
 
 /**

@@ -18,6 +18,7 @@ export enum PromptsType {
     Table = 'table',
     Page = 'page',
     BuildingBlocks = 'building-blocks',
+    KPITag = 'kpi-tag',
     RichTextEditor = 'rich-text-editor',
     RichTextEditorButtonGroups = 'rich-text-editor-button-groups'
 }

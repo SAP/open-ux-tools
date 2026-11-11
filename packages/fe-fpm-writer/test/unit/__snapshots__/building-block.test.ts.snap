@@ -1697,6 +1697,138 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks KPITag building block generate KPITag building block with all properties: generate-kpitag-all-properties 1`] = `
+Object {
+  "generate-kpitag-all-properties/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:KPITag id=\\"testKPITag\\" number=\\"{TotalPrice}\\" unit=\\"{CurrencyCode_code}\\" status=\\"Success\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-kpitag-all-properties/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks KPITag building block generate KPITag building block with number and unit: generate-kpitag-number-unit 1`] = `
+Object {
+  "generate-kpitag-number-unit/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:KPITag id=\\"testKPITag\\" number=\\"{TotalPrice}\\" unit=\\"{CurrencyCode_code}\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-kpitag-number-unit/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks KPITag building block generate KPITag building block with number only: generate-kpitag-number-only 1`] = `
+Object {
+  "generate-kpitag-number-only/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:KPITag id=\\"testKPITag\\" number=\\"{TotalPrice}\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-kpitag-number-only/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks KPITag building block generate KPITag building block with status None omitted from XML: generate-kpitag-status-none 1`] = `
+Object {
+  "generate-kpitag-status-none/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:KPITag id=\\"testKPITag\\" number=\\"{TotalPrice}\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-kpitag-status-none/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks RichTextEditorButtonGroups building block RichTextEditorButtonGroups detects richtexteditor:buttonGroups elements correctly: generate-rte-button-groups-with-existing-button-groups 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:richtexteditor=\\"sap.fe.macros.richtexteditor\\">
     <VBox>
