@@ -31,7 +31,10 @@ const PROPERTY_DOCS_GUIDE =
     'Page building block must be placed in a custom page view file (.view.xml), NOT in a fragment file. ' +
     'If the app has no custom page view files, tell the user: "Page building block can only be added to a custom page view. Please create a custom page view first, then ask again." ' +
     'Only one macros:Page element is allowed per view. If a macros:Page already exists in the view, do NOT add another — instead add building blocks (e.g. Table, FilterBar) inside it using the XPath that points to the macros:Page items aggregation. ' +
-    'When adding a Page building block, always use the XPath that is a direct child of /mvc:View as aggregationPath (e.g. /mvc:View/Page) — never use a deeper path like /mvc:View/Page/content.';
+    'When adding a Page building block, always use the XPath that is a direct child of /mvc:View as aggregationPath (e.g. /mvc:View/Page) — never use a deeper path like /mvc:View/Page/content. ' +
+    "That direct-child-of-/mvc:View rule is ONLY for the Page building block itself. Any OTHER building block (Table, FilterBar, Chart, Form, Field) added to a custom page view that already contains a Page must be inserted INTO the Page's content aggregation — pick the deepest offered XPath ending in the Page content (e.g. /mvc:View/*[local-name()='Page']/*[local-name()='content']), never the bare /mvc:View. " +
+    'The Page layout is chosen with the "templateType" property (allowed values: "full" = generate all aggregations, "basic" = minimal self-closing macros:Page) — the field is "templateType", not "template". ' +
+    'The Form building block uses the "title" property for its visible title (not "header").';
 
 /**
  * Explains aggregation child placement: which types insert into a parent macro, how to pick
@@ -42,9 +45,10 @@ const AGGREGATION_CHILD_PLACEMENT_GUIDE =
     'insert into a parent macro aggregation — their aggregationPath must point to the parent macro element ' +
     `(${aggregationParentMacroMappingNote}). ` +
     'For aggregation children: if the user specifies a position (before/after a specific existing column/field), ' +
-    'pass position as { anchor: "<existingElementKey>", placement: "Before"|"After" } — the anchor value is the key attribute of the existing element in the XML. ' +
-    'Keys are always kebab-case derived from the label (e.g. label "Test Header" → key="test-header", label "Product Name" → key="product-name"), so you can derive the anchor from the label without reading the file. ' +
-    'Otherwise omit position and the column/field is appended at the end.';
+    'pass anchor and placement as TOP-LEVEL properties of buildingBlockData — anchor: "<existingElementKey>", placement: "Before"|"After" (do NOT nest them inside a position object) — the anchor value is the key attribute of the existing element in the XML. ' +
+    'Keys are always kebab-case derived from the existing element title text (e.g. "Test Header" → key="test-header", "Product Name" → key="product-name"), so you can derive the anchor without reading the file. ' +
+    'Otherwise omit anchor/placement and the column/field is appended at the end. ' +
+    'The visible title of a CustomColumn goes in the "header" property; CustomFilterField and CustomFormField use "label"; an Action uses "key" (a kebab-case identifier) for its id and "text" for its button label — do NOT put the identifier in the generic "id" field.';
 
 /**
  * Covers the four embededFragment + eventHandler combinations for CustomColumn, CustomFilterField,
@@ -58,6 +62,7 @@ const FRAGMENT_HANDLER_GUIDE =
     'Do NOT create handler files manually. ' +
     '(3) Existing fragment, no handler — set embededFragment.name to the existing fragment file name; no handler is generated. ' +
     '(4) Existing fragment, with handler — set embededFragment.name to the existing fragment file name and embededFragment.eventHandler to { fileName: "ExistingHandler", fnName: "myFn" }. ' +
+    'For NEW fragments (cases 1 and 2), if the user gives the fragment a name, set embededFragment.name to that name so the generated fragment file is created with it — do NOT put the fragment name in the generic "id" field; if embededFragment.name is omitted the file name is derived automatically. ' +
     'Ask the user which case applies before calling execute_functionality if it is unclear.';
 
 /**
@@ -80,9 +85,20 @@ const ACTION_HANDLER_GUIDE =
 const FILTERBAR_WIRING_GUIDE =
     'FilterBar wiring: add the FilterBar first (note its id), then when adding the Table pass buildingBlockData.filterBar set to that id. ' +
     'If the Table already exists and needs linking, edit the view XML directly to add filterBar="<filterBarId>" to the macros:Table element. ' +
-    'metaPath format for Table and FilterBar — never set contextPath, always leave it unset: ' +
+    'metaPath format for metaPath building blocks (Table, FilterBar, Chart, Form) — never set contextPath, always leave it unset: ' +
     '(1) Relative binding (navigation property as value source, e.g. "to_Booking"): metaPath="<navProp>/@<annotation>#<qualifier>" — no leading slash. Example: metaPath="to_Booking/@com.sap.vocabularies.UI.v1.LineItem#tableMacro". ' +
-    '(2) Absolute binding (entity set as value source, e.g. "Booking"): metaPath="/<entitySet>/@<annotation>#<qualifier>" — leading slash. Example: metaPath="/Booking/@com.sap.vocabularies.UI.v1.SelectionFields#filterBarMacro1".';
+    '(2) Absolute binding (entity set as value source, e.g. "Booking"): metaPath="/<entitySet>/@<annotation>#<qualifier>" — leading slash. Example: metaPath="/Booking/@com.sap.vocabularies.UI.v1.SelectionFields#filterBarMacro1". ' +
+    'The same relative/absolute rule applies to a Chart: absolute binding is metaPath="/<entitySet>/@com.sap.vocabularies.UI.v1.Chart#<qualifier>" (leading slash, e.g. "/Booking/@com.sap.vocabularies.UI.v1.Chart#bookingChart") — never a bare "@...Chart" with no entity segment. ' +
+    'Always include a unique #qualifier in the metaPath (e.g. #filterBarMacro, #tableMacro, #bookingChart) — an unqualified annotation term can collide with an existing default (unqualified) annotation already present on the same entity in the backend metadata, in which case the auto-written annotation shell is skipped.';
+
+/**
+ * Explains the RichTextEditorButtonGroups input shape: a buttonGroups ARRAY, not a single flat group.
+ */
+const BUTTON_GROUPS_GUIDE =
+    'RichTextEditorButtonGroups (buildingBlockType "rich-text-editor-button-groups"): buildingBlockData must contain a "buttonGroups" ARRAY — one element per toolbar group: buttonGroups: [{ name: "<groupName>", buttons: "<comma-separated button ids>" }, ...]. ' +
+    'Each element has "name" (the group name) and "buttons" (a single comma-separated string, e.g. "bold,italic,underline"). ' +
+    'Do NOT pass a flat top-level { name, buttons } object or a top-level "buttons" field — always wrap every group inside the buttonGroups array, even when adding a single group. ' +
+    'Adding button groups REWRITES the entire set from the array you pass — it does NOT append to existing groups. So when the target RichTextEditor ALREADY has button groups and you are adding more, first read the current fragment file to list the existing groups (their name + buttons), then pass ALL groups together — existing plus new — in the buttonGroups array, using the macros:RichTextEditorWithMetadata element as the aggregationPath. This is the one case where reading the fragment first is expected.';
 
 /**
  * Composed guidance note appended to ADD_BUILDING_BLOCK_FUNCTIONALITY.description.
@@ -93,6 +109,7 @@ const BB_TYPE_DOCS_NOTE = [
     AGGREGATION_CHILD_PLACEMENT_GUIDE,
     FRAGMENT_HANDLER_GUIDE,
     ACTION_HANDLER_GUIDE,
+    BUTTON_GROUPS_GUIDE,
     FILTERBAR_WIRING_GUIDE
 ].join(' ');
 

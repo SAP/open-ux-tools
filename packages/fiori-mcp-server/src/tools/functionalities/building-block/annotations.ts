@@ -116,8 +116,8 @@ function resolveAnnotationTarget(
 
 /**
  * Builds the value object for `FioriAnnotationService.edit`.
- * FieldGroup needs a `record` wrapper (the `FieldGroupType` complex type is a raw OData type name not exported
- * by any package, so it is hardcoded); every other term uses a flat empty collection.
+ * FieldGroup and Chart need a `record` wrapper (their complex-type names are raw OData type names not exported
+ * by any package, so they are hardcoded); every other term uses a flat empty collection.
  *
  * @param term - The OData annotation term being written
  * @param qualifier - Annotation qualifier, or "" for the default unqualified annotation
@@ -131,6 +131,25 @@ function buildAnnotationValue(term: UIAnnotationTerms, qualifier: string): Recor
             record: {
                 type: 'com.sap.vocabularies.UI.v1.FieldGroupType',
                 propertyValues: [{ name: 'Data', value: { type: 'Collection', Collection: [] } }]
+            }
+        };
+    }
+    if (term === UIAnnotationTerms.Chart) {
+        // UI.Chart is a ChartDefinitionType record (not a collection). ChartType is required by the
+        // vocabulary, so the shell seeds a default; Dimensions/Measures start empty for the user to fill.
+        return {
+            term,
+            ...(qualifier && { qualifier }),
+            record: {
+                type: 'com.sap.vocabularies.UI.v1.ChartDefinitionType',
+                propertyValues: [
+                    {
+                        name: 'ChartType',
+                        value: { type: 'EnumMember', EnumMember: 'com.sap.vocabularies.UI.v1.ChartType/Column' }
+                    },
+                    { name: 'Dimensions', value: { type: 'Collection', Collection: [] } },
+                    { name: 'Measures', value: { type: 'Collection', Collection: [] } }
+                ]
             }
         };
     }

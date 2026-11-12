@@ -35,8 +35,8 @@ is a separate developer task in `@sap-ux/fe-fpm-writer` (new macro, templates, p
 - ✅ An existing **FPM application** with a custom page or custom fragment to insert into. This tool inserts a
   building block into an existing view/fragment; it does not scaffold a page. If there is no FPM custom page yet,
   create one first (e.g. via the app-generation / page-modification tools).
-- ✅ **Scope: OData/non-CAP apps.** For **Table, FilterBar, and Form** the tool **auto-writes the required UI
-  annotation shell** (`@UI.LineItem`, `@UI.SelectionFields`, `@UI.FieldGroup`) into the app's annotation file when
+- ✅ **Scope: OData/non-CAP apps.** For **Table, FilterBar, Form, and Chart** the tool **auto-writes the required UI
+  annotation shell** (`@UI.LineItem`, `@UI.SelectionFields`, `@UI.FieldGroup`, `@UI.Chart`) into the app's annotation file when
   it does not already exist — you do not need to create it first. For other standard building blocks, and for **CAP
   (CDS) projects** (out of scope — the tool does not write `.cds`), the required UI annotation must already exist in
   the model before you call the tool. If unsure, check the annotation file first.
@@ -53,15 +53,16 @@ is a separate developer task in `@sap-ux/fe-fpm-writer` (new macro, templates, p
 | `field` | single property / value | `metaPath` → annotation path for the property |
 | `form` | details section | `metaPath` → FieldGroup / property path |
 | `page` | custom page layout | — |
-| `rich-text-editor` | notes / rich text | `targetProperty` (e.g. `/Products/description`) — **not** `metaPath` |
+| `rich-text-editor` | notes / rich text | `metaPath` → bound property path (e.g. `/Products/description`) |
 | `rich-text-editor-button-groups` | RTE toolbar config | — |
 | `custom-column` | extra table column | no `metaPath`; uses `embededFragment` |
 | `custom-filter-field` | custom filter field | no `metaPath`; uses `embededFragment` |
 | `custom-form-field` | custom form field | no `metaPath`; uses `embededFragment` |
 | `action` | toolbar button / action | no `metaPath`; uses `embeddedAction` |
 
-`metaPath` is required for `table`, `chart`, `filter-bar`, `field`, `form`. Custom-* types and `action` do not use
-`metaPath`. `rich-text-editor` uses `targetProperty`.
+`metaPath` is required for `table`, `chart`, `filter-bar`, `field`, `form`, and `rich-text-editor` (for the
+rich-text-editor it is the bound property path, e.g. `/Products/description`). Custom-* types and `action` do not
+use `metaPath`.
 
 ### Floor plan support
 
@@ -94,8 +95,9 @@ Adding a building block is the functionality with id **`add-building-block`**.
    insertion points**: every view/fragment file and the valid `aggregationPath` XPath options for it
    (e.g. `/mvc:View/content`). Its `parameters` is the JSON schema for the call in step 5. **Do not guess the
    `viewOrFragmentPath` or `aggregationPath`** — use the values it returns.
-4. **Determine the binding.** For standard building blocks, pick the `metaPath` annotation (see the table). If you
-   are unsure which annotation path to use, call `search_docs`. For `rich-text-editor`, use `targetProperty`.
+4. **Determine the binding.** For standard building blocks, pick the `metaPath` (an annotation path for
+   `table`/`chart`/`filter-bar`/`field`/`form`; the bound property path such as `/Products/description` for
+   `rich-text-editor`). If you are unsure which annotation path to use, call `search_docs`.
 5. **Insert.** Call `execute_functionality` with the chosen parameters:
    ```json
    {
@@ -123,7 +125,7 @@ Add to the main custom page view (webapp/ext/main/Main.view.xml, aggregation /mv
    metaPath /Products/@com.sap.vocabularies.UI.v1.SelectionFields
 2. A Table: id productTable,
    metaPath /Products/@com.sap.vocabularies.UI.v1.LineItem, linked to productFilterBar
-3. A Rich Text Editor: id productNotesRte, targetProperty /Products/description
+3. A Rich Text Editor: id productNotesRte, metaPath /Products/description
 ```
 
 (Leave `contextPath` unset — use an absolute `metaPath` with a leading slash as above.)
@@ -134,8 +136,7 @@ Add to the main custom page view (webapp/ext/main/Main.view.xml, aggregation /mv
 
 - Guessing the `aggregationPath` (or `viewOrFragmentPath`) instead of using the options returned by
   `get_functionality_details`.
-- Setting `metaPath` on a `rich-text-editor` (it uses `targetProperty`).
-- Expecting the tool to create annotations for types other than Table/FilterBar/Form, or on CAP apps — there the UI
+- Expecting the tool to create annotations for types other than Table/FilterBar/Form/Chart, or on CAP apps — there the UI
   annotation must already exist.
 - Hand-editing the view XML instead of using the tool.
 - Calling the tool in parallel for several building blocks on the same view.

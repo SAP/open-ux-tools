@@ -42,11 +42,11 @@ function fakeService(options: {
 }
 
 describe('ANNOTATION_SHELL_TERMS', () => {
-    test('maps only Table, FilterBar and Form to their UI terms', () => {
+    test('maps Table, FilterBar, Form and Chart to their UI terms', () => {
         expect(ANNOTATION_SHELL_TERMS['table']).toBe('com.sap.vocabularies.UI.v1.LineItem');
         expect(ANNOTATION_SHELL_TERMS['filter-bar']).toBe('com.sap.vocabularies.UI.v1.SelectionFields');
         expect(ANNOTATION_SHELL_TERMS['form']).toBe('com.sap.vocabularies.UI.v1.FieldGroup');
-        expect(ANNOTATION_SHELL_TERMS['chart']).toBeUndefined();
+        expect(ANNOTATION_SHELL_TERMS['chart']).toBe('com.sap.vocabularies.UI.v1.Chart');
         expect(ANNOTATION_SHELL_TERMS['action']).toBeUndefined();
     });
 });
@@ -58,7 +58,7 @@ describe('writeAnnotationShell', () => {
     });
 
     test('skips (no term) for a building block type without an annotation shell', async () => {
-        const result = await writeAnnotationShell({ buildingBlockType: 'chart' } as any, applicationAccess, 'app', fs);
+        const result = await writeAnnotationShell({ buildingBlockType: 'field' } as any, applicationAccess, 'app', fs);
 
         expect(result).toEqual({ written: 0 });
         expect(mockCreateService).not.toHaveBeenCalled();
@@ -159,6 +159,35 @@ describe('writeAnnotationShell', () => {
         expect(value.record).toEqual({
             type: 'com.sap.vocabularies.UI.v1.FieldGroupType',
             propertyValues: [{ name: 'Data', value: { type: 'Collection', Collection: [] } }]
+        });
+    });
+
+    test('builds a record wrapper for a Chart shell', async () => {
+        const edit = jest.fn();
+        mockCreateService.mockResolvedValue(
+            fakeService({ entitySets: [{ name: 'SalesOrder', entityTypeName: 'ns.SalesOrder' }], edit })
+        );
+
+        await writeAnnotationShell(
+            { buildingBlockType: 'chart', metaPath: '/SalesOrder/@com.sap.vocabularies.UI.v1.Chart#chartMacro' } as any,
+            applicationAccess,
+            'app',
+            fs
+        );
+
+        const value = edit.mock.calls[0][0].content.value;
+        expect(value.term).toBe('com.sap.vocabularies.UI.v1.Chart');
+        expect(value.qualifier).toBe('chartMacro');
+        expect(value.record).toEqual({
+            type: 'com.sap.vocabularies.UI.v1.ChartDefinitionType',
+            propertyValues: [
+                {
+                    name: 'ChartType',
+                    value: { type: 'EnumMember', EnumMember: 'com.sap.vocabularies.UI.v1.ChartType/Column' }
+                },
+                { name: 'Dimensions', value: { type: 'Collection', Collection: [] } },
+                { name: 'Measures', value: { type: 'Collection', Collection: [] } }
+            ]
         });
     });
 

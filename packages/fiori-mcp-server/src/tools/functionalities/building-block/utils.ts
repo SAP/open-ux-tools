@@ -141,7 +141,8 @@ export const buildingBlockTypeNames = Object.values(BuildingBlockType)
 export const ANNOTATION_SHELL_TERMS: Partial<Record<BuildingBlockType, UIAnnotationTerms>> = {
     [BuildingBlockType.FilterBar]: UIAnnotationTerms.SelectionFields,
     [BuildingBlockType.Table]: UIAnnotationTerms.LineItem,
-    [BuildingBlockType.Form]: UIAnnotationTerms.FieldGroup
+    [BuildingBlockType.Form]: UIAnnotationTerms.FieldGroup,
+    [BuildingBlockType.Chart]: UIAnnotationTerms.Chart
 };
 
 // UIAnnotationTerms values are the fully qualified OData term names — the exact form used in XML annotations.
