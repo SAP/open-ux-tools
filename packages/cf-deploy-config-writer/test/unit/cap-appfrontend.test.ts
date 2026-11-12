@@ -33,7 +33,6 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getCapProjectType: jest.fn()
 }));
 
-const whichMod = await import('which');
 const btpUtils = await import('@sap-ux/btp-utils');
 const projectAccess = await import('@sap-ux/project-access');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
