@@ -279,8 +279,7 @@ export function deleteOutboundNavigationDetail(
     const { sourcePage, navEntity } = data.navigation ?? {};
     if (sourcePage && navEntity) {
         const sourceTarget = manifest['sap.ui5']?.routing?.targets?.[sourcePage];
-        const detail = (sourceTarget as unknown as TargetWithNavigation)?.options?.settings?.navigation?.[navEntity]
-            ?.detail;
+        const detail = (sourceTarget as TargetWithNavigation)?.options?.settings?.navigation?.[navEntity]?.detail;
         if (detail?.['outbound'] !== undefined) {
             delete detail['outbound'];
             fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, data.tabInfo));
@@ -314,7 +313,7 @@ export function prepareToReuseExistingPage(
         throw new Error(`Could not find navigation source ${data.navigation?.sourcePage}!`);
     }
 
-    const navigation = (page as unknown as TargetOptionsAddition).options?.settings?.navigation;
+    const navigation = (page as TargetOptionsAddition).options?.settings?.navigation;
     const navEntity = data.navigation?.navEntity;
     if (!navEntity) {
         throw new Error(`Invalid data. Navigation entity name is missing!`);

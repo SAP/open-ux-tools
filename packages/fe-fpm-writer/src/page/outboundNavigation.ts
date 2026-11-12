@@ -30,7 +30,7 @@ export async function generate(basePath: string, data: OutboundNavigation, fs?: 
         throw new Error(`The outbound with the key ${data.settings.outboundKey} already exists!`);
     }
 
-    const navigation = (page as unknown as TargetOptionsAddition).options?.settings?.navigation;
+    const navigation = (page as TargetOptionsAddition).options?.settings?.navigation;
     // if navigation already exists, delete it
     if (navigation?.[data.entity]) {
         delete navigation[data.entity];
@@ -68,7 +68,7 @@ export async function deleteOutboundNavigation(
         if (!page) {
             throw new Error(`Could not find navigation source ${data.navigation.sourcePage}!`);
         }
-        const navigation = (page as unknown as TargetOptionsAddition).options?.settings?.navigation;
+        const navigation = (page as TargetOptionsAddition).options?.settings?.navigation;
         if (navigation?.[data.entity]) {
             delete navigation[data.entity];
             fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, data.tabInfo));
