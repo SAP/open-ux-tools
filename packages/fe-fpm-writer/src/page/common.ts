@@ -14,12 +14,13 @@ import type {
     ListReport,
     Navigation,
     InternalListReport,
-    Libraries
+    Libraries,
+    TargetOptionsAddition
 } from './types.js';
 import { PageType } from './types.js';
 import type { Manifest } from '../common/types.js';
 import { FCL_ROUTER } from '../common/defaults.js';
-import { extendJSON } from '../common/file.js';
+import { extendJSON, getJsonSpace } from '../common/file.js';
 import { getTemplatePath } from '../templates.js';
 import { coerce, gte } from 'semver';
 import { getManifest } from '../common/utils.js';
@@ -28,6 +29,14 @@ type EnhancePageConfigFunction = (
     data: ObjectPage | ListReport,
     manifest: Manifest
 ) => InternalObjectPage | InternalListReport;
+
+type TargetWithNavigation = {
+    options?: {
+        settings?: {
+            navigation?: { [key: string]: { detail?: { [key: string]: unknown } } };
+        };
+    };
+};
 
 /**
  * Suffix for patterns to support arbitrary paramters
@@ -254,6 +263,68 @@ export async function validatePageConfig(
 }
 
 /**
+ * Removes "outbound" manifest entry for the given target and navigation entity.
+ *
+ * @param manifestPath - manifest path
+ * @param manifest - manifest content
+ * @param data - change data
+ * @param fs - fs editor instance
+ */
+export function deleteOutboundNavigationDetail(
+    manifestPath: string,
+    manifest: Manifest,
+    data: ObjectPage,
+    fs: Editor
+): void {
+    const { sourcePage, navEntity } = data.navigation ?? {};
+    if (sourcePage && navEntity) {
+        const sourceTarget = manifest['sap.ui5']?.routing?.targets?.[sourcePage];
+        const detail = (sourceTarget as TargetWithNavigation)?.options?.settings?.navigation?.[navEntity]?.detail;
+        if (detail?.['outbound'] !== undefined) {
+            delete detail['outbound'];
+            fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, data.tabInfo));
+        }
+    }
+}
+
+/**
+ * Validates necessary input data and removes existing target navigation (outbound) to substitude it with navigation to an existing page.
+ *
+ * @param manifestPath - manifest path
+ * @param manifest - manifest content
+ * @param data - change data
+ * @param fs - fs editor instance
+ */
+export function prepareToReuseExistingPage(
+    manifestPath: string,
+    manifest: Manifest,
+    data: ObjectPage,
+    fs: Editor
+): void {
+    if (!data.id) {
+        throw new Error(`Invalid data. Navigation target page name is missing!`);
+    }
+    let page = manifest['sap.ui5']?.routing?.targets?.[data.id];
+    if (!page) {
+        throw new Error(`Could not find existing target page ${data.id}!`);
+    }
+    page = manifest['sap.ui5']?.routing?.targets?.[data.navigation?.sourcePage ?? ''];
+    if (!page) {
+        throw new Error(`Could not find navigation source ${data.navigation?.sourcePage}!`);
+    }
+
+    const navigation = (page as TargetOptionsAddition).options?.settings?.navigation;
+    const navEntity = data.navigation?.navEntity;
+    if (!navEntity) {
+        throw new Error(`Invalid data. Navigation entity name is missing!`);
+    }
+    if (navigation?.[navEntity]) {
+        delete navigation[navEntity];
+        fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, data.tabInfo));
+    }
+}
+
+/**
  * Add an generic page to an existing UI5 application.
  * Supported pages - ListReport or ObjectPage.
  *
@@ -271,14 +342,15 @@ export async function extendPageJSON(
     templatePath: string,
     fs?: Editor
 ): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    fs ??= create(createStorage());
     await validatePageConfig(basePath, data, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 
     const config = enhanceDataFn(data, manifest);
+
+    // clean up outbound detail in the navigation settings if outbound link is already defined
+    deleteOutboundNavigationDetail(manifestPath, manifest, data, fs);
 
     // enhance manifest.json
     extendJSON(fs, {

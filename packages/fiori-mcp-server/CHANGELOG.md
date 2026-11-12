@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.16.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[75d0823](https://github.com/SAP/open-ux-tools/commit/75d0823084c6499c04fa4c564ea28a76b9e32df4)]
+
 ## 1.16.1
 
 ### Patch Changes
