@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
-import type { EditorSession } from '../../../../../src/utils/editor-session.js';
+import type { EditorSession } from '../../../../../src/adaptation-editor/editor-session.js';
 
 const requireEditorSessionMock = jest.fn<(site: string) => Pick<EditorSession, 'localUrl' | 'relayToken'>>();
 const stopEditorSessionMock = jest.fn<(site: string) => Promise<boolean>>();
-jest.unstable_mockModule('../../../../../src/utils/editor-session.js', () => ({
+jest.unstable_mockModule('../../../../../src/adaptation-editor/editor-session.js', () => ({
     requireEditorSession: requireEditorSessionMock,
     stopEditorSession: stopEditorSessionMock
 }));

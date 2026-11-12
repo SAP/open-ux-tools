@@ -22,8 +22,8 @@ import {
     requireString,
     requireStringArray
 } from './assertions.js';
-import { requireEditorSession } from '../../utils/editor-session.js';
-import { isSimpleBrowserRelayEnabled } from '../../utils/simple-browser-relay.js';
+import { requireEditorSession } from '../../adaptation-editor/editor-session.js';
+import { isSimpleBrowserRelayEnabled } from '../../adaptation-editor/simple-browser-relay.js';
 
 // Simple Browser HTTP relay when enabled (BAS / FORCE_AUTOOPEN), else Playwright.
 const activeTransport = isSimpleBrowserRelayEnabled() ? httpTransport : defaultTransport;

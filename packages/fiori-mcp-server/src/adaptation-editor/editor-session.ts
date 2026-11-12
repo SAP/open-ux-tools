@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { logger } from './logger.js';
+import { logger } from '../utils/logger.js';
 
 export interface EditorSession {
     localUrl: string;

@@ -14,8 +14,8 @@ import {
     signalEditor,
     terminateEditorProcess,
     trackEditorProcess
-} from '../utils/editor-session.js';
-import { isSimpleBrowserRelayEnabled } from '../utils/simple-browser-relay.js';
+} from '../adaptation-editor/editor-session.js';
+import { isSimpleBrowserRelayEnabled } from '../adaptation-editor/simple-browser-relay.js';
 
 /** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
 const ABAP_TIMEOUT_MS = 30000;

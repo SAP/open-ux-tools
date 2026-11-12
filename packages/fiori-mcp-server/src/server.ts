@@ -50,7 +50,7 @@ import type {
 } from './types/index.js';
 import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
 import { logger } from './utils/logger.js';
-import { stopEditorSessions } from './utils/editor-session.js';
+import { stopEditorSessions } from './adaptation-editor/editor-session.js';
 
 type ToolArgs =
     | DocSearchInput

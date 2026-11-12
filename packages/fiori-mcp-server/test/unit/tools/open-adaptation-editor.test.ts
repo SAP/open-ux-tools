@@ -3,7 +3,7 @@ import { EventEmitter } from 'node:events';
 import type { ChildProcess } from 'node:child_process';
 import { PassThrough } from 'node:stream';
 import { join } from 'node:path';
-import type { EditorSession } from '../../../src/utils/editor-session.js';
+import type { EditorSession } from '../../../src/adaptation-editor/editor-session.js';
 
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
@@ -35,7 +35,7 @@ const mockRegisterSession = jest.fn<(session: EditorSession) => void>();
 const mockSignalEditor = jest.fn<(command: 'open' | 'close', url: string) => void>();
 const mockTerminate = jest.fn<(child: ChildProcess) => Promise<boolean>>();
 const mockTrackProcess = jest.fn<(child: ChildProcess, detached: boolean) => void>();
-jest.unstable_mockModule('../../../src/utils/editor-session.js', () => ({
+jest.unstable_mockModule('../../../src/adaptation-editor/editor-session.js', () => ({
     registerEditorSession: mockRegisterSession,
     signalEditor: mockSignalEditor,
     terminateEditorProcess: mockTerminate,

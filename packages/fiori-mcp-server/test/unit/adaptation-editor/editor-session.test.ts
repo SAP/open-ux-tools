@@ -3,7 +3,7 @@ import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { EditorSession } from '../../../src/utils/editor-session.js';
+import type { EditorSession } from '../../../src/adaptation-editor/editor-session.js';
 
 const mockWarn = jest.fn();
 jest.unstable_mockModule('../../../src/utils/logger.js', () => ({ logger: { warn: mockWarn } }));
@@ -27,7 +27,7 @@ const {
     signalEditor,
     trackEditorProcess,
     terminateEditorProcess
-} = await import('../../../src/utils/editor-session.js');
+} = await import('../../../src/adaptation-editor/editor-session.js');
 
 class FakeChildProcess extends EventEmitter {
     pid: number | undefined = 1234;

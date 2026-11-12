@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { EditorSession } from '../../../../src/utils/editor-session.js';
+import type { EditorSession } from '../../../../src/adaptation-editor/editor-session.js';
 import type { FrontendActionTransport } from '../../../../src/tools/run-rta-workflow-step/browser/types.js';
 import type * as rta from '../../../../src/tools/run-rta-workflow-step/rta/index.js';
 
@@ -46,7 +46,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
 
 const mockRequireEditorSession =
     jest.fn<(site: string) => Pick<EditorSession, 'localUrl' | 'browserUrl' | 'relayToken'>>();
-jest.unstable_mockModule('../../../../src/utils/editor-session.js', () => ({
+jest.unstable_mockModule('../../../../src/adaptation-editor/editor-session.js', () => ({
     requireEditorSession: mockRequireEditorSession
 }));
 jest.unstable_mockModule('../../../../src/utils/logger.js', () => ({

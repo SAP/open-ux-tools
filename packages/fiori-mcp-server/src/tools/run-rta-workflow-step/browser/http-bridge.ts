@@ -1,6 +1,6 @@
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
 import type { NeedsUserActionPayload } from './login-page.js';
-import { requireEditorSession, stopEditorSession } from '../../../utils/editor-session.js';
+import { requireEditorSession, stopEditorSession } from '../../../adaptation-editor/editor-session.js';
 import { logger } from '../../../utils/logger.js';
 
 // Kept above the relay's 60s action deadline so its own 504 arrives before the fetch aborts.
