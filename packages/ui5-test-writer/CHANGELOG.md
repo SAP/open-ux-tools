@@ -1,5 +1,21 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Bug Fixes
+
+- Improve generated TypeScript OPA5 tests
+
+    - Remove obsolete `@sapui5/types` workaround casts now that upstream types are correct
+    - Restore checkbox-group comments and the `iClickLink` row index in the TS journey templates
+    - Preserve overloaded sub-object method signatures in generated `OpaJourneyTypes` (e.g. `iClickLink`), fixing a `TS2554: Expected 1 arguments, but got 2` type-check error [[404b757](https://github.com/SAP/open-ux-tools/commit/404b757cea93525b907ad28d3a78c01ca035ac51)]
+
 ## 1.19.16
 
 ### Patch Changes
