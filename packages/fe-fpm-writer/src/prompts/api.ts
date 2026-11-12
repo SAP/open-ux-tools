@@ -1,4 +1,4 @@
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
@@ -133,12 +133,12 @@ export class PromptsAPI {
     public async validateAnswers(
         type: PromptsType,
         answers: Answers,
-        questions?: Question[]
+        questions?: Pick<PromptQuestion, 'name'>[]
     ): Promise<ValidationResults> {
         const originalPrompts = this.cache[type] ?? (await this.getPrompts(type));
         const result: ValidationResults = {};
         if (!questions) {
-            questions = originalPrompts.questions as unknown as Question[];
+            questions = originalPrompts.questions;
         }
         for (const q of questions) {
             const question: PromptQuestion | undefined = originalPrompts.questions.find(

@@ -260,9 +260,7 @@ async function handleAction(action: Actions): Promise<void> {
                 const validationResult = await promptsAPI.validateAnswers(
                     action.value,
                     action.answers,
-                    // PromptQuestion's YUI `message` may resolve to void, which inquirer's Question type disallows;
-                    // the shapes are runtime-compatible here, so narrow to the API's expected question type.
-                    action.questions as Parameters<typeof promptsAPI.validateAnswers>[2]
+                    action.questions
                 );
                 const responseAction: SetValidationResults = {
                     type: SET_VALIDATION_RESULTS,

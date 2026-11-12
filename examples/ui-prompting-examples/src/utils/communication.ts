@@ -146,9 +146,9 @@ const QUESTIONS_TYPE_MAP = new Map([
  * @param type Prompt type
  * @returns Prompt with questions for passed prompt type.
  */
-export function getQuestions<T extends Answers>(
+export function getQuestions(
     type: PromptsType
-): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[]; initialAnswers?: Subset<T> }> {
+): Promise<{ questions: PromptQuestion[]; groups?: PromptsGroup[]; initialAnswers?: Subset<Answers> }> {
     return new Promise((resolve, reject) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,
@@ -163,9 +163,7 @@ export function getQuestions<T extends Answers>(
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
                 resolve({
-                    // The action carries questions typed against the default `Answers`; the caller's
-                    // generic `T` is resolved at runtime from the requested prompt type, so narrow here.
-                    questions: action.questions as PromptQuestion<T>[],
+                    questions: action.questions,
                     groups: 'groups' in action ? action.groups : undefined,
                     initialAnswers: 'initialAnswers' in action ? action.initialAnswers : undefined
                 });
