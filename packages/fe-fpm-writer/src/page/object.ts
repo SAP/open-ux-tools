@@ -1,14 +1,18 @@
 import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import {
     getFclConfig,
     extendPageJSON,
     initializeTargetSettings,
     getLibraryDependencies,
-    getTemplateNamePrefix
+    getTemplateNamePrefix,
+    prepareToReuseExistingPage
 } from './common.js';
 import type { Manifest } from '../common/types.js';
 import type { ObjectPage, InternalObjectPage } from './types.js';
 import { PageType } from './types.js';
+import { getManifest } from '../common/utils.js';
 
 /**
  * Enhances the provided list report configuration with default data.
@@ -49,5 +53,10 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
  * @returns the updated memfs editor instance
  */
 export async function generate(basePath: string, data: ObjectPage, fs?: Editor): Promise<Editor> {
+    if (data.reuseExisting) {
+        fs ??= create(createStorage());
+        const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
+        prepareToReuseExistingPage(manifestPath, manifest, data, fs);
+    }
     return extendPageJSON(basePath, data, enhanceData, '/page/object/manifest.json', fs);
 }
