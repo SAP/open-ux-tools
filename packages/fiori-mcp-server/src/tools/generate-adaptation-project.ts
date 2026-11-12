@@ -6,11 +6,16 @@ import { randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
 import {
+    AppRouterType,
     fetchKeyUserChanges,
+    findServiceInstancesForApp,
     getConfiguredProvider,
     getDefaultProjectName,
     getSupportedProject,
+    isCfInstalled,
+    isLoggedInCf,
     loadApps,
+    loadCfConfig,
     SupportedProject
 } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -238,33 +243,58 @@ function cleanupKeyUserChangesFile(filePath: string | undefined): void {
 /**
  * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
  *
+ * The target is selected solely by `targetEnvironment` ('ABAP' or 'CF') nothing is inferred from the
+ * other parameters. When `targetEnvironment` is missing the tool returns `InputRequired` so the caller
+ * asks the user which target to use.
+ *
  * @param params - Input parameters for the adaptation project generation.
  * @returns A promise resolving to the execution output.
  */
 export async function generateAdaptationProject(
     params: GenerateAdaptationProjectInput
 ): Promise<GenerateAdaptationProjectOutput> {
-    const {
-        system,
-        application,
-        projectType,
-        appPath,
-        targetFolder,
-        projectName,
-        namespace,
-        applicationTitle,
-        client,
-        importKeyUserChanges
-    } = params;
+    const { targetEnvironment, application, appPath, targetFolder } = params;
 
-    if (!system || !application) {
-        return { status: 'Error', message: 'Missing required parameters: system and application are required.' };
+    if (!application) {
+        return { status: 'Error', message: 'Missing required parameter: application is required.' };
     }
 
     const finalTargetFolder = targetFolder ?? appPath;
 
     if (!isAbsolute(finalTargetFolder)) {
         return { status: 'Error', message: `targetFolder must be an absolute path. Received: "${finalTargetFolder}"` };
+    }
+
+    if (targetEnvironment !== 'ABAP' && targetEnvironment !== 'CF') {
+        return {
+            status: 'InputRequired',
+            message:
+                'Specify the target: this can generate an ABAP or a Cloud Foundry adaptation project. ' +
+                'Ask the user which they want, then call generate_adaptation_project again with ' +
+                "targetEnvironment set to 'ABAP' or 'CF'. Do NOT guess - a system alone does not imply ABAP."
+        };
+    }
+
+    return targetEnvironment === 'CF' ? runCfFlow(params, finalTargetFolder) : runAbapFlow(params, finalTargetFolder);
+}
+
+/**
+ * ABAP adaptation project flow: resolves the ABAP project type (onPremise/cloudReady), optionally
+ * stages key user changes, and invokes the generator. Unchanged behaviour from the original tool.
+ *
+ * @param params - Input parameters for the adaptation project generation.
+ * @param finalTargetFolder - The validated absolute target folder.
+ * @returns A promise resolving to the execution output.
+ */
+async function runAbapFlow(
+    params: GenerateAdaptationProjectInput,
+    finalTargetFolder: string
+): Promise<GenerateAdaptationProjectOutput> {
+    const { system, application, projectType, projectName, namespace, applicationTitle, client, importKeyUserChanges } =
+        params;
+
+    if (!system) {
+        return { status: 'Error', message: 'Missing required parameter: system is required for an ABAP project.' };
     }
 
     let keyUserChangesFilePath: string | undefined;
@@ -353,5 +383,148 @@ export async function generateAdaptationProject(
         return { status: 'Error', message: `Error generating adaptation project: ${message}` };
     } finally {
         cleanupKeyUserChangesFile(keyUserChangesFilePath);
+    }
+}
+
+/**
+ * Cloud Foundry adaptation project flow: detects the CF login (never performing it), discovers which
+ * service instance exposes the requested application, and invokes the generator with a CF JSON payload.
+ *
+ * @param params - Input parameters for the adaptation project generation.
+ * @param finalTargetFolder - The validated absolute target folder.
+ * @returns A promise resolving to the execution output.
+ */
+async function runCfFlow(
+    params: GenerateAdaptationProjectInput,
+    finalTargetFolder: string
+): Promise<GenerateAdaptationProjectOutput> {
+    const {
+        application,
+        projectName,
+        namespace,
+        applicationTitle,
+        serviceInstanceName,
+        mtaMode: requestedMtaMode,
+        mtaId,
+        businessSolutionName,
+        approuter,
+        importKeyUserChanges
+    } = params;
+
+    try {
+        const cfConfig = loadCfConfig(logger);
+
+        // Detection only — this tool never runs `cf login` on the user's behalf.
+        if (!(await isCfInstalled(logger))) {
+            return {
+                status: 'Error',
+                message:
+                    'The Cloud Foundry CLI ("cf") is not installed. Install it and run `cf login`, then call ' +
+                    'generate_adaptation_project again.'
+            };
+        }
+
+        const loggedIn = await isLoggedInCf(cfConfig, logger);
+        if (!loggedIn || !cfConfig.org?.Name || !cfConfig.space?.GUID) {
+            const endpoint = cfConfig.url ? `https://api.cf.${cfConfig.url}` : '<API endpoint>';
+            return {
+                status: 'Error',
+                message:
+                    'You are not logged in to a Cloud Foundry org and space. Run ' +
+                    `\`cf login -a ${endpoint} --sso\`, select an org and space, then call ` +
+                    'generate_adaptation_project again.'
+            };
+        }
+
+        let resolvedServiceInstanceName = serviceInstanceName;
+        if (!resolvedServiceInstanceName) {
+            const matches = await findServiceInstancesForApp(application, cfConfig, logger);
+            if (matches.length === 0) {
+                return {
+                    status: 'Error',
+                    message:
+                        `No Cloud Foundry service instance in org '${cfConfig.org.Name}' / space ` +
+                        `'${cfConfig.space.Name}' exposes application '${application}'. Verify the application id ` +
+                        'and that you are targeting the correct org and space.'
+                };
+            }
+            if (matches.length === 1) {
+                resolvedServiceInstanceName = matches[0].name;
+            } else {
+                const names = matches.map((match) => match.name).join(', ');
+                return {
+                    status: 'InputRequired',
+                    message:
+                        `Multiple Cloud Foundry service instances expose application '${application}': ${names}. ` +
+                        'Ask the user which one to use, then call generate_adaptation_project again with ' +
+                        'serviceInstanceName set to the chosen value.'
+                };
+            }
+        }
+
+        const mtaMode = requestedMtaMode ?? 'existing';
+        if (mtaMode === 'new' && !mtaId) {
+            return {
+                status: 'Error',
+                message:
+                    'mtaMode "new" requires mtaId (the MTA project id/name of the folder to create). ' +
+                    'Provide mtaId and call generate_adaptation_project again.'
+            };
+        }
+
+        if (importKeyUserChanges) {
+            logger.info('importKeyUserChanges is not supported for Cloud Foundry adaptation projects; ignoring it.');
+        }
+
+        const jsonInput: Record<string, unknown> = {
+            targetEnv: 'CF',
+            application,
+            serviceInstanceName: resolvedServiceInstanceName,
+            mtaMode,
+            targetFolder: finalTargetFolder
+        };
+
+        applyOptionalFields(jsonInput, { namespace, applicationTitle });
+        if (projectName) {
+            jsonInput.projectName = projectName;
+        }
+        if (mtaId) {
+            jsonInput.mtaId = mtaId;
+        }
+        if (businessSolutionName) {
+            jsonInput.businessSolutionName = businessSolutionName;
+        }
+        if (approuter) {
+            jsonInput.approuter = approuter === 'managed' ? AppRouterType.MANAGED : AppRouterType.STANDALONE;
+        }
+
+        mkdirSync(finalTargetFolder, { recursive: true });
+
+        // Pass the JSON payload as a single argv element (see the ABAP flow for the rationale).
+        const jsonString = JSON.stringify(jsonInput);
+        const { cmd, args } = buildGeneratorCommand(jsonString);
+        const { stdout, stderr } = await runCmdArgs(cmd, args, {
+            cwd: finalTargetFolder,
+            timeout: GENERATION_TIMEOUT_MS
+        });
+
+        if (stdout) {
+            logger.info(stdout);
+        }
+        if (stderr) {
+            logger.warn(stderr);
+        }
+
+        const projectPath = mtaMode === 'new' && mtaId ? join(finalTargetFolder, mtaId) : finalTargetFolder;
+
+        return {
+            status: 'Success',
+            message: `Cloud Foundry adaptation project generated successfully at ${projectPath}.`,
+            projectPath
+        };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        logger.error(`Error generating adaptation project: ${message}`);
+        return { status: 'Error', message: `Error generating adaptation project: ${message}` };
     }
 }

@@ -48,29 +48,45 @@ const adpTools = [
         name: 'generate_adaptation_project',
         description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
 
-        This tool requires:
-        - system: The name of the SAP system (from list_sap_systems)
-        - application: The application ID to adapt
-        - appPath: The current working directory — the project subfolder is created INSIDE this folder
+        This tool generates either an ABAP or a Cloud Foundry (CF) adaptation project. The target is
+        selected ONLY by the 'targetEnvironment' parameter ('ABAP' or 'CF') and it must always be set.
+        The tool NEVER infers the target: a provided 'system' does not imply ABAP, and CF parameters do
+        not imply CF. If 'targetEnvironment' is omitted the tool generates nothing and returns status
+        'InputRequired' — ask the user whether they want ABAP or Cloud Foundry, then call again with
+        'targetEnvironment' set to their answer.
 
-        The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
+        Common required parameters:
+        - application: The application ID to adapt (ABAP app id, or the CF base-app id)
+        - appPath: The current working directory — the project is created INSIDE this folder
 
-        Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
+        ABAP (targetEnvironment: 'ABAP'):
+        - Requires 'system' (from list_sap_systems). Optional: projectType, client, importKeyUserChanges.
+        - The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
+        - PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
+          which type they want — in that case pass their choice through on the first call. When the selected system
+          AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
+          unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
+          you receive 'InputRequired', ask the user which type they want, then call this tool again with
+          projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
+          it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
+          Passing a projectType the system or application cannot support returns status 'Error'.
+        - Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
+          changes from LREP (using the same system) and include them in the generated project.
+          Generation aborts if the fetch fails or no DEFAULT adaptation exists.
+        - Use 'list_sap_systems' first to discover available systems.
 
-        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
-        which type they want — in that case pass their choice through on the first call. When the selected system
-        AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
-        unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
-        you receive 'InputRequired', ask the user which type they want, then call this tool again with
-        projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
-        it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
-        Passing a projectType the system or application cannot support returns status 'Error'.
+        Cloud Foundry (targetEnvironment: 'CF'):
+        - LOGIN IS DETECTED ONLY — this tool never runs 'cf login'. If you are not logged in to a CF org/space,
+          the tool returns status 'Error' telling you the exact 'cf login -a <API endpoint> --sso' command to run;
+          relay it to the user and call the tool again after they have logged in.
+        - SERVICE DISCOVERY: if serviceInstanceName is omitted, the tool searches the current org/space for the
+          service instance(s) exposing 'application'. Zero matches returns 'Error'; exactly one is used
+          automatically; multiple matches return status 'InputRequired' listing the service instance names — ask
+          the user which to use and call again with serviceInstanceName set to their choice.
+        - CF-only optional parameters: serviceInstanceName, mtaMode ('new'|'existing', default 'existing'), mtaId
+          (required when mtaMode is 'new'), businessSolutionName, approuter ('managed'|'standalone').
+        - projectType, client and importKeyUserChanges are ABAP-only and ignored for Cloud Foundry.
 
-        Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
-        changes from LREP (using the same system) and include them in the generated
-        project. Generation aborts if the fetch fails or no DEFAULT adaptation exists.
-
-        Use 'list_sap_systems' first to discover available systems.
         The generator will be executed with the provided JSON configuration.`,
         annotations: {
             title: 'Generate Adaptation Project',
