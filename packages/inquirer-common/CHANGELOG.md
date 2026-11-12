@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 1.0.55
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+
 ## 1.0.54
 
 ### Patch Changes
