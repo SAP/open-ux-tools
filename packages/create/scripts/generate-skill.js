@@ -117,12 +117,19 @@ metadata:
         .map((cmd) => {
             const cmdDesc = cmd.description.split('\n')[0].trim();
 
-            // Leaf command (no subcommands) — just point to references for full options
+            // Leaf command — render options summary instead of a subcommand table
             if (!cmd.subcommands || cmd.subcommands.length === 0) {
+                const optionsSummary = (cmd.options || [])
+                    .map((opt) => `| \`${opt.name}\` | ${opt.description} |`)
+                    .join('\n');
                 return [
                     `## \`${cmd.name}\``,
                     '',
                     cmdDesc,
+                    '',
+                    '| Option | Description |',
+                    '|---|---|',
+                    optionsSummary,
                     '',
                     `> Full options and flags: \`references/${cmd.name}.md\``,
                 ].join('\n');
