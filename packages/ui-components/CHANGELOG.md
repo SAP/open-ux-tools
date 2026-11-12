@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 3.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Features
+
+- new UiIcons.FioriApp icon has been added [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
 ## 3.2.0
 
 ### Minor Changes

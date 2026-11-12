@@ -1,5 +1,17 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 3.0.142
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Workspace Updates
+
+- @sap-ux/ui5-test-writer 1.19.15 → 1.19.16
+
 ## 3.0.141
 
 ### Patch Changes
